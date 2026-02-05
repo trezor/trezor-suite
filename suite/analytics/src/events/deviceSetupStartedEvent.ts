@@ -7,6 +7,7 @@ type Attributes = {
     deviceModel: AttributeDef<DeviceModelInternal>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const deviceSetupStartedEvent: EventDef<Attributes, EventType.DeviceSetupStarted> = {
     name: EventType.DeviceSetupStarted,
     descriptionTrigger: '?',

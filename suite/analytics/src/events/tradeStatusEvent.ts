@@ -16,6 +16,7 @@ type Attributes = {
     >;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const tradeStatusEvent: EventDef<Attributes, EventType.TradeStatus> = {
     name: EventType.TradeStatus,
     descriptionTrigger: 'fired on final trading step when status changes',

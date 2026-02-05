@@ -31,6 +31,7 @@ type Attributes = {
     rateType?: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> = {
     name: EventType.TradeExchange,
     descriptionTrigger: 'fired on every step during the exchange flow',

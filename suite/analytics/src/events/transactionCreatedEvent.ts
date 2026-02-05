@@ -32,6 +32,7 @@ type Attributes = {
     txType?: AttributeDef<'trade' | 'stake'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const transactionCreatedEvent: EventDef<Attributes, EventType.TransactionCreated> = {
     name: EventType.TransactionCreated,
     descriptionTrigger:

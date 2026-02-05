@@ -26,8 +26,6 @@ export type Domain =
     | 'coin'
     | 'dashboard'
     | 'device'
-    | 'device_connection'
-    | 'device_setup'
     | 'firmware'
     | 'guide'
     | 'menu'
@@ -41,6 +39,7 @@ export type Domain =
     | 'transaction'
     | 'wallet_connect';
 
+/** @description use `Domain/string (use kebab-case)` */
 type EventName = `${Domain}/${string}`;
 
 type HasKeys<T> = keyof T extends never ? false : true;

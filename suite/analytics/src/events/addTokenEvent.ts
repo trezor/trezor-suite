@@ -8,6 +8,7 @@ type Attributes = {
     token: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const addTokenEvent: EventDef<Attributes, EventType.AddToken> = {
     name: EventType.AddToken,
     descriptionTrigger: 'Accounts > Ethereum account > ... > Add token',

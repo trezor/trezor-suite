@@ -7,6 +7,7 @@ type Attributes = {
     value: AttributeDef<number>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const coinjoinAnonymityGainEvent: EventDef<Attributes, EventType.CoinjoinAnonymityGain> = {
     name: EventType.CoinjoinAnonymityGain,
     descriptionTrigger:

@@ -8,6 +8,7 @@ type Attributes = {
     anchor?: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const routerLocationChangeEvent: EventDef<Attributes, EventType.RouterLocationChange> = {
     name: EventType.RouterLocationChange,
     descriptionTrigger: 'Fired on each url change (navigation in the app).',

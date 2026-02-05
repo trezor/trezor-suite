@@ -17,6 +17,7 @@ type Attributes = {
     fractionButton?: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
     name: EventType.TradeSell,
     descriptionTrigger: 'fired on every step during the sell flow',

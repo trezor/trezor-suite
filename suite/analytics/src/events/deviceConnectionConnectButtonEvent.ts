@@ -8,6 +8,7 @@ type Attributes = {
 
 export const deviceConnectionConnectButtonEvent: EventDef<
     Attributes,
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.DeviceConnectionConnectButton
 > = {
     name: EventType.DeviceConnectionConnectButton,

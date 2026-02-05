@@ -7,6 +7,7 @@ type Attributes = {
     approved: AttributeDef<boolean>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const connectPopupPermissionsEvent: EventDef<Attributes, EventType.ConnectPopupPermissions> =
     {
         name: EventType.ConnectPopupPermissions,

@@ -6,6 +6,7 @@ type Attributes = {
     type: AttributeDef<'hidden' | 'standard'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const selectWalletTypeEvent: EventDef<Attributes, EventType.SelectWalletType> = {
     name: EventType.SelectWalletType,
     descriptionTrigger:

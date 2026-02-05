@@ -23,6 +23,7 @@ type Attributes = {
     connectionType?: AttributeDef<'cable' | 'bluetooth'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> = {
     name: EventType.DeviceConnect,
     descriptionTrigger: 'Fired when device is connected.',

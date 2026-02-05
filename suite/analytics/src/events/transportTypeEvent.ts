@@ -7,6 +7,7 @@ type Attributes = {
     version: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const transportTypeEvent: EventDef<Attributes, EventType.TransportType> = {
     name: EventType.TransportType,
     descriptionTrigger: 'On app start (when TRANSPORT.START action is fired)',

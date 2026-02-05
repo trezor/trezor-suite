@@ -11,6 +11,7 @@ type Attributes = {
     npmVersion?: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const connectPopupCallEvent: EventDef<Attributes, EventType.ConnectPopupCall> = {
     name: EventType.ConnectPopupCall,
     descriptionTrigger: 'Connect Popup call from 3rd party app',

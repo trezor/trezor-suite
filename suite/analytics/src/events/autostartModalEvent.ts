@@ -6,6 +6,7 @@ type Attributes = {
     action: AttributeDef<'background-always' | 'background-now' | 'quit-always' | 'quit-now'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const autostartModalEvent: EventDef<Attributes, EventType.AutostartModal> = {
     name: EventType.AutostartModal,
     descriptionTrigger:

@@ -7,6 +7,7 @@ type Attributes = {
     networks: AttributeDef<string[]>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const walletConnectProposalEvent: EventDef<Attributes, EventType.WalletConnectProposal> = {
     name: EventType.WalletConnectProposal,
     descriptionTrigger: 'WalletConnect DApp requesting connection',

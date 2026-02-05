@@ -7,6 +7,7 @@ type Attributes = {
     error: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const createBackupEvent: EventDef<Attributes, EventType.CreateBackup> = {
     name: EventType.CreateBackup,
     descriptionTrigger: 'Create backup modal',

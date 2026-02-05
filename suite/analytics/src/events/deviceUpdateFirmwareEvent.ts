@@ -13,6 +13,7 @@ type Attributes = {
     error: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const deviceUpdateFirmwareEvent: EventDef<Attributes, EventType.DeviceUpdateFirmware> = {
     name: EventType.DeviceUpdateFirmware,
     descriptionTrigger: 'Fired when firmware update is finished. (Custom firmware also installed)',

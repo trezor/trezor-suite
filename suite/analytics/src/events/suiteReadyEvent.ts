@@ -36,6 +36,7 @@ type Attributes = {
     networkReserve: AttributeDef<boolean>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
     name: EventType.SuiteReady,
     descriptionTrigger: 'Triggers on the application start or when the onboarding is done.',

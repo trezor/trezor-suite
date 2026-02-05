@@ -7,6 +7,7 @@ type Attributes = {
     count: AttributeDef<number>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const tradeReceivedQuotesEvent: EventDef<Attributes, EventType.TradeReceivedQuotes> = {
     name: EventType.TradeReceivedQuotes,
     descriptionTrigger: 'Quotes for buy/sell/swap are fetched',

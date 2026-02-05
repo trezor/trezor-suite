@@ -19,6 +19,7 @@ type Attributes = {
     contractAddress?: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> = {
     name: EventType.TradeNavigate,
     descriptionTrigger: 'fired on navigating from any trading button to the trading forms',

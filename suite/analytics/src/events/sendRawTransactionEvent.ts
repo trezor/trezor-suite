@@ -6,6 +6,7 @@ type Attributes = {
     networkSymbol: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const sendRawTransactionEvent: EventDef<Attributes, EventType.SendRawTransaction> = {
     name: EventType.SendRawTransaction,
     descriptionTrigger: 'Accounts > Send > ... > Send raw > Send',

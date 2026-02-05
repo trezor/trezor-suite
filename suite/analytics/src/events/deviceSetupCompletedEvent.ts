@@ -18,6 +18,7 @@ type Attributes = {
     unitPackaging: AttributeDef<number>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSetupCompleted> = {
     name: EventType.DeviceSetupCompleted,
     descriptionTrigger: 'Fired when device is successfully setup using in-app onboarding',

@@ -11,7 +11,7 @@ type Attributes = {
     isAutoUpdated?: AttributeDef<boolean>;
 };
 
-// @ts-expect-error use allowed `EventName` only (suite-common/analytics/src/eventDefinition.ts)
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const appUpdateEvent: EventDef<Attributes, EventType.AppUpdate> = {
     name: EventType.AppUpdate,
     descriptionTrigger: 'Desktop app is in a process of updating.',
