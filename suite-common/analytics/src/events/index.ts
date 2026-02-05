@@ -5,6 +5,7 @@ export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
 export { deviceConnectionDeviceConfirmationEvent } from './deviceConnectionDeviceConfirmationEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
+export { settingsAppLogExportedEvent } from './settingsAppLogExportedEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
