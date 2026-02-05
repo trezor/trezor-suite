@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,
-    EventType,
+    events,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
@@ -55,7 +55,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     const submitOption = (key: DemoAccountQuestionnaireQuestionOption) => {
         analytics.report(
             {
-                type: EventType.DemoAccountQuestionnaireQuestion,
+                type: events.demoAccountQuestionnaireQuestionEvent.name,
                 payload: {
                     option: key,
                     question: questionId,

@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Row, Text, TextButton } from '@trezor/components';
@@ -42,7 +42,7 @@ export const HeaderBreadcrumb = () => {
     const navigateToCategory = (node: GuideCategory) => {
         dispatch(openNode(node));
         analytics.report({
-            type: EventType.GuideHeaderNavigation,
+            type: events.guideHeaderNavigationEvent.name,
             payload: {
                 type: 'category',
                 id: node.id,
@@ -53,7 +53,7 @@ export const HeaderBreadcrumb = () => {
     const navigateToGuideDashboard = () => {
         dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
-            type: EventType.GuideHeaderNavigation,
+            type: events.guideHeaderNavigationEvent.name,
             payload: {
                 type: 'category',
                 id: '/',

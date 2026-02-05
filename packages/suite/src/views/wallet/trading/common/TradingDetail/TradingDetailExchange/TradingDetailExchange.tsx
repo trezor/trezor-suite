@@ -4,7 +4,7 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
@@ -88,7 +88,7 @@ export const TradingDetailExchange = () => {
         }
 
         analytics.report({
-            type: EventType.TradingStatus,
+            type: events.tradeStatusEvent.name,
             payload: {
                 type: 'exchange',
                 status: tradeStatusStep,

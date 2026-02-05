@@ -12,7 +12,7 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { AnalyticsNativeEvents, EventType } from '@suite-native/analytics';
+import { AnalyticsNativeEvents, events } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -103,7 +103,7 @@ const waitForPromiseAndReport = async (
     const action = await promise;
     if (isFulfilled(action) && (action.payload as ExchangeTrade[]).length > 0) {
         analytics.report({
-            type: EventType.TradingQuoteReceived,
+            type: events.tradingQuoteReceivedEvent.name,
             payload: {
                 type: 'exchange',
             },

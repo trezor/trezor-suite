@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -95,7 +95,7 @@ export const ConfirmValueModal = ({
 
         if (account) {
             analytics.report({
-                type: EventType.CreateReceiveAddressCopyAddress,
+                type: events.createReceiveAddressCopyAddressEvent.name,
                 payload: { assetSymbol: account.symbol },
             });
         }

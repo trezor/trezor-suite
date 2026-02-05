@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { Translation } from '@suite/intl';
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import {
     Button,
@@ -80,7 +80,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
 
         if (isFulfilled(response)) {
             analytics.report({
-                type: EventType.SettingsDeviceWipe,
+                type: events.settingsDeviceWipeEvent.name,
             });
             onCancel();
         }

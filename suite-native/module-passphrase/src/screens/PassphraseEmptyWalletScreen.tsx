@@ -6,7 +6,7 @@ import {
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -48,7 +48,7 @@ export const PassphraseEmptyWalletScreen = () => {
             );
             dispatch(runDiscoveryThunk(device));
         }
-        analytics.report({ type: EventType.PassphraseTryAgain });
+        analytics.report({ type: events.passphraseTryAgainEvent.name });
     };
 
     return (

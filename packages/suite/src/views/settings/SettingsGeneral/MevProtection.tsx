@@ -1,6 +1,6 @@
 import { FormattedList } from 'react-intl';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
@@ -27,7 +27,7 @@ export const MevProtection = () => {
         dispatch(setMevProtection(nextIsMevProtectionEnabled));
 
         analytics.report({
-            type: EventType.SettingsGeneralMevProtection,
+            type: events.settingsGeneralMevProtectionEvent.name,
             payload: { value: nextIsMevProtectionEnabled },
         });
     };

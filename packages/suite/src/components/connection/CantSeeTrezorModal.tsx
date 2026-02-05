@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -79,7 +79,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                             priority="secondary"
                             onClick={() => {
                                 analytics.report({
-                                    type: EventType.DeviceConnectionHintModal,
+                                    type: events.deviceConnectionHintModalEvent.name,
                                     payload: {
                                         option: 'notWorking',
                                     },

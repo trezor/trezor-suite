@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
@@ -86,7 +86,7 @@ const ActionButton = ({
 
     const handleOnClick = () => {
         analytics.report({
-            type: EventType.DeviceConnectionDeviceFound,
+            type: events.deviceConnectionDeviceFoundEvent.name,
             payload: {
                 option: 'connect',
             },

@@ -15,7 +15,7 @@ import {
     selectTradingPlatformByCryptoId,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
@@ -156,7 +156,7 @@ const useBuyQuotesThunk = (
                 const action = await requestPromise;
                 if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
                     analytics.report({
-                        type: EventType.TradingQuoteReceived,
+                        type: events.tradingQuoteReceivedEvent.name,
                         payload: {
                             type: 'buy',
                         },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -48,7 +48,7 @@ export const DashboardPromoBanner = () => {
 
     const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
-            type: EventType.PromoDashboardBanner,
+            type: events.promoDashboardBannerEvent.name,
             payload: {
                 action: 'close',
                 bannerType: currentBanner,
@@ -60,7 +60,7 @@ export const DashboardPromoBanner = () => {
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
-            type: EventType.PromoDashboardBanner,
+            type: events.promoDashboardBannerEvent.name,
             payload: {
                 action: 'cta',
                 bannerType: currentBanner,

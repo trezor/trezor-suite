@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TradingBuyFormProps,
@@ -61,7 +61,7 @@ export const useTradingBuyHandleChange = ({
             const quotes = await promise.unwrap();
 
             analytics.report({
-                type: EventType.TradingReceivedQuotes,
+                type: events.tradingReceivedQuotesEvent.name,
                 payload: {
                     type: 'buy',
                     count: quotes?.length ?? 0,

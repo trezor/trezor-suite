@@ -1,6 +1,6 @@
 import type { Locale } from 'date-fns';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 
@@ -50,7 +50,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
 
         dispatch(applySettings({ auto_lock_delay_ms: value }));
         analytics.report({
-            type: EventType.SettingsDeviceUpdateAutoLock,
+            type: events.settingsDeviceUpdateAutoLockEvent.name,
             payload: {
                 value,
             },

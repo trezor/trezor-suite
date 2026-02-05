@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -56,7 +56,7 @@ export const UnstakeButton = () => {
         handleSubmit(signTx)();
 
         analytics.report({
-            type: EventType.StakingUnstake,
+            type: events.stakingUnstakeEvent.name,
             payload: {
                 action: 'continue',
                 step: 'unstake-form-modal',

@@ -11,7 +11,7 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectLocale } from '@suite-native/intl';
@@ -45,7 +45,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         if (isAppReady && isOnboardingFinished && loadDuration && !initWasReported) {
             setInitWasReported(true);
             analytics.report({
-                type: EventType.AppReady,
+                type: events.appReadyEvent.name,
                 payload: {
                     appLanguage,
                     deviceLanguage,

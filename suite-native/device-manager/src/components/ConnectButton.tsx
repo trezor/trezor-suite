@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -43,7 +43,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
         onConnectDevicePress();
 
         analytics.report({
-            type: EventType.DeviceManagerClick,
+            type: events.deviceManagerClickEvent.name,
             payload: { action: 'connectDeviceButton' },
         });
     };

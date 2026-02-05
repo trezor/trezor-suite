@@ -11,7 +11,7 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -120,7 +120,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                 case 'sendAsset':
                     if (sendAsset?.cryptoId !== prevSendCryptoId.current) {
                         analytics.report({
-                            type: EventType.TradingParameterChanged,
+                            type: events.tradingParameterChangedEvent.name,
                             payload: {
                                 type: 'exchange',
                                 parameter: 'cryptoFrom',
@@ -136,7 +136,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                 case 'receiveAsset':
                     if (receiveAsset?.cryptoId !== prevReceiveCryptoId.current) {
                         analytics.report({
-                            type: EventType.TradingParameterChanged,
+                            type: events.tradingParameterChangedEvent.name,
                             payload: {
                                 type: 'exchange',
                                 parameter: 'cryptoTo',

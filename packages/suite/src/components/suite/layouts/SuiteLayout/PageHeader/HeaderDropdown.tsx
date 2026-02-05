@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
@@ -66,7 +66,7 @@ export const HeaderDropdown = ({
                 goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
 
                 analytics.report({
-                    type: EventType.TradingNavigate,
+                    type: events.tradeNavigateEvent.name,
                     payload: {
                         action: 'navigate',
                         type: 'buy/sell',
@@ -87,7 +87,7 @@ export const HeaderDropdown = ({
                 });
 
                 analytics.report({
-                    type: EventType.TradingNavigate,
+                    type: events.tradeNavigateEvent.name,
                     payload: {
                         action: 'navigate',
                         type: 'exchange',

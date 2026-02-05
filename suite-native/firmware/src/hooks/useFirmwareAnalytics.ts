@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
-import { EventType, FirmwareUpdatePayload, FirmwareUpdateStartType } from '@suite-native/analytics';
+import { FirmwareUpdatePayload, FirmwareUpdateStartType, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { FirmwareType } from '@trezor/connect';
 import {
@@ -62,7 +62,7 @@ export const useFirmwareAnalytics = ({
             resetTimeStarted();
 
             analytics.report({
-                type: EventType.FirmwareUpdateStarted,
+                type: events.firmwareUpdateStartedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     startType,
@@ -75,7 +75,7 @@ export const useFirmwareAnalytics = ({
     const handleAnalyticsReportStucked = useCallback(
         (state: 'modalPart1' | 'modalPart2' | 'buttonVisible') => {
             analytics.report({
-                type: EventType.FirmwareUpdateStucked,
+                type: events.firmwareUpdateStuckedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     duration: getElapsedTimeInSeconds(),
@@ -89,7 +89,7 @@ export const useFirmwareAnalytics = ({
     const handleAnalyticsReportFinished = useCallback(
         ({ error }: { error?: string } = {}) => {
             analytics.report({
-                type: EventType.FirmwareUpdateFinished,
+                type: events.firmwareUpdateFinishedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     duration: getElapsedTimeInSeconds(),
@@ -102,7 +102,7 @@ export const useFirmwareAnalytics = ({
 
     const handleAnalyticsReportCancelled = useCallback(() => {
         analytics.report({
-            type: EventType.FirmwareUpdateCancel,
+            type: events.firmwareUpdateCancelEvent.name,
             payload: getAnalyticsPayload(),
         });
     }, [getAnalyticsPayload, analytics]);

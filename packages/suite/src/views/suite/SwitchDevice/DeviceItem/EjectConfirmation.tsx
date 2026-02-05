@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
@@ -24,7 +24,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
         dispatch(deviceActions.forgetDevice({ device: instance }));
 
         analytics.report({
-            type: EventType.SwitchDeviceEject,
+            type: events.switchDeviceEjectEvent.name,
         });
     };
 

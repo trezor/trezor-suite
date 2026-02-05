@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
@@ -63,7 +63,7 @@ export const useTradingExchangeHandleChange = ({
             const quotes = await promise.unwrap();
 
             analytics.report({
-                type: EventType.TradingReceivedQuotes,
+                type: events.tradingReceivedQuotesEvent.name,
                 payload: {
                     type: 'exchange',
                     count: quotes?.length ?? 0,

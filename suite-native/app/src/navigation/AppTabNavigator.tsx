@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { EarnStackNavigator } from '@suite-native/module-earn';
@@ -28,7 +28,7 @@ export const AppTabNavigator = () => {
     const handleTradeTabPress = () => {
         // Buy is the default tab when navigating to the Trading stack
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradingNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'buy',

@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -30,14 +30,14 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (currentRouteName === 'suite-index') {
             analytics.report({
-                type: EventType.DashboardActions,
+                type: events.dashboardActionsEvent.name,
                 payload: { type: routeName },
             });
         }
 
         if (isAccountTabPage && account?.symbol) {
             analytics.report({
-                type: EventType.AccountsActions,
+                type: events.accountsActionsEvent.name,
                 payload: { symbol: account?.symbol, action: routeName },
             });
         }
@@ -51,7 +51,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         });
 
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'buy/sell',
@@ -75,7 +75,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         });
 
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'exchange',

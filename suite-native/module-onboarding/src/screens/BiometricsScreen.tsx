@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
@@ -40,7 +40,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
         const result = await toggleBiometricsOption();
         if (result === 'enabled') {
             analytics.report({
-                type: EventType.BiometricsChange,
+                type: events.biometricsChangeEvent.name,
                 payload: {
                     enabled: true,
                     origin: 'bottomSheet',

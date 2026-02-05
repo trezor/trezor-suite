@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     getNetwork,
@@ -28,7 +28,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
         analytics.report({
-            type: EventType.AccountsEmptyAccountReceive,
+            type: events.accountsEmptyAccountReceiveEvent.name,
             payload: {
                 symbol: account.symbol,
             },
@@ -38,7 +38,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         dispatch(goto('wallet-trading-buy', { preserveParams: true }));
 
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'buy',

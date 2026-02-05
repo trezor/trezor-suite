@@ -5,7 +5,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { PinActionType } from '@suite-native/navigation';
@@ -82,7 +82,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
 
     const handlePinAction = useCallback(async () => {
         analytics.report({
-            type: EventType.DeviceSettingsPinProtectionChange,
+            type: events.deviceSettingsPinProtectionChangeEvent.name,
             payload: { action: type },
         });
 

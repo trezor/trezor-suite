@@ -10,7 +10,7 @@ import {
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -83,7 +83,7 @@ export const useExchangeFlow = () => {
 
             const triggerAnalyticsTradeConfirmation = () => {
                 analytics.report({
-                    type: EventType.TradingConfirmTrade,
+                    type: events.tradingConfirmTradeEvent.name,
                     payload: {
                         type: 'exchange',
                     },

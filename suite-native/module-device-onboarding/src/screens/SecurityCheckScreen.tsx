@@ -1,4 +1,4 @@
-import { type AnalyticsNativeEvents, EventType } from '@suite-native/analytics';
+import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
 import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -29,7 +29,7 @@ const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
                                 href={TREZOR_RESELLERS_URL}
                                 onPress={() => {
                                     analytics.report({
-                                        type: EventType.DeviceSetupInfo,
+                                        type: events.deviceSetupInfoEvent.name,
                                         payload: {
                                             location: 'untrustedReseller',
                                         },
@@ -77,7 +77,7 @@ export const SecurityCheckScreen = ({
             suspicionCause: id,
         });
         analytics.report({
-            type: EventType.DeviceSetupSecurityCheck,
+            type: events.deviceSetupSecurityCheckEvent.name,
             payload: {
                 location: id,
             },

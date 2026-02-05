@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
 
@@ -31,7 +31,7 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
 
         if (result?.success) {
             analytics.report({
-                type: EventType.SettingsDeviceChangeHapticFeedback,
+                type: events.settingsDeviceChangeHapticFeedbackEvent.name,
                 payload: { value: !hapticEnabled },
             });
         }

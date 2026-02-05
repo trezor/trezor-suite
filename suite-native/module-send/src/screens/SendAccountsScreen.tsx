@@ -1,5 +1,5 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -18,7 +18,7 @@ export const SendAccountsScreen = ({
     const analytics = useAnalytics();
     const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
         analytics.report({
-            type: EventType.SendFlowEntered,
+            type: events.sendFlowEnteredEvent.name,
             payload: {
                 location: 'dashboard',
                 assetSymbol: account.symbol,

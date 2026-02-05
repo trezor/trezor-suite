@@ -22,7 +22,7 @@ import {
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { timeSwitchItems } from './components/TimeSwitch';
@@ -60,12 +60,12 @@ const useWatchTimeframeChangeForAnalytics = (
                 // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
                 // related to issue: https://github.com/trezor/trezor-suite/issues/7839
                 analytics.report({
-                    type: EventType.AssetDetailTimeframeChange,
+                    type: events.assetDetailTimeframeChangeEvent.name,
                     payload: { timeframe: timeframeKey, assetSymbol: symbol },
                 });
             } else {
                 analytics.report({
-                    type: EventType.WatchPortfolioTimeframeChange,
+                    type: events.watchPortfolioTimeframeChangeEvent.name,
                     payload: { timeframe: timeframeKey },
                 });
             }

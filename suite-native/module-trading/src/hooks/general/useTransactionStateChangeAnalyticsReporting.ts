@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { TradingTransaction } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { getTradeStatusStep } from '../../utils/general/utils';
@@ -34,7 +34,7 @@ export const useTransactionStateChangeAnalyticsReporting = (deviceTrades: Tradin
                 // Only report if we have a previous status (not on first render - the refresh is triggered by the useWatchAllTrades hook) and current status is defined
                 if (previousStatus !== undefined && currentStatus !== undefined) {
                     analytics.report({
-                        type: EventType.TradingStatus,
+                        type: events.tradingStatusEvent.name,
                         payload: { type: trade.tradeType, status: currentStatus },
                     });
                 }

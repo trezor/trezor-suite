@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Box, Menu, Popover, PopoverRef } from '@trezor/components';
 
@@ -35,7 +35,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
         }
 
         analytics.report({
-            type: EventType.MenuNotificationsToggle,
+            type: events.menuNotificationsToggleEvent.name,
             payload: {
                 value: !isOpen,
             },

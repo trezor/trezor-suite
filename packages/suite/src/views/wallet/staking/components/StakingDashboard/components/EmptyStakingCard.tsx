@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
@@ -142,7 +142,7 @@ export const EmptyStakingCard = () => {
             dispatch(openModal({ type: 'stake-in-a-nutshell', flow: StakingFlow.Stake }));
 
             analytics.report({
-                type: EventType.StakingStake,
+                type: events.stakingStakeEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',

@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
@@ -88,7 +88,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                         onChange={(value: DisplayRotationType) => {
                             dispatch(applySettings({ display_rotation: value }));
                             analytics.report({
-                                type: EventType.SettingsDeviceChangeOrientation,
+                                type: events.settingsDeviceChangeOrientationEvent.name,
                                 payload: {
                                     value: PROTO.Enum_DisplayRotation[value],
                                 },

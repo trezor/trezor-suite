@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { ButtonGroup, ButtonProps } from '@trezor/components';
@@ -27,7 +27,7 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('send');
 
-                    analytics.report({ type: EventType.DashboardSendModal });
+                    analytics.report({ type: events.dashboardSendModalEvent.name });
                 }}
                 data-testid="@wallet/menu/wallet-global-send"
             >
@@ -40,7 +40,7 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('receive');
 
-                    analytics.report({ type: EventType.DashboardReceiveModal });
+                    analytics.report({ type: events.dashboardReceiveModalEvent.name });
                 }}
                 data-testid="@wallet/menu/wallet-global-receive"
             >

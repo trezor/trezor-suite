@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -32,7 +32,7 @@ export const ReceiveAccountsScreen = () => {
 
     const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
         analytics.report({
-            type: EventType.ReceiveFlowEntered,
+            type: events.receiveFlowEnteredEvent.name,
             payload: {
                 location: 'dashboard',
                 assetSymbol: account.symbol,

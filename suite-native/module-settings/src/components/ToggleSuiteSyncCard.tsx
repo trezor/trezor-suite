@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -31,7 +31,7 @@ export const ToggleSuiteSyncCard = () => {
                     ensureSettingsPersisted: () => persistor?.flush(),
                 });
                 analytics.report({
-                    type: EventType.SettingsGeneralLabeling,
+                    type: events.settingsGeneralLabelingEvent.name,
                     payload: {
                         value: 'off',
                     },
@@ -50,7 +50,7 @@ export const ToggleSuiteSyncCard = () => {
             });
 
             analytics.report({
-                type: EventType.SettingsGeneralLabeling,
+                type: events.settingsGeneralLabelingEvent.name,
                 payload: {
                     value: 'suite-sync',
                 },

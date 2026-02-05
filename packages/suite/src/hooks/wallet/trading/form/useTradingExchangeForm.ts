@@ -4,7 +4,7 @@ import { useDebounce } from 'react-use';
 
 import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -301,7 +301,7 @@ export const useTradingExchangeForm = ({
         switch (pageType) {
             case 'form': {
                 analytics.report({
-                    type: EventType.TradingExchange,
+                    type: events.tradeExchangeEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'exchange-form',
@@ -324,7 +324,7 @@ export const useTradingExchangeForm = ({
             }
             case 'offers': {
                 analytics.report({
-                    type: EventType.TradingExchange,
+                    type: events.tradeExchangeEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'offers-form',
@@ -362,7 +362,7 @@ export const useTradingExchangeForm = ({
 
             const triggerAnalyticsTradeConfirmation = () => {
                 analytics.report({
-                    type: EventType.TradingConfirmTrade,
+                    type: events.tradeConfirmTradeEvent.name,
                     payload: { action: type },
                 });
             };
@@ -506,7 +506,7 @@ export const useTradingExchangeForm = ({
         navigateToExchangeOffers();
 
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'exchange',
             },

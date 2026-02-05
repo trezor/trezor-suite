@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -57,7 +57,7 @@ export const TradingOfferExchange = ({
         const result = await sendTransaction();
 
         analytics.report({
-            type: EventType.TradingExchange,
+            type: events.tradeExchangeEvent.name,
             payload: {
                 action: result ? 'continue' : 'cancel',
                 step: 'confirm-and-send',

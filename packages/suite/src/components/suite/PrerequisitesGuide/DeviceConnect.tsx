@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Button, Column } from '@trezor/components';
 
@@ -13,7 +13,7 @@ export const DeviceConnect = () => {
     const handleConnect = () => {
         dispatch(toggleConnectionModal());
         analytics.report({
-            type: EventType.DeviceConnectionConnectButton,
+            type: events.deviceConnectionConnectButtonEvent.name,
             payload: {
                 option: 'dashboard',
             },

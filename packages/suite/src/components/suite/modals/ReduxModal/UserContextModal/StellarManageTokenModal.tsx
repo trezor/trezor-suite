@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -185,7 +185,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     );
 
                     analytics.report({
-                        type: EventType.AddToken,
+                        type: events.addTokenEvent.name,
                         payload: {
                             networkSymbol: account.symbol,
                             addedNth: account.tokens?.length ? account.tokens.length + 1 : 1,
@@ -200,7 +200,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     );
                 } else {
                     analytics.report({
-                        type: EventType.RemoveToken,
+                        type: events.removeTokenEvent.name,
                         payload: {
                             networkSymbol: account.symbol,
                             token: contractAddress,

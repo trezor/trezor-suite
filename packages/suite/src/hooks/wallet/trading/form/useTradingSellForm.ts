@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -306,7 +306,7 @@ export const useTradingSellForm = ({
         navigateToSellOffers();
 
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'sell',
             },
@@ -321,7 +321,7 @@ export const useTradingSellForm = ({
         switch (pageType) {
             case 'form': {
                 analytics.report({
-                    type: EventType.TradingSell,
+                    type: events.tradeSellEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'sell-form',
@@ -341,7 +341,7 @@ export const useTradingSellForm = ({
             }
             case 'offers': {
                 analytics.report({
-                    type: EventType.TradingSell,
+                    type: events.tradeSellEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'offers-form',
@@ -387,7 +387,7 @@ export const useTradingSellForm = ({
 
         const triggerAnalyticsTradeConfirmation = () => {
             analytics.report({
-                type: EventType.TradingConfirmTrade,
+                type: events.tradeConfirmTradeEvent.name,
                 payload: { action: type },
             });
         };

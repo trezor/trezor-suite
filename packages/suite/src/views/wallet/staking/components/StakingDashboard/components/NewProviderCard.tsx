@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -40,7 +40,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
             );
 
             analytics.report({
-                type: EventType.StakingUpdateProvider,
+                type: events.stakingUpdateProviderEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',

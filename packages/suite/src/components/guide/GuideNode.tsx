@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
@@ -74,7 +74,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const navigateToNode = () => {
         dispatch(openNode(node));
         analytics.report({
-            type: EventType.GuideNodeNavigation,
+            type: events.guideNodeNavigationEvent.name,
             payload: {
                 type: node.type,
                 id: node.id,

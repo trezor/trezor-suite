@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -181,7 +181,7 @@ export const useTradingBuyForm = ({
         navigateToBuyOffers();
 
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'buy',
             },
@@ -216,7 +216,7 @@ export const useTradingBuyForm = ({
 
         const triggerAnalyticsTradeConfirmation = () => {
             analytics.report({
-                type: EventType.TradingConfirmTrade,
+                type: events.tradeConfirmTradeEvent.name,
                 payload: { action: type },
             });
         };
@@ -249,7 +249,7 @@ export const useTradingBuyForm = ({
         switch (pageType) {
             case 'form': {
                 analytics.report({
-                    type: EventType.TradingBuy,
+                    type: events.tradeBuyEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'buy-form',
@@ -265,7 +265,7 @@ export const useTradingBuyForm = ({
             }
             case 'offers': {
                 analytics.report({
-                    type: EventType.TradingBuy,
+                    type: events.tradeBuyEvent.name,
                     payload: {
                         action: 'continue',
                         step: 'offers-form',

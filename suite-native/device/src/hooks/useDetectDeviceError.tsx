@@ -16,7 +16,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware/src/nativeFirmwareSlice';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -80,7 +80,7 @@ export const useDetectDeviceError = () => {
             dispatch(deviceActions.deviceDisconnect(selectedDevice));
 
             analytics.report({
-                type: EventType.EjectDeviceClick,
+                type: events.ejectDeviceClickEvent.name,
                 payload: { origin: 'deviceNotReadyModal' },
             });
 
@@ -149,7 +149,7 @@ export const useDetectDeviceError = () => {
                 onPressPrimaryButton: () => {
                     handleDisconnect();
                     analytics.report({
-                        type: EventType.UnsupportedDevice,
+                        type: events.unsupportedDeviceEvent.name,
                         payload: { deviceState: 'unsupportedFirmware' },
                     });
                 },
@@ -193,7 +193,7 @@ export const useDetectDeviceError = () => {
                         openLink(SUITE_WEB_URL);
 
                         analytics.report({
-                            type: EventType.UnsupportedDevice,
+                            type: events.unsupportedDeviceEvent.name,
                             payload: { deviceState: 'noSeedWithFirmware' },
                         });
                     },
@@ -212,7 +212,7 @@ export const useDetectDeviceError = () => {
                         openLink(SUITE_WEB_URL);
 
                         analytics.report({
-                            type: EventType.UnsupportedDevice,
+                            type: events.unsupportedDeviceEvent.name,
                             payload: { deviceState: 'noSeed' },
                         });
                     },

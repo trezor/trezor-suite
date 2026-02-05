@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
@@ -31,7 +31,7 @@ export const EarnScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            analytics.report({ type: EventType.EarnNavigate });
+            analytics.report({ type: events.earnNavigateEvent.name });
         }, [analytics]),
     );
 

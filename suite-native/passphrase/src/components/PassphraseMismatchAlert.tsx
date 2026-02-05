@@ -10,7 +10,7 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -44,7 +44,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
     useEffect(() => {
         // Wrong passphrase was entered during verifying empty wallet
         if (hasPassphraseMismatchError) {
-            analytics.report({ type: EventType.PassphraseMismatch });
+            analytics.report({ type: events.passphraseMismatchEvent.name });
             showAlert({
                 title: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.title" />
@@ -81,7 +81,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                     navigateToInitialScreen();
 
                     analytics.report({
-                        type: EventType.PassphraseExit,
+                        type: events.passphraseExitEvent.name,
                         payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
                     });
                 },

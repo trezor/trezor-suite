@@ -13,7 +13,7 @@ import {
     selectSelectedDevice,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -79,7 +79,7 @@ export const PassphraseForm = ({
     });
 
     const handleFocusInput = () => {
-        analytics.report({ type: EventType.PassphraseEnterInApp });
+        analytics.report({ type: events.passphraseEnterInAppEvent.name });
         setIsInputFocused(true);
         onFocus?.();
     };

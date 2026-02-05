@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
@@ -166,7 +166,7 @@ export const StakingCard = ({
             dispatch(openModal({ type: 'stake', flow: StakingFlow.Stake }));
 
             analytics.report({
-                type: EventType.StakingStake,
+                type: events.stakingStakeEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',
@@ -181,7 +181,7 @@ export const StakingCard = ({
             dispatch(openModal({ type: 'claim' }));
 
             analytics.report({
-                type: EventType.StakingClaim,
+                type: events.stakingClaimEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',
@@ -196,7 +196,7 @@ export const StakingCard = ({
             dispatch(openModal({ type: 'unstake' }));
 
             analytics.report({
-                type: EventType.StakingUnstake,
+                type: events.stakingUnstakeEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',

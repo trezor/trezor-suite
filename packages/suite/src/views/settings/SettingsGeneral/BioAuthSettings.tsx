@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
 
@@ -27,7 +27,7 @@ export const BioAuthSettings = () => {
     const onChange = (nextBioAuthEnabledValue: boolean) => {
         requestBioAuthChange();
         analytics.report({
-            type: EventType.SettingsGeneralBioAuth,
+            type: events.settingsGeneralBioAuthEvent.name,
             payload: {
                 value: nextBioAuthEnabledValue,
             },

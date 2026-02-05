@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
@@ -18,7 +18,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
     const handleClick = () => {
         dispatch(changePin({ remove: false }));
         analytics.report({
-            type: EventType.SettingsDeviceChangePin,
+            type: events.settingsDeviceChangePinEvent.name,
         });
     };
 

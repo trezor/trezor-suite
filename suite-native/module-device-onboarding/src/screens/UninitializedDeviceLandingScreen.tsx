@@ -8,7 +8,7 @@ import {
     selectHasDeviceFirmwareInstalled,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -101,7 +101,7 @@ export const UninitializedDeviceLandingScreen = ({
         });
 
         analytics.report({
-            type: EventType.DeviceSetupSecurityCheck,
+            type: events.deviceSetupSecurityCheckEvent.name,
             payload: {
                 location: suspicionCause,
             },
@@ -115,7 +115,7 @@ export const UninitializedDeviceLandingScreen = ({
         });
 
         analytics.report({
-            type: EventType.DeviceSetupSecurityCheck,
+            type: events.deviceSetupSecurityCheckEvent.name,
             payload: {
                 location: suspicionCause,
             },
@@ -125,7 +125,7 @@ export const UninitializedDeviceLandingScreen = ({
     useEffect(() => {
         resetOnboardingAnalytics();
         analytics.report({
-            type: EventType.DeviceSetupStarted,
+            type: events.deviceSetupStartedEvent.name,
             payload: {
                 osName: Platform.OS,
                 deviceModel,

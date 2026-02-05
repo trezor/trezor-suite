@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import type { TradingSellType } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -82,7 +82,7 @@ export const TradingSelectedOfferSellTransaction = () => {
         const result = await sendTransaction();
 
         analytics.report({
-            type: EventType.TradingSell,
+            type: events.tradeSellEvent.name,
             payload: {
                 action: result ? 'continue' : 'cancel',
                 step: 'confirm-and-send-transaction',

@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useGuide } from 'src/hooks/guide';
@@ -33,7 +33,7 @@ export const useGuideOpenNode = () => {
         }
 
         analytics.report({
-            type: EventType.GuideTooltipLinkNavigation,
+            type: events.guideTooltipLinkNavigationEvent.name,
             payload: {
                 id: node.id,
             },

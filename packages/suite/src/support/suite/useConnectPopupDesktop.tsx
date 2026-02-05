@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import {
     connectPopupCallThunk,
     connectPopupCancelThunk,
@@ -61,7 +61,7 @@ export const useConnectPopupDesktop = () => {
                     desktopApi.connectPopupReady();
 
                     analytics.report({
-                        type: EventType.ConnectPopupInit,
+                        type: events.connectPopupInitEvent.name,
                     });
                 }
             }

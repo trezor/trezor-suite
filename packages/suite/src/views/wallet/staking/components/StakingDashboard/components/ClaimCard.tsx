@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
@@ -58,7 +58,7 @@ export const ClaimCard = () => {
             dispatch(openModal({ type: 'claim' }));
 
             analytics.report({
-                type: EventType.StakingClaim,
+                type: events.stakingClaimEvent.name,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',

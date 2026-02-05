@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -22,7 +22,7 @@ export const BitcoinUnitsSelector = () => {
     const handleSelectUnit = (value: PROTO.AmountUnit) => {
         dispatch(setBitcoinAmountUnits(value));
         analytics.report({
-            type: EventType.SettingsChangeBtcUnit,
+            type: events.settingsChangeBtcUnitEvent.name,
             payload: { bitcoinUnit: UNIT_ABBREVIATIONS[value] },
         });
     };

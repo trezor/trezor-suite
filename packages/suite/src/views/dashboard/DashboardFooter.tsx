@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     selectRememberedHiddenWalletsCount,
@@ -110,7 +110,7 @@ const StoreBadgeWithQr = ({
                     url={url}
                     onClick={() =>
                         analytics.report({
-                            type: EventType.GetMobileApp,
+                            type: events.promoMobileEvent.name,
                             payload: {
                                 platform: analyticsPayload,
                             },
@@ -169,7 +169,7 @@ const ReferralButton = () => {
             size="small"
             onClick={() => {
                 analytics.report({
-                    type: EventType.ReferralButton,
+                    type: events.promoReferralButtonEvent.name,
                     payload: { hasAtLeastOneRememberedWallet },
                 });
             }}
@@ -215,7 +215,7 @@ export const DashboardFooter = () => {
                             size="small"
                             onClick={() =>
                                 analytics.report({
-                                    type: EventType.GetDesktopApp,
+                                    type: events.promoDesktopEvent.name,
                                 })
                             }
                         >

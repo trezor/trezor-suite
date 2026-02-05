@@ -1,4 +1,4 @@
-import { DesktopAnalyticsDep, EventType } from '@suite/analytics';
+import { DesktopAnalyticsDep, events } from '@suite/analytics';
 import { TurnOnSuiteSync, TurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
 
 /**
@@ -28,7 +28,7 @@ export const createTurnOnDesktopSuiteSync =
         deps.disableLegacyMetadataIfNeeded();
 
         deps.analytics.report({
-            type: EventType.SettingsGeneralLabelingProvider,
+            type: events.settingsGeneralLabelingProviderEvent.name,
             payload: {
                 provider: 'evolu',
             },

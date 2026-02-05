@@ -2,7 +2,7 @@ import { JSX, useContext } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { IconButton, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
@@ -70,7 +70,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
     const goBack = () => {
         back?.();
         analytics.report({
-            type: EventType.GuideHeaderNavigation,
+            type: events.guideHeaderNavigationEvent.name,
             payload: {
                 type: 'back',
             },
@@ -79,7 +79,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
     const handleClose = () => {
         dispatch(close());
         analytics.report({
-            type: EventType.GuideHeaderNavigation,
+            type: events.guideHeaderNavigationEvent.name,
             payload: {
                 type: 'close',
             },

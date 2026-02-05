@@ -14,7 +14,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -129,7 +129,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         if (isPortfolioTrackerDevice) {
             if (symbol) {
                 analytics.report({
-                    type: EventType.CreateReceiveAddressShowAddress,
+                    type: events.createReceiveAddressShowAddressEvent.name,
                     payload: { assetSymbol: symbol },
                 });
                 setIsReceiveApproved(true);
@@ -144,7 +144,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
             if (wasVerificationSuccessful) {
-                analytics.report({ type: EventType.ConfirmedReceiveAddress });
+                analytics.report({ type: events.confirmedReceiveAddressEvent.name });
                 setIsReceiveApproved(true);
             } else {
                 setIsUnverifiedAddressRevealed(false);

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EventType, type TransactionCreatedEventAction } from '@suite/analytics';
+import { type TransactionCreatedEventAction, events } from '@suite/analytics';
 import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -72,7 +72,7 @@ export const TransactionReviewModalBottomContent = ({
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>
         analytics.report({
-            type: EventType.TransactionCreated,
+            type: events.transactionCreatedEvent.name,
             payload: {
                 action,
                 symbol,
@@ -108,7 +108,7 @@ export const TransactionReviewModalBottomContent = ({
 
             if (stakeType) {
                 return analytics.report({
-                    type: EventType.StakingConfirm,
+                    type: events.stakingConfirmEvent.name,
                     payload: { action: stakeType, networkSymbol: symbol },
                 });
             }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -125,7 +125,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         if (protocol) {
             analytics.report({
-                type: EventType.SendQrScan,
+                type: events.sendQrScanEvent.name,
                 payload: {
                     scheme: protocol.scheme,
                     isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,

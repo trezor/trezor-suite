@@ -3,7 +3,7 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -26,7 +26,7 @@ export const DeviceCheckBackupTutorialScreen = () => {
     useFocusEffect(
         useCallback(() => {
             analytics.report({
-                type: EventType.DeviceSettingsCheckBackupEntered,
+                type: events.deviceSettingsCheckBackupEnteredEvent.name,
             });
         }, [analytics]),
     );

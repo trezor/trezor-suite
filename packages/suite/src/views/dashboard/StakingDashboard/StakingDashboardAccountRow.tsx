@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
@@ -109,7 +109,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         );
 
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'buy',
@@ -132,7 +132,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         );
 
         analytics.report({
-            type: EventType.StakingNavigate,
+            type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 from: `dashboard/staking-dashboard/${state}`,

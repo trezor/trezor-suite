@@ -1,6 +1,6 @@
 import { FormattedList } from 'react-intl';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
@@ -28,7 +28,7 @@ export const NetworkReserve = () => {
         dispatch(setNetworkReserve(nextIsNetworkReserveEnabled));
 
         analytics.report({
-            type: EventType.SettingsGeneralNetworkReserve,
+            type: events.settingsGeneralNetworkReserveEvent.name,
             payload: { value: nextIsNetworkReserveEnabled },
         });
     };

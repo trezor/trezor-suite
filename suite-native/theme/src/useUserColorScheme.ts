@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
 import { ThemeColorVariant } from '@trezor/theme';
@@ -14,7 +14,7 @@ export const useUserColorScheme = () => {
     const handleSetUserColorScheme = (colorScheme: AppColorScheme) => {
         setUserColorScheme(colorScheme);
         analytics.report({
-            type: EventType.SettingsChangeTheme,
+            type: events.settingsChangeThemeEvent.name,
             payload: { theme: colorScheme },
         });
     };

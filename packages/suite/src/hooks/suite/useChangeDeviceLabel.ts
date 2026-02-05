@@ -3,7 +3,7 @@ import { UseFormReturn, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { TranslationFunction, useTranslation } from '@suite/intl';
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { isAscii } from '@trezor/utils';
@@ -61,7 +61,7 @@ export const useChangeDeviceLabel = (): {
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));
         analytics.report({
-            type: EventType.SettingsDeviceChangeLabel,
+            type: events.settingsDeviceChangeLabelEvent.name,
         });
     });
 

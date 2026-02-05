@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -85,7 +85,7 @@ export const AccountImportConfirmFormScreen = ({
             ).unwrap();
 
             analytics.report({
-                type: EventType.AssetsSync,
+                type: events.assetsSyncEvent.name,
                 payload: {
                     assetSymbol: symbol,
                     tokenSymbols: nonEmptyTokens.map(token => token.symbol as TokenSymbol),

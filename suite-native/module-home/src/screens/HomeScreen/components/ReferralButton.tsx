@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -10,7 +10,7 @@ export const ReferralButton = () => {
     const analytics = useAnalytics();
     const handleOpenLink = () => {
         analytics.report({
-            type: EventType.ReferralButtonPress,
+            type: events.referralButtonPressEvent.name,
         });
         openLink(SUITE_REFERRAL);
     };

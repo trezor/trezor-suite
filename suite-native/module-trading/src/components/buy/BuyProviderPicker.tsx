@@ -9,7 +9,7 @@ import {
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -81,7 +81,7 @@ export const BuyProviderPicker = () => {
 
         showSheet();
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'buy',
             },
@@ -94,7 +94,7 @@ export const BuyProviderPicker = () => {
         if (selectedValue?.exchange === quote.exchange) return;
 
         analytics.report({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'buy',
                 parameter: 'provider',

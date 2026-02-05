@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -24,7 +24,7 @@ export const CurrencySelector = () => {
     const handleSelectCurrency = (baseCurrencyCode: BaseCurrencyCode) => {
         dispatch(setBaseCurrency(baseCurrencyCode));
         analytics.report({
-            type: EventType.SettingsChangeCurrency,
+            type: events.settingsChangeCurrencyEvent.name,
             payload: { localCurrency: baseCurrencyCode },
         });
     };
