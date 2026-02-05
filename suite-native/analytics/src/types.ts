@@ -26,7 +26,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
     | {
           type: EventType.PassphraseFlowFinished;
           payload: { isEmptyWallet: boolean };
-      }
-    | {
-          type: EventType.PassphraseTryAgain;
       };

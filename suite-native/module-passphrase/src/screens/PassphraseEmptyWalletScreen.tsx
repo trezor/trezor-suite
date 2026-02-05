@@ -19,7 +19,7 @@ import {
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -31,7 +31,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);
@@ -48,7 +48,7 @@ export const PassphraseEmptyWalletScreen = () => {
             );
             dispatch(runDiscoveryThunk(device));
         }
-        legacyAnalytics.report({ type: EventType.PassphraseTryAgain });
+        analytics.report({ type: EventType.PassphraseTryAgain });
     };
 
     return (
