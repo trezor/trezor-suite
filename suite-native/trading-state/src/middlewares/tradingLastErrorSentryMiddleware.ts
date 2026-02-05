@@ -24,7 +24,6 @@ export const prepareTradingLastErrorSentryMiddleware = createMiddlewareWithExtra
         )(action);
 
         if (isLastErrorMessageAction && !!action.payload) {
-            console.warn(new TradingError(action.payload));
             captureSentryException(new TradingError(action.payload));
         }
 
