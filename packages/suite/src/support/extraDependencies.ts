@@ -1,10 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
-import {
-    DesktopAnalyticsDep,
-    createAnalytics,
-} from '@suite/analytics';
+import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
