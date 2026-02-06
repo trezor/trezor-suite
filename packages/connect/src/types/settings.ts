@@ -81,7 +81,7 @@ export interface ConnectSettingsWebextension {
     coreMode?: 'auto' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsMobile {
-    deeplinkUrl: string;
+    deeplinkUrl?: string;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
     coreMode?: 'deeplink';

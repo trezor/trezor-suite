@@ -1,6 +1,6 @@
-import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
+import type { ConnectSettingsWeb } from '@trezor/connect';
 import { factory } from '@trezor/connect/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import { ConnectImplSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
@@ -19,14 +19,14 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInSuiteWeb(),
         },
     ],
-    getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWeb>) => {
-        if (settings.coreMode === 'suite-desktop') {
+    getInitTarget: ({ coreMode }: ConnectImplSettings & ConnectSettingsWeb) => {
+        if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
-        } else if (settings.coreMode === 'suite-web') {
+        } else if (coreMode === 'suite-web') {
             return 'core-in-suite-web';
         } else {
-            if (settings.coreMode && settings.coreMode !== 'auto') {
-                console.warn(`Invalid coreMode: ${settings.coreMode}`);
+            if (coreMode && coreMode !== 'auto') {
+                console.warn(`Invalid coreMode: ${coreMode}`);
             }
 
             return 'core-in-suite-desktop';
