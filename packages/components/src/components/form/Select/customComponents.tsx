@@ -252,7 +252,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps) => (
     </DropdownWrapper>
 );
 
-export const LoadingIndicator = () => <Spinner size={20} isGrey={false} />;
+export const LoadingIndicator = () => <Spinner size={20} />;
 
 export const Placeholder = ({ children }: PlaceholderProps<OptionType>) => (
     <Text ellipsisLineCount={1} isDisabled as="div">

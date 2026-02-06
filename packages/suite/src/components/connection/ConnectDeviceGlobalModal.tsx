@@ -76,7 +76,7 @@ const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentP
             </H3>
             {!isWebUsbTransport && (
                 <Row gap={8} alignItems="center" justifyContent="center" height={36}>
-                    <Spinner size={16} isGrey={false} />
+                    <Spinner size={16} />
                     <Text intent="brand">
                         <Translation
                             id={

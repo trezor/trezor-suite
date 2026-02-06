@@ -14,11 +14,11 @@ export const mapSizeToGap = (size: TextButtonSize): SpacingValuesNew => {
     return gapMap[size];
 };
 
-export const mapSizeToIconSize = (size: TextButtonSize): number => {
-    const iconSizeMap: Record<TextButtonSize, number> = {
+export const mapSizeToIconSize = (size: TextButtonSize) => {
+    const iconSizeMap = {
         large: 20,
         small: 16,
-    };
+    } as const;
 
     return iconSizeMap[size];
 };

@@ -69,7 +69,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
         }
 
         if (isLoading) {
-            return <Spinner size={20} isGrey={false} />;
+            return <Spinner size={20} />;
         }
 
         return undefined;

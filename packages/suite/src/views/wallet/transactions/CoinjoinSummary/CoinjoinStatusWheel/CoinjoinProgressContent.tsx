@@ -108,7 +108,7 @@ export const CoinjoinProgressContent = ({
         }
 
         if (isLoadingIndicatorShown) {
-            return <Spinner size={40} isGrey={false} opacity={0.4} />;
+            return <Spinner size={40} opacity={0.4} />;
         }
 
         if (isAllPrivate && !isSessionActive) {

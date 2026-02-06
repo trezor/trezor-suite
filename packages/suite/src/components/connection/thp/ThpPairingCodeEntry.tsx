@@ -54,7 +54,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
                 autoFocus={true}
                 defaultCode={lastCode}
             />
-            {isLoading && <Spinner size={SPINNER_SIZE} />}
+            {isLoading && <Spinner size={SPINNER_SIZE} isDisabled={true} />}
         </Row>
     );
 };

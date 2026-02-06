@@ -98,7 +98,11 @@ export const TextButton = ({
         >
             <Row gap={mapSizeToGap(size)} justifyContent="center" overflow="hidden" width="100%">
                 {props.isLoading && (
-                    <Spinner isGrey={true} size={iconSize} data-testid={`${dataTestId}/spinner`} />
+                    <Spinner
+                        isDisabled={true}
+                        size={iconSize}
+                        data-testid={`${dataTestId}/spinner`}
+                    />
                 )}
                 {iconLeft && !props.isLoading && <Icon name={iconLeft} size={iconSize} />}
                 <Box overflow="hidden">

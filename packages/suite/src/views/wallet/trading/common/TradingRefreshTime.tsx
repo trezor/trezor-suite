@@ -50,7 +50,7 @@ export const TradingRefreshTime = ({
     return (
         <>
             {isLoading ? (
-                <Spinner size={15} />
+                <Spinner size={16} isDisabled={true} />
             ) : (
                 <Wrapper data-testid="@trading/refresh-time">
                     <ProgressPieWrap data-testid="@trading/refresh-time-pie">

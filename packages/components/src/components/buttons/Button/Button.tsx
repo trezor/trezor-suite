@@ -104,7 +104,7 @@ export const Button = ({
             >
                 {props.isLoading && (
                     <Spinner
-                        isGrey={true}
+                        isDisabled={true}
                         size={mapSizeToIconSize(size)}
                         data-testid={`${dataTestId}/spinner`}
                     />

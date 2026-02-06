@@ -44,7 +44,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
                     <H3>
                         <Translation id="TR_BLUETOOTH_UNPAIRING" />
                     </H3>
-                    <Spinner size={32} />
+                    <Spinner size={32} isDisabled={true} />
                 </Column>
             </Modal>
         );

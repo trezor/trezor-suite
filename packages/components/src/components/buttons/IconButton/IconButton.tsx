@@ -82,7 +82,7 @@ export const IconButton = ({
             <Box padding={mapSizeToPadding(size)}>
                 {props.isLoading ? (
                     <Spinner
-                        isGrey={true}
+                        isDisabled={true}
                         size={mapSizeToIconSize(size)}
                         data-testid={`${dataTestId}/spinner`}
                     />

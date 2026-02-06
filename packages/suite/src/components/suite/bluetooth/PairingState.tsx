@@ -8,7 +8,11 @@ type PairingStateProps = {
 
 export const PairingState = ({ isLoading, text }: PairingStateProps) => (
     <Row gap={10}>
-        {isLoading ? <Spinner size={18} /> : <Icon size={18} name="check" variant="primary" />}
+        {isLoading ? (
+            <Spinner size={20} isDisabled={true} />
+        ) : (
+            <Icon size={18} name="check" variant="primary" />
+        )}
         <Text
             intent={isLoading ? 'neutral' : 'brand'}
             priority={isLoading ? 'secondary' : 'primary'}

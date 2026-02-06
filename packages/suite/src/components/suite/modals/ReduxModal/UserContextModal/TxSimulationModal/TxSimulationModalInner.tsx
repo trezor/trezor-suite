@@ -83,7 +83,7 @@ export function TxSimulationModalInner({ action, account }: TxSimulationModalInn
             >
                 <FormProvider {...form}>
                     <Column gap={8}>
-                        {txSimulationQuery.isLoading && <Spinner size={50} />}
+                        {txSimulationQuery.isLoading && <Spinner size={48} isDisabled={true} />}
 
                         {txSimulationQuery.isSuccess && (
                             <>

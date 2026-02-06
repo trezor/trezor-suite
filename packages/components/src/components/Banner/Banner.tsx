@@ -59,7 +59,7 @@ export const Banner = ({
             width={width}
         >
             <Row gap={16} padding={{ vertical: 12, horizontal: 20 }}>
-                {isLoading && <Spinner size={20} />}
+                {isLoading && <Spinner size={20} isDisabled={true} />}
                 {!isLoading && withIcon && (
                     <Icon
                         size={20}

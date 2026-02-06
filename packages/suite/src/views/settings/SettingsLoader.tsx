@@ -80,7 +80,7 @@ export const SettingsLoading = ({ isPresent = false }: SettingsLoadingProps) => 
             <motion.div {...getContainerAnimation(isPresent)}>
                 <Container {...getContentAnimation(isPresent)} data-testid="@settings/loader">
                     <SpinnerContainer>
-                        <Spinner size={40} isGrey={false} />
+                        <Spinner size={40} />
                     </SpinnerContainer>
                     <Content>
                         <H3>
