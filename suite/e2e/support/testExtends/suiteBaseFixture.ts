@@ -14,7 +14,10 @@ import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
 
-type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
+type ElectronConf = Pick<
+    LaunchSuiteParams,
+    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
+>;
 type TrezorUserEnv = Pick<
     TrezorUserEnvLinkClass,
     | 'logTestDetails'
@@ -66,6 +69,8 @@ const electronSetup = async (
     await suite.window
         .context()
         .tracing.start({ screenshots: true, snapshots: true, sources: true });
+    // this setting only takes effect for the renderer process. To emulate offline mode also in the main process, a custom runtime flag is used.
+    await suite.electronApp.context().setOffline(electronConf.offlineMode ?? false);
 
     await mockRemoteMessageSystem(suite.window);
 

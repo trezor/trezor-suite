@@ -34,7 +34,7 @@ test.describe(
                     await onboardingPage.disableNecessaryFirmwareChecks();
                     await page.locator('[data-testid="@analytics/toggle-switch"]').click();
                     await page.locator('[data-testid="@analytics/continue-button"]').click();
-                    await page.locator('[data-testid="@onboarding/exit-app-button"]').click();
+                    await page.locator('[data-testid="@onboarding/complete-onboarding"]').click();
 
                     await expect(page.locator('[data-testid="@suite/loading"]')).toBeHidden();
                 });

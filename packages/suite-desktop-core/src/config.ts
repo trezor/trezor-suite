@@ -16,9 +16,10 @@ const allowedDomainsDev = [
     'googleusercontent.com',
 ];
 
+export const localhostDomains = ['localhost', '127.0.0.1'];
+
 export const allowedDomains = [
-    'localhost',
-    '127.0.0.1',
+    ...localhostDomains,
     'trezor.io',
     'sldev.cz', // Test environment, available only with VPN
     'invity.io',

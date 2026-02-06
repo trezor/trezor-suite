@@ -12,8 +12,9 @@ import { InterceptedEvent, createInterceptor } from '@trezor/request-manager';
 import { TorStatus } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
-import { allowedDomains } from '../config';
+import { allowedDomains, localhostDomains } from '../config';
 import type { ModuleInit } from './module';
+import { hasSwitch } from '../libs/process-switches';
 
 export const SERVICE_NAME = 'request-interceptor';
 
@@ -83,14 +84,22 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
     // handle event sent from modules/coinjoin (background thread)
     mainThreadEmitter.on('module/request-interceptor', requestInterceptorEventHandler);
 
+    // Allow only the configured list of domains (static config), plus custom backends (variable config by user).
+    // In offline mode, block all requests from Electron Main process (except localhost).
+    const getWhitelistedDomains = () => {
+        if (hasSwitch('offline-mode')) return localhostDomains;
+
+        return [
+            ...mainThreadAllowedDomain.general,
+            ...Object.values(mainThreadAllowedDomain.customBackends).flat(),
+        ];
+    };
+
     createInterceptor({
         handler: requestInterceptorEventHandler,
         getTorSettings: () => store.getTorSettings(),
         allowTorBypass: isDevEnv,
         notRequiredTorDomainsList: ['127.0.0.1', 'localhost', '.sldev.cz'],
-        getWhitelistedDomains: () => [
-            ...mainThreadAllowedDomain.general,
-            ...Object.values(mainThreadAllowedDomain.customBackends).flat(),
-        ],
+        getWhitelistedDomains,
     });
 };

@@ -37,6 +37,6 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         await device.type('12');
         await devicePrompt.confirmOnDevicePromptIsShown();
         await device.pressYes();
-        await expect(onboardingPage.onboardingExitButton).toBeVisible();
+        await expect(onboardingPage.completeOnboardingButton).toBeVisible();
     });
 });

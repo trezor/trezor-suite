@@ -21,7 +21,7 @@ export const CoinsStep = () => {
             description={<Translation id="TR_ONBOARDING_COINS_STEP_DESCRIPTION" />}
             innerActions={
                 <OnboardingCard.Button
-                    data-testid="@onboarding/exit-app-button"
+                    data-testid="@onboarding/complete-onboarding"
                     onClick={goToSuite}
                     isLoading={isTorLoading}
                     isDisabled={noNetworkEnabled}

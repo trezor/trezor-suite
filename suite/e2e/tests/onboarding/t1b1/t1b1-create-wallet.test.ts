@@ -87,7 +87,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
             });
 
             await test.step('Finish wallet creation', async () => {
-                await onboardingPage.onboardingExitButton.click();
+                await onboardingPage.completeOnboardingButton.click();
                 await expect(onboardingPage.suiteLoadedIndicator).toBeVisible();
                 await expect(dashboardPage.walletReady).toBeVisible();
             });
