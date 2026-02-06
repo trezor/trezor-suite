@@ -75,7 +75,6 @@ describe('__info common param', () => {
                     'dispose',
                     'cancel',
                     'requestWebUSBDevice',
-                    'renderWebUSBButton',
                     'disableWebUSB',
                     'bleUnpair',
                     'firmwareUpdate', // todo: this should probably work with __info param as well

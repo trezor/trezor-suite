@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { Button, ButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectWeb from '@trezor/connect-web';
+import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 
 const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    (TrezorConnect as typeof TrezorConnectWeb).requestWebUSBDevice();
+    (TrezorConnect as typeof TrezorConnectBrowser).requestWebUSBDevice();
 };
 
 type WebUsbButtonProps = Omit<ButtonProps, 'onClick' | 'data-testid' | 'children' | 'iconRight'> & {

@@ -173,17 +173,4 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     uiResponse(_response: UiResponseEvent) {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
-
-    // not needed, only because of types
-    disableWebUSB() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    requestWebUSBDevice() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    renderWebUSBButton() {}
 }

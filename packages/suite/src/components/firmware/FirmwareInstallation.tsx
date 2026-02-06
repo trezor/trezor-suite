@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectWeb from '@trezor/connect-web';
+import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 
 import {
     FirmwareOffer,
@@ -58,7 +58,7 @@ export const FirmwareInstallation = ({
                             <Banner.Button
                                 onClick={() => {
                                     (
-                                        TrezorConnect as typeof TrezorConnectWeb
+                                        TrezorConnect as typeof TrezorConnectBrowser
                                     ).requestWebUSBDevice();
                                 }}
                             >
