@@ -71,6 +71,7 @@ export const Feature = {
     entropyCheck: 'security.entropyCheck',
     entropyCheckMobile: 'security.entropyCheck.mobile',
 
+    deviceAuthenticityCheckOptiga: 'security.deviceAuthenticityCheck.optiga',
     deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
 
     trading: {

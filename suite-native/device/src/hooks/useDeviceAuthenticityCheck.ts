@@ -34,6 +34,9 @@ export const useDeviceAuthenticityCheck = () => {
     const { translate } = useTranslate();
     const { showToast } = useToast();
     const allowDebugKeys = useFeatureFlag(FeatureFlag.IsDebugKeysAllowed);
+    const isOptigaRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckOptiga),
+    );
     const isTropicRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckTropic),
     );
@@ -82,12 +85,13 @@ export const useDeviceAuthenticityCheck = () => {
 
             const isOverallValid = isDeviceAuthenticityValid({
                 result: result.payload,
+                isOptigaRemotelyDisabled,
                 isTropicRemotelyDisabled,
             });
 
             return { valid: isOverallValid, ...result.payload };
         },
-        [isDeviceBootloaderUnlocked, isTropicRemotelyDisabled],
+        [isDeviceBootloaderUnlocked, isOptigaRemotelyDisabled, isTropicRemotelyDisabled],
     );
 
     const handleDeviceAccessError = useCallback(
