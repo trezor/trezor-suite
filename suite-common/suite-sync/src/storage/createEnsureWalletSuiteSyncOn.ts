@@ -26,6 +26,13 @@ export const createEnsureWalletSuiteSyncOn =
         const device = selectDeviceByStaticSessionId(deps.getState(), deviceStaticSessionId);
 
         if (isFwUpgradeNeededForSuiteSync(device)) {
+            deps.dispatch(
+                setSuiteSyncError({
+                    deviceStaticSessionId,
+                    error: { type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' },
+                }),
+            );
+
             return err({ type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' });
         }
 

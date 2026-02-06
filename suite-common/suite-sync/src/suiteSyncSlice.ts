@@ -1,9 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
-export type SuiteSyncErrorType = DeviceErrorType | DeviceCancelledErrType;
+export type SuiteSyncErrorType =
+    | DeviceErrorType
+    | DeviceCancelledErrType
+    | SuiteSyncFirmwareUpgradeNeededDeviceErrorType;
 
 export type SuiteSyncSettings = {
     /**
