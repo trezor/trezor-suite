@@ -52,12 +52,17 @@ export const checkDeviceAuthenticityThunk = createThunk<
 
             return rejectWithValue(storedResult);
         }
+        const isOptigaRemotelyDisabled = selectIsFeatureDisabled(
+            getState(),
+            Feature.deviceAuthenticityCheckOptiga,
+        );
         const isTropicRemotelyDisabled = selectIsFeatureDisabled(
             getState(),
             Feature.deviceAuthenticityCheckTropic,
         );
         const isOverallValid = isDeviceAuthenticityValid({
             result: result.payload,
+            isOptigaRemotelyDisabled,
             isTropicRemotelyDisabled,
         });
         const storedResult = { valid: isOverallValid, ...result.payload };
