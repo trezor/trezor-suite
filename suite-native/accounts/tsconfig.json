@@ -9,6 +9,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {

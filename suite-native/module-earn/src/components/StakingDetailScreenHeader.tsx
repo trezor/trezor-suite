@@ -1,9 +1,10 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { selectAccountLabel, useAccoutsSelector } from '@suite-common/wallet-core';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { AccountLabel } from '@suite-native/labeling';
 import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -23,7 +24,7 @@ export const StakingDetailScreenHeader = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
     const { accountKey } = route.params;
 
-    const accountLabel = useAccoutsSelector(state => selectAccountLabel(state, accountKey));
+    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
 
     return (
         <ScreenHeader
@@ -41,7 +42,11 @@ export const StakingDetailScreenHeader = () => {
                         </Text>
                     </HStack>
                     <Text variant="hint" color="textSubdued">
-                        {accountLabel}
+                        <AccountLabel
+                            accountDescriptor={accountDescriptor}
+                            networkSymbol={networkSymbol}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                        />
                     </Text>
                 </>
             }

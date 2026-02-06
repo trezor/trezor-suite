@@ -2,12 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import {
-    AccountsRootState,
-    selectAccountLabel,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -24,9 +22,14 @@ export const TokenAccountDetailScreenHeader = ({
     tokenContract,
 }: TokenAccountDetailScreenHeaderProps) => {
     const { translate } = useTranslate();
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
+
+    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
+    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
+        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
     );
+
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );

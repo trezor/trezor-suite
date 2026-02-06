@@ -16,6 +16,7 @@
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
