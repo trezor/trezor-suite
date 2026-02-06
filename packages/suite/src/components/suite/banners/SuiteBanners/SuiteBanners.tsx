@@ -37,7 +37,7 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
-import { SuiteSyncKeysBanner } from './SuiteSyncKeysBanner';
+import { SuiteSyncBanner } from './SuiteSyncBanner';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
@@ -138,7 +138,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
         isDeviceConnected &&
         hasSuiteSyncError
     ) {
-        banner = <SuiteSyncKeysBanner deviceStaticSessionId={deviceStaticSessionId} />;
+        banner = <SuiteSyncBanner deviceStaticSessionId={deviceStaticSessionId} />;
         priority = 10;
     }
 
