@@ -11,7 +11,13 @@
             "path": "../env-utils"
         },
         {
+            "path": "../type-utils"
+        },
+        {
             "path": "../utils"
+        },
+        {
+            "path": "../websocket-client"
         },
         {
             "path": "../protobuf"

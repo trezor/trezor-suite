@@ -14,9 +14,9 @@ import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
 import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
 import { parseConnectSettings } from '../connectSettings';
+import * as ERRORS from '../constants/errors';
 import { PopupManager } from '../popup';
 
 /**
@@ -149,17 +149,4 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
     uiResponse(_response: UiResponseEvent) {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
-
-    // not needed, only because of types
-    disableWebUSB() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    requestWebUSBDevice() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    renderWebUSBButton() {}
 }

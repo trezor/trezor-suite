@@ -53,9 +53,7 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
-        "@trezor/connect-common": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "@trezor/websocket-client": "workspace:*"
+        "@trezor/connect-common": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",

@@ -15,11 +15,11 @@ import type {
     ConnectSettingsWeb,
     Manifest,
 } from '@trezor/connect/src/types';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
 
 import { parseConnectSettings } from '../connectSettings';
+import * as ERRORS from '../constants/errors';
 
 /**
  * CoreInSuiteDesktop implementation for TrezorConnect factory.
@@ -181,17 +181,4 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     uiResponse(_response: UiResponseEvent) {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
-
-    // not needed, only because of types
-    disableWebUSB() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    requestWebUSBDevice() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    // not needed, only because of types
-    renderWebUSBButton() {}
 }
