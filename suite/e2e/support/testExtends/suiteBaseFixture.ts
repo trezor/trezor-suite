@@ -14,7 +14,10 @@ import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
 
-type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'>;
+type ElectronConf = Pick<
+    LaunchSuiteParams,
+    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
+>;
 type TrezorUserEnv = Pick<
     TrezorUserEnvLinkClass,
     | 'logTestDetails'

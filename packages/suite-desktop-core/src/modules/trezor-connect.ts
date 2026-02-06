@@ -66,7 +66,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
     const setProxy = () => {
         // In offline mode, set an invalid proxy to block all TrezorConnect network requests
         if (hasSwitch('offline-mode')) {
-            logger.info(SERVICE_NAME, 'Offline mode enabled - blocking TrezorConnect network access');
+            logger.info(
+                SERVICE_NAME,
+                'Offline mode enabled - blocking TrezorConnect network access',
+            );
 
             return TrezorConnect.setProxy({ proxy: 'socks://0.0.0.0:1' });
         }

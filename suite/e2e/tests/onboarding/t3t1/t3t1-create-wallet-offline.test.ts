@@ -1,6 +1,6 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { expect, test, } from '../../../support/fixtures';
+import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => {
@@ -24,10 +24,14 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             }),
         },
         async ({ page, onboardingPage, devicePrompt, analyticsSection, device }) => {
-            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
+                'TR_YOU_WERE_DISCONNECTED_DOT',
+            );
 
             await analyticsSection.continueButton.click();
-            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
+                'TR_YOU_WERE_DISCONNECTED_DOT',
+            );
             await analyticsSection.continueButton.click();
 
             await test.step('Device onboarding steps', async () => {
@@ -72,10 +76,13 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
 
             await test.step('Complete onboarding and verify offline state', async () => {
                 await onboardingPage.completeOnboardingButton.click();
-                await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
-                await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
+                await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
+                    'TR_YOU_WERE_DISCONNECTED_DOT',
+                );
+                await expect(
+                    page.getByTestId('@exception/discovery-failed/description'),
+                ).toBeVisible({ timeout: 30_000 });
             });
-
         },
     );
 });
