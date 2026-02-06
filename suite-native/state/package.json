@@ -50,7 +50,6 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
-        "@suite-native/thp": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/connect": "workspace:*",

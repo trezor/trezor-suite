@@ -73,7 +73,6 @@
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../suite-sync" },
-        { "path": "../thp" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
