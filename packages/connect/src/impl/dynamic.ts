@@ -5,13 +5,26 @@ import { getSynchronize } from '@trezor/utils';
 
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
+import { ConnectSettings, ConnectSettingsWeb } from '../types';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
+
+export type ConnectImplSettings = {
+    manifest: NonNullable<ConnectSettings['manifest']>;
+    env?: ConnectSettings['env'];
+    version?: ConnectSettings['version'];
+    connectSrc?: ConnectSettings['connectSrc'];
+    debug?: ConnectSettings['debug'];
+};
+
+export type ConnectImpl = Omit<ConnectFactoryDependencies<ConnectSettingsWeb>, 'init'> & {
+    init: (params: ConnectImplSettings) => Promise<void>;
+};
 
 type TrezorConnectDynamicParams<ImplType, SettingsType extends Record<string, any>> = {
     implementations: {
         type: ImplType;
-        impl: ConnectFactoryDependencies<SettingsType>;
+        impl: ConnectImpl;
     }[];
     getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
     handleBeforeInit?: () => void;

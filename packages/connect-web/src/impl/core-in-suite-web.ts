@@ -2,6 +2,11 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
+    corsValidator,
+    parseManifest,
+    parseVersion,
+} from '@trezor/connect/src/data/connectSettings';
+import {
     CORE_CALL,
     CallMethodAnyResponse,
     CallMethodPayload,
@@ -10,34 +15,28 @@ import {
     UiResponseEvent,
     createErrorMessage,
 } from '@trezor/connect/src/events';
-import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsWeb } from '@trezor/connect/src/types';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
-import { parseConnectSettings } from '../connectSettings';
+import { getEnv, getGlobalConnectSrc } from '../connectSettings';
 import { PopupManager } from '../popup';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
  * This implementation is directly used here in connect-web, but it is also extended in connect-webextension.
  */
-export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSettingsWeb> {
+export class CoreInSuiteWeb implements ConnectImpl {
     public eventEmitter = new EventEmitter();
-    protected _settings: ConnectSettings;
     private _popupManager?: PopupManager;
 
     protected logger: Log;
 
     public constructor() {
-        this._settings = parseConnectSettings();
         this.logger = initLog('@trezor/connect-web');
     }
 
     public dispose() {
-        this._settings = parseConnectSettings();
-
         return Promise.resolve(undefined);
     }
 
@@ -48,20 +47,21 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         });
     }
 
-    public init(settings: InitFullSettings<{}>): Promise<void> {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            ...settings,
-        });
-        this.logger.enabled = !!this._settings.debug;
+    public init({ env, manifest, version, connectSrc, debug }: ConnectImplSettings): Promise<void> {
+        const globalSrc = getGlobalConnectSrc();
+        const parsedManifest = parseManifest(manifest);
 
-        if (!this._settings.manifest) {
+        this.logger.enabled = !!debug || !!globalSrc;
+
+        if (!parsedManifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
         if (!this._popupManager) {
             this._popupManager = new PopupManager({
-                ...this._settings,
-                popupSrc: this.getSuiteUrl(),
+                env: typeof env === 'string' ? env : getEnv(),
+                version: parseVersion(version),
+                manifest: parsedManifest,
+                popupSrc: this.getSuiteUrl(globalSrc || connectSrc),
                 logger: this.logger,
             });
             this._popupManager.on(DEVICE_EVENT, event => {
@@ -74,15 +74,14 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         return Promise.resolve();
     }
 
-    private getSuiteUrl() {
-        if (this._settings.connectSrc?.startsWith('http://localhost')) {
+    private getSuiteUrl(connectSrc?: string) {
+        const valid = corsValidator(connectSrc);
+
+        if (valid?.startsWith('http://localhost')) {
             return 'http://localhost:8000/connect-popup';
         }
-        if (this._settings.connectSrc?.startsWith('https://dev.suite.sldev.cz/connect/')) {
-            const branch = this._settings.connectSrc?.replace(
-                'https://dev.suite.sldev.cz/connect/',
-                '',
-            );
+        if (valid?.startsWith('https://dev.suite.sldev.cz/connect/')) {
+            const branch = valid?.replace('https://dev.suite.sldev.cz/connect/', '');
 
             return `https://dev.suite.sldev.cz/suite-web/${branch}web/connect-popup`;
         }
