@@ -32,5 +32,5 @@ export const AccountLabel = (props: AccountLabelPropsWithAccount) => {
         selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, networkSymbol),
     );
 
-    return <Text>{accountLabel}</Text>;
+    return accountLabel ? <Text>{accountLabel}</Text> : null;
 };

@@ -3,14 +3,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    selectAccountLabel,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { AccountLabel } from '@suite-native/labeling';
 import {
     CloseActionType,
     ScreenHeader,
@@ -35,9 +33,6 @@ export const ReceiveScreenHeader = ({
     const navigation = useNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
-    );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -52,6 +47,12 @@ export const ReceiveScreenHeader = ({
 
         onLeave?.();
     });
+
+    if (accountKey === undefined) {
+        return null;
+    }
+
+    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
 
     return (
         <ScreenHeader
@@ -68,12 +69,14 @@ export const ReceiveScreenHeader = ({
                         )}
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
-                        {accountLabel && (
-                            <Text variant="highlight">
-                                {accountLabel}
-                                {tokenSymbol && ` - ${tokenSymbol}`}
-                            </Text>
-                        )}
+                        <Text variant="highlight">
+                            <AccountLabel
+                                accountDescriptor={accountDescriptor}
+                                networkSymbol={networkSymbol}
+                                deviceStaticSessionId={deviceStaticSessionId}
+                            />
+                            {tokenSymbol && ` - ${tokenSymbol}`}
+                        </Text>
                     </HStack>
                 </>
             }

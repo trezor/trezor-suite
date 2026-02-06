@@ -1,8 +1,10 @@
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Text, TextProps } from '@suite-native/atoms';
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -26,8 +28,14 @@ export const AccountAddressFormatter = ({
     ...rest
 }: AccountAddressFormatterProps) => {
     const { applyStyle } = useNativeStyles();
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, value),
+
+    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(
+        value as AccountKey, // Todo: this is WTF, there is something fishy with this component see `FormatterProps<AccountKey>`
+    );
+    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
+        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
     );
 
     const baseAddressStyle = applyStyle(addressStyle);

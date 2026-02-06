@@ -11,6 +11,9 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -22,6 +25,7 @@
         { "path": "../icons" },
         { "path": "../in-app-rating" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
