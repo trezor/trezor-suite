@@ -1,9 +1,6 @@
-import { PersistentDeviceData } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-// This file is intentionally not reexported in index.ts, so that bundler won't have to import.
-
-// TODO some mocks from @suite-common/test-utils should be moved to this file
+import type { PersistentDeviceData } from '../src';
 
 export const defaultDevicePersistentData: PersistentDeviceData = {
     device_id: 'device-id',

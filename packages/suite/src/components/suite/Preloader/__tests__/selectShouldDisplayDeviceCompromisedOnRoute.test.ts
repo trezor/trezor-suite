@@ -1,6 +1,5 @@
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';

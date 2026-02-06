@@ -1,7 +1,6 @@
-import { mockConnectDevice } from '@suite-common/suite-types/mocks';
+import { defaultDevicePersistentData, mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { defaultDevicePersistentData } from '../../../support/deviceMocks';
 import { deviceInvariabilityCheck } from '../deviceInvariabilityCheck';
 
 const deviceId = 'asdf1234';
