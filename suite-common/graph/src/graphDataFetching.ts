@@ -1,11 +1,12 @@
-import { useDispatch } from 'react-redux';
-
 import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
+import {
+    type SuiteDispatch,
+    fetchTransactionsFromNowUntilTimestamp,
+} from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
@@ -147,7 +148,7 @@ const getAccountBalanceHistory = async ({
     endOfTimeFrameDate: Date;
     startOfTimeFrameDate: Date | null;
     forceRefetch?: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: SuiteDispatch;
 }): Promise<AccountBalanceHistoryWithTokens> => {
     const { symbol, identity, descriptor, accountKey, tokensFilter } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
@@ -342,7 +343,7 @@ type GetMultipleAccountBalanceHistoryWithFiatParams = {
     baseCurrencyCode: BaseCurrencyCode;
     forceRefetch?: boolean;
     isElectrumBackend: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: SuiteDispatch;
 };
 
 export const getMultipleAccountBalanceHistoryWithFiat = async ({
