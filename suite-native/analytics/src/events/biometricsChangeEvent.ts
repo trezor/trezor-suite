@@ -7,6 +7,7 @@ type Attributes = {
     origin: AttributeDef<'bottomSheet' | 'settingsToggle'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const biometricsChangeEvent: EventDef<Attributes, EventType.BiometricsChange> = {
     name: EventType.BiometricsChange,
     descriptionTrigger: 'Changing biometrics on / off',

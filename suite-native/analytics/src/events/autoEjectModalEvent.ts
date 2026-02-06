@@ -8,6 +8,7 @@ type Attributes = {
     value: AttributeDef<AutoEjectModalValue>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const autoEjectModalEvent: EventDef<Attributes, EventType.AutoEjectModal> = {
     name: EventType.AutoEjectModal,
     descriptionTrigger:

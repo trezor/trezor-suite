@@ -15,6 +15,7 @@ type Attributes = {
 
 export const deviceSetupSecurityCheckEvent: EventDef<
     Attributes,
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.DeviceSetupSecurityCheck
 > = {
     name: EventType.DeviceSetupSecurityCheck,

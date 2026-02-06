@@ -6,6 +6,7 @@ type Attributes = {};
 
 export const demoAccountQuestionnaireStartEvent: EventDef<
     Attributes,
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.DemoAccountQuestionnaireStart
 > = {
     name: EventType.DemoAccountQuestionnaireStart,

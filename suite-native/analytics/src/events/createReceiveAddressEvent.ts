@@ -7,6 +7,7 @@ type Attributes = {
     assetSymbol: AttributeDef<NetworkSymbol>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const createReceiveAddressEvent: EventDef<Attributes, EventType.CreateReceiveAddress> = {
     name: EventType.CreateReceiveAddress,
     descriptionTrigger: 'On receive address creation.',

@@ -10,6 +10,7 @@ type Attributes = {
     tokenAddress?: AttributeDef<TokenAddress>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const transactionDetailEvent: EventDef<Attributes, EventType.TransactionDetail> = {
     name: EventType.TransactionDetail,
     descriptionTrigger: 'On transaction detail opening.',

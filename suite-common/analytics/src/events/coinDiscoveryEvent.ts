@@ -14,6 +14,7 @@ type Attributes = {
     numberOfStakedAccounts: AttributeDef<number>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
     name: EventType.CoinDiscovery,
     descriptionTrigger: 'Coin discovery - when wallet is discovered',

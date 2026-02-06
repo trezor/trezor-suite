@@ -9,6 +9,7 @@ type Attributes = {
 
 export const createReceiveAddressShowAddressEvent: EventDef<
     Attributes,
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.CreateReceiveAddressShowAddress
 > = {
     name: EventType.CreateReceiveAddressShowAddress,

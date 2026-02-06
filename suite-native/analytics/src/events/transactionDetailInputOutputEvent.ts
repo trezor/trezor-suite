@@ -6,6 +6,7 @@ type Attributes = {};
 
 export const transactionDetailInputOutputEvent: EventDef<
     Attributes,
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.TransactionDetailInputOutput
 > = {
     name: EventType.TransactionDetailInputOutput,

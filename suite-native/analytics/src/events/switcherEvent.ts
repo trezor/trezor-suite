@@ -12,6 +12,7 @@ type Attributes = {
     action: AttributeDef<DeviceManagerAction>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const switcherEvent: EventDef<Attributes, EventType.Switcher> = {
     name: EventType.Switcher,
     descriptionTrigger: 'Click on something within device manager / switcher',

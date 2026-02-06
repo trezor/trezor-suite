@@ -7,6 +7,7 @@ type Attributes = {
     currentScreen: AttributeDef<string>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const screenChangeEvent: EventDef<Attributes, EventType.ScreenChange> = {
     name: EventType.ScreenChange,
     descriptionTrigger: 'On every screen change.',

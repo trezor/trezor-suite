@@ -10,6 +10,7 @@ type Attributes = {
     tokenAddresses?: AttributeDef<TokenAddress[]>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const assetsSyncEvent: EventDef<Attributes, EventType.AssetsSync> = {
     name: EventType.AssetsSync,
     descriptionTrigger: 'On Sync my coin confirmation.',

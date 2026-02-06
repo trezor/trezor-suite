@@ -29,6 +29,7 @@ type Attributes = {
     labeling: AttributeDef<'suite-sync' | 'off'>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
     name: EventType.AppReady,
     descriptionTrigger: 'On the application start or when the onboarding is done.',

@@ -15,6 +15,7 @@ type Attributes = {
     wasPinSkipped?: AttributeDef<boolean>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSetupCompleted> = {
     name: EventType.DeviceSetupCompleted,
     descriptionTrigger: 'User successfully finished device onboarding flow.',

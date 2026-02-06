@@ -8,6 +8,7 @@ type Attributes = {
     origin: AttributeDef<EjectOrigin>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const ejectDeviceClickEvent: EventDef<Attributes, EventType.EjectDeviceClick> = {
     name: EventType.EjectDeviceClick,
     descriptionTrigger: 'Eject device from anywhere.',

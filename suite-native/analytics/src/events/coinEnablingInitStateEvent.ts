@@ -7,6 +7,7 @@ type Attributes = {
     enabledNetworks: AttributeDef<NetworkSymbol[]>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const coinEnablingInitStateEvent: EventDef<Attributes, EventType.CoinEnablingInitState> = {
     name: EventType.CoinEnablingInitState,
     descriptionTrigger:

@@ -4,6 +4,7 @@ import { EventType } from '../constants';
 
 export const deviceSettingsCheckBackupEnteredEvent: EventDef<
     {},
+    // @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
     EventType.DeviceSettingsCheckBackupEntered
 > = {
     name: EventType.DeviceSettingsCheckBackupEntered,

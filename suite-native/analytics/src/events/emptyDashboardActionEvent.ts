@@ -8,6 +8,7 @@ type Attributes = {
     action: AttributeDef<EmptyDashboardAction>;
 };
 
+// @ts-expect-error deprecated event name (see `EventName` in `suite-common/analytics/src/eventDefinition.ts`)
 export const emptyDashboardActionEvent: EventDef<Attributes, EventType.EmptyDashboardAction> = {
     name: EventType.EmptyDashboardAction,
     descriptionTrigger: 'Click on something on crossroads screen',
