@@ -1,5 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import {
@@ -39,6 +40,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -93,7 +95,7 @@ const useAssetsFiatBalances = (
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
-
+    const analytics = useAnalytics();
     const theme = useTheme();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
@@ -175,9 +177,30 @@ export const AssetsView = () => {
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
-    const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
-    const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
+    const goToCoinsSettings = () => {
+        analytics.report({
+            type: EventType.DashboardAssetsGoToSettingCoins,
+        });
+        dispatch(goto('settings-coins'));
+    };
+    const setTable = () => {
+        analytics.report({
+            type: EventType.DashboardAssetsGridModeChange,
+            payload: {
+                layout: 'table',
+            },
+        });
+        dispatch(setFlag('dashboardAssetsGridMode', false));
+    };
+    const setGrid = () => {
+        analytics.report({
+            type: EventType.DashboardAssetsGridModeChange,
+            payload: {
+                layout: 'grid',
+            },
+        });
+        dispatch(setFlag('dashboardAssetsGridMode', true));
+    };
 
     const showCards = isBelowTablet || dashboardAssetsGridMode;
 

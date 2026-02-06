@@ -17,6 +17,8 @@ export enum EventType {
     AppUriHandler = 'app/uri-handler',
 
     DashboardActions = 'dashboard/actions',
+    DashboardAssetsGridModeChange = 'dashboard/assets-grid-mode-change',
+    DashboardAssetsGoToSettingCoins = 'dashboard/assets-go-to-setting-coins',
     DashboardSendModal = 'dashboard/send-modal',
     DashboardSendModalOptions = 'dashboard/send-modal/options',
     DashboardReceiveModal = 'dashboard/receive-modal',
