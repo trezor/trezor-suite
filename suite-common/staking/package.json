@@ -15,7 +15,6 @@
         "@everstake/wallet-sdk-ethereum": "1.0.4",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",

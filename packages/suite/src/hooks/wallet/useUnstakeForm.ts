@@ -9,8 +9,6 @@ import {
     simulateUnstake,
 } from '@suite-common/staking';
 import {
-    UnstakeContextValues as UnstakeContextValuesBase,
-    UnstakeFormState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
@@ -33,6 +31,10 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
+import {
+    UnstakeContextValues as UnstakeContextValuesBase,
+    UnstakeFormState,
+} from '../../components/wallet/stakeForm/StakeContext';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitProps;
@@ -282,7 +284,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseUnstakeFormsProps): Unsta
 
     return {
         ...methods,
-        methods,
+        methods, // Todo: check, this seems as a mistake
         account,
         network,
         formState,

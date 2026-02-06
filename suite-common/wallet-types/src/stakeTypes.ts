@@ -1,17 +1,21 @@
-import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
-
 import type { Network } from '@suite-common/wallet-config';
-import type {
-    Account,
-    CardanoPoolInfo,
-    FeeInfo,
-    PrecomposedLevels,
-    Rate,
-    StakeFormState,
-} from '@suite-common/wallet-types';
-import type { StakingLimits } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
+
+import { Account } from './account';
+import { CardanoPoolInfo } from './cardanoStaking';
+import { StakeFormState } from './stakeForm';
+import { ExcludedUtxos, FeeInfo, PrecomposedLevels } from './transaction';
+
+export type StakingLimits = {
+    MIN_AMOUNT_FOR_STAKING: BigNumber;
+    MAX_AMOUNT_FOR_STAKING: BigNumber;
+    MIN_FOR_WITHDRAWALS: BigNumber;
+    MIN_BALANCE_FOR_FEE_BUFFER: BigNumber;
+    MIN_BALANCE_FOR_STAKING: BigNumber;
+    MIN_AMOUNT_FOR_STAKING_DASHBOARD: BigNumber;
+};
 
 export enum EverstakeEndpointType {
     PoolStats = 'poolStats',
@@ -73,50 +77,6 @@ export interface BaseStakeContextValues {
     changeFeeLevel: (level: FeeLevel['label']) => void;
 }
 
-export type StakeContextValues = UseFormReturn<StakeFormState> &
-    BaseStakeContextValues & {
-        methods: UseFormReturn<StakeFormState>;
-        formState: ReactHookFormState<StakeFormState>;
-        removeDraft: (key: string) => void;
-        isDraft: boolean;
-        amountLimits?: AmountLimitsString;
-        isAmountForWithdrawalWarningShown: boolean;
-        isLessAmountForWithdrawalWarningShown: boolean;
-        showAdviceBanner: boolean;
-        isConfirmModalOpen: boolean;
-        stakingLimits: StakingLimits | null;
-        onCryptoAmountChange: (amount: string) => void;
-        onFiatAmountChange: (amount: string) => void;
-        setMax: () => void;
-        setRatioAmount: (divisor: number) => void;
-        closeConfirmModal: () => void;
-        onSubmit: () => void;
-        currentRate: Rate | undefined;
-        isLoading: boolean;
-        currency?: 'crypto' | 'fiat';
-        setCurrency: (currency: 'crypto' | 'fiat') => void;
-        isStakingDisabled: boolean;
-    };
-
-export type UnstakeFormState = Omit<StakeFormState, 'setMaxOutputId'>;
-
-export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
-    BaseStakeContextValues & {
-        methods: UseFormReturn<UnstakeFormState>;
-        formState: ReactHookFormState<StakeFormState>;
-        onCryptoAmountChange: (amount: string) => Promise<void>;
-        onFiatAmountChange: (amount: string) => void;
-        currentRate: Rate | undefined;
-    };
-
-export type ChangeDelegateFormState = StakeFormState;
-
-export type ChangeDelegateContextValues = UseFormReturn<ChangeDelegateFormState> &
-    BaseStakeContextValues & {
-        methods: UseFormReturn<ChangeDelegateFormState>;
-        formState: ReactHookFormState<StakeFormState>;
-    };
-
 export type StakeAccountRewards = {
     height: number;
     epoch: number;
@@ -141,6 +101,8 @@ export interface EverstakeStakingInfo {
     pools?: CardanoPoolInfo[];
 }
 
+export type ChangeDelegateFormState = StakeFormState;
+
 export interface CardanoValidatorStats {
     apr: { value: string };
     apy: { value: string };
@@ -156,4 +118,13 @@ export interface CardanoValidatorStats {
     total_stake_usd: number;
     validator_address: string;
     validator_name: string;
+}
+
+// TODO: is this still needed?
+export interface ComposeActionContext {
+    account: Account;
+    network: Network;
+    feeInfo: FeeInfo;
+    excludedUtxos?: ExcludedUtxos;
+    prison?: Record<string, unknown>;
 }

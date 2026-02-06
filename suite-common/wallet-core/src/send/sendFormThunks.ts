@@ -8,6 +8,7 @@ import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
+    ComposeActionContext,
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedLevels,
@@ -69,7 +70,6 @@ import {
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import {
-    ComposeActionContext,
     ComposeFeeLevelsError,
     PushTransactionError,
     SignTransactionError,

@@ -1,6 +1,6 @@
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { ComposeActionContext } from '@suite-common/wallet-core';
 import {
+    ComposeActionContext,
     EstimatedFee,
     ExternalOutput,
     PrecomposedLevels,

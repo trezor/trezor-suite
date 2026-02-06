@@ -1,5 +1,4 @@
-import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { ValidatorsQueue, WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, {
     AccountInfo,
     InternalTransfer,

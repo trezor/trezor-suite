@@ -3,6 +3,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
     Account,
+    ComposeActionContext,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -27,7 +28,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,

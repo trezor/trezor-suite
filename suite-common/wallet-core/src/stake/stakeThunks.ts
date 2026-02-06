@@ -1,16 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { TimerId } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import {
-    EVERSTAKE_API_KEY,
-    EVERSTAKE_ENDPOINT_PREFIX,
-    EVERSTAKE_REWARDS_SOLANA_ENPOINT,
-    EVERSTAKE_VALIDATOR,
-} from './stakeConstants';
-import { selectEverstakeData } from './stakeSelectors';
 import {
     CardanoValidatorStats,
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
@@ -22,7 +11,18 @@ import {
     StakeRewardsByAccount,
     TotalStakeRewardsByAccount,
     ValidatorsQueue,
-} from './stakeTypes';
+} from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { TimerId } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+
+import {
+    EVERSTAKE_API_KEY,
+    EVERSTAKE_ENDPOINT_PREFIX,
+    EVERSTAKE_REWARDS_SOLANA_ENPOINT,
+    EVERSTAKE_VALIDATOR,
+} from './stakeConstants';
+import { selectEverstakeData } from './stakeSelectors';
 import { selectHasBitcoinOnlyFirmware } from '../device/deviceSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';

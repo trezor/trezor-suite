@@ -3,8 +3,8 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
 import {
+    ComposeActionContext,
     PrecomposedLevels,
     PrecomposedTransaction,
     StakeFormState,
@@ -15,6 +15,8 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch } from 'src/hooks/suite';
+
+import { StakeContextValues } from '../../../components/wallet/stakeForm/StakeContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
