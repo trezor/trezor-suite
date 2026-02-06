@@ -116,7 +116,6 @@
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-authenticity": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:^",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",

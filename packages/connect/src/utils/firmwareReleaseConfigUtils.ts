@@ -1,7 +1,7 @@
 import { decode, verify } from 'jws';
 
+import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
-import { getFirmwareReleaseJwsPublicKey } from '@trezor/env-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';

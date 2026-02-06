@@ -34,5 +34,4 @@ export interface EnvUtils {
     getOsNameWeb: () => string | undefined;
     getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';
     getJWSPublicKey: () => string;
-    getFirmwareReleaseJwsPublicKey: (useCodeSignKey: boolean) => string;
 }

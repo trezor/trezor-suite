@@ -51,7 +51,6 @@
         "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
-        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {

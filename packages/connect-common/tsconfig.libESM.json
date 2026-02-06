@@ -8,9 +8,6 @@
     },
     "references": [
         {
-            "path": "../env-utils"
-        },
-        {
             "path": "../utils"
         },
         {
