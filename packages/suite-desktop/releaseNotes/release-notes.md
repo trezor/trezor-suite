@@ -1,14 +1,10 @@
-### 🚀 New features
-
-- Korean language support is now available in the Trezor Suite app, making it more accessible for a wider global audience.
-
 ### 🎨 Improvements
 
-- Dollar-cost averaging (DCA) has been removed from the Trading section to simplify the overall trading experience.
-- The Fixed/Floating rate toggle has been removed, streamlining the swap and trading flow.
-- The provider picker has been consolidated into a single selector, making it easier to compare and choose providers.
-- A new asset picker has been added to the Swap section, enabling faster and clearer selection of your target asset.
+- The transaction list has been redesigned to provide a clearer, more intuitive overview of your transaction history.
+- Trezor device wipe behavior has been unified across platforms for a more consistent and streamlined experience.
+- The labeling system has been enhanced, offering a more robust and user-friendly way to organize assets and transactions.
+- The transaction notifications have been redesigned to improve readability.
 
 ### 🔧 Bug fixes
 
-- Minor bug fixes and performance improvements have been implemented for a smoother and more reliable experience.
+- Minor bugs have been resolved alongside performance optimizations, ensuring a smoother and more reliable experience overall.
