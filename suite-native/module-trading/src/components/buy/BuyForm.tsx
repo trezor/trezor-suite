@@ -12,6 +12,7 @@ import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
+import { LastErrorMessage } from '../general/Error/LastErrorMessage';
 
 type BuyFormProps = {
     shouldAnimateEntering?: boolean;
@@ -50,6 +51,7 @@ const BuyFormMemoized = memo(
         return (
             <AnimatedBox layout={LinearTransition}>
                 <VStack spacing="sp16" testID={BUY_FORM_TEST_ID} accessible>
+                    <LastErrorMessage tradingType="buy" />
                     <BuyAlert />
                     <BuyCard
                         isAmountInputActive={isAmountInputActive}
