@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,6 +8,7 @@ import {
     runDiscoveryThunk,
     selectSelectedDevice,
     startDiscoveryThunk,
+    useThunkDispatch,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
@@ -31,7 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
-    const dispatch = useDispatch();
+    const dispatch = useThunkDispatch();
     const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
@@ -8,6 +8,7 @@ import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectSelectedDevice,
+    useThunkDispatch,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
@@ -26,7 +27,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
     const analytics = useAnalytics();
-    const dispatch = useDispatch();
+    const dispatch = useThunkDispatch();
     const store = useStore();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
