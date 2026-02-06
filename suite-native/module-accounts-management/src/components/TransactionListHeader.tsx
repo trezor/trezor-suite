@@ -12,8 +12,6 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { isZero } from '@suite-common/wallet-utils';
-import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
