@@ -1,16 +1,18 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
+import solSimulateStakeTransactionResponse from '../../../fixtures/staking/sol-simulate-stake-more-transaction.json';
 import {
     solStakingAccountFirst,
     solStakingAccountSecond,
 } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
+import { fulfillWithResult } from '../../../support/mocks/solanaStakingMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
 const stakedAmount = solStakingAccountFirst.stakeInSol;
 const stakeMoreAmount = solStakingAccountSecond.stakeInSol;
-const stakeMoreAmountFormatted = `${stakeMoreAmount} SOL`;
+const stakeMoreAndRentFormatted = `${solStakingAccountSecond.stakeAndRentInSol} SOL`;
 const totalStakedAmount = (Number(stakedAmount) + Number(stakeMoreAmount)).toFixed(9);
 
 test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -23,6 +25,14 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
         await solanaStakingMock.setupStakedAccount();
         await solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
+        // Mock simulate stake-more transaction response
+        await solanaStakingMock.replaceRoute('simulateTransaction', {
+            respond: async (route, body) => {
+                await fulfillWithResult(route, body, {
+                    value: solSimulateStakeTransactionResponse,
+                });
+            },
+        });
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: ['sol'],
@@ -84,39 +94,28 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();
-                // labeled as total but excludes fees
+
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    stakeMoreAmountFormatted,
+                    stakeMoreAndRentFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    solanaStakingMock.feeFormatted,
+                    solanaStakingMock.stakeFeeFormatted,
                 );
 
-                const feeWrapped = device.wrapText(solanaStakingMock.feeFormatted, {
+                const feeWrapped = device.wrapText(solanaStakingMock.stakeFeeFormatted, {
                     isAmount: true,
                 });
-                const amountAndFeeWrapped = device.wrapText(
-                    solanaStakingMock.addFeeTo(stakeMoreAmount),
-                    { isAmount: true },
-                );
+                const amountWrapped = device.wrapText(stakeMoreAndRentFormatted, {
+                    isAmount: true,
+                });
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
-                        body: [
-                            ['Max fees and rent:'],
-                            feeWrapped,
-                            ['Amount:'],
-                            amountAndFeeWrapped,
-                        ],
+                        body: [['Max fees and rent:'], feeWrapped, ['Amount:'], amountWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
                     T3T1: {
-                        body: [
-                            ['Amount:'],
-                            amountAndFeeWrapped,
-                            ['Max fees and rent:'],
-                            feeWrapped,
-                        ],
+                        body: [['Amount:'], amountWrapped, ['Max fees and rent:'], feeWrapped],
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
@@ -131,7 +130,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.stakedToastAccount).toContainText('Solana #1');
                 await expect(stakingSection.stakedToastAmount).toContainText(
-                    stakeMoreAmountFormatted,
+                    stakeMoreAndRentFormatted,
                 );
             });
 

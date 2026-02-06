@@ -1,6 +1,7 @@
 import type { Page, Route } from '@playwright/test';
 
 import { solanaUrlPattern } from './tradingMock';
+import solSimulateTransactionResponse from '../../fixtures/staking/sol-simulate-stake-transaction.json';
 import transactionResponse from '../../fixtures/staking/sol-stake-transactionResponse.json';
 import {
     SolanaStakingAccount,
@@ -31,7 +32,10 @@ export type SolanaRouteMethod =
     | 'getSignatureStatuses'
     | 'getSignaturesForAddress'
     | 'getTransaction'
-    | 'getProgramAccounts';
+    | 'getProgramAccounts'
+    | 'getRecentPrioritizationFees'
+    | 'getFeeForMessage'
+    | 'getMinimumBalanceForRentExemption';
 
 const BASE_EPOCH = 864; // chosen based of our mocked program accounts activation/deactivation epochs
 
@@ -89,11 +93,7 @@ const createDefaultHandlers = (): SolanaRouteHandlers => ({
         enabled: true,
         respond: async (route, body) => {
             await fulfillWithResult(route, body, {
-                value: {
-                    err: null,
-                    logs: [],
-                    unitsConsumed: 0,
-                },
+                value: solSimulateTransactionResponse,
             });
         },
     },
@@ -148,6 +148,31 @@ const createDefaultHandlers = (): SolanaRouteHandlers => ({
             await fulfillWithResult(route, body, []);
         },
     },
+    getRecentPrioritizationFees: {
+        enabled: true,
+        respond: async (route, body) => {
+            await fulfillWithResult(route, body, [
+                {
+                    prioritizationFee: 0,
+                    slot: 394770899,
+                },
+            ]);
+        },
+    },
+    getFeeForMessage: {
+        enabled: true,
+        respond: async (route, body) => {
+            await fulfillWithResult(route, body, {
+                value: 5000,
+            });
+        },
+    },
+    getMinimumBalanceForRentExemption: {
+        enabled: true,
+        respond: async (route, body) => {
+            await fulfillWithResult(route, body, 2282880);
+        },
+    },
 });
 
 const hasEnabledHandler = (
@@ -160,9 +185,9 @@ const hasEnabledHandler = (
 export class SolanaStakingMock {
     readonly handlers: SolanaRouteHandlers;
     protected currentEpoch: number = BASE_EPOCH;
-    readonly fee: number = 0.00228788;
-    readonly feeFormatted: string = '0.00228788 SOL';
-    readonly rentFee: number = 0.000005;
+    readonly stakeFeeFormatted = '0.002298742 SOL';
+    readonly unstakeFeeFormatted = '0.000015862 SOL';
+    readonly claimFeeFormatted = '0.000008605 SOL';
 
     constructor(
         private readonly page: Page,
@@ -173,12 +198,6 @@ export class SolanaStakingMock {
 
     async routeSolana(routeHandlers: SolanaRouteHandlers = this.handlers) {
         await this.page.route(solanaUrlPattern, route => this.handle(route, routeHandlers));
-    }
-
-    addFeeTo(amountInSol: string): string {
-        const total = Number(amountInSol) + this.fee - this.rentFee;
-
-        return `${total.toFixed(9)} SOL`;
     }
 
     @step()

@@ -1,0 +1,31 @@
+{
+    "accounts": null,
+    "err": null,
+    "fee": 145000,
+    "innerInstructions": null,
+    "loadedAccountsDataSize": 249647,
+    "loadedAddresses": {
+        "readonly": [],
+        "writable": []
+    },
+    "logs": [
+        "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+        "Program ComputeBudget111111111111111111111111111111 success",
+        "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+        "Program ComputeBudget111111111111111111111111111111 success",
+        "Program Stake11111111111111111111111111111111111111 invoke [1]",
+        "Program log: Instruction: Withdraw",
+        "Program Stake11111111111111111111111111111111111111 consumed 9711 of 1399700 compute units",
+        "Program Stake11111111111111111111111111111111111111 success"
+    ],
+    "postBalances": [999564667, 0, 1, 1141440, 1169280, 114979200],
+    "postTokenBalances": [],
+    "preBalances": [796473333, 203236667, 1, 1141440, 1169280, 114979200],
+    "preTokenBalances": [],
+    "replacementBlockhash": {
+        "blockhash": "8qhi21UjdfoBeRDTTrCbJecmDLDA9PsK9GfpAbU6mKRU",
+        "lastValidBlockHeight": 373500318
+    },
+    "returnData": null,
+    "unitsConsumed": 10011
+}
