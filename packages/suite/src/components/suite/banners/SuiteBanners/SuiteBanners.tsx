@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { selectSuiteSyncError, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
+import {
+    selectHasDeviceSuiteSyncError,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
 import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
@@ -69,7 +72,9 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const suiteSyncInteraction = useSelector(state =>
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
-    const suiteSyncError = useSelector(selectSuiteSyncError);
+    const hasSuiteSyncError = useSelector(state =>
+        selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
+    );
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     // The dismissal doesn't need to outlive the session. Use local state.
@@ -131,7 +136,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
         suiteSyncInteraction === 'keys-needed' &&
         deviceStaticSessionId &&
         isDeviceConnected &&
-        suiteSyncError
+        hasSuiteSyncError
     ) {
         banner = <SuiteSyncKeysBanner deviceStaticSessionId={deviceStaticSessionId} />;
         priority = 10;
