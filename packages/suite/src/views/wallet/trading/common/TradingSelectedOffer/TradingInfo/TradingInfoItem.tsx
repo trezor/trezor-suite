@@ -6,13 +6,14 @@ import {
     cryptoIdToNetworkSymbolAndContractAddress,
     useTradingAssets,
 } from '@suite-common/trading';
+import { NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Text } from '@trezor/components';
+import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
 import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
 interface TradingInfoItemProps {
@@ -42,7 +43,20 @@ export const TradingInfoItem = ({
     const showAccountLabel = !!account && type !== 'sell';
     const isExternalExchange = type === 'exchange' && !account && !!receiveAddress;
 
-    const assetOption = createAssetOptionFromCryptoId(currency);
+    const {
+        isNativeToken,
+        networkSymbol,
+        name,
+        coingeckoId,
+        displaySymbol,
+        networkName,
+        contractAddress,
+        symbol,
+    } = createAssetOptionFromCryptoId(currency);
+
+    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
+
+    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
 
     if (!amount || !currency) return null;
 
@@ -80,16 +94,27 @@ export const TradingInfoItem = ({
             >
                 <Row gap={8} justifyContent="space-between">
                     <Row gap={8} alignItems="center">
-                        <TradingCoinLogo
-                            cryptoId={currency}
-                            size={40}
-                            showNetworkIcon={!assetOption.isNativeToken}
-                        />
+                        {isNativeToken ? (
+                            <CoinLogo
+                                size={40}
+                                symbol={symbol as NetworkSymbol}
+                                type="tokenWithNetwork"
+                            />
+                        ) : (
+                            <AssetLogo
+                                size={40}
+                                coingeckoId={coingeckoId}
+                                symbol={networkSymbol}
+                                contractAddress={contractAddress}
+                                placeholder={displaySymbol}
+                                showNetworkIcon={showNetwork}
+                            />
+                        )}
                         <Column alignItems="start">
-                            <Text>{assetOption?.name}</Text>
-                            {!assetOption.isNativeToken && assetOption.networkName && (
+                            <Text>{displayName}</Text>
+                            {showNetwork && (
                                 <Text variant="tertiary" typographyStyle="hint">
-                                    {assetOption.networkName}
+                                    {networkName}
                                 </Text>
                             )}
                         </Column>
