@@ -5,16 +5,10 @@ import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
 
-type ConnectWebExtraMethods = {
-    renderWebUSBButton: (className?: string) => void;
-    disableWebUSB: () => void;
-    requestWebUSBDevice: () => void;
-};
-
 const impl = new TrezorConnectDynamic<
     'core-in-suite-desktop' | 'core-in-suite-web',
     ConnectSettingsWeb,
-    ConnectFactoryDependencies<ConnectSettingsWeb> & ConnectWebExtraMethods
+    ConnectFactoryDependencies<ConnectSettingsWeb>
 >({
     implementations: [
         {
@@ -63,7 +57,7 @@ const impl = new TrezorConnectDynamic<
     },
 });
 
-const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
+const TrezorConnect = factory<ConnectSettingsWeb, {}>(
     {
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
@@ -73,11 +67,7 @@ const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),
     },
-    {
-        renderWebUSBButton: impl.getTarget().renderWebUSBButton.bind(impl),
-        disableWebUSB: impl.getTarget().disableWebUSB.bind(impl),
-        requestWebUSBDevice: impl.getTarget().requestWebUSBDevice.bind(impl),
-    },
+    {},
 );
 
 export default TrezorConnect;
