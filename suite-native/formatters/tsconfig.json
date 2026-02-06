@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/suite-sync"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {

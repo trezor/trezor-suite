@@ -7,7 +7,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { AccountAddressFormatter } from '@suite-native/formatters';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -38,7 +38,7 @@ const AddressRow = ({ address }: { address: string }) => {
             alignItems="center"
             style={applyStyle(addressCardStyle)}
         >
-            <AccountAddressFormatter value={address} />
+            <AddressFormatter value={address} />
         </HStack>
     );
 };

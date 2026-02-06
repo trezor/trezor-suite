@@ -1,7 +1,7 @@
 export { CoinAmountFormatter } from './components/CoinAmountFormatter';
 export { CoinToFiatAmountFormatter } from './components/CoinToFiatAmountFormatter';
 export { CryptoToFiatAmountFormatter } from './components/CryptoToFiatAmountFormatter';
-export { AccountAddressFormatter } from './components/AccountAddressFormatter';
+export { AddressFormatter } from './components/AddressFormatter';
 export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmountLargeFormatter';
 export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';

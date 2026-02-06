@@ -25,7 +25,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import {
-    AccountAddressFormatter,
+    AddressFormatter,
     BaseCurrencyAmountFormatter,
     CryptoAmountFormatter,
 } from '@suite-native/formatters';
@@ -148,7 +148,7 @@ export const UtxoCard = ({
                                     address={utxo.address}
                                     deviceStaticSessionId={deviceStaticSessionId}
                                     fallback={
-                                        <AccountAddressFormatter
+                                        <AddressFormatter
                                             style={applyStyle(accountAddressFormatterStyle)}
                                             value={utxo.address}
                                             variant="hint"
