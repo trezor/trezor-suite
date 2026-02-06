@@ -114,7 +114,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Sell', () => {
 
             await tradingSellActions.confirmTradingForm();
 
-            await sellPreviewActions.closePaymentWebview();
+            await sellPreviewActions.expectBrowserAuthTriggered();
 
             await sellPreviewActions.expectConfirmationInProgress();
             await sellPreviewActions.expectConfirmationToFail();
