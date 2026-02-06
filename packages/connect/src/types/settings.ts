@@ -6,7 +6,6 @@ import { PartialRecord } from '@trezor/type-utils';
 
 import type { FirmwareUpdateSource } from '../types/firmware';
 
-export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
     appName: string;
     appIcon?: string;
