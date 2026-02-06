@@ -19,7 +19,7 @@ export type SuiteSyncQuotaManagerState = {
 };
 
 export const quotaManagerInitialState: SuiteSyncQuotaManagerState = {
-    enabled: false,
+    enabled: true,
     baseUrl: null,
     registeredDevices: [],
     ownersAllowance: [],
