@@ -23,7 +23,7 @@ export const ConnectLoadingModal = () => {
                 <Column gap={spacings.xs}>
                     <Card>
                         <Row alignItems="center" justifyContent="center" margin={spacings.xxl}>
-                            <Spinner />
+                            <Spinner size={40} isDisabled={true} />
                         </Row>
                     </Card>
                 </Column>

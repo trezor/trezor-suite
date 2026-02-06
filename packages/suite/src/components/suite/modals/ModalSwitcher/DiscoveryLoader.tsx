@@ -19,7 +19,7 @@ export const DiscoveryLoader = () => {
                     alignItems="center"
                     margin={{ top: spacings.xxxl, bottom: spacings.xl }}
                 >
-                    <Spinner size={80} isGrey={false} />
+                    <Spinner size={48} />
                     <H3 align="center" margin={{ top: spacings.xxxxl }}>
                         <Translation id="TR_COIN_DISCOVERY_LOADER_DESCRIPTION" />
                     </H3>

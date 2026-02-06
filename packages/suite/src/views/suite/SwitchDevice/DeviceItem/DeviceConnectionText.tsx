@@ -72,7 +72,7 @@ export const DeviceConnectionText = ({
         >
             <Row gap={spacings.xxs}>
                 {isLoading ? (
-                    <Spinner size={12} />
+                    <Spinner size={16} isDisabled={true} />
                 ) : (
                     <Icon name={icon} size={12} variant={variant} />
                 )}

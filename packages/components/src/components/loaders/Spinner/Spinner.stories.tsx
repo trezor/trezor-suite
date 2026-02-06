@@ -1,6 +1,7 @@
 import { ArgTypes, Meta, StoryObj } from '@storybook/react';
 
 import { Spinner as SpinnerComponent, SpinnerProps, allowedSpinnerFrameProps } from './Spinner';
+import { spinnerSizes, spinnerVariants } from './types';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof SpinnerComponent> = {
@@ -10,27 +11,27 @@ const meta: Meta<typeof SpinnerComponent> = {
 export default meta;
 
 const args: Partial<SpinnerProps> | undefined = {
-    size: 50,
-    bodyColor: undefined,
-    warningBackgroundColor: undefined,
-    warningForegroundColor: undefined,
-    isGrey: false,
+    size: 40,
+    variant: 'loading',
     ...getFramePropsStory(allowedSpinnerFrameProps).args,
 };
 const argTypes: Partial<ArgTypes<SpinnerProps>> | undefined = {
-    bodyColor: {
-        control: { type: 'color' },
+    variant: {
+        control: {
+            type: 'select',
+        },
+        options: spinnerVariants,
     },
-    warningBackgroundColor: {
-        control: { type: 'color' },
-    },
-    warningForegroundColor: {
-        control: { type: 'color' },
+    size: {
+        control: {
+            type: 'select',
+        },
+        options: spinnerSizes,
     },
     className: {
         control: false,
     },
-    isGrey: {
+    isDisabled: {
         control: {
             type: 'boolean',
         },
@@ -38,25 +39,7 @@ const argTypes: Partial<ArgTypes<SpinnerProps>> | undefined = {
     ...getFramePropsStory(allowedSpinnerFrameProps).argTypes,
 };
 
-export const Default: StoryObj<SpinnerProps> = {
+export const Spinner: StoryObj<SpinnerProps> = {
     args,
-    argTypes,
-};
-
-export const Success: StoryObj<SpinnerProps> = {
-    args: {
-        ...args,
-        hasFinished: true,
-        hasStartAnimation: true,
-    },
-    argTypes,
-};
-
-export const Error: StoryObj<SpinnerProps> = {
-    args: {
-        ...args,
-        hasError: true,
-        hasStartAnimation: true,
-    },
     argTypes,
 };

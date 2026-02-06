@@ -212,7 +212,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     cursor="pointer"
                                     content={<Translation id="TR_LOADING_TRANSACTION_DETAILS" />}
                                 >
-                                    <Spinner size={14} />
+                                    <Spinner size={16} isDisabled={true} />
                                 </Tooltip>
                             )}
                             {anonymity && <UtxoAnonymity anonymity={anonymity} />}

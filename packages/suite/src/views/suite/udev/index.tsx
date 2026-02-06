@@ -113,7 +113,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                     </>
                 ) : (
                     <>
-                        <Spinner size={24} />
+                        <Spinner size={24} isDisabled={true} />
                         <Translation id="TR_GATHERING_INFO" />
                     </>
                 )}

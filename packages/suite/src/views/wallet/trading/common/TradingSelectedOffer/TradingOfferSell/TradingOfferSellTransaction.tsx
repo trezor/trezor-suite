@@ -153,7 +153,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                     justifyContent="center"
                     margin={{ horizontal: spacings.lg, vertical: spacings.xxxxl }}
                 >
-                    <Spinner margin={{ bottom: spacings.xl }} />
+                    <Spinner size={40} isDisabled={true} margin={{ bottom: spacings.xl }} />
                     <Text>
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"

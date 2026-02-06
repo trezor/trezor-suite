@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Spinner } from '../Spinner/Spinner';
+import type { SpinnerSize } from '../Spinner/Spinner';
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -46,7 +47,7 @@ const ContentCell = styled.div<{ $size: number; $isLoading: boolean }>`
 export type LoadingContentProps = {
     children: ReactNode;
     isLoading?: boolean;
-    size?: number;
+    size?: SpinnerSize;
     isSuccessful?: boolean;
     isLoadingPositionReversed?: boolean;
     /**
@@ -58,7 +59,7 @@ export type LoadingContentProps = {
 export const LoadingContent = ({
     children,
     isLoading = false,
-    size = 25,
+    size = 24,
     isSuccessful = true,
     isLoadingPositionReversed = false,
     slideContent = true,
@@ -77,10 +78,11 @@ export const LoadingContent = ({
             {isSpinnerVisible ? (
                 <Spinner
                     size={size}
+                    isDisabled={true}
                     data-testid="@loading-content/loader"
+                    /* eslint-disable-next-line no-nested-ternary */
+                    variant={!isLoading ? (isSuccessful ? 'success' : 'error') : 'loading'}
                     hasStartAnimation
-                    hasFinished={!isLoading && isSuccessful}
-                    hasError={!isLoading && !isSuccessful}
                 />
             ) : null}
         </LoaderCell>

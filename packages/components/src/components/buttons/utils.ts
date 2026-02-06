@@ -68,12 +68,12 @@ export const mapSizeToBorderRadius = (size: ButtonSize): BorderRadii => {
     return borderRadiusMap[size];
 };
 
-export const mapSizeToIconSize = (size: ButtonSize): number => {
-    const iconSizeMap: Record<ButtonSize, number> = {
+export const mapSizeToIconSize = (size: ButtonSize) => {
+    const iconSizeMap = {
         large: 20,
         medium: 16,
         small: 16,
-    };
+    } as const;
 
     return iconSizeMap[size];
 };

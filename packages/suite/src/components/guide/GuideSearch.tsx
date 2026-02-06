@@ -70,7 +70,11 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 showClearButton={true}
                 onClear={() => setQuery('')}
                 leftContent={
-                    loading ? <Spinner size={24} /> : <Icon name="magnifyingGlass" size={24} />
+                    loading ? (
+                        <Spinner size={24} isDisabled={true} />
+                    ) : (
+                        <Icon name="magnifyingGlass" size={24} />
+                    )
                 }
                 data-testid="@guide/search"
             />

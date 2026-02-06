@@ -35,7 +35,7 @@ export const CriticalCoinjoinPhaseModal = ({
             width={400}
             heading={<Translation id="TR_COINJOIN_RUNNING" />}
             description={
-                <LoadingContent size={14} isLoading={true}>
+                <LoadingContent size={16} isLoading={true}>
                     <Translation id={SESSION_PHASE_MESSAGES[sessionPhase]} />
                 </LoadingContent>
             }

@@ -23,7 +23,7 @@ export const TradingDetailStep = ({
                     <Text data-testid={isActive ? '@trading/transaction/detail/status' : undefined}>
                         {title}
                     </Text>
-                    {isActive && <Spinner size={20} isGrey={false} />}
+                    {isActive && <Spinner size={20} />}
                     {doneContent && state === 'done' && doneContent}
                 </Row>
             }

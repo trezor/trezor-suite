@@ -14,7 +14,7 @@ export const LoadingContent: StoryObj<typeof meta> = {
         </LoadingContentComponent>
     ),
     args: {
-        size: 25,
+        size: 24,
         isLoading: true,
         slideContent: true,
     },
