@@ -55,5 +55,13 @@ export const selectSuiteSyncInteraction = (
     return null;
 };
 
-export const selectSuiteSyncError = (state: WithSuiteSyncAndDeviceState) =>
-    !!state.suiteSync.suiteSyncError;
+export const selectHasDeviceSuiteSyncError = (
+    state: WithSuiteSyncAndDeviceState,
+    deviceStaticSessionId: StaticSessionId | null,
+): boolean => {
+    if (deviceStaticSessionId === null) {
+        return false;
+    }
+
+    return state.suiteSync.suiteSyncErrors[deviceStaticSessionId] !== undefined;
+};

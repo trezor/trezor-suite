@@ -427,7 +427,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                     isSuiteSyncDebugEnabled: false,
                     suiteSyncRelayUrl: null,
                 },
-                suiteSyncError: null,
+                suiteSyncErrors: {},
             } satisfies SuiteSyncState,
             state => state,
         ),

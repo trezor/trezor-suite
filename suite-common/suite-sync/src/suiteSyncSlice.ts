@@ -1,6 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
+
+export type SuiteSyncErrorType = DeviceErrorType | DeviceCancelledErrType;
 
 export type SuiteSyncSettings = {
     /**
@@ -27,7 +30,7 @@ export type SuiteSyncSettings = {
 
 export type SuiteSyncState = {
     settings: SuiteSyncSettings;
-    suiteSyncError: DeviceErrorType | DeviceCancelledErrType | null;
+    suiteSyncErrors: Record<StaticSessionId, SuiteSyncErrorType>;
 };
 
 export const initialSuiteSyncState: SuiteSyncState = {
@@ -36,7 +39,7 @@ export const initialSuiteSyncState: SuiteSyncState = {
         isSuiteSyncDebugEnabled: false,
         suiteSyncRelayUrl: null,
     },
-    suiteSyncError: null,
+    suiteSyncErrors: {},
 };
 
 export const suiteSyncSlice = createSlice({
@@ -57,9 +60,18 @@ export const suiteSyncSlice = createSlice({
         },
         setSuiteSyncError: (
             state,
-            { payload }: PayloadAction<{ error: DeviceErrorType | DeviceCancelledErrType | null }>,
+            {
+                payload,
+            }: PayloadAction<{
+                deviceStaticSessionId: StaticSessionId;
+                error: SuiteSyncErrorType | null;
+            }>,
         ) => {
-            state.suiteSyncError = payload.error;
+            if (payload.error === null) {
+                delete state.suiteSyncErrors[payload.deviceStaticSessionId];
+            } else {
+                state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
+            }
         },
     },
 });

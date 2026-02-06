@@ -47,12 +47,14 @@ export const createEnsureWalletSuiteSyncOn =
             switch (type) {
                 case 'DeviceCancelled':
                 case 'DeviceError':
-                    deps.dispatch(setSuiteSyncError({ error: result.error }));
+                    deps.dispatch(
+                        setSuiteSyncError({ deviceStaticSessionId, error: result.error }),
+                    );
                     break;
 
                 case 'SuiteSyncUnavailableOnDeviceError':
                     // This error is now not handled in the UI, so we don't need to set the error. It will probably be added as a follow up.
-                    deps.dispatch(setSuiteSyncError({ error: null }));
+                    deps.dispatch(setSuiteSyncError({ deviceStaticSessionId, error: null }));
                     break;
 
                 case 'WriteModeRequiredForAllocation':
@@ -63,7 +65,7 @@ export const createEnsureWalletSuiteSyncOn =
                     exhaustive(type);
             }
         } else {
-            deps.dispatch(setSuiteSyncError({ error: null }));
+            deps.dispatch(setSuiteSyncError({ deviceStaticSessionId, error: null }));
         }
 
         return result;
