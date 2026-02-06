@@ -1,10 +1,13 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
+import solSimulateClaimTransactionResponse from '../../../fixtures/staking/sol-simulate-claim-transaction.json';
+import solSimulateUnstakeTransactionResponse from '../../../fixtures/staking/sol-simulate-unstake-transaction.json';
 import {
     solStakingAccountDeactivating,
     solStakingAccountFirst,
 } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
+import { fulfillWithResult } from '../../../support/mocks/solanaStakingMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
@@ -12,6 +15,7 @@ const stakedAmount = solStakingAccountFirst.stakeInSol;
 const stakedAmountFormatted = `${stakedAmount} SOL`;
 const unstakingAmount = solStakingAccountDeactivating.stakeInSol;
 const unstakingAmountFormatted = `${unstakingAmount} SOL`;
+const unstakingAndRentFormatted = `${solStakingAccountDeactivating.stakeAndRentInSol} SOL`;
 
 test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -22,6 +26,14 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
         await solanaStakingMock.setupStakedAccount();
+        // Mock simulate unstake transaction response
+        await solanaStakingMock.replaceRoute('simulateTransaction', {
+            respond: async (route, body) => {
+                await fulfillWithResult(route, body, {
+                    value: solSimulateUnstakeTransactionResponse,
+                });
+            },
+        });
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: ['sol'],
@@ -88,12 +100,16 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     stakedAmountFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    solanaStakingMock.feeFormatted,
+                    solanaStakingMock.unstakeFeeFormatted,
                 );
+
+                const feeWrapped = device.wrapText(solanaStakingMock.unstakeFeeFormatted, {
+                    isAmount: true,
+                });
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
-                        body: [['Transaction fee:'], [`${solanaStakingMock.rentFee} SOL`]],
+                        body: [['Transaction fee:'], feeWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
                 });
@@ -117,6 +133,15 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
+            });
+
+            // Mock simulate claim transaction response
+            await solanaStakingMock.replaceRoute('simulateTransaction', {
+                respond: async (route, body) => {
+                    await fulfillWithResult(route, body, {
+                        value: solSimulateClaimTransactionResponse,
+                    });
+                },
             });
 
             await test.step('Wait few epochs for claim to be available', async () => {
@@ -162,27 +187,26 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    unstakingAmountFormatted,
+                    unstakingAndRentFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    solanaStakingMock.feeFormatted,
+                    solanaStakingMock.claimFeeFormatted,
                 );
 
-                const feeWrapped = device.wrapText(`${solanaStakingMock.rentFee} SOL`, {
+                const feeWrapped = device.wrapText(solanaStakingMock.claimFeeFormatted, {
                     isAmount: true,
                 });
-                const amountAndFeeWrapped = device.wrapText(
-                    solanaStakingMock.addFeeTo(unstakingAmount),
-                    { isAmount: true },
-                );
+                const amountWrapped = device.wrapText(unstakingAndRentFormatted, {
+                    isAmount: true,
+                });
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Claim' },
-                        body: [['Transaction fee:'], feeWrapped, ['Amount:'], amountAndFeeWrapped],
+                        body: [['Transaction fee:'], feeWrapped, ['Amount:'], amountWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
                     T3T1: {
-                        body: [['Amount:'], amountAndFeeWrapped, ['Transaction fee:'], feeWrapped],
+                        body: [['Amount:'], amountWrapped, ['Transaction fee:'], feeWrapped],
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
@@ -190,7 +214,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.claimedToastAccount).toContainText('Solana #1');
                 await expect(stakingSection.claimedToastAmount).toContainText(
-                    unstakingAmountFormatted,
+                    unstakingAndRentFormatted,
                 );
             });
 

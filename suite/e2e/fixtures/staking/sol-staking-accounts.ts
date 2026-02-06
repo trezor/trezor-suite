@@ -207,6 +207,14 @@ class SolanaStakingAccountFixture {
         return (Number(this.decoded.state.fields[1].delegation.stake) / 1_000_000_000).toString();
     }
 
+    get stakeAndRentInSol(): string {
+        return (
+            (Number(this.decoded.state.fields[1].delegation.stake) +
+                Number(this.decoded.state.fields[0].rentExemptReserve)) /
+            1_000_000_000
+        ).toString();
+    }
+
     get activationEpoch(): number {
         return Number(this.decoded.state.fields[1].delegation.activationEpoch);
     }

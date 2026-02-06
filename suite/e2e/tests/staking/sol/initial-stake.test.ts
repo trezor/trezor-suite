@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
 const stakedAmount = solStakingAccountFirst.stakeInSol;
-const stakedAmountFormatted = `${stakedAmount} SOL`;
+const stakedAndRentFormatted = `${solStakingAccountFirst.stakeAndRentInSol} SOL`;
 
 test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -79,37 +79,26 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    stakedAmountFormatted,
+                    stakedAndRentFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    solanaStakingMock.feeFormatted,
+                    solanaStakingMock.stakeFeeFormatted,
                 );
 
-                const feeWrapped = device.wrapText(solanaStakingMock.feeFormatted, {
+                const feeWrapped = device.wrapText(solanaStakingMock.stakeFeeFormatted, {
                     isAmount: true,
                 });
-                const amountAndFeeWrapped = device.wrapText(
-                    solanaStakingMock.addFeeTo(stakedAmount),
-                    { isAmount: true },
-                );
+                const amountWrapped = device.wrapText(stakedAndRentFormatted, {
+                    isAmount: true,
+                });
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
-                        body: [
-                            ['Max fees and rent:'],
-                            feeWrapped,
-                            ['Amount:'],
-                            amountAndFeeWrapped,
-                        ],
+                        body: [['Max fees and rent:'], feeWrapped, ['Amount:'], amountWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
                     T3T1: {
-                        body: [
-                            ['Amount:'],
-                            amountAndFeeWrapped,
-                            ['Max fees and rent:'],
-                            feeWrapped,
-                        ],
+                        body: [['Amount:'], amountWrapped, ['Max fees and rent:'], feeWrapped],
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
@@ -120,7 +109,9 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await solanaStakingMock.setProgramAccounts([solStakingAccountFirst.payload]);
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.stakedToastAccount).toContainText('Solana #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(stakedAmountFormatted);
+                await expect(stakingSection.stakedToastAmount).toContainText(
+                    stakedAndRentFormatted,
+                );
             });
 
             await test.step('Verify pending on dashboard', async () => {
