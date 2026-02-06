@@ -8,9 +8,8 @@ import type { ConnectSettingsPublic, Manifest } from '../settings';
 // explicitly don't overlap types
 export type InitFullSettings<ExtraSettingsType extends Record<string, any>> = {
     manifest: Manifest;
-} & Partial<
-    Omit<ConnectSettingsPublic, 'manifest'> & Omit<ExtraSettingsType, keyof ConnectSettingsPublic>
->;
+} & Partial<ConnectSettingsPublic> &
+    ExtraSettingsType;
 
 export type InitType<ExtraSettingsType extends Record<string, any>> = (
     settings: InitFullSettings<ExtraSettingsType>,

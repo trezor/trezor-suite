@@ -6,7 +6,6 @@ import { getSynchronize } from '@trezor/utils';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings, ConnectSettingsWeb } from '../types';
-import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
 
 export type ConnectImplSettings = {
@@ -21,12 +20,12 @@ export type ConnectImpl = Omit<ConnectFactoryDependencies<ConnectSettingsWeb>, '
     init: (params: ConnectImplSettings) => Promise<void>;
 };
 
-type TrezorConnectDynamicParams<ImplType, SettingsType extends Record<string, any>> = {
+type TrezorConnectDynamicParams<ImplType, ExtraSettings extends Record<string, any>> = {
     implementations: {
         type: ImplType;
         impl: ConnectImpl;
     }[];
-    getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
+    getInitTarget: (settings: ConnectImplSettings & ExtraSettings) => ImplType;
     handleBeforeInit?: () => void;
     handleBeforeCall: () => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
@@ -38,27 +37,27 @@ type TrezorConnectDynamicParams<ImplType, SettingsType extends Record<string, an
  */
 export class TrezorConnectDynamic<
     ImplType,
-    SettingsType extends Record<string, any>,
-> implements ConnectFactoryDependencies<SettingsType> {
+    ExtraSettings extends Record<string, any>,
+> implements ConnectFactoryDependencies<ExtraSettings> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
-    private implementations: TrezorConnectDynamicParams<ImplType, SettingsType>['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<ImplType, SettingsType>['getInitTarget'];
+    private implementations: TrezorConnectDynamicParams<ImplType, ExtraSettings>['implementations'];
+    private getInitTarget: TrezorConnectDynamicParams<ImplType, ExtraSettings>['getInitTarget'];
     private handleBeforeInit: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType
+        ExtraSettings
     >['handleBeforeInit'];
     private handleBeforeCall: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType
+        ExtraSettings
     >['handleBeforeCall'];
     private handleErrorFallback: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType
+        ExtraSettings
     >['handleErrorFallback'];
 
-    public lastSettings?: InitFullSettings<SettingsType>;
+    public lastSettings?: ConnectImplSettings & ExtraSettings;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
 
@@ -68,7 +67,7 @@ export class TrezorConnectDynamic<
         handleBeforeInit,
         handleBeforeCall,
         handleErrorFallback,
-    }: TrezorConnectDynamicParams<ImplType, SettingsType>) {
+    }: TrezorConnectDynamicParams<ImplType, ExtraSettings>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
@@ -110,21 +109,24 @@ export class TrezorConnectDynamic<
         }
     }
 
-    public async init(settings: InitFullSettings<SettingsType>) {
-        if (!settings?.manifest) {
+    public async init(settings: ConnectImplSettings & ExtraSettings) {
+        const { manifest, connectSrc, debug, env, version } = settings;
+
+        if (!manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
+
         // Save settings for later use
         this.lastSettings = settings;
 
-        this.currentTarget = this.getInitTarget(settings);
+        this.currentTarget = this.getInitTarget(this.lastSettings);
         this.callPending = 0;
 
         // Initialize the target
         try {
             this.handleBeforeInit?.();
 
-            return await this.getTarget().init(this.lastSettings);
+            return await this.getTarget().init({ manifest, connectSrc, debug, env, version });
         } catch (error) {
             // Handle error by switching to other implementation if available as defined in `handleErrorFallback`.
             if (await this.handleErrorFallback(error.code)) {
@@ -136,7 +138,6 @@ export class TrezorConnectDynamic<
     }
 
     public setTransports({ transports }: SetTransports) {
-        this.lastSettings = { ...this.lastSettings, transports } as typeof this.lastSettings;
         this.getTarget().setTransports({ transports });
     }
 

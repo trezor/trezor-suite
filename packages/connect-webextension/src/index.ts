@@ -7,7 +7,7 @@ import {
     POPUP,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import { ConnectImplSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
@@ -31,8 +31,8 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInSuiteWeb(),
         },
     ],
-    getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
-        if (settings.coreMode === 'suite-desktop') {
+    getInitTarget: ({ coreMode }: ConnectImplSettings & ConnectSettingsWebextension) => {
+        if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else {
             return 'core-in-suite-web';
