@@ -26,3 +26,4 @@ Available flags:
 | `--log-no-print`              | Suppress console logs                                                                                                                                                                  |
 | `--remove-user-data-on-start` | Removes user data directory on start (used for E2E testing)                                                                                                                            |
 | `--expose-connect-ws`         | Expose Connect websocket even on production build                                                                                                                                      |
+| `--offline-mode`              | Experimental flag to disable all network connection both in Renderer and Main process. Note that it does **not** directly control subprocesses (e.g. tor, coinjoin)                    |

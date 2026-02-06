@@ -53,7 +53,7 @@ test.describe(
                     await onboardingPage.enableAutoconnect();
                 }
 
-                await onboardingPage.onboardingExitButton.click();
+                await onboardingPage.completeOnboardingButton.click();
             });
 
             await test.step('Reload app and check analytics state', async () => {
@@ -145,7 +145,7 @@ test.describe(
                     await devicePrompt.allowConnectToTrezor();
                     await onboardingPage.enterTHPPairingCode();
                 }
-                await onboardingPage.onboardingExitButton.click();
+                await onboardingPage.completeOnboardingButton.click();
             });
 
             await test.step('Go to settings and disable analytics', async () => {

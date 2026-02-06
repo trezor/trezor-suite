@@ -43,7 +43,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
 
-            onboardingPage.createBackupButton.click();
+            await onboardingPage.createBackupButton.click();
 
             // Create backup with Shamir shares and threshold
             const shares = 3;
@@ -54,8 +54,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             await onboardingPage.pin.setPinButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
-            await device.type('12');
-            await device.type('12');
+            await device.selectNumberOfWords(12);
+            await device.selectNumberOfWords(12);
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
