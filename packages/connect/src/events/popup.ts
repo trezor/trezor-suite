@@ -1,6 +1,6 @@
 import type { TransportInfo } from './transport';
 import { UI_EVENT } from './ui-request';
-import type { ConnectSettings, Manifest, SystemInfo } from '../types/settings';
+import type { ConnectSettings, Manifest } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
@@ -28,7 +28,6 @@ export interface PopupInit {
     payload: {
         settings: ConnectSettings; // settings from window.opener (sent by @trezor/connect-web)
         useBroadcastChannel: boolean;
-        systemInfo: SystemInfo;
         useCore?: boolean;
     };
 }
