@@ -36,6 +36,7 @@ type BridgeEndpoint =
     | '/listen'
     | '/acquire'
     | '/post'
+    | '/abort'
     | '/call'
     | '/enumerate'
     | '/release'
@@ -206,6 +207,22 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
+    // in some setups abort signal is resolved on the client-side but never resolves on the server-size (like android OkHttp request)
+    // abort signal is also meant to resolve immediately but it could take a while to process it on the server
+    // try to abort pending process through the server and fallback to local signal only if that fails
+    private createAbortSignal = (session: Session, signal?: AbortSignal) => {
+        const abortController = new AbortController();
+        signal?.addEventListener('abort', async () => {
+            const result = await this.post('/abort', { params: session });
+            if (!result.success) {
+                this.logger?.warn(`/abort/${session} error: ${result.error}`);
+                abortController.abort();
+            }
+        });
+
+        return abortController.signal;
+    };
+
     // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
     public call({
         session,
@@ -231,7 +248,7 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
 
                 if (!response.success) {
@@ -294,7 +311,7 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post('/post', {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
                 if (!response.success) {
                     return response;
@@ -322,7 +339,7 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post('/read', {
                     params: session,
                     body: this.getRequestBody(Buffer.alloc(0), protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
 
                 if (!response.success) {
@@ -388,6 +405,10 @@ export class BridgeTransport extends AbstractTransport {
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
     private async post(
+        endpoint: '/abort',
+        options: IncompleteRequestOptions,
+    ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
+    private async post(
         endpoint: '/listen',
         options?: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<Descriptor[], BridgeCommonErrors>;
@@ -435,6 +456,8 @@ export class BridgeTransport extends AbstractTransport {
                         ERRORS.INTERFACE_DATA_TRANSFER,
                         PROTOCOL_MALFORMED,
                     ]);
+                case '/abort':
+                    return this.unknownError(response.error, [ERRORS.SESSION_NOT_FOUND]);
                 case '/enumerate':
                 case '/listen':
                     return this.unknownError(response.error);
@@ -466,6 +489,8 @@ export class BridgeTransport extends AbstractTransport {
             case '/listen':
                 return bridgeApiResult.devices(response.payload);
             case '/release':
+                return bridgeApiResult.empty(response.payload);
+            case '/abort':
                 return bridgeApiResult.empty(response.payload);
             default:
                 return this.error({
