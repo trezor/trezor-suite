@@ -1,6 +1,11 @@
 import * as semver from 'semver';
 
-import { getBrowserName, getBrowserVersion, getDeviceType, getOsNameWeb } from '@trezor/env-utils';
+import {
+    getBrowserName,
+    getBrowserVersion,
+    getDeviceType,
+    getOsNameWeb,
+} from '@suite-common/suite-utils/src/userAgent';
 
 import style from './styles.css';
 import { CHROME_ANDROID_URL, CHROME_UPDATE_URL, CHROME_URL, SUITE_URL } from './urls';

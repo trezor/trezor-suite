@@ -10897,10 +10897,11 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/env-utils": "workspace:^"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11125,6 +11126,7 @@ __metadata:
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -11456,6 +11458,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     jws: "npm:^4.0.1"
+    ua-parser-js: "npm:^2.0.4"
   languageName: unknown
   linkType: soft
 
@@ -15155,12 +15158,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:^, @trezor/env-utils@workspace:packages/env-utils":
+"@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:packages/env-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
     tsx: "npm:^4.21.0"
-    ua-parser-js: "npm:^2.0.4"
   peerDependencies:
     expo-constants: "*"
     expo-localization: "*"

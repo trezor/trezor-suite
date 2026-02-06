@@ -6,6 +6,7 @@
         { "path": "../message-system" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
+        { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../wallet-core" },
         { "path": "../../packages/connect" },

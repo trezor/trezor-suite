@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
-import { getOsFamily, getUserAgent } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 

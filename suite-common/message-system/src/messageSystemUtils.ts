@@ -19,6 +19,7 @@ import type {
     TrezorHostProtocolTHPProperties,
     Version,
 } from '@suite-common/suite-types';
+import { getBrowserName, getBrowserVersion } from '@suite-common/suite-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
@@ -28,8 +29,6 @@ import {
 } from '@trezor/device-utils';
 import {
     Environment as EnvironmentType,
-    getBrowserName,
-    getBrowserVersion,
     getCommitHash,
     getEnvironment,
     getOsName,

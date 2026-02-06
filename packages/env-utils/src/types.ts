@@ -8,14 +8,8 @@ export interface EnvUtils {
     getUserAgent: () => string;
     isAndroid: () => boolean;
     isChromeOs: () => boolean;
-    getBrowserName: () => string;
-    getBrowserVersion: () => string;
     getCommitHash: () => string;
-    getDeviceType: () => string | undefined;
-    getOsVersion: () => Promise<string>;
-    getCpuArch: () => Promise<string>;
     getSuiteVersion: () => string;
-    isFirefox: () => boolean;
     getPlatform: () => string;
     getPlatformLanguages: () => readonly string[];
     getScreenWidth: () => number;
@@ -31,7 +25,5 @@ export interface EnvUtils {
     isLinux: () => boolean;
     isCodesignBuild: () => boolean;
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
-    getOsNameWeb: () => string | undefined;
-    getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';
     getJWSPublicKey: () => string;
 }

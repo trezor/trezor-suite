@@ -5,6 +5,7 @@
         { "path": "../analytics-redux" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
+        { "path": "../suite-utils" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },

@@ -1,14 +1,12 @@
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getBrowserName, getBrowserVersion, getOsVersion } from '@suite-common/suite-utils';
 import { accountsActions, deviceActions } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { DEVICE } from '@trezor/connect';
 import {
-    getBrowserName,
-    getBrowserVersion,
     getCommitHash,
     getEnvironment,
     getOsName,
-    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
