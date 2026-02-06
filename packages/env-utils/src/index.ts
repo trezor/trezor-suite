@@ -36,7 +36,6 @@ export const {
     getOsNameWeb,
     getOsFamily,
     getJWSPublicKey,
-    getFirmwareReleaseJwsPublicKey,
 } = envUtils;
 
 export { resolveStaticPath, resolveConnectPath } from './resolveStaticPath';

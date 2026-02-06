@@ -14816,7 +14816,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/env-utils": "workspace:*"
     "@trezor/protobuf": "workspace:^"
     "@trezor/protocol": "workspace:^"
     "@trezor/utils": "workspace:*"
@@ -15060,7 +15059,6 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:^"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"

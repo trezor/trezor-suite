@@ -3,7 +3,7 @@ import { Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { getLocales } from 'expo-localization';
 
-import { firmwareConfigPublicKey, publicKey } from './jws';
+import { publicKey } from './jws';
 import { EnvUtils } from './types';
 
 const isWeb = () => false;
@@ -81,9 +81,6 @@ const getOsFamily = (): 'Linux' => 'Linux';
 
 export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
-export const getFirmwareReleaseJwsPublicKey = (useCodeSignKey = false) =>
-    useCodeSignKey ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
-
 export const envUtils: EnvUtils = {
     isWeb,
     isDesktop,
@@ -118,5 +115,4 @@ export const envUtils: EnvUtils = {
     getOsNameWeb,
     getOsFamily,
     getJWSPublicKey,
-    getFirmwareReleaseJwsPublicKey,
 };
