@@ -8,14 +8,10 @@ import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
 
-type TrezorConnectDynamicParams<
-    ImplType,
-    SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
-> = {
+type TrezorConnectDynamicParams<ImplType, SettingsType extends Record<string, any>> = {
     implementations: {
         type: ImplType;
-        impl: ImplInterface;
+        impl: ConnectFactoryDependencies<SettingsType>;
     }[];
     getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
     handleBeforeInit?: () => void;
@@ -30,35 +26,23 @@ type TrezorConnectDynamicParams<
 export class TrezorConnectDynamic<
     ImplType,
     SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
 > implements ConnectFactoryDependencies<SettingsType> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
-    private implementations: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['getInitTarget'];
+    private implementations: TrezorConnectDynamicParams<ImplType, SettingsType>['implementations'];
+    private getInitTarget: TrezorConnectDynamicParams<ImplType, SettingsType>['getInitTarget'];
     private handleBeforeInit: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType,
-        ImplInterface
+        SettingsType
     >['handleBeforeInit'];
     private handleBeforeCall: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType,
-        ImplInterface
+        SettingsType
     >['handleBeforeCall'];
     private handleErrorFallback: TrezorConnectDynamicParams<
         ImplType,
-        SettingsType,
-        ImplInterface
+        SettingsType
     >['handleErrorFallback'];
 
     public lastSettings?: InitFullSettings<SettingsType>;
@@ -71,7 +55,7 @@ export class TrezorConnectDynamic<
         handleBeforeInit,
         handleBeforeCall,
         handleErrorFallback,
-    }: TrezorConnectDynamicParams<ImplType, SettingsType, ImplInterface>) {
+    }: TrezorConnectDynamicParams<ImplType, SettingsType>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;

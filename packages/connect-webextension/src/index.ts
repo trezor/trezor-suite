@@ -6,7 +6,7 @@ import {
     Manifest,
     POPUP,
 } from '@trezor/connect/src/exports';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
@@ -19,8 +19,7 @@ const _settings = parseConnectSettings();
 
 const impl = new TrezorConnectDynamic<
     'core-in-suite-desktop' | 'core-in-suite-web',
-    ConnectSettingsWebextension,
-    ConnectFactoryDependencies<ConnectSettingsWebextension>
+    ConnectSettingsWebextension
 >({
     implementations: [
         {
