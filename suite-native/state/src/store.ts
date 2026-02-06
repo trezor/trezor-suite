@@ -17,7 +17,6 @@ import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
-import { thpMiddleware } from '@suite-native/thp';
 import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
@@ -61,7 +60,6 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,
-        thpMiddleware(getExtra),
         prepareTradingMiddleware(getExtra),
         prepareTradingLastErrorSentryMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),

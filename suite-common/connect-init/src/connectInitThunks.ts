@@ -1,3 +1,4 @@
+import { events as sharedEvents } from '@suite-common/analytics';
 import { selectFirmwareChannel } from '@suite-common/firmware/src/firmwareReducer';
 import {
     Feature,
@@ -51,7 +52,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const {
             selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
-            services: { connectInitSettings },
+            services: { connectInitSettings, analytics },
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
@@ -68,10 +69,19 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 if (connectInitHooks && eventData.type in connectInitHooks) {
                     connectInitHooks[eventData.type]?.(eventData.payload, connectedDevices);
                 }
-            }
-            // dispatch event as action
-            else {
+            } else {
+                // dispatch event as action
                 dispatch({ type: eventData.type, payload: eventData.payload });
+
+                if (eventData.type === DEVICE.THP_PAIRING_STATUS_CHANGED) {
+                    const { status } = eventData.payload;
+                    if (status === 'finished' || status === 'canceled') {
+                        analytics.report({
+                            type: sharedEvents.deviceConnectionDeviceConfirmationEvent.name,
+                            payload: { option: status === 'finished' ? 'confirmed' : 'close' },
+                        });
+                    }
+                }
             }
         });
 
