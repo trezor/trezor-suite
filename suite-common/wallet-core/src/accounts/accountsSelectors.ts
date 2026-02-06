@@ -215,20 +215,6 @@ export const selectAccountForNetworkSymbolAndPath = createMemoizedSelector(
         accounts.find(account => path === account.path && networkSymbol === account.symbol) ?? null,
 );
 
-/**
- * @deprecated AccountLabel was introduced by mobile app for Portfolio Manager. Now this is
- *             deprecated in favor of Suite Sync. However, we have to keep back compatibility,
- *             as currently user has no option to label Portfolio Manager Account.
- *
- *             Use `selectSuiteSyncAccountLabel` instead!
- *
- * IMPORTANT: This is relevant only for Mobile App.
- */
-export const selectAccountLabel = createMemoizedSelector(
-    [selectAccountByKey],
-    account => account?.accountLabel ?? null,
-);
-
 export const selectAccountNetworkSymbol = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.symbol ?? null,

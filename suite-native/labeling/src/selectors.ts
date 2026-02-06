@@ -8,7 +8,7 @@ import { getIsSuiteSyncLabelingActionEnabled } from '@suite-common/suite-sync/sr
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    selectAccountLabel as selectReduxAccountLabel,
+    selectAccountByKey,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountDescriptor } from '@suite-common/wallet-types';
@@ -60,11 +60,15 @@ export const selectAccountLabel = (
         return syncedLabel;
     }
 
+    // Fallback to legacy account.label (mobile only, portfolio tracker)
+
     const accountKey = createAccountKey({
         accountDescriptor,
         networkSymbol,
         deviceStaticSessionId,
     });
 
-    return selectReduxAccountLabel(state, accountKey);
+    const account = selectAccountByKey(state, accountKey);
+
+    return account?.accountLabel ?? null;
 };
