@@ -98,7 +98,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                         openXpubQRSheet();
                         closeWalletBackupWarningSheet();
                     }}
-                    onClose={closeXpubQRSheet}
+                    onClose={closeWalletBackupWarningSheet}
                     ref={walletBackupWarningSheetRef}
                 />
             )}
