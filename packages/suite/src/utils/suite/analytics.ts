@@ -6,16 +6,18 @@ import {
 import { MetadataProviderType } from '@suite-common/metadata-types';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
+    getBrowserName,
+    getBrowserVersion,
+    getCpuArch,
+    getOsVersion,
+} from '@suite-common/suite-utils';
+import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
-    getBrowserName,
-    getBrowserVersion,
-    getCpuArch,
     getOsName,
-    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,

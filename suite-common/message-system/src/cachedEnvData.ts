@@ -1,4 +1,4 @@
-import { getOsVersion } from '@trezor/env-utils';
+import { getOsVersion } from '@suite-common/suite-utils';
 
 let cachedOsVersion: Awaited<ReturnType<typeof getOsVersion>> | undefined;
 

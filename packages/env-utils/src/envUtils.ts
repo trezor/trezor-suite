@@ -1,5 +1,3 @@
-import { UAParser } from 'ua-parser-js';
-
 import { publicKey } from './jws';
 import { EnvUtils, Environment } from './types';
 
@@ -15,57 +13,16 @@ export const getEnvironment = (): Environment => {
     return 'desktop';
 };
 
-let userAgentParser: UAParser;
-
 /* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
 const getUserAgent = () => window.navigator.userAgent;
-
-const getUserAgentParser = () => {
-    if (!userAgentParser) {
-        const ua = getUserAgent();
-        userAgentParser = new UAParser(ua);
-    }
-
-    return userAgentParser;
-};
 
 const isAndroid = () => /Android/.test(getUserAgent());
 
 const isChromeOs = () => /CrOS/.test(getUserAgent());
 
-const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
-
 const getCommitHash = () => process.env.COMMITHASH || '';
 
-/**
- * .getOS() without `.withClientHints()` is sync and uses only `userAgent`, which is insufficient
- * to distinguish macOS >= 11 (Big Sur and above) and Windows 10 | 11, so we need the async `.withClientHints()`.
- * FYI it uses `getHighEntropyValues` under the hood (works only on Chromium-based browsers).
- */
-const getOsVersion = async () => {
-    const { version } = await getUserAgentParser().getOS().withClientHints();
-
-    return version ?? '';
-};
-
-/**
- * Similar to `getOsVersion`. Here, the sync fn works everywhere but macOS, hence we use async.
- */
-const getCpuArch = async () => {
-    const { architecture } = await getUserAgentParser().getCPU().withClientHints();
-
-    return architecture ?? '';
-};
-
 const getSuiteVersion = () => process.env.VERSION || '';
-
-const getBrowserName = () => {
-    const browserName = getUserAgentParser().getBrowser().name?.replace(' ', '');
-
-    return browserName?.toLowerCase() || '';
-};
-
-const isFirefox = () => getBrowserName() === 'firefox';
 
 // List of platforms https://docker.apachezone.com/blog/74
 const getPlatform = () => window.navigator.platform;
@@ -125,24 +82,6 @@ const getOsName = () => {
     return '';
 };
 
-// generally works the same as `getOsName`, just with different information source, but does not work in some specific iOS cases
-const getOsNameWeb = () => getUserAgentParser().getOS().name?.replaceAll(' ', '');
-
-const getOsFamily = () => {
-    const osName = getUserAgentParser().getOS().name?.toLowerCase().replaceAll(' ', '');
-
-    if (osName === 'windows') {
-        return 'Windows';
-    }
-    if (osName === 'macos') {
-        return 'MacOS';
-    }
-
-    return 'Linux';
-};
-
-const getDeviceType = () => getUserAgentParser().getDevice().type;
-
 export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
 export const envUtils: EnvUtils = {
@@ -153,14 +92,8 @@ export const envUtils: EnvUtils = {
     getUserAgent,
     isAndroid,
     isChromeOs,
-    getOsVersion,
-    getCpuArch,
-    getBrowserName,
-    getBrowserVersion,
     getCommitHash,
-    getDeviceType,
     getSuiteVersion,
-    isFirefox,
     getPlatform,
     getPlatformLanguages,
     getScreenWidth,
@@ -176,7 +109,5 @@ export const envUtils: EnvUtils = {
     isLinux,
     isCodesignBuild,
     getOsName,
-    getOsNameWeb,
-    getOsFamily,
     getJWSPublicKey,
 };

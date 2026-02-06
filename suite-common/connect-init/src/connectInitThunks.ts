@@ -6,6 +6,7 @@ import {
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getBrowserName } from '@suite-common/suite-utils';
 import {
     deviceActions,
     deviceConnectThunks,
@@ -24,7 +25,7 @@ import TrezorConnect, {
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
-import { getBrowserName, isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 

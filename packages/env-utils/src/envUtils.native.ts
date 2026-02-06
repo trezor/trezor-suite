@@ -18,22 +18,9 @@ const getUserAgent = () => '';
 
 const isChromeOs = () => false;
 
-const getBrowserName = () => '';
-
-const getBrowserVersion = () => '';
-
-const getDeviceType = () => '';
-
-// no need for async fn on native; only for the sake of consistency with Web/Desktop
-const getOsVersion = () => Promise.resolve(`${Platform.Version}`);
-
-const getCpuArch = () => Promise.resolve('');
-
 const getSuiteVersion = () => Constants.expoConfig?.version || '';
 
 const getCommitHash = () => Constants.expoConfig?.extra?.commitHash;
-
-const isFirefox = () => false;
 
 const getPlatform = () => Platform.OS;
 
@@ -75,10 +62,6 @@ const getOsName = () => {
     return '';
 };
 
-const getOsNameWeb = () => '';
-
-const getOsFamily = (): 'Linux' => 'Linux';
-
 export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
 export const envUtils: EnvUtils = {
@@ -89,14 +72,8 @@ export const envUtils: EnvUtils = {
     getUserAgent,
     isAndroid,
     isChromeOs,
-    getBrowserName,
-    getBrowserVersion,
     getCommitHash,
-    getDeviceType,
-    getOsVersion,
-    getCpuArch,
     getSuiteVersion,
-    isFirefox,
     getPlatform,
     getPlatformLanguages,
     getScreenWidth,
@@ -112,7 +89,5 @@ export const envUtils: EnvUtils = {
     isLinux,
     isCodesignBuild,
     getOsName,
-    getOsNameWeb,
-    getOsFamily,
     getJWSPublicKey,
 };
