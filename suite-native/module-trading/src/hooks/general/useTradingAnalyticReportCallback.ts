@@ -16,7 +16,7 @@ export type TradingAnalyticReportCallback =
     | TradingExchangeAnalyticReportCallback
     | NullAnalyticsReportAction;
 
-const nullAction = () => {};
+const noop = () => {};
 
 export const useTradingAnalyticReportCallback = (
     tradingType?: TradingType,
@@ -30,6 +30,6 @@ export const useTradingAnalyticReportCallback = (
         case 'sell':
             return sellReportToAnalytics;
         default:
-            return nullAction;
+            return noop;
     }
 };
