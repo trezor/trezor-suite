@@ -4,7 +4,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
-import { AccountAddressFormatter } from '@suite-native/formatters';
+import { AddressFormatter } from '@suite-native/formatters';
 import {
     AddressLabel,
     TransactionOutputLabelEditable,
@@ -46,7 +46,7 @@ export const TransactionUtxoAddress = ({
                     address={address}
                     deviceStaticSessionId={deviceStaticSessionId}
                     fallback={
-                        <AccountAddressFormatter
+                        <AddressFormatter
                             key={address}
                             value={address}
                             style={applyStyle(addressTextStyle)}

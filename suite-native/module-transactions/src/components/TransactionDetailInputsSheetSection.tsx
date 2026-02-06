@@ -6,7 +6,7 @@ import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config
 import { TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
-    AccountAddressFormatter,
+    AddressFormatter,
     CryptoAmountFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
@@ -32,7 +32,7 @@ const TransactionAddressAmount = ({
     decimals,
 }: TransactionAddressAmountProps) => (
     <Box>
-        <AccountAddressFormatter value={address} variant="hint" />
+        <AddressFormatter value={address} variant="hint" />
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <CryptoAmountFormatter
