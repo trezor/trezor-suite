@@ -24,6 +24,7 @@ export const useBrowserAuth = ({ tradingType }: BrowserAuthProps): BrowserAuthRe
 
         dispatch(
             tradingThunks.setLastErrorMessageByTradingType({
+                // This string is targeted in E2E tests. Be careful when changing it, and update the tests if needed.
                 errorMessage: 'E2E: Browser auth simulated',
                 tradingType,
             }),

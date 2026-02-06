@@ -1,4 +1,4 @@
-import { scrollUntilVisible, wait } from '../../support/utils';
+import { scrollUntilVisible, wait, waitForVisible } from '../../support/utils';
 
 export class TradingActions {
     readonly DOUBLE_LONG_TIMEOUT = 60_000;
@@ -43,10 +43,19 @@ export class TradingActions {
         await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
     }
 
+    async scrollScreenToTop() {
+        await element(by.id('@screen/mainScrollView')).scrollTo('top');
+    }
+
     async scrollToLearnMoreLink() {
         // Scroll to bottom of the page.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
         const learnMoreLink = element(by.text('Learn more'));
         await scrollUntilVisible(learnMoreLink);
+    }
+
+    async expectBrowserAuthTriggered() {
+        await this.scrollScreenToTop();
+        await waitForVisible(by.text('E2E: Browser auth simulated'));
     }
 }
