@@ -52,6 +52,7 @@ export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps)
                                             ? 'UNKNOWN'
                                             : option.value
                                     }
+                                    size={24}
                                 />
 
                                 {labelParts.text}

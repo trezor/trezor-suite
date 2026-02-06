@@ -1,1 +1,5 @@
-<svg viewBox="0 0 16 8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="m0 0h16v8h-16z" fill="#002395"/><path d="m4.24 0h8v8z" fill="#fecb00"/><g id="a"><path id="b" d="m2.353283.5248529.446717-1.3748529.446717 1.374853-1.16952-.849706h1.445606z" fill="#fff"/><use x="1" xlink:href="#b" y="1"/><use x="2" xlink:href="#b" y="2"/></g><use x="3" xlink:href="#a" y="3"/><use x="6" xlink:href="#a" y="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="24" viewBox="0 0 30 24">
+  <path fill="#091c91" d="M0 0h30v24H0z"/>
+  <path fill="#f6ce46" d="M23 24 7 0h16z"/>
+  <path fill="#fff" d="m7.71 5.38 1.38-1H7.4l-.53-1.63-.53 1.62h-1.7l1.38 1L5.48 7l1.38-1 1.38 1zM5.47 0l-.86.63.53 1.62-1.38-1-1.38 1L2.9.63 2.04 0zm5.34 10.13 1.38-1h-1.7L9.94 7.5l-.52 1.62h-1.7l1.38 1-.53 1.63 1.38-1 1.38 1zm3.09 4.75 1.38-1h-1.7l-.53-1.63-.53 1.62h-1.7l1.37 1-.52 1.63 1.38-1 1.38 1zm3.1 4.75 1.38-1h-1.71L16.14 17l-.53 1.62h-1.7l1.38 1-.53 1.63 1.38-1 1.38 1zM20.6 24l.87-.63h-1.7l-.54-1.62-.52 1.62H17l.86.63z"/>
+</svg>

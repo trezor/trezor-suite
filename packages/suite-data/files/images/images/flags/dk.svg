@@ -1,1 +1,4 @@
-<svg viewBox="0 0 370 280" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h370v280h-370z" fill="#c60c30"/><g fill="#fff"><path d="m120 0h40v280h-40z"/><path d="m0 120h370v40h-370z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="24" viewBox="0 0 30 24">
+  <path fill="#b92932" d="M0 0h30v24H0z"/>
+  <path fill="#fff" d="M30 10H14V0h-4v10H0v4h10v10h4V14h16z"/>
+</svg>
