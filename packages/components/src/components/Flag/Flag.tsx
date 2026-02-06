@@ -1,35 +1,43 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 
-import { FLAGS } from './flags';
+import { FlagSize, FlagType } from './types';
+import { mapSizeToBorderRadius, mapSizeToOutlineWidth } from './utils';
 import { IMAGES_PATH } from '../Image/Image';
 
-export type FlagType = keyof typeof FLAGS;
+export type FlagProps = {
+    country: FlagType;
+    size?: FlagSize;
+};
 
-const Wrapper = styled.div<{ $isUnknown: boolean }>`
+const Wrapper = styled.div<{ $size: FlagSize }>`
     display: flex;
     align-items: center;
-    filter: ${({ $isUnknown, theme }) =>
-        theme.variant === 'dark' && $isUnknown ? 'invert(1)' : 'none'};
+    width: ${({ $size }) => `${$size}px`};
+    height: ${({ $size }) => `${$size}px`};
+    flex-shrink: 0;
 `;
 
-export interface FlagProps {
-    className?: string;
-    country: FlagType;
-    size?: number;
-}
+const FlagImage = styled.img<{ $size: FlagSize }>`
+    width: 100%;
+    display: block;
+    background: ${({ theme }) => theme.baseFillElementNeutralLight};
 
-export const Flag = ({ size = 24, country }: FlagProps) => {
-    const isUnknown = country === 'UNKNOWN';
+    ${({ $size, theme }) => css`
+        outline: ${mapSizeToOutlineWidth($size)}px solid ${theme.baseBorderElementNeutralSofter};
+        outline-offset: -${mapSizeToOutlineWidth($size)}px;
+        border-radius: ${mapSizeToBorderRadius($size)}px;
+        background: ${theme.baseFillElementNeutralLight};
+    `}
+`;
 
-    return (
-        <Wrapper $isUnknown={isUnknown}>
-            <img
-                src={resolveStaticPath(`${IMAGES_PATH}/flags/${country.toLowerCase()}.svg`)}
-                width={`${size}px`}
-                alt={`flag-${country}`}
-            />
-        </Wrapper>
-    );
-};
+export const Flag = ({ size = 24, country }: FlagProps) => (
+    <Wrapper $size={size}>
+        <FlagImage
+            $size={size}
+            src={resolveStaticPath(`${IMAGES_PATH}/flags/${country.toLowerCase()}.svg`)}
+            alt={`flag-${country}`}
+        />
+    </Wrapper>
+);

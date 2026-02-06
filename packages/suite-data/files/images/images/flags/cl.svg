@@ -1,14 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-4 -4 24 16">
-<path d="M20,12H-4V-4H20z" fill="#d52b1e"/>
-<path d="M4,4H20V-4H-4z" fill="#fff"/>
-<path d="M4,4H-4V-4H4z" fill="#0039a6"/>
-<g id="f">
-<g id="t">
-<path d="M0,-2V0H1z" fill="#fff" transform="rotate(18,0,-2)" id="o"/>
-<use xlink:href="#o" transform="scale(-1,1)"/>
-</g>
-<use xlink:href="#t" transform="rotate(72)"/>
-</g>
-<use xlink:href="#t" transform="rotate(-72)"/>
-<use xlink:href="#f" transform="rotate(144)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="24" viewBox="0 0 30 24">
+  <path fill="#c73a29" d="M30 24H0V12h30z"/>
+  <path fill="#fff" d="M30 12H0V0h30z"/>
+  <path fill="#1435a1" d="M0 0h12v12H0z"/>
+  <path fill="#fff" d="M7.15 6.67 9 5.33H6.7L6 3.15l-.7 2.18H3l1.85 1.34-.7 2.18L6 7.51l1.86 1.34z"/>
 </svg>
