@@ -1,6 +1,14 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
+import {
+    EverstakeStakingInfo,
+    PrecomposedTransactionFinal,
+    StakeFormState,
+    StakeRewardsByAccount,
+    Timestamp,
+    TotalStakeRewardsByAccount,
+    ValidatorsQueue,
+} from '@suite-common/wallet-types';
 import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
 import { VotingDelegationOption, stakeActions } from './stakeActions';
@@ -9,12 +17,6 @@ import {
     fetchEverstakeRewards,
     fetchEverstakeStakingInfo,
 } from './stakeThunks';
-import {
-    EverstakeStakingInfo,
-    StakeRewardsByAccount,
-    TotalStakeRewardsByAccount,
-    ValidatorsQueue,
-} from './stakeTypes';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {

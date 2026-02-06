@@ -67,4 +67,3 @@ suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src
 suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts
 suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts > suite-common/wallet-core/src/send/sendFormEthereumThunks.ts
 suite-common/wallet-types/src/index.ts > suite-common/wallet-types/src/solanaStaking.ts > suite-common/staking-solana/src/index.ts > suite-common/staking-solana/src/utils/index.ts > suite-common/staking-solana/src/utils/stakingUtils.ts
-suite-common/wallet-types/src/sendForm.ts > suite-common/wallet-types/src/transaction.ts

@@ -14,8 +14,12 @@ import {
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { PrecomposedLevels, StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    PrecomposedLevels,
+    StakeType,
+    ValidatorsQueue,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getEthereumEstimateFeeParams,
     isPending,

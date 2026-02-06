@@ -1,9 +1,8 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
-    ExcludedUtxos,
-    FeeInfo,
+    ComposeActionContext,
     FormState,
     PrecomposedTransactionFinal,
     WalletAccountTransaction,
@@ -12,15 +11,6 @@ import { PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
 import { ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
-
-// TODO: is this still needed?
-export interface ComposeActionContext {
-    account: Account;
-    network: Network;
-    feeInfo: FeeInfo;
-    excludedUtxos?: ExcludedUtxos;
-    prison?: Record<string, unknown>;
-}
 
 export type EthTransactionData = {
     token?: TokenInfo;

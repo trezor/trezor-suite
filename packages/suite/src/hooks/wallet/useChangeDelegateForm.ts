@@ -3,13 +3,15 @@ import { useForm } from 'react-hook-form';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
-    ChangeDelegateContextValues,
-    ChangeDelegateFormState,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
     selectVotingDelegationOption,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import {
+    ChangeDelegateFormState,
+    PrecomposedTransactionFinal,
+    SelectedAccountLoaded,
+} from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
@@ -18,6 +20,7 @@ import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
+import { ChangeDelegateContextValues } from '../../components/wallet/stakeForm/StakeForm';
 
 export const ChangeDelegateFormContext = createContext<ChangeDelegateContextValues | null>(null);
 ChangeDelegateFormContext.displayName = 'ChangeDelegateFormContext';

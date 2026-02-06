@@ -13,7 +13,6 @@ import {
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
 import {
-    ComposeActionContext,
     VotingDelegationOption,
     selectCardanoPoolsInfo,
     selectSelectedDevice,
@@ -22,6 +21,7 @@ import {
     Account,
     CardanoAction,
     CardanoPoolInfo,
+    ComposeActionContext,
     EstimatedFee,
     ExternalOutput,
     PrecomposedTransaction,

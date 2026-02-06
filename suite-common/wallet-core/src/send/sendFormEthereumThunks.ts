@@ -11,6 +11,7 @@ import {
 import {
     Account,
     AddressDisplayOptions,
+    ComposeActionContext,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -43,7 +44,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,

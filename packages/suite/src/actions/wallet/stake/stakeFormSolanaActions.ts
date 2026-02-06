@@ -20,11 +20,12 @@ import {
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Account,
     AddressDisplayOptions,
     BlockchainNetworks,
+    ComposeActionContext,
     EstimatedFee,
     ExternalOutput,
     PrecomposedLevels,

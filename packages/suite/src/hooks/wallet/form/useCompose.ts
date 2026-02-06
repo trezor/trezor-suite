@@ -5,11 +5,9 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     ComposeActionContext,
-    composeSendFormTransactionFeeLevelsThunk,
-} from '@suite-common/wallet-core';
-import {
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,

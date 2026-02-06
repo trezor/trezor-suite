@@ -6,7 +6,6 @@ import { fromWei } from 'web3-utils';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
-    StakeContextValues,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
@@ -35,6 +34,7 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
 import { useCardanoStaking } from './useCardanoStaking';
+import { StakeContextValues } from '../../components/wallet/stakeForm/StakeContext';
 
 export const StakeFormContext = createContext<StakeContextValues | null>(null);
 StakeFormContext.displayName = 'StakeFormContext';

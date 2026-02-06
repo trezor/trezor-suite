@@ -29,6 +29,7 @@ import {
 import {
     Account,
     PrecomposedLevels,
+    StakingLimits,
     StakingPoolExtended,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
@@ -77,15 +78,6 @@ export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) ||
     isSupportedSolStakingNetworkSymbol(symbol) ||
     isSupportedAdaStakingNetworkSymbol(symbol);
-
-export type StakingLimits = {
-    MIN_AMOUNT_FOR_STAKING: BigNumber;
-    MAX_AMOUNT_FOR_STAKING: BigNumber;
-    MIN_FOR_WITHDRAWALS: BigNumber;
-    MIN_BALANCE_FOR_FEE_BUFFER: BigNumber;
-    MIN_BALANCE_FOR_STAKING: BigNumber;
-    MIN_AMOUNT_FOR_STAKING_DASHBOARD: BigNumber;
-};
 
 export const getStakingLimitsByNetworkSymbol = (
     symbol: NetworkSymbol | undefined,
