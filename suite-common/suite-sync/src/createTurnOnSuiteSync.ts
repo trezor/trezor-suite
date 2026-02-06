@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { quotaManagerEnabledUpdated } from '@suite-common/suite-sync-quota-manager';
 import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
@@ -20,6 +21,12 @@ export const createTurnOnSuiteSync =
         }
 
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: true }));
+
+        deps.dispatch(
+            quotaManagerEnabledUpdated({
+                isEnabled: true,
+            }),
+        );
 
         if (deviceStaticSessionId !== undefined) {
             const result = await deps.ensureWalletSuiteSyncOn({
