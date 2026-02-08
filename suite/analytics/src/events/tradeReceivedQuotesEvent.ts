@@ -7,8 +7,8 @@ type Attributes = {
     count: AttributeDef<number>;
 };
 
-export const tradingReceivedQuotesEvent: EventDef<Attributes, EventType.TradingReceivedQuotes> = {
-    name: EventType.TradingReceivedQuotes,
+export const tradeReceivedQuotesEvent: EventDef<Attributes, EventType.TradeReceivedQuotes> = {
+    name: EventType.TradeReceivedQuotes,
     descriptionTrigger: 'Quotes for buy/sell/swap are fetched',
     changelog: [{ version: '25.10.0', notes: 'added' }],
 

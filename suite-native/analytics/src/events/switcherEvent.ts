@@ -12,8 +12,8 @@ type Attributes = {
     action: AttributeDef<DeviceManagerAction>;
 };
 
-export const deviceManagerClickEvent: EventDef<Attributes, EventType.DeviceManagerClick> = {
-    name: EventType.DeviceManagerClick,
+export const switcherEvent: EventDef<Attributes, EventType.Switcher> = {
+    name: EventType.Switcher,
     descriptionTrigger: 'Click on something within device manager / switcher',
     changelog: [{ version: '23.11.1', notes: 'added' }],
 

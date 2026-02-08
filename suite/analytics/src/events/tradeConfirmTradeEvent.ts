@@ -6,8 +6,8 @@ type Attributes = {
     action: AttributeDef<'buy' | 'sell' | 'exchange'>;
 };
 
-export const tradeConfirmTradeEvent: EventDef<Attributes, EventType.TradingConfirmTrade> = {
-    name: EventType.TradingConfirmTrade,
+export const tradeConfirmTradeEvent: EventDef<Attributes, EventType.TradeConfirmTrade> = {
+    name: EventType.TradeConfirmTrade,
     descriptionTrigger:
         'Fired on every `Finish transaction` click in the Trade section, regardless of the state of the response from the API.',
     changelog: [

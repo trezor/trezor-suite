@@ -8,8 +8,8 @@ type Attributes = {
     action: AttributeDef<EmptyDashboardAction>;
 };
 
-export const emptyDashboardClickEvent: EventDef<Attributes, EventType.EmptyDashboardClick> = {
-    name: EventType.EmptyDashboardClick,
+export const emptyDashboardActionEvent: EventDef<Attributes, EventType.EmptyDashboardAction> = {
+    name: EventType.EmptyDashboardAction,
     descriptionTrigger: 'Click on something on crossroads screen',
     changelog: [{ version: '23.11.1', notes: 'added' }],
 

@@ -6,8 +6,8 @@ type Attributes = {
     platform: AttributeDef<'ios' | 'android'>;
 };
 
-export const promoMobileEvent: EventDef<Attributes, EventType.GetMobileApp> = {
-    name: EventType.GetMobileApp,
+export const promoMobileEvent: EventDef<Attributes, EventType.PromoMobile> = {
+    name: EventType.PromoMobile,
     descriptionTrigger: 'A user clicks the mobile app promo banner',
     changelog: [{ version: '23.5.2', notes: 'added' }],
 

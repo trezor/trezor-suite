@@ -16,8 +16,8 @@ type Attributes = {
     exchangeName?: AttributeDef<string>;
 };
 
-export const tradeBuyEvent: EventDef<Attributes, EventType.TradingBuy> = {
-    name: EventType.TradingBuy,
+export const tradeBuyEvent: EventDef<Attributes, EventType.TradeBuy> = {
+    name: EventType.TradeBuy,
     descriptionTrigger: 'fired on every step during the buy flow',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 

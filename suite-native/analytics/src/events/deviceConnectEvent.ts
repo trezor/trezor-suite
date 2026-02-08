@@ -14,8 +14,8 @@ type Attributes = {
     connectionType: AttributeDef<'cable' | 'bluetooth'>;
 };
 
-export const connectDeviceEvent: EventDef<Attributes, EventType.ConnectDevice> = {
-    name: EventType.ConnectDevice,
+export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> = {
+    name: EventType.DeviceConnect,
     descriptionTrigger: 'When device is successfully connected and authorized.',
     changelog: [
         { version: '25.5.1', notes: 'Added attribute: mode' },

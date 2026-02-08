@@ -16,8 +16,11 @@ type Attributes = {
     error?: AttributeDef<string | undefined>;
 };
 
-export const firmwareUpdateFinishedEvent: EventDef<Attributes, EventType.FirmwareUpdateFinished> = {
-    name: EventType.FirmwareUpdateFinished,
+export const firmwareFirmwareUpdateFinishedEvent: EventDef<
+    Attributes,
+    EventType.FirmwareFirmwareUpdateFinished
+> = {
+    name: EventType.FirmwareFirmwareUpdateFinished,
     descriptionTrigger: 'Update finished - either success or error',
     changelog: [{ version: '25.5.1', notes: 'Added attribute - @location (fw)' }],
     attributes: {

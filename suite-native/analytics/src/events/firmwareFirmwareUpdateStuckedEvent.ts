@@ -17,8 +17,11 @@ type Attributes = {
     stuckedType: AttributeDef<FirmwareUpdateStuckedState>;
 };
 
-export const firmwareUpdateStuckedEvent: EventDef<Attributes, EventType.FirmwareUpdateStucked> = {
-    name: EventType.FirmwareUpdateStucked,
+export const firmwareFirmwareUpdateStuckedEvent: EventDef<
+    Attributes,
+    EventType.FirmwareFirmwareUpdateStucked
+> = {
+    name: EventType.FirmwareFirmwareUpdateStucked,
     descriptionTrigger:
         'On displayed stucked button, user clicked it and displayed part 1 or part 2 or modal that should help resolve that',
     changelog: [{ version: '25.1.2', notes: 'Added' }],

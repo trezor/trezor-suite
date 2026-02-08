@@ -16,8 +16,8 @@ type Attributes = {
     >;
 };
 
-export const tradeStatusEvent: EventDef<Attributes, EventType.TradingStatus> = {
-    name: EventType.TradingStatus,
+export const tradeStatusEvent: EventDef<Attributes, EventType.TradeStatus> = {
+    name: EventType.TradeStatus,
     descriptionTrigger: 'fired on final trading step when status changes',
     changelog: [{ version: '25.4.1', notes: 'added' }],
 
