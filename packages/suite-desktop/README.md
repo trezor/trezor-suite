@@ -14,7 +14,7 @@ Both `dependencies` and `devDependencies` defined in `package.json` of this pack
 yarn workspace @trezor/suite-desktop dev
 ```
 
-[Read more about development and debugging](../../docs/packages/suite-desktop.md)
+[Read more about development and debugging](../../docs/packages/suite-desktop/index.md)
 
 ---
 
@@ -82,7 +82,7 @@ Location of data directory depends on platform:
 | macOS | `~/Library/Application Support/` |
 | Windows | `C:\Users\<user>\AppData\Roaming\` |
 
-Name of data directory [depends on environment](../../docs/packages/suite-desktop.md/#app-id-and-name-by-environment) and it's `@trezor/suite-desktop`, `@trezor/suite-desktop-dev` or `@trezor/suite-desktop-local`.
+Name of data directory [depends on environment](../../docs/packages/suite-desktop/index.md/#app-id-and-name-by-environment) and it's `@trezor/suite-desktop`, `@trezor/suite-desktop-dev` or `@trezor/suite-desktop-local`.
 
 You can open current user data dir directly in Suite debug settings via the link in "Wipe app data" description.
 
