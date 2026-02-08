@@ -33,6 +33,8 @@ Same concept (user data separated by environment) works on web out of the box (s
 
 Note that locally built Suite is "development (sldev)", while "local dev server" is for `yarn suite:dev:desktop`.
 
+If you want to run built Suite app with fresh data on every start (similarly to running Suite Web in an anonymous browser window), follow [these instructions](./anon-mode.md).
+
 ## Debugging
 
 See separate documentation for [debugging](./debugging.md) with debugging instructions.
