@@ -1,5 +1,12 @@
-import { AppUpdateEventStatus } from './constants';
-
+export enum AppUpdateEventStatus {
+    Available = 'available',
+    Closed = 'closed',
+    Download = 'download',
+    Downloaded = 'downloaded',
+    Error = 'error',
+    InstallAndRestart = 'install-and-restart',
+    InstallOnQuit = 'install-on-quit',
+}
 export type OnboardingAnalytics = {
     startTime: number;
     firmware: 'install' | 'update' | 'skip' | 'up-to-date';

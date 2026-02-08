@@ -19,8 +19,8 @@ type Attributes = {
     contractAddress?: AttributeDef<string>;
 };
 
-export const tradeNavigateEvent: EventDef<Attributes, EventType.TradingNavigate> = {
-    name: EventType.TradingNavigate,
+export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> = {
+    name: EventType.TradeNavigate,
     descriptionTrigger: 'fired on navigating from any trading button to the trading forms',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 

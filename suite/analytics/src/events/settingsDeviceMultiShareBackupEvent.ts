@@ -8,9 +8,9 @@ type Attributes = {
 
 export const settingsDeviceMultiShareBackupEvent: EventDef<
     Attributes,
-    EventType.SettingsMultiShareBackup
+    EventType.SettingsDeviceMultiShareBackup
 > = {
-    name: EventType.SettingsMultiShareBackup,
+    name: EventType.SettingsDeviceMultiShareBackup,
     descriptionTrigger:
         'When Multi share flow is started/abandoned/finished or if learn-more button is clicked',
     changelog: [{ version: '24.6.1', notes: 'added' }],

@@ -14,8 +14,11 @@ type Attributes = {
     location: AttributeDef<FirmwareUpdateLocation>;
 };
 
-export const firmwareUpdateCancelEvent: EventDef<Attributes, EventType.FirmwareUpdateCancel> = {
-    name: EventType.FirmwareUpdateCancel,
+export const firmwareFirmwareUpdateCancelEvent: EventDef<
+    Attributes,
+    EventType.FirmwareFirmwareUpdateCancel
+> = {
+    name: EventType.FirmwareFirmwareUpdateCancel,
     descriptionTrigger: 'User cancel FW update confirmation on device or in app.',
     changelog: [{ version: '25.1.2', notes: 'added' }],
 

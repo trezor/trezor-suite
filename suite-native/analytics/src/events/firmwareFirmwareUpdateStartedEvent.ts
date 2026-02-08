@@ -15,8 +15,11 @@ type Attributes = {
     startType: AttributeDef<FirmwareUpdateStartType>;
 };
 
-export const firmwareUpdateStartedEvent: EventDef<Attributes, EventType.FirmwareUpdateStarted> = {
-    name: EventType.FirmwareUpdateStarted,
+export const firmwareFirmwareUpdateStartedEvent: EventDef<
+    Attributes,
+    EventType.FirmwareFirmwareUpdateStarted
+> = {
+    name: EventType.FirmwareFirmwareUpdateStarted,
     descriptionTrigger: 'On starting update firmware flow or tapping Retry button.',
     changelog: [{ version: '25.1.2', notes: 'added' }],
 

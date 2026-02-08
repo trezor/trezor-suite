@@ -27,8 +27,8 @@ type Attributes = {
     exchangeName?: AttributeDef<string>;
 };
 
-export const tradeApprovalEvent: EventDef<Attributes, EventType.TradingExchangeApproval> = {
-    name: EventType.TradingExchangeApproval,
+export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> = {
+    name: EventType.TradeApproval,
     descriptionTrigger: 'user interacts with an approve/revoke DEX swap transaction on EVM chains',
     changelog: [{ version: '25.9.0', notes: 'added' }],
 

@@ -31,8 +31,8 @@ type Attributes = {
     rateType?: AttributeDef<string>;
 };
 
-export const tradeExchangeEvent: EventDef<Attributes, EventType.TradingExchange> = {
-    name: EventType.TradingExchange,
+export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> = {
+    name: EventType.TradeExchange,
     descriptionTrigger: 'fired on every step during the exchange flow',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 

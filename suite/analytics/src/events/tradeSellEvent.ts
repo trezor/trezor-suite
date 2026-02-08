@@ -17,8 +17,8 @@ type Attributes = {
     fractionButton?: AttributeDef<string>;
 };
 
-export const tradeSellEvent: EventDef<Attributes, EventType.TradingSell> = {
-    name: EventType.TradingSell,
+export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
+    name: EventType.TradeSell,
     descriptionTrigger: 'fired on every step during the sell flow',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 
