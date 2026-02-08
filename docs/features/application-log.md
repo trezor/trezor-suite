@@ -53,6 +53,6 @@ Some of the redux actions are modified even before they are logged. For example,
 
 There is a page in Notion [Engineering/Suite/Application Log](https://www.notion.so/satoshilabs/Application-log-1908fc91f1564da480a55ea487fdd6e6) where the Support Team can add requests to extend the application log either by new items to App & Platform information or by logging new redux action / extending current ones.
 
-## New redux action
+## New redux action
 
 Redux action name has to be added to `logsMiddleware.ts` and if it contains sensitive information, it should be redacted using `redactAction` method in `logsUtils.ts`.

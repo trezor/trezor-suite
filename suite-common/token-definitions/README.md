@@ -56,7 +56,7 @@ Scripts:
 ]
 ```
 
-## Naming
+## Naming
 
 - Token definitions: include both coin and nft definitions
 - Coin definitions: contain just tokens ERC20, SPL and Stellar classic assets (`code-issuer` format)
