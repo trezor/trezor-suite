@@ -36,6 +36,7 @@
     - [@trezor/suite-desktop](./packages/suite-desktop/index.md)
         - [debugging](./packages/suite-desktop/debugging.md)
         - [runtime flags](./packages/suite-desktop/runtime-flags.md)
+        - [anonymous mode](./packages/suite-desktop/anon-mode.md)
     - [creating new package](./packages/creating-packages.md)
 - [Features](./features/index.md)
     - [coin handler](./features/protocols/coin-handler.md)
