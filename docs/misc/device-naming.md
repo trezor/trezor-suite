@@ -1,4 +1,4 @@
-# Trezor device naming in codebase
+# Trezor device naming in codebase
 
 Development/Internal name consists of 4 keys
 <`product_class`> <`platform`> <`feature_class`> <`generation`>
