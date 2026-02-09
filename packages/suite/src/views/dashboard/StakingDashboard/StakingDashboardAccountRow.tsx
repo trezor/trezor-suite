@@ -99,7 +99,6 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
         dispatch(
             goto('wallet-trading-buy', {
-                preserveParams: true,
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -122,7 +121,6 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const navigateToStaking = () => {
         dispatch(
             goto('wallet-staking', {
-                preserveParams: true,
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
