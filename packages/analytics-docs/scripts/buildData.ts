@@ -62,6 +62,19 @@ const attributeTypesByEventName = extractAttributeTypesByEventName({
     eventFileGlobs,
 });
 
+// eslint-disable-next-line no-console
+console.log('[analytics-docs] attributeTypes events:', Object.keys(attributeTypesByEventName).length);
+// eslint-disable-next-line no-console
+console.log(
+    '[analytics-docs] attributeTypes sample:',
+    Object.keys(attributeTypesByEventName).slice(0, 5),
+);
+// eslint-disable-next-line no-console
+console.log(
+    '[analytics-docs] normalizedEvents sample:',
+    Object.keys(normalizedEvents).slice(0, 5),
+);
+
 let filled = 0;
 let missing = 0;
 
