@@ -107,7 +107,7 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
                         break;
 
                     case WebBrowserResultType.LOCKED:
-                        dispatchLastErrorMessage(translate('moduleTrading.webView.browserLocked'));
+                        dispatchLastErrorMessage(translate('moduleTrading.browser.browserLocked'));
                         break;
 
                     default:
@@ -115,7 +115,7 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
                 }
             } catch (error: unknown) {
                 console.error('Error opening web browser:', error);
-                dispatchLastErrorMessage(translate('moduleTrading.webView.browserError'));
+                dispatchLastErrorMessage(translate('moduleTrading.browser.browserError'));
             }
         },
         [

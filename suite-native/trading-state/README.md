@@ -8,7 +8,7 @@
 
 ```mermaid
 graph TD
-    inactive -- on webview open --> window_opened
+    inactive -- on browser open --> window_opened
 
     window_opened -- on trade close --> inactive
     window_opened -- on X press --> window_closed_incomplete

@@ -89,7 +89,7 @@ describe('useBrowserAuth', () => {
         });
 
         it.each([WebBrowserResultType.CANCEL, WebBrowserResultType.DISMISS])(
-            'should call handleWebViewClosed when openBrowserAsync resolves with %s',
+            'should call handleBrowserClosed when openBrowserAsync resolves with %s',
             async type => {
                 mockOpenBrowserAsync.mockResolvedValue({ type });
                 const { result } = renderUseBrowserAuth();
@@ -127,7 +127,7 @@ describe('useBrowserAuth', () => {
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
             expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
-                getTranslation('moduleTrading.webView.browserLocked'),
+                getTranslation('moduleTrading.browser.browserLocked'),
             );
         });
 
@@ -144,7 +144,7 @@ describe('useBrowserAuth', () => {
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
             expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
-                getTranslation('moduleTrading.webView.browserError'),
+                getTranslation('moduleTrading.browser.browserError'),
             );
             expect(errorSpy).toHaveBeenCalledWith('Error opening web browser:', error);
         });
@@ -178,7 +178,7 @@ describe('useBrowserAuth', () => {
             expect(mockDismissBrowser).not.toHaveBeenCalled();
         });
 
-        it('should call dismissBrowser and handleWebViewSuccess for sell tradingType when url matches closeCallbackUrl ', () => {
+        it('should call dismissBrowser and handleBrowserSuccess for sell tradingType when url matches closeCallbackUrl ', () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
             const { result } = renderUseBrowserAuth();
@@ -194,7 +194,7 @@ describe('useBrowserAuth', () => {
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
 
-        it('should call handleWebViewSuccess and set tradeToBeOpened for buy ', () => {
+        it('should call handleBrowserSuccess and set tradeToBeOpened for buy ', () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
             const { result } = renderUseBrowserAuth('buy');

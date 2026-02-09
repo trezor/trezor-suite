@@ -337,8 +337,8 @@ describe('useSellFlow', () => {
         });
     });
 
-    describe('handleWebview', () => {
-        it('should navigate to webview when processResponseData is called with form data', async () => {
+    describe('handleBrowser', () => {
+        it('should navigate to browser when processResponseData is called with form data', async () => {
             const trade = sellQuotes[0];
 
             act(() => {

@@ -25,7 +25,7 @@ describe('TradeDetailHeader', () => {
 
     const renderHeader = (orderId: string, trades: TradingTransaction[] = []) =>
         renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={orderId} onOpenedWebview={jest.fn()} />,
+            <TradeDetailHeader orderId={orderId} onOpenedBrowser={jest.fn()} />,
             { preloadedState: createPreloadedState(trades) },
         );
 
