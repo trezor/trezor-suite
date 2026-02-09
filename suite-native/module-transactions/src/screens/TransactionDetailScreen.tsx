@@ -11,7 +11,6 @@ import {
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -47,11 +46,7 @@ export const TransactionDetailScreen = ({
         selectExplorer(state, transaction?.symbol),
     );
     const isPending = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionPending(
-            state,
-            txid as AccountKey, // Todo: I think this is a bug
-            accountKey,
-        ),
+        selectIsTransactionPending(state, accountKey, txid),
     );
 
     const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
