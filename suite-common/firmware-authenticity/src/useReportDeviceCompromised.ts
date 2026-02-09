@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFirmwareUpdateSource } from '@suite-common/firmware';
+import { selectFirmwareChannel } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
@@ -35,7 +35,7 @@ const useCommonData = ({ device }: CommonProps) => {
 const useReportRevisionCheck = ({ device }: CommonProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const firmwareSource = useSelector(selectFirmwareUpdateSource);
+    const firmwareSource = useSelector(selectFirmwareChannel);
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -67,7 +67,7 @@ const useReportRevisionCheck = ({ device }: CommonProps) => {
 const useReportHashCheck = ({ device }: CommonProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const firmwareSource = useSelector(selectFirmwareUpdateSource);
+    const firmwareSource = useSelector(selectFirmwareChannel);
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;

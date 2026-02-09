@@ -16,7 +16,7 @@ describe('TrezorConnect Actions', () => {
             preloadedState: {
                 wallet: { settings: { enabledNetworks: [] } },
                 device: { selectedDevice: undefined, devices: [] },
-                firmware: { firmwareUpdateSource: 'production' },
+                firmware: { firmwareChannel: 'production' },
                 messageSystem: messageSystemInitialState,
             },
         });

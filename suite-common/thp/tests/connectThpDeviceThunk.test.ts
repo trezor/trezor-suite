@@ -28,7 +28,7 @@ const initialFirmwareState: FirmwareUpdateState = {
     targetType: undefined,
     uiEvent: undefined,
     useDevkit: false,
-    firmwareUpdateSource: 'production',
+    firmwareChannel: 'production',
     switchFirmwareType: false,
 };
 

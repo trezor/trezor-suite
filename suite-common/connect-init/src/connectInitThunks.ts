@@ -1,4 +1,4 @@
-import { selectFirmwareUpdateSource } from '@suite-common/firmware/src/firmwareReducer';
+import { selectFirmwareChannel } from '@suite-common/firmware/src/firmwareReducer';
 import {
     Feature,
     parseTimeoutThresholdsPerModel,
@@ -55,7 +55,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
-        const getFirmwareUpdateSource = () => selectFirmwareUpdateSource(getState());
+        const getFirmwareChannel = () => selectFirmwareChannel(getState());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -196,7 +196,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 thp,
                 debug: showConnectLogs,
                 firmwareHashCheckTimeouts,
-                firmwareUpdateSource: getFirmwareUpdateSource(),
+                firmwareChannel: getFirmwareChannel(),
             });
         } catch (error) {
             let formattedError: string;

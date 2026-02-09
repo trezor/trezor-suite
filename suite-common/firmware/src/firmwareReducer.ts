@@ -11,7 +11,7 @@ import {
     FirmwareType,
     UI,
 } from '@trezor/connect';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import { firmwareActions } from './firmwareActions';
 
@@ -28,7 +28,7 @@ type FirmwareUpdateCommon = {
     targetType?: FirmwareType;
     useDevkit: boolean;
     uiEvent?: FirmwareUpdateUiEvent;
-    firmwareUpdateSource: FirmwareUpdateSource;
+    firmwareChannel: FirmwareChannel;
     switchFirmwareType: boolean;
 };
 
@@ -49,7 +49,7 @@ const initialState: FirmwareUpdateState = {
     targetType: undefined,
     useDevkit: false,
     uiEvent: undefined,
-    firmwareUpdateSource: 'production',
+    firmwareChannel: 'production',
     switchFirmwareType: false, // NOTE: flag that indicates when the user intents to change the type of FW universal -> bitcoin-only
 };
 
@@ -59,7 +59,7 @@ type RootState = {
 
 type StorageActionPayload = {
     firmware: {
-        firmwareUpdateSource: FirmwareUpdateSource;
+        firmwareChannel: FirmwareChannel;
     };
 };
 
@@ -68,8 +68,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(
             extra.actionTypes.storageLoad,
             (state, { payload }: PayloadAction<StorageActionPayload>) => {
-                if (payload.firmware)
-                    state.firmwareUpdateSource = payload.firmware.firmwareUpdateSource;
+                if (payload.firmware) state.firmwareChannel = payload.firmware.firmwareChannel;
             },
         )
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
@@ -90,7 +89,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(firmwareActions.resetReducer, state => ({
             ...initialState,
-            firmwareUpdateSource: state.firmwareUpdateSource,
+            firmwareChannel: state.firmwareChannel,
             useDevkit: state.useDevkit,
         }))
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
@@ -99,8 +98,8 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
             state.cachedDevice = payload;
         })
-        .addCase(firmwareActions.setFirmwareUpdateSource, (state, { payload }) => {
-            state.firmwareUpdateSource = payload;
+        .addCase(firmwareActions.setFirmwareChannel, (state, { payload }) => {
+            state.firmwareChannel = payload;
         })
         .addMatcher<FirmwareUpdateUiEvent>(
             (action: FirmwareUpdateUiEvent) =>
@@ -120,7 +119,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
 
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
-export const selectFirmwareUpdateSource = (state: RootState) => state.firmware.firmwareUpdateSource;
+export const selectFirmwareChannel = (state: RootState) => state.firmware.firmwareChannel;
 export const selectSwitchFirmwareType = (state: RootState) => state.firmware.switchFirmwareType;
 
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
