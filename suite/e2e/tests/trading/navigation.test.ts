@@ -24,13 +24,13 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
                 await dashboardPage.buyButton('btc').click();
-                await tradingPage.verifyBuyFormOpened(/BTC/);
+                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
             });
 
             await test.step('Buy from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await tradingPage.buyButton.click();
-                await tradingPage.verifyBuyFormOpened(/BTC/);
+                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
             });
 
             await test.step('Buy from global header', async () => {
@@ -40,18 +40,18 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await walletPage.walletExtraDropDown.click();
                 }
                 await walletPage.openTradingGlobalButton.click();
-                await tradingPage.verifyBuyFormOpened(/BTC|ETH|LTC/);
+                await tradingPage.verifyBuyFormOpened(/Bitcoin|Ethereum|Litecoin/);
             });
 
             await test.step('Buy from empty account', async () => {
                 await walletPage.openAccount({ symbol: 'ltc' });
                 await walletPage.buyButton.click();
-                await tradingPage.verifyBuyFormOpened(/LTC/);
+                await tradingPage.verifyBuyFormOpened(/Litecoin/);
             });
 
             await test.step('Buy from token', async () => {
                 await walletPage.openBuyTradingOfToken('eth', 'TrueUSD');
-                await tradingPage.verifyBuyFormOpened(/TUSD/);
+                await tradingPage.verifyBuyFormOpened(/TrueUSD/);
             });
 
             // SELL
@@ -59,7 +59,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await walletPage.sellButton.click();
-                await tradingPage.verifySellFormOpened(/BTC/);
+                await tradingPage.verifySellFormOpened(/Bitcoin/);
             });
 
             await test.step('Sell from token', async () => {
@@ -67,7 +67,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
                 // We cannot reproduce it manually, so we are using retry workaround to stabilize automation
                 await expect(async () => {
                     await walletPage.openSellTradingOfToken('eth', 'USD Coin');
-                    await tradingPage.verifySellFormOpened(/USDC/);
+                    await tradingPage.verifySellFormOpened(/USD Coin/);
                 }).toPass({ timeout: 15_000 });
             });
 
@@ -75,18 +75,18 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Swap from Global header', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openSwapGlobalButton.click();
-                await tradingPage.verifySwapFormOpened(/BTC|ETH|LTC/);
+                await tradingPage.verifySwapFormOpened(/Bitcoin|Ethereum|Litecoin/);
             });
 
             await test.step('Swap from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await walletPage.swapButton.click();
-                await tradingPage.verifySwapFormOpened(/BTC/);
+                await tradingPage.verifySwapFormOpened(/Bitcoin/);
             });
 
             await test.step('Swap from token', async () => {
                 await walletPage.openSwapTradingOfToken('eth', 'USD Coin');
-                await tradingPage.verifySwapFormOpened(/USDC/);
+                await tradingPage.verifySwapFormOpened(/USD Coin/);
             });
         },
     );
