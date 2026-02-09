@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-02-03T00:00:00+00:00",
-    "sequence": 132,
+    "timestamp": "2026-02-09T00:00:00+00:00",
+    "sequence": 133,
     "actions": [
         {
             "conditions": [
@@ -948,43 +948,6 @@
                     }
                 },
                 "context": { "domain": ["accounts.coinjoin", "accounts.btc.coinjoin"] }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "base": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "4a43c6a8-8003-432f-ad56-aae90243e1ac",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "warning",
-                "category": ["banner"],
-                "content": {
-                    "en": "We’re having temporary syncing issues with the Base network, which may cause delays or errors. Your Base assets are completely safe. Thanks for your patience.",
-                    "es": "Estamos teniendo problemas temporales de sincronización con la red Base, lo que puede causar retrasos o errores. Tus activos de Base están completamente seguros. Gracias por tu paciencia.",
-                    "cs": "Máme dočasné problémy se synchronizací sítě Base, což může způsobit zpoždění nebo chyby. Vaše prostředky v Base jsou zcela v bezpečí. Děkujeme za trpělivost.",
-                    "ru": "У нас возникли временные проблемы с синхронизацией сети Base, что может вызвать задержки или ошибки. Ваши активы Base находятся в полной безопасности. Спасибо за терпение.",
-                    "ja": "Base ネットワークで一時的な同期の問題が発生しており、遅延やエラーが発生する可能性があります。お客様の Base 資産は完全に安全です。しばらくお待ちください。",
-                    "hu": "Átmeneti szinkronizálási problémáink vannak a(z) Base hálózattal, ami késéseket vagy hibákat okozhat. A(z) Base eszközei teljes biztonságban vannak. Köszönjük türelmét.",
-                    "it": "Stiamo riscontrando problemi temporanei di sincronizzazione con la rete Base, che potrebbero causare ritardi o errori. I tuoi asset Base sono completamente al sicuro. Grazie per la pazienza.",
-                    "fr": "Nous rencontrons des problèmes de synchronisation temporaires avec le réseau Base, ce qui peut entraîner des retards ou des erreurs. Vos actifs Base sont en parfaite sécurité. Merci de votre patience.",
-                    "de": "Wir haben vorübergehende Synchronisierungsprobleme mit dem Base-Netzwerk, was zu Verzögerungen oder Fehlern führen kann. Deine Base-Assets sind vollkommen sicher. Danke für deine Geduld.",
-                    "tr": "Base ağıyla ilgili geçici senkronizasyon sorunları yaşıyoruz, bu da gecikmelere veya hatalara neden olabilir. Base varlıklarınız tamamen güvendedir. Sabrınız için teşekkürler.",
-                    "pt": "Estamos enfrentando problemas temporários de sincronização com a rede Base, o que pode causar atrasos ou erros. Seus ativos Base estão totalmente seguros. Obrigado pela sua paciência.",
-                    "uk": "У нас виникли тимчасові проблеми з синхронізацією мережі Base, що може спричинити затримки або помилки. Ваші активи Base у цілковитій безпеці. Дякуємо за терпіння."
-                }
             }
         },
         {
