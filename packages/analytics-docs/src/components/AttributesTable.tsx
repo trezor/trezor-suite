@@ -33,10 +33,18 @@ export function AttributesTable({ attributes }: { attributes: Record<string, Att
                 <Table>
                     <Table.Header>
                         <Table.Row>
-                            <Table.Cell>Attribute</Table.Cell>
-                            <Table.Cell>Type</Table.Cell>
-                            <Table.Cell>Version</Table.Cell>
-                            <Table.Cell>Description</Table.Cell>
+                            <Table.Cell>
+                                <Text typographyStyle="label">Attribute</Text>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text typographyStyle="label">Type</Text>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text typographyStyle="label">Version</Text>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Text typographyStyle="label">Description</Text>
+                            </Table.Cell>
                             <Table.Cell></Table.Cell>
                         </Table.Row>
                     </Table.Header>

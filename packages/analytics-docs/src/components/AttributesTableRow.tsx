@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+
 import { Box, Column, Row, Table, Text } from '@trezor/components';
 
 import { AddedBadge } from './AddedBadge';
@@ -7,9 +9,99 @@ import { useChangelogButton } from '../useChangelogButton';
 import { Markdown } from './Markdown';
 import type { AttributeDoc } from '../types';
 
+const Syntax = styled.span`
+    * {
+        white-space: pre;
+        font-family: monospace;
+        font-size: inherit;
+    }
+`;
+
 type AttributesTableRowProps = {
     k: string;
     attributes: Record<string, AttributeDoc>;
+};
+
+const formatRuntimeType = (t?: string) => {
+    if (!t) return '—';
+    const normalized = t.replace(/\r\n/g, '\n').trim();
+    if (!normalized) return '—';
+
+    if (normalized.includes('\n| ')) return normalized;
+
+    const parts = normalized.split(' | ');
+    if (parts.length > 2) return parts.join('\n| ');
+
+    return normalized;
+};
+
+const renderRuntimeTypeLine = (line: string) => {
+    const parts: Array<string | JSX.Element> = [];
+    const re =
+        /'([^'\\]|\\.)*'|"([^"\\]|\\.)*"|\b(string|number|boolean|bigint|symbol|null|undefined|unknown|any|never|object)\b|\b\d+(?:\.\d+)?\b/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = re.exec(line)) !== null) {
+        const [token] = match;
+        if (match.index > lastIndex) {
+            parts.push(line.slice(lastIndex, match.index));
+        }
+        if (token.startsWith("'") || token.startsWith('"')) {
+            parts.push(
+                <span key={`${match.index}-${token}`} style={{ color: '#6A8759' }}>
+                    {token}
+                </span>,
+            );
+        } else if (
+            token === 'string' ||
+            token === 'number' ||
+            token === 'boolean' ||
+            token === 'bigint' ||
+            token === 'symbol' ||
+            token === 'null' ||
+            token === 'undefined' ||
+            token === 'unknown' ||
+            token === 'any' ||
+            token === 'never' ||
+            token === 'object'
+        ) {
+            parts.push(
+                <span key={`${match.index}-${token}`} style={{ color: '#CC7832' }}>
+                    {token}
+                </span>,
+            );
+        } else if (/^\d/.test(token)) {
+            parts.push(
+                <span key={`${match.index}-${token}`} style={{ color: '#6897BB' }}>
+                    {token}
+                </span>,
+            );
+        } else {
+            parts.push(token);
+        }
+        lastIndex = match.index + token.length;
+    }
+
+    if (lastIndex < line.length) {
+        parts.push(line.slice(lastIndex));
+    }
+
+    return parts;
+};
+
+const renderRuntimeType = (t?: string) => {
+    const formatted = formatRuntimeType(t);
+    if (formatted === '—') return '—';
+
+    const lines = formatted.split('\n');
+
+    return lines.map((line, idx) => (
+        <span key={`${idx}-${line}`}>
+            {renderRuntimeTypeLine(line)}
+            {idx < lines.length - 1 && <br />}
+        </span>
+    ));
 };
 
 export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) => {
@@ -26,8 +118,8 @@ export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) =
                     </Text>
                 </Table.Cell>
                 <Table.Cell>
-                    <Text typographyStyle="label" isMonospaced>
-                        <pre>{attribute.runtimeType}</pre>
+                    <Text typographyStyle="label">
+                        <Syntax>{renderRuntimeType(attribute.runtimeType)}</Syntax>
                     </Text>
                 </Table.Cell>
 

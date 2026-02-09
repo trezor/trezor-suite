@@ -6,8 +6,8 @@ type AddedBadgeProps = {
 
 export const AddedBadge = ({ children }: AddedBadgeProps) => (
     <Tooltip content="Added in version">
-        <Badge intent="brand" size="small">
-            added {children}
+        <Badge intent="brand" size="small" iconLeft="plus">
+            {children}
         </Badge>
     </Tooltip>
 );
