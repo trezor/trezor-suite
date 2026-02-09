@@ -1,4 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
@@ -28,10 +27,9 @@ const preloadedStateWithTrezor = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
-const isCIRun = !!process.env.GITHUB_ACTION;
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 
-conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
+describe('Trade Exchange [@androidOnly]', () => {
     describe('with portfolio tracker [@noDevice]', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
@@ -44,7 +42,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
     });
 
-    conditionalDescribe(isCIRun || passphrase, 'with device disconnected [@fixT3W1]', () => {
+    describe('with device disconnected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(
@@ -84,7 +82,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
     });
 
-    conditionalDescribe(isCIRun || passphrase, 'with device connected [@fixT3W1]', () => {
+    describe('with device connected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(

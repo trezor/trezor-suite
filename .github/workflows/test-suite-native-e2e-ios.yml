@@ -144,24 +144,11 @@ jobs:
           GITHUB_REPORTER_VERBOSE: false
           RELEASE_BUILD: ${{ env.release_build }}
           GITHUB_ACTION: true
-        run: |
-          npx detox clean-framework-cache && npx detox build-framework-cache
-          yarn test:e2e ios.sim.release --headless
-
-      - name: Upload results to Currents.dev
-        if: ${{ ! cancelled() }}
-        env:
           CURRENTS_PROJECT_ID: LjEjiV
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-        working-directory: ./suite-native/app
         run: |
-          npx currents convert \
-            --input-format=junit \
-            --input-file=./reports/junit-report.xml \
-            --output-dir=./currents \
-            --framework=postman \
-            --framework-version=v11.2.0
-          npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
+          npx detox clean-framework-cache && npx detox build-framework-cache
+          yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --headless
 
       - name: "Store test artifacts"
         uses: actions/upload-artifact@v4

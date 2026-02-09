@@ -1,5 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
-
 import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
@@ -13,26 +11,22 @@ const preloadedStateT3T1 = preparePreloadedReduxState(
     regtestDiscoveryFinishedStateT3T1,
 );
 
-conditionalDescribe(
-    device.getPlatform() === 'android',
-    'FW update required [@specificModel]',
-    () => {
-        beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateT3T1 } });
-            await prepareTrezorEmulator({
-                version: '2.8.9',
-                args: { isFirmwareUpdateEnabled: true },
-            });
+describe('FW update required [@androidOnly @T3T1]', () => {
+    beforeEach(async () => {
+        await openApp({ args: { preloadedState: preloadedStateT3T1 } });
+        await prepareTrezorEmulator({
+            version: '2.8.9',
+            args: { isFirmwareUpdateEnabled: true },
         });
+    });
 
-        test('Device Check Backup is possible from firmware update', async () => {
-            await onDeviceManager.tapDeviceSwitch();
-            await onDeviceManager.tapDeviceSettingsButton();
-            await onDeviceSettings.tapUpdateFirmwareButton();
-            await onDeviceSettings.tapUpdateFirmwareBottomSheet();
-            await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
+    test('Device Check Backup is possible from firmware update', async () => {
+        await onDeviceManager.tapDeviceSwitch();
+        await onDeviceManager.tapDeviceSettingsButton();
+        await onDeviceSettings.tapUpdateFirmwareButton();
+        await onDeviceSettings.tapUpdateFirmwareBottomSheet();
+        await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
 
-            await onDeviceSettings.passCheckBackupFlow();
-        });
-    },
-);
+        await onDeviceSettings.passCheckBackupFlow();
+    });
+});

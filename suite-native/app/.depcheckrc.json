@@ -40,6 +40,8 @@
         "redux-persist",
         "@config-plugins/detox",
         "@currents/cmd",
-        "expo-atlas"
+        "expo-atlas",
+        "jest-junit",
+        "ts-jest"
     ]
 }

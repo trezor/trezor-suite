@@ -1,6 +1,5 @@
 import { expect as detoxExpect } from 'detox';
 
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
@@ -32,7 +31,7 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Suite Sync [@fixT3W1]', () => {
+describe('Suite Sync [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ version: '2-main', seed: MNEMONIC });

@@ -1,7 +1,6 @@
 import { expect as jestExpect } from '@jest/globals';
 import { expect as detoxExpect } from 'detox';
 
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
@@ -61,7 +60,7 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3W1]', () => {
+describe('passphrase flow [@androidOnly @T3T1]', () => {
     beforeAll(async () => {
         // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({

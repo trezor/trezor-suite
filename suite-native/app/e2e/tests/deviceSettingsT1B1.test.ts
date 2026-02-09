@@ -1,4 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
@@ -15,20 +14,16 @@ const preloadedStateT1B1 = preparePreloadedReduxState(
     regtestDiscoveryFinishedStateT1B1,
 );
 
-conditionalDescribe(
-    device.getPlatform() === 'android',
-    'Device Settings T1B1 [@specificModel]',
-    () => {
-        beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateT1B1 } });
-            await prepareTrezorEmulator({ model: Model.T1B1 });
-            await onDeviceManager.tapDeviceSwitch();
-            await onDeviceManager.tapDeviceSettingsButton();
-        });
+describe('Device Settings T1B1 [@androidOnly @T1B1]', () => {
+    beforeEach(async () => {
+        await openApp({ args: { preloadedState: preloadedStateT1B1 } });
+        await prepareTrezorEmulator({ model: Model.T1B1 });
+        await onDeviceManager.tapDeviceSwitch();
+        await onDeviceManager.tapDeviceSettingsButton();
+    });
 
-        test('Device Check Backup with unsupported Device Model', async () => {
-            await onDeviceSettings.tapDeviceCheckBackupButton();
-            await waitForVisible(by.text('To check your backup, use the web application.'));
-        });
-    },
-);
+    test('Device Check Backup with unsupported Device Model', async () => {
+        await onDeviceSettings.tapDeviceCheckBackupButton();
+        await waitForVisible(by.text('To check your backup, use the web application.'));
+    });
+});

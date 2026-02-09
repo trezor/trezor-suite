@@ -5,9 +5,21 @@ const nativeJestConfig = require('../../../jest.config.native');
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+const projectName = process.env.TDR_PROJECT_NAME;
+if (!projectName) {
+    throw new Error('TDR_PROJECT_NAME environment variable is not defined');
+}
+
 const baseReporters = [
     'detox/runners/jest/reporter',
-    ['jest-junit', { outputDirectory: './reports', outputName: 'junit-report.xml' }],
+    [
+        'jest-junit',
+        {
+            suiteName: projectName,
+            outputDirectory: './reports',
+            outputName: `${projectName}-junit-report.xml`,
+        },
+    ],
 ];
 const githubReporter = './e2e/support/reporter/index.js';
 const reporters =
@@ -18,7 +30,7 @@ const reporters =
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
     ...nativeJestConfig,
-    rootDir: '..',
+    rootDir: process.cwd(),
     testTimeout: 120000,
     globalSetup: 'detox/runners/jest/globalSetup',
     globalTeardown: 'detox/runners/jest/globalTeardown',
@@ -36,5 +48,5 @@ module.exports = {
     ],
     testMatch: ['<rootDir>/e2e/tests/**/*.test.ts'],
     testPathIgnorePatterns: ['/e2e/tests/manual/'],
-    testNamePattern: process.env.JEST_TEST_NAME_PATTERN || undefined,
+    testNamePattern: process.env.TDR_GREP,
 };

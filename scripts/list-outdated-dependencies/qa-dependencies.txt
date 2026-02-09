@@ -8,8 +8,10 @@
 @playwright/browser-firefox
 @playwright/browser-webkit
 @playwright/test
-@types/jest
 @types/better-sqlite3
+@types/jest
+@types/minimist
+@types/xml2js
 babel-jest
 better-sqlite3
 chai
@@ -24,5 +26,7 @@ jest-extended
 jest-junit
 jest-mock
 jest-watch-typeahead
+minimist
 react-intl
 ts-jest
+xml2js

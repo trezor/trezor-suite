@@ -1,4 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
@@ -28,7 +27,7 @@ const navigateToEjectWallets = async () => {
     await onSettings.openSection('eject-wallets');
 };
 
-conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets [@fixT3W1]', () => {
+describe('Eject wallets [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
