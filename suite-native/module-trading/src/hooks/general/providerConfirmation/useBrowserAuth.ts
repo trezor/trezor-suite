@@ -12,15 +12,24 @@ import {
 import { invariant } from '@suite-common/suite-utils';
 import { TradingType, tradingThunks } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import { captureSentryException } from '@suite-native/sentry';
 import { tradingActions } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BrowserAuthProps, BrowserAuthRet } from './useBrowserAuthTypes';
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
 import { useOnForegroundCallback } from './useOnForegroundCallback';
+import { getSourceForForm } from '../../../utils/general/formUtils';
 import { doesUrlContainCloseCallbackUrl } from '../../../utils/general/utils';
 
 export * from './useBrowserAuthTypes';
+
+class BrowserAuthError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'BrowserAuthError';
+    }
+}
 
 const noop = () => {};
 
@@ -82,6 +91,14 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
 
     const openBrowser = useCallback(
         async (url: string, callbackUrl: string) => {
+            if (!tradingType) {
+                const msg = 'Attempted to openBrowser without a tradingType provided.';
+                console.warn(msg);
+                captureSentryException(new BrowserAuthError(msg));
+
+                return;
+            }
+
             setLastCallbackUrl(callbackUrl);
 
             // Note that provider confirmation status is set "window_opened" even when `openBrowserAsync` fails (error is thrown / browser is locked).
@@ -119,6 +136,7 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
             }
         },
         [
+            tradingType,
             dispatchLastErrorMessage,
             handleBrowserClosed,
             handleBrowserOpened,
@@ -127,5 +145,21 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
         ],
     );
 
-    return { openBrowser };
+    const openBrowserForFormData = useCallback<BrowserAuthRet['openBrowserForFormData']>(
+        async (formData, returnUrl) => {
+            const source = getSourceForForm(formData);
+            if (!source?.uri) {
+                const msg = 'Unable to open browser, no URI provided.';
+                console.warn(msg);
+                captureSentryException(new BrowserAuthError(msg));
+
+                return;
+            }
+
+            await openBrowser(source.uri, returnUrl);
+        },
+        [openBrowser],
+    );
+
+    return { openBrowser, openBrowserForFormData };
 };

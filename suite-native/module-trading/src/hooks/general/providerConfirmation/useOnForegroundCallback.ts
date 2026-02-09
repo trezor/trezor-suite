@@ -7,6 +7,7 @@ class AppStateChangeError extends Error {
     constructor(cause?: unknown) {
         super('Error thrown in callback provided to useOnForegroundCallback');
         this.cause = cause;
+        this.name = 'AppStateChangeError';
     }
 }
 

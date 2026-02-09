@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import type { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
@@ -25,7 +25,7 @@ import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
-import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
+import { buildTradingUrl } from '../../utils/general/formUtils';
 import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
@@ -62,7 +62,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         coinInfo,
     });
 
-    const { openBrowser } = useBrowserAuth({
+    const { openBrowserForFormData } = useBrowserAuth({
         tradingType: 'buy',
         orderId: candidateQuote?.orderId,
     });
@@ -86,22 +86,13 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
     };
 
-    const handleBrowser = (formData: FormResponse['form'], returnUrl: string) => {
-        const source = getSourceForForm(formData);
-        if (!source?.uri) {
-            return;
-        }
-
-        return openBrowser(source.uri, returnUrl);
-    };
-
     const handleTradeResponse = (response: BuyTradeResponse, returnUrl: string) => {
         if (response.trade.paymentId) {
             dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
         }
 
         if (response.tradeForm) {
-            handleBrowser(response.tradeForm.form, returnUrl);
+            openBrowserForFormData(response.tradeForm.form, returnUrl);
         }
 
         clearBuyFormQuoteData(form);
@@ -172,7 +163,7 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 timer,
                 returnUrl,
-                loginRequest: formResponse => handleBrowser(formResponse, returnUrl),
+                loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },

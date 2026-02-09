@@ -37,6 +37,12 @@ jest.mock('expo-linking', () => ({
     useLinkingURL: () => mockLinkingURL,
 }));
 
+const mockCaptureSentryException = jest.fn();
+
+jest.mock('@suite-native/sentry', () => ({
+    captureSentryException: (...args: unknown[]) => mockCaptureSentryException(...args),
+}));
+
 const mockSetShouldWatchForForeground = jest.fn();
 
 jest.mock('../useOnForegroundCallback', () => ({
@@ -75,6 +81,31 @@ describe('useBrowserAuth', () => {
     });
 
     describe('openBrowser', () => {
+        it('should log error to sentry and return early when called with undefined tradingType', async () => {
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = renderHookWithStoreProvider(
+                () => useBrowserAuth({ tradingType: undefined }),
+                { store },
+            );
+
+            await act(async () => {
+                await result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(undefined);
+            expect(mockOpenBrowserAsync).not.toHaveBeenCalled();
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                'Attempted to openBrowser without a tradingType provided.',
+            );
+            expect(mockCaptureSentryException).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'Attempted to openBrowser without a tradingType provided.',
+                }),
+            );
+        });
+
         it('should call openBrowserAsync', () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
             const { result } = renderUseBrowserAuth();
@@ -209,6 +240,53 @@ describe('useBrowserAuth', () => {
                 }),
             );
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('openBrowserForFormData', () => {
+        it('should call openBrowserAsync with URL extracted from formData', () => {
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowserForFormData(
+                    {
+                        formMethod: 'GET',
+                        formAction: 'URL',
+                        fields: {},
+                    },
+                    'CALLBACK_URL',
+                );
+            });
+
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(undefined);
+            expect(mockOpenBrowserAsync).toHaveBeenCalledWith('URL', expect.any(Object));
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+        });
+
+        it('should log error when method is not supported', () => {
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowserForFormData(
+                    {
+                        formMethod: 'IFRAME',
+                        formAction: 'URL',
+                        fields: {},
+                    },
+                    'CALLBACK_URL',
+                );
+            });
+
+            expect(mockOpenBrowserAsync).not.toHaveBeenCalled();
+            expect(consoleWarnSpy).toHaveBeenCalledWith('Unable to open browser, no URI provided.');
+            expect(mockCaptureSentryException).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'Unable to open browser, no URI provided.',
+                }),
+            );
         });
     });
 });

@@ -33,5 +33,6 @@ export const useBrowserAuth = ({ tradingType }: BrowserAuthProps): BrowserAuthRe
 
     return {
         openBrowser,
+        openBrowserForFormData: openBrowser,
     };
 };
