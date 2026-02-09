@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { CompactCardWithIconLayout, TitledSection } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
@@ -17,7 +16,6 @@ type NavigationProps = StackNavigationProps<
 
 export const NeedHelpSection = () => {
     const navigation = useNavigation<NavigationProps>();
-    const areAppLogsEnabled = useFeatureFlag(FeatureFlag.AreAppLogsEnabled);
 
     const openLink = useOpenLink();
 
@@ -36,13 +34,11 @@ export const NeedHelpSection = () => {
                 icon="lifebuoy"
                 onPress={openContactSupport}
             />
-            {areAppLogsEnabled && (
-                <CompactCardWithIconLayout
-                    title={<Translation id="moduleSettings.faq.needHelp.appLog" />}
-                    icon="fileTxt"
-                    onPress={navigateToAppLogs}
-                />
-            )}
+            <CompactCardWithIconLayout
+                title={<Translation id="moduleSettings.faq.needHelp.appLog" />}
+                icon="fileTxt"
+                onPress={navigateToAppLogs}
+            />
         </TitledSection>
     );
 };

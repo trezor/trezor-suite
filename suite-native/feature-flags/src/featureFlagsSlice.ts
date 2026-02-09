@@ -14,7 +14,6 @@ export const FeatureFlag = {
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsEarnEnabled: 'isEarnEnabled',
-    AreAppLogsEnabled: 'areAppLogsEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -46,7 +45,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
     [FeatureFlag.IsEarnEnabled]: process.env.EXPO_PUBLIC_FF_IS_EARN_ENABLED === 'true',
-    [FeatureFlag.AreAppLogsEnabled]: process.env.EXPO_PUBLIC_FF_ARE_APP_LOGS_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -60,7 +58,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsEarnEnabled,
-    FeatureFlag.AreAppLogsEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

@@ -44,7 +44,6 @@
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../experimental-features" },
-        { "path": "../feature-flags" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
