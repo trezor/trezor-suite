@@ -2,10 +2,10 @@ import fs from 'fs';
 
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { OutputLabelId } from '../../support/enums/outputLabelId';
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
-import { createTestAnnotation } from '../../support/reporters/annotations';
+import { OutputLabelId } from '../../../support/enums/outputLabelId';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });

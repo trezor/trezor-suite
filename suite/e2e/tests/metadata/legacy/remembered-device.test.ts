@@ -1,6 +1,6 @@
-import { AccountLabelId } from '../../support/enums/accountLabelId';
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { AccountLabelId } from '../../../support/enums/accountLabelId';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 //Metadata - In settings, there is enable metadata switch.
 //On enable, it initiates metadata right away (if device already has state).

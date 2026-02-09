@@ -1,5 +1,5 @@
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 const metadataAddress = 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
