@@ -15,7 +15,7 @@ import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {
     orderId: string;
-    onOpenedWebview: () => void;
+    onOpenedBrowser: () => void;
 };
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
@@ -26,7 +26,7 @@ const iconWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
 }));
 
-export const TradeDetailHeader = ({ orderId, onOpenedWebview }: TradeDetailHeaderProps) => {
+export const TradeDetailHeader = ({ orderId, onOpenedBrowser }: TradeDetailHeaderProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
@@ -63,7 +63,7 @@ export const TradeDetailHeader = ({ orderId, onOpenedWebview }: TradeDetailHeade
             provider={trade.data.exchange}
             tradeType={trade.tradeType}
             orderId={orderId}
-            onOpenedWebview={onOpenedWebview}
+            onOpenedBrowser={onOpenedBrowser}
         />
     );
 };

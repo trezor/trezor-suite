@@ -25,7 +25,7 @@ const TEST_EXCHANGE_STATUS_URL = 'https://checkout.mercuryo.io/status/{{orderId}
 const TEST_SELL_STATUS_URL = 'https://checkout.mercuryo.io/sell/status/{{orderId}}';
 
 const mockOpenLink = jest.fn();
-const mockOnOpenedWebview = jest.fn();
+const mockOnOpenedBrowser = jest.fn();
 const mockNavigation = {
     navigate: jest.fn(),
 };
@@ -101,7 +101,7 @@ describe('TradeDetailAlert', () => {
                 provider={TEST_PROVIDER}
                 tradeType={tradeType}
                 orderId={orderId || trade.data.orderId}
-                onOpenedWebview={mockOnOpenedWebview}
+                onOpenedBrowser={mockOnOpenedBrowser}
             />,
             { preloadedState: createPreloadedState([trade], supportUrl) },
         );
@@ -138,7 +138,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId="nonexistent-order-id"
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([], undefined) }, // No trades in store
             );
@@ -149,8 +149,8 @@ describe('TradeDetailAlert', () => {
                 fireEvent.press(getByText('Proceed to pay'));
             });
 
-            // Should not call onOpenedWebview when trade is not found
-            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+            // Should not call onOpenedBrowser when trade is not found
+            expect(mockOnOpenedBrowser).not.toHaveBeenCalled();
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
     });
@@ -198,7 +198,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="sell"
                     orderId="test-order-id"
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([]) },
             );
@@ -271,7 +271,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId="test-order-id"
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([]) },
             );
@@ -286,7 +286,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId="test-order-id"
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([]) },
             );
@@ -307,7 +307,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId="test-order-id"
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: { wallet: { trading: tradingState } } },
             );
@@ -323,7 +323,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId={undefined}
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([], TEST_BUY_STATUS_URL) },
             );
@@ -337,7 +337,7 @@ describe('TradeDetailAlert', () => {
 
         it('should render button but not navigate when partnerData is missing for buy trades', async () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            // Remove partnerData to test missing webview data
+            // Remove partnerData to test missing url for browser navigation
             delete buyTrade.data.partnerData;
 
             const { getByText } = await renderWithStoreProviderAsync(
@@ -346,7 +346,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId={buyTrade.data.orderId!}
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([buyTrade], undefined) }, // No support URL
             );
@@ -357,7 +357,7 @@ describe('TradeDetailAlert', () => {
 
             // Should not navigate when partnerData is missing
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
-            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+            expect(mockOnOpenedBrowser).not.toHaveBeenCalled();
         });
 
         it('should fall back to support URL when partnerData is missing for exchange trades', async () => {
@@ -370,7 +370,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="exchange"
                     orderId={exchangeTrade.data.orderId!}
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([exchangeTrade], TEST_EXCHANGE_STATUS_URL) },
             );
@@ -386,9 +386,9 @@ describe('TradeDetailAlert', () => {
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
 
-        it('should render button but not navigate when neither webview nor support URL is available', async () => {
+        it('should render button but not navigate when neither URL for browser auth nor support URL is available', async () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            // Remove partnerData to test missing webview data
+            // Remove partnerData to test missing url for browser navigation
             delete buyTrade.data.partnerData;
 
             // Create state without provider info to test no support URL case
@@ -405,7 +405,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="buy"
                     orderId={buyTrade.data.orderId!}
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: { wallet: { trading: tradingState } } },
             );
@@ -414,15 +414,15 @@ describe('TradeDetailAlert', () => {
                 fireEvent.press(getByText('Proceed to pay'));
             });
 
-            // Should not navigate when neither webview nor support URL is available
+            // Should not navigate when neither partner authentication URL nor support URL is available
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
-            expect(mockOnOpenedWebview).not.toHaveBeenCalled();
+            expect(mockOnOpenedBrowser).not.toHaveBeenCalled();
             expect(mockOpenLink).not.toHaveBeenCalled();
         });
 
-        it('should handle sell trades with webview navigation when partnerData is available', async () => {
+        it('should handle sell trades with browser navigation when partnerData is available', async () => {
             const sellTrade = getSellTrade({ status: 'ERROR' });
-            // Ensure partnerData is present for webview navigation
+            // Ensure partnerData is present for browser navigation
             sellTrade.data.partnerData = 'https://sell.mercuryo.io/test';
 
             const { getByText } = await renderWithStoreProviderAsync(
@@ -431,7 +431,7 @@ describe('TradeDetailAlert', () => {
                     provider={TEST_PROVIDER}
                     tradeType="sell"
                     orderId={sellTrade.data.orderId!}
-                    onOpenedWebview={mockOnOpenedWebview}
+                    onOpenedBrowser={mockOnOpenedBrowser}
                 />,
                 { preloadedState: createPreloadedState([sellTrade], TEST_SELL_STATUS_URL) },
             );
@@ -440,7 +440,7 @@ describe('TradeDetailAlert', () => {
                 fireEvent.press(getByText('Go to provider support'));
             });
 
-            // Should call support URL for sell trades (not webview navigation)
+            // Should call support URL for sell trades (not browser auth navigation)
             expect(mockOpenLink).toHaveBeenCalledWith(
                 'https://checkout.mercuryo.io/sell/status/d369ba9e-7370-4a6e-87dc-aefd3851c735',
             );

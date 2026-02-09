@@ -43,7 +43,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
         return null;
     }
 
-    const onOpenedWebview = () => {
+    const onOpenedBrowser = () => {
         closeModal();
     };
 
@@ -57,7 +57,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             title={tradeTitle}
             isCloseDisplayed
         >
-            <TradeDetailHeader orderId={orderId} onOpenedWebview={onOpenedWebview} />
+            <TradeDetailHeader orderId={orderId} onOpenedBrowser={onOpenedBrowser} />
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />

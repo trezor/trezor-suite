@@ -34,7 +34,7 @@ type TradeDetailAlertProps = {
     provider?: string;
     tradeType: TradingType;
     orderId?: string;
-    onOpenedWebview?: () => void;
+    onOpenedBrowser?: () => void;
 };
 
 const isBuyOrSell = (
@@ -101,7 +101,7 @@ export const TradeDetailAlert = ({
     provider,
     tradeType,
     orderId,
-    onOpenedWebview,
+    onOpenedBrowser,
 }: TradeDetailAlertProps) => {
     const openLink = useOpenLink();
 
@@ -139,14 +139,14 @@ export const TradeDetailAlert = ({
         supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
     }
 
-    const navigateToWebView = () => {
+    const navigateToBrowser = () => {
         if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
             const callbackUrl = buildTradingUrl({
                 actionType: 'trade',
                 tradeType: trade.tradeType,
                 orderId,
             });
-            onOpenedWebview?.();
+            onOpenedBrowser?.();
             openBrowser(trade.data.partnerData, callbackUrl);
         }
     };
@@ -155,7 +155,7 @@ export const TradeDetailAlert = ({
     let handleButtonPress: (() => void) | undefined;
 
     if ((['waiting', 'kyc'] as TradeStatusStep[]).includes(alertType) && orderId) {
-        handleButtonPress = () => navigateToWebView();
+        handleButtonPress = () => navigateToBrowser();
     }
 
     if (supportUrl) {
