@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import type { BankAccount, FormResponse, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import {
     selectTradingSellInfo,
@@ -11,7 +11,7 @@ import {
 } from '@suite-common/trading';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
-import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
+import { buildTradingUrl } from '../../utils/general/formUtils';
 import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
@@ -23,22 +23,9 @@ export const useSellFlow = () => {
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
-    const { openBrowser } = useBrowserAuth({
+    const { openBrowserForFormData } = useBrowserAuth({
         tradingType: 'sell',
     });
-
-    // whenever we get a form data, we need to navigate to open the browser
-    const handleBrowser = useCallback(
-        (formData: FormResponse['form'], returnUrl: string) => {
-            const source = getSourceForForm(formData);
-            if (!source?.uri) {
-                return;
-            }
-
-            openBrowser(source.uri, returnUrl);
-        },
-        [openBrowser],
-    );
 
     const getCommonFunctions = useCallback(
         (trade?: SellFiatTrade) => {
@@ -61,7 +48,7 @@ export const useSellFlow = () => {
             };
 
             const processResponseData = (response: SellFiatTradeResponse) =>
-                handleBrowser(response.tradeForm?.form, returnUrl);
+                openBrowserForFormData(response.tradeForm?.form, returnUrl);
 
             return {
                 returnUrl,
@@ -69,7 +56,7 @@ export const useSellFlow = () => {
                 processResponseData,
             };
         },
-        [handleBrowser, selectedQuote],
+        [openBrowserForFormData, selectedQuote],
     );
 
     const {

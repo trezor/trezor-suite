@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import type { ExchangeTrade, FormResponse } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import {
     TradingSendRejectedProps,
@@ -13,7 +13,7 @@ import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
+import { buildTradingUrl } from '../../utils/general/formUtils';
 import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
@@ -39,22 +39,9 @@ export const useExchangeFlow = () => {
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
-    const { openBrowser } = useBrowserAuth({
+    const { openBrowserForFormData } = useBrowserAuth({
         tradingType: 'exchange',
     });
-
-    // whenever we get a form data, we need to navigate to open the browser
-    const handleBrowser = useCallback(
-        (formData: FormResponse['form'], returnUrl: string) => {
-            const source = getSourceForForm(formData);
-            if (!source?.uri) {
-                return;
-            }
-
-            openBrowser(source.uri, returnUrl);
-        },
-        [openBrowser],
-    );
 
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
@@ -82,7 +69,7 @@ export const useExchangeFlow = () => {
             };
 
             const processResponseData = (response: ExchangeTrade) =>
-                handleBrowser(response.tradeForm?.form, returnUrl);
+                openBrowserForFormData(response.tradeForm?.form, returnUrl);
 
             return {
                 returnUrl,
@@ -90,7 +77,7 @@ export const useExchangeFlow = () => {
                 processResponseData,
             };
         },
-        [handleBrowser, analytics, quote],
+        [openBrowserForFormData, analytics, quote],
     );
 
     const {
