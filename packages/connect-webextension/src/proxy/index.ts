@@ -1,13 +1,7 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index
-import {
-    CORE_CALL,
-    CallMethod,
-    ConnectSettingsWebextension,
-    POPUP,
-    createErrorMessage,
-} from '@trezor/connect/src/exports';
+import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
@@ -28,7 +22,7 @@ const cancel = () => {
     }
 };
 
-const init = (settings: ConnectDynamicSettings & ConnectSettingsWebextension): Promise<void> => {
+const init = (settings: ConnectDynamicSettings): Promise<void> => {
     if (!_channel) {
         _channel = new WindowServiceWorkerChannel({
             name: 'trezor-connect-proxy',

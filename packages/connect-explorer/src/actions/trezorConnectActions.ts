@@ -132,7 +132,7 @@ export const init =
                     }
                 };
             } else {
-                await TrezorConnect.init(connectOptions);
+                await TrezorConnect.init({ ...connectOptions, coreMode: connectOptions.coreMode });
             }
         } catch (err) {
             dispatch({ type: ON_INIT_ERROR, payload: err.message });

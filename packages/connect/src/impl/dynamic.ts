@@ -6,7 +6,7 @@ import { getSynchronize } from '@trezor/utils';
 import { parseConnectSrc, parseManifest, parseVersion } from '../data/connectSettings';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import { ConnectSettings, ConnectSettingsWeb } from '../types';
+import { ConnectSettings } from '../types';
 import type { SetTransports } from '../types/api/setTransports';
 
 export type ConnectImplSettings = {
@@ -17,19 +17,23 @@ export type ConnectImplSettings = {
     connectSrc?: ConnectSettings['connectSrc'];
 };
 
-export type ConnectDynamicSettings = Partial<ConnectImplSettings>;
+type CoreMode = 'auto' | 'suite-desktop' | 'suite-web';
 
-export type ConnectImpl = Omit<ConnectFactoryDependencies<ConnectSettingsWeb>, 'init'> & {
+export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
+    coreMode?: CoreMode;
+};
+
+export type ConnectImpl = Omit<ConnectFactoryDependencies<{}>, 'init'> & {
     init: (params: ConnectImplSettings) => Promise<void>;
 };
 
-type TrezorConnectDynamicParams<ImplType, ExtraSettings extends Record<string, any>> = {
+type TrezorConnectDynamicParams<ImplType> = {
     implementations: {
         type: ImplType;
         impl: ConnectImpl;
     }[];
-    getInitTarget: (settings: ExtraSettings) => ImplType;
-    handleBeforeCall: (settings?: ExtraSettings) => Promise<void>;
+    getInitTarget: (coreMode?: CoreMode) => ImplType;
+    handleBeforeCall: (coreMode?: CoreMode) => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
 };
 
@@ -37,25 +41,16 @@ type TrezorConnectDynamicParams<ImplType, ExtraSettings extends Record<string, a
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
  */
-export class TrezorConnectDynamic<
-    ImplType,
-    ExtraSettings extends Record<string, any>,
-> implements ConnectFactoryDependencies<ExtraSettings> {
+export class TrezorConnectDynamic<ImplType> implements ConnectFactoryDependencies<{}> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
-    private implementations: TrezorConnectDynamicParams<ImplType, ExtraSettings>['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<ImplType, ExtraSettings>['getInitTarget'];
-    private handleBeforeCall: TrezorConnectDynamicParams<
-        ImplType,
-        ExtraSettings
-    >['handleBeforeCall'];
-    private handleErrorFallback: TrezorConnectDynamicParams<
-        ImplType,
-        ExtraSettings
-    >['handleErrorFallback'];
+    private implementations: TrezorConnectDynamicParams<ImplType>['implementations'];
+    private getInitTarget: TrezorConnectDynamicParams<ImplType>['getInitTarget'];
+    private handleBeforeCall: TrezorConnectDynamicParams<ImplType>['handleBeforeCall'];
+    private handleErrorFallback: TrezorConnectDynamicParams<ImplType>['handleErrorFallback'];
 
-    private lastSettings?: ExtraSettings;
+    private coreMode?: CoreMode;
     private implSettings?: ConnectImplSettings;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
@@ -65,7 +60,7 @@ export class TrezorConnectDynamic<
         getInitTarget,
         handleBeforeCall,
         handleErrorFallback,
-    }: TrezorConnectDynamicParams<ImplType, ExtraSettings>) {
+    }: TrezorConnectDynamicParams<ImplType>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
@@ -105,8 +100,8 @@ export class TrezorConnectDynamic<
         }
     }
 
-    public async init(settings: ConnectDynamicSettings & ExtraSettings) {
-        this.lastSettings = settings;
+    public async init(settings: ConnectDynamicSettings) {
+        this.coreMode = settings.coreMode;
 
         const manifest = parseManifest(settings.manifest);
 
@@ -123,7 +118,7 @@ export class TrezorConnectDynamic<
             connectSrc: parseConnectSrc(settings.connectSrc),
         };
 
-        this.currentTarget = this.getInitTarget(settings);
+        this.currentTarget = this.getInitTarget(settings.coreMode);
         this.callPending = 0;
 
         // Initialize the target
@@ -149,7 +144,7 @@ export class TrezorConnectDynamic<
             if (this.callPending === 0) {
                 await this.beforeCallSynchronize(async () => {
                     this.callPending++;
-                    await this.handleBeforeCall(this.lastSettings);
+                    await this.handleBeforeCall(this.coreMode);
                 });
             }
             const response = await this.getTarget().call(params);
