@@ -23,7 +23,6 @@ import {
     PrecomposedTransactionFinal,
     RatesByKey,
     ReceiveInfo,
-    SuccessfulAccount,
     TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
@@ -56,9 +55,6 @@ const { SYSTEM_PROGRAM_PUBLIC_KEY } = solanaUtils;
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
-
-export const isAccountSuccessful = (account: Account): account is SuccessfulAccount =>
-    !account.failed;
 
 export const isAccountFailed = (account: Account): account is FailedAccount => !!account.failed;
 
