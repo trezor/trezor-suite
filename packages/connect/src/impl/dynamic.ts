@@ -23,56 +23,41 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
     coreMode?: CoreMode;
 };
 
+type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
+
 export type ConnectImpl = Omit<ConnectFactoryDependencies<{}>, 'init'> & {
     init: (params: ConnectImplSettings) => Promise<void>;
 };
 
-type TrezorConnectDynamicParams<ImplType> = {
-    implementations: {
-        type: ImplType;
-        impl: ConnectImpl;
-    }[];
-    getInitTarget: (coreMode?: CoreMode) => ImplType;
-    handleBeforeCall: (coreMode?: CoreMode) => Promise<void>;
-    handleErrorFallback: (errorCode: string) => Promise<boolean>;
+type TrezorConnectDynamicParams = {
+    implementations: Record<ImplType, ConnectImpl>;
 };
 
 /**
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
  */
-export class TrezorConnectDynamic<ImplType> implements ConnectFactoryDependencies<{}> {
+export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
-    private implementations: TrezorConnectDynamicParams<ImplType>['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<ImplType>['getInitTarget'];
-    private handleBeforeCall: TrezorConnectDynamicParams<ImplType>['handleBeforeCall'];
-    private handleErrorFallback: TrezorConnectDynamicParams<ImplType>['handleErrorFallback'];
+    private readonly implementations: Record<ImplType, ConnectImpl>;
 
     private coreMode?: CoreMode;
     private implSettings?: ConnectImplSettings;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
 
-    public constructor({
-        implementations,
-        getInitTarget,
-        handleBeforeCall,
-        handleErrorFallback,
-    }: TrezorConnectDynamicParams<ImplType>) {
+    public constructor({ implementations }: TrezorConnectDynamicParams) {
         this.implementations = implementations;
-        this.currentTarget = this.implementations[0].type;
-        this.getInitTarget = getInitTarget;
-        this.handleBeforeCall = handleBeforeCall;
-        this.handleErrorFallback = handleErrorFallback;
-        this.implementations.forEach(impl => {
-            impl.impl.eventEmitter = this.eventEmitter;
+        this.currentTarget = 'core-in-suite-desktop';
+        Object.values(this.implementations).forEach(impl => {
+            impl.eventEmitter = this.eventEmitter;
         });
     }
 
     public getTarget() {
-        return this.implementations.find(impl => impl.type === this.currentTarget)!.impl;
+        return this.implementations[this.currentTarget];
     }
 
     public getTargetType() {
@@ -118,7 +103,7 @@ export class TrezorConnectDynamic<ImplType> implements ConnectFactoryDependencie
             connectSrc: parseConnectSrc(settings.connectSrc),
         };
 
-        this.currentTarget = this.getInitTarget(settings.coreMode);
+        this.currentTarget = this.getInitTarget();
         this.callPending = 0;
 
         // Initialize the target
@@ -144,7 +129,7 @@ export class TrezorConnectDynamic<ImplType> implements ConnectFactoryDependencie
             if (this.callPending === 0) {
                 await this.beforeCallSynchronize(async () => {
                     this.callPending++;
-                    await this.handleBeforeCall(this.coreMode);
+                    await this.handleBeforeCall();
                 });
             }
             const response = await this.getTarget().call(params);
@@ -176,5 +161,46 @@ export class TrezorConnectDynamic<ImplType> implements ConnectFactoryDependencie
         this.callPending = 0;
 
         return this.getTarget().dispose();
+    }
+
+    private getInitTarget() {
+        const { coreMode } = this;
+
+        if (coreMode === 'suite-desktop') {
+            return 'core-in-suite-desktop';
+        } else if (coreMode === 'suite-web') {
+            return 'core-in-suite-web';
+        } else {
+            if (coreMode && coreMode !== 'auto') {
+                console.warn(`Invalid coreMode: ${coreMode}`);
+            }
+
+            // TODO for webextension, default was previously core-in-suite-web
+            return 'core-in-suite-desktop';
+        }
+    }
+
+    private async handleBeforeCall() {
+        const { coreMode } = this;
+
+        // Always try if desktop is available again
+        if (coreMode === 'suite-desktop' || coreMode === 'auto' || coreMode === undefined) {
+            await this.switchTarget('core-in-suite-desktop');
+        }
+    }
+
+    private async handleErrorFallback(errorCode: string) {
+        // Handle desktop errors
+        if (
+            this.getTargetType() === 'core-in-suite-desktop' &&
+            // TODO for webextension, Method_Unsupported wasn't here
+            (errorCode === 'Desktop_ConnectionMissing' || errorCode === 'Method_Unsupported')
+        ) {
+            await this.switchTarget('core-in-suite-web');
+
+            return true;
+        }
+
+        return false;
     }
 }
