@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { FirmwareType } from '@trezor/connect';
-import type { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import type { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';
 
@@ -55,9 +55,9 @@ const cacheDevice = createAction(
     }),
 );
 
-const setFirmwareUpdateSource = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/set-firmware-update-source`,
-    (payload: FirmwareUpdateSource) => ({
+const setFirmwareChannel = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/set-firmware-channel`,
+    (payload: FirmwareChannel) => ({
         payload,
     }),
 );
@@ -71,5 +71,5 @@ export const firmwareActions = {
     resetReducer,
     toggleUseDevkit,
     cacheDevice,
-    setFirmwareUpdateSource,
+    setFirmwareChannel,
 };
