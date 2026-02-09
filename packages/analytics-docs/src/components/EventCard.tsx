@@ -59,7 +59,6 @@ const Header = ({ event }: { event: EventDoc }) => {
                 <Row gap={16} alignItems="center">
                     <H3>{event.name} </H3>
                     <Row gap={4}>
-                        <ChangelogButton />
                         <Tooltip content="Copy event name">
                             <IconButton
                                 onClick={() => {
@@ -73,6 +72,7 @@ const Header = ({ event }: { event: EventDoc }) => {
                                 priority="secondary"
                             />
                         </Tooltip>
+                        <ChangelogButton />
                         <Tooltip content="Open in Github">
                             <IconButton
                                 href={getEventUrl(event.name)}
