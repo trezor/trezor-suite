@@ -1,5 +1,6 @@
 import type { TSchema } from '@sinclair/typebox';
 
+import type TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect, { DEVICE } from '@trezor/connect-web';
 import type { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 
@@ -38,7 +39,9 @@ export type MethodAction =
     | { type: typeof SET_METHOD_PROCESSING; payload: boolean };
 
 // TrezorConnect action types
-export type ConnectOptions = Partial<Parameters<(typeof TrezorConnect)['init']>[0]>;
+export type ConnectOptions = Partial<
+    Parameters<(typeof TrezorConnect | typeof TrezorConnectMobile)['init']>[0]
+>;
 
 export type TrezorConnectAction =
     | { type: typeof ON_SELECT_DEVICE; path: string }

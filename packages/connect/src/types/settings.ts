@@ -71,13 +71,6 @@ export interface ConnectSettingsInternal {
     firmwareUpdateSource?: FirmwareUpdateSource;
 }
 
-export interface ConnectSettingsWeb {
-    coreMode?: 'auto' | 'deeplink' | 'suite-desktop' | 'suite-web';
-}
-export interface ConnectSettingsWebextension {
-    /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
-    coreMode?: 'auto' | 'suite-desktop' | 'suite-web';
-}
 export interface ConnectSettingsMobile {
     deeplinkUrl?: string;
     deeplinkOpen?: (url: string) => void;
@@ -88,9 +81,6 @@ export interface ConnectSettingsMobile {
 export type ConnectSettings = ConnectSettingsPublic &
     ConnectSettingsInternal &
     // coreMode is a common parameter between these, so it is explicitly handled here for correct handling
-    Omit<ConnectSettingsWeb & ConnectSettingsWebextension & ConnectSettingsMobile, 'coreMode'> & {
-        coreMode?:
-            | ConnectSettingsWeb['coreMode']
-            | ConnectSettingsWebextension['coreMode']
-            | ConnectSettingsMobile['coreMode'];
+    Omit<ConnectSettingsMobile, 'coreMode'> & {
+        coreMode?: 'auto' | 'suite-desktop' | 'suite-web' | 'deeplink';
     };

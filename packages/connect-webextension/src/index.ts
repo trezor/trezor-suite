@@ -1,5 +1,5 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import { ConnectSettingsWebextension, POPUP } from '@trezor/connect/src/exports';
+import { POPUP } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { ConnectDynamicSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
@@ -7,10 +7,7 @@ import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageCh
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
-const impl = new TrezorConnectDynamic<
-    'core-in-suite-desktop' | 'core-in-suite-web',
-    ConnectSettingsWebextension
->({
+const impl = new TrezorConnectDynamic<'core-in-suite-desktop' | 'core-in-suite-web'>({
     implementations: [
         {
             type: 'core-in-suite-desktop',
@@ -21,14 +18,14 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInSuiteWeb(),
         },
     ],
-    getInitTarget: ({ coreMode }: ConnectSettingsWebextension) => {
+    getInitTarget: (coreMode: ConnectDynamicSettings['coreMode']) => {
         if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else {
             return 'core-in-suite-web';
         }
     },
-    handleBeforeCall: async ({ coreMode }: ConnectSettingsWebextension = {}) => {
+    handleBeforeCall: async (coreMode: ConnectDynamicSettings['coreMode']) => {
         // Always try if desktop is available again
         if (coreMode === 'suite-desktop' || coreMode === 'auto' || coreMode === undefined) {
             await impl.switchTarget('core-in-suite-desktop');
@@ -64,7 +61,7 @@ const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{
         type: string;
         method: keyof typeof TrezorConnect;
-        settings: ConnectDynamicSettings & ConnectSettingsWebextension;
+        settings: ConnectDynamicSettings;
     }>({
         name: 'trezor-connect-proxy',
         channel: {
@@ -75,7 +72,7 @@ const initProxyChannel = () => {
         allowSelfOrigin: true,
     });
 
-    let proxySettings: ConnectDynamicSettings & ConnectSettingsWebextension;
+    let proxySettings: ConnectDynamicSettings;
 
     channel.init();
     channel.on('message', message => {
