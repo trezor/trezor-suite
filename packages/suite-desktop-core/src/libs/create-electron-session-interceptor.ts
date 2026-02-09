@@ -3,11 +3,14 @@ import { session } from 'electron';
 import { hasSwitch } from './process-switches';
 
 /**
- * Should be used for all webRequest.on* events as there can be only
- * one listener for each of them, but sometimes we need to bind more
- * of them.
+ * Create an electron Renderer interceptor with API to add/remove custom handlers. In the Renderer process,
+ * network requests are made from the electron binary itself (the browser), so we use the electron api.
+ * Session.webRequest interceptor allows only one onBeforeRequest handler, but sometimes we need to bind more.
+ *
+ * This applies on all Renderer process traffic + also electron-updater traffic (it uses an electron Session too).
+ * Note that this DOESN'T apply to network requests directly from nodejs, that's done in packages/request-manager
  */
-export const createInterceptor = (): RequestInterceptor => {
+export const createElectronSessionInterceptor = (): RequestInterceptor => {
     let beforeRequestListeners: BeforeRequestListener[] = [];
     const filter = { urls: ['*://*/*'] };
 

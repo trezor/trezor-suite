@@ -1,10 +1,9 @@
 /**
  * Request Interceptor
- * This module intercepts requests from electron nodejs main process and
- * lets request-manager interceptor knows if Tor is enable so it has to use Tor or not.
+ * This module intercepts requests from Electron Main process (direct network requests from nodejs) and
+ * lets request-manager interceptor knows if Tor is enabled (whether it has to use Tor or not).
  *
- *
- * Differences from request-filter module is that it intercepts all requests from electron nodejs main process,
+ * Differences from request-filter module is that it intercepts all requests from Electron Main process (nodejs),
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -29,7 +28,9 @@ const mainThreadAllowedDomain = {
 };
 
 /**
- * This module handles request interception for the main thread.
+ * This module handles request interception for the electron Main thread.
+ *
+ * Please note that the `interceptor` from ModuleInit api is for the Renderer process, so we don't use it here.
  */
 export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) => {
     const { logger } = global;

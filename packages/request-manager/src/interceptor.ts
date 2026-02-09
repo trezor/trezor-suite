@@ -10,6 +10,11 @@ import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
 import { TorIdentities } from './torIdentities';
 import { InterceptorOptions } from './types';
 
+/**
+ * Create an interceptor that can be used to intercept and manage network requests made from a Node.js environment.
+
+ * Note that this DOESN'T apply to requests from the Electron browser, that's done in `create-electron-session-interceptor.ts`
+ */
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const requestPool = createRequestPool(interceptorOptions);
     const torIdentities = new TorIdentities(interceptorOptions.getTorSettings);
