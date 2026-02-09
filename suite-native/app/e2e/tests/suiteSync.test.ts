@@ -40,7 +40,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Suite Sync [@fixT3W1]',
         await onTabBar.tapBackButton();
     });
 
-    test('Sync account label across sessions', async () => {
+    // Automation is being reworked, skipping for now
+    test.skip('Sync account label across sessions', async () => {
         // Verify account label sync
         await onTabBar.navigateToMyAssets();
         await waitToHaveText(by.id('@accountList/item/title'), ACCOUNT_LABEL);
