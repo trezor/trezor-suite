@@ -11629,6 +11629,7 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"

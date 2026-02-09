@@ -17,7 +17,7 @@ import {
     StaticSessionId,
     TokenInfo,
 } from '@trezor/connect';
-import { RequiredKey } from '@trezor/type-utils';
+import { Branded, RequiredKey } from '@trezor/type-utils';
 
 import { Account, AccountDescriptor } from './account';
 
@@ -47,6 +47,9 @@ export type PrecomposedTransactionCardanoNonFinal =
     };
 
 export type BaseCurrencyOption = { value: BaseCurrencyCode | ''; label: string };
+
+export type TxOutputId = string | Branded<'TxOutputId'>;
+export const asTxOutputId = (value: string) => value as TxOutputId;
 
 export type Output = {
     type: 'payment' | 'opreturn';

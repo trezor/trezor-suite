@@ -1,11 +1,14 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import {
+    createTargets,
+    selectIsPhishingTransaction,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Link, Row, Tooltip } from '@trezor/components';
@@ -63,7 +66,7 @@ export const TransactionItem = memo(
         const [limit, setLimit] = useState(0);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
-        const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
+        const account = useSelector(selectSelectedAccount) || null;
 
         const networkFeatures = network.accountTypes[accountType]?.features ?? network.features;
 
@@ -72,34 +75,12 @@ export const TransactionItem = memo(
             `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
-        const { type, targets, tokens, internalTransfers } = transaction;
+        const { type } = transaction;
 
-        // Filter out internal transfers that are instant staking transactions
-        const filteredInternalTransfers = useMemo(
-            () =>
-                internalTransfers.filter(t => {
-                    const stakeType = getInstantStakeType(t, address, symbol);
-
-                    return stakeType !== 'stake';
-                }),
-            [internalTransfers, address, symbol],
-        );
+        const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
-
-        // join together regular targets, internal and token transfers
-        const allOutputs: (
-            | { type: 'token'; payload: (typeof tokens)[number] }
-            | { type: 'internal'; payload: (typeof filteredInternalTransfers)[number] }
-            | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
-        )[] = [
-            ...tokens
-                .filter(token => token.type !== 'self')
-                .map(t => ({ type: 'token' as const, payload: t })),
-            ...targets.map(t => ({ type: 'target' as const, payload: t })),
-            ...filteredInternalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
-        ];
 
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;

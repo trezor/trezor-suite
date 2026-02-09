@@ -20,7 +20,7 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           type: 'outputLabel';
           entityKey: string;
           txid: string;
-          outputIndex: number | string;
+          outputIndex: string; // not just index, for tokens/internals it can be different stuff
           defaultValue?: string;
           value?: string;
           networkSymbol: string;

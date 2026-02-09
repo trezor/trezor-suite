@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from '@suite/intl';
 import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
+    Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
@@ -35,11 +36,10 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
-import { CombinedTarget } from './TransactionTargetsList';
 import { AmountComponent } from '../../AmountComponent';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
 
-type TransactionTargetProps = CombinedTarget & {
+type TransactionTargetProps = Target & {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
     isActionDisabled?: boolean;
@@ -53,6 +53,7 @@ export const TransactionTarget = ({
     accountKey,
     isActionDisabled,
     isPhishingTransaction,
+    targetId,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
     const { translationString } = useTranslation();
@@ -156,22 +157,9 @@ export const TransactionTarget = ({
         ],
     );
 
-    const metadataId = useMemo(() => {
-        switch (type) {
-            case 'target':
-                return payload.n;
-            case 'token':
-                return `token-${payload.contract}`;
-            case 'internal':
-                return `internal-${payload.to}`;
-            default:
-                return exhaustive(type);
-        }
-    }, [type, payload]);
+    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[`${targetId}`];
 
-    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[metadataId];
-
-    const defaultMetadataValue = `${transaction.txid}-${metadataId}`;
+    const defaultMetadataValue = `${transaction.txid}-${targetId}`;
     const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
 
     const label = useMemo(() => {
@@ -203,8 +191,7 @@ export const TransactionTarget = ({
 
     const outputLabel =
         suiteSyncOutputLabels.find(
-            it =>
-                it.txId === transaction.txid && it.outputIndex.toString() === metadataId.toString(),
+            it => it.txId === transaction.txid && it.outputIndex.toString() === targetId,
         )?.label ?? targetMetadata;
 
     return (
@@ -222,7 +209,7 @@ export const TransactionTarget = ({
                         type: 'outputLabel',
                         entityKey: accountKey,
                         txid: transaction.txid,
-                        outputIndex: metadataId,
+                        outputIndex: `${targetId}`,
                         defaultValue: defaultMetadataValue,
                         value: outputLabel,
                         networkSymbol: transaction.symbol,

@@ -1,30 +1,13 @@
+import { Target } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    InternalTransfer as InternalTransferType,
-    TokenTransfer as TokenTransferType,
-} from '@trezor/blockchain-link-types';
 
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTarget } from './TransactionTarget';
 
-export type CombinedTarget =
-    | {
-          type: 'token';
-          payload: TokenTransferType;
-      }
-    | {
-          type: 'internal';
-          payload: InternalTransferType;
-      }
-    | {
-          type: 'target';
-          payload: WalletAccountTransaction['targets'][number];
-      };
-
 type TransactionTargetsListProps = {
     transaction: WalletAccountTransaction;
-    allOutputs: CombinedTarget[];
+    allOutputs: Target[];
     limit: number;
     defaultLimit: number;
     accountKey: AccountKey;
@@ -43,7 +26,7 @@ export const TransactionTargetsList = ({
 }: TransactionTargetsListProps) => {
     const previewTargets = allOutputs.slice(0, defaultLimit);
 
-    const renderTarget = ({ target, i }: { target: CombinedTarget; i: number }) => {
+    const renderTarget = ({ target, i }: { target: Target; i: number }) => {
         const commonProps = {
             ...target,
             transaction,
