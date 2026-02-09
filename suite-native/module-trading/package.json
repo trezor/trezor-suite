@@ -56,6 +56,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-add-accounts": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
