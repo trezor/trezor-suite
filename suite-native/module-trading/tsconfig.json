@@ -64,6 +64,7 @@
         { "path": "../message-system" },
         { "path": "../module-add-accounts" },
         { "path": "../navigation" },
+        { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
