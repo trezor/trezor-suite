@@ -94,8 +94,8 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.localFirmwares = parseLocalFirmwares(input.localFirmwares);
     }
 
-    if (typeof input.firmwareUpdateSource === 'string') {
-        settings.firmwareUpdateSource = input.firmwareUpdateSource;
+    if (typeof input.firmwareChannel === 'string') {
+        settings.firmwareChannel = input.firmwareChannel;
     }
 
     if (Array.isArray(input.transports)) {

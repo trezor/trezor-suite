@@ -16,7 +16,7 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 
 import { DataManager } from './DataManager';
 import { Features, StrictFeatures } from '../types/device';
-import { FirmwareReleaseConfigInfo, FirmwareUpdateSource } from '../types/firmware';
+import { FirmwareChannel, FirmwareReleaseConfigInfo } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {
@@ -56,7 +56,7 @@ const UNSIGNED_LOCALHOST = {
     BASE_URL: 'http://localhost:3000',
     MIDDLE_PATH: 'firmware/unsigned',
 };
-const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = {
+const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
     production: RELEASES_URL_REMOTE_BASE,
     'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
     'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
@@ -65,7 +65,7 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = 
     'localhost-signed': SIGNED_LOCALHOST,
 };
 
-type OnlineFirmwareBaseUrl = RemoteBaseInfo & { env: FirmwareUpdateSource };
+type OnlineFirmwareBaseUrl = RemoteBaseInfo & { env: FirmwareChannel };
 
 /**
  * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
@@ -75,19 +75,19 @@ type OnlineFirmwareBaseUrl = RemoteBaseInfo & { env: FirmwareUpdateSource };
  *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', env: 'localhost-unsigned' }
  */
 export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
-    const firmwareUpdateSource = DataManager.getSettings('firmwareUpdateSource');
+    const firmwareChannel = DataManager.getSettings('firmwareChannel');
 
-    if (!firmwareUpdateSource) {
-        // If for some reason `firmwareUpdateSource` settings is not set we return production one.
+    if (!firmwareChannel) {
+        // If for some reason `firmwareChannel` settings is not set we return production one.
         return {
             ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            env: 'production' as FirmwareUpdateSource,
+            env: 'production' as FirmwareChannel,
         };
     }
 
     return {
-        ...FIRMWARE_REMOTE_BASE_URLS[firmwareUpdateSource],
-        env: firmwareUpdateSource,
+        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
+        env: firmwareChannel,
     };
 };
 

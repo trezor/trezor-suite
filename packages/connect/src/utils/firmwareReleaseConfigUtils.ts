@@ -5,7 +5,7 @@ import { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
-import { FirmwareUpdateSource } from '../types/firmware';
+import { FirmwareChannel } from '../types/firmware';
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',
@@ -16,7 +16,7 @@ const JWS_CONFIG = {
 
 type JwsInfo = {
     jws: string;
-    env: FirmwareUpdateSource;
+    env: FirmwareChannel;
 };
 
 const fetchRemoteJws = async (): Promise<JwsInfo> => {

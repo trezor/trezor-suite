@@ -48,7 +48,7 @@ export type FirmwareUpdateFlowType =
     | 'manual'
     | 'unknown_flow';
 
-export type FirmwareUpdateSource =
+export type FirmwareChannel =
     | 'production'
     | 'test-unsigned'
     | 'test-unsigned-stable'
