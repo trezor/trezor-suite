@@ -9,17 +9,17 @@ export const normalizeEvents = (
     Object.fromEntries(
         events.map(event => {
             const attributes: Record<string, AttributeDoc> = Object.fromEntries(
-                Object.entries(event.attributes ?? {}).map(
-                    ([name, attribute]: [string, AttributeDef<unknown>]) => [
-                        name,
-                        {
-                            description: attribute.description,
-                            limitations: attribute.limitations,
-                            runtimeType: undefined,
-                            changelog: normalizeChangelog(attribute.changelog),
-                        },
-                    ],
-                ),
+                (
+                    Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]
+                ).map(([name, attribute]) => [
+                    name,
+                    {
+                        description: attribute.description,
+                        limitations: attribute.limitations,
+                        runtimeType: undefined,
+                        changelog: normalizeChangelog(attribute.changelog),
+                    },
+                ]),
             );
 
             return [

@@ -30,9 +30,9 @@ const withPlatform = <T extends Record<string, any>>(events: T, platform: string
     }));
 
 const eventsArray = [
-    ...withPlatform(sharedEvents.default.events, 'shared'),
-    ...withPlatform(desktopEvents.default.events, 'desktop'),
-    ...withPlatform(mobileEvents.default, 'mobile'),
+    ...withPlatform(sharedEvents.events, 'shared'),
+    ...withPlatform(desktopEvents.events, 'desktop'),
+    ...withPlatform(mobileEvents.events, 'mobile'),
 ];
 
 const normalizedEvents = normalizeEvents(eventsArray);
@@ -63,17 +63,17 @@ const attributeTypesByEventName = extractAttributeTypesByEventName({
 });
 
 // eslint-disable-next-line no-console
-console.log('[analytics-docs] attributeTypes events:', Object.keys(attributeTypesByEventName).length);
+console.log(
+    '[analytics-docs] attributeTypes events:',
+    Object.keys(attributeTypesByEventName).length,
+);
 // eslint-disable-next-line no-console
 console.log(
     '[analytics-docs] attributeTypes sample:',
     Object.keys(attributeTypesByEventName).slice(0, 5),
 );
 // eslint-disable-next-line no-console
-console.log(
-    '[analytics-docs] normalizedEvents sample:',
-    Object.keys(normalizedEvents).slice(0, 5),
-);
+console.log('[analytics-docs] normalizedEvents sample:', Object.keys(normalizedEvents).slice(0, 5));
 
 let filled = 0;
 let missing = 0;

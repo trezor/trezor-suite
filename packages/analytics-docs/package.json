@@ -12,12 +12,13 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@trezor/eslint": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.1.0",
         "styled-components": "^6.1.19",
         "ts-morph": "^23.0.0"
     },
     "devDependencies": {
-        "@trezor/eslint": "workspace:*",
         "@vitejs/plugin-react": "^4.7.0",
         "react-dom": "19.1.0",
         "tsx": "^4.20.3",

@@ -1,4 +1,4 @@
-import { List, ListItem, Markdown as MarkdownComponent, Paragraph, Text } from '@trezor/components';
+import { List, Markdown as MarkdownComponent, Paragraph, Text } from '@trezor/components';
 
 type MarkdownProps = {
     children?: string | null;
@@ -17,7 +17,7 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                 </Paragraph>
             ),
             ul: ({ children }) => <List>{children}</List>,
-            li: ({ children }) => <ListItem>{children}</ListItem>,
+            li: ({ children }) => <List.Item>{children}</List.Item>,
         }}
     >
         {childrenMarkdown}
