@@ -18,6 +18,7 @@ export class OutputMetadata extends MetadataBase {
         await this.page.resetMousePosition();
         await expect(this.outputLabel(outputId, txNumber)).toHaveText(/[A-Za-z]+/);
         await this.outputLabel(outputId, txNumber).hover();
+        await this.page.waitForTimeout(500); // edit button is unstable without this wait
         await this.outputLabel(outputId, txNumber).getByTestId(this.editButtonId).click();
     }
 
