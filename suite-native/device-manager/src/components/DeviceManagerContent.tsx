@@ -76,7 +76,7 @@ export const DeviceManagerContent = () => {
         setIsDeviceManagerVisible(false);
 
         analytics.report({
-            type: events.deviceManagerClickEvent.name,
+            type: events.switcherEvent.name,
             payload: {
                 action:
                     selectedDevice.id === PORTFOLIO_TRACKER_DEVICE_ID

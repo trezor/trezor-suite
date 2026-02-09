@@ -181,7 +181,7 @@ export const useTradingBuyForm = ({
         navigateToBuyOffers();
 
         analytics.report({
-            type: events.tradingCompareOffersEvent.name,
+            type: events.tradeCompareOffersEvent.name,
             payload: {
                 type: 'buy',
             },
