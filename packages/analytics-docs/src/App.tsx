@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ import {
     Select,
     intermediaryTheme,
 } from '@trezor/components';
+import { useDebounce } from '@trezor/react-utils';
 
 import analyticsData from './analytics.json';
 import { EventCard } from './components/EventCard';
@@ -53,6 +54,7 @@ function uniqSorted(arr: string[]) {
 
 function parseVer(v?: string) {
     const [a = 0, b = 0, c = 0] = (v ?? '').split('.').map(n => Number(n) || 0);
+
     return [a, b, c] as const;
 }
 
@@ -63,13 +65,16 @@ function cmpVerDesc(va?: string, vb?: string) {
     if (a1 !== a2) return a2 - a1;
     if (b1 !== b2) return b2 - b1;
     if (c1 !== c2) return c2 - c1;
+
     return 0;
 }
 
 export function App() {
     const [query, setQuery] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
     const [platform, setPlatform] = useState<'all' | string>('all');
     const [sort, setSort] = useState<'az' | 'za' | 'added' | 'updated'>('az');
+    const debounce = useDebounce();
 
     const allEvents = useMemo(() => getEventsFromJson(analyticsData), []);
 
@@ -79,7 +84,11 @@ export function App() {
         return ['all', ...uniqSorted(platforms)];
     }, [allEvents]);
 
-    const normalizedQuery = query.trim().toLowerCase();
+    useEffect(() => {
+        debounce(() => setDebouncedQuery(query), 100);
+    }, [query, debounce]);
+
+    const normalizedQuery = debouncedQuery.trim().toLowerCase();
 
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
@@ -109,17 +118,23 @@ export function App() {
 
             if (sort === 'added') {
                 const c = cmpVerDesc(getAdded(a), getAdded(b));
+
                 return c !== 0 ? c : an.localeCompare(bn);
             }
 
             if (sort === 'updated') {
                 const c = cmpVerDesc(getEffectiveUpdated(a), getEffectiveUpdated(b));
+
                 return c !== 0 ? c : an.localeCompare(bn);
             }
 
             return an.localeCompare(bn);
         });
     }, [allEvents, platform, normalizedQuery, sort]);
+    const eventCards = useMemo(
+        () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),
+        [filteredEvents],
+    );
 
     const sorting = [
         {
@@ -198,7 +213,7 @@ export function App() {
                                     {normalizedQuery ? (
                                         <>
                                             {' '}
-                                            matching <strong>{query.trim()}</strong>
+                                            matching <strong>{debouncedQuery.trim()}</strong>
                                         </>
                                     ) : null}
                                 </Paragraph>
@@ -213,11 +228,7 @@ export function App() {
                                 maxWidth={200}
                             />
                         </Row>
-                        <Column gap={20}>
-                            {filteredEvents.map(event => (
-                                <EventCard key={event.name} event={event} />
-                            ))}
-                        </Column>
+                        <Column gap={20}>{eventCards}</Column>
                     </ContentContainer>
                 </Box>
             </Box>

@@ -9,8 +9,8 @@ export const LastUpdatedBadge = ({ children }: LastUpdatedBadgeProps) => {
 
     return (
         <Tooltip content="Last updated in version">
-            <Badge intent="warning" size="small">
-                last updated {children}
+            <Badge intent="warning" size="small" iconLeft="arrowsClockwiseFilled">
+                {children}
             </Badge>
         </Tooltip>
     );
