@@ -1,6 +1,9 @@
+import { useSelector } from 'react-redux';
+
 import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { selectTradingProviderMetadata } from '@suite-common/trading';
 import { Column, InfoSegments, Link, Text, Tooltip } from '@trezor/components';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
@@ -9,8 +12,11 @@ type TradingFooterProps = {
 };
 
 export const TradingFooter = ({ provider }: TradingFooterProps) => {
-    const providerName = provider?.companyName ? (
-        provider.companyName
+    const currentProviderMetadata = useSelector(selectTradingProviderMetadata);
+    const providerMetadata = provider ?? currentProviderMetadata;
+
+    const providerName = providerMetadata?.companyName ? (
+        providerMetadata.companyName
     ) : (
         <Translation id="TR_TERMS_PROVIDER_PLACEHOLDER" />
     );
@@ -23,8 +29,8 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => {
                     values={{
                         provider: providerName,
                         comp: chunks =>
-                            provider?.termsUrl ? (
-                                <Link href={provider.termsUrl}>{providerName}</Link>
+                            providerMetadata?.termsUrl ? (
+                                <Link href={providerMetadata.termsUrl}>{providerName}</Link>
                             ) : (
                                 chunks
                             ),

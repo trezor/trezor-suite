@@ -3,13 +3,11 @@ import { useSelector } from 'react-redux';
 
 import type { ProviderMetadata } from 'invity-api';
 
+import { selectTradingProviderMetadata } from '@suite-common/trading';
 import { AnimatedBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import {
-    selectIsAmountInputActive,
-    selectTradingProviderMetadata,
-} from '@suite-native/trading-state';
+import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
 export type FooterProps = {

@@ -710,3 +710,6 @@ export const selectTradingDetailData = createMemoizedSelector(
         };
     },
 );
+
+export const selectTradingProviderMetadata = (state: TradingRootState) =>
+    state.wallet.trading.currentProviderMetadata;

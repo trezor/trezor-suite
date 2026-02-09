@@ -1,5 +1,5 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
-import type { CryptoId, ProviderMetadata } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
@@ -85,12 +85,6 @@ export const tradingSlice = createSliceWithExtraDeps({
             ) {
                 state.providerConfirmationStatus = newStatus;
             }
-        },
-        setCurrentProviderMetadata: (
-            state,
-            { payload }: PayloadAction<ProviderMetadata | undefined>,
-        ) => {
-            state.currentProviderMetadata = payload;
         },
         clearSelectedAccounts: state => {
             state.buy.tradingAccountKey = undefined;
