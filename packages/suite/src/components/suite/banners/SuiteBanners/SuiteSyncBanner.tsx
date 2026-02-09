@@ -1,8 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
-import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
-import { Banner } from '@trezor/components';
+import { Translation, TranslationKey } from '@suite/intl';
+import {
+    WithSuiteSyncAndDeviceState,
+    selectHasDeviceSuiteSyncError,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { Banner, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -11,83 +16,110 @@ import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { suiteSyncErrorHandler } from '../../labeling/suiteSyncErrorHandler';
 
+type BannerConfig = {
+    testId: string;
+    buttonLabel: TranslationKey;
+    description: TranslationKey;
+};
+
+type SuiteSyncBannerInteraction = 'keys-needed' | 'firmware-upgrade-needed';
+
+const bannerConfigs: Record<SuiteSyncBannerInteraction, BannerConfig> = {
+    'keys-needed': {
+        testId: '@notification/suite-sync-keys/button',
+        buttonLabel: 'TR_SUITE_SYNC_GET_KEYS',
+        description: 'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
+    },
+    'firmware-upgrade-needed': {
+        testId: '@notification/suite-sync-firmware-update/button',
+        buttonLabel: 'TR_SUITE_SYNC_FIRMWARE_UPDATE',
+        description: 'TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER',
+    },
+};
+
+const isBannerInteraction = (interaction: string): interaction is SuiteSyncBannerInteraction =>
+    interaction in bannerConfigs;
+
 type SuiteSyncBannerProps = {
     deviceStaticSessionId: StaticSessionId;
 };
 
-const SuiteSyncKeysBannerContent = ({
-    deviceStaticSessionId,
+const SuiteSyncBannerContent = ({
+    config,
+    isDeviceConnected,
+    onClick,
 }: {
-    deviceStaticSessionId: StaticSessionId;
-}) => {
+    config: BannerConfig;
+    isDeviceConnected: boolean;
+    onClick: () => void;
+}) => (
+    <Banner
+        icon
+        intent="info"
+        rightContent={
+            <Tooltip
+                content={
+                    !isDeviceConnected ? (
+                        <Translation id="TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP" />
+                    ) : undefined
+                }
+            >
+                <Banner.Button
+                    isDisabled={!isDeviceConnected}
+                    onClick={onClick}
+                    data-testid={config.testId}
+                >
+                    <Translation id={config.buttonLabel} />
+                </Banner.Button>
+            </Tooltip>
+        }
+        description={<Translation id={config.description} />}
+    />
+);
+
+export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
 
-    const handleGetKeys = async () => {
-        const result = await suiteSync.ensureWalletSuiteSyncOn({
-            deviceStaticSessionId,
-            isWriteMode: false,
-        });
-
-        if (!result.success) {
-            suiteSyncErrorHandler({
-                error: result.error,
-                dispatch,
-                deviceStaticSessionId,
-            });
-        }
-    };
-
-    return (
-        <Banner
-            icon
-            intent="info"
-            rightContent={
-                <Banner.Button
-                    onClick={handleGetKeys}
-                    data-testid="@notification/suite-sync-keys/button"
-                >
-                    <Translation id="TR_SUITE_SYNC_GET_KEYS" />
-                </Banner.Button>
-            }
-            description={<Translation id="TR_SUITE_SYNC_KEYS_NEEDED_BANNER" />}
-        />
+    const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
+        selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
     );
-};
-
-const SuiteSyncFirmwareUpgradeBannerContent = () => {
-    const dispatch = useDispatch();
-
-    const handleUpdate = () => {
-        dispatch(goto('firmware-index', { params: { cancelable: true } }));
-    };
-
-    return (
-        <Banner
-            icon
-            intent="info"
-            rightContent={
-                <Banner.Button
-                    onClick={handleUpdate}
-                    data-testid="@notification/suite-sync-firmware-upgrade/button"
-                >
-                    <Translation id="TR_SUITE_SYNC_FIRMWARE_UPGRADE" />
-                </Banner.Button>
-            }
-            description={<Translation id="TR_SUITE_SYNC_FIRMWARE_UPGRADE_NEEDED_BANNER" />}
-        />
-    );
-};
-
-export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
     const suiteSyncInteraction = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    switch (suiteSyncInteraction) {
-        case 'keys-needed':
-            return <SuiteSyncKeysBannerContent deviceStaticSessionId={deviceStaticSessionId} />;
-        case 'firmware-upgrade-needed':
-            return <SuiteSyncFirmwareUpgradeBannerContent />;
+    if (!hasSuiteSyncError || !suiteSyncInteraction || !isBannerInteraction(suiteSyncInteraction)) {
+        return null;
     }
+
+    const config = bannerConfigs[suiteSyncInteraction];
+
+    const handlers: Record<SuiteSyncBannerInteraction, () => void> = {
+        'keys-needed': async () => {
+            const result = await suiteSync.ensureWalletSuiteSyncOn({
+                deviceStaticSessionId,
+                isWriteMode: false,
+            });
+
+            if (!result.success) {
+                suiteSyncErrorHandler({
+                    error: result.error,
+                    dispatch,
+                    deviceStaticSessionId,
+                });
+            }
+        },
+        'firmware-upgrade-needed': () => {
+            dispatch(goto('firmware-index', { params: { cancelable: true } }));
+        },
+    };
+
+    return (
+        <SuiteSyncBannerContent
+            config={config}
+            isDeviceConnected={isDeviceConnected}
+            onClick={handlers[suiteSyncInteraction]}
+        />
+    );
 };
