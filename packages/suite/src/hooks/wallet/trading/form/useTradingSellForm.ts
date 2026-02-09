@@ -306,7 +306,7 @@ export const useTradingSellForm = ({
         navigateToSellOffers();
 
         analytics.report({
-            type: events.tradingCompareOffersEvent.name,
+            type: events.tradeCompareOffersEvent.name,
             payload: {
                 type: 'sell',
             },

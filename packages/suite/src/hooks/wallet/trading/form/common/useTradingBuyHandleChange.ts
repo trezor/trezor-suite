@@ -61,7 +61,7 @@ export const useTradingBuyHandleChange = ({
             const quotes = await promise.unwrap();
 
             analytics.report({
-                type: events.tradingReceivedQuotesEvent.name,
+                type: events.tradeReceivedQuotesEvent.name,
                 payload: {
                     type: 'buy',
                     count: quotes?.length ?? 0,

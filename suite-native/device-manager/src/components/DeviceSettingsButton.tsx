@@ -55,7 +55,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
             screen: DeviceSettingsStackRoutes.DeviceSettings,
         });
         analytics.report({
-            type: events.deviceManagerClickEvent.name,
+            type: events.switcherEvent.name,
             payload: { action: 'deviceSettings' },
         });
     };

@@ -1,8 +1,8 @@
 export { createAnalytics, type DesktopAnalyticsDep } from './createAnalytics';
-export type {
-    OnboardingAnalytics,
-    AppUpdateEvent,
-    FirmwareSource,
+export {
+    type OnboardingAnalytics,
+    type AppUpdateEvent,
+    type FirmwareSource,
     AppUpdateEventStatus,
 } from './definitions';
 export { EventType } from './constants';

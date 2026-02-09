@@ -70,7 +70,7 @@ export const EmptyPortfolioCrossroads = () => {
     const handleConnectDevice = () => {
         onConnectDevicePress();
         analytics.report({
-            type: events.emptyDashboardClickEvent.name,
+            type: events.emptyDashboardActionEvent.name,
             payload: { action: 'connectDevice' },
         });
     };
@@ -80,7 +80,7 @@ export const EmptyPortfolioCrossroads = () => {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
         analytics.report({
-            type: events.emptyDashboardClickEvent.name,
+            type: events.emptyDashboardActionEvent.name,
             payload: { action: 'syncCoins' },
         });
     };

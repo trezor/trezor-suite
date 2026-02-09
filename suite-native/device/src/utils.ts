@@ -75,7 +75,7 @@ export const reportDeviceConnectionAnalytics = (
     analytics: Analytics<AnalyticsNativeEvents>,
 ) => {
     analytics.report({
-        type: events.connectDeviceEvent.name,
+        type: events.deviceConnectEvent.name,
         payload: {
             mode: getDeviceMode(device),
             firmwareVersion: getFirmwareVersionArray(device),

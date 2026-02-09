@@ -43,7 +43,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
         onConnectDevicePress();
 
         analytics.report({
-            type: events.deviceManagerClickEvent.name,
+            type: events.switcherEvent.name,
             payload: { action: 'connectDeviceButton' },
         });
     };

@@ -144,7 +144,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
             if (wasVerificationSuccessful) {
-                analytics.report({ type: events.confirmedReceiveAddressEvent.name });
+                analytics.report({ type: events.receiveAddressConfirmOnTrezorEvent.name });
                 setIsReceiveApproved(true);
             } else {
                 setIsUnverifiedAddressRevealed(false);

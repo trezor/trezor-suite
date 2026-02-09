@@ -62,7 +62,7 @@ export const useFirmwareAnalytics = ({
             resetTimeStarted();
 
             analytics.report({
-                type: events.firmwareUpdateStartedEvent.name,
+                type: events.firmwareFirmwareUpdateStartedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     startType,
@@ -75,7 +75,7 @@ export const useFirmwareAnalytics = ({
     const handleAnalyticsReportStucked = useCallback(
         (state: 'modalPart1' | 'modalPart2' | 'buttonVisible') => {
             analytics.report({
-                type: events.firmwareUpdateStuckedEvent.name,
+                type: events.firmwareFirmwareUpdateStuckedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     duration: getElapsedTimeInSeconds(),
@@ -89,7 +89,7 @@ export const useFirmwareAnalytics = ({
     const handleAnalyticsReportFinished = useCallback(
         ({ error }: { error?: string } = {}) => {
             analytics.report({
-                type: events.firmwareUpdateFinishedEvent.name,
+                type: events.firmwareFirmwareUpdateFinishedEvent.name,
                 payload: {
                     ...getAnalyticsPayload(),
                     duration: getElapsedTimeInSeconds(),
@@ -102,7 +102,7 @@ export const useFirmwareAnalytics = ({
 
     const handleAnalyticsReportCancelled = useCallback(() => {
         analytics.report({
-            type: events.firmwareUpdateCancelEvent.name,
+            type: events.firmwareFirmwareUpdateCancelEvent.name,
             payload: getAnalyticsPayload(),
         });
     }, [getAnalyticsPayload, analytics]);

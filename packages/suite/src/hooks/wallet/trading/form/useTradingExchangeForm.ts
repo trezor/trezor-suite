@@ -506,7 +506,7 @@ export const useTradingExchangeForm = ({
         navigateToExchangeOffers();
 
         analytics.report({
-            type: events.tradingCompareOffersEvent.name,
+            type: events.tradeCompareOffersEvent.name,
             payload: {
                 type: 'exchange',
             },
