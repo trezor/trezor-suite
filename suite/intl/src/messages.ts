@@ -1911,6 +1911,10 @@ export const messages = defineMessages({
         defaultMessage: 'Trezor detected in incorrect state. Restart it to reconnect.',
         id: 'TR_NEEDS_ATTENTION_DEVICE_BUSY',
     },
+    TR_NEEDS_ATTENTION_DEVICE_LOCKED: {
+        defaultMessage: 'Trezor is locked. Please unlock it to continue.',
+        id: 'TR_NEEDS_ATTENTION_DEVICE_LOCKED',
+    },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER: {
         defaultMessage: 'Trezor is already in use',
         id: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER',
