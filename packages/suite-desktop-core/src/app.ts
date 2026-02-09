@@ -13,12 +13,12 @@ import { createDeferred, resolveAfter } from '@trezor/utils';
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
 import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
 import { APP_NAME } from './libs/constants';
+import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { loadIndex } from './libs/loadIndex';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
-import { createInterceptor } from './libs/request-interceptor';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store, WinBoundsCoords } from './libs/store';
@@ -177,7 +177,7 @@ const init = async () => {
     await app.whenReady();
 
     // Load bridge module first, it is required in both UI and daemon mode
-    const interceptor = createInterceptor();
+    const interceptor = createElectronSessionInterceptor();
     const mainWindowProxy = new MainWindowProxy();
     const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
         initBackgroundModules({
