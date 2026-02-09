@@ -1408,6 +1408,7 @@
   "TR_NAV_TRADE": "거래",
   "TR_NAV_TRANSACTIONS": "요약",
   "TR_NEEDS_ATTENTION_DEVICE_BUSY": "Trezor가 잘못된 상태로 감지되었습니다. 다시 시작해 재연결하세요.",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor가 잠겨 있습니다. 계속하려면 잠금을 해제하세요.",
   "TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED": "Trezor의 펌웨어가 손상되었습니다. 계속하려면 펌웨어를 다시 설치하세요.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "펌웨어 업데이트가 필요합니다.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor가 아직 설정되지 않았습니다.",

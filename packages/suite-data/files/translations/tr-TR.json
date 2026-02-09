@@ -1229,6 +1229,7 @@
   "TR_NAV_TOKENS": "Token'lar",
   "TR_NAV_TRADE": "Alım-satım işlemi",
   "TR_NAV_TRANSACTIONS": "Genel Bakış",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor kilitli. Devam etmek için lütfen kilidini açın.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Ürün yazılımı güncellemesi gerekli.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor kurulmamıştır.",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "Yeni Trezor bağlandı.",

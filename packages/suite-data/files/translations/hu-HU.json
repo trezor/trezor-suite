@@ -1257,6 +1257,7 @@
   "TR_NAV_TOKENS": "Tokenek",
   "TR_NAV_TRADE": "Kereskedés",
   "TR_NAV_TRANSACTIONS": "Áttekintés",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "A Trezor zárolva van. A folytatáshoz kérjük, oldja fel.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "A firmware frissítése szükséges.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "A Trezor még nincs beállítva.",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "Új Trezor csatlakoztatva.",

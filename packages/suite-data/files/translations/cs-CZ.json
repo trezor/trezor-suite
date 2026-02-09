@@ -1408,6 +1408,7 @@
   "TR_NAV_TRADE": "Obchod",
   "TR_NAV_TRANSACTIONS": "Přehled",
   "TR_NEEDS_ATTENTION_DEVICE_BUSY": "Trezor se nachází v nesprávném stavu. Restartuje jej pro opětovné připojení.",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor je uzamčený. Pokračujte prosím odemknutím.",
   "TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED": "Firmware vašeho Trezoru je poškozen. Pro pokračování přeinstalujte firmware.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Je vyžadována aktualizace firmwaru.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor nebyl nastaven.",
