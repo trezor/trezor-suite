@@ -25,7 +25,7 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
-export type ConnectImpl = Omit<ConnectFactoryDependencies<{}>, 'init'> & {
+export type ConnectImpl = Omit<ConnectFactoryDependencies<{}>, 'init' | 'eventEmitter'> & {
     init: (params: ConnectImplSettings) => Promise<void>;
 };
 
@@ -38,7 +38,7 @@ type TrezorConnectDynamicParams = {
  *
  */
 export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
-    public eventEmitter = new EventEmitter();
+    public readonly eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
     private readonly implementations: Record<ImplType, ConnectImpl>;
@@ -51,9 +51,6 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
     public constructor({ implementations }: TrezorConnectDynamicParams) {
         this.implementations = implementations;
         this.currentTarget = 'core-in-suite-desktop';
-        Object.values(this.implementations).forEach(impl => {
-            impl.eventEmitter = this.eventEmitter;
-        });
     }
 
     public getTarget() {
