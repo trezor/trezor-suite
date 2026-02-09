@@ -5,6 +5,8 @@ import { PageName } from '@suite-common/suite-types';
 import routes from 'src/constants/suite/routes';
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+import { resolveEffectiveBackgroundRouteName } from 'src/utils/suite/router';
 
 type AppRouterProps = {
     components: Record<PageName, ComponentType>;
@@ -12,12 +14,17 @@ type AppRouterProps = {
 
 export const AppRouter = memo(({ components }: AppRouterProps) => {
     const routeName = useSelector(selectRouteName);
+    const route = useSelector(state => state.router.route);
+    const { suiteRouterHistory } = useSuiteServices();
+
+    const resolvedRouteName =
+        resolveEffectiveBackgroundRouteName(route, suiteRouterHistory.getLocation()) ?? routeName;
 
     // Resolve component by route name, with nested routes falling back to parent component
-    let componentName = routeName;
+    let componentName = resolvedRouteName;
     // NOTE: This throws a TS error becuase routeNames also contain foreground app names
-    if (routeName && !Object.prototype.hasOwnProperty.call(components, routeName)) {
-        const current = routes.find(r => r.name === routeName);
+    if (resolvedRouteName && !Object.prototype.hasOwnProperty.call(components, resolvedRouteName)) {
+        const current = routes.find(r => r.name === resolvedRouteName);
         if (current?.isNestedRoute) {
             const parent = routes.find(
                 r => r.hasNestedRoutes && current.pattern.startsWith(`${r.pattern}/`),
