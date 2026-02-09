@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 
-import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
 import {
     CORE_CALL,
     CallMethodAnyResponse,
@@ -85,18 +84,16 @@ export class CoreInSuiteDesktop implements ConnectImpl {
             };
         }
 
-        const parsedManifest = parseManifest(manifest);
-
         // manifest is required in all implementations. for core-in-suite-desktop, also manifest.appName is required
-        if (!parsedManifest || !parsedManifest.appName) {
+        if (!manifest.appName) {
             throw ERRORS.TypedError(
                 'Init_ManifestMissing',
                 'Manifest is missing or manifest.appName is not set',
             );
         }
 
-        this.manifest = parsedManifest;
-        this.version = parseVersion(version);
+        this.manifest = manifest;
+        this.version = version;
 
         return await this.connect();
     }

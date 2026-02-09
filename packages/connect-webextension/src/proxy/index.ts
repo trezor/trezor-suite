@@ -4,11 +4,12 @@ import EventEmitter from 'events';
 import {
     CORE_CALL,
     CallMethod,
-    ConnectSettings,
+    ConnectSettingsWebextension,
     POPUP,
     createErrorMessage,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
+import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
@@ -27,7 +28,7 @@ const cancel = () => {
     }
 };
 
-const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
+const init = (settings: ConnectDynamicSettings & ConnectSettingsWebextension): Promise<void> => {
     if (!_channel) {
         _channel = new WindowServiceWorkerChannel({
             name: 'trezor-connect-proxy',
