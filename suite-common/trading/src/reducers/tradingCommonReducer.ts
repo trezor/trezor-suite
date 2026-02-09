@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
+import { Coins, CryptoId, InfoResponse, Platforms, type ProviderMetadata } from 'invity-api';
 
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
@@ -61,6 +61,7 @@ export interface TradingState {
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
     settings: TradingSettingsState;
+    currentProviderMetadata?: ProviderMetadata;
 }
 
 export type TradingRootState = {
@@ -143,6 +144,12 @@ const tradingCommonSlice = createSlice({
         },
         setVerifiedAddress(state, action: PayloadAction<TradingVerifiedAddress>) {
             state.verifiedAddress = action.payload;
+        },
+        setCurrentProviderMetadata: (
+            state,
+            { payload }: PayloadAction<ProviderMetadata | undefined>,
+        ) => {
+            state.currentProviderMetadata = payload;
         },
     },
 });

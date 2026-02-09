@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { tradingBuyActions } from '@suite-common/trading';
+import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
@@ -22,11 +22,7 @@ import {
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import {
-    buyActions,
-    selectTradingProviderMetadata,
-    selectTradingResidenceCountry,
-} from '@suite-native/trading-state';
+import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { BuyFormType, TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 

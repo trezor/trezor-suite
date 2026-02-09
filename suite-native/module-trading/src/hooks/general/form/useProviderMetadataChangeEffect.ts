@@ -7,8 +7,9 @@ import {
     type TradingRootState,
     TradingType,
     selectTradingProviderByNameAndTradeType,
+    selectTradingProviderMetadata,
+    tradingActions,
 } from '@suite-common/trading';
-import { selectTradingProviderMetadata, tradingActions } from '@suite-native/trading-state';
 
 export type QuoteProviderFormWatch = (key: 'quote.exchange') => string | undefined;
 
