@@ -14,19 +14,23 @@ import {
     intermediaryTheme,
 } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
+import { hexToRgba } from '@trezor/utils';
 
 import analyticsData from './analytics.json';
 import { EventCard } from './components/EventCard';
 import { GlobalStyle } from './components/GlobalStyle';
 import type { EventDoc } from './types';
+import { getPlatformIcon } from './utils';
 
 const TopBar = styled.div`
     gap: 12px;
     position: sticky;
-    top: 0px;
+    top: 0;
     z-index: 100;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    padding: 12px 24px 12px 24px;
+    background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    backdrop-filter: blur(20px);
+    padding: 12px 24px;
 `;
 
 const ContentContainer = styled.div`
@@ -39,6 +43,51 @@ type AnalyticsJsonShape = {
     events?: Record<string, EventDoc>;
 };
 
+const sorting = [
+    {
+        value: 'az',
+        label: 'Alphabetical (A-Z)',
+    },
+    {
+        value: 'za',
+        label: 'Alphabetical (Z-A)',
+    },
+    {
+        value: 'added',
+        label: 'Added',
+    },
+    {
+        value: 'updated',
+        label: 'Last updated',
+    },
+];
+
+const PlatformItemSelect = ({ platform }: { platform: string }) => (
+    <Row alignItems="center" gap={8}>
+        <Icon name={getPlatformIcon(platform)} size="medium" />
+        {platform}
+    </Row>
+);
+
+const platforms = [
+    {
+        value: 'all',
+        label: 'All',
+    },
+    {
+        value: 'desktop',
+        label: <PlatformItemSelect platform="desktop" />,
+    },
+    {
+        value: 'mobile',
+        label: <PlatformItemSelect platform="mobile" />,
+    },
+    {
+        value: 'shared',
+        label: <PlatformItemSelect platform="shared" />,
+    },
+];
+
 function getEventsFromJson(input: unknown): EventDoc[] {
     const data = input as AnalyticsJsonShape;
 
@@ -46,10 +95,6 @@ function getEventsFromJson(input: unknown): EventDoc[] {
     if (!data.events || typeof data.events !== 'object') return [];
 
     return Object.values(data.events);
-}
-
-function uniqSorted(arr: string[]) {
-    return Array.from(new Set(arr)).sort((a, b) => a.localeCompare(b));
 }
 
 function parseVer(v?: string) {
@@ -78,14 +123,8 @@ export function App() {
 
     const allEvents = useMemo(() => getEventsFromJson(analyticsData), []);
 
-    const allPlatforms = useMemo(() => {
-        const platforms = allEvents.flatMap(e => e.platform ?? []);
-
-        return ['all', ...uniqSorted(platforms)];
-    }, [allEvents]);
-
     useEffect(() => {
-        debounce(() => setDebouncedQuery(query), 100);
+        debounce(() => setDebouncedQuery(query));
     }, [query, debounce]);
 
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
@@ -136,98 +175,73 @@ export function App() {
         [filteredEvents],
     );
 
-    const sorting = [
-        {
-            value: 'az',
-            label: 'Alphabetical (A-Z)',
-        },
-        {
-            value: 'za',
-            label: 'Alphabetical (Z-A)',
-        },
-        {
-            value: 'added',
-            label: 'Added',
-        },
-        {
-            value: 'updated',
-            label: 'Last updated',
-        },
-    ];
-
     return (
         <>
             <GlobalStyle theme={{ variant: 'dark', ...intermediaryTheme.dark }} />
             <Box minHeight="100vh">
                 <TopBar>
                     <ContentContainer>
-                        <Row justifyContent="space-between" gap={20}>
-                            <Row gap={16} alignItems="center">
-                                <H2>Analytics events docs</H2>
-                                <Icon name="bookOpen" />
-                            </Row>
-                            <Row gap={8}>
-                                <Input
-                                    value={query}
-                                    size="small"
-                                    onChange={e => setQuery(e.target.value)}
-                                    placeholder="Search"
-                                    showClearButton="always"
-                                    onClear={() => setQuery('')}
-                                />
+                        <Column gap={12}>
+                            <Row justifyContent="space-between" gap={20}>
+                                <Row gap={16} alignItems="center">
+                                    <H2>Analytics events docs</H2>
+                                    <Icon name="bookOpen" />
+                                </Row>
+                                <Row gap={8}>
+                                    <Input
+                                        value={query}
+                                        size="small"
+                                        onChange={e => setQuery(e.target.value)}
+                                        placeholder="Search"
+                                        showClearButton="always"
+                                        onClear={() => setQuery('')}
+                                    />
 
+                                    <Select
+                                        placeholder="Platform"
+                                        onChange={option => {
+                                            setPlatform(option.value);
+                                        }}
+                                        aria-label="Platform filter"
+                                        size="small"
+                                        options={platforms}
+                                    />
+                                </Row>
+                            </Row>
+                            <Row justifyContent="space-between" gap={16} alignItems="center">
+                                <Box width="100%">
+                                    <Paragraph typographyStyle="label" variant="tertiary" flex="1">
+                                        Showing <strong>{filteredEvents.length}</strong> of{' '}
+                                        <strong>{allEvents.length}</strong> events
+                                        {platform !== 'all' ? (
+                                            <>
+                                                {' '}
+                                                for platform <strong>{platform}</strong>
+                                            </>
+                                        ) : null}
+                                        {normalizedQuery ? (
+                                            <>
+                                                {' '}
+                                                matching <strong>{debouncedQuery.trim()}</strong>
+                                            </>
+                                        ) : null}
+                                    </Paragraph>
+                                </Box>
                                 <Select
-                                    placeholder="Platform"
+                                    placeholder="Sort by"
                                     onChange={option => {
-                                        setPlatform(option.value);
+                                        setSort(option.value);
                                     }}
-                                    aria-label="Platform filter"
                                     size="small"
-                                    options={allPlatforms.map(p => ({
-                                        value: p,
-                                        label: p,
-                                    }))}
+                                    options={sorting}
+                                    maxWidth={200}
                                 />
                             </Row>
-                        </Row>
+                        </Column>
                     </ContentContainer>
                 </TopBar>
                 <Box padding={24}>
                     <ContentContainer>
-                        <Row
-                            justifyContent="space-between"
-                            gap={16}
-                            margin={{ bottom: 16 }}
-                            alignItems="center"
-                        >
-                            <Box width="100%">
-                                <Paragraph typographyStyle="label" variant="tertiary" flex="1">
-                                    Showing <strong>{filteredEvents.length}</strong> of{' '}
-                                    <strong>{allEvents.length}</strong> events
-                                    {platform !== 'all' ? (
-                                        <>
-                                            {' '}
-                                            for platform <strong>{platform}</strong>
-                                        </>
-                                    ) : null}
-                                    {normalizedQuery ? (
-                                        <>
-                                            {' '}
-                                            matching <strong>{debouncedQuery.trim()}</strong>
-                                        </>
-                                    ) : null}
-                                </Paragraph>
-                            </Box>
-                            <Select
-                                placeholder="Sort by"
-                                onChange={option => {
-                                    setSort(option.value);
-                                }}
-                                size="small"
-                                options={sorting}
-                                maxWidth={200}
-                            />
-                        </Row>
                         <Column gap={20}>{eventCards}</Column>
                     </ContentContainer>
                 </Box>

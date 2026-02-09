@@ -9,17 +9,7 @@ import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { useChangelogButton } from '../useChangelogButton';
 import { Markdown } from './Markdown';
-
-const getIcon = (platform: string) => {
-    switch (platform) {
-        case 'mobile':
-            return 'deviceMobile';
-        case 'desktop':
-            return 'desktop';
-        default:
-            return 'desktopTower';
-    }
-};
+import { getPlatformIcon } from '../utils';
 
 const getPlatformDirectory = (platform: string) => {
     switch (platform) {
@@ -90,7 +80,11 @@ const Header = ({ event }: { event: EventDoc }) => {
                     <AddedBadge>{event.changelog.addedInVersion}</AddedBadge>
                     <LastUpdatedBadge>{event.changelog.lastUpdatedInVersion}</LastUpdatedBadge>
 
-                    <Badge size="small" intent="neutral" iconRight={getIcon(event.platform)}>
+                    <Badge
+                        size="small"
+                        intent="neutral"
+                        iconRight={getPlatformIcon(event.platform)}
+                    >
                         {event.platform}
                     </Badge>
                 </Row>
