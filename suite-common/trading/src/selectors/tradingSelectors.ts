@@ -738,3 +738,6 @@ export const selectTradingLastErrorMessageByTradeType = (
             exhaustive(tradingType, 'Unexpected trade type');
     }
 };
+
+export const selectTradingProviderMetadata = (state: TradingRootState) =>
+    state.wallet.trading.currentProviderMetadata;

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useProviderMetadataChangeEffect } from '@suite-common/trading';
 import { Column, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -33,6 +34,11 @@ export const TradingSelectedOfferProvider = () => {
 
     const providers = getProvidersInfoProps(context);
     const quote = preselectedQuote ?? getSelectedQuote(context);
+
+    useProviderMetadataChangeEffect(
+        type,
+        quote == null || isAmountEmpty ? undefined : quote?.exchange,
+    );
 
     const onGoToOffers = async () => {
         await goToOffers();

@@ -1,6 +1,6 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { tradingExchangeActions } from '@suite-common/trading';
+import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -19,7 +19,7 @@ import {
     getWalletState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { exchangeActions, selectTradingProviderMetadata } from '@suite-native/trading-state';
+import { exchangeActions } from '@suite-native/trading-state';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 

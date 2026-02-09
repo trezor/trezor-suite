@@ -6,6 +6,7 @@ import {
     InvityServerEnvironment,
     TradingCountryCode,
     TradingRootStateWithDeviceAndAccounts,
+    selectTradingProviderMetadata,
 } from '@suite-common/trading';
 import {
     AccountsRootState,
@@ -46,7 +47,6 @@ import {
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
     selectTradingProviderConfirmationStatus,
-    selectTradingProviderMetadata,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from '../commonSelectors';
 
