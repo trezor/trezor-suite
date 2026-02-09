@@ -7,7 +7,6 @@ import { parseConnectSrc, parseManifest, parseVersion } from '../data/connectSet
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings } from '../types';
-import type { SetTransports } from '../types/api/setTransports';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;
@@ -25,7 +24,10 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
-export type ConnectImpl = Omit<ConnectFactoryDependencies<{}>, 'init' | 'eventEmitter'> & {
+export type ConnectImpl = Omit<
+    ConnectFactoryDependencies<{}>,
+    'init' | 'eventEmitter' | 'uiResponse' | 'setTransports'
+> & {
     init: (params: ConnectImplSettings) => Promise<void>;
 };
 
@@ -116,10 +118,6 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
         }
     }
 
-    public setTransports({ transports }: SetTransports) {
-        this.getTarget().setTransports({ transports });
-    }
-
     public async call(params: CallMethodPayload) {
         try {
             // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
@@ -143,10 +141,6 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
         } finally {
             this.callPending--;
         }
-    }
-
-    public uiResponse(params: any) {
-        return this.getTarget().uiResponse(params);
     }
 
     public cancel(error?: string) {
@@ -199,5 +193,15 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
         }
 
         return false;
+    }
+
+    // not supported, transports are controlled by suite
+    public setTransports() {
+        throw new Error('Method_InvalidPackage');
+    }
+
+    // this shouldn't be needed, ui response should be handled in suite
+    public uiResponse() {
+        throw ERRORS.TypedError('Method_InvalidPackage');
     }
 }
