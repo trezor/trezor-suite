@@ -17,6 +17,7 @@
         "ts-morph": "^23.0.0"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "@vitejs/plugin-react": "^4.7.0",
         "react-dom": "19.1.0",
         "tsx": "^4.20.3",

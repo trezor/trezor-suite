@@ -5,7 +5,7 @@ import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { useChangelogButton } from '../useChangelogButton';
 import { Markdown } from './Markdown';
-import { AttributeDoc } from '../normalizeEvents';
+import type { AttributeDoc } from '../types';
 
 type AttributesTableRowProps = {
     k: string;
@@ -27,7 +27,7 @@ export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) =
                 </Table.Cell>
                 <Table.Cell>
                     <Text typographyStyle="label" isMonospaced>
-                        {attribute.runtimeType}
+                        <pre>{attribute.runtimeType}</pre>
                     </Text>
                 </Table.Cell>
 

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 import * as desktopEvents from '@suite/analytics';
 import * as sharedEvents from '@suite-common/analytics';
-import * as mobileEvents from '@suite-native/analytics/src/events'; // @TODO
+import * as mobileEvents from '@suite-native/analytics';
 
 import { extractAttributeTypesByEventName, findPackageRoot, findUp } from './extractAttributeTypes';
 import { normalizeEvents } from '../src/normalizeEvents';

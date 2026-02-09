@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { normalizeChangelog } from './normalizeChangelog';
-import { AttributeDoc, EventDoc } from './types';
+import type { AttributeDoc, EventDoc } from './types';
 
 export const normalizeEvents = (
     events: Array<EventDef<any, any> & { platform?: string }>,
@@ -35,3 +35,5 @@ export const normalizeEvents = (
             ];
         }),
     );
+
+export { AttributeDoc };
