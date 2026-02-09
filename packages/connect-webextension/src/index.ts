@@ -1,21 +1,11 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import {
-    ConnectSettings,
-    ConnectSettingsPublic,
-    ConnectSettingsWebextension,
-    Manifest,
-    POPUP,
-} from '@trezor/connect/src/exports';
+import { ConnectSettingsWebextension, POPUP } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { ConnectImplSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import { ConnectDynamicSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
-
-import { parseConnectSettings } from './connectSettings';
-
-const _settings = parseConnectSettings();
 
 const impl = new TrezorConnectDynamic<
     'core-in-suite-desktop' | 'core-in-suite-web',
@@ -31,15 +21,15 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInSuiteWeb(),
         },
     ],
-    getInitTarget: ({ coreMode }: ConnectImplSettings & ConnectSettingsWebextension) => {
+    getInitTarget: ({ coreMode }: ConnectSettingsWebextension) => {
         if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else {
             return 'core-in-suite-web';
         }
     },
-    handleBeforeInit: () => {
-        if (impl.lastSettings?._extendWebextensionLifetime) {
+    handleBeforeInit: ({ _extendWebextensionLifetime }: ConnectSettingsWebextension) => {
+        if (_extendWebextensionLifetime) {
             // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
             // We could make it to be continuously alive but it is probably overkilling.
             // https://developer.chrome.com/blog/longer-esw-lifetimes
@@ -48,12 +38,9 @@ const impl = new TrezorConnectDynamic<
             chrome.runtime.onMessage.addListener(() => false);
         }
     },
-    handleBeforeCall: async () => {
+    handleBeforeCall: async ({ coreMode }: ConnectSettingsWebextension = {}) => {
         // Always try if desktop is available again
-        const isCoreModeDesktop = impl.lastSettings?.coreMode === 'suite-desktop';
-        const isCoreModeAuto =
-            impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
-        if (isCoreModeDesktop || isCoreModeAuto) {
+        if (coreMode === 'suite-desktop' || coreMode === 'auto' || coreMode === undefined) {
             await impl.switchTarget('core-in-suite-desktop');
         }
     },
@@ -87,7 +74,7 @@ const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{
         type: string;
         method: keyof typeof TrezorConnect;
-        settings: { manifest: Manifest } & Partial<ConnectSettings>;
+        settings: ConnectDynamicSettings & ConnectSettingsWebextension;
     }>({
         name: 'trezor-connect-proxy',
         channel: {
@@ -98,7 +85,7 @@ const initProxyChannel = () => {
         allowSelfOrigin: true,
     });
 
-    let proxySettings: ConnectSettings = parseConnectSettings();
+    let proxySettings: ConnectDynamicSettings & ConnectSettingsWebextension;
 
     channel.init();
     channel.on('message', message => {
@@ -107,17 +94,13 @@ const initProxyChannel = () => {
         const { method, settings } = payload;
 
         if (type === POPUP.INIT) {
-            proxySettings = parseConnectSettings({ ..._settings, ...settings });
+            proxySettings = settings;
 
             return;
         }
 
         // Core is loaded in popup and initialized every time, so we send the settings from here.
-        TrezorConnect.init(
-            proxySettings as { manifest: Manifest } & Partial<
-                ConnectSettingsPublic & ConnectSettingsWebextension
-            >,
-        ).then(() => {
+        impl.init({ env: 'webextension', ...proxySettings }).then(() => {
             (TrezorConnect as any)[method](payload).then((response: any) => {
                 channel.postMessage({
                     ...response,

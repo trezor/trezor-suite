@@ -1,11 +1,7 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import {
-    corsValidator,
-    parseManifest,
-    parseVersion,
-} from '@trezor/connect/src/data/connectSettings';
+import { corsValidator } from '@trezor/connect/src/data/connectSettings';
 import {
     CORE_CALL,
     CallMethodAnyResponse,
@@ -49,18 +45,14 @@ export class CoreInSuiteWeb implements ConnectImpl {
 
     public init({ env, manifest, version, connectSrc, debug }: ConnectImplSettings): Promise<void> {
         const globalSrc = getGlobalConnectSrc();
-        const parsedManifest = parseManifest(manifest);
 
         this.logger.enabled = !!debug || !!globalSrc;
 
-        if (!parsedManifest) {
-            throw ERRORS.TypedError('Init_ManifestMissing');
-        }
         if (!this._popupManager) {
             this._popupManager = new PopupManager({
-                env: typeof env === 'string' ? env : getEnv(),
-                version: parseVersion(version),
-                manifest: parsedManifest,
+                manifest,
+                version,
+                env: env ?? getEnv(),
                 popupSrc: this.getSuiteUrl(globalSrc || connectSrc),
                 logger: this.logger,
             });

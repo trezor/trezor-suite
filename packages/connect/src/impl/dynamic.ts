@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
+import { parseConnectSrc, parseManifest, parseVersion } from '../data/connectSettings';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings, ConnectSettingsWeb } from '../types';
@@ -10,11 +11,13 @@ import type { SetTransports } from '../types/api/setTransports';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;
+    version: NonNullable<ConnectSettings['version']>;
     env?: ConnectSettings['env'];
-    version?: ConnectSettings['version'];
-    connectSrc?: ConnectSettings['connectSrc'];
     debug?: ConnectSettings['debug'];
+    connectSrc?: ConnectSettings['connectSrc'];
 };
+
+export type ConnectDynamicSettings = Partial<ConnectImplSettings>;
 
 export type ConnectImpl = Omit<ConnectFactoryDependencies<ConnectSettingsWeb>, 'init'> & {
     init: (params: ConnectImplSettings) => Promise<void>;
@@ -25,9 +28,9 @@ type TrezorConnectDynamicParams<ImplType, ExtraSettings extends Record<string, a
         type: ImplType;
         impl: ConnectImpl;
     }[];
-    getInitTarget: (settings: ConnectImplSettings & ExtraSettings) => ImplType;
-    handleBeforeInit?: () => void;
-    handleBeforeCall: () => Promise<void>;
+    getInitTarget: (settings: ExtraSettings) => ImplType;
+    handleBeforeInit?: (settings: ExtraSettings) => void;
+    handleBeforeCall: (settings?: ExtraSettings) => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
 };
 
@@ -57,7 +60,8 @@ export class TrezorConnectDynamic<
         ExtraSettings
     >['handleErrorFallback'];
 
-    public lastSettings?: ConnectImplSettings & ExtraSettings;
+    private lastSettings?: ExtraSettings;
+    private implSettings?: ConnectImplSettings;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
 
@@ -92,7 +96,7 @@ export class TrezorConnectDynamic<
             return;
         }
 
-        if (!this.lastSettings) {
+        if (!this.implSettings || !this.lastSettings) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
@@ -101,32 +105,40 @@ export class TrezorConnectDynamic<
         const oldTarget = this.getTarget();
         try {
             this.currentTarget = target;
-            this.handleBeforeInit?.();
-            await this.getTarget().init(this.lastSettings);
+            this.handleBeforeInit?.(this.lastSettings);
+            await this.getTarget().init(this.implSettings);
             await oldTarget.dispose();
         } catch {
             this.currentTarget = oldTargetType;
         }
     }
 
-    public async init(settings: ConnectImplSettings & ExtraSettings) {
-        const { manifest, connectSrc, debug, env, version } = settings;
+    public async init(settings: ConnectDynamicSettings & ExtraSettings) {
+        this.lastSettings = settings;
+
+        const manifest = parseManifest(settings.manifest);
 
         if (!manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
         // Save settings for later use
-        this.lastSettings = settings;
+        this.implSettings = {
+            manifest,
+            env: settings.env,
+            debug: settings.debug,
+            version: parseVersion(settings.version),
+            connectSrc: parseConnectSrc(settings.connectSrc),
+        };
 
-        this.currentTarget = this.getInitTarget(this.lastSettings);
+        this.currentTarget = this.getInitTarget(settings);
         this.callPending = 0;
 
         // Initialize the target
         try {
-            this.handleBeforeInit?.();
+            this.handleBeforeInit?.(settings);
 
-            return await this.getTarget().init({ manifest, connectSrc, debug, env, version });
+            return await this.getTarget().init(this.implSettings);
         } catch (error) {
             // Handle error by switching to other implementation if available as defined in `handleErrorFallback`.
             if (await this.handleErrorFallback(error.code)) {
@@ -147,7 +159,7 @@ export class TrezorConnectDynamic<
             if (this.callPending === 0) {
                 await this.beforeCallSynchronize(async () => {
                     this.callPending++;
-                    await this.handleBeforeCall();
+                    await this.handleBeforeCall(this.lastSettings);
                 });
             }
             const response = await this.getTarget().call(params);

@@ -1,6 +1,6 @@
 import type { ConnectSettingsWeb } from '@trezor/connect';
 import { factory } from '@trezor/connect/src/factory';
-import { ConnectImplSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
@@ -19,7 +19,7 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInSuiteWeb(),
         },
     ],
-    getInitTarget: ({ coreMode }: ConnectImplSettings & ConnectSettingsWeb) => {
+    getInitTarget: ({ coreMode }: ConnectSettingsWeb) => {
         if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else if (coreMode === 'suite-web') {
@@ -32,12 +32,9 @@ const impl = new TrezorConnectDynamic<
             return 'core-in-suite-desktop';
         }
     },
-    handleBeforeCall: async () => {
+    handleBeforeCall: async ({ coreMode }: ConnectSettingsWeb = {}) => {
         // Always try if desktop is available again
-        const isCoreModeDesktop = impl.lastSettings?.coreMode === 'suite-desktop';
-        const isCoreModeAuto =
-            impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
-        if (isCoreModeDesktop || isCoreModeAuto) {
+        if (coreMode === 'suite-desktop' || coreMode === 'auto' || coreMode === undefined) {
             await impl.switchTarget('core-in-suite-desktop');
         }
     },

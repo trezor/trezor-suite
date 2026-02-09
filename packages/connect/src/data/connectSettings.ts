@@ -77,6 +77,9 @@ export const corsValidator = (url?: string) => {
         return url;
 };
 
+export const parseConnectSrc = (connectSrc?: string) =>
+    typeof connectSrc === 'string' ? corsValidator(connectSrc) : DEFAULT_DOMAIN;
+
 export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     const settings: ConnectSettings = { ...initialSettings };
     if ('debug' in input) {
