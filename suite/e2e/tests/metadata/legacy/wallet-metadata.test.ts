@@ -1,5 +1,5 @@
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 const standardWalletIndex = 0;
 const hiddenWalletIndex = 1;

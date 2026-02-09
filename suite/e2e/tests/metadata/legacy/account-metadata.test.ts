@@ -1,6 +1,6 @@
-import { AccountLabelId } from '../../support/enums/accountLabelId';
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { AccountLabelId } from '../../../support/enums/accountLabelId';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 // Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow

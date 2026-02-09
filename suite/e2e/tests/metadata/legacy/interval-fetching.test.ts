@@ -1,8 +1,8 @@
 import * as METADATA_LABELING from '@trezor/suite/src//actions/suite/metadata/metadataLabelingConstants';
 
-import { AccountLabelId } from '../../support/enums/accountLabelId';
-import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { AccountLabelId } from '../../../support/enums/accountLabelId';
+import { expect, test } from '../../../support/fixtures';
+import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 const providers = [
     {
