@@ -21,7 +21,7 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
@@ -164,7 +164,7 @@ export interface SuiteDBSchema extends DBSchema {
     firmware: {
         key: 'firmware';
         value: {
-            firmwareUpdateSource: FirmwareUpdateSource;
+            firmwareChannel: FirmwareChannel;
         };
     };
     persistentDeviceData: {

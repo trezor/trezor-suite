@@ -31,7 +31,7 @@ const getInitialState = () => ({
         selectedDevice: device,
     },
     messageSystem: messageSystemInitialState,
-    firmware: { firmwareUpdateSource: 'production' },
+    firmware: { firmwareChannel: 'production' },
 });
 
 type State = ReturnType<typeof getInitialState>;

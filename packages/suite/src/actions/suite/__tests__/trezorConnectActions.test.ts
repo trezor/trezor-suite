@@ -31,7 +31,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         },
     },
     messageSystem: messageSystemInitialState,
-    firmware: { firmwareUpdateSource: 'production' },
+    firmware: { firmwareChannel: 'production' },
 });
 
 type State = ReturnType<typeof getInitialState>;

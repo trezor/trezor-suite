@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
+import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
 import { Column, Text } from '@trezor/components';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -12,10 +12,10 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const FirmwareUpdateEnvironmentSelect = () => {
-    const firmwareUpdateSource = useSelector(selectFirmwareUpdateSource);
+    const firmwareChannel = useSelector(selectFirmwareChannel);
     const dispatch = useDispatch();
 
-    const options: { label: string; value: FirmwareUpdateSource }[] = [
+    const options: { label: string; value: FirmwareChannel }[] = [
         { label: 'Production', value: 'production' },
         { label: 'Test Unsigned', value: 'test-unsigned' },
         { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
@@ -23,21 +23,20 @@ export const FirmwareUpdateEnvironmentSelect = () => {
         { label: 'Localhost Signed', value: 'localhost-signed' },
         { label: 'Localhost Unsigned', value: 'localhost-unsigned' },
     ];
-    const selectedOption =
-        options.find(option => option.value === firmwareUpdateSource) || options[0];
+    const selectedOption = options.find(option => option.value === firmwareChannel) || options[0];
 
-    const handleChange = (item: { value: FirmwareUpdateSource }) => {
-        dispatch(firmwareActions.setFirmwareUpdateSource(item.value));
+    const handleChange = (item: { value: FirmwareChannel }) => {
+        dispatch(firmwareActions.setFirmwareChannel(item.value));
     };
 
     return (
         <SectionItem>
             <TextColumn
-                title="Firmware Update Source"
+                title="Firmware Channel"
                 description={
                     <Column gap={4}>
                         <Text>
-                            Set firmware update source for testing unsigned and signed. Remember you
+                            Set firmware channel for testing unsigned and signed. Remember you
                             have to reload the web app or desktop in order for it to be fully
                             applied.
                         </Text>
