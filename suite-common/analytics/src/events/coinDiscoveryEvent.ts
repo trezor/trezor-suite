@@ -11,6 +11,7 @@ type Attributes = {
     numberOfNonZeroAccounts: AttributeDef<number>;
     tokenSymbols: AttributeDef<TokenSymbol[]>;
     tokenAddresses: AttributeDef<TokenAddress[]>;
+    numberOfStakedAccounts: AttributeDef<number>;
 };
 
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
@@ -42,6 +43,10 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
         tokenSymbols: {
             changelog: [{ version: '26.2.0', notes: 'added' }],
             description: 'Token symbols',
+        },
+        numberOfStakedAccounts: {
+            changelog: [{ version: '26.2.0', notes: 'added' }],
+            description: 'Number of staked accounts',
         },
     },
 };

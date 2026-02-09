@@ -21,7 +21,10 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { Account, DiscoveryStatus, TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
-import { getAccountsWithSomeTransactionHistory } from '@suite-common/wallet-utils';
+import {
+    getAccountTotalStakingBalance,
+    getAccountsWithSomeTransactionHistory,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -32,6 +35,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 import { typedObjectEntries } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
@@ -297,6 +301,9 @@ const trackCompleteDiscoveryResult = (
                         account =>
                             account.tokens?.map(token => toTokenAddress(token.contract)) ?? [],
                     ),
+                    numberOfStakedAccounts: accounts.filter(account =>
+                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
+                    ).length,
                 },
             });
         }
