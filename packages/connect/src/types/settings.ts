@@ -72,12 +72,10 @@ export interface ConnectSettingsInternal {
 }
 
 export interface ConnectSettingsWeb {
-    hostLabel?: string;
     coreMode?: 'auto' | 'deeplink' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsWebextension {
     /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
-    _extendWebextensionLifetime?: boolean;
     coreMode?: 'auto' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsMobile {

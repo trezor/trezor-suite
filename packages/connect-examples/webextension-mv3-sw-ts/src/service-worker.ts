@@ -19,7 +19,6 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
         },
         transports: ['BridgeTransport', 'WebUsbTransport'], // Transport protocols to be used
         connectSrc,
-        _extendWebextensionLifetime: true, // Makes the service worker in @trezor/connect-webextension stay alive longer.
     });
 
     // Event listener for messages from other parts of the extension

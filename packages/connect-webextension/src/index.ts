@@ -28,16 +28,6 @@ const impl = new TrezorConnectDynamic<
             return 'core-in-suite-web';
         }
     },
-    handleBeforeInit: ({ _extendWebextensionLifetime }: ConnectSettingsWebextension) => {
-        if (_extendWebextensionLifetime) {
-            // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
-            // We could make it to be continuously alive but it is probably overkilling.
-            // https://developer.chrome.com/blog/longer-esw-lifetimes
-            // https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#keep-sw-alive
-            // https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
-            chrome.runtime.onMessage.addListener(() => false);
-        }
-    },
     handleBeforeCall: async ({ coreMode }: ConnectSettingsWebextension = {}) => {
         // Always try if desktop is available again
         if (coreMode === 'suite-desktop' || coreMode === 'auto' || coreMode === undefined) {
