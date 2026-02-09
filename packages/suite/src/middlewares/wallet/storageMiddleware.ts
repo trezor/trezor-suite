@@ -315,7 +315,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
-                case SUITE.SET_STAKING_DASHBOARD_COLLAPSED:
                 case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:

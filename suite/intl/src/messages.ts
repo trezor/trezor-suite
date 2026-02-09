@@ -8896,25 +8896,45 @@ export const messages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-    TR_STAKING_DASHBOARD_TITLE: {
-        id: 'TR_STAKING_DASHBOARD_TITLE',
+    TR_EARN_STAKING_DASHBOARD_TITLE: {
+        id: 'TR_EARN_STAKING_DASHBOARD_TITLE',
         defaultMessage: 'Staking',
     },
-    TR_STAKING_DASHBOARD_TEXT: {
-        id: 'TR_STAKING_DASHBOARD_TEXT',
+    TR_EARN_STAKING_DASHBOARD_TEXT: {
+        id: 'TR_EARN_STAKING_DASHBOARD_TEXT',
         defaultMessage:
             'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
     },
-    TR_STAKING_DASHBOARD_ACTIVE: {
-        id: 'TR_STAKING_DASHBOARD_ACTIVE',
+    TR_EARN_YIELD_DASHBOARD_TITLE: {
+        id: 'TR_EARN_YIELD_DASHBOARD_TITLE',
+        defaultMessage: 'Stablecoin yield',
+    },
+    TR_EARN_YIELD_DASHBOARD_TEXT: {
+        id: 'TR_EARN_YIELD_DASHBOARD_TEXT',
+        defaultMessage: 'Put your stablecoins to work and earn rewards.',
+    },
+    TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE: {
+        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE',
+        defaultMessage: 'Supply more',
+    },
+    TR_EARN_YIELD_DASHBOARD_WITHDRAW: {
+        id: 'TR_EARN_YIELD_DASHBOARD_WITHDRAW',
+        defaultMessage: 'Withdraw',
+    },
+    TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
+        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
+        defaultMessage: 'Supply now',
+    },
+    TR_EARN_DASHBOARD_ACTIVE: {
+        id: 'TR_EARN_DASHBOARD_ACTIVE',
         defaultMessage: 'Active',
     },
-    TR_STAKING_DASHBOARD_NOT_ACTIVE: {
-        id: 'TR_STAKING_DASHBOARD_NOT_ACTIVE',
+    TR_EARN_DASHBOARD_NOT_ACTIVE: {
+        id: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
         defaultMessage: 'Inactive',
     },
-    TR_STAKING_DASHBOARD_OUTDATED: {
-        id: 'TR_STAKING_DASHBOARD_OUTDATED',
+    TR_EARN_STAKING_DASHBOARD_OUTDATED: {
+        id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED',
         defaultMessage: 'Outdated provider',
     },
     TR_STAKING_MODAL_OUTDATED: {
@@ -8930,52 +8950,52 @@ export const messages = defineMessages({
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
         defaultMessage: 'Update provider',
     },
-    TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
-        id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
-        defaultMessage: 'Account',
+    TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
+        id: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
+        defaultMessage: 'Account & balance',
     },
-    TR_STAKING_DASHBOARD_TABLE_APY: {
-        id: 'TR_STAKING_DASHBOARD_TABLE_APY',
+    TR_EARN_DASHBOARD_TABLE_APY: {
+        id: 'TR_EARN_DASHBOARD_TABLE_APY',
         defaultMessage: 'APY',
     },
-    TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS: {
-        id: 'TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS',
+    TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS: {
+        id: 'TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS',
         defaultMessage: 'Your yearly rewards',
     },
-    TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS: {
-        id: 'TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS',
+    TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS: {
+        id: 'TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS',
         defaultMessage: 'Potential rewards',
     },
-    TR_STAKING_DASHBOARD_STAKE_NOW: {
-        id: 'TR_STAKING_DASHBOARD_STAKE_NOW',
+    TR_EARN_STAKING_DASHBOARD_STAKE_NOW: {
+        id: 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW',
         defaultMessage: 'Stake now',
     },
-    TR_STAKING_DASHBOARD_STAKE_MORE: {
-        id: 'TR_STAKING_DASHBOARD_STAKE_MORE',
+    TR_EARN_STAKING_DASHBOARD_STAKE_MORE: {
+        id: 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE',
         defaultMessage: 'Stake more',
     },
-    TR_STAKING_DASHBOARD_ACTIVATE: {
-        id: 'TR_STAKING_DASHBOARD_ACTIVATE',
+    TR_EARN_STAKING_DASHBOARD_ACTIVATE: {
+        id: 'TR_EARN_STAKING_DASHBOARD_ACTIVATE',
         defaultMessage: 'Activate {networkName}',
     },
-    TR_STAKING_DASHBOARD_MINIMUM_STAKE: {
-        id: 'TR_STAKING_DASHBOARD_MINIMUM_STAKE',
+    TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE: {
+        id: 'TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE',
         defaultMessage: 'Minimum {amount} {displaySymbol} required to stake',
     },
-    TR_STAKING_DASHBOARD_MAXIMUM_STAKE: {
-        id: 'TR_STAKING_DASHBOARD_MAXIMUM_STAKE',
+    TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE: {
+        id: 'TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE',
         defaultMessage: 'Maximum staked',
     },
-    TR_STAKING_DASHBOARD_IF_YOU_ADD: {
-        id: 'TR_STAKING_DASHBOARD_IF_YOU_ADD',
+    TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD: {
+        id: 'TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD',
         defaultMessage: 'if you add {amount} {displaySymbol}',
     },
-    TR_STAKING_DASHBOARD_STAKED: {
-        id: 'TR_STAKING_DASHBOARD_STAKED',
+    TR_EARN_STAKING_DASHBOARD_STAKED: {
+        id: 'TR_EARN_STAKING_DASHBOARD_STAKED',
         defaultMessage: '{amount} {displaySymbol} staked',
     },
-    TR_STAKING_DASHBOARD_OUTDATED_PROVIDER: {
-        id: 'TR_STAKING_DASHBOARD_OUTDATED_PROVIDER',
+    TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER: {
+        id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER',
         defaultMessage: 'Update to Everstake and earn ~{apy}% APY',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
@@ -9205,8 +9225,8 @@ export const messages = defineMessages({
         id: 'TR_STAKE_N_A',
         defaultMessage: 'N/A',
     },
-    TR_STAKE_APY_REQUIRED: {
-        id: 'TR_STAKE_APY_REQUIRED',
+    TR_EARN_APY_REQUIRED: {
+        id: 'TR_EARN_APY_REQUIRED',
         defaultMessage: 'APY required to calculate rewards',
     },
     TR_STAKE_APY_DESC: {

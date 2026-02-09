@@ -107,7 +107,6 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
             evmSettings: state.suite.evmSettings,
             seenDisconnectNotificationForDeviceIds:
                 state.suite.seenDisconnectNotificationForDeviceIds,
-            stakingDashboardCollapsed: state.suite.stakingDashboardCollapsed,
         },
         'suite',
         true,
@@ -394,7 +393,6 @@ export const saveSuiteSettings =
                 evmSettings: suite.evmSettings,
                 seenDisconnectNotificationForDeviceIds:
                     suite.seenDisconnectNotificationForDeviceIds,
-                stakingDashboardCollapsed: suite.stakingDashboardCollapsed,
             },
             'suite',
             true,

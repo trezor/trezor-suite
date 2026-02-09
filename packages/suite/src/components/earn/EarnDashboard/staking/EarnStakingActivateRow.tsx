@@ -8,9 +8,9 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
-import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
+import { EarnAccountCell } from '../common/EarnAccountCell';
 
-export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol }) => {
+export const EarnStakingActivateRow = ({ symbol }: { symbol: NetworkSymbol }) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const apy = useSelector(state => selectPoolStatsApyData(state, undefined, symbol));
@@ -38,7 +38,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
     return (
         <Table.Row>
             <Table.Cell>
-                <StakingDashboardAccountCell symbol={symbol} />
+                <EarnAccountCell symbol={symbol} />
             </Table.Cell>
 
             <Table.Cell>
@@ -48,7 +48,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
             <Table.Cell colSpan={2}>
                 <Paragraph typographyStyle="body" variant="tertiary">
                     <Translation
-                        id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
+                        id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                         values={{
                             amount: minStakingAmount?.toString(),
                             displaySymbol,
@@ -64,7 +64,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
                     isDisabled={isDiscoveryRunning}
                 >
                     <Translation
-                        id="TR_STAKING_DASHBOARD_ACTIVATE"
+                        id="TR_EARN_STAKING_DASHBOARD_ACTIVATE"
                         values={{ networkName: name }}
                     />
                 </Button>

@@ -82,10 +82,6 @@ export type SuiteAction =
           variant: AppState['suite']['settings']['theme']['variant'];
       }
     | {
-          type: typeof SUITE.SET_STAKING_DASHBOARD_COLLAPSED;
-          isCollapsed: boolean;
-      }
-    | {
           type: typeof SUITE.SET_TRANSACTION_HISTORY_PREFILL;
           payload: string;
       }
@@ -125,11 +121,6 @@ export const setTheme = (
 ): SuiteAction => ({
     type: SUITE.SET_THEME,
     variant,
-});
-
-export const setStakingDashboardCollapsed = (isCollapsed: boolean): SuiteAction => ({
-    type: SUITE.SET_STAKING_DASHBOARD_COLLAPSED,
-    isCollapsed,
 });
 
 export const setAddressDisplayType = (
