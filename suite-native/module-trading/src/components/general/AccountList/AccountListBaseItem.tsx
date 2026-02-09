@@ -140,7 +140,7 @@ export const AccountListBaseItem = ({
                     <Box justifyContent="center">
                         <Icon
                             name="caretRight"
-                            color="textSecondaryHighlight"
+                            color="iconDefault"
                             accessibilityHint={translate('moduleTrading.accountScreen.step2Hint')}
                         />
                     </Box>
