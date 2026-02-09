@@ -29,7 +29,6 @@ type TrezorConnectDynamicParams<ImplType, ExtraSettings extends Record<string, a
         impl: ConnectImpl;
     }[];
     getInitTarget: (settings: ExtraSettings) => ImplType;
-    handleBeforeInit?: (settings: ExtraSettings) => void;
     handleBeforeCall: (settings?: ExtraSettings) => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
 };
@@ -47,10 +46,6 @@ export class TrezorConnectDynamic<
     private currentTarget: ImplType;
     private implementations: TrezorConnectDynamicParams<ImplType, ExtraSettings>['implementations'];
     private getInitTarget: TrezorConnectDynamicParams<ImplType, ExtraSettings>['getInitTarget'];
-    private handleBeforeInit: TrezorConnectDynamicParams<
-        ImplType,
-        ExtraSettings
-    >['handleBeforeInit'];
     private handleBeforeCall: TrezorConnectDynamicParams<
         ImplType,
         ExtraSettings
@@ -68,14 +63,12 @@ export class TrezorConnectDynamic<
     public constructor({
         implementations,
         getInitTarget,
-        handleBeforeInit,
         handleBeforeCall,
         handleErrorFallback,
     }: TrezorConnectDynamicParams<ImplType, ExtraSettings>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
-        this.handleBeforeInit = handleBeforeInit;
         this.handleBeforeCall = handleBeforeCall;
         this.handleErrorFallback = handleErrorFallback;
         this.implementations.forEach(impl => {
@@ -96,7 +89,7 @@ export class TrezorConnectDynamic<
             return;
         }
 
-        if (!this.implSettings || !this.lastSettings) {
+        if (!this.implSettings) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
@@ -105,7 +98,6 @@ export class TrezorConnectDynamic<
         const oldTarget = this.getTarget();
         try {
             this.currentTarget = target;
-            this.handleBeforeInit?.(this.lastSettings);
             await this.getTarget().init(this.implSettings);
             await oldTarget.dispose();
         } catch {
@@ -136,8 +128,6 @@ export class TrezorConnectDynamic<
 
         // Initialize the target
         try {
-            this.handleBeforeInit?.(settings);
-
             return await this.getTarget().init(this.implSettings);
         } catch (error) {
             // Handle error by switching to other implementation if available as defined in `handleErrorFallback`.

@@ -148,10 +148,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.coreMode = input.coreMode;
     }
 
-    if (typeof input._extendWebextensionLifetime === 'boolean') {
-        settings._extendWebextensionLifetime = input._extendWebextensionLifetime;
-    }
-
     if (typeof input.binFilesBaseUrl === 'string') {
         settings.binFilesBaseUrl = input.binFilesBaseUrl;
     }
