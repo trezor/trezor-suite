@@ -134,4 +134,4 @@ export const getFirmwareType = (features: Features) => {
 };
 
 export const isFirmwareCacheUsedForSelectedSource = () =>
-    DataManager.getSettings('firmwareUpdateSource') === 'production';
+    DataManager.getSettings('firmwareChannel') === 'production';
