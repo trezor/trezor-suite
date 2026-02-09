@@ -697,20 +697,20 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect(this.buyAssetPickerDisplaySymbol).toHaveText(displaySymbol);
-        await expect(this.page.getByText('You buy')).toBeVisible();
+        await expect.soft(this.buyAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
-        await expect(this.page.getByText('You sell')).toBeVisible();
+        await expect.soft(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.page.getByText('You sell')).toBeVisible();
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
-        await expect(this.page.getByText('Swap amount')).toBeVisible();
+        await expect.soft(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
     }
 
     @step()
