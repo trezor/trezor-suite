@@ -285,7 +285,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: firmwareReducer,
         key: 'firmware',
         version: 1,
-        persistedKeys: ['firmwareUpdateSource'],
+        persistedKeys: ['firmwareChannel'],
         storage: deps.mmkvStorage,
     });
 

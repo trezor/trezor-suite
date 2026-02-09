@@ -3,26 +3,26 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { reloadAppAsync } from 'expo';
 
-import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
+import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
 import { useAlert } from '@suite-native/alerts';
 import { Select, SelectItemType } from '@suite-native/atoms';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
-const options: SelectItemType<FirmwareUpdateSource>[] = [
+const options: SelectItemType<FirmwareChannel>[] = [
     { label: 'Production', value: 'production' },
     { label: 'Test Unsigned', value: 'test-unsigned' },
     { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
     { label: 'Test Signed', value: 'test-signed' },
 ];
 
-export const FirmwareUpdateEnvironmentSelect = () => {
+export const FirmwareUpdateChannelSelect = () => {
     const dispatch = useDispatch();
     const { showAlert } = useAlert();
 
-    const selectedFirmwareUpdateSource = useSelector(selectFirmwareUpdateSource);
+    const selectedFirmwareChannel = useSelector(selectFirmwareChannel);
 
-    const handleSelectEnvironment = (environment: FirmwareUpdateSource) => {
-        dispatch(firmwareActions.setFirmwareUpdateSource(environment));
+    const handleSelectEnvironment = (environment: FirmwareChannel) => {
+        dispatch(firmwareActions.setFirmwareChannel(environment));
         showAlert({
             title: 'Restart the app to apply the change?',
             primaryButtonTitle: 'Restart',
@@ -32,10 +32,10 @@ export const FirmwareUpdateEnvironmentSelect = () => {
     };
 
     return (
-        <Select<FirmwareUpdateSource>
-            title="Environment"
+        <Select<FirmwareChannel>
+            title="Channel"
             items={options}
-            value={selectedFirmwareUpdateSource}
+            value={selectedFirmwareChannel}
             onSelectItem={handleSelectEnvironment}
             isLabelShown
         />

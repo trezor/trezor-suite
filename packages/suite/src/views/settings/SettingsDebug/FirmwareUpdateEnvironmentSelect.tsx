@@ -36,9 +36,8 @@ export const FirmwareUpdateEnvironmentSelect = () => {
                 description={
                     <Column gap={4}>
                         <Text>
-                            Set firmware channel for testing unsigned and signed. Remember you
-                            have to reload the web app or desktop in order for it to be fully
-                            applied.
+                            Set firmware channel for testing unsigned and signed. Remember you have
+                            to reload the web app or desktop in order for it to be fully applied.
                         </Text>
                         <Text variant="info">
                             If you select production, the binaries will be cached.
