@@ -106,7 +106,7 @@ export const SettingsDebug = () => {
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
             </SettingsSection>
-            <SettingsSection title="Firmware update source">
+            <SettingsSection title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings />

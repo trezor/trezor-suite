@@ -271,7 +271,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveConnectSettings());
             }
 
-            if (firmwareActions.setFirmwareUpdateSource.match(action)) {
+            if (firmwareActions.setFirmwareChannel.match(action)) {
                 api.dispatch(storageActions.saveFirmwareSettings());
             }
 

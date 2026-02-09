@@ -575,7 +575,7 @@ export const saveFirmwareSettings = () => (_dispatch: Dispatch, getState: GetSta
     db.addItem(
         'firmware',
         {
-            firmwareUpdateSource: firmware.firmwareUpdateSource,
+            firmwareChannel: firmware.firmwareChannel,
         },
         'firmware',
         true,
