@@ -42,23 +42,7 @@ jobs:
     uses: ./.github/workflows/template-suite-native-e2e-android.yml
     needs: prepare_android_test_app
     with:
-      emulator_model: "T3T1"
       publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
-    secrets:
-      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
-      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
-      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-      SLACK_MOBILE_E2E_WEBHOOK: ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
-      E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
-  run_android_e2e_tests_t3w1:
-    uses: ./.github/workflows/template-suite-native-e2e-android.yml
-    needs: prepare_android_test_app
-    with:
-      emulator_model: "T3W1"
-      jest_test_name_pattern: "^(?!.*(@specificModel|@fixT3W1|@noDevice))" # exclude @specificModel, @fixT3W1 and @noDevice tests
-      publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
-      currents_ci_build_id: "pr-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
-      currents_tags: "T3W1"
     secrets:
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}

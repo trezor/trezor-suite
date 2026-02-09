@@ -1,4 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
@@ -24,7 +23,7 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Receive [@fixT3W1]', () => {
+describe('Receive [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();

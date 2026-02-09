@@ -1,4 +1,3 @@
-import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcCoinEnabled } from '../fixtures/btcCoinEnabled';
@@ -30,7 +29,7 @@ const preloadedState = preparePreloadedReduxState(
 
 const LONG_RUNNING_TEST_TIMEOUT = 5 * 60 * 1000; // [ms]
 
-conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fixT3W1]', () => {
+describe('Device onboarding [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });

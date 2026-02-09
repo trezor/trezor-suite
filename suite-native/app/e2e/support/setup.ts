@@ -128,7 +128,7 @@ const getFwVersion = (model: Model, version: string | undefined) => {
 };
 
 export const prepareTrezorEmulator = async ({
-    version,
+    version = process.env.TDR_FIRMWARE_VERSION,
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = getModelFromEnv(),

@@ -164,7 +164,7 @@ export const isElementVisible = async (elementOrMatcher: ElementOrMatcher): Prom
 };
 
 export function getModelFromEnv(): Model {
-    const envValue = process.env.EMULATOR_MODEL as Model;
+    const envValue = process.env.TDR_MODEL as Model;
 
     return envValue in Model ? envValue : Model.T3T1;
 }
