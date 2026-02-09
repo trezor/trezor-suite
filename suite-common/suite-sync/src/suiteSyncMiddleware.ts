@@ -4,18 +4,20 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions, selectDeviceThunk } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
-import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
-
-// Thunk triggers for which we want to turn on Suite Sync for the currently selected wallet
-const suiteSyncTurnOnTriggers = [
-    // Wallet selected
-    selectDeviceThunk.fulfilled,
-] as const;
+import { selectHasDeviceSuiteSyncError, selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
 export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
     (action, { next, getState, extra }) => {
-        if (selectIsSuiteSyncEnabled(getState()) && deviceActions.setDiscovered.match(action)) {
-            if (action.payload.success) {
+        if (
+            selectIsSuiteSyncEnabled(getState()) &&
+            deviceActions.setDiscovered.match(action) &&
+            action.payload.success
+        ) {
+            const suiteSyncErrors = selectHasDeviceSuiteSyncError(
+                getState(),
+                action.payload.staticSessionId,
+            );
+            if (!suiteSyncErrors) {
                 extra.services.suiteSync.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: action.payload.staticSessionId,
                     isWriteMode: false,
@@ -23,14 +25,22 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             }
         }
 
-        if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(...suiteSyncTurnOnTriggers)(action)) {
-            const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
+        if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(selectDeviceThunk.fulfilled)(action)) {
+            const { payload } = action as ReturnType<typeof selectDeviceThunk.fulfilled>;
 
-            if (isTrezorDeviceWithState(payload.device)) {
-                extra.services.suiteSync.ensureWalletSuiteSyncOn({
-                    deviceStaticSessionId: payload.device.state.staticSessionId,
-                    isWriteMode: false,
-                });
+            if (isTrezorDeviceWithState(payload.device) && payload.device.discovered) {
+                const suiteSyncErrors = selectHasDeviceSuiteSyncError(
+                    getState(),
+                    payload.device?.state.staticSessionId,
+                );
+
+                // If the device is reselected with already existing error within the session, don't trigger it again.
+                if (!suiteSyncErrors) {
+                    extra.services.suiteSync.ensureWalletSuiteSyncOn({
+                        deviceStaticSessionId: payload.device.state.staticSessionId,
+                        isWriteMode: false,
+                    });
+                }
             }
         }
 
