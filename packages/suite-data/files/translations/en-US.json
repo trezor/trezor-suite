@@ -2269,7 +2269,7 @@
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Security first with your Trezor",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Security first with your Trezor",
   "TR_TRADING_SWAP_UNAVAILABLE": "Swap unavailable",
-  "TR_TRADING_TERMS": "This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn’t involved.",
+  "TR_TRADING_TERMS": "This service is offered by a third-party provider, not Trezor. Provider’s terms apply.",
   "TR_TRADING_TOKEN_NETWORK": "{tokenName} on {networkName} network",
   "TR_TRADING_TRADE_FEE": "Trade fee",
   "TR_TRADING_TRANS_ID": "Trade ID:",

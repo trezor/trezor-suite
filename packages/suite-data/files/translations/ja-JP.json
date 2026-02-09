@@ -827,7 +827,7 @@
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": "デバイス {deviceLabel} は接続されていません",
   "TR_DEVICE_LABEL_IS_UNAVAILABLE": "デバイス {deviceLabel} は利用できません",
   "TR_DEVICE_NOT_CONNECTED": "デバイスが接続されていません",
-  "TR_DEVICE_NOT_INITIALIZED": "Trezorが設定されていません",
+  "TR_DEVICE_NOT_INITIALIZED": "Trezorがセットアップされていません",
   "TR_DEVICE_NOT_INITIALIZED_TEXT": "あなたがすぐに開始できるようにプロセスをガイドします。",
   "TR_DEVICE_SECURITY": "セキュリティ",
   "TR_DEVICE_SETTINGS_AFTER_DELAY": "自動ロックまで",
