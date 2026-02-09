@@ -5,7 +5,6 @@ import {
     CallMethodAnyResponse,
     CallMethodPayload,
     POPUP,
-    UiResponseEvent,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
 import type { Manifest } from '@trezor/connect/src/types/settings';
@@ -115,11 +114,6 @@ export class CoreInSuiteDesktop implements ConnectImpl {
         }
     }
 
-    public setTransports() {
-        // not supported, transports are controlled by suite-desktop.
-        throw new Error('Method_InvalidPackage');
-    }
-
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         try {
             if (!this.ws.isConnected()) {
@@ -150,10 +144,5 @@ export class CoreInSuiteDesktop implements ConnectImpl {
                 payload: ERRORS.serializeError(this.error(err)),
             };
         }
-    }
-
-    // this shouldn't be needed, ui response should be handled in suite-desktop
-    uiResponse(_response: UiResponseEvent) {
-        throw ERRORS.TypedError('Method_InvalidPackage');
     }
 }

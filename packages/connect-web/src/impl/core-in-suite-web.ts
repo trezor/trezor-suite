@@ -7,7 +7,6 @@ import {
     CallMethodAnyResponse,
     CallMethodPayload,
     POPUP,
-    UiResponseEvent,
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
@@ -117,15 +116,5 @@ export class CoreInSuiteWeb implements ConnectImpl {
 
             return createErrorMessage(error);
         }
-    }
-
-    // not supported, transports are controlled by suite
-    public setTransports() {
-        throw new Error('Method_InvalidPackage');
-    }
-
-    // this shouldn't be needed, ui response should be handled in suite
-    uiResponse(_response: UiResponseEvent) {
-        throw ERRORS.TypedError('Method_InvalidPackage');
     }
 }
