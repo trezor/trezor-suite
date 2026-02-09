@@ -11,18 +11,15 @@ const impl = new TrezorConnectDynamic({
     },
 });
 
-const TrezorConnect = factory(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        setTransports: impl.setTransports.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {},
-);
+const TrezorConnect = factory({
+    eventEmitter: impl.eventEmitter,
+    init: impl.init.bind(impl),
+    call: impl.call.bind(impl),
+    setTransports: impl.setTransports.bind(impl),
+    uiResponse: impl.uiResponse.bind(impl),
+    cancel: impl.cancel.bind(impl),
+    dispose: impl.dispose.bind(impl),
+});
 
 export default TrezorConnect;
 export * from '@trezor/connect/src/exports';

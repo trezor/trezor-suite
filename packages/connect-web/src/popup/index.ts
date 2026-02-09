@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
-import EventEmitter from 'events';
-
 import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
@@ -37,7 +35,7 @@ const POPUP_CLOSE_INTERVAL = 500;
 
 type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'env' | 'version'> & { logger: Log };
 
-export class PopupManager extends EventEmitter {
+export class PopupManager {
     private popupWindow:
         | { mode: 'tab'; tab: chrome.tabs.Tab }
         | { mode: 'window'; window: Window }
@@ -64,7 +62,6 @@ export class PopupManager extends EventEmitter {
     private logger: Log;
 
     constructor({ env, popupSrc, manifest, version, logger }: Params) {
-        super();
         this.settings = { manifest, version };
         this.origin = getOrigin(popupSrc);
         this.env = env;
@@ -277,7 +274,7 @@ export class PopupManager extends EventEmitter {
                 );
             }
         } else if (message.event === DEVICE_EVENT) {
-            this.emit(DEVICE_EVENT, message);
+            // TODO what to do?
         }
     }
 
@@ -347,6 +344,5 @@ export class PopupManager extends EventEmitter {
             code: 'Method_Interrupted',
             error: POPUP.CLOSED,
         });
-        this.emit(POPUP.CLOSED);
     }
 }

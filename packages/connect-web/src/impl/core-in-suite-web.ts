@@ -6,7 +6,6 @@ import {
     CORE_CALL,
     CallMethodAnyResponse,
     CallMethodPayload,
-    DEVICE_EVENT,
     POPUP,
     UiResponseEvent,
     createErrorMessage,
@@ -55,9 +54,6 @@ export class CoreInSuiteWeb implements ConnectImpl {
                 env: env ?? getEnv(),
                 popupSrc: this.getSuiteUrl(globalSrc || connectSrc),
                 logger: this.logger,
-            });
-            this._popupManager.on(DEVICE_EVENT, event => {
-                this.eventEmitter.emit(DEVICE_EVENT, event);
             });
         }
 

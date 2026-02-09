@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 
 import {
@@ -19,7 +17,6 @@ import { WebsocketError } from '@trezor/websocket-client/src/client';
  * CoreInSuiteDesktop implementation for TrezorConnect factory.
  */
 export class CoreInSuiteDesktop implements ConnectImpl {
-    public eventEmitter = new EventEmitter();
     private manifest?: Manifest;
     private version?: string;
     private ws: WebsocketClient<{}>;
