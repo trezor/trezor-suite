@@ -72,6 +72,11 @@ export const selectVisibleDeviceAccountsMap = createMemoizedSelector(
         ),
 );
 
+export const selectVisibleDeviceNetworkAccounts = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, (_state, networkSymbol: NetworkSymbol) => networkSymbol],
+    (accounts, networkSymbol) => accounts.filter(account => account.symbol === networkSymbol),
+);
+
 export const selectDeviceAccountsForNetworkSymbolAndAccountType = createMemoizedSelector(
     [
         selectDeviceAccounts,

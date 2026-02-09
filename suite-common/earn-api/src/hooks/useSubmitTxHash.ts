@@ -28,7 +28,7 @@ interface UseSubmitTxHashProps {
  * Submit the transaction hash after broadcasting a transaction to the blockchain. This updates the transaction status and enables tracking.
  * @url https://docs.yield.xyz/reference/transactionscontroller_submittransactionhash
  */
-export function useSubmitTxHash({ onSuccess, onError }: UseSubmitTxHashProps) {
+export function useSubmitTxHash({ onSuccess, onError }: UseSubmitTxHashProps = {}) {
     return useMutation<SubmitTransactionHashResponseSuccess, Error, SubmitTxHashVariables>({
         mutationKey: desktopMutationKeys.submitTxHash,
         mutationFn: ({ txId, txHash }) =>
