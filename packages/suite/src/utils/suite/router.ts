@@ -188,6 +188,17 @@ export const getAppWithParams = (path: { pathname: PathString; hash?: HashString
     return { app, params, route } as RouterAppWithParams;
 };
 
+export const resolveEffectiveBackgroundRouteName = (
+    route: Route | undefined,
+    location: { pathname: PathString; hash?: HashString },
+) => {
+    if (route?.isForegroundApp) {
+        return getAppWithParams(location).route?.name ?? route?.name;
+    }
+
+    return route?.name;
+};
+
 export type WalletParams = CommonWalletParams;
 export type RouteParams = {
     [K in keyof (WalletParams & ModalAppParams & DashboardParams)]?: (WalletParams &
