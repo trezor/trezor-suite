@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { selectThpStep } from '@suite-common/thp';
+import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { useAlert } from '@suite-native/alerts';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -31,6 +31,7 @@ export const ThpConfirmationScreen = ({
     const { startThpAutoconnect, ignoreThpAutoconnect } = useThpAutoconnectActions();
 
     const thpStep = useSelector(selectThpStep);
+    const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);
     const isThpScreenDismissable = useSelector(selectIsThpScreenDismissable);
 
     const { showAlert } = useAlert();
@@ -50,13 +51,14 @@ export const ThpConfirmationScreen = ({
         useCallback(() => {
             if (thpStep === 'CodeEntry') {
                 navigation.replace(AuthorizeDeviceStackRoutes.ThpCodeEntry);
-            } else if (thpStep === 'AutoconnectInfo') {
+            } else if (thpAutoconnectStep === 'AutoconnectInfo') {
                 showThpAutoconnectEnableAlert();
             } else if (isThpScreenDismissable) {
                 navigateToInitialScreen();
             }
         }, [
             thpStep,
+            thpAutoconnectStep,
             isThpScreenDismissable,
             navigateToInitialScreen,
             navigation,

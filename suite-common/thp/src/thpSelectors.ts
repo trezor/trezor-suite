@@ -10,6 +10,8 @@ export const selectIsThpInProgress = (state: ThpRootState) => state.thp.step !==
 
 export const selectThpStep = (state: ThpRootState) => state.thp.step;
 
+export const selectThpAutoconnectStep = (state: ThpRootState) => state.thp.autoconnectStep;
+
 export const selectThpLastResult = (state: ThpRootState) => state.thp.lastResult;
 
 export const selectThpCredentials = (state: ThpRootState) => state.thp.credentials;

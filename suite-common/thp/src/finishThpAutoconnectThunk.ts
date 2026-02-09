@@ -11,7 +11,7 @@ import { THP_PREFIX, thpActions } from './thpActions';
 export const finishThpAutoconnectThunk = createThunk<void, void, void>(
     `${THP_PREFIX}/finishThpAutoconnectThunk`,
     (_, { dispatch }) => {
-        dispatch(thpActions.finishThpFlow());
+        dispatch(thpActions.finishAutoconnectFlow());
         dispatch(startOrRestartDiscoveryThunk());
     },
 );

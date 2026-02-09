@@ -17,7 +17,12 @@ const deviceReduce = prepareDeviceReducer(extraDependenciesCommonMock);
 const device = mockConnectDevice({
     thp: createDeviceThp(),
 });
-const initialThpState: ThpState = { step: null, lastThpCode: undefined, credentials: [] };
+const initialThpState: ThpState = {
+    step: null,
+    autoconnectStep: null,
+    lastThpCode: undefined,
+    credentials: [],
+};
 const initialFirmwareState: FirmwareUpdateState = {
     error: '',
     cachedDevice: undefined,

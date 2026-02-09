@@ -11,6 +11,8 @@ const finishThpFlow = createAction(`${THP_PREFIX}/finish-thp-flow`);
 
 const cancelThpFlow = createAction(`${THP_PREFIX}/cancel-thp-flow`);
 
+const finishAutoconnectFlow = createAction(`${THP_PREFIX}/finish-autoconnect-flow`);
+
 export const showAutoconnectInfo = createAction(`${THP_PREFIX}/showAutoconnectInfo`);
 
 export const setLastThpCode = createAction(
@@ -46,6 +48,7 @@ export const removeAllCredentials = createAction(`${THP_PREFIX}/removeAllCredent
 export const thpActions = {
     invalidCode,
     finishThpFlow,
+    finishAutoconnectFlow,
     addCredential,
     cancelThpFlow,
     removeCredentials,
