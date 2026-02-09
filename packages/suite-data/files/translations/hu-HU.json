@@ -1269,7 +1269,6 @@
   "TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW": "A Trezor már használatban van.",
   "TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW": "A Trezor már használatban van.",
   "TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING": "Trezor Safe 7 észlelve",
-  "TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION": "Tovább a THP párosításhoz",
   "TR_NETWORK_COINJOIN_BITCOIN": "Coinjoin",
   "TR_NETWORK_COINJOIN_BITCOIN_REGTEST": "Coinjoin Regtest",
   "TR_NETWORK_COINJOIN_BITCOIN_TESTNET": "Coinjoin Testnet (teszthálózat)",

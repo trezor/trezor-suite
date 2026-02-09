@@ -1896,7 +1896,7 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED',
     },
     TR_NEEDS_ATTENTION_UNAVAILABLE: {
-        defaultMessage: "Trezor isn't available.",
+        defaultMessage: "Your Trezor isn't available.",
         id: 'TR_NEEDS_ATTENTION_UNAVAILABLE',
     },
     TR_NEEDS_ATTENTION_UNREADABLE: {
@@ -2922,15 +2922,15 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Connect device to access device settings',
+        defaultMessage: 'Connect your Trezor to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
-        defaultMessage: 'Device detected in incorrect state',
+        defaultMessage: 'Your Trezor is in an incorrect state',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE: {
-        defaultMessage: "You can't change device settings in this state",
+        defaultMessage: "Device settings can't be changed in the current state",
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
@@ -2938,7 +2938,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
-        defaultMessage: 'Other settings unavailable in bootloader mode',
+        defaultMessage: 'Other settings are unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
@@ -4674,7 +4674,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_NOT_INITIALIZED: {
         id: 'TR_DEVICE_NOT_INITIALIZED',
-        defaultMessage: "Trezor isn't set up",
+        defaultMessage: "Your Trezor isn't set up",
         description:
             'Device not initialized means that it has no cryptographic secret lives in it and it must be either recovered from seed or newly generated.',
     },
@@ -4761,7 +4761,7 @@ export const messages = defineMessages({
     TR_ONCE_YOU_BEGIN_THIS_PROCESS: {
         id: 'TR_ONCE_YOU_BEGIN_THIS_PROCESS',
         defaultMessage:
-            "This process only takes a few minutes, but you can't pause or restart it once you begin.",
+            "This process only takes a few minutes, but you can't pause or restart it once you start.",
     },
     TR_I_AM_IN_SAFE_PRIVATE_OR: {
         id: 'TR_I_AM_IN_SAFE_PRIVATE_OR',
@@ -6228,7 +6228,7 @@ export const messages = defineMessages({
     },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
-        defaultMessage: 'Suite Sync (recommended)',
+        defaultMessage: 'Suite Sync',
     },
     TR_LABELING_ERROR: {
         id: 'TR_LABELING_ERROR',
@@ -7179,12 +7179,12 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_1: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_1',
-        defaultMessage: 'My <strong>hologram</strong> was intact and untampered with.',
+        defaultMessage: 'The <strong>hologram</strong> was intact and untampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
         defaultMessage:
-            'My device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
+            'The device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
@@ -7247,7 +7247,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
-        defaultMessage: 'Your device authentication check failed.',
+        defaultMessage: 'Your device authenticity check failed.',
     },
     TR_PLAY_IT_SAFE: {
         id: 'TR_PLAY_IT_SAFE',
@@ -7305,7 +7305,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_ITEM_1: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_1',
         defaultMessage:
-            "This check is a must-do step to ensure your device's reliability, integrity, and secure use.",
+            "This check is essential to ensure your device's reliability, integrity, and secure use.",
     },
     TR_DEVICE_AUTHENTICITY_ITEM_2: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_2',
@@ -9055,8 +9055,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_CARD_KEEP_EARNING_TEXT: {
         id: 'TR_STAKING_CARD_KEEP_EARNING_TEXT',
-        defaultMessage:
-            '<t>APY</t> is your yearly return on staked funds, with compounding (excludes the 2 ADA deposit).',
+        defaultMessage: '<t>APY</t> is your yearly compounded return on your staked funds.',
     },
     TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT: {
         id: 'TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT',
