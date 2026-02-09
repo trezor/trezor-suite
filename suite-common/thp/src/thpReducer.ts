@@ -29,14 +29,15 @@ export type ThpStep =
     | 'ConfirmOnlyConnection'
     | 'CodeEntry'
     | 'CodeInvalid'
-    | 'AutoconnectInfo'
-    | 'Autoconnect'
     // Currently relevant only for Firmware Update / Custom Firmware & Onboarding Firmware
     | 'BeforeConnectionInfo'
     | null;
 
+export type ThpAutoconnectStep = 'AutoconnectInfo' | 'Autoconnect';
+
 export type ThpState = {
     step: ThpStep;
+    autoconnectStep: ThpAutoconnectStep | null;
     lastThpCode?: string;
     lastResult?: 'finished' | 'canceled';
     credentials: ThpSuiteCredentials[];
@@ -44,6 +45,7 @@ export type ThpState = {
 
 export const initialThpState: ThpState = {
     step: null,
+    autoconnectStep: null,
     lastThpCode: undefined,
     lastResult: undefined,
     credentials: [] as ThpSuiteCredentials[],
@@ -65,7 +67,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 state.lastThpCode = payload.code;
             })
             .addCase(thpActions.showAutoconnectInfo, state => {
-                state.step = 'AutoconnectInfo';
+                state.autoconnectStep = 'AutoconnectInfo';
             })
             .addCase(thpActions.incrementCredentialConnectionCounter, (state, { payload }) => {
                 const credentialToUpdate = state.credentials.find(
@@ -103,6 +105,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 state.step = null;
                 state.lastResult = 'canceled';
             })
+            .addCase(thpActions.finishAutoconnectFlow, state => {
+                state.autoconnectStep = null;
+            })
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,
                 state => {
@@ -129,7 +134,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                             state.step = 'ConfirmOnlyConnection';
                             break;
                         case 'thp_autoconnect_credential_request':
-                            state.step = 'Autoconnect';
+                            state.autoconnectStep = 'Autoconnect';
                             break;
                     }
                 },
@@ -157,7 +162,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                             state.step = 'ConfirmOnlyConnection';
                         }
                         if (action.payload.name === 'thp_autoconnect_credential_request') {
-                            state.step = 'Autoconnect';
+                            state.autoconnectStep = 'Autoconnect';
                         }
                     }
                 },

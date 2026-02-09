@@ -23,6 +23,7 @@ export const initialAppState: AppState = {
     bluetooth: initialDesktopBluetoothState,
     thp: {
         step: null,
+        autoconnectStep: null,
         lastThpCode: undefined,
         credentials: [],
     },

@@ -316,7 +316,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
     {
         description: 'blocks navigation when auto-connect offered',
         initialState: buildInitialState({
-            thp: { step: 'AutoconnectInfo' },
+            thp: { autoconnectStep: 'AutoconnectInfo' },
         }),
         action: {
             type: deviceActions.connectDevice.type,

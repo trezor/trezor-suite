@@ -71,13 +71,6 @@ export const FirmwareModal = ({
                 case 'CodeEntry':
                     return device !== undefined ? <StepThpPairing modalHeading={heading} /> : null;
 
-                // Auto-connect not relevant for Firmware Installation.
-                // We don't want to ask the user for autoconnect during FW installation, instead we
-                // postpone it for the next connection.
-                case 'AutoconnectInfo':
-                case 'Autoconnect':
-                    return null;
-
                 case 'CodeInvalid':
                     return <StepThpFailed modalHeading={heading} />;
 

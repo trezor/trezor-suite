@@ -5,6 +5,7 @@ export {
     selectThp,
     selectIsThpInProgress,
     selectThpStep,
+    selectThpAutoconnectStep,
     selectThpLastResult,
     selectThpCredentials,
 } from './thpSelectors';

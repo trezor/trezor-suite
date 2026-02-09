@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectThpStep } from '@suite-common/thp';
+import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -14,8 +14,13 @@ import { ThpPairingFailedModal } from './ThpPairingFailedModal';
 export const ThpGlobalModalManager = () => {
     const device = useSelector(selectSelectedFirstThpDevice);
     const thpStep = useSelector(selectThpStep);
+    const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);
 
-    if (device !== undefined && thpStep !== null) {
+    if (!device) {
+        return null;
+    }
+
+    if (thpStep !== null) {
         switch (thpStep) {
             // handled in FirmwareModal and onboarding FirmwareStep
             case 'BeforeConnectionInfo':
@@ -28,12 +33,18 @@ export const ThpGlobalModalManager = () => {
                 return <ThpPairingPinEntryModal />;
             case 'CodeInvalid':
                 return <ThpPairingFailedModal />;
-            case 'AutoconnectInfo':
-                return <ThpAutoconnectInfoModal device={device} />;
-            case 'Autoconnect':
-                return <ThpAutoconnectionModal device={device} />;
             default:
                 return exhaustive(thpStep);
         }
     }
+
+    if (thpAutoconnectStep === 'AutoconnectInfo') {
+        return <ThpAutoconnectInfoModal device={device} />;
+    }
+
+    if (thpAutoconnectStep === 'Autoconnect') {
+        return <ThpAutoconnectionModal device={device} />;
+    }
+
+    return null;
 };

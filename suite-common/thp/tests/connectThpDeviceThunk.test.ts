@@ -16,6 +16,7 @@ const thpCredential2 = createCredential({ credential: 'credential-2' });
 
 const initialThpState: ThpState = {
     step: null,
+    autoconnectStep: null,
     lastThpCode: undefined,
     credentials: [thpCredential1, thpCredential2],
 };
@@ -62,7 +63,7 @@ describe(connectThpDeviceThunk.name, () => {
             store.dispatch(connectThpDeviceThunk({ device }));
             expect(store.getState().thp.credentials[0].connectionCounter).toEqual(expectedCounter);
             expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
-            expect(store.getState().thp.step).toEqual(expectedStep);
+            expect(store.getState().thp.autoconnectStep).toEqual(expectedStep);
         },
     );
 

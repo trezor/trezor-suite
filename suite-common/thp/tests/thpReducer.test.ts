@@ -11,6 +11,7 @@ const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
 
 const initialState: ThpState = {
     step: null,
+    autoconnectStep: null,
     lastThpCode: undefined,
     lastResult: undefined,
     credentials: [],

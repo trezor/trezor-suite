@@ -155,14 +155,6 @@ export const FirmwareStep = () => {
                 return <ThpPairingConfirmStep device={device} />;
             case 'CodeEntry':
                 return <ThpPairingStep />;
-
-            // Auto-connect not relevant for Onboarding Firmware Installation.
-            // 1) We don't want to ask user for autoconnect during FW installation.
-            // 2) It shall never happen anyway, onboarding is the 1st connection.
-            case 'AutoconnectInfo':
-            case 'Autoconnect':
-                return null;
-
             case 'CodeInvalid':
                 return <ThpPairingFailedStep />;
 
