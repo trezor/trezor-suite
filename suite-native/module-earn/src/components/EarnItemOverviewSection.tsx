@@ -1,6 +1,12 @@
-import { selectFormattedAccountType, useAccoutsSelector } from '@suite-common/wallet-core';
+import { useSelector } from 'react-redux';
+
+import {
+    selectFormattedAccountType,
+    selectHasRunningDiscovery,
+    useAccoutsSelector,
+} from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Badge, Box, HStack, Text } from '@suite-native/atoms';
+import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
@@ -42,8 +48,9 @@ export const EarnItemOverviewSection = ({
     );
 
     const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
-
     const fallbackApy = useNativeStakingSelector(state => selectAPYBySymbol(state, symbol));
+
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     return (
         <HStack
@@ -72,20 +79,29 @@ export const EarnItemOverviewSection = ({
                     )}
                 </Box>
             </Box>
-            <Box style={applyStyle(valuesContainerStyle)}>
-                {accountKey && (
-                    <CryptoAmountFormatter
-                        value={stakedBalance}
-                        symbol={symbol}
-                        decimals={CRYPTO_BALANCE_DECIMALS}
-                        color="textDefault"
-                    />
-                )}
-                <Text
-                    variant={accountKey ? 'hint' : 'body'}
-                    color={accountKey ? 'textSubdued' : 'textDefault'}
-                >{`${apy || fallbackApy}% p.a.`}</Text>
-            </Box>
+
+            {isDiscoveryRunning ? (
+                <BoxSkeleton width={70} height={20} />
+            ) : (
+                <>
+                    <Box style={applyStyle(valuesContainerStyle)}>
+                        {accountKey && (
+                            <CryptoAmountFormatter
+                                value={stakedBalance}
+                                symbol={symbol}
+                                decimals={CRYPTO_BALANCE_DECIMALS}
+                                color="textDefault"
+                            />
+                        )}
+                        {(apy || fallbackApy) && (
+                            <Text
+                                variant={accountKey ? 'hint' : 'body'}
+                                color={accountKey ? 'textSubdued' : 'textDefault'}
+                            >{`${apy || fallbackApy}% p.a.`}</Text>
+                        )}
+                    </Box>
+                </>
+            )}
         </HStack>
     );
 };
