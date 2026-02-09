@@ -228,7 +228,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     type: 'outputLabel',
                                     entityKey: account.key,
                                     txid: utxo.txid,
-                                    outputIndex: utxo.vout,
+                                    outputIndex: `${utxo.vout}`,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
                                     value: outputLabel,
                                     networkSymbol: account.symbol,

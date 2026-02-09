@@ -484,7 +484,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                     // txid is not known at this moment. metadata is only saved
                                     // along with other sendForm data and processed in sendFormActions.
                                     txid: 'will-be-replaced',
-                                    outputIndex: outputId,
+                                    outputIndex: `${outputId}`,
                                     defaultValue: `${outputId}`,
                                     value: label,
                                     networkSymbol: symbol,

@@ -608,7 +608,7 @@ export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => 
 };
 
 export const getInstantStakeType = (
-    internalTransfer: InternalTransfer,
+    internalTransfer: Pick<InternalTransfer, 'from' | 'to'>,
     address?: string,
     symbol?: NetworkSymbol,
 ): StakeType | null => {

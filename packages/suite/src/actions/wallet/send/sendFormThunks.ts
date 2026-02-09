@@ -160,7 +160,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
                     type: 'outputLabel',
                     entityKey: selectedAccount.key,
                     txid,
-                    outputIndex,
+                    outputIndex: `${outputIndex}`,
                     value: label,
                     defaultValue: '',
                     networkSymbol: selectedAccount.symbol,

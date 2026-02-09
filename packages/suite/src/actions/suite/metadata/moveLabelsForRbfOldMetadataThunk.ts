@@ -4,6 +4,7 @@ import { RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import { Dispatch } from 'src/types/suite';
@@ -28,13 +29,13 @@ export const deleteDanglingLabels = async ({
     networkSymbol,
     txid,
 }: DeleteAllOutputLabelsParams) => {
-    for (const outputIndex of Object.keys(labels)) {
+    for (const outputIndex of typedObjectKeys(labels)) {
         await dispatch(
             metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid,
-                outputIndex: Number(outputIndex),
+                outputIndex: `${outputIndex}`,
                 defaultValue: '',
                 value: '',
                 accountDescriptor,
@@ -61,7 +62,7 @@ export const copyLabelToNewTransaction = async ({
     networkSymbol,
     newTxid,
 }: MoveLabelToNewTransactionParams) => {
-    for (const outputIndex of Object.keys(accountOutputLabels)) {
+    for (const outputIndex of typedObjectKeys(accountOutputLabels)) {
         const value = accountOutputLabels[outputIndex];
 
         await dispatch(
@@ -69,7 +70,7 @@ export const copyLabelToNewTransaction = async ({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid: newTxid,
-                outputIndex: Number(outputIndex),
+                outputIndex: `${outputIndex}`,
                 defaultValue: '',
                 value,
                 accountDescriptor,

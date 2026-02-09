@@ -7,6 +7,7 @@
         { "path": "../fiat-services" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
+        { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

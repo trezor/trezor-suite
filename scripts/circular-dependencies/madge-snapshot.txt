@@ -56,7 +56,6 @@ packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > pa
 packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsItemComponent.tsx
 packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx
 packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeMisc.tsx
-packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTargetsList.tsx > packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTarget.tsx
 packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
 packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
 packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx

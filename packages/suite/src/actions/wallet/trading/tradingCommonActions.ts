@@ -1,5 +1,5 @@
 import { formDraftActions, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
-import { Output } from '@suite-common/wallet-types';
+import type { Output } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
