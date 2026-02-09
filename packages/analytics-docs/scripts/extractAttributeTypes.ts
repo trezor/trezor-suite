@@ -169,6 +169,21 @@ const getEventNameFromEventObject = (varDecl: import('ts-morph').VariableDeclara
 };
 
 const getEventDefTypeArgs = (varDecl: import('ts-morph').VariableDeclaration) => {
+    const typeNode = varDecl.getTypeNode();
+    const typeRef = typeNode?.asKind(ts.SyntaxKind.TypeReference);
+    if (typeRef) {
+        const typeName = typeRef.getTypeName();
+        if (Node.isIdentifier(typeName) && typeName.getText() === 'EventDef') {
+            const typeArgs = typeRef.getTypeArguments();
+            if (typeArgs.length < 1) return undefined;
+
+            return {
+                attributesType: typeArgs[0].getType(),
+                nameType: typeArgs[1]?.getType(),
+            };
+        }
+    }
+
     const t = varDecl.getType();
     const alias = t.getAliasSymbol();
     if (!alias || alias.getName() !== 'EventDef') return undefined;

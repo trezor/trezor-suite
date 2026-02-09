@@ -50,6 +50,8 @@ const Header = ({ event }: { event: EventDoc }) => {
 
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
 
+    if (!event.name) return null;
+
     const getEventUrl = (eventName: string) =>
         `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventName(eventName)}.ts`;
 
