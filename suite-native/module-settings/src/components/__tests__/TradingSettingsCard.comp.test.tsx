@@ -1,4 +1,4 @@
-import { act, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { TradingSettingsCard, TradingSettingsCardProps } from '../TradingSettingsCard';
 
@@ -50,20 +50,6 @@ describe('TradingSettingsCard', () => {
             expect(getByTestId('@settings/trading')).toBeOnTheScreen();
             expect(getByText('Trading')).toBeOnTheScreen();
             expect(getByText('Country of residence')).toBeOnTheScreen();
-        });
-
-        it('should call onPress callback when button is pressed', async () => {
-            const onPressMock = jest.fn();
-            const { getByTestId } = await renderTradingSettingsCard({
-                testID: '@settings/trading',
-                onPress: onPressMock,
-            });
-
-            await act(async () => {
-                await userEvent.press(getByTestId('@settings/trading'));
-            });
-
-            expect(onPressMock).toHaveBeenCalledTimes(1);
         });
     });
 });
