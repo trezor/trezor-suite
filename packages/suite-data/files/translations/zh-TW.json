@@ -1283,6 +1283,7 @@
   "TR_NAV_TOKENS": "代幣",
   "TR_NAV_TRADE": "交易",
   "TR_NAV_TRANSACTIONS": "總覽",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor 已鎖定。請解鎖以繼續。",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "韌體需要更新。",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor 裝置還沒設定完成。",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "接上了新的 Trezor 裝備。",

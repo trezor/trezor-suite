@@ -1060,6 +1060,7 @@
   "TR_NAV_TOKENS": "Токены",
   "TR_NAV_TRADE": "Обмен",
   "TR_NAV_TRANSACTIONS": "Обзор",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor заблокирован. Пожалуйста, разблокируйте его, чтобы продолжить.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Требуется обновление прошивки",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor не был настроен.",
   "TR_NEEDS_ATTENTION_SEEDLESS": "Trezor не имеет резервную копию.",

@@ -1271,6 +1271,7 @@
   "TR_NAV_TRADE": "Trade",
   "TR_NAV_TRANSACTIONS": "Panoramica",
   "TR_NEEDS_ATTENTION_DEVICE_BUSY": "Trezor rilevato in stato errato. Riavvialo per riconnetterlo.",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor è bloccato. Sbloccalo per continuare.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Aggiornamento firmware necessario.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor non è stato configurato.",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "Nuovo Trezor collegato.",

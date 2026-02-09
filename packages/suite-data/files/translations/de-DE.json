@@ -1407,6 +1407,7 @@
   "TR_NAV_TRADE": "Handel",
   "TR_NAV_TRANSACTIONS": "Übersicht",
   "TR_NEEDS_ATTENTION_DEVICE_BUSY": "Trezor wurde in einem fehlerhaften Zustand erkannt. Starte das Gerät neu, um die Verbindung wiederherzustellen.",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor ist gesperrt. Bitte zum Fortfahren entsperren.",
   "TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED": "Die Firmware deines Trezors ist beschädigt. Installiere die Firmware erneut, um fortzufahren.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Firmware-Update erforderlich.",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor wurde noch nicht eingerichtet.",

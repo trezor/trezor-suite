@@ -1408,6 +1408,7 @@
   "TR_NAV_TRADE": "交易",
   "TR_NAV_TRANSACTIONS": "概览",
   "TR_NEEDS_ATTENTION_DEVICE_BUSY": "检测到 Trezor 设备状态异常，请重启设备以重新连接。",
+  "TR_NEEDS_ATTENTION_DEVICE_LOCKED": "Trezor 已锁定。请解锁以继续。",
   "TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED": "您的 Trezor 设备固件已损坏。请重新安装固件以继续。",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "需要固件更新。",
   "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor 设备尚未设置。",
