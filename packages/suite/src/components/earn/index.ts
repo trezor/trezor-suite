@@ -6,9 +6,12 @@ export { EarnProviderConsentModal } from './modals/EarnProviderConsent/EarnProvi
 export { StakingEarnProviderConsentModal } from './modals/EarnProviderConsent/StakingEarnProviderConsentModal';
 export { YieldEarnProviderConsentModal } from './modals/EarnProviderConsent/YieldEarnProviderConsentModal';
 export { UpdateEarnProviderConsentModal } from './modals/EarnProviderConsent/UpdateEarnProviderConsentModal';
+export { EarnDashboard } from './EarnDashboard/EarnDashboard';
 
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';
 export { EarnWithdrawingInfo } from './modals/EarnInANutshell/components/EarnWithdrawingInfo';
 
 export { VotingDelegations } from './VotingDelegations/VotingDelegations';
 export { VotingDelegationsOptions } from './VotingDelegations/VotingDelegationsOptions';
+
+export { PoweredByBadge } from './providers/PoweredByBadge';

@@ -4,7 +4,7 @@ import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 import { AccountLabel, CoinBalance } from 'src/components/suite';
 
@@ -25,15 +25,12 @@ const AccountLabelContainer = styled.div`
     white-space: nowrap;
 `;
 
-interface StakingDashboardAccountCellProps {
+type EarnAccountCellProps = {
     account?: Account;
     symbol?: NetworkSymbol;
-}
+};
 
-export const StakingDashboardAccountCell = ({
-    account,
-    symbol,
-}: StakingDashboardAccountCellProps) => {
+export const EarnAccountCell = ({ account, symbol }: EarnAccountCellProps) => {
     const networkSymbol = account?.symbol ?? symbol;
 
     if (!networkSymbol) return null;
@@ -41,10 +38,10 @@ export const StakingDashboardAccountCell = ({
     return (
         <AccountCellContainer>
             <Column alignItems="center">
-                <CoinLogo size={24} symbol={networkSymbol} />
+                <CoinLogo size={32} symbol={networkSymbol} />
             </Column>
 
-            <Column flex="1" overflow="hidden" gap={spacings.xxxs}>
+            <Column flex="1" overflow="hidden" gap={2}>
                 <AccountLabelContainer>
                     {account ? (
                         <AccountLabel

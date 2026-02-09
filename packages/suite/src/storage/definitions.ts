@@ -70,7 +70,6 @@ export interface SuiteDBSchema extends DBSchema {
             flags: SuiteState['flags'];
             evmSettings: SuiteState['evmSettings'];
             seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];
-            stakingDashboardCollapsed: SuiteState['stakingDashboardCollapsed'];
         };
     };
     historicRates: {

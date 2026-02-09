@@ -16,6 +16,7 @@ export const IMAGES = {
     GAINS_GRAPH: 'gains-graph.svg',
     GHOST: 'ghost.svg',
     INVITY_LOGO: 'invity-logo.svg',
+    MORPHO_LOGO: 'morpho-logo.svg',
     PLAY_STORE: 'play-store.svg',
     RECOVERY_2x: 'recovery@2x.png',
     STROKE_BORDER: 'stroke-border.svg',

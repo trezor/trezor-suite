@@ -28,10 +28,10 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
-import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
-import { StakingDashboardRewardsAmount } from './StakingDashboardRewardsAmount';
+import { EarnAccountCell } from '../common/EarnAccountCell';
+import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
-export const StakingDashboardAccountRow = ({ account }: { account: Account }) => {
+export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const analytics = useAnalytics();
@@ -155,8 +155,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             <Table.Cell>
                 <Row width="100%" alignItems="center" justifyContent="space-between">
                     <Column alignItems="flex-start">
-                        <StakingDashboardRewardsAmount
-                            accountSymbol={account.symbol}
+                        <EarnRewardsAmount
+                            symbol={account.symbol}
                             rewards={isStakingActive ? currentRewards : '0'}
                             apy={apy}
                         />
@@ -164,7 +164,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                         {isStakingActive && (
                             <Paragraph typographyStyle="hint" variant="tertiary">
                                 <Translation
-                                    id="TR_STAKING_DASHBOARD_STAKED"
+                                    id="TR_EARN_STAKING_DASHBOARD_STAKED"
                                     values={{
                                         amount: formatCryptoAmount(stakingBalance),
                                         displaySymbol,
@@ -191,8 +191,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             <Table.Cell>
                 <Column>
                     {apy && (
-                        <StakingDashboardRewardsAmount
-                            accountSymbol={account.symbol}
+                        <EarnRewardsAmount
+                            symbol={account.symbol}
                             rewards={potentialRewards}
                             apy={apy}
                             variant="primary"
@@ -202,7 +202,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     {!isCardanoNetworkType && apy && (
                         <Paragraph typographyStyle="hint" variant="tertiary">
                             <Translation
-                                id="TR_STAKING_DASHBOARD_IF_YOU_ADD"
+                                id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
                                 values={{
                                     amount: formatCryptoAmount(accountBalance),
                                     displaySymbol,
@@ -218,7 +218,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     return (
         <Table.Row onClick={navigateToStaking}>
             <Table.Cell>
-                <StakingDashboardAccountCell account={account} />
+                <EarnAccountCell account={account} />
             </Table.Cell>
 
             <Table.Cell>
@@ -234,7 +234,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     <Table.Cell colSpan={2}>
                         <Paragraph typographyStyle="body" variant="tertiary">
                             <Translation
-                                id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
+                                id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                                 values={{
                                     amount: minStakingAmount?.toString(),
                                     displaySymbol,
@@ -266,8 +266,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                             <Translation
                                 id={
                                     state === 'staking-active'
-                                        ? 'TR_STAKING_DASHBOARD_STAKE_MORE'
-                                        : 'TR_STAKING_DASHBOARD_STAKE_NOW'
+                                        ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
+                                        : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
                                 }
                             />
                         </Button>
@@ -281,7 +281,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
                     <Table.Cell>
                         <Paragraph typographyStyle="body" variant="tertiary">
-                            <Translation id="TR_STAKING_DASHBOARD_MAXIMUM_STAKE" />
+                            <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
                         </Paragraph>
                     </Table.Cell>
 
@@ -305,7 +305,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     <Table.Cell>
                         <Paragraph typographyStyle="body" variant="tertiary">
                             <Translation
-                                id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
+                                id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                                 values={{
                                     amount: minStakingAmount?.toString(),
                                     displaySymbol,
@@ -334,7 +334,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                             <Icon name="warning" size={24} variant="warning" />
                             <Paragraph typographyStyle="body" variant="warning">
                                 <Translation
-                                    id="TR_STAKING_DASHBOARD_OUTDATED_PROVIDER"
+                                    id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"
                                     values={{ apy: formatApyValue(apy) }}
                                 />
                             </Paragraph>

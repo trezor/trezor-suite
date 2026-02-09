@@ -1,21 +1,20 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Image, ImageType, Row, Text } from '@trezor/components';
+import { Image, Row, Text } from '@trezor/components';
 
-const PROVIDERS = {
-    everstake: {
-        logo: 'EVERSTAKE_LOGO',
-    },
-} as const satisfies Record<string, { logo: ImageType }>;
+import {
+    type EarnProviderId,
+    earnProviderMetadata,
+} from 'src/components/earn/providers/providerMetadata';
 
 const ImageWrapper = styled.div`
     filter: ${({ theme }) => (theme.variant === 'dark' ? 'invert(1)' : 'none')};
 `;
 
-interface PoweredByBadgeProps {
-    provider: keyof typeof PROVIDERS;
-}
+type PoweredByBadgeProps = {
+    provider: EarnProviderId;
+};
 
 export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
     return (
@@ -24,7 +23,7 @@ export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
                 <Translation id="TR_STAKE_PROVIDED_BY" />
             </Text>
             <ImageWrapper>
-                <Image image={PROVIDERS[provider].logo} width={100} height={40} />
+                <Image image={earnProviderMetadata[provider].logo} width={100} height={40} />
             </ImageWrapper>
         </Row>
     );

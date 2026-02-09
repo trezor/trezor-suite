@@ -9,8 +9,8 @@ import {
     HELP_CENTER_SOL_STAKING,
 } from '@trezor/urls';
 
+import { PoweredByBadge } from 'src/components/earn';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { PoweredByBadge } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

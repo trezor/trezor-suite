@@ -3,32 +3,27 @@ import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { H4, TextVariant } from '@trezor/components';
 
-interface StakingDashboardRewardsAmountProps {
-    accountSymbol: NetworkSymbol;
+type EarnRewardsAmountProps = {
+    symbol: NetworkSymbol;
     rewards: string;
     apy: number | null;
     variant?: TextVariant;
-}
+};
 
-export const StakingDashboardRewardsAmount = ({
-    accountSymbol,
-    rewards,
-    apy,
-    variant,
-}: StakingDashboardRewardsAmountProps) => {
+export const EarnRewardsAmount = ({ symbol, rewards, apy, variant }: EarnRewardsAmountProps) => {
     const { CryptoAmountFormatter } = useFormatters();
 
     if (!apy)
         return (
             <H4 variant={variant}>
-                <Translation id="TR_STAKE_APY_REQUIRED" />
+                <Translation id="TR_EARN_APY_REQUIRED" />
             </H4>
         );
 
     return (
         <H4 variant={variant}>
             {CryptoAmountFormatter.format(rewards, {
-                symbol: accountSymbol,
+                symbol,
                 isBalance: true,
                 withSymbol: true,
                 isEllipsisAppended: false,
