@@ -40,34 +40,27 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                 await onboardingPage.createWalletButton.click();
             });
 
-            await test.step('Confirm on device', async () => {
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await device.pressYes();
-            });
-
-            await test.step('Start backup process', async () => {
-                await onboardingPage.createBackupButton.click();
-            });
-
             await test.step('Check backup completion steps', async () => {
                 await onboardingPage.backup.wroteSeedProperlyCheckbox.click();
                 await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
                 await onboardingPage.backup.willHideSeedCheckbox.click();
-                await devicePrompt.confirmOnDevicePromptIsHidden();
 
-                await onboardingPage.backup.startButton.click();
-                await devicePrompt.confirmOnDevicePromptIsShown();
+                await page.getByTestId('@onboarding/create-backup-button').click();
 
+                await page.waitForTimeout(1_000);
+                await device.pressYes();
+                await page.waitForTimeout(1_000);
+                await device.pressYes();
                 // Emulator needs to initialize the seed first
                 await page.waitForTimeout(1_000);
                 for (let i = 0; i < 48; i++) {
                     await device.pressYes();
                 }
-
-                await onboardingPage.backup.closeButton.click();
+                await page.getByTestId('@onboarding/continue-button').click();
             });
 
             await test.step('Lets set PIN', async () => {
+                await page.waitForTimeout(2_000);
                 const pin = '12345';
 
                 await onboardingPage.pin.setPinButton.click();

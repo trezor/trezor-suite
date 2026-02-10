@@ -1,8 +1,8 @@
-import { type AcquiredDevice } from '@suite-common/suite-types';
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import type { AcquiredDevice } from '@suite-common/suite-types';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { type Step, type StepCategory } from 'src/types/onboarding';
 
 import {
     type IsStepUsedProps,
@@ -13,247 +13,240 @@ import {
     resolveNextAvailableStep,
 } from '../steps';
 
-const firmwareStep: Step = {
-    id: STEP.ID_FIRMWARE_STEP,
-    path: [],
-};
+const allSteps = stepCategories.flatMap(category => category.steps);
 
-const backupStep: Step = {
-    id: STEP.ID_BACKUP_STEP,
-    path: [],
-    supportedModels: [
-        DeviceModelInternal.T3B1,
-        { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },
-    ],
-};
+const createDevice = (overrides: Partial<AcquiredDevice['features']>) =>
+    ({
+        features: {
+            internal_model: DeviceModelInternal.T2T1,
+            ...overrides,
+        },
+    }) as AcquiredDevice;
 
-const stepCategory: StepCategory = {
-    id: 'device',
-    labelTranslationId: 'TR_DEVICE',
-    steps: [firmwareStep],
-};
+const defaultDevice = createDevice({ internal_model: DeviceModelInternal.T2T1 });
 
-const defaultDevice = {
-    features: { internal_model: DeviceModelInternal.T1B1 },
-    firmwareType: FirmwareType.Universal,
-} as AcquiredDevice;
-
-const propsMock: IsStepUsedProps = {
+const createProps = (overrides?: Partial<IsStepUsedProps>): IsStepUsedProps => ({
     onboardingPath: [],
     device: defaultDevice,
     isDeviceAuthenticityCheckEnabled: true,
     isUnlockedBootloaderAllowed: false,
-};
+    ...overrides,
+});
 
-const stepsMock = [firmwareStep, backupStep];
+const getStepsForPath = (path: typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY) =>
+    allSteps.filter(step =>
+        isStepUsed(step, createProps({ onboardingPath: [path], device: defaultDevice })),
+    );
 
 describe('steps', () => {
-    describe(findNextStep.name, () => {
-        it('should find next step', () => {
-            const device = {
-                ...defaultDevice,
-                features: {
-                    internal_model: DeviceModelInternal.T2T1,
-                    backup_availability: 'Required',
-                },
-            } as AcquiredDevice;
+    describe('real onboarding flow - create wallet (T2T1)', () => {
+        const createSteps = getStepsForPath(STEP.PATH_CREATE);
 
-            expect(findNextStep(firmwareStep.id, stepsMock, device)).toEqual(backupStep);
+        it('should contain the expected steps for T2T1 create flow', () => {
+            const stepIds = createSteps.map(s => s.id);
+            expect(stepIds).toEqual([
+                STEP.ID_FIRMWARE_STEP,
+                STEP.ID_CREATE_OR_RECOVER,
+                STEP.ID_RESET_DEVICE_STEP,
+                STEP.ID_SECURITY_STEP,
+                STEP.ID_SET_PIN_STEP,
+            ]);
         });
 
-        it('should return null in no next step exists', () => {
-            expect(findNextStep(backupStep.id, stepsMock, defaultDevice)).toBe(null);
-        });
-    });
-
-    describe(findPrevStep.name, () => {
-        it('should find previous step', () => {
-            expect(findPrevStep(backupStep.id, stepsMock)).toEqual(firmwareStep);
-        });
-
-        it('should throw on improper use (no more step exists)', () => {
-            expect(() => findPrevStep(firmwareStep.id, stepsMock)).toThrow('no prev step exists');
-        });
-    });
-
-    describe(isStepUsed.name, () => {
-        it('empty path means no restriction', () => {
-            expect(isStepUsed(firmwareStep, propsMock)).toEqual(true);
+        it('should navigate through the full create flow', () => {
+            expect(findNextStep(STEP.ID_FIRMWARE_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_CREATE_OR_RECOVER,
+            );
+            expect(findNextStep(STEP.ID_CREATE_OR_RECOVER, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_RESET_DEVICE_STEP,
+            );
+            expect(findNextStep(STEP.ID_RESET_DEVICE_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_SECURITY_STEP,
+            );
+            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_SET_PIN_STEP,
+            );
+            expect(findNextStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)).toBe(null);
         });
 
-        it('should return false for no overlap', () => {
-            const stepWithPath: Step = { ...firmwareStep, path: ['create'] };
-            const propsWithPath: IsStepUsedProps = { ...propsMock, onboardingPath: ['recovery'] };
-            expect(isStepUsed(stepWithPath, propsWithPath)).toEqual(false);
-        });
+        it('should skip PIN step when device already has pin protection', () => {
+            const deviceWithPin = createDevice({
+                internal_model: DeviceModelInternal.T2T1,
+                pin_protection: true,
+            });
 
-        it('should return true for full overlap', () => {
-            const stepWithPath: Step = { ...firmwareStep, path: ['create'] };
-            const propsWithPath: IsStepUsedProps = { ...propsMock, onboardingPath: ['create'] };
-            expect(isStepUsed(stepWithPath, propsWithPath)).toEqual(true);
-        });
-
-        it('should exclude steps not supported by device', () => {
-            const deviceT3B1 = {
-                features: {
-                    internal_model: DeviceModelInternal.T3B1,
-                    backup_availability: 'Required',
-                },
-            } as AcquiredDevice;
-            const propsWithT3B1 = { ...propsMock, device: deviceT3B1 };
-            expect(isStepUsed(backupStep, propsWithT3B1)).toEqual(true);
-
-            const deviceT1B1 = {
-                features: { internal_model: DeviceModelInternal.T1B1 },
-            } as AcquiredDevice;
-            const propsWithT1B1 = { ...propsMock, device: deviceT1B1 };
-            expect(isStepUsed(backupStep, propsWithT1B1)).toEqual(false);
-        });
-
-        it('should exclude steps not supported by firmware', () => {
-            const deviceT3T1newer = {
-                features: {
-                    internal_model: DeviceModelInternal.T3T1,
-                    major_version: 2,
-                    minor_version: 8,
-                    patch_version: 0,
-                    backup_availability: 'Required',
-                },
-            } as AcquiredDevice;
-            const propsNewerT3T1 = { ...propsMock, device: deviceT3T1newer };
-            expect(isStepUsed(backupStep, propsNewerT3T1)).toEqual(true);
-
-            const deviceT3T1older = {
-                features: {
-                    internal_model: DeviceModelInternal.T3T1,
-                    major_version: 2,
-                    minor_version: 7,
-                    patch_version: 2,
-                },
-            } as AcquiredDevice;
-            const propsOlderT3T1 = { ...propsMock, device: deviceT3T1older };
-            expect(isStepUsed(backupStep, propsOlderT3T1)).toEqual(false);
-        });
-
-        it('should exclude steps as per firmware type', () => {
-            const btcOnlyDevice = { ...defaultDevice, firmwareType: FirmwareType.BitcoinOnly };
-            const universalStep: Step = {
-                id: STEP.ID_SET_PIN_STEP,
-                supportedFirmwareTypes: [FirmwareType.Universal],
-            };
-            const btcOnlyStep: Step = {
-                id: STEP.ID_SET_PIN_STEP,
-                supportedFirmwareTypes: [FirmwareType.BitcoinOnly],
-            };
-            const propsBtcOnly = { ...propsMock, device: btcOnlyDevice };
-
-            expect(isStepUsed(universalStep, propsMock)).toEqual(true);
-            expect(isStepUsed(btcOnlyStep, propsMock)).toEqual(false);
-            expect(isStepUsed(universalStep, propsBtcOnly)).toEqual(false);
-            expect(isStepUsed(btcOnlyStep, propsBtcOnly)).toEqual(true);
+            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, deviceWithPin)).toBe(null);
         });
     });
 
-    describe(isStepCategoryUsed.name, () => {
-        it('should return true for category with at least one valid step', () => {
-            expect(isStepCategoryUsed(stepCategory, propsMock)).toEqual(true);
+    describe('real onboarding flow - create wallet (T3T1)', () => {
+        const deviceT3T1 = createDevice({
+            internal_model: DeviceModelInternal.T3T1,
+            major_version: 2,
+            minor_version: 8,
+            patch_version: 0,
+            backup_availability: 'Required',
+        } as Partial<AcquiredDevice['features']>);
+
+        const createSteps = allSteps.filter(step =>
+            isStepUsed(
+                step,
+                createProps({ onboardingPath: [STEP.PATH_CREATE], device: deviceT3T1 }),
+            ),
+        );
+
+        it('should include authenticate and tutorial steps for T3T1', () => {
+            const stepIds = createSteps.map(s => s.id);
+            expect(stepIds).toContain(STEP.ID_AUTHENTICATE_DEVICE_STEP);
+            expect(stepIds).toContain(STEP.ID_TUTORIAL_STEP);
         });
 
-        it('should return false for category with no steps', () => {
-            const modifiedStepCategory: StepCategory = { ...stepCategory, steps: [] };
-            expect(isStepCategoryUsed(modifiedStepCategory, propsMock)).toEqual(false);
-        });
-
-        it('should return false for category with only irrelevant steps', () => {
-            const deviceBtcOnlyT1B1 = {
-                firmwareType: FirmwareType.BitcoinOnly,
-                features: {
-                    internal_model: DeviceModelInternal.T3T1,
-                    major_version: 1,
-                    minor_version: 12,
-                    patch_version: 1,
-                },
-            } as AcquiredDevice;
-            const propsWithBtcOnlyT1B1 = { ...propsMock, device: deviceBtcOnlyT1B1 };
-
-            const modifiedStepCategory: StepCategory = {
-                ...stepCategory,
-                steps: [backupStep],
-            };
-            expect(isStepCategoryUsed(modifiedStepCategory, propsWithBtcOnlyT1B1)).toEqual(false);
-        });
-    });
-
-    describe(resolveNextAvailableStep.name, () => {
-        const setPinStep: Step = { id: STEP.ID_SET_PIN_STEP, path: [] };
-        const backupStepInSteps: Step = { id: STEP.ID_BACKUP_STEP, path: [] };
-
-        const steps: Step[] = [backupStepInSteps, setPinStep];
-
-        it('should return requested step if it is accessible', () => {
-            const device = {
-                ...defaultDevice,
-                features: {
-                    internal_model: DeviceModelInternal.T2T1,
-                    pin_protection: false,
-                    backup_availability: 'Required',
-                },
-            } as AcquiredDevice;
-
-            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, steps, device)).toEqual(
-                setPinStep,
+        it('should navigate through the full T3T1 create flow', () => {
+            expect(findNextStep(STEP.ID_FIRMWARE_STEP, createSteps, deviceT3T1)?.id).toBe(
+                STEP.ID_AUTHENTICATE_DEVICE_STEP,
+            );
+            expect(
+                findNextStep(STEP.ID_AUTHENTICATE_DEVICE_STEP, createSteps, deviceT3T1)?.id,
+            ).toBe(STEP.ID_TUTORIAL_STEP);
+            expect(findNextStep(STEP.ID_TUTORIAL_STEP, createSteps, deviceT3T1)?.id).toBe(
+                STEP.ID_CREATE_OR_RECOVER,
             );
         });
+    });
 
-        it('should skip PIN step when pin protection is already set', () => {
-            const device = {
-                ...defaultDevice,
-                features: {
-                    internal_model: DeviceModelInternal.T2T1,
-                    pin_protection: true,
-                    backup_availability: 'Required',
-                },
-            } as AcquiredDevice;
+    describe('real onboarding flow - recovery (T2T1)', () => {
+        const recoverySteps = getStepsForPath(STEP.PATH_RECOVERY);
 
-            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, steps, device)).toEqual(null);
+        it('should contain the expected steps for T2T1 recovery flow', () => {
+            const stepIds = recoverySteps.map(s => s.id);
+            expect(stepIds).toEqual([
+                STEP.ID_FIRMWARE_STEP,
+                STEP.ID_CREATE_OR_RECOVER,
+                STEP.ID_RECOVERY_STEP,
+                STEP.ID_SECURITY_STEP,
+                STEP.ID_SET_PIN_STEP,
+            ]);
         });
 
-        it('should NOT skip Backup step when device does not require backup - you cant do backup on the device', () => {
-            const device = {
-                ...defaultDevice,
-                features: {
-                    internal_model: DeviceModelInternal.T2T1,
-                    pin_protection: false,
-                    backup_availability: 'Available',
-                },
-            } as AcquiredDevice;
-
-            expect(resolveNextAvailableStep(STEP.ID_BACKUP_STEP, steps, device)).toEqual(
-                backupStepInSteps,
+        it('should navigate through the full recovery flow', () => {
+            expect(findNextStep(STEP.ID_FIRMWARE_STEP, recoverySteps, defaultDevice)?.id).toBe(
+                STEP.ID_CREATE_OR_RECOVER,
             );
-        });
-
-        it('should return null when requested step is not in steps list', () => {
-            expect(resolveNextAvailableStep(STEP.ID_FIRMWARE_STEP, steps, defaultDevice)).toEqual(
-                null,
+            expect(findNextStep(STEP.ID_CREATE_OR_RECOVER, recoverySteps, defaultDevice)?.id).toBe(
+                STEP.ID_RECOVERY_STEP,
+            );
+            expect(findNextStep(STEP.ID_RECOVERY_STEP, recoverySteps, defaultDevice)?.id).toBe(
+                STEP.ID_SECURITY_STEP,
             );
         });
     });
 
     describe(findNextStep.name, () => {
         it('should return null when current step is not present in the steps list', () => {
-            // This may happen when a step becomes unused right after it is completed (e.g. backup step is removed
-            // from available steps once the device no longer requires backup). In that case returning the first step
-            // (firmware) would incorrectly restart onboarding.
-            const steps: Step[] = [
-                { id: STEP.ID_FIRMWARE_STEP, path: [] },
-                { id: STEP.ID_SECURITY_STEP, path: [] },
-                { id: STEP.ID_SET_PIN_STEP, path: [] },
-            ];
+            const createSteps = getStepsForPath(STEP.PATH_CREATE);
+            expect(findNextStep(STEP.ID_RECOVERY_STEP, createSteps, defaultDevice)).toBe(null);
+        });
+    });
 
-            // Without the `currentIndex === -1` guard this would incorrectly return `steps[0]` (firmware).
-            expect(findNextStep(STEP.ID_BACKUP_STEP, steps, defaultDevice)).toEqual(null);
-            expect(findNextStep(STEP.ID_BACKUP_STEP, steps, defaultDevice)).not.toEqual(steps[0]);
+    describe(findPrevStep.name, () => {
+        it('should find previous step', () => {
+            const createSteps = getStepsForPath(STEP.PATH_CREATE);
+            expect(findPrevStep(STEP.ID_CREATE_OR_RECOVER, createSteps)?.id).toBe(
+                STEP.ID_FIRMWARE_STEP,
+            );
+        });
+
+        it('should throw on improper use (no more step exists)', () => {
+            const createSteps = getStepsForPath(STEP.PATH_CREATE);
+            expect(() => findPrevStep(createSteps[0].id, createSteps)).toThrow(
+                'no prev step exists',
+            );
+        });
+    });
+
+    describe(isStepUsed.name, () => {
+        it('should exclude authenticate step when authenticity check is disabled', () => {
+            const authenticateStep = allSteps.find(s => s.id === STEP.ID_AUTHENTICATE_DEVICE_STEP)!;
+            const deviceT3T1 = createDevice({
+                internal_model: DeviceModelInternal.T3T1,
+                backup_availability: 'Required',
+            } as Partial<AcquiredDevice['features']>);
+
+            expect(
+                isStepUsed(
+                    authenticateStep,
+                    createProps({
+                        device: deviceT3T1,
+                        isDeviceAuthenticityCheckEnabled: true,
+                    }),
+                ),
+            ).toBe(true);
+
+            expect(
+                isStepUsed(
+                    authenticateStep,
+                    createProps({
+                        device: deviceT3T1,
+                        isDeviceAuthenticityCheckEnabled: false,
+                    }),
+                ),
+            ).toBe(false);
+        });
+
+        it('should exclude tutorial step for unsupported models', () => {
+            const tutorialStep = allSteps.find(s => s.id === STEP.ID_TUTORIAL_STEP)!;
+            expect(isStepUsed(tutorialStep, createProps({ device: defaultDevice }))).toBe(false);
+
+            const deviceT3B1 = createDevice({
+                internal_model: DeviceModelInternal.T3B1,
+                backup_availability: 'Required',
+            } as Partial<AcquiredDevice['features']>);
+            expect(isStepUsed(tutorialStep, createProps({ device: deviceT3B1 }))).toBe(true);
+        });
+
+        it('should exclude tutorial step for T3T1 with old firmware', () => {
+            const tutorialStep = allSteps.find(s => s.id === STEP.ID_TUTORIAL_STEP)!;
+            const deviceOldFw = createDevice({
+                internal_model: DeviceModelInternal.T3T1,
+                major_version: 2,
+                minor_version: 7,
+                patch_version: 2,
+            } as Partial<AcquiredDevice['features']>);
+            expect(isStepUsed(tutorialStep, createProps({ device: deviceOldFw }))).toBe(false);
+        });
+    });
+
+    describe(isStepCategoryUsed.name, () => {
+        it('should return true for categories with at least one valid step', () => {
+            const deviceCategory = stepCategories.find(c => c.id === 'device')!;
+            expect(isStepCategoryUsed(deviceCategory, createProps())).toBe(true);
+        });
+    });
+
+    describe(resolveNextAvailableStep.name, () => {
+        const createSteps = getStepsForPath(STEP.PATH_CREATE);
+
+        it('should return requested step if it is accessible', () => {
+            expect(
+                resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)?.id,
+            ).toBe(STEP.ID_SET_PIN_STEP);
+        });
+
+        it('should skip PIN step when pin protection is already set', () => {
+            const deviceWithPin = createDevice({
+                internal_model: DeviceModelInternal.T2T1,
+                pin_protection: true,
+            });
+
+            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, deviceWithPin)).toBe(
+                null,
+            );
+        });
+
+        it('should return null when requested step is not in steps list', () => {
+            expect(
+                resolveNextAvailableStep(STEP.ID_RECOVERY_STEP, createSteps, defaultDevice),
+            ).toBe(null);
         });
     });
 });

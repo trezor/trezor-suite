@@ -1,5 +1,4 @@
 export const ID_CREATE_OR_RECOVER = 'create-or-recover';
-export const ID_BACKUP_STEP = 'backup';
 export const ID_FINAL_STEP = 'final';
 export const ID_FIRMWARE_STEP = 'firmware';
 export const ID_RESET_DEVICE_STEP = 'reset-device';

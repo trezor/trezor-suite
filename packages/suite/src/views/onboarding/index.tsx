@@ -9,7 +9,6 @@ import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
-import { BackupStep } from 'src/views/onboarding/steps/BackupStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
@@ -56,11 +55,8 @@ export const Onboarding = () => {
                 // b) Seed recovery
                 return RecoveryStep;
             case STEP.ID_SECURITY_STEP:
-                // Security intro (BACKUP, PIN), option to skip them
+                // Wallet creation + backup (resetDevice with skip_backup: false)
                 return SecurityStep;
-            case STEP.ID_BACKUP_STEP:
-                // Seed backup
-                return BackupStep;
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
                 return PinStep;

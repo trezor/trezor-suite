@@ -31,31 +31,28 @@ export const BackupSeedCards = () => {
 
     return (
         <Column gap={16}>
-            <Paragraph
-                typographyStyle="body-sm"
-                intent="neutral"
-                priority="secondary"
-                align="center"
-            >
+            <Paragraph typographyStyle="body-sm" align="center">
                 <Translation id="TR_ONBOARDING_CLICK_TO_CONFIRM" />
             </Paragraph>
             <Grid gap={16} columns={isBelowTablet ? 1 : 3}>
                 {items.map(item => (
                     <Card
-                        paddingType="large"
+                        paddingType="normal"
+                        height="100%"
+                        minHeight="140px"
                         key={item.key}
                         onClick={() => dispatch(backupActions.toggleCheckboxByKey(item.key))}
                         data-testid={`@backup/check-item/${item.key}`}
                     >
-                        <Column gap={16}>
-                            <Row gap={16} alignItems="flex-start" justifyContent="space-between">
-                                <Icon name={item.icon} intent="neutral" priority="secondary" />
+                        <Column height="100%" justifyContent="space-between">
+                            <Row gap={16} alignItems="center" justifyContent="space-between">
                                 <Checkbox
                                     isChecked={isChecked(item.key)}
                                     onChange={event => {
                                         event.preventDefault();
                                     }}
                                 />
+                                <Icon name={item.icon} size={24} />
                             </Row>
                             <Paragraph typographyStyle="body-sm">{item.label}</Paragraph>
                         </Column>

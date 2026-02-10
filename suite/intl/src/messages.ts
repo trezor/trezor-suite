@@ -13,6 +13,10 @@ export const messages = defineMessages({
         defaultMessage: 'Error 404: Link not found',
         id: 'TR_404_TITLE',
     },
+    TR_NEW: {
+        defaultMessage: 'New',
+        id: 'TR_NEW',
+    },
     TR_NEW_PASSPHRASE_WALLET: {
         defaultMessage: 'New passphrase',
         id: 'TR_NEW_PASSPHRASE_WALLET',
@@ -4840,6 +4844,19 @@ export const messages = defineMessages({
         id: 'TR_BACKUP_CREATED',
         defaultMessage: 'Wallet backup created successfully',
     },
+    TR_WALLET_CREATED_NOT_SECURED: {
+        id: 'TR_WALLET_CREATED_NOT_SECURED',
+        defaultMessage: 'Wallet created, but not secured',
+    },
+    TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION: {
+        id: 'TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION',
+        defaultMessage:
+            'If your Trezor is lost, damaged, or stolen, you will lose access to your funds without a wallet backup. Finish your Trezor setup first, then create a wallet backup in Device Settings.',
+    },
+    TR_CONTINUE_TO_PIN: {
+        id: 'TR_CONTINUE_TO_PIN',
+        defaultMessage: 'Continue to PIN',
+    },
     TR_REMOVE: {
         id: 'TR_REMOVE',
         defaultMessage: 'Remove',
@@ -5181,6 +5198,18 @@ export const messages = defineMessages({
         defaultMessage:
             "Generates a single set of 12 or 24 words that can fully recover your wallet. A legacy wallet backup can't be upgraded to a Multi-share Backup. <a>Learn more</a>",
     },
+    TR_NEW_WALLET: {
+        id: 'TR_NEW_WALLET',
+        defaultMessage: 'New wallet',
+    },
+    TR_RECOVER_WALLET: {
+        id: 'TR_RECOVER_WALLET',
+        defaultMessage: 'Recover wallet',
+    },
+    TR_WALLET_BACKUP_TYPE: {
+        id: 'TR_WALLET_BACKUP_TYPE',
+        defaultMessage: 'Wallet backup type',
+    },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
         defaultMessage: 'Update your device firmware to enable the Single-share Backup feature.',
@@ -5207,9 +5236,9 @@ export const messages = defineMessages({
         id: 'TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE',
         defaultMessage: 'Trezor will create your new wallet.',
     },
-    TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM: {
-        id: 'TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM',
-        defaultMessage: 'Create wallet',
+    TR_ONBOARDING_SELECT_SEED_TYPE_CONTINUE: {
+        id: 'TR_ONBOARDING_SELECT_SEED_TYPE_CONTINUE',
+        defaultMessage: 'Continue',
     },
     TR_CREATE_WALLET: {
         id: 'TR_CREATE_WALLET',

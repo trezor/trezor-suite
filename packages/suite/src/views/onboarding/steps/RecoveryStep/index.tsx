@@ -11,7 +11,7 @@ import {
 } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
-import { Column } from '@trezor/components';
+import { Badge, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
@@ -45,7 +45,14 @@ export const RecoveryStep = () => {
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
             return (
                 <RecoveryStepBox
-                    heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                    heading={
+                        <Column gap={8} alignItems="center" justifyContent="center">
+                            <Badge intent="neutral" size="medium">
+                                <Translation id="TR_RECOVER_WALLET" />
+                            </Badge>
+                            <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                        </Column>
+                    }
                     description={<Translation id="TR_RECOVER_SUBHEADING_COMPUTER" />}
                 >
                     <SelectWordCount
@@ -74,7 +81,14 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 description={<Translation id={subheadingKey} />}
                 innerActions={
                     <OnboardingCard.Button
@@ -98,7 +112,14 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_SELECT_RECOVERY_METHOD" />
+                    </Column>
+                }
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 && wordsCount === 24 ? (
                         <Translation
@@ -125,7 +146,14 @@ export const RecoveryStep = () => {
         // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 ? null : (
                         <Translation id={subheadingKey} />
@@ -156,7 +184,14 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 device={device}
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 ? (
@@ -183,7 +218,14 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_WALLET_RECOVERED_FROM_SEED" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
+                    </Column>
+                }
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/continue-button"
@@ -198,7 +240,14 @@ export const RecoveryStep = () => {
     if (status === 'finished' && error) {
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVERY_FAILED" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVERY_FAILED" />
+                    </Column>
+                }
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
                 variant="destructive"
                 innerActions={
