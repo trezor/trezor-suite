@@ -2,13 +2,11 @@
 
 **All skills are mandatory reading** before making changes.
 
-- [Project Overview](skills/project-overview.md) – What Trezor Suite is and how the monorepo is organized
+- [Project Overview](skills/project-structure.md) – What Trezor Suite is and how the monorepo is organized
 - [Setup Requirements](skills/setup-requirements.md) – Prerequisites and initial environment setup
 - [Development Commands](skills/development-commands.md) – Running apps, linting, testing, and building
-- [Project Structure](skills/project-structure.md) – Key directories and important configuration files
 - [Common Tasks](skills/common-tasks.md) – Dependency management, package creation, and troubleshooting
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines.md) – Conventional Commits format and best practices
-- [Development Notes](skills/development-notes.md) – Platform-specific notes and build time expectations
 - [Common Issues](skills/common-issues.md) – Known issues and their solutions
 - [Testing](skills/testing.md) – Running tests and test-related guidelines
 
