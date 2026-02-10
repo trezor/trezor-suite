@@ -43,7 +43,8 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI.REQUEST_PASSPHRASE, (state, action) => {
                 // @ts-expect-error payload not typed
-                if (action.payload?.device?._state?.staticSessionId) {
+                // TODO properly type check with some guard
+                if (action.payload?.device?.state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
                 } else if (state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested) {
                     // If pin was requested for new passphrase wallet, we can't wait for close window to reset the state
@@ -71,7 +72,8 @@ export const deviceAuthorizationSlice = createSlice({
             .addMatcher(isPassphraseButtonRequestCode, (state, action) => {
                 if (
                     // @ts-expect-error payload not typed
-                    !action.payload.device._state &&
+                    // TODO properly type check with some guard
+                    !action.payload.device.state &&
                     state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested
                 ) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
