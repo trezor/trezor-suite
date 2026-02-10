@@ -100,7 +100,8 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
                         // prevents 'Render frame was disposed before WebFrameMain could be accessed', occurring when renderer process is closed during responding
                         // https://github.com/electron/electron/blob/3536d49/docs/api/structures/ipc-main-event.md
                         // https://github.com/electron/electron/blob/3536d49/docs/breaking-changes.md#behavior-changed-frame-properties-may-retrieve-detached-webframemain-instances-or-none-at-all
-                        if (ipcEvent.senderFrame === null) return;
+                        if (ipcEvent.senderFrame === null || ipcEvent.senderFrame.isDestroyed())
+                            return;
 
                         reply(ipcEventName, payload);
                     });
