@@ -3,7 +3,7 @@ import { EventSubscription } from 'expo-modules-core';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
-const DEBUG_LOGS = true;
+const DEBUG_LOGS = false;
 
 const debugLog = (...args: any[]) => {
     if (DEBUG_LOGS) {
