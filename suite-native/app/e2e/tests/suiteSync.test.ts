@@ -6,6 +6,7 @@ import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
 import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
@@ -23,6 +24,7 @@ const WALLET_LABEL = 'Evolu synced wallet';
 const ADDRESS_LABEL = 'Evolu synced BTC address';
 
 const preloadedState = preparePreloadedReduxState(
+    initialDeviceDataState,
     onboardingCompletedState,
     getModelFromEnv() === Model.T3W1
         ? btcDiscoveryFinishedStateT3W1

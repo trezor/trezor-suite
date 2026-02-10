@@ -5,15 +5,21 @@ import { DeviceReducerState, deviceReducerInitialState } from '@suite-common/wal
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { wait, waitForVisible } from '../support/utils';
 
 const getPreloadedState = (payload: DeviceReducerState['simulatedEntropyCheckFail']) =>
-    preparePreloadedReduxState(onboardingCompletedState, deviceChecksEnabledState, {
-        device: { ...deviceReducerInitialState, simulatedEntropyCheckFail: payload },
-    });
+    preparePreloadedReduxState(
+        initialDeviceDataState,
+        onboardingCompletedState,
+        deviceChecksEnabledState,
+        {
+            device: { ...deviceReducerInitialState, simulatedEntropyCheckFail: payload },
+        },
+    );
 
 const LONG_RUNNING_TEST_TIMEOUT = 5 * 60 * 1000; // [ms]
 

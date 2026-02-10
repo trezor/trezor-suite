@@ -10,6 +10,7 @@ import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedS
 import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { DeepLinkServer } from '../support/deepLinkServer';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
@@ -33,6 +34,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
 };
 
 const preloadedState = preparePreloadedReduxState(
+    initialDeviceDataState,
     onboardingCompletedState,
     getModelFromEnv() === Model.T3W1
         ? btcDiscoveryFinishedStateT3W1

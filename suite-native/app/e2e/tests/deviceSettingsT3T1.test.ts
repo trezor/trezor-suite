@@ -1,6 +1,7 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
@@ -11,6 +12,7 @@ import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../s
 import { waitForVisible } from '../support/utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
+    initialDeviceDataState,
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );

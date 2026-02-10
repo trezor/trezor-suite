@@ -1,3 +1,4 @@
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
@@ -5,7 +6,7 @@ import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState } from '../support/setup';
 
-const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
+const preloadedState = preparePreloadedReduxState(initialDeviceDataState, onboardingCompletedState);
 
 describe('Import accounts of other networks. [@noDevice]', () => {
     beforeEach(async () => {
