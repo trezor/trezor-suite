@@ -111,6 +111,10 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
                     presentationStyle: WebBrowserPresentationStyle.OVER_FULL_SCREEN,
                     dismissButtonStyle: 'close',
                     enableBarCollapsing: false,
+                    // this allows to keep the browser open in the background on android, so user can switch
+                    // from and back to it (e.g. to copy the 2FA code from authenticator app)
+                    // without it being killed by the system
+                    showInRecents: true,
                 });
 
                 switch (type) {
