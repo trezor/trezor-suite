@@ -3,7 +3,6 @@ export {
     selectSuiteSyncRelayUrl,
     selectSuiteSyncInteraction,
     selectIsSuiteSyncDebugEnabled,
-    selectDeviceSuiteSyncError,
     selectHasDeviceSuiteSyncError,
     type WithSuiteSyncState,
 } from './suiteSyncSelectors';

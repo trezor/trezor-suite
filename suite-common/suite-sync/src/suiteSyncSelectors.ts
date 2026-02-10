@@ -1,7 +1,7 @@
 import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
-import { SuiteSyncErrorType, SuiteSyncState } from './suiteSyncSlice';
+import { SuiteSyncState } from './suiteSyncSlice';
 import { SuiteSyncInteraction } from './suiteSyncTypes';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
@@ -53,17 +53,6 @@ export const selectSuiteSyncInteraction = (
     }
 
     return null;
-};
-
-export const selectDeviceSuiteSyncError = (
-    state: WithSuiteSyncAndDeviceState,
-    deviceStaticSessionId: StaticSessionId | null,
-): SuiteSyncErrorType | undefined => {
-    if (deviceStaticSessionId === null) {
-        return undefined;
-    }
-
-    return state.suiteSync.suiteSyncErrors[deviceStaticSessionId];
 };
 
 export const selectHasDeviceSuiteSyncError = (

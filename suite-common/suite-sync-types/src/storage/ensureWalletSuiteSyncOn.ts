@@ -33,6 +33,4 @@ export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
-export type EnsureWalletSuiteSyncOnDep = {
-    ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn;
-};
+export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
