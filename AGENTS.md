@@ -9,6 +9,7 @@
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines.md) – Conventional Commits format and best practices
 - [Common Issues](skills/common-issues.md) – Known issues and their solutions
 - [Testing](skills/testing.md) – Running tests and test-related guidelines
+- [Writing RN tests](skills/writing-native-tests.md) – Guidelines for writing tests for suite-native components, hooks and functions
 
 ## Code Style (mandatory)
 
@@ -22,5 +23,5 @@ Always apply these style rules when writing or modifying code in this repository
 
 - **Build times**: Initial setup takes 15-20 minutes; builds can take 10-15 minutes
 - **Windows**: Use Git Bash instead of cmd/PowerShell; consider WSL for better performance
-- **Testing**: Some tests may timeout in CI environments without network access
+- **Testing**: Some tests may time out in CI environments without network access
 - **Hardware wallets**: Use trezor/trezor-user-env emulator for development
