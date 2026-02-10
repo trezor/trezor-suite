@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
-import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from '@trezor/connect-common/src/data/version';
+import { DEFAULT_DOMAIN, VERSION } from '@trezor/connect-common/src/data/version';
 
 import { parseThpSettings } from './thpSettings';
 import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
@@ -24,7 +24,6 @@ const initialSettings: ConnectSettings = {
     lazyLoad: false,
     timestamp: new Date().getTime(),
     sharedLogger: true,
-    deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
     transportReconnect: true,
 };
 
