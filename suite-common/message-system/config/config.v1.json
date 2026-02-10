@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2026-02-09T00:00:00+00:00",
+    "timestamp": "2026-02-10T00:00:00+00:00",
     "sequence": 133,
     "actions": [
         {
@@ -1428,12 +1428,12 @@
                                 "pt": "Ajude-nos a melhorar as negociações no Trezor Suite. Participe de uma sessão de feedback e compartilhe sua experiência."
                             },
                             "description": {
-                                "en": "Answer a short survey to see if you qualify for 60 min interview and get free Trezor Model One or Amazon voucher for 30 USD.",
-                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 60 minutos y recibe un Trezor Model One gratis o un vale de Amazon de 30 USD.",
-                                "cs": "Vyplňte krátký dotazník a zjistěte, zda splňujete podmínky pro 60minutový rozhovor a získejte Trezor Model One, nebo dárkový poukaz na Amazon v hodnotě 30 USD.",
-                                "de": "Beantworten Sie eine kurze Umfrage, um zu sehen, ob Sie für ein 60-minütiges Interview in Frage kommen, und erhalten Sie einen kostenlosen Trezor Model One oder einen Amazon-Gutschein über 30 USD.",
-                                "fr": "Répondez à un court sondage pour voir si vous êtes éligible à un entretien de 60 minutes et recevez un Trezor Model One gratuit ou un bon d'achat Amazon de 30 USD.",
-                                "pt": "Responda a uma breve pesquisa para ver se você se qualifica para uma entrevista de 60 minutos e ganhe um Trezor Model One grátis ou um vale da Amazon de 30 USD."
+                                "en": "Answer a short survey to see if you qualify for 60 min interview and get 50 USD discount on Trezor's e-shop or Amazon voucher for 30 USD.",
+                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 60 minutos y recibe un descuento de 50 USD en la tienda virtual de Trezor o un vale de Amazon de 30 USD.",
+                                "cs": "Vyplňte krátký dotazník a zjistěte, zda splňujete podmínky pro 60minutový rozhovor a získejte slevu 50 USD v Trezor e-shopu, nebo dárkový poukaz na Amazon v hodnotě 30 USD.",
+                                "de": "Beantworten Sie eine kurze Umfrage, um zu sehen, ob Sie für ein 60-minütiges Interview in Frage kommen, und erhalten Sie einen Rabatt von 50 USD im Trezor-E-Shop oder einen Amazon-Gutschein über 30 USD.",
+                                "fr": "Répondez à un court sondage pour voir si vous êtes éligible à un entretien de 60 minutes et recevez une remise de 50 USD sur l'e-shop de Trezor ou un bon d'achat Amazon de 30 USD.",
+                                "pt": "Responda a uma breve pesquisa para ver se você se qualifica para uma entrevista de 60 minutos e ganhe um desconto de 50 USD na loja virtual da Trezor ou um vale da Amazon de 30 USD."
                             },
                             "cta": {
                                 "action": "external-link",
