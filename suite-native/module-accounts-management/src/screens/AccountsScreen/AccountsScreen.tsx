@@ -20,7 +20,7 @@ import {
 } from '@suite-native/navigation';
 
 export const AccountsScreen = () => {
-    const { handleEearnNavigation } = useHandleEarnNavigation();
+    const { handleEarnNavigation } = useHandleEarnNavigation();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
@@ -28,7 +28,7 @@ export const AccountsScreen = () => {
 
     const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, isStaking }) => {
         if (isStaking) {
-            handleEearnNavigation(account.key);
+            handleEarnNavigation(account.key);
 
             return;
         }

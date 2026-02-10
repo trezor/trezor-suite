@@ -28,6 +28,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.15.0",

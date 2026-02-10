@@ -4,6 +4,8 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
@@ -22,7 +24,16 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
+import {
+    AppTabsParamList,
+    AppTabsRoutes,
+    EarnStackRoutes,
+    HomeStackRoutes,
+    TabNavigationProp,
+    checkIsRouteAnyOf,
+} from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
@@ -51,6 +62,8 @@ const deviceButtonsStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp16,
 }));
 
+type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStack>;
+
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
@@ -63,6 +76,9 @@ export const DeviceManagerContent = () => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
 
+    const navigation = useNavigation<NavigationProp>();
+    const currentRoute = useRoute();
+
     const { setIsDeviceManagerVisible } = useDeviceManager();
 
     const toggleIsChangeDeviceRequested = () =>
@@ -71,6 +87,19 @@ export const DeviceManagerContent = () => {
     const insets = useSafeAreaInsets();
 
     const handleSelectDevice = (selectedDevice: TrezorDevice) => {
+        const isOnEarnScreenRoute = checkIsRouteAnyOf([EarnStackRoutes.Earn], currentRoute.name);
+        const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(selectedDevice);
+
+        // When user selects BTC only device in device switcher, redirect to homescreen out of the earn section.
+        if (isOnEarnScreenRoute && isBitcoinOnlyFirmware) {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    { name: AppTabsRoutes.HomeStack, params: { screen: HomeStackRoutes.Home } },
+                ],
+            });
+        }
+
         dispatch(selectDeviceThunk({ device: selectedDevice }));
         setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);

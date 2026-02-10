@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
@@ -12,10 +15,13 @@ import {
 
 export const useHandleEarnNavigation = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, any>>();
-    const isEearnEnabled = useFeatureFlag(FeatureFlag.IsEarnEnabled);
+    const isEarnEnabled = useFeatureFlag(FeatureFlag.IsEarnEnabled);
+    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
 
-    const handleEearnNavigation = (accountKey: Account['key']) => {
-        if (isEearnEnabled) {
+    const isEarnAvailable = isEarnEnabled && !hasBitcoinOnlyFirmware;
+
+    const handleEarnNavigation = (accountKey: Account['key']) => {
+        if (isEarnAvailable) {
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.EarnStack,
                 params: {
@@ -29,5 +35,5 @@ export const useHandleEarnNavigation = () => {
         }
     };
 
-    return { handleEearnNavigation };
+    return { handleEarnNavigation };
 };

@@ -29,6 +29,7 @@
         { "path": "../labeling" },
         { "path": "../navigation" },
         { "path": "../services" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]
