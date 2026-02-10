@@ -98,10 +98,10 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
             await device.powerOff();
 
             // Device is saved, when disconnected, user still can edit labels
-            await metadataPage.account.changeLabel(
-                AccountLabelId.BitcoinDefault1,
-                'edited for remembered',
-            );
+            await metadataPage.account.changeLabel({
+                accountId: AccountLabelId.BitcoinDefault1,
+                label: 'edited for remembered',
+            });
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
                 'edited for remembered',
             );

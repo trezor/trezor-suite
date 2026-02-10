@@ -38,7 +38,11 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             });
 
             await test.step('Add label to output 3 and verify', async () => {
-                await metadataPage.output.editLabel(OutputLabelId.BitcoinLegacy6, 2, 'output 3');
+                await metadataPage.output.changeLabel({
+                    outputId: OutputLabelId.BitcoinLegacy6,
+                    txNumber: 2,
+                    label: 'output 3',
+                });
                 await expect(
                     metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy6, 2),
                 ).toContainText('output 3');
@@ -46,18 +50,22 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
 
             await test.step('Label "send to myself tx"', async () => {
                 await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 9 });
-                await metadataPage.output.editLabel(
-                    OutputLabelId.BitcoinLegacy10,
-                    0,
-                    'really to myself',
-                );
+                await metadataPage.output.changeLabel({
+                    outputId: OutputLabelId.BitcoinLegacy10,
+                    txNumber: 0,
+                    label: 'really to myself',
+                });
                 await expect(
                     metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
                 ).toContainText('really to myself');
             });
 
             await test.step('Test that label can be edited and submitted by enter', async () => {
-                await metadataPage.output.editLabel(OutputLabelId.BitcoinLegacy10, 0, 'edited');
+                await metadataPage.output.changeLabel({
+                    outputId: OutputLabelId.BitcoinLegacy10,
+                    txNumber: 0,
+                    label: 'edited',
+                });
                 await expect(
                     metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
                 ).toContainText('edited');

@@ -120,7 +120,10 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             });
 
             await walletPage.openAccount();
-            await metadataPage.account.changeLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+            await metadataPage.account.changeLabel({
+                accountId: AccountLabelId.BitcoinDefault1,
+                label: 'Kvooo',
+            });
             await expect(
                 metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1),
             ).toContainText('Kvooo');
@@ -160,7 +163,10 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
             await walletPage.openAccount();
             // just enter some label, this indicates that app did not crash
-            await metadataPage.account.changeLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+            await metadataPage.account.changeLabel({
+                accountId: AccountLabelId.BitcoinDefault1,
+                label: 'Kvooo',
+            });
         },
     );
 

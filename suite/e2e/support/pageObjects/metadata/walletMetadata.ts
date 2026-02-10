@@ -9,6 +9,7 @@ export class WalletMetadata extends MetadataBase {
         this.page.getByTestId(`@switch-device/wallet-on-index/${index}`);
     readonly labelChangeSuccessIcon = (index: number) =>
         this.walletOnIndex(index).getByTestId(this.successId);
+
     @step()
     async clickEditLabel(index: number) {
         await this.page.resetMousePosition();
@@ -22,5 +23,12 @@ export class WalletMetadata extends MetadataBase {
     async successIconIsVisible(standardWalletIndex: number) {
         await expect(this.labelChangeSuccessIcon(standardWalletIndex)).toBeVisible();
         await expect(this.labelChangeSuccessIcon(standardWalletIndex)).toBeHidden();
+    }
+
+    @step()
+    async changeLabel({ index, label }: { index: number; label: string }) {
+        await this.clickEditLabel(index);
+        await this.fillLabelInput(label);
+        await this.successIconIsVisible(index);
     }
 }
