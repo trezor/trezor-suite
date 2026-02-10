@@ -73,7 +73,7 @@ export const messages = {
     messageSystem: {
         killswitch: {
             title: 'Update required',
-            content: 'Update to continue using Trezor Suite. Don’t worry, your funds are secure.',
+            content: 'Update to continue using Trezor Suite. Your funds are secure.',
             cta: 'Download latest version',
         },
     },
@@ -81,7 +81,7 @@ export const messages = {
         label: 'Label',
         addLabel: 'Add label',
         disableAlert: {
-            title: 'Are you sure you want to turn off Suite Sync?',
+            title: 'Turn off Suite Sync?',
             description:
                 'Turning off Suite Sync disables labeling. Your labels will stay safely encrypted, but they won’t be visible until you turn Suite Sync back on.',
             cta: 'Turn off',
@@ -109,7 +109,7 @@ export const messages = {
                 button: 'Receive assets',
             },
             uninitializedDevice: {
-                title: 'Your Trezor is ready for setup',
+                title: 'Your Trezor is ready to set up',
                 subtitle: 'You can do this anytime.',
                 button: 'Start setup',
             },
@@ -142,7 +142,7 @@ export const messages = {
         buttons: {
             receive: 'Receive',
             send: 'Send',
-            referral: 'Earn $20 per Referral',
+            referral: 'Earn $20 per referral',
         },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
@@ -154,7 +154,7 @@ export const messages = {
             },
         },
         firmwareUpdateAlert: {
-            title: 'New Trezor firmware version available.',
+            title: 'New firmware is available.',
             version: 'Version {version}',
             button: {
                 close: 'Close',
@@ -163,7 +163,8 @@ export const messages = {
         },
         suiteSyncAlert: {
             title: 'Allow Suite Sync',
-            description: 'Allow Suite Sync to view and edit labels, wallet and account names.',
+            description:
+                'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
             button: 'Allow',
         },
     },
@@ -846,8 +847,8 @@ export const messages = {
                 },
             },
             errors: {
-                pinInvalid: 'The PIN you’ve entered as current is incorrect.',
-                pinMismatch: 'The PINs you’ve entered do not match.',
+                pinInvalid: 'The PIN you’ve entered is incorrect.',
+                pinMismatch: "The PINs you’ve entered don't match.",
             },
             buttons: {
                 setPin: 'Set PIN',
@@ -856,7 +857,7 @@ export const messages = {
             },
         },
         backupAndPassphrase: {
-            title: 'Backup & passphrase',
+            title: 'Wallet backup & passphrase',
             description: 'Check wallet backup, passphrase',
         },
         passphrase: {
@@ -875,8 +876,8 @@ export const messages = {
             checkButton: 'Check authenticity',
             info: {
                 title: 'Check device authenticity',
-                item1: 'This confirms that the chip inside your hardware wallet is genuine.',
-                item2: 'Once your device has been given a clean bill of health, you’re all set.',
+                item1: 'This confirms that the secure hardware inside your device is genuine.',
+                item2: 'Once your device has passed this check and been verified, you’re all set.',
                 letsDoItButton: 'Let’s do it',
             },
             success: {
@@ -895,7 +896,8 @@ export const messages = {
             confirmationCards: {
                 eraseAllData: {
                     title: 'Erase all data',
-                    description: "This will erase all device data. This action can't be undone.",
+                    description:
+                        "All data on your Trezor will be erased. This action can't be undone.",
                 },
                 walletBackup: {
                     title: 'Wallet backup',
@@ -904,12 +906,12 @@ export const messages = {
                 },
             },
             loadingSuccessScreen: {
-                wipedTitle: 'Device wiped',
+                wipedTitle: 'Trezor wiped successfully',
                 factoryResetTitle: 'Trezor reset',
             },
             factoryResetScreen: {
                 title: 'Factory reset',
-                description: 'This will reset all of your device’s data. Proceed with caution.',
+                description: 'This will erase all data on your Trezor. Proceed with caution.',
             },
         },
         bluetooth: {
@@ -922,8 +924,8 @@ export const messages = {
         },
         autoconnect: {
             settingsCard: {
-                title: 'Auto connect',
-                description: 'Toggle auto connect settings',
+                title: 'Auto-connect',
+                description: 'Toggle auto-connect settings',
             },
             screen: {
                 subtitle:
@@ -1061,7 +1063,7 @@ export const messages = {
                     title: 'Suite Sync',
                     subtitle: 'Sync data across your devices',
                     screenSubtitle:
-                        'Name your wallets, personalize accounts, and label transactions. Labels are stored locally and synced across your devices.',
+                        'Name your wallets, personalize accounts, and label transactions to stay organized on all your approved devices.',
                     toggleDescription:
                         'Keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
                 },
@@ -1365,7 +1367,7 @@ export const messages = {
                 firmware: {
                     title: 'Firmware authenticity check',
                     subtitle:
-                        'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Suite.',
+                        'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Trezor Suite.',
                     turnOffTitle: 'Turn off firmware authenticity check',
                 },
                 device: {
@@ -1383,16 +1385,15 @@ export const messages = {
             bitcoinBackends: {
                 title: 'Bitcoin backends',
                 subtitle: 'Manage backend connections',
-                description:
-                    'Connect to a custom backend server, like your own Bitcoin node, for enhanced privacy.',
+                description: 'Connect to a custom backend server for enhanced privacy.',
                 servers: {
-                    title: 'Backend servers',
+                    title: 'Backend server',
                     status: {
                         connected: 'Connected',
                         disconnected: 'Disconnected',
                     },
                     serverType: 'Server type',
-                    serverTypeDefault: 'Default – Trezor',
+                    serverTypeDefault: 'Trezor (default)',
                     serverAddress: 'Server address',
                     connectButton: 'Connect',
                     invalidFormat:
@@ -1402,10 +1403,10 @@ export const messages = {
                         'Unable to connect to server. Check for typos and server disruptions.',
                 },
                 closeAction: {
-                    title: 'Discard your changes?',
-                    description: 'Unsaved edits will be lost if you leave this page.',
+                    title: 'Discard changes?',
+                    description: 'Any unsaved changes will be lost.',
                     discardButton: 'Discard',
-                    continueEditingButton: 'Continue editing',
+                    continueEditingButton: 'Keep editing',
                 },
                 connectionInfo: {
                     title: 'Connection info',
@@ -1486,7 +1487,7 @@ export const messages = {
             subtitle:
                 'Use your PIN to unlock your Trezor when\nconnecting it to a phone or computer.',
             cancelAlert: {
-                title: 'Are you sure you want to cancel PIN setup?',
+                title: 'Cancel PIN setup?',
                 description:
                     'We strongly recommend setting a PIN for your Trezor to prevent unauthorized access.',
                 cancelButton: 'Yes, cancel',
@@ -2002,7 +2003,7 @@ export const messages = {
         addressCopied: 'Address copied',
         copyButton: 'Copy',
         shareButton: 'Share',
-        qrCodeHint: 'Point the camera directly at the QR code',
+        qrCodeHint: 'Scan the QR code with your camera.',
         pickImageButton: 'Upload from gallery',
         pickImageError: 'QR code not found in the image.',
         cautionWarning: {
@@ -2012,7 +2013,7 @@ export const messages = {
         },
         deniedWarning: {
             title: 'Camera access denied.',
-            description: 'Please allow camera access in your device settings.',
+            description: 'Allow camera access in your device settings.',
             grantPermissionButton: 'Grant permission',
         },
     },
@@ -2066,7 +2067,7 @@ export const messages = {
             title: 'Confirm passphrase\non your Trezor',
             description: 'Go to your device and confirm the passphrase you’ve entered.',
             warningSheet: {
-                title: 'Are you sure you would like to cancel opening a passphrase wallet?',
+                title: 'Cancel opening this passphrase wallet?',
                 primaryButton: 'Cancel',
                 secondaryButton: 'Continue opening',
             },
@@ -2309,15 +2310,13 @@ export const messages = {
         },
         earnScreen: {
             title: 'Earn',
-            // TODO: implement correct subtitle with stablecoin yield once available
-            //  Stablecoin yield and Staking can be currently managed only in Trezor Suite for desktop.
             subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
             earnItem: {
                 rewards: 'Rewards',
                 pending: 'Activation pending',
             },
             infoModal: {
-                title: `Manage {earnType} in Trezor Suite for desktop`,
+                title: 'Manage {earnType} in Trezor Suite for desktop',
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
                 copyLabel: 'Hold to copy',
             },
@@ -2780,13 +2779,13 @@ export const messages = {
         },
         updateCard: {
             upToDate: 'You’re all up to date',
-            newVersionAvailable: 'Update available',
+            newVersionAvailable: 'New firmware is available.',
             updateButton: 'Update',
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
         },
         changelog: {
-            button: 'What’s new?',
-            title: 'What’s new?',
+            button: "See what's new",
+            title: "See what's new",
             changelogUnavailable: 'No changelog available',
         },
         firmwareInfoScreen: {
@@ -2862,19 +2861,19 @@ export const messages = {
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
             contactSupportButton: 'Contact support',
-            stuckButton: 'Feel like you’re stuck?',
+            stuckButton: 'Troubleshooting tips',
         },
         stuckedBottomSheet: {
             part1: {
-                title: 'Make sure you have your wallet backup.',
+                title: 'Make sure you have your wallet backup',
                 description:
                     'Having your wallet backup is crucial as the troubleshooting might result in a corrupted state of firmware that will require reinstalling.',
                 continueButton: 'I have my wallet backup ready',
                 closeButton: 'Cancel',
             },
             part2: {
-                title: 'Feel like you’re stuck? ',
-                subtitle: 'Here’s a bunch of things you can try.',
+                title: 'Troubleshooting tips',
+                subtitle: 'Try the steps below to continue installing the firmware.',
                 gotItButton: 'Got it',
                 tip1: 'Reconnect the cable to your phone',
                 tip2: 'Try a different cable',
@@ -2983,7 +2982,7 @@ export const messages = {
                 signSuccessMessage: 'Everything is ready, you can send the transaction now.',
             },
             cancelAlert: {
-                title: 'Are you sure you’d like to cancel sending the transaction?',
+                title: 'Cancel transaction?',
                 continueButton: 'Continue editing',
             },
         },
