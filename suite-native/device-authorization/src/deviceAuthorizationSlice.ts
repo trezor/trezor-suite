@@ -5,6 +5,7 @@ import { UI } from '@trezor/connect';
 import {
     isFlowEndingButtonRequest,
     isPassphraseButtonRequestCode,
+    isPassphraseRequest,
     isPinButtonRequestCode,
     isSuiteSyncButtonRequest,
 } from './utils';
@@ -42,8 +43,7 @@ export const deviceAuthorizationSlice = createSlice({
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
             })
             .addCase(UI.REQUEST_PASSPHRASE, (state, action) => {
-                // @ts-expect-error payload not typed
-                if (action.payload?.device?._state?.staticSessionId) {
+                if (isPassphraseRequest(action) && action.payload?.device?.state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
                 } else if (state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested) {
                     // If pin was requested for new passphrase wallet, we can't wait for close window to reset the state
@@ -70,8 +70,7 @@ export const deviceAuthorizationSlice = createSlice({
             // 3. After pin is succesfully entered, we receive next step passphrase button request so we reset to Idle so passphrase module gets focused.
             .addMatcher(isPassphraseButtonRequestCode, (state, action) => {
                 if (
-                    // @ts-expect-error payload not typed
-                    !action.payload.device._state &&
+                    !action.payload.device.state &&
                     state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested
                 ) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
