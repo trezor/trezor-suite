@@ -52,7 +52,6 @@ export const TradingCryptoAmount = ({
                     value={amount}
                     symbol={coinSymbol}
                     contractAddress={contractAddress}
-                    disableHiddenPlaceholder
                     data-testid="@trading/offers/quote/crypto-amount"
                 />
             </Row>
