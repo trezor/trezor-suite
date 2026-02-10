@@ -1,5 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
     PRELOADED_BTC_ACCOUNT_LABEL,
@@ -13,6 +14,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
+    initialDeviceDataState,
     onboardingCompletedState,
     portfolioTrackerBtcAccountState,
 );

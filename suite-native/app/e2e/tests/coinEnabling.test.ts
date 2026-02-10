@@ -5,6 +5,7 @@ import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
@@ -15,6 +16,7 @@ import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../s
 import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
+    initialDeviceDataState,
     onboardingCompletedState,
     getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );

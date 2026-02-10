@@ -1,3 +1,4 @@
+import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onHome } from '../pageObjects/homeActions';
@@ -7,6 +8,7 @@ import { tradingHistoryActions } from '../pageObjects/trading/tradingHistoryActi
 import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
+    initialDeviceDataState,
     portfolioTrackerBtcAccountState,
     onboardingCompletedState,
 );
