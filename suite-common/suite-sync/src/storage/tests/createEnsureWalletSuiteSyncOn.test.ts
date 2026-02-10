@@ -1,6 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { DeviceRootState } from '@suite-common/wallet-core';
@@ -32,7 +30,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
             refreshSuiteSyncKeys: null,
-            dispatch: null,
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -51,7 +48,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const unavailableCapabilities: UnavailableCapabilities = { evolu: 'no-support' };
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: null,
             getState: () => createMockState([mockSuiteDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
@@ -70,41 +66,10 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
     });
 
-    it('returns error when device needs firmware upgrade', async () => {
-        const unavailableCapabilities: UnavailableCapabilities = { evolu: 'update-required' };
-        const device = mockSuiteDevice({
-            unavailableCapabilities,
-            state: { staticSessionId: DEVICE_STATIC_SESSION_ID_123 },
-        });
-
-        if (device.state?.staticSessionId === undefined) {
-            throw new Error('staticSessionId is undefined');
-        }
-
-        const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: null,
-            getState: () => createMockState([device]),
-            refreshSuiteSyncKeys: null,
-            ensureSuiteSyncData: null,
-            subscriptionStorage: createSubscriptionStorageMock(),
-        });
-
-        const result = await createEnsureWalletSuiteSyncOn(deps)({
-            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
-            isWriteMode: false,
-        });
-
-        expect(!result.success && result.error.type).toBe(
-            'SuiteSyncFirmwareUpgradeNeededDeviceErrorType',
-        );
-        expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
-    });
-
     it('calls ensureSuiteSyncData when wallet is eligible', async () => {
         const ensureResult = ok({ data: {} } as any);
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: mock<Dispatch>(() => {}),
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
@@ -127,7 +92,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const ensureResult = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: mock<Dispatch>(() => {}),
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),

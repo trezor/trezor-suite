@@ -39,6 +39,7 @@ import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
+import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createEnsureWalletSuiteSyncOnWithErrorHandler';
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
 import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
 import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
@@ -128,12 +129,14 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncListener,
     });
 
-    const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn({
+    const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOnWithErrorHandler({
         dispatch: deps.dispatch,
-        getState: deps.getState,
-        refreshSuiteSyncKeys,
-        ensureSuiteSyncData: subscribeSuiteSyncData,
-        subscriptionStorage,
+        ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
+            getState: deps.getState,
+            refreshSuiteSyncKeys,
+            ensureSuiteSyncData: subscribeSuiteSyncData,
+            subscriptionStorage,
+        }),
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({

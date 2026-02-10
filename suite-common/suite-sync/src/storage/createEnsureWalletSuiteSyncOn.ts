@@ -1,5 +1,3 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
 import {
     EnsureWalletSuiteSyncOn,
     RefreshSuiteSyncKeysDep,
@@ -8,13 +6,11 @@ import {
 } from '@suite-common/suite-sync-types';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import { err, exhaustive } from '@trezor/type-utils';
+import { err } from '@trezor/type-utils';
 
-import { setSuiteSyncError } from '../suiteSyncSlice';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 export type EnsureWalletSuiteSyncOnDeps = {
-    dispatch: Dispatch;
     getState: () => any;
 } & SubscribeSuiteSyncDataDep &
     RefreshSuiteSyncKeysDep &
@@ -26,13 +22,6 @@ export const createEnsureWalletSuiteSyncOn =
         const device = selectDeviceByStaticSessionId(deps.getState(), deviceStaticSessionId);
 
         if (isFwUpgradeNeededForSuiteSync(device)) {
-            deps.dispatch(
-                setSuiteSyncError({
-                    deviceStaticSessionId,
-                    error: { type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' },
-                }),
-            );
-
             return err({ type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' });
         }
 
@@ -43,37 +32,8 @@ export const createEnsureWalletSuiteSyncOn =
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        const result = await deps.ensureSuiteSyncData({
+        return await deps.ensureSuiteSyncData({
             deviceStaticSessionId,
             isWriteMode,
         });
-
-        if (!result.success) {
-            const { type } = result.error;
-
-            switch (type) {
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                    deps.dispatch(
-                        setSuiteSyncError({ deviceStaticSessionId, error: result.error }),
-                    );
-                    break;
-
-                case 'SuiteSyncUnavailableOnDeviceError':
-                    // This error is now not handled in the UI, so we don't need to set the error. It will probably be added as a follow up.
-                    deps.dispatch(setSuiteSyncError({ deviceStaticSessionId, error: null }));
-                    break;
-
-                case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
-                    break;
-
-                default:
-                    exhaustive(type);
-            }
-        } else {
-            deps.dispatch(setSuiteSyncError({ deviceStaticSessionId, error: null }));
-        }
-
-        return result;
     };

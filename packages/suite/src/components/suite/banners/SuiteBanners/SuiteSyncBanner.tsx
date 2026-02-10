@@ -51,7 +51,7 @@ const SuiteSyncBannerContent = ({
 }: {
     config: BannerConfig;
     isDeviceConnected: boolean;
-    onClick: () => void;
+    onClick: () => void | Promise<void>;
 }) => (
     <Banner
         icon
@@ -95,7 +95,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
 
     const config = bannerConfigs[suiteSyncInteraction];
 
-    const handlers: Record<SuiteSyncBannerInteraction, () => void> = {
+    const handlers: Record<SuiteSyncBannerInteraction, () => void | Promise<void>> = {
         'keys-needed': async () => {
             const result = await suiteSync.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
