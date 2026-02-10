@@ -39,12 +39,13 @@ const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
 const Wrapper = styled.div`
     width: 100%;
     display: flex;
+    align-items: center;
     flex-direction: column;
     gap: ${spacingsPx.xl};
 `;
 
 const SelectWrapper = styled.div<{ $elevation: Elevation }>`
-    width: 100%;
+    width: 700px;
     border-radius: ${borders.radii.sm};
     border: 1px solid ${mapElevationToBorder};
     background: ${mapElevationToBackground};

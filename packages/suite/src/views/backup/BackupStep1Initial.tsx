@@ -7,7 +7,7 @@ import {
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Modal, Paragraph } from '@trezor/components';
+import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
@@ -45,7 +45,14 @@ export const BackupStep1Initial = ({
             onCancel={onCancel}
             intent="brand"
             data-testid="@backup"
-            heading={<Translation id="TR_CREATE_BACKUP" />}
+            heading={
+                <Column gap={8} alignItems="center" justifyContent="center">
+                    <Badge intent="neutral" size="medium">
+                        <Translation id="TR_NEW_WALLET" />
+                    </Badge>
+                    <Translation id="TR_CREATE_BACKUP" />
+                </Column>
+            }
             description={<BackupStepDescription />}
             bottomContent={
                 <>

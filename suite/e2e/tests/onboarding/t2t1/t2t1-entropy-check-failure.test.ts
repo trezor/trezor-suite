@@ -37,9 +37,20 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
             await test.step('Start creating wallet', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.createWalletButton.click();
-                await onboardingPage.selectSeedType('12-words');
+                // Proceed with default backup type (12-words for T2T1)
+                await onboardingPage.selectSeedConfirmButton.click();
+
+                await onboardingPage.backup.wroteSeedProperlyCheckbox.click();
+                await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
+                await onboardingPage.backup.willHideSeedCheckbox.click();
+                await onboardingPage.createBackupButton.click();
+
+                // Wallet creation begins on device, entropy check runs after seed generation.
+                // Reject backup early so pending resetDevice settles.
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+                await device.pressYes();
+                await device.pressNo();
             });
 
             await test.step('Land on entropy check failure', async () => {
@@ -62,6 +73,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
             // note that this specific string is one of the ignored errors, see getIsIgnoredEntropyCheckError
             const mockedError = 'device disconnected during action';
             await page.ensureStoreOnDesktop();
+
             await page.evaluate(
                 action => window.store.dispatch(action),
                 deviceActions.setSimulatedEntropyCheckFail({
@@ -73,15 +85,23 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
             await test.step('Start creating wallet', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.createWalletButton.click();
-                await onboardingPage.selectSeedType('12-words');
+                await onboardingPage.selectSeedConfirmButton.click();
+
+                await onboardingPage.backup.wroteSeedProperlyCheckbox.click();
+                await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
+                await onboardingPage.backup.willHideSeedCheckbox.click();
+                await onboardingPage.createBackupButton.click();
+
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+                await device.pressYes();
+                await device.pressNo();
             });
 
             await test.step('Display error toast, but stay on the same screen (no device compromised)', async () => {
                 await expect(page.getByTestId('@toast/error')).toContainText(mockedError);
                 await page.waitForTimeout(500); // we do not expect any navigation, so ensure no navigation occurs
-                await expect(onboardingPage.selectSeedConfirmButton).toBeVisible();
+                await expect(page.getByTestId('@button/go-to-onboarding')).toBeVisible();
             });
         },
     );

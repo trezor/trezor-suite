@@ -54,22 +54,59 @@ export class BackupSection {
     }
 
     @step()
-    async passThroughShamirBackup(shares: number, threshold: number) {
-        // Backup button should be disabled until all checkboxes are checked
-        await expect(this.startButton).toBeDisabled();
+    async passThroughShamirBackup(
+        shares: number,
+        threshold: number,
+        { deviceConfirmations }: { deviceConfirmations: number },
+    ) {
+        const backupButton = this.page.getByTestId('@onboarding/create-backup-button');
+        const closeButton = this.page.getByTestId('@onboarding/continue-button');
+
+        await expect(backupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
         await this.madeNoDigitalCopyCheckbox.click();
         await this.willHideSeedCheckbox.click();
 
-        // Create Shamir backup on device
-        await this.startButton.click();
+        await backupButton.click();
+
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        for (let i = 0; i < deviceConfirmations; i++) {
+            await this.page.waitForTimeout(1000);
+            await this.device.pressYes();
+        }
 
-        // Adding delay to mitigate race condition; avoids hitting the homescreen
         await this.page.waitForTimeout(1000);
-        await this.device.readAndConfirmShamirMnemonic({ shares, threshold });
+        await this.device.readAndConfirmAtomicShamirMnemonic({ shares, threshold });
 
-        await this.closeButton.click();
+        await closeButton.click();
+    }
+
+    @step()
+    async passThroughBip39Backup({ deviceConfirmations }: { deviceConfirmations: number }) {
+        const backupButton = this.page.getByTestId('@onboarding/create-backup-button');
+        const closeButton = this.page.getByTestId('@onboarding/continue-button');
+
+        await expect(backupButton).toBeDisabled();
+
+        await this.wroteSeedProperlyCheckbox.click();
+        await this.madeNoDigitalCopyCheckbox.click();
+        await this.willHideSeedCheckbox.click();
+
+        await backupButton.click();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        for (let i = 0; i < deviceConfirmations; i++) {
+            await this.page.waitForTimeout(1000);
+            await this.device.pressYes();
+        }
+
+        // For BIP39, manually confirm all seed words on device (48 presses for 12 words on T1B1)
+        await this.page.waitForTimeout(1000);
+        for (let i = 0; i < 48; i++) {
+            await this.device.pressYes();
+        }
+
+        await closeButton.click();
     }
 }

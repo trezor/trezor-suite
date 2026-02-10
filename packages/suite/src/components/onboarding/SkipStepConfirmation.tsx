@@ -30,7 +30,6 @@ const getModalContent = (
                 body: <Translation id="TR_SKIP_UPDATE_DESCRIPTION" />,
             };
         case STEP.ID_SECURITY_STEP:
-        case STEP.ID_BACKUP_STEP:
             return {
                 heading: <Translation id="TR_SKIP_BACKUP" />,
                 secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,

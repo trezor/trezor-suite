@@ -18,17 +18,17 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueThroughFirmware();
 
-        // Will be clicking on Shamir backup button
+        // Select backup type (no device interaction, just navigates to SecurityStep)
         await onboardingPage.createWalletButton.click();
         await onboardingPage.selectSeedType('shamir-advanced');
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
 
-        await onboardingPage.createBackupButton.click();
-
+        // Start backup
         const shares = 3;
         const threshold = 2;
-        await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
+        await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+            deviceConfirmations: 4,
+        });
+
         await onboardingPage.pin.setPinButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
 

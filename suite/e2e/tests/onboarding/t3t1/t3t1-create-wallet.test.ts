@@ -31,24 +31,17 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             await page.waitForTimeout(500);
             await onboardingPage.tutorial.skip();
 
-            // Create wallet with Shamir backup
+            // Select backup type (no device interaction, just navigates to SecurityStep)
             await onboardingPage.createWalletButton.click();
             await onboardingPage.selectSeedType('shamir-advanced');
 
-            // Accept ToS
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-
-            // Confirm wallet created
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-
-            await onboardingPage.createBackupButton.click();
-
-            // Create backup with Shamir shares and threshold
+            // SecurityStep: check backup seed cards, create wallet + backup on device, continue
+            // In the new atomic flow, wallet creation and backup happen together
             const shares = 3;
             const threshold = 2;
-            await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
+            await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+                deviceConfirmations: 3,
+            });
 
             // Set PIN
             await onboardingPage.pin.setPinButton.click();

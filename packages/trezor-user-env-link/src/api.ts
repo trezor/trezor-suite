@@ -77,6 +77,11 @@ export interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
+export interface ReadAndConfirmAtomicShamirMnemonicEmu {
+    shares: number;
+    threshold: number;
+}
+
 type StartBridgeVersion = '2.0.33' | 'node-bridge';
 
 export const MNEMONICS = {
@@ -297,6 +302,15 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
         await this.client.send({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
+            ...options,
+        });
+
+        return null;
+    }
+    async readAndConfirmAtomicShamirMnemonicEmu(options: ReadAndConfirmAtomicShamirMnemonicEmu) {
+        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await this.client.send({
+            type: 'emulator-read-and-confirm-atomic-shamir-mnemonic',
             ...options,
         });
 
