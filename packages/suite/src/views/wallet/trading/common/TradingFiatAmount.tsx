@@ -1,17 +1,31 @@
 import { useFormatters } from '@suite-common/formatters';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
+import { HiddenPlaceholder } from '../../../../components/suite';
+
 interface TradingFiatAmountProps {
     amount?: BaseCurrencyAmount;
     currency?: string;
+    disableHiddenPlaceholder?: boolean;
 }
 
-export const TradingFiatAmount = ({ amount, currency }: TradingFiatAmountProps) => {
+export const TradingFiatAmount = ({
+    amount,
+    currency,
+    disableHiddenPlaceholder,
+}: TradingFiatAmountProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    if (amount !== undefined) {
-        return <BaseCurrencyAmountFormatter value={amount} currency={currency} />;
+    const content =
+        amount !== undefined ? (
+            <BaseCurrencyAmountFormatter value={amount} currency={currency} />
+        ) : (
+            <>{currency?.toUpperCase()}</>
+        );
+
+    if (disableHiddenPlaceholder) {
+        return content;
     }
 
-    return <>{currency?.toUpperCase()}</>;
+    return <HiddenPlaceholder>{content}</HiddenPlaceholder>;
 };
