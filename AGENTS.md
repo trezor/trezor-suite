@@ -10,6 +10,7 @@
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines.md) – Conventional Commits format and best practices
 - [Development Notes](skills/development-notes.md) – Platform-specific notes and build time expectations
 - [Common Issues](skills/common-issues.md) – Known issues and their solutions
+- [Testing](skills/testing.md) – Running tests and test-related guidelines
 
 ## Code Style (mandatory)
 
