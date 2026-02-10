@@ -33,7 +33,7 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const { handleEearnNavigation } = useHandleEarnNavigation();
+    const { handleEarnNavigation } = useHandleEarnNavigation();
     const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -45,7 +45,7 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
-                handleEearnNavigation(account.key);
+                handleEarnNavigation(account.key);
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey: account.key,
@@ -55,7 +55,7 @@ export const Assets = () => {
             }
             setSelectedAssetSymbol(null);
         },
-        [handleEearnNavigation, navigation],
+        [handleEarnNavigation, navigation],
     );
 
     const handleCloseBottomSheet = useCallback(() => {

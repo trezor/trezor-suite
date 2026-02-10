@@ -1,15 +1,17 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TabBarItem } from './TabBarItem';
 import { AppTabsRoutes } from '../routes';
 import { TabsOptions } from '../types';
-
+import { TabBarItem } from './TabBarItem';
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }
@@ -44,6 +46,11 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
+    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const isEarnEnabled = useFeatureFlag(FeatureFlag.IsEarnEnabled);
+
+    const shouldHideEarnTab = isBitcoinOnlyFirmware || !isEarnEnabled;
+
     return (
         <Box
             style={applyStyle(tabBarStyle, {
@@ -53,6 +60,10 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
             })}
         >
             {state.routes.map((route, index) => {
+                if (route.name === AppTabsRoutes.EarnStack && shouldHideEarnTab) {
+                    return null;
+                }
+
                 const isFocused = state.index === index;
                 const { routeName, iconName, focusedIconName, params } = tabItemOptions[route.name];
                 const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
