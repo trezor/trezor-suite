@@ -5,12 +5,14 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailInputsSheet } from './TransactionDetailInputsSheet';
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
+import { SheetControls } from './TransactionDetailSheet';
 import { TransactionDetailValuesSheet } from './TransactionDetailValuesSheet';
 
 type TransactionDetailSheetsProps = {
     transaction: WalletAccountTransaction;
     isTokenTransaction?: boolean;
     accountKey: AccountKey;
+    inputsSheetControls?: SheetControls;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -22,6 +24,7 @@ export const TransactionDetailSheets = ({
     transaction,
     isTokenTransaction = false,
     accountKey,
+    inputsSheetControls,
 }: TransactionDetailSheetsProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -36,7 +39,11 @@ export const TransactionDetailSheets = ({
                 />
 
                 {isValuesSheetVisible && <TransactionDetailValuesSheet transaction={transaction} />}
-                <TransactionDetailInputsSheet txid={transaction.txid} accountKey={accountKey} />
+                <TransactionDetailInputsSheet
+                    txid={transaction.txid}
+                    accountKey={accountKey}
+                    sheetControls={inputsSheetControls}
+                />
             </VStack>
         </Card>
     );

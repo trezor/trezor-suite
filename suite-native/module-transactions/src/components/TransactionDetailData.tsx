@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Box, Card, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, InlineAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -39,6 +39,7 @@ export const TransactionDetailData = ({
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+    const inputsSheetControls = useBottomSheetModal();
 
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, accountKey, transaction.txid),
@@ -132,6 +133,7 @@ export const TransactionDetailData = ({
                 transaction={transaction}
                 accountKey={accountKey}
                 tokenTransfer={tokenTransfer}
+                onShowMore={inputsSheetControls.openModal}
             />
             {hasIncludedCoins && (
                 <TransactionDetailIncludedCoins
@@ -145,6 +147,7 @@ export const TransactionDetailData = ({
                 transaction={transaction}
                 isTokenTransaction={isTokenTransaction}
                 accountKey={accountKey}
+                inputsSheetControls={inputsSheetControls}
             />
         </VStack>
     );

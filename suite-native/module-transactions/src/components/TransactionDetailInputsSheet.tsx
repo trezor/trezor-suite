@@ -14,11 +14,12 @@ import {
 } from '@suite-native/transactions';
 
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
-import { TransactionDetailSheet } from './TransactionDetailSheet';
+import { SheetControls, TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailInputsSheetProps = {
     txid: string;
     accountKey: AccountKey;
+    sheetControls?: SheetControls;
 };
 
 type InputsOutputsHeaderProps = {
@@ -68,6 +69,7 @@ const getTransactionInputsAndOutputsCount = (transfers: TransactionTranfer[]) =>
 export const TransactionDetailInputsSheet = ({
     txid,
     accountKey,
+    sheetControls,
 }: TransactionDetailInputsSheetProps) => {
     const { translate } = useTranslate();
     const transactionTransfers = useSelector(
@@ -85,6 +87,7 @@ export const TransactionDetailInputsSheet = ({
             iconName="swap"
             transactionId={txid}
             sheetName="inputs"
+            sheetControls={sheetControls}
         >
             <VStack>
                 <TransactionDetailInputsSheetSection
