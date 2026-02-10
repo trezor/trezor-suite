@@ -30,6 +30,24 @@ export const createInterceptor = (): RequestInterceptor => {
 
     // Adds listener for electron default session.
     session.defaultSession.webRequest.onBeforeRequest(filter, handleRequest);
+    
+    // session.fromPartition('webview').resolveProxy('https://www.trezor.io').then((proxyUrl) => {
+    //     console.log('proxyUrl', proxyUrl);
+
+    //     // DIRECT means no proxy is configured
+    //     if (proxyUrl !== 'DIRECT') {
+    //         // retrieve the parts of the proxy from the string returned
+    //         // the url would look something like: 'PROXY http-proxy.mydomain.com:8080'
+    //         const proxyUrlComponents = proxyUrl.split(':');
+
+    //         const proxyHost = proxyUrlComponents[0].split(' ')[1];
+    //         console.log('proxyHost', proxyHost);
+    //         const proxyPort = parseInt(proxyUrlComponents[1], 10);
+    //         console.log('proxyPort', proxyPort);
+
+    //         // do something with proxy details
+    //     }
+    // });
 
     const onBeforeRequest = (listener: BeforeRequestListener) => {
         beforeRequestListeners.push(listener);
@@ -38,6 +56,8 @@ export const createInterceptor = (): RequestInterceptor => {
     const offBeforeRequest = (listener: BeforeRequestListener) => {
         beforeRequestListeners = beforeRequestListeners.filter(f => f !== listener);
     };
+
+
 
     return {
         onBeforeRequest,
