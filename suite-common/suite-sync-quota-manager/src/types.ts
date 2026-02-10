@@ -4,6 +4,7 @@ export type RegisteredDevice = {
     deviceId: string;
     totalStorageSize: number;
     unspentStorageSize: number;
+    dismissedNoQuotaLeftWarning: boolean;
 };
 
 export type OwnerAllowance = {
