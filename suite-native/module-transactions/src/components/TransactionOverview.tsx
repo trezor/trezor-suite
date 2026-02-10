@@ -1,17 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { isUtxoBased } from '@suite-common/wallet-utils';
-import { Box, Card, Divider, HStack, Text, TextButton } from '@suite-native/atoms';
+import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    StackNavigationProps,
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle } from '@trezor/styles';
 
@@ -23,6 +15,7 @@ type TransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
     tokenTransfer?: TypedTokenTransfer;
+    onShowMore: () => void;
 };
 
 export const cardStyle = prepareNativeStyle(utils => ({
@@ -30,33 +23,18 @@ export const cardStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.none,
 }));
 
-type NavigationProps = StackNavigationProps<
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes.TransactionDetailOverview
->;
-
 export const TransactionOverview = ({
     transaction,
     accountKey,
     tokenTransfer,
+    onShowMore,
 }: TransactionDetailSummaryProps) => {
-    const navigation = useNavigation<NavigationProps>();
-
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const isTokenTransferDetail = !!tokenTransfer;
 
-    const navigateToOverview = () => {
-        navigation.navigate(TransactionDetailStackRoutes.TransactionDetailOverview, {
-            txid: transaction.txid,
-            accountKey,
-        });
-    };
-
     if (!account) return null;
-
-    const isUtxoBasedNetwork = isUtxoBased(account);
 
     // Check if this is a Stellar trustline transaction
     const isStellarTrustline =
@@ -73,7 +51,7 @@ export const TransactionOverview = ({
                 <TokenTransactionDetailSummary
                     transaction={transaction}
                     tokenTransfer={tokenTransfer}
-                    onShowMore={navigateToOverview}
+                    onShowMore={onShowMore}
                 />
             );
         }
@@ -82,7 +60,7 @@ export const TransactionOverview = ({
             <NetworkTransactionDetailSummary
                 accountKey={accountKey}
                 transaction={transaction}
-                onShowMore={navigateToOverview}
+                onShowMore={onShowMore}
             />
         );
     };
@@ -93,16 +71,6 @@ export const TransactionOverview = ({
                 <Text variant="hint">
                     <Translation id="transactions.detail.transactionOverviewTitle" />
                 </Text>
-                {isUtxoBasedNetwork && (
-                    <TextButton
-                        size="small"
-                        variant="primary"
-                        isUnderlined
-                        onPress={navigateToOverview}
-                    >
-                        <Translation id="transactions.detail.showDetails" />
-                    </TextButton>
-                )}
             </HStack>
             <Divider />
             <Box padding="sp16">{renderContent()}</Box>

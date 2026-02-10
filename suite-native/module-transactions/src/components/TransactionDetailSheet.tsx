@@ -14,12 +14,15 @@ import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+export type SheetControls = ReturnType<typeof useBottomSheetModal>;
+
 type TransactionDetailSheetProps = {
     iconName: IconName;
     title: string;
     transactionId: string;
     children: ReactNode;
     sheetName: SheetType;
+    sheetControls?: SheetControls;
 };
 
 type SheetType = 'parameters' | 'values' | 'inputs';
@@ -71,9 +74,11 @@ export const TransactionDetailSheet = ({
     transactionId,
     children,
     sheetName,
+    sheetControls,
 }: TransactionDetailSheetProps) => {
     const analytics = useAnalytics();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const internal = useBottomSheetModal();
+    const { bottomSheetRef, openModal, closeModal } = sheetControls ?? internal;
 
     const openSheet = () => {
         analytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
