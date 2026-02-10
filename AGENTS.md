@@ -19,6 +19,13 @@ All code contributions **must** follow the project's code style guide:
 
 Always apply these style rules when writing or modifying code in this repository.
 
+## Formatting (mandatory)
+
+After any code changes, run formatting on changed files before finishing:
+
+1. `yarn g:prettier --write <changed-files>`
+2. `yarn g:eslint --fix <changed-files>`
+
 # Other Notes
 
 - **Build times**: Initial setup takes 15-20 minutes; builds can take 10-15 minutes
