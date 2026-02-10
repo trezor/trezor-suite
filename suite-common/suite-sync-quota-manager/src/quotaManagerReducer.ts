@@ -2,6 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import {
     eraseFetchedDataDebug,
+    noQuotaLeftWarningDismissed,
     quotaManagerDeviceFetched,
     quotaManagerDeviceUnspentStorageFetched,
     quotaManagerOwnerFetched,
@@ -50,6 +51,7 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                         deviceId: payload.deviceId,
                         totalStorageSize: payload.totalStorageSize,
                         unspentStorageSize: payload.unspentStorageSize,
+                        dismissedNoQuotaLeftWarning: false,
                     });
                 }
             })
@@ -72,6 +74,15 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                         walletDescriptor: payload.walletDescriptor,
                         totalSpace: payload.totalSpace,
                     });
+                }
+            })
+            .addCase(noQuotaLeftWarningDismissed, (state, { payload }) => {
+                const existingDevice = state.registeredDevices.find(
+                    device => device.deviceId === payload.deviceId,
+                );
+
+                if (existingDevice) {
+                    existingDevice.dismissedNoQuotaLeftWarning = true;
                 }
             }),
 );

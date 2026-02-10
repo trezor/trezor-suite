@@ -21,6 +21,7 @@ export {
     quotaManagerFetchError,
     suiteSyncQuotaManagerActions,
     eraseFetchedDataDebug,
+    noQuotaLeftWarningDismissed,
 } from './quotaManagerActions';
 
 /**
@@ -33,7 +34,10 @@ export {
     selectIsDeviceRegistered,
     selectHasOwnerAllowance,
     selectHasDeviceAllowance,
+    selectLeftDeviceQuota,
+    selectDeviceDismissedNoQuotaLeftWarning,
 } from './quotaManagerSelectors';
+export type { WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 
 /**
  * Reducers.

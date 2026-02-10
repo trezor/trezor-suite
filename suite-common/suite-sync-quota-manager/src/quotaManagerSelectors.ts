@@ -2,7 +2,7 @@ import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 
-type WithSuiteSyncQuotaManagerState = {
+export type WithSuiteSyncQuotaManagerState = {
     suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
 };
 
@@ -26,6 +26,17 @@ export const selectRegisteredDevices = (state: WithSuiteSyncQuotaManagerState) =
 
 export const selectOwnersAllowance = (state: WithSuiteSyncQuotaManagerState) =>
     state.suiteSyncQuotaManager.ownersAllowance;
+
+export const selectLeftDeviceQuota = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
+    state.suiteSyncQuotaManager.registeredDevices.find(di => di.deviceId === deviceId)
+        ?.unspentStorageSize;
+
+export const selectDeviceDismissedNoQuotaLeftWarning = (
+    state: WithSuiteSyncQuotaManagerState,
+    deviceId: string,
+) =>
+    state.suiteSyncQuotaManager.registeredDevices.find(di => di.deviceId === deviceId)
+        ?.dismissedNoQuotaLeftWarning;
 
 export const selectHasDeviceAllowance = (
     state: WithSuiteSyncQuotaManagerState,

@@ -43,10 +43,18 @@ export const quotaManagerOwnerFetched = createAction(
     }),
 );
 
+export const noQuotaLeftWarningDismissed = createAction(
+    `${QUOTA_MANAGER_PREFIX}/noQuotaLeftWarningDismissed`,
+    (payload: { deviceId: string }) => ({
+        payload,
+    }),
+);
+
 export const suiteSyncQuotaManagerActions = {
     updateQuotaManagerBaseUrl,
     quotaManagerFetchError,
     quotaManagerDeviceFetched,
     quotaManagerOwnerFetched,
     eraseFetchedDataDebug,
+    noQuotaLeftWarningDismissed,
 };
