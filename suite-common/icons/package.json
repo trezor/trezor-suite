@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn g:tsx generateIcons.js && yarn g:tsx generateIconFont.ts",
+        "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
         "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts"
     },
