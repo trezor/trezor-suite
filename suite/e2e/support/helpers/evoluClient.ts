@@ -1,6 +1,9 @@
 import { Evolu, SimpleName, getOrThrow } from '@evolu/common';
 import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
 import { expect } from '@playwright/test';
+import { execSync } from 'child_process';
+import { diff } from 'jest-diff';
+import { isEqual, omit, orderBy } from 'lodash';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
@@ -9,6 +12,7 @@ import { createNodeEvoluDeps } from './createEvoluNodeDeps';
 import { step } from '../common';
 
 type TableName = keyof typeof Schema;
+const allTables = Object.keys(Schema) as TableName[];
 
 export class EvoluClient {
     private _evolu?: Evolu<typeof Schema>;
@@ -61,6 +65,16 @@ export class EvoluClient {
     }
 
     @step()
+    wipeAndRestartServer() {
+        execSync(
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml up --force-recreate -d quota-db suite-sync',
+            {
+                cwd: '../../',
+            },
+        );
+    }
+
+    @step()
     writeTo<T extends TableName>(table: T, object: Upsertable<(typeof Schema)[T]>) {
         const upsertResult = this.evolu.upsert(table, object as any);
         if (!upsertResult.ok) {
@@ -94,7 +108,6 @@ export class EvoluClient {
 
     @step()
     async debugReadAllTablesAndThrow() {
-        const allTables = Object.keys(Schema) as TableName[];
         const allDataPromise = allTables.map(async table => await this.readFrom(table));
         await expect(async () => {
             const allData = await Promise.all(allDataPromise);
@@ -107,5 +120,34 @@ export class EvoluClient {
             // we have collected all data, throw it for debugging purposes
             throw new Error(`Evolu Data: ${JSON.stringify(allData, null, 2)}`);
         }).toPass({ timeout: 3_000, intervals: [1000, 2000, 2500] });
+    }
+
+    @step()
+    async expectInTable<T extends TableName>(
+        table: T,
+        expectedData: object[],
+        options?: {
+            softExpect?: boolean;
+            omit?: string[];
+            timeout?: number;
+        },
+    ) {
+        const omitFields = options?.omit ?? ['id', 'createdAt'];
+        const timeout = options?.timeout ?? 5_000;
+        const expectFn = options?.softExpect ? expect.soft : expect;
+
+        await expectFn(async () => {
+            const actualData = await this.readFrom(table);
+            const actualOmitted = actualData.map(item => omit(item, omitFields));
+            // Unfortunately label is the only guaranteed property for ordering
+            // might not be sufficient for more advance test scenarios. YAGNI for now.
+            const actualOrdered = orderBy(actualOmitted, ['label']);
+            const expectedOrdered = orderBy(expectedData, ['label']);
+            if (!isEqual(expectedOrdered, actualOrdered)) {
+                throw new Error(
+                    `Table "${table}" data does not match.\nDiff:\n${diff(expectedOrdered, actualOrdered)}`,
+                );
+            }
+        }).toPass({ timeout });
     }
 }

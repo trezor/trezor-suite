@@ -1,21 +1,15 @@
-import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
-import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
-
-import { isWebProject, skipFixture } from '../../../support/common';
+import {
+    WALLET_INDEX,
+    accountDescriptor,
+    ownerSecret,
+    walletDescriptor,
+} from '../../../fixtures/metadata/default-metadata-ids';
+import { isWebProject } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 
-// const ownerId = getOrThrow(OwnerId.from('0Fco3XDgKR59zX5VBvyyGQ'));
-const ownerSecret = asSuiteSyncOwnerSecretHex(
-    'd5cafbfc837fcdba7fd54025ce352fac369db9383d41d73dbd4f3353b63bc4644585f41195021419707ccdf76bbdf0b1cb0e11f07ff19a41b5f22602dfee3b63',
-);
-
-const WALLET_SEED_INDEX = 0;
-const accountDescriptor = asAccountDescriptor(
-    'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY',
-);
 const walletSeed = {
     id: 'ya1CCDTCVPyRa6egTac7yg',
-    walletDescriptor: asWalletDescriptor('mkqRFzxmkCGX9jxgpqqFHcxRUmLJcLDBer'),
+    walletDescriptor,
     label: 'Evolu synced wallet',
 };
 
@@ -39,21 +33,19 @@ test.describe(
     { tag: ['@webOnly', '@specificFirmware', '@T3W1', '@T3T1'] },
     () => {
         test.use({
-            exceptionLogger: skipFixture,
             firmwareVersion: '2-main',
             deviceSetup: { passphrase_protection: true },
         });
 
         test.beforeEach(async ({ evoluClient, onboardingPage }) => {
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
             await test.step('Seed Evolu relay server', async () => {
-                await evoluClient.init({
-                    ownerSecret,
-                });
+                evoluClient.wipeAndRestartServer();
+                await evoluClient.init({ ownerSecret });
                 evoluClient.writeTo('wallet', walletSeed);
                 evoluClient.writeTo('account', accountSeed);
                 evoluClient.writeTo('address', addressSeed);
             });
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
         });
 
         test('Sync labels from server', async ({
@@ -112,7 +104,7 @@ test.describe(
             await test.step('Verify wallet label is synced', async () => {
                 await dashboardPage.openDeviceSwitcher();
                 await expect
-                    .soft(metadataPage.wallet.walletLabel(WALLET_SEED_INDEX))
+                    .soft(metadataPage.wallet.walletLabel(WALLET_INDEX))
                     .toHaveText(walletSeed.label);
                 await dashboardPage.deviceSwitchingCloseButton.click();
             });

@@ -23,7 +23,15 @@ export class OutputMetadata extends MetadataBase {
     }
 
     @step()
-    async editLabel(outputId: string, txNumber: number, label: string) {
+    async changeLabel({
+        outputId,
+        txNumber,
+        label,
+    }: {
+        outputId: string;
+        txNumber: number;
+        label: string;
+    }) {
         await this.clickAddLabelButton(outputId, txNumber);
         await this.outputMetadataInput(outputId, txNumber).fill(label);
         await this.page.keyboard.press('Enter');

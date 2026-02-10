@@ -16,7 +16,8 @@
         "github:create:project": "tsx ./support/reporters/scriptCreateProject.ts",
         "git:bisect": "./scripts/bisect-commits.sh",
         "decode:sol:stake": "tsx ./scripts/decode-sol-staking-account.ts",
-        "docker:suite-sync": "docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml up --force-recreate quota-db suite-sync"
+        "docker:suite-sync": "docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml up -d --force-recreate quota-db suite-sync -d && docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml logs -f suite-sync",
+        "docker:suite-sync:stop": "docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml down"
     },
     "devDependencies": {
         "@currents/playwright": "^1.19.0",
@@ -25,7 +26,6 @@
         "@playwright/browser-firefox": "^1.57.0",
         "@playwright/browser-webkit": "^1.57.0",
         "@playwright/test": "^1.57.0",
-        "@scure/bip39": "^1.5.1",
         "@solana-program/stake": "^0.5.0",
         "@solana/addresses": "^2.3.0",
         "@solana/kit": "^2.3.0",

@@ -26,4 +26,11 @@ export class AddressMetadata extends MetadataBase {
         await expect(this.successLabel(accountId)).toBeVisible();
         await expect(this.successLabel(accountId)).toBeHidden();
     }
+
+    @step()
+    async changeLabel({ address, label }: { address: string; label: string }) {
+        await this.clickEditLabel(address);
+        await this.fillLabelInput(label);
+        await this.successIconIsVisible(address);
+    }
 }

@@ -16,18 +16,17 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel(accountId: string, newLabel: string) {
-        await this.page.resetMousePosition();
-        // ensure account label is loaded - test can be too fast
-        await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
-        await this.accountLabel(accountId).hover();
-        await this.editLabelButton(accountId).click();
-        await this.fillLabelInput(newLabel, { useButton: true });
+    async changeLabel({ accountId, label }: { accountId: string; label: string }) {
+        await this.clickEditLabelButton(accountId);
+        await this.fillLabelInput(label, { useButton: true });
+        await this.successIconIsVisible(accountId);
     }
 
     @step()
     async clickEditLabelButton(accountId: string) {
         await this.page.resetMousePosition();
+        // ensure account label is loaded - test can be too fast
+        await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
         await this.accountLabel(accountId).hover();
         await this.editLabelButton(accountId).click();
     }

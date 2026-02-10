@@ -15602,7 +15602,6 @@ __metadata:
     "@playwright/browser-firefox": "npm:^1.57.0"
     "@playwright/browser-webkit": "npm:^1.57.0"
     "@playwright/test": "npm:^1.57.0"
-    "@scure/bip39": "npm:^1.5.1"
     "@solana-program/stake": "npm:^0.5.0"
     "@solana/addresses": "npm:^2.3.0"
     "@solana/kit": "npm:^2.3.0"

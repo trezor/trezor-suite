@@ -42,11 +42,13 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Edit label with button submit', async () => {
-            await metadataPage.account.changeLabel(AccountLabelId.BitcoinDefault1, 'even cooler');
+            await metadataPage.account.changeLabel({
+                accountId: AccountLabelId.BitcoinDefault1,
+                label: 'even cooler',
+            });
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('even cooler');
-            await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
         });
 
         await test.step('Discard label changes via Escape', async () => {
@@ -97,11 +99,10 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             await walletPage.addAccountButton.click();
             await settingsPage.coinsTab.networkButton('btc').click();
             await page.getByTestId('@add-account').click();
-            await metadataPage.account.changeLabel(
-                newAccountLabelId,
-                'adding label to a newly added account. does it work?',
-            );
-            await metadataPage.account.successIconIsVisible(newAccountLabelId);
+            await metadataPage.account.changeLabel({
+                accountId: newAccountLabelId,
+                label: 'adding label to a newly added account. does it work?',
+            });
             await expect(
                 walletPage.accountLabel({
                     symbol: 'btc',
