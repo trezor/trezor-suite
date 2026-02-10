@@ -31,6 +31,9 @@ const networkAssetsTypesConfig = [
 ];
 
 // https://github.com/svg/svgo#built-in-plugins
+/**
+ * @type {import('svgo').Config}
+ */
 const svgoConfig = {
     multipass: true,
     js2svg: {
@@ -50,6 +53,7 @@ const svgoConfig = {
         'removeDimensions',
         'removeRasterImages',
         'removeScripts',
+        'convertStyleToAttrs',
     ],
 };
 
