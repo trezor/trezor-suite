@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
@@ -47,7 +46,7 @@ export const firmwareUpdate = createThunk<
             services: { reportSecurityCheck },
         } = extra;
 
-        const device = selectSelectedDevice(getState());
+        const device = extra.selectors.selectDevice(getState());
         const binFilesBaseUrl = await dispatch(getBinFilesBaseUrlThunk()).unwrap();
         const suiteLanguage = selectLanguage(getState());
         const { useDevkit, cachedDevice, error } = selectFirmware(getState());

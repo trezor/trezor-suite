@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -104,7 +103,6 @@ const shouldShowReconnectPrompt = ({
 export const useFirmwareInstallation = () => {
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
-    const device = useSelector(selectSelectedDevice);
     const isThpInProgress = useSelector(selectIsThpInProgress);
     const thpStep = useSelector(selectThpStep);
     const switchFirmwareType = useSelector(selectSwitchFirmwareType);
@@ -127,7 +125,7 @@ export const useFirmwareInstallation = () => {
 
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.
-    const originalDevice = firmware.cachedDevice || device;
+    const originalDevice = firmware.cachedDevice;
 
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
