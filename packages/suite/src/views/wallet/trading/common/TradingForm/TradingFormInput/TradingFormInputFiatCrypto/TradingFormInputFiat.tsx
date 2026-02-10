@@ -14,6 +14,7 @@ import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-co
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,
+    findToken,
     getFiatRateKey,
     getInputState,
     getNetworkReserve,
@@ -64,8 +65,12 @@ export const TradingFormInputFiat = ({
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const tokenAddress = sendCryptoSelect?.contractAddress as TokenAddress | undefined;
 
+    const balance = tokenAddress
+        ? findToken(account.tokens, tokenAddress)?.balance
+        : account.formattedBalance;
+
     const { fiatAmount } = useFiatFromCryptoValue({
-        amount: account.formattedBalance || '',
+        amount: balance || '',
         symbol: account.symbol,
         tokenAddress,
         rateType: 'current',
@@ -136,9 +141,10 @@ export const TradingFormInputFiat = ({
                       min: validateMin(translationString),
                       decimals: validateDecimals(translationString, { decimals: 2 }),
                       balance: (value: string) => {
+                          const valueBigNumber = new BigNumber(value);
                           if (
                               fiatAmount &&
-                              new BigNumber(value).isGreaterThan(new BigNumber(fiatAmount))
+                              valueBigNumber.isGreaterThan(new BigNumber(fiatAmount))
                           ) {
                               return translationString('AMOUNT_IS_NOT_ENOUGH');
                           }
