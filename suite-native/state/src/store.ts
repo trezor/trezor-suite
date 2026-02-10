@@ -16,6 +16,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
+import { NativeServices } from '@suite-native/services';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import { thpMiddleware } from '@suite-native/thp';
 import {
@@ -64,6 +65,9 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     return middlewares;
 };
 
+let globalStaticServicesHack: NativeServices | null = null;
+export const getGlobalStaticServicesHack = () => globalStaticServicesHack;
+
 export const initStore = (preloadedState?: PreloadedState) => {
     let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
         typeof extraFactory
@@ -72,14 +76,20 @@ export const initStore = (preloadedState?: PreloadedState) => {
     const ensureEncryptionKey = createEnsureEncryptionKey();
     const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
 
-    const extraFactory = (api: MiddlewareAPI) => ({
-        ...extraDependencies,
-        services: createNativeCompositionRoot({
+    const extraFactory = (api: MiddlewareAPI) => {
+        const services = createNativeCompositionRoot({
             ...api,
             ensureEncryptionKey,
             mmkvStorage,
-        }),
-    });
+        });
+
+        globalStaticServicesHack = services;
+
+        return {
+            ...extraDependencies,
+            services,
+        };
+    };
 
     const store = configureStore({
         preloadedState: preloadedState as FullPreloadedState,

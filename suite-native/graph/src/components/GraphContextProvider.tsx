@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { analytics } from '@suite-native/analytics';
-import { NativeServices, NativeServicesProvider } from '@suite-native/services';
+import { NativeServicesProvider } from '@suite-native/services';
+import { getGlobalStaticServicesHack } from '@suite-native/state';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
@@ -12,14 +12,15 @@ type ProviderProps = {
 
 const renderer = createRenderer();
 
-// So far only analytics are needed in th graph context. Might be extended later.
-const services = {
-    analytics,
-} as NativeServices;
+const GraphServicesProvider = ({ children }: ProviderProps) => {
+    const services = getGlobalStaticServicesHack();
 
-const GraphServicesProvider = ({ children }: ProviderProps) => (
-    <NativeServicesProvider services={services}>{children}</NativeServicesProvider>
-);
+    if (services == null) {
+        return null;
+    }
+
+    return <NativeServicesProvider services={services}>{children}</NativeServicesProvider>;
+};
 
 const GraphStylesProvider = ({ children }: ProviderProps) => {
     const colorVariant = useActiveColorScheme();

@@ -8,7 +8,7 @@ export type NativeAnalyticsDep = {
     analytics: Analytics<AnalyticsNativeEvents>;
 };
 
-const createAnalytics = (): Analytics<AnalyticsNativeEvents> => {
+export const createAnalytics = (): Analytics<AnalyticsNativeEvents> => {
     const newAnalytics = new QueuedAnalytics<AnalyticsNativeEvents>({
         version: getSuiteVersion(),
         app: 'suite',
@@ -26,5 +26,3 @@ const createAnalytics = (): Analytics<AnalyticsNativeEvents> => {
 
     return newAnalytics;
 };
-
-export const analytics = createAnalytics();
