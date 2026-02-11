@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import type { StaticSessionId } from '@trezor/connect';
@@ -14,7 +14,7 @@ import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
     txId: string;
-    outputIndex: string;
+    txTargetId: TxTargetId;
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
@@ -22,7 +22,7 @@ type TransactionOutputLabelEditableProps = {
 
 export const TransactionOutputLabelEditable = ({
     txId,
-    outputIndex,
+    txTargetId,
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
@@ -32,7 +32,7 @@ export const TransactionOutputLabelEditable = ({
     const { showToast } = useToast();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
-        selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
+        selectSuiteSyncOutputLabel(state, txId, txTargetId, deviceStaticSessionId),
     );
 
     if (!isLabellingAllowed) {
@@ -43,7 +43,7 @@ export const TransactionOutputLabelEditable = ({
         const result = await suiteSync.labeling.updateOutputLabel({
             deviceStaticSessionId,
             txId,
-            outputIndex,
+            txTargetId,
             label: value,
             accountDescriptor,
             networkSymbol,

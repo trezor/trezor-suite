@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AddressFormatter } from '@suite-native/formatters';
@@ -19,7 +19,7 @@ const addressTextStyle = prepareNativeStyle(_ => ({
 
 type TransactionUtxoAddressProps = {
     address: string;
-    outputIndex: number;
+    txTargetId: TxTargetId;
     txId: string;
     deviceStaticSessionId: StaticSessionId;
     showLabels?: boolean;
@@ -30,7 +30,7 @@ type TransactionUtxoAddressProps = {
 export const TransactionUtxoAddress = ({
     deviceStaticSessionId,
     txId,
-    outputIndex,
+    txTargetId,
     address,
     accountDescriptor,
     networkSymbol,
@@ -54,13 +54,13 @@ export const TransactionUtxoAddress = ({
                     }
                 />
 
-                {isLabellingAllowed && isDebugEnv() && <Text>[{outputIndex}]</Text>}
+                {isLabellingAllowed && isDebugEnv() && <Text>[{`${txTargetId}`}]</Text>}
             </HStack>
 
             {showLabels && (
                 <TransactionOutputLabelEditable
                     txId={txId}
-                    outputIndex={`${outputIndex}`}
+                    txTargetId={txTargetId}
                     deviceStaticSessionId={deviceStaticSessionId}
                     accountDescriptor={accountDescriptor}
                     networkSymbol={networkSymbol}

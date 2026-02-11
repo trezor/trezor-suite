@@ -6,7 +6,7 @@ export type UpdateOutputLabelDeps = EnsureWalletSuiteSyncOnDep;
 export const createUpdateOutputLabel =
     (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>
     async ({
-        outputIndex,
+        txTargetId,
         label,
         accountDescriptor,
         txId,
@@ -24,7 +24,7 @@ export const createUpdateOutputLabel =
 
         return ensureWalletOnResult.payload.data.outputs.update({
             txId,
-            outputIndex,
+            txTargetId,
             label,
             accountDescriptor,
             networkSymbol,

@@ -15,10 +15,10 @@ export const suiteSyncToBip329 = ({
     const bip329Labels: Bip329Label[] = [];
 
     if (outputLabels.length > 0) {
-        for (const { txId, outputIndex, label } of outputLabels) {
+        for (const { txId, txTargetId, label } of outputLabels) {
             bip329Labels.push({
                 type: 'output',
-                ref: `${txId}:${outputIndex}`,
+                ref: `${txId}:${txTargetId}`, // For bitcoin-like networks, txTargetId is the outputIndex (number)
                 label: label ?? '',
                 spendable: allSpendable, // Right now Trezor Suite does not allow to set spendable so all are `true`.
             });

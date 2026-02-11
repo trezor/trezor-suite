@@ -1,4 +1,4 @@
-import { TxOutputId } from '@suite-common/wallet-types';
+import { TxTargetId } from '@suite-common/wallet-types';
 import {
     InternalTransfer as InternalTransferType,
     TokenTransfer as TokenTransferType,
@@ -10,19 +10,19 @@ import {
  */
 export type SimpleTarget = {
     type: 'target';
-    targetId: TxOutputId;
+    targetId: TxTargetId;
     payload: Transaction['targets'][number];
 };
 
 export type TokenTarget = {
     type: 'token';
-    targetId: TxOutputId;
+    targetId: TxTargetId;
     payload: TokenTransferType;
 };
 
 export type InternalTarget = {
     type: 'internal';
-    targetId: TxOutputId;
+    targetId: TxTargetId;
     payload: InternalTransferType;
 };
 

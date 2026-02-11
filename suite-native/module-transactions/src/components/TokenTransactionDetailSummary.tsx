@@ -1,3 +1,4 @@
+import { createTokenTargetId } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { VinVoutAddress } from '@suite-native/transactions';
@@ -18,10 +19,20 @@ export const TokenTransactionDetailSummary = ({
 }: TokenTransactionDetailSummaryProps) => {
     // Token transfer has always only one address, so we need to wrap it to an array.
     const inputAddresses: VinVoutAddress[] = [
-        { address: tokenTransfer.from, isChangeAddress: false, outputIndex: 0 },
+        {
+            address: tokenTransfer.from,
+            isChangeAddress: false,
+            outputIndex: 0,
+            txTargetId: createTokenTargetId(tokenTransfer),
+        },
     ];
     const outputAddresses: VinVoutAddress[] = [
-        { address: tokenTransfer.to, isChangeAddress: false, outputIndex: 0 },
+        {
+            address: tokenTransfer.to,
+            isChangeAddress: false,
+            outputIndex: 0,
+            txTargetId: createTokenTargetId(tokenTransfer),
+        },
     ];
 
     return (

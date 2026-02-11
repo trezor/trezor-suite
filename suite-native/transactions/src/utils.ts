@@ -1,6 +1,7 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
 import { SignValue } from '@suite-common/suite-types';
+import { createSimpleTargetId } from '@suite-common/wallet-core';
 import { TransactionType } from '@suite-common/wallet-types';
 import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined } from '@trezor/utils';
@@ -30,6 +31,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
                     address,
                     isChangeAddress,
                     outputIndex: target.n,
+                    txTargetId: createSimpleTargetId(target),
                 }),
             );
         }),
