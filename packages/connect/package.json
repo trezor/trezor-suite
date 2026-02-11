@@ -98,7 +98,7 @@
     },
     "dependencies": {
         "@ethereumjs/common": "^10.1.1",
-        "@ethereumjs/tx": "^10.1.0",
+        "@ethereumjs/tx": "^10.1.1",
         "@fivebinaries/coin-selection": "3.0.0",
         "@mobily/ts-belt": "^3.13.1",
         "@noble/hashes": "^1.6.1",
