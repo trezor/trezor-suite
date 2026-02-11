@@ -83,16 +83,20 @@ export const CompactCardWithIconLayout = ({
         cardVariantToColorsMap[variant];
 
     const tap = Gesture.Tap()
+        .maxDuration(5000)
         .onBegin(() => {
             isPressed.value = true;
+        })
+        .onFinalize(() => {
+            isPressed.value = false;
+        })
+        .onTouchesCancelled(() => {
+            isPressed.value = false;
         })
         .onEnd(() => {
             if (onPress) {
                 runOnJS(onPress)();
             }
-        })
-        .onFinalize(() => {
-            isPressed.value = false;
         });
 
     const animatedStyle = useAnimatedStyle(() => ({
