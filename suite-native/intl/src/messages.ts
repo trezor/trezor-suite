@@ -1884,6 +1884,7 @@ export const messages = {
                 values: 'Compare values',
                 inputs: 'Inputs & Outputs',
             },
+            showDetails: 'Show details',
         },
         tokens: {
             toggleTokens: 'Include tokens',
@@ -1948,6 +1949,17 @@ export const messages = {
                 copied: 'Address copied to clipboard',
             },
             unknownTarget: 'Target or Origin of transaction is unknown.',
+        },
+        transactionOverviewScreen: {
+            title: 'Received transaction',
+            fromCard: {
+                title: 'From',
+            },
+            toCard: {
+                title: 'To',
+                meTitle: 'Me',
+                otherRecipients: 'Other recipients',
+            },
         },
     },
     device: {
