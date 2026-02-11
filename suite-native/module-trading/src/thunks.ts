@@ -1,4 +1,5 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
@@ -6,6 +7,7 @@ import {
     TradingExchangeType,
     TradingSellType,
     TradingSignAndPushSendFormTransactionProps,
+    parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
@@ -18,6 +20,7 @@ import {
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import {
+    composeAllowanceTransactionThunk,
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
     formDraftActions,
@@ -32,10 +35,17 @@ import {
     FeeInfo,
     FeeLevelLabel,
     PrecomposedTransactionFinal,
+    TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    buildApprovalTransactionData,
+    getAllowanceAmount,
+    getEvmApprovalTxData,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
     UpdateSelectedFeeLevelThunkParams,
@@ -239,6 +249,137 @@ export const composeTradingTransactionThunk = createThunk(
             return rejectWithValue(`Failed to compose transaction: ${errStr}`);
         } catch (error) {
             console.error('Compose trading transaction error:', error);
+
+            return rejectWithValue(getErrorStrFromThunkRejectedValue(error));
+        }
+    },
+);
+
+export const composeEvmApprovalFeeLevelsThunk = createThunk(
+    `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/composeEvmApprovalFeeLevels`,
+    async (
+        {
+            quote,
+            account,
+            feeInfo,
+            selectedFeeLevel = 'normal',
+            customFee,
+            approvalTypeOverride,
+        }: {
+            quote: ExchangeTrade;
+            account: Account;
+            feeInfo: FeeInfo;
+            selectedFeeLevel?: FeeLevelLabel;
+            customFee?: {
+                feeLimit: string;
+                feePerUnit: string;
+                maxFeePerGas?: string;
+                maxPriorityFeePerGas?: string;
+            };
+            approvalTypeOverride?: DexApprovalType;
+        },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
+        try {
+            const { dexTx, send, sendStringAmount, approvalType: quoteApprovalType } = quote;
+
+            if (!dexTx?.data || !send || !sendStringAmount) {
+                return rejectWithValue('DEX quote with dexTx data is required');
+            }
+
+            const approvalData = getEvmApprovalTxData(dexTx.data);
+            if (!approvalData?.spender) {
+                return rejectWithValue('Could not extract spender from dexTx data');
+            }
+
+            const { contractAddress } = parseCryptoId(send);
+            if (!contractAddress) {
+                return rejectWithValue('Could not extract token contract address');
+            }
+
+            const token = selectAccountTokenInfo(
+                getState(),
+                account.key,
+                contractAddress as TokenAddress,
+            );
+
+            if (!token) {
+                return rejectWithValue('Token not found in account');
+            }
+
+            const approvalType =
+                approvalTypeOverride ?? ((quoteApprovalType ?? 'INFINITE') as DexApprovalType);
+            const { allowanceAmount } = getAllowanceAmount({
+                rawAmount: sendStringAmount,
+                approvalType,
+                token,
+            });
+
+            if (!allowanceAmount) {
+                return rejectWithValue('Could not compute allowance amount');
+            }
+
+            const data = buildApprovalTransactionData({
+                amount: allowanceAmount,
+                spender: approvalData.spender,
+            });
+
+            const response = await dispatch(
+                composeAllowanceTransactionThunk({
+                    account,
+                    contract: contractAddress,
+                    data,
+                    feeInfo,
+                    selectedFee: selectedFeeLevel,
+                    customFee,
+                }),
+            );
+
+            if (isFulfilled(response)) {
+                const feeLevels = response.payload;
+                dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
+
+                const selectedLevel = feeLevels[selectedFeeLevel];
+                if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
+                    const composed = selectedLevel as PrecomposedTransactionFinal;
+
+                    dispatch(
+                        tradingCommonActions.saveComposedTransactionInfo({
+                            selectedFee: selectedFeeLevel,
+                            composed: {
+                                fee: composed.fee,
+                                feePerByte: composed.feePerByte,
+                                feeLimit: composed.feeLimit,
+                                estimatedFeeLimit: composed.estimatedFeeLimit,
+                                maxFeePerGas: composed.maxFeePerGas,
+                                maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
+                                token: composed.token,
+                            },
+                        }),
+                    );
+
+                    const formDraftKey = getFormDraftKeyByTradeType('exchange');
+
+                    dispatch(
+                        formDraftActions.storeDraft({
+                            key: formDraftKey,
+                            formDraft: {
+                                selectedFee: selectedFeeLevel,
+                                feePerUnit: composed.feePerByte,
+                                feeLimit: composed.feeLimit ?? '',
+                            },
+                        }),
+                    );
+                }
+
+                return fulfillWithValue(response.payload);
+            }
+
+            const errStr = getErrorStrFromThunkRejectedValue(response);
+
+            return rejectWithValue(`Failed to compose allowance transaction: ${errStr}`);
+        } catch (error) {
+            console.error('Compose allowance fee levels error:', error);
 
             return rejectWithValue(getErrorStrFromThunkRejectedValue(error));
         }
