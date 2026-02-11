@@ -12,10 +12,10 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useTradingAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { TradingFeesForm } from '../components/fees/TradingFeesForm';
-import { useTradingAnalyticReportCallback } from '../hooks/general/useTradingAnalyticReportCallback';
 
 type RouteProps = StackProps<TradingStackParamList, TradingStackRoutes.TradingFees>['route'];
 

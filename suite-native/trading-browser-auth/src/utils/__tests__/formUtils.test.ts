@@ -15,7 +15,7 @@ describe('formUtils', () => {
         <html>
             <head>
                 <title>Trezor Suite</title>
-                
+${' '.repeat(16)}
                 <style>
                     body, html {
                       width: 100%;
@@ -49,16 +49,15 @@ describe('formUtils', () => {
         </html>
     `);
         });
-    });
 
-    it('should have content with options', () => {
-        expect(
-            applyHtmlTemplate('CONTENT_TO_EMBED', {
-                title: 'TITLE',
-                script: 'SCRIPT',
-                backUrl: 'BACK_URL',
-            }),
-        ).toStrictEqual(`
+        it('should have content with options', () => {
+            expect(
+                applyHtmlTemplate('CONTENT_TO_EMBED', {
+                    title: 'TITLE',
+                    script: 'SCRIPT',
+                    backUrl: 'BACK_URL',
+                }),
+            ).toStrictEqual(`
         <!DOCTYPE html>
         <html>
             <head>
@@ -96,56 +95,57 @@ describe('formUtils', () => {
             </body>
         </html>
     `);
-    });
-});
-
-describe('getRequestFormSource', () => {
-    it('should return null when no form is provided', () => {
-        expect(getRequestFormSource({})).toBeNull();
-    });
-
-    it('should return uri for GET formMethod', () => {
-        expect(
-            getRequestFormSource({
-                form: {
-                    formMethod: 'GET',
-                    formAction: 'get_action',
-                    fields: {},
-                },
-            }),
-        ).toStrictEqual({
-            uri: 'get_action',
         });
     });
 
-    it('should return null for IFRAME formMethod', () => {
-        expect(
-            getRequestFormSource({
-                form: {
-                    formMethod: 'IFRAME',
-                    formAction: 'get_action',
-                    fields: {},
-                },
-            }),
-        ).toBeNull();
-    });
+    describe('getRequestFormSource', () => {
+        it('should return null when no form is provided', () => {
+            expect(getRequestFormSource({})).toBeNull();
+        });
 
-    it('should create script with form for POST formMethod', () => {
-        expect(
-            getRequestFormSource({
-                form: {
-                    formMethod: 'POST',
-                    formAction: 'post_action',
-                    fields: { key1: 'value1', key2: 'value2' },
-                },
-            }),
-        ).toStrictEqual({
-            html: `
+        it('should return uri for GET formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'GET',
+                        formAction: 'get_action',
+                        fields: {},
+                    },
+                }),
+            ).toStrictEqual({
+                uri: 'get_action',
+            });
+        });
+
+        it('should return null for IFRAME formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'IFRAME',
+                        formAction: 'get_action',
+                        fields: {},
+                    },
+                }),
+            ).toBeNull();
+        });
+
+        it('should create script with form for POST formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'POST',
+                        formAction: 'post_action',
+                        fields: { key1: 'value1', key2: 'value2' },
+                    },
+                }),
+            ).toStrictEqual({
+                html: `
         Forwarding to post_action...
         <form id="buy-form" method="POST" action="post_action" target='_self'>
         <input type="hidden" name="key1" value="value1"><input type="hidden" name="key2" value="value2">
         </form>
         <script type="text/javascript">document.getElementById("buy-form").submit();</script>`,
+            });
         });
     });
 
@@ -181,16 +181,15 @@ describe('getRequestFormSource', () => {
             expect(result?.html).toContain('custom_back_url');
         });
     });
-});
-
-describe('buildTradingUrl', () => {
-    it('should return correct url format', () => {
-        expect(
-            buildTradingUrl({
-                actionType: 'quote',
-                tradeType: 'buy',
-                orderId: '1234',
-            }),
-        ).toBe('trezorsuite://trading?action=quote&tradeType=buy&orderId=1234');
+    describe('buildTradingUrl', () => {
+        it('should return correct url format', () => {
+            expect(
+                buildTradingUrl({
+                    actionType: 'quote',
+                    tradeType: 'buy',
+                    orderId: '1234',
+                }),
+            ).toBe('trezorsuite://trading?action=quote&tradeType=buy&orderId=1234');
+        });
     });
 });

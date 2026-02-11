@@ -5,7 +5,7 @@ import { ProviderConfirmationStatusInfo } from '../ProviderConfirmationStatusInf
 
 let mockUseProviderConfirmationStatus: ProviderConfirmationStatus;
 
-jest.mock('../../../../hooks/general/providerConfirmation/useProviderConfirmationStatus', () => ({
+jest.mock('../../hooks/useProviderConfirmationStatus', () => ({
     useProviderConfirmationStatus: () => mockUseProviderConfirmationStatus,
 }));
 

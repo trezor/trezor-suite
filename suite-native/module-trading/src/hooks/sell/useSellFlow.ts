@@ -9,10 +9,9 @@ import {
     sellThunks,
     sellUtils,
 } from '@suite-common/trading';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
-import { buildTradingUrl } from '../../utils/general/formUtils';
-import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
 export const useSellFlow = () => {

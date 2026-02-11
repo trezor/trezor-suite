@@ -6,7 +6,8 @@ import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallback
 
 const mockReportToAnalytics = jest.fn();
 
-jest.mock('../../useTradingAnalyticReportCallback', () => ({
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
     useTradingAnalyticReportCallback: () => mockReportToAnalytics,
 }));
 

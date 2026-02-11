@@ -4,6 +4,8 @@ import { trezorLogo } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import { xssFilters } from '@trezor/utils';
 
+import { TRADING_URL_BASE, TRADING_URL_DEFAULT_BACK } from '../consts';
+
 type TemplateOptions = {
     title?: string;
     script?: string;
@@ -20,9 +22,6 @@ export type BuildTradingUrlProps = {
     tradeType: TradingType;
     orderId: string | undefined;
 };
-
-export const TRADING_URL_BASE = 'trezorsuite://trading';
-export const TRADING_URL_DEFAULT_BACK = `${TRADING_URL_BASE}/back`;
 
 export const applyHtmlTemplate = (
     content = 'You may now close this window.',

@@ -2,6 +2,7 @@ import { memo, useEffect } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
+import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { SellAlert } from './SellAlert';
@@ -10,7 +11,6 @@ import { SellConfirmation } from './SellConfirmation';
 import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
-import { useSellAnalyticReportCallback } from '../../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
 

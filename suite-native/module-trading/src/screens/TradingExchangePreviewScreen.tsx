@@ -13,6 +13,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -27,7 +28,6 @@ import {
 } from '../components/exchange/ExchangePreview';
 import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
-import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';

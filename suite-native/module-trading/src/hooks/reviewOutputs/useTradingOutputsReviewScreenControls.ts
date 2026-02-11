@@ -6,6 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/device';
+import type {
+    TradingExchangeAnalyticReportCallback,
+    TradingSellAnalyticReportCallback,
+} from '@suite-native/trading-analytics';
 import { tradingActions } from '@suite-native/trading-state';
 import { TradingOutputsReviewScreenNavigationProp } from '@suite-native/trading-types';
 import {
@@ -15,10 +19,8 @@ import {
 } from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
-import type { TradingExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
 import type { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
 import type { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
-import type { TradingSellAnalyticReportCallback } from '../sell/useSellAnalyticReportCallback';
 
 export type UseTradingOutputsReviewScreenControlsProps = Pick<
     UseTradingTransactionReturnProps,

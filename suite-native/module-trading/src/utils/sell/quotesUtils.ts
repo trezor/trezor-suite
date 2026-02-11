@@ -1,8 +1,5 @@
-import type { CoinInfo, SellFiatTrade } from 'invity-api';
-
 import { invariant } from '@suite-common/suite-utils';
-import { MinimalSellFormProps, cryptoIdToNetwork } from '@suite-common/trading';
-import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
+import { MinimalSellFormProps } from '@suite-common/trading';
 import { SellFormType } from '@suite-native/trading-types';
 
 export const tradingSellFormToTradingSellFormProps = (
@@ -35,35 +32,5 @@ export const tradingSellFormToTradingSellFormProps = (
         amountInCrypto,
         countrySelect: country,
         sendCryptoSelect: { id: sendAsset.cryptoId },
-    };
-};
-
-export type GetAnalyticsTradingSellPayloadProps = {
-    quote: SellFiatTrade | undefined;
-    coinInfo: CoinInfo | undefined;
-};
-
-export const getAnalyticsTradingSellPayload = ({
-    quote,
-    coinInfo,
-}: GetAnalyticsTradingSellPayloadProps) => {
-    if (!coinInfo || !quote?.cryptoCurrency) {
-        return null;
-    }
-
-    const tradeableAsset = coinInfoToTradeableAsset(quote.cryptoCurrency, coinInfo);
-    const symbol = cryptoIdToNetwork(quote.cryptoCurrency)?.symbol;
-
-    if (!tradeableAsset) {
-        return null;
-    }
-
-    return {
-        cryptoLabel: tradeableAsset.symbol,
-        cryptoNetworkSymbol: symbol,
-        cryptoContractAddress: tradeableAsset.contractAddress,
-        receiveMethod: quote.paymentMethod,
-        countryOfResidence: quote.country,
-        exchangeName: quote.exchange,
     };
 };

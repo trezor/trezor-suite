@@ -3,11 +3,11 @@ import { TradingType } from '@suite-common/trading';
 import {
     type TradingExchangeAnalyticReportCallback,
     useExchangeAnalyticReportCallback,
-} from '../exchange/useExchangeAnalyticReportCallback';
+} from './useExchangeAnalyticReportCallback';
 import {
     type TradingSellAnalyticReportCallback,
     useSellAnalyticReportCallback,
-} from '../sell/useSellAnalyticReportCallback';
+} from './useSellAnalyticReportCallback';
 
 type NullAnalyticsReportAction = (_step: unknown, _action: unknown) => void;
 

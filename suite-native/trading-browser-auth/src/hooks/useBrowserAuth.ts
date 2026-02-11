@@ -19,8 +19,8 @@ import { exhaustive } from '@trezor/type-utils';
 import { BrowserAuthProps, BrowserAuthRet } from './useBrowserAuthTypes';
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
 import { useOnForegroundCallback } from './useOnForegroundCallback';
-import { getSourceForForm } from '../../../utils/general/formUtils';
-import { doesUrlContainCloseCallbackUrl } from '../../../utils/general/utils';
+import { getSourceForForm } from '../utils/formUtils';
+import { doesUrlContainCloseCallbackUrl } from '../utils/utils';
 
 export * from './useBrowserAuthTypes';
 

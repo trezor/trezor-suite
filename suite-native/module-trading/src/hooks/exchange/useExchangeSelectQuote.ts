@@ -16,6 +16,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     selectExchangeSelectedReceiveAccount,
@@ -24,7 +25,6 @@ import {
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
-import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCallback';
 import { clearExchangeFormQuoteData } from './useExchangeForm';
 import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';

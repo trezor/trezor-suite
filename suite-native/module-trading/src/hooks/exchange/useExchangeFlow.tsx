@@ -11,10 +11,9 @@ import {
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { buildTradingUrl } from '../../utils/general/formUtils';
-import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
 export type TradingExchangeConfirmTradeProps = {

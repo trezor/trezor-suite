@@ -1,9 +1,11 @@
 import { StackProps, TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import {
+    useExchangeAnalyticReportCallback,
+    useSellAnalyticReportCallback,
+} from '@suite-native/trading-analytics';
 
 import { ReviewOutputsContent } from '../components/reviewOutputs/ReviewOutputsContent';
-import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 
 export const TradingExchangeOutputsReviewScreen = ({

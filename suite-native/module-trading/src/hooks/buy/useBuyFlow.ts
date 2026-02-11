@@ -20,17 +20,16 @@ import {
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
-import { buildTradingUrl } from '../../utils/general/formUtils';
 import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
 } from '../../utils/general/receiveAccountUtils';
-import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
