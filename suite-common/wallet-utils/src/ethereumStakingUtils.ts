@@ -146,3 +146,18 @@ export const getStakeType = (precomposedForm: FormState, outputs: ReviewOutput[]
               .filter(output => output.type === 'data')
               .map(output => getTxStakeNameByDataHex(output?.value))
               .find(type => type) || null;
+
+export const hasStakeInPendingDepositedState = (account: Account) => {
+    if (account?.networkType !== 'ethereum') return false;
+
+    const pool = getAccountEverstakeStakingPool(account);
+    if (!pool) return false;
+
+    const { pendingDepositedBalance, pendingBalance } = pool;
+
+    if (new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0)) {
+        return true;
+    }
+
+    return false;
+};

@@ -1,20 +1,25 @@
 import { useEffect, useMemo } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
+
+import { commonQueryKeys } from '@suite-common/react-query';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
+    fetchEverstakeDataApi,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
     selectHasRunningDiscovery,
     selectPoolStatsApyData,
     selectPoolStatsNextRewardPayout,
-    selectValidatorsQueue,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { EverstakeEndpointType, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import {
+    getStakingDataForNetwork,
+    hasStakeInPendingDepositedState,
+} from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -40,9 +45,6 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { data, isLoading } =
-        useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
-
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const nextRewardPayout = useSelector(state =>
         selectPoolStatsNextRewardPayout(state, account?.symbol),
@@ -52,6 +54,31 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
     const dispatch = useDispatch();
+
+    const lastTxBlockTime = useMemo(() => {
+        if (!stakeTxs?.length) return undefined;
+
+        return stakeTxs[0]?.blockTime;
+    }, [stakeTxs]);
+
+    const { data: validatorQueueData, isLoading: isValidatorQueueLoading } = useQuery({
+        enabled: !!account,
+        queryKey: commonQueryKeys.validatorsQueue(accountKey, lastTxBlockTime),
+        staleTime: 60 * 1000, // 1 minute
+        queryFn: () => {
+            if (!account) return;
+
+            const timestamp = hasStakeInPendingDepositedState(account)
+                ? lastTxBlockTime
+                : undefined;
+
+            return fetchEverstakeDataApi({
+                symbol: 'eth',
+                endpointType: EverstakeEndpointType.ValidatorsQueue,
+                timestamp,
+            });
+        },
+    });
 
     useEffect(() => {
         if (accountKey) {
@@ -66,8 +93,8 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
-    const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
-    const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
+    const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
+    const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
@@ -77,10 +104,10 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
-                <Column gap={spacings.xxxxl}>
+                <Column gap={48}>
                     {isStakingActive ? (
                         <DashboardSection>
-                            <Column gap={spacings.sm}>
+                            <Column gap={12}>
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <InstantStakeBanner
@@ -88,23 +115,22 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />
-                                <Grid
-                                    columns={isBelowLaptop || !canClaim ? 1 : 2}
-                                    gap={spacings.sm}
-                                >
+                                <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                     <ClaimCard />
-                                    <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
+                                    <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                         <ApyCard apy={apy} />
                                         <PayoutCardNextRewards
                                             nextRewardPayout={nextRewardPayout}
                                             daysToAddToPool={daysToAddToPool}
-                                            validatorWithdrawTime={data?.validatorWithdrawTime}
+                                            validatorWithdrawTime={
+                                                validatorQueueData?.validatorWithdrawTime
+                                            }
                                         />
                                     </Flex>
                                 </Grid>
                                 <StakingCard
                                     account={account}
-                                    isValidatorsQueueLoading={isLoading}
+                                    isValidatorsQueueLoading={isValidatorQueueLoading}
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />

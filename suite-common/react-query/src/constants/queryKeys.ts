@@ -3,6 +3,12 @@ import type { AllowedQueryKey } from '../types';
 export const commonQueryKeys = {
     txSimulationEVM: (input?: any) => ['tx-simulation-evm', input],
     dappScan: (url?: string) => ['dapp-scan', url],
+    validatorsQueue: (accountKey: string, timestamp?: number) => [
+        'everstake',
+        'validatorsQueue',
+        accountKey,
+        timestamp ?? 'no-ts',
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const desktopQueryKeys = {

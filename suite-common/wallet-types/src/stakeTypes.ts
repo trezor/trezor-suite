@@ -1,4 +1,4 @@
-import type { Network } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -41,6 +41,12 @@ export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
         dsol: 'chain',
         ada: 'blockchain/summary',
     },
+};
+
+export type EverstakeDataParams = {
+    symbol: NetworkSymbol;
+    endpointType: EverstakeEndpointType;
+    timestamp?: number;
 };
 
 export interface ValidatorsQueue {

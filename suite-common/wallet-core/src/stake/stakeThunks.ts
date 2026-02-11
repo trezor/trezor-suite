@@ -6,6 +6,7 @@ import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
+    EverstakeDataParams,
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
     EverstakeStakingInfo,
@@ -27,48 +28,53 @@ import { selectEverstakeData } from './stakeSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
-export const fetchEverstakeData = createThunk<
-    ValidatorsQueue | { ethApy: number; nextRewardPayout: number },
-    {
-        symbol: 'eth';
-        endpointType: EverstakeEndpointType;
-    },
-    { rejectValue: string }
->(`${STAKE_MODULE}/fetchEverstakeData`, async (params, { fulfillWithValue, rejectWithValue }) => {
-    const { symbol, endpointType } = params;
+export async function fetchEverstakeDataApi(params: EverstakeDataParams) {
+    const { symbol, endpointType, timestamp } = params;
+
+    if (symbol !== 'eth') {
+        throw new Error('Only Ethereum is supported for this endpoint');
+    }
 
     const endpointSuffix = EVERSTAKE_ENDPOINT_TYPES[endpointType];
     const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
 
+    const response = await fetch(
+        `${endpointPrefix}/${endpointSuffix}${timestamp ? `?timestamp=${timestamp}` : ''}`,
+    );
+
+    if (!response.ok) throw new Error(response.statusText);
+
+    const data = await response.json();
+
+    if (endpointType === EverstakeEndpointType.PoolStats) {
+        return {
+            ethApy: Number(new BigNumber(data.apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN)),
+            nextRewardPayout: Math.ceil(data.next_reward_payout_in / 60 / 60 / 24),
+        };
+    }
+
+    return {
+        validatorsEnteringNum: data.validators_entering_num,
+        validatorsExitingNum: data.validators_exiting_num,
+        validatorsTotalCount: data.validators_total_count,
+        validatorsPerEpoch: data.validators_per_epoch,
+        validatorActivationTime: data.validator_activation_time,
+        validatorExitTime: data.validator_exit_time,
+        validatorWithdrawTime: data.validator_withdraw_time,
+        validatorAddingDelay: data.validator_adding_delay,
+        updatedAt: data.updated_at,
+    };
+}
+
+export const fetchEverstakeData = createThunk<
+    ValidatorsQueue | { ethApy: number; nextRewardPayout: number },
+    EverstakeDataParams,
+    { rejectValue: string }
+>(`${STAKE_MODULE}/fetchEverstakeData`, async (params, { fulfillWithValue, rejectWithValue }) => {
     try {
-        const response = await fetch(`${endpointPrefix}/${endpointSuffix}`);
+        const data = await fetchEverstakeDataApi(params);
 
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-
-        const data = await response.json();
-
-        if (endpointType === EverstakeEndpointType.PoolStats) {
-            return fulfillWithValue({
-                ethApy: Number(
-                    new BigNumber(data.apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN),
-                ),
-                nextRewardPayout: Math.ceil(data.next_reward_payout_in / 60 / 60 / 24),
-            });
-        }
-
-        return fulfillWithValue({
-            validatorsEnteringNum: data.validators_entering_num,
-            validatorsExitingNum: data.validators_exiting_num,
-            validatorsTotalCount: data.validators_total_count,
-            validatorsPerEpoch: data.validators_per_epoch,
-            validatorActivationTime: data.validator_activation_time,
-            validatorExitTime: data.validator_exit_time,
-            validatorWithdrawTime: data.validator_withdraw_time,
-            validatorAddingDelay: data.validator_adding_delay,
-            updatedAt: data.updated_at,
-        } as ValidatorsQueue);
+        return fulfillWithValue(data);
     } catch (error) {
         return rejectWithValue(error.toString());
     }
