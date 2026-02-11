@@ -4021,14 +4021,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk-ethereum@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@everstake/wallet-sdk-ethereum@npm:1.0.4"
+"@everstake/wallet-sdk-ethereum@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@everstake/wallet-sdk-ethereum@npm:1.0.5"
   dependencies:
     bignumber.js: "npm:^9.3.0"
     ethereum-multicall: "npm:^2.26.0"
     web3: "npm:4.16.0"
-  checksum: 10/3a99a1accd07f6ff5d547b87f2e5f4f3d4b4286e9a958293bc96e3b444049a811a22dd57704b1f673e2fef2224f85f7aa019c792b6a9fe5cba828ad48e568cfd
+  checksum: 10/5523d8a97c896516f119e43108661e22b43a1b53546a41016d3e7be91283a0e3ecaeaab51ac9470dcbf281078f08568f9ba01fa3b2acc1b8c5e64b2892581c27
   languageName: node
   linkType: hard
 
@@ -11314,7 +11314,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
-    "@everstake/wallet-sdk-ethereum": "npm:1.0.4"
+    "@everstake/wallet-sdk-ethereum": "npm:1.0.5"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
