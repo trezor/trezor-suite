@@ -68,11 +68,6 @@ runs:
       run: |
         yarn workspace @trezor/connect-web build
 
-    # todo: we are going to remove inline bundle?
-    - name: Check connect-web build size
-      shell: bash
-      run: ./packages/connect-web/scripts/check-inline-build-size.sh
-
     - name: Build connect-webextension
       shell: bash
       run: |
@@ -117,6 +112,7 @@ runs:
         cd ../../../
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
+        ./packages/connect-examples/webextension/scripts/check-webextension-bundle-size.sh
 
     - name: Build connect-explorer-webextension
       if: inputs.buildArtifacts == 'true'
