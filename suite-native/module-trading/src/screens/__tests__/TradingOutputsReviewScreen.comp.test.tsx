@@ -116,7 +116,7 @@ const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams
         params,
     }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>;
 
-describe('', () => {
+describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
