@@ -1,32 +1,6 @@
-import { Icon, Input, Row, Select } from '@trezor/components';
+import { Input, Row, Select } from '@trezor/components';
 
-import { getPlatformIcon } from '../utils/getPlatformIcon';
-
-const PlatformItemSelect = ({ platform }: { platform: string }) => (
-    <Row alignItems="center" gap={8}>
-        <Icon name={getPlatformIcon(platform)} size="medium" />
-        {platform}
-    </Row>
-);
-
-const platforms = [
-    {
-        value: 'all',
-        label: 'All',
-    },
-    {
-        value: 'desktop',
-        label: <PlatformItemSelect platform="desktop" />,
-    },
-    {
-        value: 'mobile',
-        label: <PlatformItemSelect platform="mobile" />,
-    },
-    {
-        value: 'shared',
-        label: <PlatformItemSelect platform="shared" />,
-    },
-];
+import { platforms } from '../constants';
 
 type FilterProps = {
     query: string;

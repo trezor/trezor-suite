@@ -7,9 +7,9 @@ import { Box, Column, Row, Table, Text } from '@trezor/components';
 import { AddedBadge } from './AddedBadge';
 import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
-import { useChangelogButton } from '../useChangelogButton';
 import { Markdown } from './Markdown';
 import type { AttributeDoc } from '../types';
+import { useChangelogButton } from '../utils/useChangelogButton';
 
 const Syntax = styled.span`
     * {
