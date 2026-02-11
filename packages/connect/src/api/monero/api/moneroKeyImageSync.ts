@@ -1,5 +1,5 @@
-import { keccak_256 } from '@noble/hashes/sha3';
-import { hexToBytes } from '@noble/hashes/utils';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { hexToBytes } from '@noble/hashes/utils.js';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
