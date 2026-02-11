@@ -1,30 +1,29 @@
 import { useState } from 'react';
 
+import { analyticsActions, selectCustomAnalyticsUrl } from '@suite-common/analytics-redux';
 import { Button, Code, Column, Input, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AnalyticsUrl = () => {
-    const debug = useSelector(state => state.suite.settings.debug);
+    const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
 
-    const [inputValue, setInputValue] = useState(debug.customAnalyticsUrl ?? '');
+    const [inputValue, setInputValue] = useState(customAnalyticsUrl ?? '');
 
     const handleSave = () => {
         const trimmedUrl = inputValue.trim();
         const url = trimmedUrl || undefined;
-        dispatch(setDebugMode({ customAnalyticsUrl: url }));
+        dispatch(analyticsActions.setCustomAnalyticsUrl(url));
         analytics.setUrl(url);
     };
 
     const handleReset = () => {
         setInputValue('');
-        dispatch(setDebugMode({ customAnalyticsUrl: undefined }));
+        dispatch(analyticsActions.setCustomAnalyticsUrl(undefined));
         analytics.setUrl(undefined);
     };
 
@@ -35,7 +34,7 @@ export const AnalyticsUrl = () => {
                 description="Override the analytics endpoint URL. Leave empty and save to use the default."
             />
             <ActionColumn>
-                <Column gap={spacings.xxs}>
+                <Column gap={4}>
                     <Input
                         data-testid="@settings/debug/analytics/url-input"
                         value={inputValue}
@@ -51,10 +50,10 @@ export const AnalyticsUrl = () => {
                             </Button>
                         }
                     />
-                    {debug.customAnalyticsUrl && (
-                        <Column gap={spacings.xxs}>
+                    {customAnalyticsUrl && (
+                        <Column gap={4} alignItems="flex-end">
                             <Text typographyStyle="hint" variant="tertiary">
-                                Current: <Code>{debug.customAnalyticsUrl}</Code>
+                                Current: <Code>{customAnalyticsUrl}</Code>
                             </Text>
                             <Button
                                 data-testid="@settings/debug/analytics/reset-button"

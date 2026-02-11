@@ -20,6 +20,7 @@
             "path": "../../suite-common/validators"
         },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../config" },

@@ -1,6 +1,7 @@
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
+    selectCustomAnalyticsUrl,
     selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
@@ -47,10 +48,14 @@ export const initAnalyticsThunk = createThunk(
 
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
+
+        const customAnalyticsUrl = selectCustomAnalyticsUrl(getState());
+
         const options: InitOptions = {
             instanceId,
             sessionId,
             environment: 'mobile',
+            url: customAnalyticsUrl,
             commitId: getCommitHash(),
             isDev: isDevelopEnv(),
             callbacks: {
