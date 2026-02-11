@@ -36,6 +36,7 @@ export {
     selectHasDeviceAllowance,
     selectLeftDeviceQuota,
     selectDeviceDismissedNoQuotaLeftWarning,
+    selectShouldDisplayOutOfQuotaAlert,
 } from './quotaManagerSelectors';
 export type { WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 

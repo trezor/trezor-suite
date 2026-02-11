@@ -19,14 +19,9 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
+import { HomescreenAlerts } from './HomescreenAlerts';
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
-import { SuiteSyncKeysAlert } from './SuiteSyncKeysAlert';
-import {
-    selectShouldDisplaySuiteSyncAlert,
-    selectShouldDisplayUpgradeFirmwareAlert,
-} from '../homescreenSelectors';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -36,9 +31,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
     );
-
-    const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
-    const shouldDisplayFirmwareUpdateAlert = useSelector(selectShouldDisplayUpgradeFirmwareAlert);
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
 
@@ -58,19 +50,9 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
         });
     };
 
-    const getHomescreenAlert = () => {
-        if (shouldDisplaySuiteSyncAlert) {
-            return <SuiteSyncKeysAlert />;
-        } else if (shouldDisplayFirmwareUpdateAlert) {
-            return <FirmwareUpdateAlert />;
-        } else {
-            return null;
-        }
-    };
-
     return (
         <VStack spacing="sp32" marginTop="sp8">
-            {getHomescreenAlert()}
+            <HomescreenAlerts />
             <AnimatedVStack spacing="sp32" layout={LinearTransition}>
                 <PortfolioGraph ref={ref} />
                 <VStack spacing="sp64" marginHorizontal="sp16">
