@@ -23,6 +23,7 @@ export interface SuiteRootState {
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
+    customAnalyticsUrl?: string;
     showDebugMenu: boolean;
     transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
     isUnlockedBootloaderAllowed: boolean;
