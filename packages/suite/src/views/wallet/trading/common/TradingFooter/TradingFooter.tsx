@@ -13,13 +13,9 @@ type TradingFooterProps = {
 
 export const TradingFooter = ({ provider }: TradingFooterProps) => {
     const currentProviderMetadata = useSelector(selectTradingProviderMetadata);
-    const providerMetadata = provider ?? currentProviderMetadata;
+    const { companyName, termsUrl } = provider ?? currentProviderMetadata ?? {};
 
-    const providerName = providerMetadata?.companyName ? (
-        providerMetadata.companyName
-    ) : (
-        <Translation id="TR_TERMS_PROVIDER_PLACEHOLDER" />
-    );
+    const providerName = companyName ?? <Translation id="TR_TERMS_PROVIDER_PLACEHOLDER" />;
 
     return (
         <Column alignItems="center" margin={{ top: 48 }} gap={12}>
@@ -29,11 +25,7 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => {
                     values={{
                         provider: providerName,
                         comp: chunks =>
-                            providerMetadata?.termsUrl ? (
-                                <Link href={providerMetadata.termsUrl}>{providerName}</Link>
-                            ) : (
-                                chunks
-                            ),
+                            termsUrl ? <Link href={termsUrl}>{providerName}</Link> : chunks,
                     }}
                 />
             </Text>

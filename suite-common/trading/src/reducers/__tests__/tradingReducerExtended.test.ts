@@ -6,6 +6,7 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
 import { sellThunks } from '../../thunks/sell';
+import { getProviderMetadataFixture } from '../__fixtures__/providerMetadata';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
 import { buyInitialState, tradingBuyActions } from '../buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
@@ -137,6 +138,45 @@ describe('Testing trading reducer', () => {
                 store.dispatch(tradingActions.setModalAccountKey('MY_KEY' as AccountKey)); // Todo: create properly via `createAccountKey()`
 
                 expect(store.getState().wallet.trading.modalAccountKey).toEqual('MY_KEY');
+            });
+
+            it('should set currentProviderMetadata with complete provider data', () => {
+                const providerMetadata = getProviderMetadataFixture('changenow');
+
+                expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
+
+                store.dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
+
+                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
+                    providerMetadata,
+                );
+            });
+
+            it('should update currentProviderMetadata when called multiple times', () => {
+                const firstProvider = getProviderMetadataFixture('changenow');
+                const secondProvider = getProviderMetadataFixture('sideshift');
+
+                store.dispatch(tradingActions.setCurrentProviderMetadata(firstProvider));
+                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
+                    firstProvider,
+                );
+
+                store.dispatch(tradingActions.setCurrentProviderMetadata(secondProvider));
+                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
+                    secondProvider,
+                );
+            });
+
+            it('should clear currentProviderMetadata when set to undefined', () => {
+                const providerMetadata = getProviderMetadataFixture('changenow');
+
+                store.dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
+                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
+                    providerMetadata,
+                );
+
+                store.dispatch(tradingActions.setCurrentProviderMetadata(undefined));
+                expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
             });
         });
 
