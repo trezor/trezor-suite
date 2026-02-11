@@ -111,8 +111,9 @@ Whenever you do a change in a native code (updating native dependency and so on)
     - `yarn native:prebuild:clean`
     - `yarn native:android` or `yarn native:ios`
 2. In case of issues with the packager, try to restart it with `--reset-cache` i.e (`yarn s --reset-cache`).
-3. Sometimes it's helpful to combine two previous points with uninstalling the app from the device/emulator.
-4. Make sure you are using pure Node or `nvm` for managing node version (other version managers like `fnm` can cause build issues on iOS).
-5. `npx react-native doctor` may help to identify issues with your environment, though not every check _has_ to pass
-6. Android emulator on Linux may be unstable with default software renderer. Then go to settings of the Android Virtual Device and choose Graphics acceleration: Hardware.<br />
+3. If metro crashes after running `yarn start` on iOS, try running `watchman watch-del-all` to clear stale file‑watch state.
+4. Sometimes it's helpful to combine two previous points with uninstalling the app from the device/emulator.
+5. Make sure you are using pure Node or `nvm` for managing node version (other version managers like `fnm` can cause build issues on iOS).
+6. `npx react-native doctor` may help to identify issues with your environment, though not every check _has_ to pass
+7. Android emulator on Linux may be unstable with default software renderer. Then go to settings of the Android Virtual Device and choose Graphics acceleration: Hardware.<br />
    For further debugging, start emulator with `adb logcat -v long > emulator_log.txt` running somewhere in the background.
