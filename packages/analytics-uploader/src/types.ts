@@ -9,6 +9,7 @@ export type InitOptions = {
     instanceId?: string;
     environment?: Environment;
     url?: string;
+    loggerEnabled?: boolean;
     isDev: boolean;
     commitId: string;
     callbacks?: {

@@ -177,12 +177,7 @@ export const sessionRequestThunk = createThunk<void, { event: WalletKitTypes.Ses
 
 ## 5. Verifying that events are tracked
 
-**Desktop / Web:**
-
 1. **DevTools** → **Network** tab → filter by `.log` → inspect **Query String Parameters** in the request.
 2. **Keboola** — access via [access form](https://www.notion.so/satoshilabs/Engineering-6d5f34c46db041318ceeecb65f973980) in company Notion.
-3. **Custom build** — build with the analytics server URL pointing to your own server.
-
-**Suite Native (mobile):**
-
-- Set the environment variable `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` and run the app; events will be printed to the console.
+3. **Console logs** — Enable console logging in **Debug Settings**/**Dev Utils** → **Console Logging** toggle; events will be printed to the console.
+4. **Custom URL** — in **Debug Settings**/**Dev Utils** → **Custom Analytics URL** point to your own server.

@@ -53,6 +53,8 @@ export const analyticsMock: Analytics<any> = {
     isEnabled: () => true,
     disable: () => {},
     enable: () => {},
+    setUrl: () => {},
+    setLoggerEnabled: () => {},
     init: () => {},
 };
 

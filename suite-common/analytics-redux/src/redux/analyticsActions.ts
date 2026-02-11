@@ -15,9 +15,12 @@ export const disableAnalytics = createAction(`${ACTION_PREFIX}/disableAnalytics`
 
 const setCustomAnalyticsUrl = createAction(
     `${ACTION_PREFIX}/setCustomAnalyticsUrl`,
-    (payload: string | undefined) => ({
-        payload,
-    }),
+    (payload: string | undefined) => ({ payload }),
+);
+
+const setLoggerEnabled = createAction(
+    `${ACTION_PREFIX}/setLoggerEnabled`,
+    (payload: boolean | undefined) => ({ payload }),
 );
 
 export const analyticsActions = {
@@ -25,4 +28,5 @@ export const analyticsActions = {
     enableAnalytics,
     disableAnalytics,
     setCustomAnalyticsUrl,
+    setLoggerEnabled,
 } as const;
