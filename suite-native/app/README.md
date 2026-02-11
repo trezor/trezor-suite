@@ -95,7 +95,6 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 
 > If you use `.env` file, it has the lowest priority. See [what other .env\* files you can use](https://github.com/bkeepers/dotenv/blob/c6e583a/README.md#what-other-env-files-can-i-use).
 
-- `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally,
 - `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally and
 - `EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED=true` to debug @trezor/transport-native-usb locally.
 - `EXPO_PUBLIC_IS_NATIVE_BLUETOOTH_LOGGER_ENABLED=true` to debug @trezor/transport-native-bluetooth locally.

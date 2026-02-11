@@ -5,6 +5,7 @@ import {
     selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
+    selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
 import { createThunk } from '@suite-common/redux-utils';
 import { EventType, asTypedNativeAnalytics } from '@suite-native/analytics';
@@ -50,12 +51,14 @@ export const initAnalyticsThunk = createThunk(
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
         const customAnalyticsUrl = selectCustomAnalyticsUrl(getState());
+        const loggerEnabled = selectLoggerEnabled(getState());
 
         const options: InitOptions = {
             instanceId,
             sessionId,
             environment: 'mobile',
             url: customAnalyticsUrl,
+            loggerEnabled,
             commitId: getCommitHash(),
             isDev: isDevelopEnv(),
             callbacks: {

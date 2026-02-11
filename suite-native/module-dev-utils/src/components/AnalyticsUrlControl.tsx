@@ -1,9 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { analyticsActions, selectCustomAnalyticsUrl } from '@suite-common/analytics-redux';
+import {
+    analyticsActions,
+    selectCustomAnalyticsUrl,
+    selectLoggerEnabled,
+} from '@suite-common/analytics-redux';
 import { yup } from '@suite-common/validators';
 import { analytics } from '@suite-native/analytics';
-import { Button, Card, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
@@ -11,6 +15,7 @@ const DEFAULT_CUSTOM_URL = '';
 
 export const AnalyticsUrlControl = () => {
     const customUrl = useSelector(selectCustomAnalyticsUrl);
+    const loggerEnabled = useSelector(selectLoggerEnabled);
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
@@ -19,7 +24,7 @@ export const AnalyticsUrlControl = () => {
             analyticsUrl: customUrl ?? DEFAULT_CUSTOM_URL,
         },
         validation: yup.object({
-            analyticsUrl: yup.string(),
+            analyticsUrl: yup.string().url('Please enter a valid URL'),
         }),
     });
 
@@ -34,6 +39,7 @@ export const AnalyticsUrlControl = () => {
         const url = trimmedUrl || undefined;
         dispatch(analyticsActions.setCustomAnalyticsUrl(url));
         analytics.setUrl(url);
+        reset({ analyticsUrl: trimmedUrl });
         showToast({
             message: url ? 'Analytics URL updated' : 'Analytics URL reset to default',
             variant: 'success',
@@ -55,7 +61,7 @@ export const AnalyticsUrlControl = () => {
             <VStack spacing="sp12">
                 <Text variant="titleSmall">Analytics URL</Text>
                 <Text variant="label" color="textSubdued">
-                    Override the analytics endpoint URL. Leave empty and save to use the default.
+                    Point to your own analytics server for testing.
                 </Text>
                 <Form form={form}>
                     <VStack>
@@ -84,6 +90,19 @@ export const AnalyticsUrlControl = () => {
                         )}
                     </VStack>
                 </Form>
+                <Divider />
+                <HStack justifyContent="space-between" paddingTop="sp8">
+                    <Text>Console Logging</Text>
+                    <CheckBox
+                        testID="@analytics-url-control/logger-checkbox"
+                        isChecked={!!loggerEnabled}
+                        onChange={() => {
+                            const newValue = !loggerEnabled;
+                            dispatch(analyticsActions.setLoggerEnabled(newValue));
+                            analytics.setLoggerEnabled(newValue);
+                        }}
+                    />
+                </HStack>
             </VStack>
         </Card>
     );

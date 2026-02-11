@@ -13,6 +13,7 @@ export interface Analytics<T extends AnalyticsEvent> {
     disable: () => void;
     isEnabled: () => boolean;
     setUrl: (url?: string) => void;
+    setLoggerEnabled: (enabled: boolean) => void;
     report: (data: T, config?: ReportConfig) => void;
 }
 
@@ -31,6 +32,7 @@ export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
     private isDev?: boolean;
     private environment?: InitOptions['environment'];
     private url?: string;
+    private loggerEnabled = false;
 
     private callbacks?: InitOptions['callbacks'];
 
@@ -49,6 +51,7 @@ export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
         this.isDev = options.isDev;
         this.environment = options.environment;
         this.url = options.url ?? getUrl(this.app, options.isDev, options.environment);
+        this.loggerEnabled = options.loggerEnabled ?? false;
         this.callbacks = options.callbacks;
 
         // Call flushQueue only if 'enabled' is explicitly set (true or false).
@@ -90,6 +93,10 @@ export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
 
     public setUrl = (url?: string) => {
         this.url = url ?? getUrl(this.app, this.isDev ?? false, this.environment);
+    };
+
+    public setLoggerEnabled = (enabled: boolean) => {
+        this.loggerEnabled = enabled;
     };
 
     public report = (data: T, config?: ReportConfig) => {
@@ -146,6 +153,7 @@ export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
                 keepalive: true,
             },
             retry: true,
+            loggerEnabled: this.loggerEnabled,
         });
     };
 }

@@ -1,7 +1,11 @@
 import { useState } from 'react';
 
-import { analyticsActions, selectCustomAnalyticsUrl } from '@suite-common/analytics-redux';
-import { Button, Code, Column, Input, Text } from '@trezor/components';
+import {
+    analyticsActions,
+    selectCustomAnalyticsUrl,
+    selectLoggerEnabled,
+} from '@suite-common/analytics-redux';
+import { Button, Code, Column, Input, Switch, Text } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -9,6 +13,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AnalyticsUrl = () => {
     const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);
+    const loggerEnabled = useSelector(selectLoggerEnabled);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
 
@@ -28,45 +33,61 @@ export const AnalyticsUrl = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="Analytics URL"
-                description="Override the analytics endpoint URL. Leave empty and save to use the default."
-            />
-            <ActionColumn>
-                <Column gap={4}>
-                    <Input
-                        data-testid="@settings/debug/analytics/url-input"
-                        value={inputValue}
-                        placeholder="https://custom-analytics-server.example.com/log"
-                        onChange={e => setInputValue(e.target.value)}
-                        rightContent={
-                            <Button
-                                data-testid="@settings/debug/analytics/save-button"
-                                onClick={handleSave}
-                                size="small"
-                            >
-                                Save
-                            </Button>
-                        }
+        <>
+            <SectionItem>
+                <TextColumn title="Custom Analytics URL" />
+                <ActionColumn>
+                    <Column gap={4}>
+                        <Input
+                            data-testid="@settings/debug/analytics/url-input"
+                            value={inputValue}
+                            placeholder="https://custom-analytics-server.example.com/log"
+                            onChange={e => setInputValue(e.target.value)}
+                            rightContent={
+                                <Button
+                                    data-testid="@settings/debug/analytics/save-button"
+                                    onClick={handleSave}
+                                    size="small"
+                                >
+                                    Save
+                                </Button>
+                            }
+                        />
+                        {customAnalyticsUrl && (
+                            <Column gap={4} alignItems="flex-end">
+                                <Text typographyStyle="hint" variant="tertiary">
+                                    Current: <Code>{customAnalyticsUrl}</Code>
+                                </Text>
+                                <Button
+                                    data-testid="@settings/debug/analytics/reset-button"
+                                    onClick={handleReset}
+                                    size="small"
+                                    intent="critical"
+                                >
+                                    Reset to Default
+                                </Button>
+                            </Column>
+                        )}
+                    </Column>
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn
+                    title="Console Logging"
+                    description="Log analytics events to the browser console for debugging"
+                />
+                <ActionColumn>
+                    <Switch
+                        data-testid="@settings/debug/analytics/logger-switch"
+                        isChecked={!!loggerEnabled}
+                        onChange={() => {
+                            const newValue = !loggerEnabled;
+                            dispatch(analyticsActions.setLoggerEnabled(newValue));
+                            analytics.setLoggerEnabled(newValue);
+                        }}
                     />
-                    {customAnalyticsUrl && (
-                        <Column gap={4} alignItems="flex-end">
-                            <Text typographyStyle="hint" variant="tertiary">
-                                Current: <Code>{customAnalyticsUrl}</Code>
-                            </Text>
-                            <Button
-                                data-testid="@settings/debug/analytics/reset-button"
-                                onClick={handleReset}
-                                size="small"
-                                intent="critical"
-                            >
-                                Reset to Default
-                            </Button>
-                        </Column>
-                    )}
-                </Column>
-            </ActionColumn>
-        </SectionItem>
+                </ActionColumn>
+            </SectionItem>
+        </>
     );
 };

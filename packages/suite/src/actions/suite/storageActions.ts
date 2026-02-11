@@ -429,6 +429,7 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
             instanceId: analytics.instanceId,
             confirmed: analytics.confirmed,
             customAnalyticsUrl: analytics.customAnalyticsUrl,
+            loggerEnabled: analytics.loggerEnabled,
         },
         'suite',
         true,

@@ -18,7 +18,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../config" },
         {
             "path": "../../packages/analytics-uploader"
         },

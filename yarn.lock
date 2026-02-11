@@ -11797,6 +11797,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics-redux@workspace:suite-native/analytics-redux"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -11811,13 +11812,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics@workspace:suite-native/analytics"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-native/config": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
