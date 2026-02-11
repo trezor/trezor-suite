@@ -19,6 +19,7 @@ import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
+import { createDb } from 'src/storage';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
@@ -65,10 +66,14 @@ export const init = async (container: HTMLElement) => {
     const root = createRoot(container);
     root.render(<LoadingScreen />);
 
-    const preloadAction = await preloadStore();
+    const db = createDb();
+    const preloadAction = await preloadStore(db);
     const { statePatch } = await desktopApi.handshake();
 
-    const { store, services } = createSuiteDesktopCompositionRoot(preloadAction, statePatch);
+    const { store, services } = createSuiteDesktopCompositionRoot(
+        { preloadStoreAction: preloadAction, db },
+        statePatch,
+    );
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {

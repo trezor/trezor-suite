@@ -68,9 +68,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     await runMigrations(db, oldVersion, transaction);
 };
 
-export const db = new SuiteDB<SuiteDBSchema>(
-    'trezor-suite',
-    LATEST_MIGRATION_VERSION,
-    onUpgrade,
-    reloadApp,
-);
+export type DbDep = { db: SuiteDB<SuiteDBSchema> };
+
+export const createDb = (): SuiteDB<SuiteDBSchema> =>
+    new SuiteDB<SuiteDBSchema>('trezor-suite', LATEST_MIGRATION_VERSION, onUpgrade, reloadApp);

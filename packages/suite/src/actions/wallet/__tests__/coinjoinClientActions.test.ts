@@ -13,9 +13,9 @@ import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
-import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
 
+import { createDb } from '../../../storage';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 import {
     clientEmitException,
@@ -86,10 +86,13 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Walle
 };
 
 describe('coinjoinClientActions', () => {
+    let db = null;
+
     afterEach(() => {
         jest.clearAllMocks();
     });
     beforeAll(async () => {
+        db = createDb();
         await db.getDB();
     });
 

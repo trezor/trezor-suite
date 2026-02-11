@@ -16,7 +16,7 @@ import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import storageMiddleware from './storageMiddleware';
+import prepareStorageMiddleware from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
@@ -30,7 +30,7 @@ export const getWalletMiddlewares = (
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
-    storageMiddleware,
+    prepareStorageMiddleware(getExtra),
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,

@@ -1,9 +1,12 @@
+import SuiteDB from '@trezor/suite-storage';
+
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-import { db } from 'src/storage';
+
+import type { SuiteDBSchema } from '../../storage/definitions';
 
 // This function should be called before first render
 // PreloadedState will be used in redux store creation
-export const preloadStore = async () => {
+export const preloadStore = async (db: SuiteDB<SuiteDBSchema>) => {
     if (!db.isSupported()) return;
 
     // check if db is blocked/blocking before preloading start

@@ -1,6 +1,8 @@
 import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import SuiteDB from '@trezor/suite-storage';
 
+import type { SuiteDBSchema } from '../../storage/definitions';
 import { SuiteServices } from '../extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
@@ -20,5 +22,8 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
             listen: (_: {}) => () => {},
         },
         disableLegacyMetadataIfNeeded: () => {},
+        // Todo: introduce proper interface with just few methods to make mocking easy
+        //       and se do not depend on implementation details.
+        db: {} as SuiteDB<SuiteDBSchema>,
     },
 };

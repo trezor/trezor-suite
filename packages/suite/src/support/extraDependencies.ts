@@ -51,6 +51,7 @@ import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseB
 import { createDisableLegacyMetadataIfNeeded } from '../actions/suite/metadata/disableLegacyMetadateIfNeeded';
 import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
+import { DbDep } from '../storage';
 import { AppState, TrezorDevice } from '../types/suite';
 import {
     HistoryDep,
@@ -96,12 +97,13 @@ export type StoreAPIDep = {
     dispatch: (_: any) => any;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep;
+export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep & DbDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     DisableLegacyMetadataIfNeededDep &
-    SuiteRouterHistoryDep;
+    SuiteRouterHistoryDep &
+    DbDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
@@ -135,6 +137,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     return {
+        db: deps.db,
         suiteSync,
         platformEncryption,
         analytics,

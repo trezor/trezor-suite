@@ -47,6 +47,7 @@ import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { DbDep } from '../storage';
 import {
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -129,7 +130,7 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep & SuiteSyncAppReloaderDep;
+export type SuiteStoreDeps = HistoryDep & SuiteSyncAppReloaderDep & DbDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -158,6 +159,7 @@ export const initStore = (
             dispatch: api.dispatch,
             reloadApp: deps.reloadApp,
             history: deps.history,
+            db: deps.db,
         }),
     });
 

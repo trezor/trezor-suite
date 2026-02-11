@@ -1,5 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
@@ -15,18 +16,22 @@ import * as discoveryActions from '@suite-common/wallet-core';
 import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
+import SuiteDB from '@trezor/suite-storage';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
-import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
+import prepareStorageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
+import { createDb } from 'src/storage';
+import type { SuiteDBSchema } from 'src/storage/definitions';
+import { SuiteServices, extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { configureStore } from 'src/support/tests/configureStore';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { AcquiredDevice, AppState } from 'src/types/suite';
 
 import * as storageActions from '../storageActions';
@@ -153,11 +158,29 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [storageMiddleware];
 
-const mockStore = configureStore<State, any>(middlewares);
+const createInitializedDb = async () => {
+    const db = createDb();
+    await db.getDB();
 
-type mockStoreType = ReturnType<typeof mockStore>;
+    return db;
+};
+
+const mockStore = (db: SuiteDB<SuiteDBSchema>) => {
+    const extra: ExtraDependenciesStatic & { services: SuiteServices } = {
+        ...extraDependenciesDesktopMock,
+        services: {
+            ...extraDependenciesDesktopMock.services,
+            db,
+        },
+    };
+
+    const middlewares = [prepareStorageMiddleware(() => extra)];
+
+    return configureStore<State, any>(middlewares, { services: { db } } as any);
+};
+
+type mockStoreType = ReturnType<ReturnType<typeof mockStore>>;
 
 const updateStore = (store: mockStoreType) => {
     store.subscribe(() => {
@@ -179,12 +202,9 @@ const mockFetch = (data: any) =>
     );
 
 describe('Storage actions', () => {
-    // afterEach(async () => {
-    //     await indexedDB.deleteDatabase('trezor-suite');
-    // });
-
     it('should store wallet settings in the db and update them automatically', async () => {
-        const store = mockStore(getInitialState());
+        const db = await createInitializedDb();
+        const store = mockStore(db)(getInitialState());
         updateStore(store);
 
         // save wallet settings to the db
@@ -192,7 +212,7 @@ describe('Storage actions', () => {
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
         await store.dispatch(discoveryActions.setBaseCurrency('czk'));
         const { settings } = store.getState().wallet;
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
 
         // check if stored local currency is 'czk'
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
@@ -201,41 +221,44 @@ describe('Storage actions', () => {
     });
 
     it('should store suite settings in the db and update them automatically', async () => {
-        const store = mockStore(getInitialState());
+        const db = await createInitializedDb();
+        const store = mockStore(db)(getInitialState());
         updateStore(store);
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
         await store.dispatch(suiteActions.initialRunCompleted());
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
 
         expect(store.getState().suite.flags.initialRun).toEqual(false);
         global.fetch = f;
     });
 
     it('should store, override and remove send form', async () => {
-        let store = mockStore(getInitialState());
+        const db = await createInitializedDb();
+        let store = mockStore(db)(getInitialState());
         updateStore(store);
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'a' }, 'account-key');
-        store.dispatch(await preloadStore());
+        await storageActions.saveDraft(db, { address: 'a' }, 'account-key');
+        store.dispatch(await preloadStore(db));
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'a' } });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'b' }, 'account-key');
-        store.dispatch(await preloadStore());
+        await storageActions.saveDraft(db, { address: 'b' }, 'account-key');
+        store.dispatch(await preloadStore(db));
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'b' } });
 
-        await storageActions.removeDraft('account-key' as AccountKey); // Todo: create properly via `createAccountKey()`
-        store = mockStore(getInitialState());
+        await storageActions.removeDraft(db, 'account-key' as AccountKey); // Todo: create properly via `createAccountKey()`
+        store = mockStore(db)(getInitialState());
         updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
         expect(store.getState().wallet.send.drafts).toEqual({});
     });
 
     it('should store remembered device', async () => {
-        let store = mockStore(
+        const db = await createInitializedDb();
+        let store = mockStore(db)(
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
@@ -265,7 +288,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1));
 
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
 
         // stored devices
         const load1 = store.getState();
@@ -299,9 +322,9 @@ describe('Storage actions', () => {
 
         // forget dev1
         await store.dispatch(storageActions.forgetDevice(dev1));
-        store = mockStore(getInitialState());
+        store = mockStore(db)(getInitialState());
         updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
 
         const load2 = store.getState();
         // device deleted, dev2 and dev2Instance1 should still be there
@@ -323,12 +346,13 @@ describe('Storage actions', () => {
         // forget device dev1 along with its instances
         await store.dispatch(storageActions.forgetDevice(dev2));
         await store.dispatch(storageActions.forgetDevice(dev2Instance1));
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
 
     it('should remove all txs for the acc', async () => {
-        let store = mockStore(
+        const db = await createInitializedDb();
+        let store = mockStore(db)(
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
@@ -352,10 +376,10 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2));
 
         // remove txs for acc 1
-        await storageActions.removeAccountTransactions(acc1);
-        store = mockStore(getInitialState());
+        await storageActions.removeAccountTransactions(db, acc1);
+        store = mockStore(db)(getInitialState());
         updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
 
         const state = store.getState();
 
@@ -371,9 +395,10 @@ describe('Storage actions', () => {
     });
 
     it('should update device settings in the db', async () => {
+        const db = await createInitializedDb();
         // device needs to be connected otherwise devices reducer doesn't update the device
         const dev1Connected = { ...dev1, connected: true } as const;
-        const store = mockStore(
+        const store = mockStore(db)(
             getInitialState({
                 device: {
                     devices: [dev1Connected],
@@ -401,18 +426,20 @@ describe('Storage actions', () => {
 
         // Hack - because the db operation is done in a middleware, it is not awaitable via dispatch
         await new Promise(resolve => setTimeout(resolve, 100));
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
         expect(selectDevices(store.getState())[0].label).toBe('New Label');
     });
 
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
+        const db = await createInitializedDb();
+
         const accLtc = mockWalletAccount({
             deviceState: dev1.state!.staticSessionId!,
             symbol: 'ltc',
             descriptor: asAccountDescriptor('desc2'),
         });
 
-        const store = mockStore(
+        const store = mockStore(db)(
             getInitialState({
                 device: {
                     devices: [dev1],
@@ -450,7 +477,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev1));
 
         // verify that graph data are stored
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
         // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
@@ -458,7 +485,7 @@ describe('Storage actions', () => {
         await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));
 
         // verify that graph data for acc1 were removed
-        store.dispatch(await preloadStore());
+        store.dispatch(await preloadStore(db));
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
     });

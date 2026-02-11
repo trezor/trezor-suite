@@ -1,9 +1,11 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { db } from '../index';
+import { createDb } from '../index';
 
 describe('storage', () => {
     test('2 calls to uninitiated db', async () => {
+        const db = createDb();
+
         db.addItem('coinjoinDebugSettings', {}, 'debug', true);
         await db.addItem('coinjoinDebugSettings', {}, 'debug', true);
 

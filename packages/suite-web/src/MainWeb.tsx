@@ -13,6 +13,7 @@ import {
     ToasterProvider,
 } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
+import { createDb } from 'src/storage';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
@@ -53,9 +54,13 @@ export const init = async (container: HTMLElement) => {
     const root = createRoot(container);
     root.render(<LoadingScreen />);
 
-    const preloadAction = await preloadStore();
+    const db = createDb();
+    const preloadAction = await preloadStore(db);
 
-    const { store, services } = createSuiteWebCompositionRoot(preloadAction);
+    const { store, services } = createSuiteWebCompositionRoot({
+        preloadStoreAction: preloadAction,
+        db,
+    });
 
     root.render(
         <SuiteServicesProvider services={services}>
