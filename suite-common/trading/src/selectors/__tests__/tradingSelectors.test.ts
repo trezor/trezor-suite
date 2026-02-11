@@ -56,6 +56,7 @@ import {
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
+    selectTradingProviderMetadata,
     selectTradingSellAccountKey,
     selectTradingSellFormStep,
     selectTradingSellInfo,
@@ -1439,6 +1440,30 @@ describe('tradingSelectors', () => {
             const second = selectTradingAccountKeyByTradeType(state, 'exchange');
 
             expect(first).toBe(second);
+        });
+    });
+
+    describe('selectTradingProviderMetadata', () => {
+        it('should return currentProviderMetadata from state', () => {
+            const providerMetadata = {
+                name: 'TEST_PROVIDER',
+                companyName: 'Test Company',
+                logo: 'https://example.com/logo.png',
+                isActive: true,
+            };
+            state.wallet.trading.currentProviderMetadata = providerMetadata;
+
+            const result = selectTradingProviderMetadata(state);
+
+            expect(result).toEqual(providerMetadata);
+        });
+
+        it('should return undefined when currentProviderMetadata is not set', () => {
+            state.wallet.trading.currentProviderMetadata = undefined;
+
+            const result = selectTradingProviderMetadata(state);
+
+            expect(result).toBeUndefined();
         });
     });
 });
