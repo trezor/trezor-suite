@@ -6,32 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { FullAlertBox } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-const containerStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderRadius: utils.borders.radii.r12,
-    borderWidth: 1,
-    borderColor: utils.colors.backgroundAlertBlueSubtleOnElevationNegative,
-    backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
-    padding: utils.spacings.sp16,
-    gap: utils.spacings.sp12,
-    marginHorizontal: utils.spacings.sp16,
-}));
-
-const flex1Style = {
-    flex: 1,
-};
 
 type CloseStateItem = {
     deviceId: string;
@@ -40,7 +22,7 @@ type CloseStateItem = {
 const closeStateAtom = atom<CloseStateItem[]>([]);
 
 export const FirmwareUpdateAlert = () => {
-    const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
     const deviceId = useSelector(selectDeviceId);
     const navigation =
@@ -77,39 +59,22 @@ export const FirmwareUpdateAlert = () => {
     }
 
     return (
-        <Animated.View style={applyStyle(containerStyle)} entering={FadeIn} exiting={FadeOut}>
-            <Icon name="info" size="large" />
-            <VStack spacing="sp12" style={flex1Style}>
-                <Box>
-                    <Text variant="body-md-strong">
-                        <Translation id="moduleHome.firmwareUpdateAlert.title" />
-                    </Text>
-                    <Text>
-                        <Translation
-                            id="moduleHome.firmwareUpdateAlert.version"
-                            values={{ version: updateFirmwareVersion }}
-                        />
-                    </Text>
-                </Box>
-                <HStack spacing="sp8" style={flex1Style}>
-                    <Button
-                        size="small"
-                        colorScheme="blueElevation0"
-                        onPress={handleClose}
-                        style={flex1Style}
-                    >
-                        <Translation id="moduleHome.firmwareUpdateAlert.button.close" />
-                    </Button>
-                    <Button
-                        size="small"
-                        colorScheme="blueBold"
-                        onPress={handleUpdateFirmware}
-                        style={flex1Style}
-                    >
-                        <Translation id="moduleHome.firmwareUpdateAlert.button.update" />
-                    </Button>
-                </HStack>
-            </VStack>
+        <Animated.View entering={FadeIn} exiting={FadeOut}>
+            <FullAlertBox
+                title={<Translation id="moduleHome.firmwareUpdateAlert.title" />}
+                description={
+                    <Translation
+                        id="moduleHome.firmwareUpdateAlert.version"
+                        values={{ version: updateFirmwareVersion }}
+                    />
+                }
+                variant="info"
+                secondaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.close')}
+                onPressSecondaryButton={handleClose}
+                primaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.update')}
+                onPressPrimaryButton={handleUpdateFirmware}
+                marginHorizontal="sp16"
+            />
         </Animated.View>
     );
 };
