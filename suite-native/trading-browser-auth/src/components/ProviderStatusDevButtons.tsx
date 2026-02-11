@@ -1,14 +1,24 @@
-import { Button, HStack, VStack } from '@suite-native/atoms';
+import { useSelector } from 'react-redux';
+
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { DebugModeView } from '@suite-native/trading-debug';
+import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from '../hooks/useDispatchProviderConfirmationStatus';
 
 const ProviderStatusDevButtonsContent = () => {
     const dispatchHelper = useDispatchProviderConfirmationStatus();
+    const currentStatus = useSelector(selectTradingProviderConfirmationStatus);
 
     return (
-        <VStack spacing="sp4" alignItems="center">
+        <VStack spacing="sp4" flex={1}>
             <HStack>
+                <Text variant="callout">Current status:</Text>
+                <Text variant="callout" color="textSubdued">
+                    {currentStatus}
+                </Text>
+            </HStack>
+            <HStack justifyContent="center" spacing="sp4">
                 <Button
                     colorScheme="redElevation0"
                     size="tiny"
@@ -45,7 +55,7 @@ const ProviderStatusDevButtonsContent = () => {
                     success
                 </Button>
             </HStack>
-            <HStack>
+            <HStack justifyContent="center">
                 <Button
                     colorScheme="yellowElevation0"
                     size="tiny"

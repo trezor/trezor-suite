@@ -1,10 +1,5 @@
 import { FeatureFlag, toggleFeatureFlag } from '@suite-native/feature-flags';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { ProviderStatusDevButtons } from '../ProviderStatusDevButtons';
@@ -13,21 +8,29 @@ describe('ProviderStatusDevButtons', () => {
     let store: TestStore;
 
     const renderProviderStatusDevButtons = () =>
-        renderWithStoreProviderAsync(<ProviderStatusDevButtons />, { store });
+        renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
 
-    beforeEach(async () => {
-        ({ store } = await initStore());
+    beforeEach(() => {
+        ({ store } = initStore());
     });
 
-    it('should display nothing without debug mode', async () => {
-        const { toJSON } = await renderProviderStatusDevButtons();
+    it('should display nothing without debug mode', () => {
+        const { toJSON } = renderProviderStatusDevButtons();
 
         expect(toJSON()).toBeNull();
     });
 
+    it('should display current status', () => {
+        store.dispatch(toggleFeatureFlag({ featureFlag: FeatureFlag.IsTradingDebugEnabled }));
+        const { getByText } = renderProviderStatusDevButtons();
+
+        expect(getByText('Current status:')).toBeOnTheScreen();
+        expect(getByText('inactive')).toBeOnTheScreen();
+    });
+
     it('should change state on buttons press', async () => {
         store.dispatch(toggleFeatureFlag({ featureFlag: FeatureFlag.IsTradingDebugEnabled }));
-        const { getByText } = await renderProviderStatusDevButtons();
+        const { getByText } = renderProviderStatusDevButtons();
 
         await userEvent.press(getByText('restart flow'));
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
