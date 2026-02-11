@@ -9,7 +9,11 @@ import {
 } from '../selectors/tradingSelectors';
 import type { TradingType } from '../types';
 
-export const useProviderMetadataChangeEffect = (tradingType: TradingType, quoteName?: string) => {
+export const useProviderMetadataChangeEffect = (
+    tradingType: TradingType,
+    quoteName?: string,
+    areProviderChangesAllowed = true,
+) => {
     const dispatch = useDispatch();
 
     const providerMetadata = useSelector((state: TradingRootState) =>
@@ -18,18 +22,16 @@ export const useProviderMetadataChangeEffect = (tradingType: TradingType, quoteN
     const currentProviderMetadata = useSelector(selectTradingProviderMetadata);
 
     useEffect(() => {
-        if (!quoteName && providerMetadata) {
-            dispatch(tradingActions.setCurrentProviderMetadata(undefined));
+        if (!areProviderChangesAllowed) {
+            return;
         }
-    }, [dispatch, quoteName, providerMetadata]);
 
-    useEffect(() => {
         if (providerMetadata === currentProviderMetadata) {
             return;
         }
 
         dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
-    }, [providerMetadata, currentProviderMetadata, dispatch]);
+    }, [providerMetadata, currentProviderMetadata, dispatch, areProviderChangesAllowed]);
 
     useEffect(
         () => () => {

@@ -23,6 +23,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@testing-library/react": "^16.3.0",
         "@trezor/address-validator": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-plugin-ethereum": "workspace:*",
@@ -36,7 +37,6 @@
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
-        "@testing-library/react": "^16.3.0",
         "@types/invity-api": "^1.1.12"
     }
 }
