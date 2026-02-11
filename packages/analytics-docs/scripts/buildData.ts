@@ -8,7 +8,7 @@ import * as sharedEvents from '@suite-common/analytics';
 import * as mobileEvents from '@suite-native/analytics';
 
 import { extractAttributeTypesByEventName, findPackageRoot, findUp } from './extractAttributeTypes';
-import { normalizeEvents } from '../src/normalizeEvents';
+import { normalizeEvents } from '../src/utils/normalizeEvents';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

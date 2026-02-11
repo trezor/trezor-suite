@@ -7,9 +7,9 @@ import { AddedBadge } from './AddedBadge';
 import { AttributesTable } from './AttributesTable';
 import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
-import { useChangelogButton } from '../useChangelogButton';
 import { Markdown } from './Markdown';
-import { getPlatformIcon } from '../utils';
+import { getPlatformIcon } from '../utils/getPlatformIcon';
+import { useChangelogButton } from '../utils/useChangelogButton';
 
 const getPlatformDirectory = (platform: string) => {
     switch (platform) {

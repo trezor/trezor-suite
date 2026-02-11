@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
-import { normalizeChangelog } from './normalizeChangelog';
 import type { AttributeDoc, EventDoc } from './types';
+import { normalizeChangelog } from './utils/normalizeChangelog';
 
 export const normalizeEvents = (
     events: Array<EventDef<any, any> & { platform?: string }>,
@@ -9,17 +9,17 @@ export const normalizeEvents = (
     Object.fromEntries(
         events.map(event => {
             const attributes: Record<string, AttributeDoc> = Object.fromEntries(
-                (
-                    Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]
-                ).map(([name, attribute]) => [
-                    name,
-                    {
-                        description: attribute.description,
-                        limitations: attribute.limitations,
-                        runtimeType: undefined,
-                        changelog: normalizeChangelog(attribute.changelog),
-                    },
-                ]),
+                (Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]).map(
+                    ([name, attribute]) => [
+                        name,
+                        {
+                            description: attribute.description,
+                            limitations: attribute.limitations,
+                            runtimeType: undefined,
+                            changelog: normalizeChangelog(attribute.changelog),
+                        },
+                    ],
+                ),
             );
 
             return [

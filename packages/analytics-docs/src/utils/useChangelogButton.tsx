@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { IconButton, Tooltip } from '@trezor/components';
 
 export const useChangelogButton = () => {
