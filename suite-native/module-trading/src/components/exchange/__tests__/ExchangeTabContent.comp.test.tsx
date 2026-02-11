@@ -19,7 +19,7 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingExchangeEnabled: () => true,
 }));
 
-describe('ExchangeTab', () => {
+describe(ExchangeTabContent.name, () => {
     beforeEach(() => {
         mockUseTradingExchangeData = jest.fn(() => ({
             isLoading: false,

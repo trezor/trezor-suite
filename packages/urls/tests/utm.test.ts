@@ -1,6 +1,6 @@
 import { withPlatformUtm } from '../src/platform-utm';
 
-describe('withUtm', () => {
+describe(withPlatformUtm.name, () => {
     test('adds utm_medium=mobile for trezor.io urls', () => {
         const defaultValue = process.env.EXPO_PUBLIC_ENVIRONMENT;
         process.env.EXPO_PUBLIC_ENVIRONMENT = 'mobile';

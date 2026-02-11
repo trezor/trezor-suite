@@ -81,7 +81,7 @@ describe('router', () => {
         });
     });
 
-    describe('stripPrefixedUrl', () => {
+    describe(stripPrefixedURL.name, () => {
         it('should strip prefix from the URL', () => {
             const prefix = '/test/asset/prefix';
             process.env.ASSET_PREFIX = prefix;

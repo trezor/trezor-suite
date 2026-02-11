@@ -13,7 +13,7 @@ const testOptions = {
 } as Options;
 const output = path.join(testOptions.outputPath ?? '', testOptions.outputFile ?? '');
 
-describe('logger', () => {
+describe(Logger.name, () => {
     let spy: any;
     beforeEach(() => {
         spy = jest.spyOn(global.console, 'log').mockImplementation();

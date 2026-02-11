@@ -6,7 +6,7 @@ jest.mock('../../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
 }));
 
-describe('SendUtxosScreenFooter', () => {
+describe(SendUtxoScreenFooter.name, () => {
     it('should render footer with selected total and continue button', async () => {
         const { getByText } = await renderWithStoreProviderAsync(
             <SendUtxoScreenFooter symbol="btc" selectedTotal="800000000" onSubmit={jest.fn()} />,

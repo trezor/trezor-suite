@@ -322,7 +322,7 @@ describe('buySelectors', () => {
         });
     });
 
-    describe('selectMobileBuyQuotesByPaymentMethod', () => {
+    describe(selectBuyQuotesByPaymentMethodNative.name, () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 ...buyQuotes,

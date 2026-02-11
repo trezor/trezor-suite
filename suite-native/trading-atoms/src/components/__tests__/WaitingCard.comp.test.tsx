@@ -4,7 +4,7 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { WaitingCard, type WaitingCardProps } from '../WaitingCard';
 
-describe('ProviderWaitingCard', () => {
+describe(WaitingCard.name, () => {
     const renderProviderWaitingCard = (props: Partial<WaitingCardProps>) =>
         renderWithBasicProvider(<WaitingCard title="TITLE" subtitle="SUBTITLE" {...props} />);
 

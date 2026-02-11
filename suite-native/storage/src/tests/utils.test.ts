@@ -1,6 +1,6 @@
 import { filterKeysByPartialMatch } from '../transforms/utils';
 
-describe('filterObjectKeys', () => {
+describe(filterKeysByPartialMatch.name, () => {
     it('should filter out keys that are specified in the filterKeys array', () => {
         const obj = { apple: 1, banana: 2, apricot: 3, berry: 4, ananas: 5 };
         const filterKeys = ['ap', 'ana'];

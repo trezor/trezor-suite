@@ -19,7 +19,7 @@ jest.mock('@suite-common/wallet-utils', () => ({
     getAccountTotalStakingBalance: (_: Account) => mockStakingBalance,
 }));
 
-describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
+describe(isFilterValueMatchingAccount.name, () => {
     const account = {
         accountLabel: 'Original account name',
         symbol: 'eth',

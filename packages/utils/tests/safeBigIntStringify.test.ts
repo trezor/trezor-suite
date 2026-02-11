@@ -1,6 +1,6 @@
 import { safeBigIntStringify } from '../src';
 
-describe('safeStringify', () => {
+describe(safeBigIntStringify.name, () => {
     it('serializes regular objects normally', () => {
         const obj = { a: 1, b: 'text', c: true, d: null };
         expect(safeBigIntStringify(obj)).toBe(JSON.stringify(obj));

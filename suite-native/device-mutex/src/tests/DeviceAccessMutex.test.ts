@@ -57,7 +57,7 @@ describe('DeviceAccessMutex', () => {
     });
 });
 
-describe('RequestDeviceAccess', () => {
+describe(requestDeviceAccess.name, () => {
     test('requesting by multiple tasks in parallel', async () => {
         const numberOfTasks = 5;
 
@@ -95,7 +95,7 @@ describe('RequestDeviceAccess', () => {
     });
 });
 
-describe('RequestPrioritizedDeviceAccess', () => {
+describe(requestPrioritizedDeviceAccess.name, () => {
     test('prioritized task execution', async () => {
         // Put multiple tasks in the queue.
         A.makeWithIndex(5, () => requestDeviceAccess(deviceAccessCallbackMock));

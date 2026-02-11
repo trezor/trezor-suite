@@ -23,7 +23,7 @@ describe('solana utils', () => {
         );
     });
 
-    describe('getTokenNameAndSymbol', () => {
+    describe(buildTokenTransferInstruction.name, () => {
         fixtures.buildTokenTransferInstruction.forEach(({ description, input, expectedOutput }) => {
             it(description, async () => {
                 const txix = await buildTokenTransferInstruction(

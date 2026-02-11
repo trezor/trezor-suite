@@ -29,7 +29,7 @@ describe('stellar/utils', () => {
         });
     });
 
-    describe('buildSendTransactoin', () => {
+    describe(buildSendTransaction.name, () => {
         fixtures.buildSendTransactoin.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = buildSendTransaction({

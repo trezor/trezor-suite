@@ -210,7 +210,7 @@ describe('main staking selectors', () => {
         });
     });
 
-    describe('selectApyBySymbol', () => {
+    describe(selectAPYBySymbol.name, () => {
         it('should return correct apy for eht', () => {
             const testState = getTestState([]);
 
