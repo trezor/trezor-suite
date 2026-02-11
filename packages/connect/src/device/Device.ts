@@ -567,7 +567,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     this.busy = 'pin-locked';
                 }
 
-                if (error.code === 'Device_ThpPairingTagInvalid') {
+                if (
+                    error.code === 'Device_ThpPairingTagInvalid' ||
+                    error.code === 'Failure_ActionCancelled'
+                ) {
                     // return as TypedError
                     return Promise.reject(error);
                 }

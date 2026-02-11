@@ -4,10 +4,10 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
 import { createDeferred } from '@trezor/utils';
 
+import { abortThpWorkflow, thpCall } from './thpCall';
 import { DataManager } from '../../data/DataManager';
 import { DEVICE, UiResponseThpPairingTag } from '../../events';
 import type { Device } from '../Device';
-import { abortThpWorkflow, thpCall } from './thpCall';
 
 const processQrCodeTag = async (device: Device, value: string) => {
     const thpState = device.getThpState();
@@ -61,9 +61,6 @@ const processNfcTag = async (device: Device, value: string) => {
 };
 
 const processCodeEntry = async (device: Device, value: string) => {
-    if (value.length !== 6) {
-        throw ERRORS.TypedError('Device_ThpPairingTagInvalid');
-    }
     const codeValue = Buffer.from(value, 'ascii');
 
     const thpState = device.getThpState();
@@ -140,21 +137,27 @@ const waitForPairingTag = async (device: Device) => {
         throw ERRORS.TypedError('Device_ThpPairingMethodsException');
     }
 
-    const dfd = createDeferred<UiResponseThpPairingTag['payload'] | { error: string }>();
+    const dfd = createDeferred<
+        UiResponseThpPairingTag['payload'] | { error: ERRORS.TrezorError }
+    >();
 
     // start listening for the Cancel message from Trezor
     const { readAbort, readCancel } = waitForPairingCancel(device);
     const cancelResult = readCancel
         .then(readResult => {
             if (readResult.success) {
-                let error: string;
-                if (readResult.payload.type === 'Failure' && readResult.payload.message.message) {
-                    error = readResult.payload.message.message;
+                let code, message;
+                const { payload } = readResult;
+                if (payload.type === 'Failure') {
+                    code = payload.message.code;
+                    message = payload.message.message;
                 } else {
-                    error = `Pairing tag cancelled (${readResult.payload.type})`;
+                    message = `Unexpected message type: ${readResult.payload.type}`;
                 }
 
-                dfd.resolve({ error });
+                dfd.resolve({
+                    error: ERRORS.TypedError(code || 'ThpUnknownError', message),
+                });
             }
         })
         .catch(() => {
@@ -179,7 +182,9 @@ const waitForPairingTag = async (device: Device) => {
             dfd.resolve(response.payload);
         } else {
             abortThpWorkflow(device).then(() => {
-                dfd.resolve({ error: response.error.message });
+                dfd.resolve({
+                    error: ERRORS.TypedError('ThpUnknownError', response.error.message),
+                });
             });
         }
     });
@@ -193,7 +198,7 @@ const waitForPairingTag = async (device: Device) => {
     thpState.setPairingTagPromise(undefined);
 
     if ('error' in pairingResponse) {
-        throw new Error(pairingResponse.error);
+        throw pairingResponse.error;
     }
 
     // node-bridge + usb: abort received on client side of http request resolves faster than server. result with "device call in progress"
@@ -201,7 +206,8 @@ const waitForPairingTag = async (device: Device) => {
 
     return processThpPairingResponse(device, pairingResponse).catch(e => {
         // catch pairing tag mismatch
-        if (e.code === 'Failure_FirmwareError') {
+        // DataError since 2.10.0 https://github.com/trezor/trezor-firmware/commit/b0c3be9b1d95946471ebdab27918a3f652cf11e9
+        if (e.code === 'Failure_FirmwareError' || e.code === 'Failure_DataError') {
             // 'Unexpected Code Entry Tag'
             throw ERRORS.TypedError('Device_ThpPairingTagInvalid', e.message);
         }
