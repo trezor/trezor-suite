@@ -28,9 +28,8 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceMode =
         (device?.mode && ['seedless'].includes(device.mode)) ||
         (device?.features !== undefined && isRecoveryInProgress(device?.features));
-    const firmwareUpdateRequired = device?.firmware === 'required';
 
-    return wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
+    return wrongDeviceType || wrongDeviceMode;
 };
 
 export const SettingsDevice = () => {
