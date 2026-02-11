@@ -103,10 +103,10 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 );
 
                 const feeWrapped = device.wrapText(solanaStakingMock.stakeFeeFormatted, {
-                    isAmount: true,
+                    wrapByWords: true,
                 });
                 const amountWrapped = device.wrapText(stakeMoreAndRentFormatted, {
-                    isAmount: true,
+                    wrapByWords: true,
                 });
                 await expect(device).toShowOnDisplay({
                     T3W1: {

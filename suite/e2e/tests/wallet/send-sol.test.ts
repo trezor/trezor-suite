@@ -114,7 +114,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
                 // verify amount & fee
                 const amountWrapped = device.wrapText(`${sendMaxAmountWithReserve} SOL`, {
-                    isAmount: true,
+                    wrapByWords: true,
                 });
                 await expect(device).toShowOnDisplay({
                     [Model.T3W1]: {
@@ -123,7 +123,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                             ['Amount:'],
                             amountWrapped,
                             ['Transaction fee:'],
-                            device.wrapText(`${maxFee} SOL`, { isAmount: true }),
+                            device.wrapText(`${maxFee} SOL`, { wrapByWords: true }),
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },

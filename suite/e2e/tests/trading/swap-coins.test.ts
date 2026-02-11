@@ -134,7 +134,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                         ['Amount:'],
                         [formattedSendAmount],
                         ['Transaction fee:'],
-                        device.wrapText(`${solanaFee} SOL`, { isAmount: true }),
+                        device.wrapText(`${solanaFee} SOL`, { wrapByWords: true }),
                     ],
                     actions: { right_button: 'Hold to sign' },
                 },
