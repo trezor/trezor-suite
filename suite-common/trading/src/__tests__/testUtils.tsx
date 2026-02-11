@@ -3,15 +3,17 @@ import { Provider } from 'react-redux';
 
 import { combineReducers } from '@reduxjs/toolkit';
 import { RenderHookOptions, renderHook } from '@testing-library/react';
-import type { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import type { BuyInfo } from '../reducers/buyReducer';
-import type { ExchangeInfo } from '../reducers/exchangeReducer';
-import type { SellInfo } from '../reducers/sellReducer';
 import { TradingState, initialState, tradingCommonReducer } from '../reducers/tradingCommonReducer';
 import { regional } from '../regional';
+
+/**
+ * TODO This utility is a temporary solution to simplify testing of trading-related hooks and components.
+ * Is should be moved to the correct place defined in the issue below.
+ * @see https://github.com/trezor/trezor-suite/issues/25138
+ */
 
 export type TradingTestState = {
     wallet: {
@@ -51,19 +53,17 @@ export const createTradingTestState = (
 /**
  * Creates a partial BuyInfo state for testing.
  *
- * @param providerInfos - Map of provider name to BuyProviderInfo
- * @returns Partial BuyInfo with minimal required fields
+ * @param providerInfos - Map of provider name to BuyProviderInfo (or Partial for testing)
+ * @returns BuyInfo-like object for testing (with any type for flexibility)
  *
  * @example
  * ```ts
  * const buyInfo = createBuyInfoState({
- *   changenow: getProviderMetadataFixture('changenow') as BuyProviderInfo
+ *   changenow: getProviderMetadataFixture('changenow') as any
  * });
  * ```
  */
-export const createBuyInfoState = (
-    providerInfos: Record<string, BuyProviderInfo> = {},
-): Partial<BuyInfo> => ({
+export const createBuyInfoState = (providerInfos: Record<string, any> = {}): any => ({
     buyInfo: {
         country: regional.UNKNOWN_COUNTRY,
         providers: [],
@@ -77,12 +77,10 @@ export const createBuyInfoState = (
 /**
  * Creates a partial ExchangeInfo state for testing.
  *
- * @param providerInfos - Map of provider name to ExchangeProviderInfo
- * @returns Partial ExchangeInfo with minimal required fields
+ * @param providerInfos - Map of provider name to ExchangeProviderInfo (or Partial for testing)
+ * @returns ExchangeInfo-like object for testing (with any type for flexibility)
  */
-export const createExchangeInfoState = (
-    providerInfos: Record<string, ExchangeProviderInfo> = {},
-): Partial<ExchangeInfo> => ({
+export const createExchangeInfoState = (providerInfos: Record<string, any> = {}): any => ({
     providerInfos,
     buyCryptoIds: [],
     sellCryptoIds: [],
@@ -91,12 +89,10 @@ export const createExchangeInfoState = (
 /**
  * Creates a partial SellInfo state for testing.
  *
- * @param providerInfos - Map of provider name to SellProviderInfo
- * @returns Partial SellInfo with minimal required fields
+ * @param providerInfos - Map of provider name to SellProviderInfo (or Partial for testing)
+ * @returns SellInfo-like object for testing (with any type for flexibility)
  */
-export const createSellInfoState = (
-    providerInfos: Record<string, SellProviderInfo> = {},
-): Partial<SellInfo> => ({
+export const createSellInfoState = (providerInfos: Record<string, any> = {}): any => ({
     country: regional.UNKNOWN_COUNTRY,
     providerInfos,
     supportedCryptoCurrencies: [],
