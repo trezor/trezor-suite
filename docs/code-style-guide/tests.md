@@ -27,24 +27,27 @@ expect(screen.getByText(getTranslation('path.to.translation'))).toBe(
 ## Naming conventions
 
 - Tests are placed in `__tests__` folders and have `.test.ts` extension.
+- Test folder is placed in same directory as actual implementation
 - When testing components suffix should be `.comp.test.tsx`.
 - When testing hooks suffix should be `.hook.test.ts`.
 - When testing types, suffix should be `.type-test.ts`, to prevent from being executed by jest. (For example: `packages/utils/tests/typedObjectFromEntries.type-test.ts`)
-- Fixtures are placed in `__fixtures__` folders and have `.fixture.ts` or `.mock.ts` extension.
+- Fixtures are placed in `__mocks__` folders and have `mock` prefix.
+- `__mocks__` folder is placed in the root of the package, not in `src`.
 
 ### Example:
 
 ```
-my-module/src/
-├── __fixtures__/
-│   └── myState.fixture.ts
-├── __tests__/
-│   ├── MyComponent.comp.test.tsx
-│   ├── useMyData.hook.test.ts
-│   └── utils.test.ts
-├── MyComponent.tsx
-├── useMyData.ts
-└── utils.ts
+my-module/
+├── __mocks__/
+│   └── mockMyComponent.ts
+└── src/
+    ├── __tests__/
+    │   ├── MyComponent.comp.test.tsx
+    │   ├── useMyData.hook.test.ts
+    │   └── utils.test.ts
+    ├── MyComponent.tsx
+    ├── useMyData.ts
+    └── utils.ts
 ```
 
 ### Reusability
