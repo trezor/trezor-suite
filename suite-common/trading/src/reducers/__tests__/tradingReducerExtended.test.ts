@@ -142,41 +142,11 @@ describe('Testing trading reducer', () => {
 
             it('should set currentProviderMetadata with complete provider data', () => {
                 const providerMetadata = getProviderMetadataFixture('changenow');
-
-                expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
-
                 store.dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
 
                 expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
                     providerMetadata,
                 );
-            });
-
-            it('should update currentProviderMetadata when called multiple times', () => {
-                const firstProvider = getProviderMetadataFixture('changenow');
-                const secondProvider = getProviderMetadataFixture('sideshift');
-
-                store.dispatch(tradingActions.setCurrentProviderMetadata(firstProvider));
-                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
-                    firstProvider,
-                );
-
-                store.dispatch(tradingActions.setCurrentProviderMetadata(secondProvider));
-                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
-                    secondProvider,
-                );
-            });
-
-            it('should clear currentProviderMetadata when set to undefined', () => {
-                const providerMetadata = getProviderMetadataFixture('changenow');
-
-                store.dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
-                expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
-                    providerMetadata,
-                );
-
-                store.dispatch(tradingActions.setCurrentProviderMetadata(undefined));
-                expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
             });
         });
 

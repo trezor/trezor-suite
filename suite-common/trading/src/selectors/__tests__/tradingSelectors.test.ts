@@ -15,6 +15,7 @@ import coins from '../../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
 import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
+import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
 import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
 import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
@@ -1490,12 +1491,7 @@ describe('tradingSelectors', () => {
 
     describe('selectTradingProviderMetadata', () => {
         it('should return currentProviderMetadata from state', () => {
-            const providerMetadata = {
-                name: 'TEST_PROVIDER',
-                companyName: 'Test Company',
-                logo: 'https://example.com/logo.png',
-                isActive: true,
-            };
+            const providerMetadata = getProviderMetadataFixture('changenow');
             state.wallet.trading.currentProviderMetadata = providerMetadata;
 
             const result = selectTradingProviderMetadata(state);
