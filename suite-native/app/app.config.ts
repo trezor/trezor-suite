@@ -1,5 +1,6 @@
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
+import { execFileSync } from 'child_process';
 import { createHash } from 'crypto';
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
@@ -67,6 +68,15 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+
+// This is used only as a fallback for the local development.
+const getLocalCommitHash = (): string => {
+    try {
+        return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf-8' }).trim();
+    } catch {
+        return 'unknown';
+    }
+};
 
 // Generate a hash of active EXPO_PUBLIC env variables
 const getExpoPublicEnvHash = () => {
@@ -300,7 +310,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
         plugins: getPlugins(),
         extra: {
-            commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || process.env.COMMIT_HASH || '',
+            commitHash:
+                process.env.EAS_BUILD_GIT_COMMIT_HASH ||
+                process.env.COMMIT_HASH ||
+                getLocalCommitHash(),
             expoPublicEnvHash: getExpoPublicEnvHash(), // Only to change fingerprint of the build on environment variables change
             eas: {
                 projectId,
