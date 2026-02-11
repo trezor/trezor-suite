@@ -7,6 +7,7 @@ import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
+    selectCustomAnalyticsUrl,
     selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
@@ -15,7 +16,6 @@ import { ExtraDependencies } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
-import { selectCustomAnalyticsUrl } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState } from 'src/types/suite';
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
