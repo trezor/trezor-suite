@@ -1,6 +1,5 @@
 import {
     EnsureWalletSuiteSyncOn,
-    RefreshSuiteSyncKeysDep,
     SubscribeSuiteSyncDataDep,
     SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
@@ -13,7 +12,6 @@ import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../
 export type EnsureWalletSuiteSyncOnDeps = {
     getState: () => any;
 } & SubscribeSuiteSyncDataDep &
-    RefreshSuiteSyncKeysDep &
     SubscriptionStorageDep;
 
 export const createEnsureWalletSuiteSyncOn =

@@ -29,7 +29,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             getState: () => createMockState([]),
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
-            refreshSuiteSyncKeys: null,
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -49,7 +48,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([mockSuiteDevice({ unavailableCapabilities })]),
-            refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
         });
@@ -71,7 +69,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
-            refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
@@ -93,7 +90,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
-            refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
