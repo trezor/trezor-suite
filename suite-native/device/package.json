@@ -13,7 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.26",
-        "@reduxjs/toolkit": "2.11.0",
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",

@@ -15,7 +15,7 @@
         "@gorhom/bottom-sheet": "5.2.6",
         "@react-navigation/native": "7.1.26",
         "@react-navigation/native-stack": "7.9.0",
-        "@reduxjs/toolkit": "2.11.0",
+        "@reduxjs/toolkit": "2.11.2",
         "@shopify/react-native-skia": "2.2.12",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

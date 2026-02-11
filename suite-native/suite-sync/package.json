@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@evolu/react-native": "^14.2.0",
-        "@reduxjs/toolkit": "2.11.0",
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
