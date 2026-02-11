@@ -253,7 +253,7 @@ class CommonDB<TDBStructure> {
         const txIdIndex = tx.store.index(indexName);
         let cursor = await txIdIndex.openCursor(IDBKeyRange.only(key));
         while (cursor) {
-            cursor.delete();
+            await cursor.delete();
 
             cursor = await cursor.continue();
         }
