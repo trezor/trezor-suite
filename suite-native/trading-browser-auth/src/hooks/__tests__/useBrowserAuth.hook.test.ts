@@ -15,7 +15,7 @@ import {
     tradingActions,
 } from '@suite-native/trading-state';
 
-import { TRADING_URL_DEFAULT_BACK } from '../../../../utils/general/formUtils';
+import { TRADING_URL_DEFAULT_BACK } from '../../consts';
 import { useBrowserAuth } from '../useBrowserAuth';
 
 const mockOpenBrowserAsync = jest.fn();

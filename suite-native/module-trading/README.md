@@ -31,7 +31,9 @@ Provides logic shared between trading and send flow.
 
 ### Internal trading modules
 
+- **@suite-native/trading-analytics:** Analytics helpers.
 - **@suite-native/trading-atoms:** Reusable components.
+- **@suite-native/trading-browser-auth:** Hooks and components for handling browser authentication in trading features.
 - **@suite-native/trading-debug:** Debug UI components for displaying information while `IsTradingDebugEnabled` FF is set.
 - **@suite-native/trading-types:** Types used across trading modules.
 - **@suite-native/trading-consts:** Constants used across trading modules.
@@ -41,16 +43,20 @@ Provides logic shared between trading and send flow.
 
 ```mermaid
 graph TD
-    app["@suite-native/app"]
-    module-dev-utils["@suite-native/module-dev-utils"]
-    module-onboarding["@suite-native/module-onboarding"]
-    module-settings["@suite-native/module-settings"]
-    state["@suite-native/state"]
+    subgraph non-trading-modules["External modules"]
+        app["@suite-native/app"]
+        module-onboarding["@suite-native/module-onboarding"]
+        module-settings["@suite-native/module-settings"]
+        state["@suite-native/state"]
+        module-dev-utils["@suite-native/module-dev-utils"]
+    end
     module-trading["@suite-native/module-trading"]
     trading-residence["@suite-native/trading-residence"]
     trading-state["@suite-native/trading-state"]
     subgraph trading-internal["Trading internal modules"]
         trading-atoms["@suite-native/trading-atoms"]
+        trading-analytics["@suite-native/trading-analytics"]
+        trading-browser-auth["@suite-native/trading-browser-auth"]
         trading-debug["@suite-native/trading-debug"]
         trading-fixtures["@suite-native/trading-fixtures"]
         trading-types["@suite-native/trading-types"]
@@ -77,11 +83,18 @@ graph TD
     module-trading -.-> trading-types
     module-trading --> trading-consts
     module-trading -.-> trading-fixtures
-    module-trading --> trading-debug
     module-trading --> trading-atoms
+    module-trading --> trading-analytics
+    module-trading --> trading-browser-auth
+    module-trading --> trading-debug
     module-trading --> trading-state
     module-trading --> transaction-management
     module-trading --> trading-residence
+    trading-browser-auth --> trading-analytics
+    trading-browser-auth --> trading-atoms
+    trading-browser-auth --> trading-debug
+    trading-browser-auth --> trading-state
+    trading-analytics --> trading-atoms
     trading-residence --> trading-state
     trading-residence --> trading-atoms
     trading-residence --> trading-consts

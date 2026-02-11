@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { type WaitingCardProps } from '@suite-native/trading-atoms';
-import { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import type { WaitingCardProps } from '@suite-native/trading-atoms';
+import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { ConfirmationFailed } from './ConfirmationFailed';
 import { ConfirmationInProgress } from './ConfirmationInProgress';
-import { useProviderConfirmationStatus } from '../../../hooks/general/providerConfirmation/useProviderConfirmationStatus';
+import { useProviderConfirmationStatus } from '../hooks/useProviderConfirmationStatus';
 
 const NOT_VISIBLE_STATUSES: ProviderConfirmationStatus[] = [
     'confirmation_success',

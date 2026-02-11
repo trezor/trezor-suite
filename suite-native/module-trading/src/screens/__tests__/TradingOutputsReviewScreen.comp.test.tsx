@@ -31,11 +31,9 @@ const mockUseSellFlow = {
 const mockReportToAnalyticsExchange = jest.fn();
 const mockReportToAnalyticsSell = jest.fn();
 
-jest.mock('../../hooks/exchange/useExchangeAnalyticReportCallback', () => ({
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
     useExchangeAnalyticReportCallback: () => mockReportToAnalyticsExchange,
-}));
-
-jest.mock('../../hooks/sell/useSellAnalyticReportCallback', () => ({
     useSellAnalyticReportCallback: () => mockReportToAnalyticsSell,
 }));
 

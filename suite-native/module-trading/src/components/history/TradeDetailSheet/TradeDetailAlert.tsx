@@ -15,10 +15,9 @@ import { FullAlertBox } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useBrowserAuth } from '../../../hooks/general/providerConfirmation/useBrowserAuth';
-import { buildTradingUrl } from '../../../utils/general/formUtils';
 import { TradeStatusStep } from '../../../utils/general/utils';
 
 type AlertConfig = {

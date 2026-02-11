@@ -8,19 +8,21 @@ import {
     useTradingDetailData,
 } from '@suite-common/trading';
 import { Screen } from '@suite-native/navigation';
+import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
+import {
+    ProviderConfirmationStatusInfo,
+    ProviderStatusDevButtons,
+} from '@suite-native/trading-browser-auth';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
 import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
-import { ProviderConfirmationStatusInfo } from '../components/sell/ProviderConfirmation/ProviderConfirmationStatusInfo';
-import { ProviderStatusDevButtons } from '../components/sell/ProviderConfirmation/ProviderStatusDevButtons';
 import {
     SellPreviewContinueButton,
     SellPreviewScreenHeader,
     SellPreviewView,
 } from '../components/sell/SellPreview';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
-import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 import { clearTradingStateThunk } from '../thunks';
 

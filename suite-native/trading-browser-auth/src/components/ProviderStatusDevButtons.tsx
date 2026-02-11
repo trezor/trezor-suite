@@ -1,7 +1,7 @@
 import { Button, HStack, VStack } from '@suite-native/atoms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
-import { useDispatchProviderConfirmationStatus } from '../../../hooks/general/providerConfirmation/useDispatchProviderConfirmationStatus';
+import { useDispatchProviderConfirmationStatus } from '../hooks/useDispatchProviderConfirmationStatus';
 
 const ProviderStatusDevButtonsContent = () => {
     const dispatchHelper = useDispatchProviderConfirmationStatus();

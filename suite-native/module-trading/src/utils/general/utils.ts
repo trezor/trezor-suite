@@ -14,8 +14,6 @@ import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
-import { TRADING_URL_DEFAULT_BACK } from './formUtils';
-
 type UndefinedTradeOperation = {
     fromValue: undefined;
     fromCurrency: undefined;
@@ -183,11 +181,6 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 };
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
-
-export const doesUrlContainCloseCallbackUrl = (
-    url: string,
-    closeCallbackUrl: string = TRADING_URL_DEFAULT_BACK,
-) => url.includes(closeCallbackUrl);
 
 export const getRandomAccountDescriptor = () => getWeakRandomId(20);
 

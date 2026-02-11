@@ -16,9 +16,6 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-constants"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -64,11 +61,12 @@
         { "path": "../message-system" },
         { "path": "../module-add-accounts" },
         { "path": "../navigation" },
-        { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
+        { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
+        { "path": "../trading-browser-auth" },
         { "path": "../trading-consts" },
         { "path": "../trading-debug" },
         { "path": "../trading-residence" },

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import { TradingType } from '@suite-common/trading';
+import { useTradingAnalyticReportCallback } from '@suite-native/trading-analytics';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
 export const useBrowserStateChangeCallbacks = (tradingType: TradingType | undefined) => {

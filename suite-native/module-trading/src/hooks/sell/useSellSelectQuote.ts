@@ -16,11 +16,11 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
-import { useSellAnalyticReportCallback } from './useSellAnalyticReportCallback';
 import { clearSellFormQuoteData } from './useSellForm';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
