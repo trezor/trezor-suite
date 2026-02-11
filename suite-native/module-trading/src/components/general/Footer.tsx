@@ -92,6 +92,8 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
                         textPressedColor="textDisabled"
                         href={TREZOR_TRADING_LEARN_MORE_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.learnMore" />}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
                     />
                 </HStack>
             </VStack>
