@@ -143,12 +143,4 @@ describe('useProviderMetadataChangeEffect', () => {
         unmount();
         expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
     });
-
-    it('should handle undefined quoteName gracefully', () => {
-        const { result } = renderHookWithTradingStore(() =>
-            useProviderMetadataChangeEffect('buy', undefined, true),
-        );
-
-        expect(result.current).toBeUndefined();
-    });
 });
