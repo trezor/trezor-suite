@@ -30,7 +30,7 @@ describe(createUpdateOutputLabel.name, () => {
         const result = await updateOutputLabel({
             deviceStaticSessionId,
             txId: 'txid',
-            outputIndex: '1',
+            txTargetId: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,
@@ -43,7 +43,7 @@ describe(createUpdateOutputLabel.name, () => {
 
         expect(storage.data.outputs.update).toHaveBeenCalledWith({
             txId: 'txid',
-            outputIndex: '1',
+            txTargetId: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,
@@ -63,7 +63,7 @@ describe(createUpdateOutputLabel.name, () => {
         const result = await updateOutputLabel({
             deviceStaticSessionId,
             txId: 'txid',
-            outputIndex: '1',
+            txTargetId: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,

@@ -1,3 +1,5 @@
+import { asTxTargetId } from '@suite-common/wallet-types';
+
 import { VinVoutAddress } from '../types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from '../utils';
 import {
@@ -22,11 +24,13 @@ describe(mapTransactionInputsOutputsToAddresses.name, () => {
                 address: 'bc1q39kuc35n722fmy0nw3qqhpvg0ch8f0a6rt22xs',
                 isChangeAddress: false,
                 outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
             },
             {
                 address: 'bc346cd7c787e903ac4b41e4fd2e038a81cb696d5dbf87',
                 isChangeAddress: false,
                 outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
             },
         ];
         expect(
@@ -44,11 +48,13 @@ describe(mapTransactionInputsOutputsToAddresses.name, () => {
                 address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
                 isChangeAddress: false,
                 outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
             },
             {
                 address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
                 isChangeAddress: false,
                 outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
             },
         ];
         expect(
@@ -120,11 +126,13 @@ describe(sortTargetAddressesToBeginning.name, () => {
                 address: '3BcXPstZ4ZHhvLxPFkjFocuFySKt8nsGgs',
                 isChangeAddress: false,
                 outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
             },
             {
                 address: '3QpCQP3A2q7kCr8QgsWuqG1Bg1P6RySonw',
                 isChangeAddress: false,
                 outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
             },
         ];
 
@@ -150,11 +158,13 @@ describe(sortTargetAddressesToBeginning.name, () => {
                 address: 'bc1ql2ntmq4jlq5g2q53q89c7f7d27s35se96jq6kw',
                 isChangeAddress: false,
                 outputIndex: 1,
+                txTargetId: asTxTargetId('1'),
             },
             {
                 address: 'bc1qt5mjvp7nt4lpq77s4c3trvyre2smtcxz4zmmjs',
                 isChangeAddress: true,
                 outputIndex: 0,
+                txTargetId: asTxTargetId('0'),
             },
         ];
 

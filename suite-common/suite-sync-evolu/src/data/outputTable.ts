@@ -15,7 +15,7 @@ import {
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountDescriptor, asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { UnwrapQuery } from '../evoluUtils';
@@ -27,13 +27,15 @@ export type OutputEvoluId = typeof OutputEvoluId.Type;
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
  *            compatible!
+ *
+ * Todo: Rename to `Target`?
  */
 export const OutputLabelSchema = {
     output: {
         id: OutputEvoluId,
         label: nullOr(NonEmptyString1000),
         txId: NonEmptyString1000,
-        outputIndex: NonEmptyString1000,
+        outputIndex: NonEmptyString1000, // Todo: rename: txTargetId
         accountDescriptor: NonEmptyString1000,
         networkSymbol: NonEmptyString1000,
     },
@@ -42,9 +44,9 @@ export const OutputLabelSchema = {
 export class OutputEvoluTable implements OutputTable {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
-    update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
+    update = ({ txId, txTargetId, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
         const idResult = OutputEvoluId.from(
-            createIdFromString(createSuiteSyncOutputId(txId, outputIndex)),
+            createIdFromString(createSuiteSyncOutputId(txId, txTargetId)),
         );
 
         if (!idResult.ok) {
@@ -54,7 +56,7 @@ export class OutputEvoluTable implements OutputTable {
         const result = this.evolu.upsert('output', {
             id: idResult.value,
             txId,
-            outputIndex,
+            outputIndex: `${txTargetId}`,
             label: normalizeLabel(label),
             accountDescriptor: accountDescriptor as AccountDescriptor,
             networkSymbol: networkSymbol as NetworkSymbol,
@@ -89,7 +91,7 @@ export class OutputEvoluTable implements OutputTable {
                 acc.push({
                     id: createSuiteSyncOutputId(label.txId, label.outputIndex),
                     txId: label.txId,
-                    outputIndex: label.outputIndex,
+                    txTargetId: asTxTargetId(label.outputIndex),
                     label: label.label,
                     accountDescriptor,
                     networkSymbol: label.networkSymbol as NetworkSymbol,

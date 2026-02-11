@@ -1,14 +1,18 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { Branded } from '@trezor/type-utils';
 
 import { SuiteSyncTable } from '../SuiteSyncTable';
 
 export type SuiteSyncOutputId = string & Branded<'SuiteSyncOutputId'>;
 
-export const createSuiteSyncOutputId = (txId: string, outputIndex: string) =>
-    `${txId}-${outputIndex}` as SuiteSyncOutputId;
+export const createSuiteSyncOutputId = (txId: string, txTargetId: TxTargetId) =>
+    `${txId}-${txTargetId}` as SuiteSyncOutputId;
 
+/**
+ * This shall be renamed to Target table, probably. As this may also allow to name
+ * not just output, but also input.
+ */
 export type SuiteSyncOutput = {
     id: SuiteSyncOutputId;
     txId: string;
@@ -17,7 +21,7 @@ export type SuiteSyncOutput = {
      * This is not just index, for tokens, it may be Contract Address, etc...
      * It is a number index only for bitcoin-like networks
      */
-    outputIndex: string;
+    txTargetId: TxTargetId;
 
     label: string | null;
     accountDescriptor: AccountDescriptor;

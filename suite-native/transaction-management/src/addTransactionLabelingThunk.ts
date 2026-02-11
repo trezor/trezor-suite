@@ -1,7 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import {
+    createSimpleTargetId,
+    selectPrecomposedSendForm,
+    selectSendPrecomposedTx,
+} from '@suite-common/wallet-core';
+import { Account, TxTargetId } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
@@ -38,7 +42,7 @@ export const addTransactionLabelingThunk = createThunk<
 
             const transactionUtxoLabels = (precomposedForm?.outputs ?? []).reduce<
                 {
-                    outputIndex: number;
+                    txTargetId: TxTargetId;
                     value: string;
                 }[]
             >((acc, formOutput, index) => {
@@ -50,7 +54,11 @@ export const addTransactionLabelingThunk = createThunk<
                     // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
                     const outputIndex = outputsPermutation.findIndex(p => p === index);
 
-                    acc.push({ outputIndex, value: label });
+                    acc.push({
+                        // Todo: this works only for bitcoin-like networks where txTargetId is the outputIndex (number)
+                        txTargetId: createSimpleTargetId({ n: outputIndex }),
+                        value: label,
+                    });
                 }
 
                 return acc;
@@ -60,11 +68,7 @@ export const addTransactionLabelingThunk = createThunk<
                 extra.services.suiteSync.labeling.updateOutputLabel({
                     deviceStaticSessionId: selectedAccount.deviceState,
                     txId,
-
-                    // This is probably not working for non-bitcoin networks
-                    // Todo: see `TransactionTarget:metadataId` and unify
-                    outputIndex: `${label.outputIndex}`,
-
+                    txTargetId: label.txTargetId,
                     label: label.value,
                     accountDescriptor: selectedAccount.descriptor,
                     networkSymbol: selectedAccount.symbol,

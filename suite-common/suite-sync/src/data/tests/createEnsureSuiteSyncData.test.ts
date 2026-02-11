@@ -243,7 +243,7 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
                     networkSymbol: 'btc',
                     accountDescriptor: asAccountDescriptor('account-1'),
                     txId: 'transaction-id',
-                    outputIndex: '0',
+                    txTargetId: '0',
                     label: 'Output spend for buying drugs',
                 },
             ]),

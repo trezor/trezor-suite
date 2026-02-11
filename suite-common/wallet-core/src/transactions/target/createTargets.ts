@@ -1,6 +1,11 @@
 import { getInstantStakeType } from '@suite-common/staking';
-import { Account, asTxOutputId } from '@suite-common/wallet-types';
-import { InternalTransfer, Transaction } from '@trezor/blockchain-link-types';
+import { Account, TxTargetId, asTxTargetId } from '@suite-common/wallet-types';
+import {
+    Target as BlockchainlinkTarget,
+    InternalTransfer,
+    TokenTransfer,
+    Transaction,
+} from '@trezor/blockchain-link-types';
 
 import { InternalTarget, SimpleTarget, Target, TokenTarget } from './Target';
 
@@ -20,6 +25,32 @@ type CreateCombineTargetsParams = {
     account: Pick<Account, 'descriptor' | 'symbol'>;
 };
 
+export const createSimpleTargetId = (t: Pick<BlockchainlinkTarget, 'n'>): TxTargetId =>
+    asTxTargetId(`${t.n}`);
+
+export const createSimpleTarget = (t: BlockchainlinkTarget): SimpleTarget => ({
+    type: 'target' as const,
+    targetId: createSimpleTargetId(t),
+    payload: t,
+});
+
+export const createTokenTargetId = (t: TokenTransfer): TxTargetId =>
+    asTxTargetId(`token-${t.contract}`);
+
+export const createTokenTarget = (t: TokenTransfer): TokenTarget => ({
+    type: 'token' as const,
+    targetId: createTokenTargetId(t),
+    payload: t,
+});
+
+export const createInternalTargetId = (t: InternalTransfer) => asTxTargetId(`internal-${t.to}`);
+
+export const createInternalTarget = (t: InternalTransfer): InternalTarget => ({
+    type: 'internal' as const,
+    targetId: createInternalTargetId(t),
+    payload: t,
+});
+
 /**
  * Join together regular targets, internal and token transfers
  */
@@ -27,30 +58,8 @@ export const createTargets = ({ transaction, account }: CreateCombineTargetsPara
     const { targets, tokens, internalTransfers } = transaction;
 
     return [
-        ...targets.map(
-            (t): SimpleTarget => ({
-                type: 'target' as const,
-                targetId: asTxOutputId(`${t.n}`),
-                payload: t,
-            }),
-        ),
-
-        ...tokens
-            .filter(token => token.type !== 'self')
-            .map(
-                (t): TokenTarget => ({
-                    type: 'token' as const,
-                    targetId: asTxOutputId(`token-${t.contract}`),
-                    payload: t,
-                }),
-            ),
-
-        ...filteredInternalTransfers(internalTransfers, account).map(
-            (t): InternalTarget => ({
-                type: 'internal' as const,
-                targetId: asTxOutputId(`internal-${t.to}`),
-                payload: t,
-            }),
-        ),
+        ...targets.map(createSimpleTarget),
+        ...tokens.filter(token => token.type !== 'self').map(createTokenTarget),
+        ...filteredInternalTransfers(internalTransfers, account).map(createInternalTarget),
     ];
 };

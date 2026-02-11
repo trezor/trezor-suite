@@ -12,6 +12,7 @@ import {
     FiatRatesRootState,
     TransactionsRootState,
     WalletSettingsRootState,
+    createSimpleTargetId,
     selectAccountNetworkType,
     selectAccountTransactions,
     selectBaseCurrency,
@@ -67,7 +68,12 @@ export const selectTransactionAddresses = createMemoizedSelector(
             // For ripple, we don't have inputs (input is always the same address - account descriptor)
             if (addressesType === 'inputs') {
                 return [
-                    { address: transaction.descriptor, isChangeAddress: false, outputIndex: 0 },
+                    {
+                        address: transaction.descriptor,
+                        isChangeAddress: false,
+                        outputIndex: 0,
+                        txTargetId: createSimpleTargetId({ n: 0 }),
+                    },
                 ];
             }
 

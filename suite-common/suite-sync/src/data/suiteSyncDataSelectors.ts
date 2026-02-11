@@ -6,7 +6,7 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
+import type { AccountDescriptor, TxTargetId, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { typedObjectValues } from '@trezor/utils';
@@ -91,7 +91,7 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
         (
             state: SuiteSyncDataRootState,
             _txId: string,
-            _outputIndex: string,
+            _txOutputId: TxTargetId,
             deviceStaticSessionId: StaticSessionId,
         ) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
@@ -99,10 +99,10 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
             return selectAllOutputsForWallet(state, walletDescriptor);
         },
         (_state: SuiteSyncDataRootState, txId: string) => txId,
-        (_state: SuiteSyncDataRootState, _txId: string, outputIndex: string) => outputIndex,
+        (_state: SuiteSyncDataRootState, _txId: string, txOutputId: TxTargetId) => txOutputId,
     ],
-    (outputs, txId, outputIndex) => {
-        const id = createSuiteSyncOutputId(txId, `${outputIndex}`);
+    (outputs, txId, txOutputId) => {
+        const id = createSuiteSyncOutputId(txId, txOutputId);
 
         return outputs.find(output => output.id === id)?.label ?? null;
     },

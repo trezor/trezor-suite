@@ -190,9 +190,8 @@ export const TransactionTarget = ({
     }, [type, transaction, payload, accountMetadata]);
 
     const outputLabel =
-        suiteSyncOutputLabels.find(
-            it => it.txId === transaction.txid && it.outputIndex.toString() === targetId,
-        )?.label ?? targetMetadata;
+        suiteSyncOutputLabels.find(it => it.txId === transaction.txid && it.txTargetId === targetId)
+            ?.label ?? targetMetadata;
 
     return (
         <TransactionTargetLayout

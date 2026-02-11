@@ -48,8 +48,11 @@ export type PrecomposedTransactionCardanoNonFinal =
 
 export type BaseCurrencyOption = { value: BaseCurrencyCode | ''; label: string };
 
-export type TxOutputId = string | Branded<'TxOutputId'>;
-export const asTxOutputId = (value: string) => value as TxOutputId;
+/**
+ * Target is the unified term for both Inputs and Outputs on the transaction.
+ */
+export type TxTargetId = string | Branded<'TxTargetId'>;
+export const asTxTargetId = (value: string) => value as TxTargetId;
 
 export type Output = {
     type: 'payment' | 'opreturn';
