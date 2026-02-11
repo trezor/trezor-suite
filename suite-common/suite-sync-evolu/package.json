@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch",
-        "@noble/hashes": "^1.6.1",
+        "@noble/hashes": "^2.0.1",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

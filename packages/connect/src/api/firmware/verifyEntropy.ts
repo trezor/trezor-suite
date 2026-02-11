@@ -1,7 +1,6 @@
-import { crypto } from '@noble/hashes/crypto';
-import { hmac } from '@noble/hashes/hmac';
-import { sha256 } from '@noble/hashes/sha256';
-import { randomBytes } from '@noble/hashes/utils';
+import { hmac } from '@noble/hashes/hmac.js';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { randomBytes } from '@noble/hashes/utils.js';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import { bip39 } from '@trezor/crypto-utils';
