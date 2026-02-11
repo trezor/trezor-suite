@@ -15,6 +15,7 @@ import { ExtraDependencies } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
+import { selectCustomAnalyticsUrl } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState } from 'src/types/suite';
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
@@ -63,12 +64,14 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
     const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
+    const customAnalyticsUrl = selectCustomAnalyticsUrl(getState());
     const getOptions: (props: SendReportProps) => InitOptions = ({
         sendReport,
     }: SendReportProps) => ({
         instanceId,
         sessionId,
         environment: getEnvironment(),
+        url: customAnalyticsUrl,
         commitId: getCommitHash(),
         isDev: !isCodesignBuild(),
         callbacks: {
