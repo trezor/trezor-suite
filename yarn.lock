@@ -10433,9 +10433,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-base@npm:^14.0.1":
-  version: 14.0.1
-  resolution: "@stellar/stellar-base@npm:14.0.1"
+"@stellar/stellar-base@npm:^14.0.4":
+  version: 14.0.4
+  resolution: "@stellar/stellar-base@npm:14.0.4"
   dependencies:
     "@noble/curves": "npm:^1.9.6"
     "@stellar/js-xdr": "npm:^3.1.2"
@@ -10443,23 +10443,26 @@ __metadata:
     bignumber.js: "npm:^9.3.1"
     buffer: "npm:^6.0.3"
     sha.js: "npm:^2.4.12"
-  checksum: 10/53bdb54ad567a51fda1b584bb2c9e23dc61d85906bb38959393cb1cb7a2ebec43c0e56876a3b28dea4fc38d934d3a02c0dc778264f534913ba9e0469b711e18b
+  checksum: 10/3408a6e6196a10c21e63b1f671ef28b4b7e85a39a52728bfd6fcb91f7f5fa79adcb8af78a6f2ede82a23ccfb76fc5c02bbf1542fc9abafe195fb2ff5c9f3fb9b
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:14.2.0":
-  version: 14.2.0
-  resolution: "@stellar/stellar-sdk@npm:14.2.0"
+"@stellar/stellar-sdk@npm:14.5.0":
+  version: 14.5.0
+  resolution: "@stellar/stellar-sdk@npm:14.5.0"
   dependencies:
-    "@stellar/stellar-base": "npm:^14.0.1"
-    axios: "npm:^1.12.2"
+    "@stellar/stellar-base": "npm:^14.0.4"
+    axios: "npm:^1.13.3"
     bignumber.js: "npm:^9.3.1"
+    commander: "npm:^14.0.2"
     eventsource: "npm:^2.0.2"
     feaxios: "npm:^0.0.23"
     randombytes: "npm:^2.1.0"
     toml: "npm:^3.0.0"
     urijs: "npm:^1.19.1"
-  checksum: 10/cf516068185695ed057f949609245fa36790968f99a99a6a0b12294f101c2ddf87b9959f109f37bf1c5e68f24543bcc483cdfe16bfd7d8fd8eb66120984f5dca
+  bin:
+    stellar-js: bin/stellar-js
+  checksum: 10/2e6b5e762df1963e7165fd07a84bdb9ff17452c757d23e6ed9c85f46f5bb38ab8373132fae9f8f88b8c051dc5e6b8b05017caa7f72361d2693912b87308f86c2
   languageName: node
   linkType: hard
 
@@ -14774,7 +14777,7 @@ __metadata:
     "@solana/keys": "npm:^2.3.0"
     "@solana/rpc-api": "npm:^2.3.0"
     "@solana/rpc-types": "npm:^2.3.0"
-    "@stellar/stellar-sdk": "npm:14.2.0"
+    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -14797,7 +14800,7 @@ __metadata:
     "@solana-program/token-2022": "npm:^0.4.2"
     "@solana/kit": "npm:^2.3.0"
     "@solana/rpc-types": "npm:^2.3.0"
-    "@stellar/stellar-sdk": "npm:14.2.0"
+    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -15063,7 +15066,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:14.2.0"
+    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
   peerDependencies:
@@ -19669,14 +19672,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.0, axios@npm:^1.12.2":
-  version: 1.13.2
-  resolution: "axios@npm:1.13.2"
+"axios@npm:^1.12.0, axios@npm:^1.12.2, axios@npm:^1.13.3":
+  version: 1.13.4
+  resolution: "axios@npm:1.13.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/ae4e06dcd18289f2fd18179256d550d27f9a53ecb2f9c59f2ccc4efd1d7151839ba8c3e0fb533dac793e4a59a576ca8689a19244dce5c396680837674a47a867
+  checksum: 10/54b7ef71c64837f9d52475832337f520cf6fa85c94612e03a3a2aad7082804a2544741267122696662147e90e6d2746601346984cf531ae715ecdb56d586a04c
   languageName: node
   linkType: hard
 
