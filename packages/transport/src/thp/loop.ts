@@ -132,7 +132,7 @@ export const thpLoop = async ({
                 switch (ackResult.payload.messageType) {
                     case THP_CONTROL_BYTE.ACK_MESSAGE: {
                         const { ackBit } = protocolThp.readThpHeader(ackResult.payload.header);
-                        if (ackBit === thpState.recvAckBit) {
+                        if (ackBit === thpState.sendAckBit) {
                             phase = ThpLoopState.READ_RESPONSE;
                         } else {
                             debug(`READ_ACK unexpected ThpAck bit`);
