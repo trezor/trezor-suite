@@ -11700,7 +11700,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-redux: "npm:^9.2.0"
     web3-utils: "npm:^4.3.2"
   languageName: unknown
@@ -11750,7 +11750,7 @@ __metadata:
     bech32: "npm:2.0.0"
     date-fns: "npm:^4.1.0"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     web3-eth-abi: "npm:^4.4.1"
     web3-utils: "npm:^4.3.2"
   languageName: unknown
@@ -11817,7 +11817,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
@@ -12598,7 +12598,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     type-fest: "npm:4.24.0"
@@ -12833,7 +12833,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
@@ -13407,7 +13407,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     react-native-svg: "npm:15.14.0"
@@ -14356,7 +14356,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~15.0.8"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
@@ -15344,7 +15344,7 @@ __metadata:
     framer-motion: "npm:^12.23.3"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.1.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-intl: "npm:^8.0.6"
     react-svg: "npm:16.3.0"
     storybook: "npm:^9.0.16"
@@ -15860,7 +15860,7 @@ __metadata:
     react-error-boundary: "npm:^6.0.0"
     react-focus-lock: "npm:^2.13.6"
     react-helmet-async: "npm:^2.0.5"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.71.1"
     react-intl: "npm:^8.0.6"
     react-redux: "npm:9.2.0"
     react-select: "npm:^5.10.2"
@@ -39601,12 +39601,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.66.1":
-  version: 7.66.1
-  resolution: "react-hook-form@npm:7.66.1"
+"react-hook-form@npm:^7.71.1":
+  version: 7.71.1
+  resolution: "react-hook-form@npm:7.71.1"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/3b39276432de206ee37b3fb24c7d7b815fa1b641a179685392b9dc715edfa5ed3a5d57f7366429595f09c182bf25d7adc991c0c00101739d9efc977ecee22a53
+  checksum: 10/54b56aa52a6ac17fb5aa68ce072b08f50b75c2705bf878069f817c346e464c1ebfbf67be372d94cf8e620fa07ca8e64ffca71bb69071dd0290a1ef8f43eefb9d
   languageName: node
   linkType: hard
 
