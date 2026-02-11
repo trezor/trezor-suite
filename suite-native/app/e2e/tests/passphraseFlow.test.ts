@@ -5,7 +5,6 @@ import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
-import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
@@ -52,7 +51,6 @@ const expectNonEmptyWallet = async () => {
 };
 
 const preloadedState = preparePreloadedReduxState(
-    initialDeviceDataState,
     onboardingCompletedState,
     getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1

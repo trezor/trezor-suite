@@ -4,7 +4,6 @@ import CS_TRANSLATIONS from '@suite-native/intl/translations/cs-CZ.json';
 import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
 import { PROTO } from '@trezor/connect';
 
-import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onHome } from '../pageObjects/homeActions';
@@ -14,7 +13,6 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
-    initialDeviceDataState,
     portfolioTrackerBtcAccountState,
     onboardingCompletedState,
 );

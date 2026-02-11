@@ -1,6 +1,5 @@
 import { expect as detoxExpect } from 'detox';
 
-import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
@@ -14,7 +13,7 @@ const goToBtcImportXpubScreen = async () => {
     await onAccountImport.selectCoin({ networkSymbol: 'btc' });
 };
 
-const preloadedState = preparePreloadedReduxState(initialDeviceDataState, onboardingCompletedState);
+const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
 describe('Import invalid accounts [@noDevice]', () => {
     beforeEach(async () => {

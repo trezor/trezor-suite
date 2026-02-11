@@ -4,7 +4,6 @@ import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedS
 import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
-import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
@@ -15,7 +14,6 @@ import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../s
 import { getModelFromEnv } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
-    initialDeviceDataState,
     onboardingCompletedState,
     getModelFromEnv() === Model.T3W1
         ? btcDiscoveryFinishedStateT3W1

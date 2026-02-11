@@ -1,7 +1,6 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
-import { initialDeviceDataState } from '../fixtures/initialDeviceDataState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
@@ -16,13 +15,11 @@ import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../s
 import { waitForVisible } from '../support/utils';
 
 const preloadedStateWithoutTrezor = preparePreloadedReduxState(
-    initialDeviceDataState,
     portfolioTrackerBtcAccountState,
     onboardingCompletedState,
 );
 
 const preloadedStateWithTrezor = preparePreloadedReduxState(
-    initialDeviceDataState,
     ethCoinEnabled,
     onboardingCompletedState,
 );
