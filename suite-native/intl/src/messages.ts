@@ -62,6 +62,13 @@ export const messages = {
                     cta: 'Create wallet backup',
                 },
             },
+            outOfSuiteSyncQuota: {
+                title: 'Suite Sync storage is full',
+                subtitle:
+                    'New labels will be saved locally on this phone, but not synced to your other devices.',
+                cta: 'Contact support',
+                dismiss: 'Dismiss',
+            },
         },
         tokens: '+ Tokens',
         warning: 'Warning',

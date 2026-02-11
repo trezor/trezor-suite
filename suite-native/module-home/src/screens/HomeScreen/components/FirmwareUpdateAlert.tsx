@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
-import { FullAlertBox } from '@suite-native/atoms';
+import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
@@ -59,22 +58,20 @@ export const FirmwareUpdateAlert = () => {
     }
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
-            <FullAlertBox
-                title={<Translation id="moduleHome.firmwareUpdateAlert.title" />}
-                description={
-                    <Translation
-                        id="moduleHome.firmwareUpdateAlert.version"
-                        values={{ version: updateFirmwareVersion }}
-                    />
-                }
-                variant="info"
-                secondaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.close')}
-                onPressSecondaryButton={handleClose}
-                primaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.update')}
-                onPressPrimaryButton={handleUpdateFirmware}
-                marginHorizontal="sp16"
-            />
-        </Animated.View>
+        <AnimatedFullAlertBox
+            title={<Translation id="moduleHome.firmwareUpdateAlert.title" />}
+            description={
+                <Translation
+                    id="moduleHome.firmwareUpdateAlert.version"
+                    values={{ version: updateFirmwareVersion }}
+                />
+            }
+            variant="info"
+            secondaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.close')}
+            onPressSecondaryButton={handleClose}
+            primaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.update')}
+            onPressPrimaryButton={handleUpdateFirmware}
+            marginHorizontal="sp16"
+        />
     );
 };

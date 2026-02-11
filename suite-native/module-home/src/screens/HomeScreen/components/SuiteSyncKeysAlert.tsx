@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
-import { FullAlertBox } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -25,7 +24,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const SuiteSyncKeysAlert = () => {
-    const { translate } = useTranslate();
     const { suiteSync } = useNativeServices();
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
@@ -52,15 +50,13 @@ export const SuiteSyncKeysAlert = () => {
     if (!shouldDisplaySuiteSyncAlert) return null;
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
-            <FullAlertBox
-                variant="info"
-                title={translate('moduleHome.suiteSyncAlert.title')}
-                description={translate('moduleHome.suiteSyncAlert.description')}
-                primaryButtonLabel={translate('moduleHome.suiteSyncAlert.button')}
-                onPressPrimaryButton={allowSuiteSyncForWallet}
-                marginHorizontal="sp16"
-            />
-        </Animated.View>
+        <AnimatedFullAlertBox
+            variant="info"
+            title={<Translation id="moduleHome.suiteSyncAlert.title" />}
+            description={<Translation id="moduleHome.suiteSyncAlert.description" />}
+            primaryButtonLabel={<Translation id="moduleHome.suiteSyncAlert.button" />}
+            onPressPrimaryButton={allowSuiteSyncForWallet}
+            marginHorizontal="sp16"
+        />
     );
 };

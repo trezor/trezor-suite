@@ -1,11 +1,9 @@
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
-    WithSuiteSyncQuotaManagerState,
     noQuotaLeftWarningDismissed,
-    selectDeviceDismissedNoQuotaLeftWarning,
-    selectLeftDeviceQuota,
+    selectShouldDisplayOutOfQuotaAlert,
 } from '@suite-common/suite-sync-quota-manager';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, Button, IconButton } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -17,14 +15,9 @@ export const OutOfQuotaBanner = () => {
     const href = useExternalLink(TREZOR_SUPPORT_URL);
     const device = useSelector(selectSelectedDevice);
 
-    const alreadyDismissed = useSelector((state: WithSuiteSyncQuotaManagerState) =>
-        selectDeviceDismissedNoQuotaLeftWarning(state, device?.id || ''),
-    );
-    const quotaLeft = useSelector((state: WithSuiteSyncQuotaManagerState) =>
-        selectLeftDeviceQuota(state, device?.id || ''),
-    );
+    const shouldDisplay = useSelector(selectShouldDisplayOutOfQuotaAlert);
 
-    if (quotaLeft === undefined || quotaLeft > 0 || alreadyDismissed) return null;
+    if (shouldDisplay === false) return null;
 
     const handleDismiss = () => {
         if (!device || !device.id) return false;

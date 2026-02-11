@@ -69,6 +69,7 @@ export * from './utils';
 export * from './PriceChangeBadge';
 export * from './resetLetterSpacingOnAndroidStyle';
 export * from './FullAlertBox/FullAlertBox';
+export * from './FullAlertBox/AnimatedFullAlertBox';
 export * from './CircularSpinner';
 export * from './CardStepper/CardStepper';
 export * from './Sheet/BottomSheetModal';
