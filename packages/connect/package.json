@@ -97,7 +97,7 @@
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "dependencies": {
-        "@ethereumjs/common": "^10.1.0",
+        "@ethereumjs/common": "^10.1.1",
         "@ethereumjs/tx": "^10.1.0",
         "@fivebinaries/coin-selection": "3.0.0",
         "@mobily/ts-belt": "^3.13.1",
