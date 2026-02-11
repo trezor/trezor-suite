@@ -46,7 +46,7 @@ Create `Suite-anonymous.sh` anywhere, then `chmod +x "./Suite-anonymous.sh"`:
 #!/bin/sh
 echo Launching trezor suite \"anonymously\"
 open "/Applications/Trezor Suite.app"
-rm -rf "$HOME/Library/Application Support/@trezor/suite-desktop"
+rm -rf "$HOME/Library/Application Support/@trezor/suite-desktop" "$HOME/Library/Caches/io.trezor.TrezorSuite" "$HOME/Library/Caches/io.trezor.TrezorSuite.ShipIt"
 echo "Purged all Trezor Suite data ;)"
 ```
 
@@ -77,3 +77,6 @@ The `--no-sandbox` parameter is necessary on Ubuntu 24+, may not be needed on ot
 Note that the local config is located at `@trezor/suite-desktop` only if you downloaded [the official Trezor Suite](https://trezor.io/trezor-suite).
 
 If you have self-built your app instead, then it shall be `@trezor/suite-desktop-dev`, see [details here](./index.md#app-id-and-name-by-environment)
+
+Also please note that these scripts only delete custom user data, they do not erase all traces of any activity.
+Depending on your OS, the USB or Bluetooth devices may be registered by your system (outside of Suite).
