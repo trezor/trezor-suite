@@ -11,6 +11,7 @@ import {
     isExchangeTrade,
     isSellFiatTrade,
 } from '@suite-common/trading';
+import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { AccountKey, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 
@@ -46,6 +47,8 @@ export const createFormStateForSendForm = ({
     let outputAddress: string;
     let outputAmount: string;
     let sendTokenContract: string | undefined;
+    let transactionData = '';
+    let ethereumAdjustGasLimit = '';
 
     // Handle extra field for networks that require it (e.g., destinationTag for XRP)
     let destinationTag: string | undefined;
@@ -61,6 +64,16 @@ export const createFormStateForSendForm = ({
         const exchangeProviders = providers as Record<string, ExchangeProviderInfo>;
         outputAddress = exchangeQuote.sendAddress || '';
         outputAmount = exchangeQuote.sendStringAmount || '';
+
+        // DEX quotes carry transaction data for correct fee estimation
+        if (exchangeQuote.isDex && exchangeQuote.dexTx) {
+            outputAddress = exchangeQuote.dexTx.to;
+            transactionData = exchangeQuote.dexTx.data;
+            // Gas limit adjustment only for the swap itself, not for approval transactions
+            if (exchangeQuote.status === 'CONFIRM') {
+                ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
+            }
+        }
 
         if (exchangeQuote.send) {
             const { contractAddress } = cryptoIdToNetworkAndContractAddress(exchangeQuote.send);
@@ -128,8 +141,8 @@ export const createFormStateForSendForm = ({
         bitcoinLocktimeDatetime: '',
         ethereumNonce: '',
         ethereumDataAscii: '',
-        ethereumAdjustGasLimit: '',
-        transactionData: '',
+        ethereumAdjustGasLimit,
+        transactionData,
         destinationTag,
         rbfParams: undefined,
         isCoinControlEnabled: false,

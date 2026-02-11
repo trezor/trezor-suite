@@ -2567,6 +2567,7 @@ export const messages = {
                 },
             },
         },
+        composeAllowanceError: 'Failed to estimate approval fees. Please try again.',
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
             subtitle:

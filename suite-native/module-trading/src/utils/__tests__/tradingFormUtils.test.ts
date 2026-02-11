@@ -194,6 +194,98 @@ describe('createFormStateForSendForm', () => {
             ).toThrow('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
         });
 
+        it('should set transactionData and output address from dexTx for DEX quotes', () => {
+            const dexQuote: ExchangeTrade = {
+                exchange: '1inch',
+                send: 'ethereum' as any,
+                sendStringAmount: '1.0',
+                sendAddress: '0xUserAddress',
+                receive: 'ethereum--0xTokenAddress' as any,
+                receiveStringAmount: '1000.0',
+                status: 'CONFIRM',
+                orderId: 'dex-order-123',
+                quoteId: 'dex-quote-456',
+                isDex: true,
+                dexTx: {
+                    from: '0xUserAddress',
+                    to: '0xDexRouterAddress',
+                    data: '0xabcdef1234567890',
+                    value: '1000000000000000000',
+                },
+            };
+
+            const providers = { '1inch': exchangeInvity };
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                providers,
+                sendAccountKey,
+            });
+
+            // DEX output address should come from dexTx.to, not sendAddress
+            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.transactionData).toBe('0xabcdef1234567890');
+            expect(formState.ethereumAdjustGasLimit).toBe('1.25');
+        });
+
+        it('should not apply gas limit adjustment for DEX approval transactions', () => {
+            const dexApprovalQuote: ExchangeTrade = {
+                exchange: '1inch',
+                send: 'ethereum--0xTokenAddress' as any,
+                sendStringAmount: '100.0',
+                sendAddress: '0xUserAddress',
+                receive: 'ethereum' as any,
+                receiveStringAmount: '0.5',
+                status: 'APPROVAL_REQ',
+                orderId: 'dex-approval-123',
+                quoteId: 'dex-approval-456',
+                isDex: true,
+                dexTx: {
+                    from: '0xUserAddress',
+                    to: '0xDexRouterAddress',
+                    data: '0xapprovaldata',
+                    value: '0',
+                },
+            };
+
+            const providers = { '1inch': exchangeInvity };
+            const formState = createFormStateForSendForm({
+                quote: dexApprovalQuote,
+                providers,
+                sendAccountKey,
+            });
+
+            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.transactionData).toBe('0xapprovaldata');
+            // No gas adjustment for approval transactions
+            expect(formState.ethereumAdjustGasLimit).toBe('');
+        });
+
+        it('should not set DEX fields for CEX exchange quotes', () => {
+            const cexQuote: ExchangeTrade = {
+                exchange: 'changelly',
+                send: 'ethereum' as any,
+                sendStringAmount: '1.0',
+                sendAddress: '0xChangellyDepositAddress',
+                receive: 'bitcoin' as any,
+                receiveStringAmount: '0.05',
+                status: 'CONFIRM',
+                orderId: 'cex-order-123',
+                quoteId: 'cex-quote-456',
+                isDex: false,
+            };
+
+            const providers = { changelly: exchangeInvity };
+            const formState = createFormStateForSendForm({
+                quote: cexQuote,
+                providers,
+                sendAccountKey,
+            });
+
+            expect(formState.outputs[0].address).toBe('0xChangellyDepositAddress');
+            expect(formState.transactionData).toBe('');
+            expect(formState.ethereumAdjustGasLimit).toBe('');
+        });
+
         it('should use default fee level when not provided', () => {
             const quote: ExchangeTrade = {
                 exchange: 'test',
