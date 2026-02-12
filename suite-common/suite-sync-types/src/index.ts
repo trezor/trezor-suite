@@ -10,6 +10,7 @@ export type {
 export type {
     RefreshSuiteSyncKeys,
     RefreshSuiteSyncKeysDep,
+    RefreshSuiteSyncKeysResult,
     WriteModeRequiredForAllocationErrType,
 } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';

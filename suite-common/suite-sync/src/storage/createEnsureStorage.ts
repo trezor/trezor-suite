@@ -9,6 +9,7 @@ import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-ty
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
+import { EnsureQuotaDep } from './createEnsureQuota';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
@@ -19,7 +20,8 @@ export type EnsureStorageDeps = {
 } & SuiteSyncStorageRepositoryDep &
     CreateSuiteStorageDep &
     RefreshSuiteSyncKeysDep &
-    GetDeviceForStaticSessionIdDep;
+    GetDeviceForStaticSessionIdDep &
+    EnsureQuotaDep;
 
 export type EnsureStorageParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -59,15 +61,28 @@ export const createEnsureStorage =
             return err(SuiteSyncUnavailableOnDeviceError());
         }
 
-        const ownerResult = await deps.refreshSuiteSyncKeys({ device, isWriteMode });
+        const keysResult = await deps.refreshSuiteSyncKeys({ device });
 
-        if (!ownerResult.success) {
-            return ownerResult;
+        if (!keysResult.success) {
+            return keysResult;
+        }
+
+        const { owner, delegatedKey } = keysResult.payload;
+
+        const quotaResult = await deps.ensureQuota({
+            deviceStaticSessionId,
+            delegatedKey,
+            owner,
+            isWriteMode,
+        });
+
+        if (!quotaResult.success) {
+            return quotaResult;
         }
 
         const relayUrl = deps.getRelayUrl();
         const newStorage = deps.createSuiteStorage({
-            suiteSyncOwner: ownerResult.payload,
+            suiteSyncOwner: owner,
             relayUrl: relayUrl !== null && relayUrl.trim() !== '' ? relayUrl : deps.defaultRelayUrl,
         });
 
