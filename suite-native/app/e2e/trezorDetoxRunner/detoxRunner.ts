@@ -100,7 +100,7 @@ const getJestTestFiles = (): string[] => {
         const output = execSync('npx jest --listTests --config ./e2e/jest.config.js', {
             cwd: process.cwd(),
             encoding: 'utf8',
-            env: { ...process.env, CI: 'true' },
+            env: { ...process.env, CI: 'true', TDR_PROJECT_NAME: 'detox' },
         });
 
         return output
@@ -311,7 +311,7 @@ if (projectsToRun.length === 0) {
     }
 }
 
-const allFiles = testFiles || getJestTestFiles();
+const allFiles = testFiles && testFiles.length > 0 ? testFiles : getJestTestFiles();
 
 const shardingEnabled = shard !== undefined && totalShards !== undefined;
 const shardedFiles = shardingEnabled
