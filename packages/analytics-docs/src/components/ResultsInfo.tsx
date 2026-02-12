@@ -1,10 +1,12 @@
-import { Box, Paragraph } from '@trezor/components';
+import { Box, Link, Paragraph, Row } from '@trezor/components';
 
 type ResultsInfoProps = {
     filteredCount: number;
     totalCount: number;
     platform: string;
     query: string;
+    hasActiveFilters?: boolean;
+    onClearAll?: () => void;
 };
 
 export const ResultsInfo = ({
@@ -12,9 +14,11 @@ export const ResultsInfo = ({
     totalCount,
     platform,
     query,
+    hasActiveFilters,
+    onClearAll,
 }: ResultsInfoProps) => (
-    <Box width="100%">
-        <Paragraph typographyStyle="label" variant="tertiary" flex="1">
+    <Row gap={8} alignItems="center" flex="1">
+        <Paragraph typographyStyle="label" variant="tertiary">
             Showing <strong>{filteredCount}</strong> of <strong>{totalCount}</strong> events
             {platform !== 'all' ? (
                 <>
@@ -28,6 +32,14 @@ export const ResultsInfo = ({
                     matching <strong>{query.trim()}</strong>
                 </>
             ) : null}
+            .
         </Paragraph>
-    </Box>
+        {hasActiveFilters && onClearAll && (
+            <Box cursor="pointer">
+                <Link onClick={onClearAll} typographyStyle="label">
+                    Clear filters
+                </Link>
+            </Box>
+        )}
+    </Row>
 );

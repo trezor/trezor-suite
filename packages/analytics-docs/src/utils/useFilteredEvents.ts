@@ -154,11 +154,18 @@ export const useFilteredEvents = () => {
         });
     }, [allEvents, platform, normalizedQuery, sort]);
 
+    const clearAll = () => {
+        setQuery('');
+        setPlatform('all');
+        setSort('az');
+    };
+
     return {
         filteredEvents,
         setQuery,
         setSort,
         setPlatform,
+        clearAll,
         query,
         platform,
         sort,
