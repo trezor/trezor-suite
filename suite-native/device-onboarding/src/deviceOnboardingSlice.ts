@@ -8,7 +8,7 @@ export type DeviceOnboardingSliceRootState = {
     deviceOnboarding: DeviceOnboardingSliceState;
 };
 
-const deviceOnboardingSliceInitialState: DeviceOnboardingSliceState = {
+export const deviceOnboardingSliceInitialState: DeviceOnboardingSliceState = {
     wasDeviceOnboardingCancelled: false,
 };
 

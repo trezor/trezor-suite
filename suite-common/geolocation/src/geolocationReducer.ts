@@ -8,7 +8,7 @@ export type GeolocationState = {
     countryCode: CountryCode | null;
 };
 
-const geolocationInitialState: GeolocationState = {
+export const geolocationInitialState: GeolocationState = {
     countryCode: null,
 };
 

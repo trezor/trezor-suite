@@ -10,7 +10,7 @@ export type DiscoveryRootState = {
     };
 };
 
-const initialState: Discovery = {};
+export const discoveryInitialState: Discovery = {};
 
 const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: DeviceUniquePath }) => {
     if (!draft[payload.path]) {
@@ -38,7 +38,7 @@ const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: Devi
 };
 
 export const prepareDiscoveryReducer = createReducerWithExtraDeps(
-    initialState,
+    discoveryInitialState,
     (builder, _extra) => {
         builder.addCase(discoveryActions.startDiscovery, (state, { payload }) => {
             state[payload.path] = {

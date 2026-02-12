@@ -8,7 +8,7 @@ type AppSliceRootState = {
     app: AppSliceState;
 };
 
-const appSliceInitialState: AppSliceState = {
+export const appSliceInitialState: AppSliceState = {
     isAppReady: false,
 };
 
