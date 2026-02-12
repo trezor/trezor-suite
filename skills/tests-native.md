@@ -1,6 +1,7 @@
 # Writing Native Tests (TDD)
 
-This skill enforces Test-Driven Development (TDD) practices for suite-native packages and ensures proper usage of the `@suite-native/test-utils` package.
+This skill enforces Test-Driven Development (TDD) practices for suite-native packages and ensures proper usage of the
+`@suite-native/test-utils` package.
 
 ## Core Principles
 
@@ -8,7 +9,8 @@ This skill enforces Test-Driven Development (TDD) practices for suite-native pac
 
 - **ALWAYS** write tests before implementing features in suite-native packages.
 - Follow the Red-Green-Refactor cycle:
-    1. **Red**: Write a failing test that describes the desired behavior. Run test to confirm it fails for the right reason (e.g., "Cannot find element" or "Expected value to be X but got Y").
+    1. **Red**: Write a failing test that describes the desired behavior. Run test to confirm it fails for the right
+       reason (e.g., "Cannot find element" or "Expected value to be X but got Y").
     2. **Green**: Write the minimum code to make the test pass. Run test to confirm it passes.
     3. **Refactor**: Clean up the code while keeping tests green. Run test to confirm it still passes after refactoring.
 
@@ -23,17 +25,6 @@ This skill enforces Test-Driven Development (TDD) practices for suite-native pac
 - **REQUIRED**: Use `@suite-native/test-utils` for all suite-native testing.
 - **NEVER** import directly from `@testing-library/react-native`.
 - The test-utils package provides all necessary utilities and proper test setup.
-
-## Running Tests
-
-You **MUST** use [testing](./testing.md) skill for running tests.
-
-## Documentation Reference
-
-For detailed API documentation and more examples, see:
-
-- [Suite Native Test Utils Documentation](../docs/tests/suite-native-test-utils.md)
-- [General Testing Guidelines](tests.md)
 
 ## Checklist
 
