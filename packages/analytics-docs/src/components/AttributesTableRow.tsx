@@ -136,8 +136,6 @@ export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) =
                 <Table.Cell>
                     <Column>
                         <Markdown>{attribute.description}</Markdown>
-
-                        {attribute.limitations && <Markdown>{attribute.limitations}</Markdown>}
                     </Column>
                 </Table.Cell>
                 <Table.Cell align="end">
