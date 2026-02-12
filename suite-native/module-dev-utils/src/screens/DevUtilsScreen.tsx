@@ -2,7 +2,7 @@ import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { AnalyticsUrlControl } from '../components/AnalyticsUrlControl';
+import { AnalyticsLogging } from '../components/AnalyticsLogging';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
 import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
@@ -27,7 +27,7 @@ export const DevUtilsScreen = () => (
             <InfoCard />
             <FeatureFlagsCard />
             <TestnetsToggle />
-            <AnalyticsUrlControl />
+            <AnalyticsLogging />
             <TradingCard />
             <MessageSystemCard />
             <FirmwareSourceCard />
