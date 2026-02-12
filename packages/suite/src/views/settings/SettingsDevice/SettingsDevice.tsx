@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { isRecoveryInProgress } from '@suite/recovery';
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
@@ -19,7 +18,6 @@ import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
 import { BackupFailed } from './BackupFailed';
 import { BackupRecoverySeed } from './BackupRecoverySeed';
-import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
@@ -61,7 +59,6 @@ export const SettingsDevice = () => {
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
@@ -179,9 +176,6 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
                 {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {isDeviceConnectedViaBluetooth && (
-                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
-                )}
                 <ForgetDevice />
             </SettingsSection>
 

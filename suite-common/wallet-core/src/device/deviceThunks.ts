@@ -402,6 +402,14 @@ export const toggleAutoEjectThunk = createThunk(
 
 type ForgetAllDeviceDataThunkParams = {
     deviceId: TrezorDevice['id'];
+    // When true, prevents the global "Remove from Bluetooth settings" modal from
+    // appearing after a failed OS-level bond removal. Used by the ForgetDevice modal
+    // which handles OS removal instructions in its own UI.
+    suppressOsUnpairingModal?: boolean;
+    // When true, skips the OS-level Bluetooth bond removal entirely. Used when the
+    // device is disconnected and the user has already manually removed the pairing
+    // from both the OS Bluetooth settings and the Trezor device.
+    skipBluetoothForget?: boolean;
 };
 
 /**
@@ -411,7 +419,10 @@ type ForgetAllDeviceDataThunkParams = {
  */
 export const forgetSingleDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
-    async ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
+    async (
+        { deviceId, suppressOsUnpairingModal, skipBluetoothForget }: ForgetAllDeviceDataThunkParams,
+        { dispatch, extra, getState },
+    ) => {
         if (!deviceId) return;
 
         const device = selectDeviceById(getState(), deviceId);
@@ -425,8 +436,15 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
                 : undefined;
         if (bluetoothId !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
-            // try to remove OS-level Bluetooth bonds, if supported by the platform
-            await dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
+            if (!skipBluetoothForget) {
+                // try to remove OS-level Bluetooth bonds, if supported by the platform
+                await dispatch(
+                    extra.thunks.forgetBluetoothDevice({
+                        bluetoothId,
+                        suppressOsUnpairingModal,
+                    }),
+                );
+            }
         }
         const credentials = matchingDevice?.thp?.credentials;
         if (credentials !== undefined) {

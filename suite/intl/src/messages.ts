@@ -4450,11 +4450,11 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_BULLET_FORGET: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_FORGET',
-        defaultMessage: 'Trezor Suite will forget this Trezor.',
+        defaultMessage: 'Trezor Suite will forget any existence of this Trezor.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED',
-        defaultMessage: 'Bluetooth pairing will be removed, and your Trezor will be disconnected.',
+        defaultMessage: 'Bluetooth pairing will be removed and Trezor will be disconnected.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED',
@@ -4463,6 +4463,40 @@ export const messages = defineMessages({
     TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
         defaultMessage: "Your wallet backup and funds stay intact—they won't be erased.",
+    },
+    TR_FORGET_DEVICE_MODAL_CONFIRM: {
+        id: 'TR_FORGET_DEVICE_MODAL_CONFIRM',
+        defaultMessage: 'Forget device',
+    },
+    TR_FORGET_DEVICE_MODAL_FINISH_HEADING: {
+        id: 'TR_FORGET_DEVICE_MODAL_FINISH_HEADING',
+        defaultMessage: 'Finish forgetting this Trezor',
+    },
+    TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER: {
+        id: 'TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER',
+        defaultMessage: 'On your computer',
+    },
+    TR_FORGET_DEVICE_MODAL_ON_YOUR_TREZOR: {
+        id: 'TR_FORGET_DEVICE_MODAL_ON_YOUR_TREZOR',
+        defaultMessage: 'On your Trezor',
+    },
+    TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS: {
+        id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS',
+        defaultMessage:
+            '<b>Remove your Trezor device from the <link>Bluetooth settings</link>.</b> If not, you might have trouble pairing it again in the future.',
+    },
+    TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR: {
+        id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR',
+        defaultMessage:
+            'Go to <b>Pair & Connect</b> and remove your phone. This will prevent connection errors later.',
+    },
+    TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT: {
+        id: 'TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT',
+        defaultMessage: "I've removed it",
+    },
+    TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT: {
+        id: 'TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT',
+        defaultMessage: 'This device will be forgotten after you disconnect it.',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',

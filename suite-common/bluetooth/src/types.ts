@@ -62,4 +62,7 @@ export type ForgetBluetoothDeviceThunkParams = {
     // This thunk must rely on `bluetoothId` directly. When this thunk is called,
     // the device may already be disconnected, and therefore, it cannot be selected from the state.
     bluetoothId: BluetoothDeviceId;
+    // When true, skip dispatching setIsDeviceOsUnpairingRequired(true) on failure.
+    // Used by the ForgetDevice modal which handles OS removal instructions itself.
+    suppressOsUnpairingModal?: boolean;
 };

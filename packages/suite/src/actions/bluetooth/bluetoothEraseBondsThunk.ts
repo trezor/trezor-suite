@@ -3,11 +3,7 @@ import {
     ForgetBluetoothDeviceThunkParams,
     bluetoothActions,
 } from '@suite-common/bluetooth';
-import {
-    selectDeviceBluetoothId,
-    selectIsDeviceConnectedViaBluetooth,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { selectDeviceBluetoothId, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
@@ -18,12 +14,12 @@ import { setIsUnpairingDevice } from './desktopBluetoothReducer';
 
 export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
-    async ({ bluetoothId }, { dispatch }) => {
+    async ({ bluetoothId, suppressOsUnpairingModal }, { dispatch }) => {
         dispatch(setIsUnpairingDevice({ isUnpairing: true }));
         await dispatch(bluetoothDisconnectDeviceThunk({ id: bluetoothId }));
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
         dispatch(setIsUnpairingDevice({ isUnpairing: false }));
-        if (!resultForget.success) {
+        if (!resultForget.success && !suppressOsUnpairingModal) {
             dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
         }
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
@@ -32,14 +28,23 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
 
 type UnpairCurrentBondThunkParams = {
     bluetoothId: BluetoothDeviceId;
+    // When true, skip calling bluetoothDisconnectDeviceThunk after bleUnpair.
+    // Used when bleUnpair already disconnects the peripheral, making the
+    // explicit disconnect fail with "Peripheral not found".
+    skipDisconnect?: boolean;
 };
 
-const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, void>(
+/**
+ * Sends bleUnpair command to the Trezor device and cleans up BT state on success.
+ * Does NOT trigger the global OS removal modal or forgetBluetoothDeviceThunk.
+ * Returns whether the unpair was successful.
+ */
+export const unpairCurrentBondThunk = createThunk<boolean, UnpairCurrentBondThunkParams, void>(
     `${BLUETOOTH_PREFIX}/unpairCurrentBond`,
-    async ({ bluetoothId }, { dispatch, getState }) => {
+    async ({ bluetoothId, skipDisconnect }, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) return false;
 
         const result = await TrezorConnect.bleUnpair({ device, all: false });
         if (
@@ -47,21 +52,29 @@ const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, v
             result.error.code === 'Device_Disconnected' // This is an expected success
         ) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
-            dispatch(forgetBluetoothDeviceThunk({ bluetoothId }));
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+            if (!skipDisconnect) {
+                await dispatch(forgetBluetoothDeviceThunk({ bluetoothId }));
+            }
+
+            return true;
         }
+
+        dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+
+        return false;
     },
 );
 
 export const bluetoothEraseBondsThunk = createThunk(
     `${BLUETOOTH_PREFIX}/bluetoothEraseBondsThunk`,
     async (_, { dispatch, getState }) => {
-        const isDeviceConnectedViaBluetooth = selectIsDeviceConnectedViaBluetooth(getState());
         const bluetoothId = selectDeviceBluetoothId(getState());
 
-        if (isDeviceConnectedViaBluetooth && bluetoothId) {
-            await dispatch(unpairCurrentBondThunk({ bluetoothId }));
+        if (bluetoothId) {
+            const success = await dispatch(unpairCurrentBondThunk({ bluetoothId })).unwrap();
+            if (success) {
+                await dispatch(forgetBluetoothDeviceThunk({ bluetoothId }));
+            }
         }
     },
 );
