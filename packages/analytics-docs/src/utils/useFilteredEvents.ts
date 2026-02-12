@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useDebounce } from '@trezor/react-utils';
 
@@ -102,6 +102,8 @@ export const useFilteredEvents = () => {
     const [sort, setSort] = useState<'az' | 'za' | 'added' | 'updated'>(initial.sort);
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<'all' | string>(initial.platform);
+    const [isPlatformSortFiltering, setIsPlatformSortFiltering] = useState(false);
+    const isInitialMount = useRef(true);
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
     const allEvents = useMemo(() => getEventsFromJson(analyticsData), []);
     const debounce = useDebounce();
@@ -117,6 +119,21 @@ export const useFilteredEvents = () => {
     useEffect(() => {
         updateUrl(debouncedQuery, platform, sort);
     }, [debouncedQuery, platform, sort]);
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+
+            return;
+        }
+
+        setIsPlatformSortFiltering(true);
+        const id = setTimeout(() => setIsPlatformSortFiltering(false), 300);
+
+        return () => clearTimeout(id);
+    }, [debouncedQuery, platform, sort]);
+
+    const isFiltering = isPlatformSortFiltering;
 
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
@@ -158,6 +175,8 @@ export const useFilteredEvents = () => {
         setQuery('');
         setPlatform('all');
         setSort('az');
+        setIsPlatformSortFiltering(true);
+        setTimeout(() => setIsPlatformSortFiltering(false), 300);
     };
 
     return {
@@ -172,5 +191,6 @@ export const useFilteredEvents = () => {
         allEvents,
         debouncedQuery,
         normalizedQuery,
+        isFiltering,
     };
 };
