@@ -2,17 +2,6 @@
 
 [Introduction](./index.md)
 
-- [Code Style Guide](./code-style-guide/index.md)
-    - [Packages](./code-style-guide/packages.md)
-    - [Basic Syntax](./code-style-guide/basic-syntax.md)
-    - [TypeScript](./code-style-guide/typescript.md)
-    - [Import/Export](./code-style-guide/import-export.md)
-    - [Components](./code-style-guide/components.md)
-    - [Redux](./code-style-guide/redux.md)
-    - [Naming](./code-style-guide/naming.md)
-    - [Tests](./code-style-guide/tests.md)
-    - [Comments](./code-style-guide/comments.md)
-    - [Defensive Programming](./code-style-guide/defensive-programming.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
