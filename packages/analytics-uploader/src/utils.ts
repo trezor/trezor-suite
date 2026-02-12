@@ -89,8 +89,9 @@ export const reportEvent = async ({
     loggerEnabled,
 }: ReportEventProps) => {
     if (loggerEnabled) {
+        const payload = Object.fromEntries(new URL(url).searchParams.entries());
         // eslint-disable-next-line no-console
-        console.log(`[Analytics] '${type}': ${url}`);
+        console.log(`[Analytics] '${type}'`, { type, url, retry, payload });
     }
 
     try {
