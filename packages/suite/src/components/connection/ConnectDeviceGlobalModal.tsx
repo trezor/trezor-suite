@@ -229,7 +229,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
-    if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
+    if (wasBluetoothDeviceWiped?.isRequired || isUnpairingDevice) return null;
 
     if (isBluetoothMode && isManualPairingRequired) {
         return <BluetoothManualPairingModal onCancel={onCancel} />;

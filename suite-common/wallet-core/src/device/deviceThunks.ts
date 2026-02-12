@@ -387,6 +387,8 @@ export const toggleAutoEjectThunk = createThunk(
 type ForgetDevicePersistentDataThunkParams = {
     deviceId: TrezorDevice['id'];
     isOsUnpairingFinished?: boolean;
+    skipToggleModalConnection?: boolean;
+    skipDisconnect?: boolean;
 };
 
 /**
@@ -397,7 +399,12 @@ type ForgetDevicePersistentDataThunkParams = {
 export const forgetDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
     async (
-        { deviceId, isOsUnpairingFinished }: ForgetDevicePersistentDataThunkParams,
+        {
+            deviceId,
+            skipToggleModalConnection,
+            isOsUnpairingFinished,
+            skipDisconnect,
+        }: ForgetDevicePersistentDataThunkParams,
         { dispatch, extra, getState },
     ) => {
         if (!deviceId) return;
@@ -411,11 +418,17 @@ export const forgetDevicePersistentDataThunk = createThunk(
             matchingDevice?.descriptor?.apiType === 'bluetooth' && matchingDevice.descriptor.id
                 ? asBluetoothDeviceId(matchingDevice.descriptor.id)
                 : undefined;
+
         if (bluetoothId !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
             await dispatch(
-                extra.thunks.forgetBluetoothDevice({ bluetoothId, isOsUnpairingFinished }),
+                extra.thunks.forgetBluetoothDevice({
+                    bluetoothId,
+                    skipToggleModalConnection,
+                    isOsUnpairingFinished,
+                    skipDisconnect,
+                }),
             );
         }
         const credentials = matchingDevice?.thp?.credentials;
@@ -427,12 +440,18 @@ export const forgetDevicePersistentDataThunk = createThunk(
 
 export type ForgetDeviceThunkParams = {
     isOsUnpairingFinished?: boolean;
+    skipToggleModalConnection?: boolean;
+    skipDisconnect?: boolean;
 };
 
 export const forgetDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
     async (
-        { isOsUnpairingFinished }: ForgetDeviceThunkParams | undefined = {},
+        {
+            skipToggleModalConnection,
+            isOsUnpairingFinished,
+            skipDisconnect,
+        }: ForgetDeviceThunkParams | undefined = {},
         { dispatch, getState },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -442,7 +461,12 @@ export const forgetDeviceThunk = createThunk(
         const deviceInstances = getDeviceInstances(device, devices);
 
         await dispatch(
-            forgetDevicePersistentDataThunk({ deviceId: device.id, isOsUnpairingFinished }),
+            forgetDevicePersistentDataThunk({
+                deviceId: device.id,
+                skipToggleModalConnection,
+                isOsUnpairingFinished,
+                skipDisconnect,
+            }),
         );
 
         deviceInstances.forEach(instance => {

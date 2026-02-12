@@ -62,5 +62,7 @@ export type ForgetBluetoothDeviceThunkParams = {
     // This thunk must rely on `bluetoothId` directly. When this thunk is called,
     // the device may already be disconnected, and therefore, it cannot be selected from the state.
     bluetoothId: BluetoothDeviceId;
+    skipToggleModalConnection?: boolean;
     isOsUnpairingFinished?: boolean;
+    skipDisconnect?: boolean;
 };

@@ -13,10 +13,12 @@ import { useDispatch, useSelector } from '../../../hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;
+    skipToggleModalConnection?: boolean;
 };
 
 export const UnpairBluetoothDeviceFromOsModal = ({
     onFinish,
+    skipToggleModalConnection = false,
 }: UnpairBluetoothDeviceFromOsModalProps) => {
     const dispatch = useDispatch();
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
@@ -33,7 +35,11 @@ export const UnpairBluetoothDeviceFromOsModal = ({
 
     const onCancel = () => {
         dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
-        dispatch(toggleConnectionModal());
+        // NOTE: skipToggleModalConnection=true is when user forgets the device from settings,
+        // then we only dispalys this unpair modal and we don't want to continue to the "connect device again"
+        if (!skipToggleModalConnection) {
+            dispatch(toggleConnectionModal());
+        }
         onFinish?.();
     };
 

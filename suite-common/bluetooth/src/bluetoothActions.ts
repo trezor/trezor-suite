@@ -77,7 +77,17 @@ const enableAutoConnect = createAction(
 
 const setIsDeviceOsUnpairingRequired = createAction(
     `${BLUETOOTH_PREFIX}/set-is-device-os-unpairing-required`,
-    (isDeviceOsUnpairingRequired: boolean) => ({ payload: isDeviceOsUnpairingRequired }),
+    (
+        isDeviceOsUnpairingRequired: boolean,
+        params: {
+            skipToggleModalConnection?: boolean;
+        } = {},
+    ) => ({
+        payload: {
+            isDeviceOsUnpairingRequired,
+            skipToggleModalConnection: Boolean(params?.skipToggleModalConnection),
+        },
+    }),
 );
 
 export const bluetoothActions = {
