@@ -2,10 +2,10 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import type { TranslationKey } from '@suite/intl';
+import { deviceActions } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 

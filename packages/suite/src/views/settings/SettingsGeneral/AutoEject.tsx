@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { selectDevices, selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/device';
+import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';

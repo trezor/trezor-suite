@@ -1,3 +1,4 @@
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -23,7 +24,6 @@ import {
     EVERSTAKE_VALIDATOR,
 } from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
-import { selectHasBitcoinOnlyFirmware } from '../device/deviceSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 

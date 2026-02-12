@@ -1,8 +1,8 @@
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { selectInstacelessUnselectedDevices } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectInstacelessUnselectedDevices } from '@suite-common/wallet-core';
 import { AnimatedBox, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

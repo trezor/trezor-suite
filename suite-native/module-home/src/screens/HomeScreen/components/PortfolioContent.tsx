@@ -4,11 +4,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectHasRunningDiscovery,
-    selectIsDeviceAuthorized,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceAuthorized, selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, Button, HStack, VStack } from '@suite-native/atoms';

@@ -4,7 +4,7 @@ import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-rean
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { selectDeviceState } from '@suite-common/wallet-core';
+import { selectDeviceState } from '@suite-common/device';
 import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

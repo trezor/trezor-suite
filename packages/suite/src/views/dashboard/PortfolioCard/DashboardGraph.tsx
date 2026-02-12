@@ -4,8 +4,9 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { selectBaseCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, Button } from '@trezor/components';
 import { typography } from '@trezor/theme';

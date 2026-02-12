@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -78,7 +79,6 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
-import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,

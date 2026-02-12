@@ -3,6 +3,7 @@ import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { logsSlice } from '@suite-common/logger';
@@ -20,7 +21,6 @@ import {
     formDraftReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
-    prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,

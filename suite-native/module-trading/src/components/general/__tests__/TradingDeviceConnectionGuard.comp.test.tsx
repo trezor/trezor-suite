@@ -22,8 +22,8 @@ jest.mock('@react-navigation/native', () => ({
 
 let mockSelectIsDeviceConnected: boolean;
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectIsDeviceConnected: () => mockSelectIsDeviceConnected,
 }));
 

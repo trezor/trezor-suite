@@ -1,4 +1,4 @@
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { prepareDeviceReducer } from '@suite-common/device';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

@@ -5,7 +5,7 @@ import {
     SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import type { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 

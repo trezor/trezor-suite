@@ -6,18 +6,20 @@ import {
     selectAnalyticsSessionId,
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics-redux';
+import {
+    DeviceRootState,
+    selectDevices,
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     BlockchainRootState,
-    DeviceRootState,
     WalletSettingsRootState,
     selectBaseCurrency,
-    selectDevices,
     selectEnabledCustomBackends,
     selectEnabledNetworks,
     selectIsDiscreteModeActive,
-    selectRememberedHiddenWalletsCount,
-    selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
 import { DeviceState } from '@trezor/connect';
 import {

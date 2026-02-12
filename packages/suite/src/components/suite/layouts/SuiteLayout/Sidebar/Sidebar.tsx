@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogo } from '@trezor/product-components';
@@ -23,16 +23,16 @@ import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
-import { TrafficLightOffset } from '../../../TrafficLightOffset';
-import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
-import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
-import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 import {
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './consts';
+import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
+import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
+import { TrafficLightOffset } from '../../../TrafficLightOffset';
+import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     overflow-x: hidden;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
+import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
 import { IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

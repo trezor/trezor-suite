@@ -2,6 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
+import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
@@ -10,7 +11,6 @@ import {
     SuiteSyncAppReloaderDep,
     SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
-import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';

@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { err, ok } from '@trezor/type-utils';
 
 import { quotaManagerDeviceFetched, quotaManagerFetchError } from '../quotaManagerActions';

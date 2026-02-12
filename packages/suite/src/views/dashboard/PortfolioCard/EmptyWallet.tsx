@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { selectEnabledNetworks, selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
+import { selectIsDeviceUsingPassphrase } from '@suite-common/device';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

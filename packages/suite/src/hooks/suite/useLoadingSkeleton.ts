@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 
 import { useSelector } from 'src/hooks/suite';
 

@@ -1,6 +1,7 @@
+import { deviceActions } from '@suite-common/device';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
-import { deviceActions, formDraftActions } from '@suite-common/wallet-core';
+import { formDraftActions } from '@suite-common/wallet-core';
 
 import { buyActions, exchangeActions, sellActions, tradingActions } from '../../reducers';
 import { getFormDraftKeyByTradeType } from '../../utils';

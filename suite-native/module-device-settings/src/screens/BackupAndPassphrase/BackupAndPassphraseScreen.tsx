@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    selectIsDeviceBackupUnfinished,
-    selectIsDeviceInitialized,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceBackupUnfinished, selectIsDeviceInitialized } from '@suite-common/device';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';

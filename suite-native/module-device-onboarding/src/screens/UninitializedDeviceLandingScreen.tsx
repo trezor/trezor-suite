@@ -7,7 +7,7 @@ import { useSetAtom } from 'jotai';
 import {
     selectHasDeviceFirmwareInstalled,
     selectShouldOfferUpdateFirmware,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { events } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';

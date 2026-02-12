@@ -7,7 +7,7 @@ import {
     selectDeviceUpdateFirmwareVersion,
     selectHasBitcoinOnlyFirmware,
     selectIsFirmwareUpgradable,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import {
     Box,
     Card,

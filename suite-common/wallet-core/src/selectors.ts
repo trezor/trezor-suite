@@ -1,3 +1,8 @@
+import {
+    DeviceRootState,
+    selectHasOnlyPortfolioDevice,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
@@ -19,12 +24,7 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
-import { DeviceRootState } from './device/deviceReducer';
-import {
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-    selectSupportedNetworkByDevice,
-} from './device/deviceSelectors';
+import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
 import { DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';

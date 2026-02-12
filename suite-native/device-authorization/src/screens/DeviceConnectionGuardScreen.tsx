@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsBluetoothSupportedByDevice } from '@suite-common/wallet-core';
+import { selectIsBluetoothSupportedByDevice } from '@suite-common/device';
 import { selectBluetoothPermissionStatus } from '@suite-native/bluetooth';
 import {
     ConnectAndUnlockDeviceScreenContent,

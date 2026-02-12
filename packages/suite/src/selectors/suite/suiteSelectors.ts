@@ -1,4 +1,4 @@
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { TransportInfo } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

@@ -1,10 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    selectDeviceInternalModel,
-    selectSelectedDevice,
-    submitPassphrase,
-} from '@suite-common/wallet-core';
+import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/device';
+import { submitPassphrase } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { DeviceModelIcon } from '@suite-native/icons';

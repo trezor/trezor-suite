@@ -1,14 +1,13 @@
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     blockchainActions,
-    deviceActions,
     discoveryActions,
     feesActions,
     selectDeviceAccounts,
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus, WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';

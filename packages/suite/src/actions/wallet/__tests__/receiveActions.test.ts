@@ -1,9 +1,9 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 
 import * as receiveActions from 'src/actions/wallet/receiveActions';

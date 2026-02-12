@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
-import { selectDeviceStaticSessionId } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {

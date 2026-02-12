@@ -1,12 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics-redux';
+import { deviceActions } from '@suite-common/device';
 import {
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     changeNetworks,
-    deviceActions,
     setBaseCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';

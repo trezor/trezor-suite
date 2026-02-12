@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
+import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
-    selectHasDevicePassphraseEntryCapability,
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';

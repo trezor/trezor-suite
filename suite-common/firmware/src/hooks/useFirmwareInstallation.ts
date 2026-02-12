@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
     DeviceModelInternal,

@@ -1,11 +1,8 @@
 import { ReactNode } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
 import { SuiteSyncInteraction } from '@suite-common/suite-sync';
-import {
-    selectDeviceByStaticSessionId,
-    selectDeviceLabelOrNameById,
-} from '@suite-common/wallet-core';
 import { Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';

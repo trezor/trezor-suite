@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';

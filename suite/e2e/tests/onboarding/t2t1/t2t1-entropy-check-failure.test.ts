@@ -1,4 +1,4 @@
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
 import { TestCategory, TestPriority, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';

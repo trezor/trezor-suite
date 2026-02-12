@@ -1,4 +1,5 @@
 import { selectKnownDevices } from '@suite-common/bluetooth';
+import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
 import { MetadataState } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
@@ -10,11 +11,6 @@ import { DefinitionType, TokenManagementAction } from '@suite-common/token-defin
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import {
-    deviceActions,
-    selectDevices,
-    selectPersistentDeviceData,
-} from '@suite-common/wallet-core';
 import type {
     AccountKey,
     FormState,

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
-import { SendState, StakeState, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { SendState, StakeState } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,

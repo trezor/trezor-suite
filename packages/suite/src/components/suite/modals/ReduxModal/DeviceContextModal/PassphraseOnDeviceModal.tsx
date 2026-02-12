@@ -3,10 +3,8 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Translation, messages } from '@suite/intl';
-import {
-    selectIsDiscoveryStatusConfirmEmptyPassphrase,
-    selectSelectedDeviceLabelOrName,
-} from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { selectIsDiscoveryStatusConfirmEmptyPassphrase } from '@suite-common/wallet-core';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';

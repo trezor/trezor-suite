@@ -5,7 +5,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

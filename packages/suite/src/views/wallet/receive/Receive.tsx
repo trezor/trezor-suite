@@ -1,4 +1,5 @@
-import { selectPendingAccountAddresses, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

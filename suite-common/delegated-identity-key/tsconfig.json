@@ -8,10 +8,9 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../device" },
         { "path": "../platform-encryption" },
         { "path": "../suite-types" },
-        { "path": "../wallet-core" },
-        { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

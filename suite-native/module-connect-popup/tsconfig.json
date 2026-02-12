@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/connect-popup"
         },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
         },

@@ -4,11 +4,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDeviceDefaultBackupType, selectIsDeviceInitialized } from '@suite-common/device';
 import { BackupType } from '@suite-common/suite-types';
-import {
-    selectDeviceDefaultBackupType,
-    selectIsDeviceInitialized,
-} from '@suite-common/wallet-core';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,

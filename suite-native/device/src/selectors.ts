@@ -1,6 +1,24 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
+    DeviceRootState,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+    selectDeviceFirmwareVersionArray,
+    selectDeviceInstances,
+    selectDeviceModel,
+    selectDevices,
+    selectFirmwareRevisionCheckError,
+    selectHasDeviceFirmwareInstalled,
+    selectIsConnectedDeviceUninitialized,
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceInBootloader,
+    selectIsEntropyCheckFailed,
+    selectIsFirmwareAuthenticityCheckDismissed,
+    selectIsUnacquiredDevice,
+    selectSelectedDevice,
+    selectSelectedDeviceAuthenticity,
+} from '@suite-common/device';
+import {
     isHardRevisionCheckError,
     isSkippedRevisionCheckError,
     revisionCheckErrorScenarios,
@@ -14,10 +32,8 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { ThpRootState } from '@suite-common/thp';
 import {
     AccountsRootState,
-    DeviceRootState,
     DiscoveryRootState,
     FiatRatesRootState,
-    PORTFOLIO_TRACKER_DEVICE_ID,
     WalletSettingsRootState,
     getAccountsByDeviceState,
     selectAccounts,
@@ -25,22 +41,8 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
-    selectDeviceFirmwareVersionArray,
-    selectDeviceInstances,
-    selectDeviceModel,
-    selectDevices,
-    selectFirmwareRevisionCheckError,
-    selectHasDeviceFirmwareInstalled,
     selectHasRunningDiscovery,
-    selectIsConnectedDeviceUninitialized,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceInBootloader,
     selectIsDiscoveredDeviceAccountless,
-    selectIsEntropyCheckFailed,
-    selectIsFirmwareAuthenticityCheckDismissed,
-    selectIsUnacquiredDevice,
-    selectSelectedDevice,
-    selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
 import {
     Account,

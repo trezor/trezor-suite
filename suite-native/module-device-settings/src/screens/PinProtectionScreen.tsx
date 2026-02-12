@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByPin } from '@suite-common/device';
 import { Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
     Feature,
@@ -10,7 +11,6 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 
 import * as metadataPasswordsActions from 'src/actions/suite/metadata/metadataPasswordsActions';
 import * as metadataProviderActions from 'src/actions/suite/metadata/metadataProviderThunks';

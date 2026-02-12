@@ -3,7 +3,7 @@ import { Controller, useController } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';

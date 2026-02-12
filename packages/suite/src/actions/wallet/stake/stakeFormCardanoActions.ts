@@ -1,4 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
@@ -12,11 +13,7 @@ import {
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import {
-    VotingDelegationOption,
-    selectCardanoPoolsInfo,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import {
     Account,
     CardanoAction,

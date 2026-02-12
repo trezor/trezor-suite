@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { SectionListData } from '@suite-native/trading-atoms';

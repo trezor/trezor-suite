@@ -1,10 +1,7 @@
+import type { DeviceRootState } from '@suite-common/device';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceMainnetAccounts,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectDeviceMainnetAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { selectDeviceHistoryIgnoredNetworkSymbols } from '../selectors';

@@ -1,3 +1,4 @@
+import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -20,7 +21,6 @@ import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectDevices } from '../device/deviceSelectors';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';

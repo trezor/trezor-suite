@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { PortfolioTrackerInfo } from '@suite-native/trading-atoms';
 import { selectIsTradingSellEnabled } from '@suite-native/trading-state';
 

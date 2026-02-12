@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
 import { Button } from '@trezor/components';
 import {
     HELP_CENTER_ENTROPY_CHECK_URL,

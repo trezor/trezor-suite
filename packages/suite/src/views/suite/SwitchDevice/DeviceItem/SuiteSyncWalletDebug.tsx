@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import { deviceActions } from '@suite-common/device';
 import {
     isSuiteSyncSupportedByDevice,
     selectIsSuiteSyncDebugEnabled,
@@ -7,7 +8,6 @@ import {
     setSuiteSyncOwner,
 } from '@suite-common/suite-sync';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

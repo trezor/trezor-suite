@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';

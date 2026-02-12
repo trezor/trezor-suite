@@ -1,4 +1,18 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
+import {
+    DEVICE_MODULE_PREFIX,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+    deviceActions,
+    getIsIgnoredEntropyCheckError,
+    portfolioTrackerDevice,
+    selectDeviceById,
+    selectDevices,
+    selectPersistentDeviceDataById,
+    selectPhysicalDeviceWallets,
+    selectSelectedDevice,
+    shouldDeviceBeRemembered,
+    sortDevices,
+} from '@suite-common/device';
 import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
@@ -19,7 +33,6 @@ import {
     getNetworkId,
     getProtocolMagic,
     getStakingPath,
-    shouldDeviceBeRemembered,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     Address,
@@ -34,22 +47,11 @@ import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
-import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
-import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
-import {
-    selectDeviceById,
-    selectDevices,
-    selectPersistentDeviceDataById,
-    selectPhysicalDeviceWallets,
-    selectSelectedDevice,
-} from './deviceSelectors';
-import { sortDevices } from './sortDevices';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
-import { getIsIgnoredEntropyCheckError } from './services/getIsIgnoredEntropyCheckError';
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`

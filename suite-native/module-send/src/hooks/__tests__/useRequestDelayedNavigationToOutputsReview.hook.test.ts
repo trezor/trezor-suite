@@ -6,8 +6,8 @@ import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayed
 const mockSelectDeviceButtonRequestsCodes = jest.fn().mockReturnValue([]);
 const mockNavigate = jest.fn();
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectDeviceButtonRequestsCodes: () => mockSelectDeviceButtonRequestsCodes(),
 }));
 

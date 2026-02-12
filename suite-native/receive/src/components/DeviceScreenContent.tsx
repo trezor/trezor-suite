@@ -9,7 +9,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

@@ -1,5 +1,9 @@
 import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
 import {
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/device';
+import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
@@ -11,10 +15,6 @@ import {
     getCpuArch,
     getOsVersion,
 } from '@suite-common/suite-utils';
-import {
-    selectRememberedHiddenWalletsCount,
-    selectRememberedStandardWalletsCount,
-} from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getOsName,

@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';

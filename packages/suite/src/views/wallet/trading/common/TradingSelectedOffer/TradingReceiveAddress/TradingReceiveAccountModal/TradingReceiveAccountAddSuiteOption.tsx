@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, Icon } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';

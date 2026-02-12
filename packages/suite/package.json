@@ -27,6 +27,7 @@
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",

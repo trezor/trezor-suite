@@ -1,9 +1,9 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { TranslationKey } from '@suite/intl';
+import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { AppState } from 'src/reducers/store';

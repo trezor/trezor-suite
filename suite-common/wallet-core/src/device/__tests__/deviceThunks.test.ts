@@ -2,11 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 
 import { forgetPersistentDataPreloadedStateFixture } from '../__fixtures__/forgetPersistentDataPreloadedState';
-import { prepareDeviceReducer } from '../deviceReducer';
 import { forgetSingleDevicePersistentDataThunk } from '../deviceThunks';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);

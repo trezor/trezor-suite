@@ -7,6 +7,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -16,7 +17,6 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
-    selectDeviceUnavailableCapabilities,
     selectIsAmountInSats,
     selectSendFormDraftByKey,
     sendFormActions,

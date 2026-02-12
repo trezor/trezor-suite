@@ -5,18 +5,14 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
+import { deviceActions, selectDevices, selectIsDeviceRemembered } from '@suite-common/device';
 import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction, selectThpAutoconnectStep } from '@suite-common/thp';
-import {
-    deviceActions,
-    selectDevices,
-    selectIsAnyNetworkEnabled,
-    selectIsDeviceRemembered,
-} from '@suite-common/wallet-core';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {

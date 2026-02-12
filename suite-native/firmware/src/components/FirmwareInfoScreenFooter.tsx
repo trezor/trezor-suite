@@ -1,9 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import {
-    selectHasDeviceFirmwareInstalled,
-    selectHasRunningDiscovery,
-} from '@suite-common/wallet-core';
+import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

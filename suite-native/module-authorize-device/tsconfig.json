@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
         },

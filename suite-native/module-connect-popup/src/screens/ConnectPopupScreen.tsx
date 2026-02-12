@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
-    selectHasRunningDiscovery,
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Loader } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';

@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Image, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

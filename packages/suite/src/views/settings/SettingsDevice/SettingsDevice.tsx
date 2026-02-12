@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';

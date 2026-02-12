@@ -1,13 +1,13 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { analyticsActions } from '@suite-common/analytics-redux';
+import { deviceActions } from '@suite-common/device';
 import { createMiddleware } from '@suite-common/redux-utils';
 import {
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     changeNetworks,
-    deviceActions,
     setBaseCurrency,
 } from '@suite-common/wallet-core';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';

@@ -1,8 +1,8 @@
 import { createMockDeps } from '@suite-common/dependency-injection';
+import type { DeviceRootState } from '@suite-common/device';
+import { deviceReducerInitialState } from '@suite-common/device';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import type { DeviceRootState } from '@suite-common/wallet-core';
-import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
 import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';

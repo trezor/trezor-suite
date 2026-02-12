@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
     selectIsDeviceConnectedViaBluetoothLowOnBattery,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 

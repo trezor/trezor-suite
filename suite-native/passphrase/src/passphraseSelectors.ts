@@ -1,8 +1,5 @@
-import {
-    DeviceRootState,
-    DiscoveryRootState,
-    selectDiscoveryByDevicePath,
-} from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/device';
+import { DiscoveryRootState, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 
 export const selectHasPassphraseMismatchError = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);

@@ -7,7 +7,7 @@ import {
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';

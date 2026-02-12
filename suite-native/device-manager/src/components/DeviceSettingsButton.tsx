@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

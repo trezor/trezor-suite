@@ -7,7 +7,7 @@ import {
     selectIsBluetoothSupportedByDevice,
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { selectBluetoothPermissionStatus } from '@suite-native/bluetooth';
 import {
     ConnectAndUnlockDeviceScreenContent,

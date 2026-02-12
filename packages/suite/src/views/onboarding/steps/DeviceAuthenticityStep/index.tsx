@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';

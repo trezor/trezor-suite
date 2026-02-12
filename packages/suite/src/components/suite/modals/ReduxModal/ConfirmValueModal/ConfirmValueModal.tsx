@@ -2,11 +2,11 @@ import { ReactNode, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     Banner,

@@ -4,15 +4,15 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    selectHasDevicePassphraseEntryCapability,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
     PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
-import {
-    selectHasDevicePassphraseEntryCapability,
-    selectSelectedDevice,
-    submitPassphrase,
-} from '@suite-common/wallet-core';
+import { submitPassphrase } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';

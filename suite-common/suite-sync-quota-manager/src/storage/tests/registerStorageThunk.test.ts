@@ -1,7 +1,7 @@
 import { mocked } from 'jest-mock';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ok } from '@trezor/type-utils';
 
 import { quotaManagerDeviceFetched, quotaManagerFetchError } from '../../quotaManagerActions';
@@ -11,7 +11,7 @@ import { registerStorageThunk } from '../registerStorageThunk';
 
 jest.mock('../../quotaManagerFetch');
 jest.mock('../../quotaManagerSelectors');
-jest.mock('@suite-common/wallet-core');
+jest.mock('@suite-common/device');
 
 const mockDispatch = jest.fn();
 const mockGetState = jest.fn();

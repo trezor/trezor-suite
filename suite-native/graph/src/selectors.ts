@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { AccountItem } from '@suite-common/graph';
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
@@ -10,7 +11,6 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectAccountByKey,
     selectDeviceMainnetAccounts,
 } from '@suite-common/wallet-core';

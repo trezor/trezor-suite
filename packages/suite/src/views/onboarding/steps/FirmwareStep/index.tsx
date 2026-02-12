@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';

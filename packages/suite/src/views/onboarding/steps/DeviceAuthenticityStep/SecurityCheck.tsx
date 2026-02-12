@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
     Card,

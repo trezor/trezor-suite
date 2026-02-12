@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { isTrezorDeviceWithState } from '@suite-common/device';
 import {
     WriteModeRequiredForAllocation,
     ensureDeviceHasQuotaThunk,
@@ -12,7 +13,7 @@ import {
     SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
 import { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';

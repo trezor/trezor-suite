@@ -2,11 +2,9 @@ import { FC, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Route } from '@suite-common/suite-types';
-import {
-    selectHasBitcoinOnlyFirmware,
-    selectIsAnyNonBitcoinLikeNetworkEnabled,
-} from '@suite-common/wallet-core';
+import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectFirmwareChangelog } from '@suite-common/wallet-core';
+import { selectFirmwareChangelog } from '@suite-common/device';
 import { BottomSheetModal, BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

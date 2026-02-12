@@ -1,17 +1,16 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';

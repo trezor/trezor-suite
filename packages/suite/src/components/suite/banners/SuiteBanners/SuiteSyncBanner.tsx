@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { Banner, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 

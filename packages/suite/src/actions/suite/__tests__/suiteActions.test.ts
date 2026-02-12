@@ -1,17 +1,16 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
+import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
-    deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    prepareDeviceReducer,
     selectDeviceThunk,
     selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';

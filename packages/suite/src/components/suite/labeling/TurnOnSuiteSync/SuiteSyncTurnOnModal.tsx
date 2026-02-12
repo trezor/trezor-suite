@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { Card, Column, IconCircle, List, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';

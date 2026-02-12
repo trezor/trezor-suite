@@ -1,13 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectIsDeviceBackupRequired,
-    selectSelectedDevice,
-    showXpubOnDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey, showXpubOnDevice } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';

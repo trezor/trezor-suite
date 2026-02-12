@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { roundToNearestMinutes, subHours } from 'date-fns';
 
-import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
+import { selectIsDeviceAuthorized } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';

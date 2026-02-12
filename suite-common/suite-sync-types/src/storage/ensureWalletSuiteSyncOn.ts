@@ -1,5 +1,5 @@
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 

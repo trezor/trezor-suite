@@ -5,6 +5,11 @@ import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
+    type DeviceRootState,
+    selectIsDeviceInViewOnlyMode,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
@@ -13,11 +18,8 @@ import {
 } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
     accountsActions,
     selectDeviceAccounts,
-    selectIsDeviceInViewOnlyMode,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';

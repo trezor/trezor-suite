@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { initialState } from '../../../reducers/tradingCommonReducer';
@@ -10,8 +10,8 @@ import { getNonce } from '../getNonce';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectSelectedDevice: jest.fn(),
 }));
 

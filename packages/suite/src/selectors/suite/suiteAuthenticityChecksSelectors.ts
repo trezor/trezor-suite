@@ -1,18 +1,18 @@
 import {
-    isHardHashCheckError,
-    isHardRevisionCheckError,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
-} from '@suite-common/firmware-authenticity';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
-import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
     selectIsDeviceIdCheckSuccess,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import {
+    isHardHashCheckError,
+    isHardRevisionCheckError,
+    isSkippedHashCheckError,
+    isSkippedRevisionCheckError,
+} from '@suite-common/firmware-authenticity';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 import { AppState } from 'src/types/suite';
 

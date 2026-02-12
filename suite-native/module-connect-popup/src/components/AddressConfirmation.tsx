@@ -6,7 +6,7 @@ import {
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

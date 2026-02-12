@@ -2,6 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareDeviceReducer } from '@suite-common/device';
 import {
     fetchConfigThunk,
     initMessageSystemThunk,
@@ -25,7 +26,6 @@ import {
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
     preloadFeeInfoThunk,
-    prepareDeviceReducer,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';

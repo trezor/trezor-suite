@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 

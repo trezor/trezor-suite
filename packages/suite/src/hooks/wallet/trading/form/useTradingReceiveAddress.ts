@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     TradingType,
@@ -16,7 +17,6 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 

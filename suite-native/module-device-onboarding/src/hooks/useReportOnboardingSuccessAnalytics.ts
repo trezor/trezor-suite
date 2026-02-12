@@ -8,7 +8,7 @@ import {
     selectDeviceModel,
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';

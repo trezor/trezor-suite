@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {

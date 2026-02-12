@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import type { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';

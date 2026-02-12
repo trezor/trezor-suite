@@ -1,17 +1,16 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 
+import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    isApprovalFlowSupported,
     isEvmApprovalTx,
     isExchangeTradingForm,
     subunitsToUnits,

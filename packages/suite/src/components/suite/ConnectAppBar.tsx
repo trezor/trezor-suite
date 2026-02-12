@@ -6,7 +6,7 @@ import {
     connectPopupActions,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 

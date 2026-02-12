@@ -1,12 +1,11 @@
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
     accountsActions,
     changeNetworks,
-    deviceActions,
-    selectSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';

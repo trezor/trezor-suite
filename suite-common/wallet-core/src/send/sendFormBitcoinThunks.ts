@@ -1,3 +1,4 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -34,7 +35,6 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
-import { selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
+import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
 import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-native/firmware';
 import { Translation, TxKeyPath } from '@suite-native/intl';

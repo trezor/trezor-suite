@@ -16,6 +16,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",

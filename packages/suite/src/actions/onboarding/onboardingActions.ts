@@ -1,7 +1,8 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
-import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';

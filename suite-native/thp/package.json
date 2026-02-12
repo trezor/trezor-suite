@@ -12,8 +12,8 @@
     "dependencies": {
         "@react-navigation/native": "7.1.26",
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/device": "workspace:*",
         "@suite-common/thp": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",

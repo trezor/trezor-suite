@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import { selectSelectedDevice } from '@suite-common/device';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
     ExtraDependenciesStatic,
@@ -15,7 +16,6 @@ import {
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';

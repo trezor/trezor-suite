@@ -1,8 +1,9 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import * as modalActions from 'src/actions/suite/modalActions';

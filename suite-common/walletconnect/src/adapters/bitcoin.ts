@@ -2,9 +2,10 @@ import { WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { Bip43Path, Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { CallMethodResponse, ComposeOutput } from '@trezor/connect';

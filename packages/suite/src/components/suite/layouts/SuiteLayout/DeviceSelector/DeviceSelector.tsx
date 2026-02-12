@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Tooltip } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';

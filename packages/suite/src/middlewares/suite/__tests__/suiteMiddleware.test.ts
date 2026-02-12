@@ -1,6 +1,6 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { appChanged } from 'src/actions/suite/suiteActions';

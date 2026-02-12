@@ -4,8 +4,9 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../bluetooth" },
+        { "path": "../device" },
         { "path": "../fiat-services" },
-        { "path": "../platform-encryption" },
+        { "path": "../firmware" },
         { "path": "../redux-utils" },
         { "path": "../staking" },
         { "path": "../suite-constants" },

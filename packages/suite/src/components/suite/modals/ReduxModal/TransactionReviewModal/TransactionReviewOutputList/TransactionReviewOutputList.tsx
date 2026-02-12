@@ -3,7 +3,8 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { DeviceRootState, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/device';
+import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,

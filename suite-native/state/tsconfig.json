@@ -11,6 +11,7 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
+        { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"

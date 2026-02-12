@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -8,13 +9,7 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
-import {
-    WALLET_SETTINGS,
-    deviceActions,
-    discoveryActions,
-    selectDevices,
-    selectDevicesCount,
-} from '@suite-common/wallet-core';
+import { WALLET_SETTINGS, discoveryActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     accumulateAccountCountBySymbolAndType,

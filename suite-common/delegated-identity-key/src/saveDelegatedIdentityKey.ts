@@ -1,8 +1,8 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 export type SaveDelegatedIdentityKeyDeps = {

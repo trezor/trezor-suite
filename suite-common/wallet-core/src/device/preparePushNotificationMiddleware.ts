@@ -1,7 +1,7 @@
+import { deviceActions } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorPushNotificationType } from '@trezor/connect';
 
-import { deviceActions } from './deviceActions';
 import { deviceWipedFromDeviceThunk } from './deviceThunks';
 
 // We need extra.thunks.forgetBluetoothDevice in forgetSingleDevicePersistentDataThunk.

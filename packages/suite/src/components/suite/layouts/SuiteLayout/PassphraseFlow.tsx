@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { UI } from '@trezor/connect';
 
 import { MODAL } from '../../../../actions/suite/constants';

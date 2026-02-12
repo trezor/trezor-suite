@@ -1,11 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';

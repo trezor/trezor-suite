@@ -2,11 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    runDiscoveryThunk,
-    selectSelectedDevice,
-    startDiscoveryThunk,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { runDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, Image, Modal, Text } from '@trezor/components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 

@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { NetworkType } from '@suite-common/wallet-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Account,
     FormState,
@@ -11,7 +11,6 @@ import {
 import {
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
-    isApprovalFlowSupported,
     isEvmApprovalTx,
     isTestnet,
 } from '@suite-common/wallet-utils';

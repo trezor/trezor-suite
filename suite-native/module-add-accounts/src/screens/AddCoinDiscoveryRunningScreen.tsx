@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,

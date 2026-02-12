@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';

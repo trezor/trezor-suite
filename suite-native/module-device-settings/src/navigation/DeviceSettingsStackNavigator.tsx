@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { selectIsDeviceConnected } from '@suite-common/device';
 // this import is against the rule of not importing from other modules. This specific case is OK, because the @suite-native/module-check-backup
 // is imported only here and nowhere else, so it is treated as a submodule of @suite-native/module-device-settings.
 import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';

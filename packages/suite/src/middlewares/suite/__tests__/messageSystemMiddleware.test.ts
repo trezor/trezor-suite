@@ -1,12 +1,12 @@
 import { Reducer, combineReducers } from '@reduxjs/toolkit';
 
+import { prepareDeviceReducer } from '@suite-common/device';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
 import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
 import { AnyAction } from '@suite-common/redux-utils';
 import { Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';

@@ -1,3 +1,4 @@
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     getSupportedDefinitionTypes,
@@ -8,7 +9,6 @@ import {
 } from '@suite-common/token-definitions';
 import { type AccountType, type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    PORTFOLIO_TRACKER_DEVICE_STATE,
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
     updateFiatRatesThunk,

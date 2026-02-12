@@ -1,17 +1,17 @@
 import { ReactNode } from 'react';
 
 import { Translation, TranslationFunction, TranslationKey, useTranslation } from '@suite/intl';
+import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
-    isApprovalFlowSupported,
     isEvmApprovalTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';

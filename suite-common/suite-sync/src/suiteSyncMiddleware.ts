@@ -1,8 +1,8 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { deviceActions, selectDeviceThunk } from '@suite-common/wallet-core';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
+import { selectDeviceThunk } from '@suite-common/wallet-core';
 
 import { selectHasDeviceSuiteSyncError, selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 

@@ -2,13 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-    startDiscoveryThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { selectHasNoDeviceWithEmptyPassphrase } from '@suite-native/device';
 

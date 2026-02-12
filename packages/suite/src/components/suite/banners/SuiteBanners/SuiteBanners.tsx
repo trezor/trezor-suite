@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectBannerMessage } from '@suite-common/message-system';
-import { selectHasDeviceSuiteSyncError } from '@suite-common/suite-sync';
 import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
-    selectVisibleDeviceAccounts,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectBannerMessage } from '@suite-common/message-system';
+import { selectHasDeviceSuiteSyncError } from '@suite-common/suite-sync';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';

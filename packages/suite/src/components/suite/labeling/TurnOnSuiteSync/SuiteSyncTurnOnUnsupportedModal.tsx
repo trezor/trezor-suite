@@ -1,8 +1,5 @@
 import { Translation } from '@suite/intl';
-import {
-    selectDeviceByStaticSessionId,
-    selectDeviceLabelOrNameById,
-} from '@suite-common/wallet-core';
+import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { TREZOR_URL } from '@trezor/urls';

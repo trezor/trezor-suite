@@ -1,7 +1,7 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
 
-import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from '../deviceConstants';
-import { sortDevices } from '../sortDevices';
+import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from '../src/deviceConstants';
+import { sortDevices } from '../src/sortDevices';
 
 describe(sortDevices.name, () => {
     const baseAcquired: TrezorDevice = {

@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Column, Grid, Image } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import type { ModelFor } from '@trezor/product-components';

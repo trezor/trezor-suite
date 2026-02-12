@@ -1,10 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
+import type {
     AcquiredDevice,
     ButtonRequest,
-    DelegatedIdentityKey,
+    PersistentDeviceData,
     StoredAuthenticateDeviceResult,
     ThpSuiteCredentials,
     TrezorDevice,
@@ -140,7 +139,7 @@ const setThpCredentials = createAction(
 
 type SetDelegatedIdentityKeyParams = {
     deviceId: string;
-    delegatedKey: EncryptedHex<DelegatedIdentityKey> | null;
+    delegatedKey: PersistentDeviceData['delegatedIdentityKey'];
 };
 
 const setDelegatedIdentityKey = createAction(

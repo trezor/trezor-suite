@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
     selectBlockchainState,
-    selectSelectedDevice as selectDeviceSelector,
     selectDeviceThunk,
-    selectDevices,
     selectTransactions,
 } from '@suite-common/wallet-core';
 import {
@@ -47,7 +46,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const transactions = useSelector(selectTransactions);
     const blockchain = useSelector(selectBlockchainState);
     const devices = useSelector(selectDevices);
-    const currentDevice = useSelector(selectDeviceSelector);
+    const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
     const dispatch = useDispatch();
 

@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { isLinux } from '@trezor/env-utils';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';

@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasBitcoinOnlyFirmware, selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,

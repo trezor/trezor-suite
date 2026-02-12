@@ -1,8 +1,8 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
+import { selectDevices } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevices } from '@suite-common/wallet-core';
 import { Box, Button, Column } from '@trezor/components';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';

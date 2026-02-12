@@ -1,7 +1,7 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
-import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';

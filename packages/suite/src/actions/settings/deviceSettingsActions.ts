@@ -1,12 +1,9 @@
+import { selectSelectedDevice, selectSimulatedEntropyCheckFail } from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    processEntropyCheckResultThunk,
-    selectSelectedDevice,
-    selectSimulatedEntropyCheckFail,
-} from '@suite-common/wallet-core';
+import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 

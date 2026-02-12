@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    DeviceRootState,
     TransactionsRootState,
     WalletSettingsRootState,
     selectBaseCurrency,

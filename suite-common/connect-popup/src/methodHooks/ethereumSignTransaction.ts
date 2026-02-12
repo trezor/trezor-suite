@@ -1,8 +1,8 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { Bip43Path, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
-    selectSelectedDevice,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';

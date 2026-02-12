@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
+import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

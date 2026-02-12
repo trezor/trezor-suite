@@ -1,6 +1,7 @@
 import { toWei } from 'web3-utils';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
@@ -20,7 +21,6 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,

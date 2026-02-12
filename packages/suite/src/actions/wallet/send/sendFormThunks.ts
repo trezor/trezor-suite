@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
@@ -13,7 +14,6 @@ import {
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
     selectPrecomposedSendForm,
-    selectSelectedDevice,
     selectSendFormDrafts,
     sendFormActions,
     signTransactionThunk,

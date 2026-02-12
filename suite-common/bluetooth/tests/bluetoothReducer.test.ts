@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
 import { Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

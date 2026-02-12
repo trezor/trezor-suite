@@ -8,11 +8,9 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
-        },
-        {
-            "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
         { "path": "../atoms" },

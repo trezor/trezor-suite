@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
-    selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';

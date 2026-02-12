@@ -3,13 +3,13 @@ import {
     ForgetBluetoothDeviceThunkParams,
     bluetoothActions,
 } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectDeviceBluetoothId,
     selectIsDeviceConnectedViaBluetooth,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 

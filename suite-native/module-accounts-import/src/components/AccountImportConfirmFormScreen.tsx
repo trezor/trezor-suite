@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import {
     TokenDefinitionsRootState,
     selectFilterKnownTokens,
@@ -11,7 +12,6 @@ import {
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';

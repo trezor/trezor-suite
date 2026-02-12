@@ -1,3 +1,4 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -5,7 +6,6 @@ import {
     addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
-    selectSelectedDevice,
     stakeActions,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';

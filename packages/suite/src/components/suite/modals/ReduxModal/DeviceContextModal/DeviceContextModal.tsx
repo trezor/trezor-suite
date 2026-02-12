@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 
 import { messages } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';

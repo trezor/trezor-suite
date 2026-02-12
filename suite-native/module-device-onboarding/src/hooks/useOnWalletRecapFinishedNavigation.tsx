@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByPin } from '@suite-common/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,

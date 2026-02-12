@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 export const useThpAutoconnectActions = () => {
     const dispatch = useDispatch();

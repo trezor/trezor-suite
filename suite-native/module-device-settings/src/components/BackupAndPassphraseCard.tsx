@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,

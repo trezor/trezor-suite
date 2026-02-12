@@ -2,10 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/device" },
         { "path": "../../suite-common/thp" },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../intl" },

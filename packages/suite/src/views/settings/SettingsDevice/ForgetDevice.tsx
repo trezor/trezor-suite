@@ -2,13 +2,9 @@ import { useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import {
-    deviceActions,
-    forgetSingleDevicePersistentDataThunk,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { forgetSingleDevicePersistentDataThunk } from '@suite-common/wallet-core';
 import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';

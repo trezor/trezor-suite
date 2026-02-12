@@ -5,12 +5,9 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsDeviceBackupRequired } from '@suite-common/device';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectIsDeviceBackupRequired,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import {

@@ -2,8 +2,8 @@ import { MouseEventHandler } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { deviceActions } from '@suite-common/device';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -11,12 +11,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*"
     }
 }

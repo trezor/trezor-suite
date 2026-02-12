@@ -1,9 +1,9 @@
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import {
     SkippedHashCheckError,
     SkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';

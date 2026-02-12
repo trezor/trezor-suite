@@ -1,6 +1,7 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
+import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsRootState,
@@ -10,7 +11,6 @@ import {
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
     selectBaseCurrency,

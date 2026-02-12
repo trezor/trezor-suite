@@ -1,5 +1,5 @@
+import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { DEVICE_MODULE_PREFIX } from '@suite-common/wallet-core';
 
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { findRoute } from 'src/utils/suite/router';

@@ -1,6 +1,7 @@
 import { useEvent } from 'react-use';
 
-import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';

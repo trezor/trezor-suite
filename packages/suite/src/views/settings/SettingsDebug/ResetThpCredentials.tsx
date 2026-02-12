@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 

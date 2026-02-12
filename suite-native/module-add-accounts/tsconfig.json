@@ -5,6 +5,7 @@
         "outDir": "libDev"
     },
     "references": [
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/wallet-config"
         },

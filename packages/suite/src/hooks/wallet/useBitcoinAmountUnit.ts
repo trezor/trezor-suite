@@ -1,9 +1,6 @@
+import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
-import {
-    selectDeviceUnavailableCapabilities,
-    setBitcoinAmountUnits,
-    toggleBitcoinAmountUnits,
-} from '@suite-common/wallet-core';
+import { setBitcoinAmountUnits, toggleBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

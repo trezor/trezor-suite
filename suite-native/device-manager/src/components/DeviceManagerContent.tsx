@@ -6,16 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
-    selectDeviceThunk,
-    selectHasRunningDiscovery,
     selectIsDeviceInitialized,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,

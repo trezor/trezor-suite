@@ -1,3 +1,4 @@
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncEnabled,
@@ -9,7 +10,7 @@ import {
 } from '@suite-common/suite-sync';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccounts, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { sanitizeFilename } from '@trezor/utils';

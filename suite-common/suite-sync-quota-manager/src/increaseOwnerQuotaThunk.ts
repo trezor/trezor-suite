@@ -4,11 +4,11 @@ import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
+import { isTrezorDeviceWithState, selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {

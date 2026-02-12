@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

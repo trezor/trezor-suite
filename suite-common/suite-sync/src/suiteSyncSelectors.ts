@@ -1,6 +1,6 @@
+import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import { SuiteSyncState } from './suiteSyncSlice';

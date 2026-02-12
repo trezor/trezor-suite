@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 
-import {
-    DeviceRootState,
-    SerializedTx,
-    selectSelectedDevice,
-    selectSendFormReviewButtonRequestsCount,
-} from '@suite-common/wallet-core';
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { SerializedTx, selectSendFormReviewButtonRequestsCount } from '@suite-common/wallet-core';
 import { Account, FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
@@ -19,10 +15,10 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
+import { TransactionReviewOutputList } from './TransactionReviewOutputList';
 import { ExpiredTxValidity } from '../../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
-import { TransactionReviewOutputList } from './TransactionReviewOutputList';
 import { hasTxValidityExpired } from '../utils';
 
 type TransactionReviewModalContentProps = {

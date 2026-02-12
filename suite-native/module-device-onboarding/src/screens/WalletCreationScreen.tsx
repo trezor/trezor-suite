@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { getIsIgnoredEntropyCheckError } from '@suite-common/device';
 import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { getIsIgnoredEntropyCheckError } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,

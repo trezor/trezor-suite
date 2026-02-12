@@ -1,9 +1,9 @@
+import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions } from '@suite-common/wallet-core';
 import type {
     AuthenticateDeviceResult,
     Response,

@@ -17,6 +17,7 @@
         "@react-navigation/native-stack": "7.9.0",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/react-native-skia": "2.2.12",
+        "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

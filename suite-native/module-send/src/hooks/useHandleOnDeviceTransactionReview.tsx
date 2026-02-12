@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { selectIsDeviceRemembered, sendFormActions } from '@suite-common/wallet-core';
+import { selectIsDeviceRemembered } from '@suite-common/device';
+import { sendFormActions } from '@suite-common/wallet-core';
 import {
     AccountKey,
     GeneralPrecomposedTransactionFinal,

@@ -1,5 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     SimpleTokenStructure,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/token-definitions';
 import {
     AccountsRootState,
-    DeviceRootState,
     FiatRatesRootState,
     TransactionsRootState,
     WalletSettingsRootState,
@@ -18,7 +18,6 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
-    selectIsPortfolioTrackerDevice,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';

@@ -1,10 +1,10 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
