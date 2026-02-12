@@ -2,7 +2,6 @@ export type AppVersion = `${number}.${number}.${number}` | '?';
 
 export type BaseData = {
     changelog: Array<{ version: AppVersion; notes: string }>;
-    limitations?: string;
     description?: string;
 };
 

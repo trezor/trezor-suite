@@ -12,7 +12,7 @@ const PlatformItem = ({ platform }: { platform: string }) => (
 export const platforms = [
     {
         value: 'all',
-        label: 'All',
+        label: 'All platforms',
     },
     {
         value: 'desktop',

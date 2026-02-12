@@ -14,8 +14,10 @@ import { useFilteredEvents } from './utils/useFilteredEvents';
 
 const TopBar = styled.div`
     gap: 12px;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
@@ -23,6 +25,9 @@ const TopBar = styled.div`
     padding: 12px 24px;
 `;
 
+const Content = styled.div`
+    margin: 140px 20px 20px;
+`;
 const ContentContainer = styled.div`
     margin: auto;
     max-width: 1000px;
@@ -30,7 +35,7 @@ const ContentContainer = styled.div`
 `;
 
 export function App() {
-    const { filteredEvents, setQuery, setSort, setPlatform, query } = useFilteredEvents();
+    const { filteredEvents, setQuery, setSort, setPlatform, query, platform } = useFilteredEvents();
 
     const eventCards = useMemo(
         () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),
@@ -53,6 +58,7 @@ export function App() {
                                     setQuery={setQuery}
                                     query={query}
                                     setPlatform={setPlatform}
+                                    platform={platform}
                                 />
                             </Row>
                             <Row justifyContent="space-between" gap={16} alignItems="center">
@@ -70,11 +76,11 @@ export function App() {
                         </Column>
                     </ContentContainer>
                 </TopBar>
-                <Box padding={24}>
+                <Content>
                     <ContentContainer>
                         <Column gap={40}>{eventCards}</Column>
                     </ContentContainer>
-                </Box>
+                </Content>
             </Box>
         </>
     );

@@ -14,7 +14,6 @@ export const normalizeEvents = (
                         name,
                         {
                             description: attribute.description,
-                            limitations: attribute.limitations,
                             runtimeType: undefined,
                             changelog: normalizeChangelog(attribute.changelog),
                         },

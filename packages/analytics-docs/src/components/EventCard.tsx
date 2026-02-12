@@ -106,7 +106,7 @@ export function EventCard({ event }: { event: EventDoc }) {
                     <Markdown>{event.description}</Markdown>
                 </InfoItem>
             )}
-            {event.description && (
+            {event.possibleImprovements && (
                 <InfoItem
                     label="Possible improvements"
                     typographyStyle="label"

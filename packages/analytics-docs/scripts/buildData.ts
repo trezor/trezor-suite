@@ -1,11 +1,9 @@
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import * as desktopEvents from '@suite/analytics';
-import * as sharedEvents from '@suite-common/analytics';
-import * as mobileEvents from '@suite-native/analytics';
+import type { EventDef } from '@suite-common/analytics';
 
 import { extractAttributeTypesByEventName, findPackageRoot, findUp } from './extractAttributeTypes';
 import { normalizeEvents } from '../src/utils/normalizeEvents';
@@ -17,22 +15,42 @@ const repoRoot = path.resolve(__dirname, '../../..');
 
 const require = createRequire(import.meta.url);
 
+/** Load events module directly from package src/events/index.ts (Node ESM does not resolve ./events to index.ts). */
+const loadEventsFromPackage = async (
+    packageName: string,
+): Promise<Array<EventDef<unknown, string>>> => {
+    const packageRoot = path.dirname(require.resolve(`${packageName}/package.json`));
+    const eventsPath = path.join(packageRoot, 'src', 'events', 'index.ts');
+    const module = await import(pathToFileURL(eventsPath).href);
+
+    return Object.values(module) as Array<EventDef<unknown, string>>;
+};
+
 const docgenTsconfig = path.resolve(__dirname, '../tsconfig.docgen.json');
 const tsConfigFilePath = fs.existsSync(docgenTsconfig)
     ? docgenTsconfig
     : (findUp('tsconfig.json', path.resolve(__dirname, '..')) ??
       path.resolve(repoRoot, 'tsconfig.json'));
 
-const withPlatform = <T extends Record<string, any>>(events: T, platform: string) =>
-    Object.values(events).map(event => ({
+const withPlatform = (
+    events: Array<EventDef<unknown, string>>,
+    platform: string,
+): Array<EventDef<unknown, string> & { platform: string }> =>
+    events.map(event => ({
         ...event,
         platform,
     }));
 
+const [sharedEventsList, desktopEventsList, mobileEventsList] = await Promise.all([
+    loadEventsFromPackage('@suite-common/analytics'),
+    loadEventsFromPackage('@suite/analytics'),
+    loadEventsFromPackage('@suite-native/analytics'),
+]);
+
 const eventsArray = [
-    ...withPlatform(sharedEvents.events, 'shared'),
-    ...withPlatform(desktopEvents.events, 'desktop'),
-    ...withPlatform(mobileEvents.events, 'mobile'),
+    ...withPlatform(sharedEventsList, 'shared'),
+    ...withPlatform(desktopEventsList, 'desktop'),
+    ...withPlatform(mobileEventsList, 'mobile'),
 ];
 
 const normalizedEvents = normalizeEvents(eventsArray);
@@ -61,19 +79,6 @@ const attributeTypesByEventName = extractAttributeTypesByEventName({
     tsConfigFilePath,
     eventFileGlobs,
 });
-
-// eslint-disable-next-line no-console
-console.log(
-    '[analytics-docs] attributeTypes events:',
-    Object.keys(attributeTypesByEventName).length,
-);
-// eslint-disable-next-line no-console
-console.log(
-    '[analytics-docs] attributeTypes sample:',
-    Object.keys(attributeTypesByEventName).slice(0, 5),
-);
-// eslint-disable-next-line no-console
-console.log('[analytics-docs] normalizedEvents sample:', Object.keys(normalizedEvents).slice(0, 5));
 
 let filled = 0;
 let missing = 0;
