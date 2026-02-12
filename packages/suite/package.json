@@ -135,7 +135,7 @@
         "web3-utils": "^4.3.2"
     },
     "devDependencies": {
-        "@testing-library/react": "^16.3.0",
+        "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
         "@types/file-saver": "^2.0.6",
