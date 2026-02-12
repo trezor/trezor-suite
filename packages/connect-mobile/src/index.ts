@@ -1,10 +1,12 @@
 import EventEmitter from 'events';
 
 import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
+import { createErrorMessage } from '@trezor/connect/src/events';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type { ConnectSettings, ConnectSettingsMobile } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     DEEPLINK_VERSION,
@@ -27,9 +29,8 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         };
     }
 
-    public setTransports() {
-        // TODO: implement
-        throw new Error('Unsupported right now');
+    public updateConnectSettings(_params: UpdateConnectSettings) {
+        return Promise.resolve(createErrorMessage(ERRORS.TypedError('Method_InvalidPackage')));
     }
 
     private validateConnectSrc(connectSrc?: string) {
@@ -201,8 +202,8 @@ const TrezorConnect = factory<
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
-        setTransports: impl.setTransports.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
+        updateConnectSettings: impl.updateConnectSettings.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),
     },

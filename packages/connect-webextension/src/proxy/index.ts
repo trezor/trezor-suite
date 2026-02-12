@@ -4,6 +4,7 @@ import EventEmitter from 'events';
 import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
+import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
@@ -60,11 +61,15 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
     );
 };
 
-const setTransports = () => {
-    // TODO: implement
-    throw new Error('Unsupported right now');
-};
-
+const updateConnectSettings = (_params: UpdateConnectSettings) =>
+    Promise.resolve(
+        createErrorMessage(
+            ERRORS.TypedError(
+                'Method_InvalidPackage',
+                'updateConnectSettings is not supported in this implementation',
+            ),
+        ),
+    );
 const call: CallMethod = async (params: any) => {
     try {
         const response = await _channel.postMessage({
@@ -92,8 +97,8 @@ const TrezorConnect = factory({
     eventEmitter,
     init,
     call,
-    setTransports,
     uiResponse,
+    updateConnectSettings,
     cancel,
     dispose,
 });
