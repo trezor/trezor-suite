@@ -13,7 +13,7 @@ import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 
-// Export module state and use it trezor-connect module to override init + setTransports params
+// Export module state and use it trezor-connect module to override init + updateConnectSettings params
 // getTransport function is reassigned in onLoad, onQuit
 type BluetoothModuleState = {
     getTransport: () => BluetoothTransport | undefined;

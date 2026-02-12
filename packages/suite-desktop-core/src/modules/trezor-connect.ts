@@ -42,7 +42,7 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
     }
 };
 
-// override TrezorConnect.init and TrezorConnect.setTransports params
+// override TrezorConnect.init and TrezorConnect.updateConnectSettings params
 // add BluetoothTransport if bluetooth module is enabled
 const getTransportsParam = (
     transports?: ConnectSettings['transports'],
@@ -69,7 +69,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
             : { proxy: '' };
         logger.info(SERVICE_NAME, `${running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
 
-        return TrezorConnect.setProxy(payload);
+        return TrezorConnect.updateConnectSettings(payload);
     };
 
     const ipcProxyOptions: IpcProxyHandlerOptions<typeof TrezorConnect> = {
@@ -109,7 +109,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     return response;
                 }
 
-                if (method === 'setTransports') {
+                if (method === 'updateConnectSettings') {
                     params[0].transports = getTransportsParam(params[0].transports);
                 }
 

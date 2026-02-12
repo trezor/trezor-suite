@@ -3,7 +3,6 @@ import { ConnectWebKey } from './types';
 // List of methods that don't work with device, so they don't need to be patched
 export const blacklist: ConnectWebKey[] = [
     'init',
-    'setTransports',
     'getSettings',
     'on',
     'off',
