@@ -9,7 +9,7 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     init: InitType<SettingsType>;
     call: CallMethod;
     eventEmitter: EventEmitter;
-    setTransports: TrezorConnect['setTransports'];
+    updateConnectSettings: TrezorConnect['updateConnectSettings'];
     uiResponse: TrezorConnect['uiResponse'];
     cancel: TrezorConnect['cancel'];
     dispose: TrezorConnect['dispose'];
@@ -84,7 +84,6 @@ export const connectCallableMethods = [
     'rippleSignTransaction',
     'setBrightness',
     'setBusy',
-    'setProxy',
     'showDeviceTutorial',
     'signMessage',
     'signTransaction',
@@ -114,7 +113,7 @@ export const factory = <
         eventEmitter,
         init,
         call,
-        setTransports,
+        updateConnectSettings,
         uiResponse,
         cancel,
         dispose,
@@ -140,7 +139,7 @@ export const factory = <
 
     return {
         init,
-        setTransports,
+        updateConnectSettings,
 
         on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
             eventEmitter.on(type, fn);

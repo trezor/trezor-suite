@@ -48,7 +48,6 @@ export { default as resetDevice } from './resetDevice';
 export { default as loadDevice } from './loadDevice';
 export { default as setBrightness } from './setBrightness';
 export { default as setBusy } from './setBusy';
-export { default as setProxy } from './setProxy';
 export { default as signMessage } from './signMessage';
 export { default as signTransaction } from './signTransaction';
 export { default as unlockPath } from './unlockPath';

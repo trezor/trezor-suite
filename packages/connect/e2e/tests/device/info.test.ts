@@ -64,7 +64,6 @@ describe('__info common param', () => {
                 [
                     // "utility" methods
                     'init',
-                    'setTransports',
                     'getSettings',
                     'on',
                     'off',
@@ -78,6 +77,7 @@ describe('__info common param', () => {
                     'disableWebUSB',
                     'bleUnpair',
                     'firmwareUpdate', // todo: this should probably work with __info param as well
+                    'updateConnectSettings',
                 ].includes(method)
             ) {
                 return;

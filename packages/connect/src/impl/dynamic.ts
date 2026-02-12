@@ -7,6 +7,7 @@ import { parseManifest, parseVersion } from '../data/connectSettings';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings } from '../types';
+import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;
@@ -25,7 +26,7 @@ type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
 export type ConnectImpl = Omit<
     ConnectFactoryDependencies<{}>,
-    'init' | 'eventEmitter' | 'uiResponse' | 'setTransports'
+    'init' | 'eventEmitter' | 'uiResponse' | 'updateConnectSettings'
 > & {
     init: (params: ConnectImplSettings) => Promise<void>;
 };
@@ -116,6 +117,17 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
         }
     }
 
+    public updateConnectSettings(_params: UpdateConnectSettings) {
+        return Promise.resolve(
+            createErrorMessage(
+                ERRORS.TypedError(
+                    'Method_InvalidPackage',
+                    'updateConnectSettings is not supported in this implementation',
+                ),
+            ),
+        );
+    }
+
     public async call(params: CallMethodPayload) {
         try {
             // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
@@ -191,11 +203,6 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
         }
 
         return false;
-    }
-
-    // not supported, transports are controlled by suite
-    public setTransports() {
-        throw new Error('Method_InvalidPackage');
     }
 
     // this shouldn't be needed, ui response should be handled in suite

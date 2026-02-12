@@ -48,7 +48,7 @@ type TopLevelMethods =
     | 'off'
     | 'on'
     | 'removeAllListeners'
-    | 'setTransports'
+    | 'updateConnectSettings'
     | 'uiResponse';
 
 // necessary part of CallMethod which shouldn't be exposed to the consumers

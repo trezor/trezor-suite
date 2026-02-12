@@ -21,7 +21,7 @@ import {
 } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
-import type { SetTransports } from '../types/api/setTransports';
+import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { Log, initLog } from '../utils/debug';
 
 export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
@@ -175,15 +175,36 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this._log.enabled = !!this._settings.debug;
     }
 
-    public setTransports({ transports }: SetTransports) {
-        if (!transports?.length) {
-            transports = ['BridgeTransport', 'WebUsbTransport'];
+    public updateConnectSettings(params: UpdateConnectSettings) {
+        const { proxy, transports } = params;
+
+        if (proxy !== undefined) {
+            return Promise.resolve(
+                createErrorMessage(
+                    ERRORS.TypedError(
+                        'Method_InvalidPackage',
+                        'proxy setting is not supported in web environment',
+                    ),
+                ),
+            );
         }
-        this._settings = parseConnectSettings({ ...this._settings, transports });
-        this.handleCoreMessage({
-            type: TRANSPORT.SET_TRANSPORTS,
-            payload: { transports },
-        });
+
+        if (transports !== undefined) {
+            let newTransports = transports;
+            if (!transports?.length) {
+                newTransports = ['BridgeTransport', 'WebUsbTransport'];
+            }
+            this._settings = parseConnectSettings({ ...this._settings, transports });
+            this.handleCoreMessage({
+                type: TRANSPORT.SET_TRANSPORTS,
+                payload: { transports: newTransports },
+            });
+        }
+
+        return Promise.resolve({
+            success: true as const,
+            payload: { message: 'success' },
+        } as const);
     }
 
     public async call(params: CallMethodPayload) {
