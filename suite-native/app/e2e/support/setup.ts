@@ -3,6 +3,7 @@ import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
 import { PreloadedState } from '@suite-native/state';
+import { mockInitialAppState } from '@suite-native/state/mocks';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -164,11 +165,12 @@ export const prepareTrezorEmulator = async ({
 };
 
 /**
- * Merges multiple preloaded state fragments into a single preloaded state and serializes the result.
+ * Merges multiple preloaded state fragments into the initial app state, to yield a complete preloaded state and serializes the result.
  * Be mindful about the order of the fragments, as the later fragments will always override the earlier ones!
  */
 export const preparePreloadedReduxState = (...stateFragments: PreloadedState[]): string => {
-    const definedFragments = stateFragments.filter(fragment => fragment !== undefined);
+    const initialStateAndFragments = [mockInitialAppState(), ...stateFragments];
+    const definedFragments = initialStateAndFragments.filter(fragment => fragment !== undefined);
     const mergedState = mergeDeepObject(...definedFragments);
 
     return JSON.stringify(mergedState);
