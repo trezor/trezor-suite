@@ -341,8 +341,20 @@ export const runDiscoveryThunk = createThunk(
         try {
             let device: TrezorDevice = passedDevice;
 
-            const reselectDevice = () => {
-                const selectedDevice = selectSelectedDevice(getState());
+            const reselectDevice = (
+                deviceState: TrezorDeviceWithState['state'],
+                devicePath: DeviceUniquePath,
+            ) => {
+                const selectedDevice = selectDeviceByStaticSessionId(
+                    getState(),
+                    deviceState.staticSessionId,
+                );
+                if (!selectedDevice) {
+                    dispatch(cancelDiscoveryThunk(devicePath));
+
+                    return device;
+                }
+
                 assertDeviceIsAcquired(selectedDevice);
 
                 return selectedDevice;
@@ -438,7 +450,7 @@ export const runDiscoveryThunk = createThunk(
                 );
             }
 
-            device = reselectDevice();
+            device = reselectDevice(deviceState, passedDevice.path);
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
@@ -540,7 +552,7 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            device = reselectDevice();
+            device = reselectDevice(deviceState, device.path);
 
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
