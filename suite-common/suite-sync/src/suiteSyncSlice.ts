@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
-import { deviceActions } from '@suite-common/wallet-core';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
 import { StaticSessionId } from '@trezor/connect';
 
 export type SuiteSyncErrorType =

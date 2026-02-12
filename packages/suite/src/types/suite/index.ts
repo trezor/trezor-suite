@@ -3,6 +3,7 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -15,12 +16,7 @@ import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-man
 import type { Route } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    deviceActions,
-    discoveryActions,
-    feesActions,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+import { discoveryActions, feesActions, transactionsActions } from '@suite-common/wallet-core';
 import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
 import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 

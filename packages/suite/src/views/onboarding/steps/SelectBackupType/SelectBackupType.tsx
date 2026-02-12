@@ -15,8 +15,8 @@ import {
 import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectDeviceDefaultBackupType } from '@suite-common/device';
 import { BackupType } from '@suite-common/suite-types';
-import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
 import {
     Elevation,

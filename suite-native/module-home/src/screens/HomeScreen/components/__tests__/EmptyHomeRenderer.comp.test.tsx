@@ -1,4 +1,4 @@
-import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import {
     PreloadedState,
     getTranslation,

@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
-import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {

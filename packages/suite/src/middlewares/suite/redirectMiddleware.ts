@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import { selectIsRouterLocked } from 'src/selectors/suite/suiteSelectors';

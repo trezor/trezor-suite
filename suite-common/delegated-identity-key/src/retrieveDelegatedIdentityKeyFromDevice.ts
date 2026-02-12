@@ -1,10 +1,11 @@
+import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/device';
 import {
     DelegatedIdentityKey,
+    DeviceCancelledErrType,
+    DeviceErrorType,
     TrezorDeviceWithState,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
-import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/wallet-core';
-import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 

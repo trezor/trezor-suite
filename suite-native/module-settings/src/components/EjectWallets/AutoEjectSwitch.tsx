@@ -1,10 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    selectIsDeviceAutoEjectEnabled,
-    selectIsNoPhysicalDeviceConnected,
-    toggleAutoEjectThunk,
-} from '@suite-common/wallet-core';
+import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
+import { selectIsDeviceAutoEjectEnabled, toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';

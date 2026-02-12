@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Column, H3, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -2,6 +2,12 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import {
+    deviceActions,
+    selectDeviceByStaticSessionId,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
     AnyAction,
     ExtraDependencies,
     SuiteCompatibleThunk,
@@ -39,16 +45,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
+import { selectDeviceThunk } from './selectDeviceThunk';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
-import { deviceActions } from '../device/deviceActions';
-import {
-    selectDeviceByStaticSessionId,
-    selectDevices,
-    selectSelectedDevice,
-} from '../device/deviceSelectors';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
-import { selectDeviceThunk } from './selectDeviceThunk';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';

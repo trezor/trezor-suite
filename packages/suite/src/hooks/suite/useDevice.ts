@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 

@@ -1,15 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFirmwareChannel } from '@suite-common/firmware';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     type DeviceRootState,
     deviceInvariabilityCheck,
     getIsDeviceIdValid,
     selectPersistentDeviceDataById,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectFirmwareChannel } from '@suite-common/firmware';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';

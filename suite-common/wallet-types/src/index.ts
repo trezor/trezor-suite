@@ -16,7 +16,6 @@ export * from './send';
 export * from './solanaStaking';
 export * from './wallet';
 export * from './globalSendReceive';
-export * from './device';
 export * from './baseCurrency';
 export * from './transactionSimulation';
 export * from './stakeTypes';

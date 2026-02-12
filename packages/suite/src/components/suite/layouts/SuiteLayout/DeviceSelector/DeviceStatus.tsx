@@ -1,4 +1,4 @@
-import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
+import { selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Row, Tooltip } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';

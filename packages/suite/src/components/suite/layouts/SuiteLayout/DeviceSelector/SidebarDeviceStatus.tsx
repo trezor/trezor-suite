@@ -1,6 +1,6 @@
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { TrezorDevice } from 'src/types/suite';
 

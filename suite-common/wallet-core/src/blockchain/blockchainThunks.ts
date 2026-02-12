@@ -1,3 +1,4 @@
+import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -34,7 +35,6 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
-import { selectDevices } from '../device/deviceSelectors';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 

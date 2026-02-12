@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { BtcOnlyCoinEnablingContent, CoinEnablingForm } from '@suite-native/coin-enabling';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';

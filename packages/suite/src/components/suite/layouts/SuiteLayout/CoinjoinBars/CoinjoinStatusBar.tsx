@@ -1,12 +1,8 @@
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import {
-    selectAccountByKey,
-    selectDeviceThunk,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';

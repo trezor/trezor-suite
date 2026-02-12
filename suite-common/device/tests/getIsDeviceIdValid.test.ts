@@ -1,7 +1,7 @@
 import type { UnknownDevice } from '@suite-common/suite-types';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 
-import { getIsDeviceIdValid } from '../getIsDeviceIdValid';
+import { getIsDeviceIdValid } from '../src/services/getIsDeviceIdValid';
 
 describe(getIsDeviceIdValid.name, () => {
     it('returns true valid acquired device', () => {

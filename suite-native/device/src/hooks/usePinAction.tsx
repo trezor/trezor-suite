@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

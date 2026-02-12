@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceModelById,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelIcon, Icon, IconSize } from '@suite-native/icons';
 
 type DeviceItemIconProps = {

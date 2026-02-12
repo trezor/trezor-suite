@@ -1,11 +1,8 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    selectHasRunningDiscovery,
-    selectIsDeviceBackupRequired,
-    selectIsFirmwareUpgradable,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceBackupRequired, selectIsFirmwareUpgradable } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {

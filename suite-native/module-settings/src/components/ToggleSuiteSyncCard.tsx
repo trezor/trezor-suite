@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

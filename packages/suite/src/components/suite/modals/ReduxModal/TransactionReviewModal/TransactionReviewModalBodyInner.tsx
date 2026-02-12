@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
-    DeviceRootState,
     SendState,
     SerializedTx,
     StakeState,

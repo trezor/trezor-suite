@@ -1,8 +1,8 @@
 import * as semver from 'semver';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';

@@ -1,14 +1,11 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
+import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
-import {
-    deviceActions,
-    prepareDeviceReducer,
-    prepareWalletSettingsReducer,
-} from '@suite-common/wallet-core';
+import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
 import { featureFlagsSlice } from '@suite-native/feature-flags';
 import { NativeFirmwareState, nativeFirmwareReducer } from '@suite-native/firmware';

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -9,7 +10,6 @@ import {
     getStatus,
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Column, Paragraph, Text, motionEasing } from '@trezor/components';
 import { DeviceWithScene } from '@trezor/product-components';
 

@@ -2,11 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectHasRunningDiscovery,
-    selectIsDeviceInViewOnlyMode,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconButton } from '@suite-native/atoms';
 import {
     AccountsImportStackRoutes,

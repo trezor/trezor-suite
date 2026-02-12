@@ -1,13 +1,12 @@
 import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 
+import { type DeviceRootState, selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type DeviceRootState,
     selectAccounts,
     selectDeviceAccounts,
-    selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import addressValidator from '@trezor/address-validator';

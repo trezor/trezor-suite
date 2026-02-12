@@ -43,8 +43,8 @@ jest.mock('@suite-native/services', () => {
 });
 
 let mockIsDeviceConnected = true;
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 

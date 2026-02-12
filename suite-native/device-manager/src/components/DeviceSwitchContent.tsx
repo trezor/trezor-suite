@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
+import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/device';
 import { Text } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';

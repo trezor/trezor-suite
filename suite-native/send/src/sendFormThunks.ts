@@ -1,17 +1,16 @@
 import { isRejected } from '@reduxjs/toolkit';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     PushTransactionError,
     SignTransactionError,
     SignTransactionTimeoutError,
-    deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
-    selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
     sendFormActions,

@@ -1,11 +1,11 @@
 import { TranslationKey } from '@suite/intl';
-import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import {
     getIsDeviceIdValid,
     selectIsDeviceInvariabilityCheckSuccess,
     selectSelectedDevice,
     selectWasFwHashCheckOtherErrorLastTime,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
 import { FirmwareHashCheckError } from '@trezor/connect';
 

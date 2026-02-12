@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';

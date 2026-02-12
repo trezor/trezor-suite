@@ -1,6 +1,6 @@
+import type { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     StakeRootState,
     TransactionsRootState,
 } from '@suite-common/wallet-core';

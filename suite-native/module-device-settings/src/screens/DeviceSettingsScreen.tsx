@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     selectDeviceLabel,
     selectDeviceModel,
@@ -8,7 +7,8 @@ import {
     selectIsDeviceConnectedViaBluetooth,
     selectIsDeviceInitialized,
     selectIsThpDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { TitledSection, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';

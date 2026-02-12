@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
 
 import { AccountSearchBox } from './AccountSearchBox';

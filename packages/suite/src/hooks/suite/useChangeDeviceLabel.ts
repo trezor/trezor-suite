@@ -4,8 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { yup } from '@suite-common/validators';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

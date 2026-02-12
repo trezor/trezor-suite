@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';

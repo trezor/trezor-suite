@@ -4,11 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectDeviceAutoconnectCredentials, selectIsDeviceConnected } from '@suite-common/device';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
-import {
-    selectDeviceAutoconnectCredentials,
-    selectIsDeviceConnected,
-} from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,

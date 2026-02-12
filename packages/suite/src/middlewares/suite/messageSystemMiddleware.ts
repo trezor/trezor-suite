@@ -1,3 +1,4 @@
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
 import {
     categorizeMessages,
@@ -6,7 +7,7 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
-import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { changeNetworks } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

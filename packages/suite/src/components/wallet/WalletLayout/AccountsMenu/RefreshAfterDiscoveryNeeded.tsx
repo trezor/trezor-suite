@@ -4,8 +4,8 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
-    selectSelectedDevice,
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';

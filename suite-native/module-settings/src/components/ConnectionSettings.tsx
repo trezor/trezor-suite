@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     Box,
     Card,

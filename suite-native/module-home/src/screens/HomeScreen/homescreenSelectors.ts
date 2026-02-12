@@ -1,3 +1,12 @@
+import {
+    DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectIsDeviceBackedUp,
+    selectIsDeviceConnected,
+    selectIsFirmwareUpgradable,
+    selectIsPortfolioTrackerDevice,
+    selectShouldOfferUpdateFirmware,
+} from '@suite-common/device';
 import { MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
@@ -5,17 +14,7 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import {
-    DeviceRootState,
-    DiscoveryRootState,
-    selectDeviceStaticSessionId,
-    selectHasRunningDiscovery,
-    selectIsDeviceBackedUp,
-    selectIsDeviceConnected,
-    selectIsFirmwareUpgradable,
-    selectIsPortfolioTrackerDevice,
-    selectShouldOfferUpdateFirmware,
-} from '@suite-common/wallet-core';
+import { DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<

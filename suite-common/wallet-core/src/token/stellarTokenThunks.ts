@@ -1,5 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -14,7 +15,6 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
 
-import { selectSelectedDevice } from '../device/deviceSelectors';
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 
 export interface TokenThunkPayload {

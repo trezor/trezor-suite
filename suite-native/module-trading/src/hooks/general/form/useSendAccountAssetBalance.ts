@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     AccountsRootState,
-    DeviceRootState,
     TransactionsRootState,
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';

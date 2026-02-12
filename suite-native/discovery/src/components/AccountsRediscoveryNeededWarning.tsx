@@ -2,13 +2,12 @@ import { useSelector } from 'react-redux';
 
 import {
     DeviceRootState,
-    WalletCoreCompoundRootState,
     selectDeviceModelById,
     selectIsDeviceConnected,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-    selectShouldRediscover,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { WalletCoreCompoundRootState, selectShouldRediscover } from '@suite-common/wallet-core';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

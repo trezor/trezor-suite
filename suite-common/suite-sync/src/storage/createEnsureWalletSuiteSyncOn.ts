@@ -1,11 +1,10 @@
+import { isTrezorDeviceWithState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import {
     EnsureWalletSuiteSyncOn,
     RefreshSuiteSyncKeysDep,
     SubscribeSuiteSyncDataDep,
     SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
-import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err } from '@trezor/type-utils';
 
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';

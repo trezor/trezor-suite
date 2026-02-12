@@ -2,13 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     deviceActions,
-    selectIsAnyNetworkEnabled,
     selectIsDeviceInitialized,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { Button } from '@suite-native/atoms';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';

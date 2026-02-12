@@ -5,10 +5,10 @@ import {
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
+import { selectDevices } from '@suite-common/device';
 import { selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';

@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectIsDeviceBackupUnfinished } from '@suite-common/wallet-core';
+import { selectIsDeviceBackupUnfinished } from '@suite-common/device';
 import { Tooltip } from '@trezor/components';
 
 import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';

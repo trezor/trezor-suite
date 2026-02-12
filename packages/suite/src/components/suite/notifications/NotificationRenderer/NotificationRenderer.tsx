@@ -2,9 +2,9 @@ import { ComponentType, JSX } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

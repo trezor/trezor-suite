@@ -2,11 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
+import type { DeviceRootState } from '@suite-common/device';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
     TransactionsRootState,
     selectAccountByKey,
     selectAccountFormattedBalance,

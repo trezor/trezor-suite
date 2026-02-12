@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/device';
 import { Box, HStack, Image, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';

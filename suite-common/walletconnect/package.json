@@ -14,6 +14,7 @@
         "@reown/walletkit": "^1.2.8",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/mev": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

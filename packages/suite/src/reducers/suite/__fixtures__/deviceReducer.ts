@@ -1,10 +1,6 @@
+import { DeviceReducerState, deviceActions, deviceReducerInitialState } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import {
-    DeviceReducerState,
-    deviceActions,
-    deviceReducerInitialState,
-} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 

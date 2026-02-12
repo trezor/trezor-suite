@@ -1,15 +1,14 @@
 import { produce } from 'immer';
 
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
-    AccountsRootState,
     DeviceReducerState,
     deviceActions,
-    selectAccountByKey,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 

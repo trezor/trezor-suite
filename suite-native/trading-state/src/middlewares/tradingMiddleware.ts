@@ -1,7 +1,8 @@
 import { UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { deviceActions, formDraftActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { formDraftActions } from '@suite-common/wallet-core';
 
 import { buyActions, exchangeActions, sellActions, tradingActions } from '../reducers';
 import { getFormDraftKeyByTradeType } from '../utils';

@@ -11,6 +11,7 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
@@ -30,9 +31,6 @@
         },
         {
             "path": "../../suite-common/wallet-constants"
-        },
-        {
-            "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"

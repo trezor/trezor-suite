@@ -1,5 +1,5 @@
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isSelectedDevice } from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { BadgeProps, FlexProps } from '@trezor/components';
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
 import { useDispatch, useSelector } from '../../hooks/suite';

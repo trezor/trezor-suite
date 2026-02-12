@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/device';
 import { events } from '@suite-native/analytics';
 import {
     BottomSheetModal,

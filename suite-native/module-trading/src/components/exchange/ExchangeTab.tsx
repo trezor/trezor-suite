@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    selectHasBitcoinOnlyFirmware,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { BtcOnlyFirmwareInfo, PortfolioTrackerInfo } from '@suite-native/trading-atoms';
 import { selectIsTradingExchangeEnabled } from '@suite-native/trading-state';
 

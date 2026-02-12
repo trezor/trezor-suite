@@ -15,6 +15,7 @@
         "@react-navigation/native-stack": "7.9.0",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/react-native-skia": "2.2.12",
+        "@suite-common/device": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",

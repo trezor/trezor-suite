@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';

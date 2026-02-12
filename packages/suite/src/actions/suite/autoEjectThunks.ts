@@ -1,5 +1,6 @@
+import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { selectDevices, setDeviceAutoEjectThunk } from '@suite-common/wallet-core';
+import { setDeviceAutoEjectThunk } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 

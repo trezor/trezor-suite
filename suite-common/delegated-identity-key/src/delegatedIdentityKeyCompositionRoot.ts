@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { selectDeviceDelegatedIdentityKey } from '@suite-common/device';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { selectDeviceDelegatedIdentityKey } from '@suite-common/wallet-core';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
 import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentityKeyFromState';

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
 import {
     DeviceAutoConnectStackParamList,

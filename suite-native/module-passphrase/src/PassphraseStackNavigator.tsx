@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import {
     PassphraseStackParamList,
     PassphraseStackRoutes,

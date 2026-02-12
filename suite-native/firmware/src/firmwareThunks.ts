@@ -1,5 +1,5 @@
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 
 const NATIVE_FIRMWARE_MODULE_PREFIX = 'nativeFirmware';
 

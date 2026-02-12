@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -8,11 +9,7 @@ import {
     TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
-import {
-    AccountsRootState,
-    DeviceReducerState,
-    deviceInitialState,
-} from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';

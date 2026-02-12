@@ -1,7 +1,8 @@
+import { selectDevices } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey, selectDevices } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account, AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {

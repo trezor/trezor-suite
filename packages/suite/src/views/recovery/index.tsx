@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { usePin } from '@suite-common/wallet-core';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { usePin } from '@suite-common/wallet-core';
+import { usePin } from '@suite-common/device';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 

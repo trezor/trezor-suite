@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
+import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { Box, Image } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

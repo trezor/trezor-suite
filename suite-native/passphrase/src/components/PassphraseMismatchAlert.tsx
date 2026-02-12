@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
-    selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';

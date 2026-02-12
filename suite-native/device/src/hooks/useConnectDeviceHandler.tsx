@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import {
-    acquireDevice,
     selectIsAnyPhysicalDeviceConnectedViaUsb,
     selectIsDeviceThpLocked,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { acquireDevice } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
     HomeStackParamList,

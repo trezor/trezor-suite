@@ -1,5 +1,5 @@
+import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
 
 export const backfillPortfolioTrackerUnavailableCapabilities = (
     devices: TrezorDevice[],

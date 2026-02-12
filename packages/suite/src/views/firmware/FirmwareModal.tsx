@@ -1,7 +1,8 @@
 import { ReactNode, useState } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
-import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

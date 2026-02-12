@@ -3,11 +3,11 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     DiscoveryRootState,
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';

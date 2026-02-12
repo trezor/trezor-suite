@@ -10,12 +10,12 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import { Device, DeviceState, Features, KnownDevice, Unsuccessful } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 
 import { DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
+import { shouldDeviceBeRemembered } from './deviceUtils';
 
 export type DeviceReducerState = {
     /**

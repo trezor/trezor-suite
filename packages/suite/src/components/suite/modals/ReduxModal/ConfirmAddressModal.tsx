@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';

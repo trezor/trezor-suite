@@ -1,4 +1,10 @@
 import { events as sharedEvents } from '@suite-common/analytics';
+import {
+    deviceActions,
+    selectDevices,
+    selectIsPendingTransportEvent,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { selectFirmwareChannel } from '@suite-common/firmware/src/firmwareReducer';
 import {
     Feature,
@@ -8,14 +14,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName } from '@suite-common/suite-utils';
-import {
-    deviceActions,
-    deviceConnectThunks,
-    selectDevices,
-    selectEnabledNetworks,
-    selectIsPendingTransportEvent,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { deviceConnectThunks, selectEnabledNetworks } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,

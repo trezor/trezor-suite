@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { Box, PictogramTitleHeader, Text, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

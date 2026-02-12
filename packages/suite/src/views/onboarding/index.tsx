@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { goto } from 'src/actions/suite/routerActions';

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,

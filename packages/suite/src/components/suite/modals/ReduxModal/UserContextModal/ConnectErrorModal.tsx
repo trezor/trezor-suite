@@ -4,7 +4,7 @@ import {
     connectPopupCallThunkInner,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_REQUEST } from '@trezor/connect';
 import { spacings } from '@trezor/theme';

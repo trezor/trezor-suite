@@ -1,5 +1,6 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type AccountType,
@@ -13,8 +14,6 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { formattedAccountTypeMap } from './accountsConstants';
 import { AccountsRootState } from './accountsReducer';
-import { DeviceRootState } from '../device/deviceReducer';
-import { selectSelectedDevice } from '../device/deviceSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState

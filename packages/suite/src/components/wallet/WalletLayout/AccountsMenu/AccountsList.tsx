@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { findSuiteSyncAccountLabel, selectSuiteSyncAccountLabels } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
-import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';

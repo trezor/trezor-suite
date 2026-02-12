@@ -5,11 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import {
     selectDeviceModel,
     selectFirmwareReleaseConfig,
-    selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
     selectIsFirmwareUpgradable,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';

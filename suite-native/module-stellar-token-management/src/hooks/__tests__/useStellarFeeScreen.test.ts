@@ -86,11 +86,15 @@ jest.mock('@suite-native/atoms', () => ({
     }),
 }));
 
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
+    selectDeviceButtonRequestsCodes: jest.fn(),
+    selectIsDeviceConnectedAndAuthorized: jest.fn(),
+}));
+
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectAccountByKey: jest.fn(),
-    selectDeviceButtonRequestsCodes: jest.fn(),
-    selectIsDeviceConnectedAndAuthorized: jest.fn(),
     selectDeepCopyOfFormDraft: jest.fn(),
     fetchAndUpdateAccountThunk: jest.fn(),
 }));
@@ -134,12 +138,10 @@ jest.mock('../../thunks', () => ({
 }));
 
 const mockSelectAccountByKey = jest.requireMock('@suite-common/wallet-core').selectAccountByKey;
-const mockSelectDeviceButtonRequestsCodes = jest.requireMock(
-    '@suite-common/wallet-core',
-).selectDeviceButtonRequestsCodes;
-const mockSelectIsDeviceConnectedAndAuthorized = jest.requireMock(
-    '@suite-common/wallet-core',
-).selectIsDeviceConnectedAndAuthorized;
+const mockSelectDeviceButtonRequestsCodes =
+    jest.requireMock('@suite-common/device').selectDeviceButtonRequestsCodes;
+const mockSelectIsDeviceConnectedAndAuthorized =
+    jest.requireMock('@suite-common/device').selectIsDeviceConnectedAndAuthorized;
 const mockSelectDeepCopyOfFormDraft = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectDeepCopyOfFormDraft;

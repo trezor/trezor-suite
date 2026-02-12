@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import {
-    selectHasOnlyEmptyPortfolioTracker,
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
     selectIsDeviceThpLocked,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
 import { selectIsDeviceReadyToUse, selectIsDeviceSetupSupported } from '@suite-native/device';
 

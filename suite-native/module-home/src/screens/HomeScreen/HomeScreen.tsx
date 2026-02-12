@@ -7,8 +7,8 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceUnlocked,
-    selectIsDiscoveredDeviceAccountless,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
 import {
     selectIsBluetoothDeviceOsUnpairingRequired,
     useBluetoothAlerts,

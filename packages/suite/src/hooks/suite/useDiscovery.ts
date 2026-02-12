@@ -1,10 +1,7 @@
 import { useCallback } from 'react';
 
-import {
-    isDiscoveryInProgress,
-    selectDiscoveryByDevicePath,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 
 import { useSelector } from './useSelector';
 

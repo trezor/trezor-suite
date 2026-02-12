@@ -6,7 +6,6 @@
     },
     "references": [
         { "path": "../suite-types" },
-        { "path": "../wallet-types" },
         { "path": "../../packages/type-utils" }
     ]
 }

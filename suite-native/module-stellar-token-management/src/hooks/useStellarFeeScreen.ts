@@ -5,14 +5,16 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
-    AccountsRootState,
     DeviceRootState,
+    selectDeviceButtonRequestsCodes,
+    selectIsDeviceConnectedAndAuthorized,
+} from '@suite-common/device';
+import {
+    AccountsRootState,
     FormDraftRootState,
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
     selectDeepCopyOfFormDraft,
-    selectDeviceButtonRequestsCodes,
-    selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,

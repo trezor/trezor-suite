@@ -4,6 +4,13 @@ import { MiddlewareAPI } from 'redux';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
+import {
+    deviceActions,
+    selectDeviceByState,
+    selectDeviceByStaticSessionId,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import {
@@ -23,16 +30,11 @@ import {
     accountsActions,
     blockchainActions,
     changeNetworks,
-    deviceActions,
     explorerActions,
     selectAccountByKey,
     selectAccountsByDeviceState,
-    selectDeviceByState,
-    selectDeviceByStaticSessionId,
-    selectDevices,
     selectHistoricFiatRates,
     selectIsDeviceAutoEjectEnabled,
-    selectSelectedDevice,
     setBaseCurrency,
     transactionsActions,
     updateTxsFiatRatesThunk,

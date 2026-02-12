@@ -1,6 +1,6 @@
 import { A, D, O } from '@mobily/ts-belt';
 
-import { DeviceRootState } from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/device';
 
 /**
  * Beware, if you want to persist some part of state outside device reducer,

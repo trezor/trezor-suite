@@ -1,5 +1,6 @@
 import { fromWei, toWei } from 'web3-utils';
 
+import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -31,7 +32,6 @@ import {
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
-    isApprovalFlowSupported,
     isEvmApprovalTx,
     isPending,
     isSentTransaction,
@@ -49,7 +49,6 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../device/deviceSelectors';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const calculate = (

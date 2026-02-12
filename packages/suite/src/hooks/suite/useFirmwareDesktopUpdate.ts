@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/device';
 import {
     type FirmwareUpdateProps,
     selectFirmware,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
-import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { useSelector } from './useSelector';

@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { IconName } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

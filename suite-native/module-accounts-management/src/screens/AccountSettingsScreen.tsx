@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountByKey,
     selectFormattedAccountType,
-    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';

@@ -1,5 +1,5 @@
+import { portfolioTrackerDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { portfolioTrackerDevice } from '@suite-common/wallet-core';
 
 import { SuiteSyncInteraction } from '../suiteSyncTypes';
 import {

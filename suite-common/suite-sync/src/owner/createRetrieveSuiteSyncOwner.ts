@@ -1,13 +1,16 @@
 import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
 import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import { DeviceError } from '@suite-common/device';
 import {
     CreateSuiteSyncOwner,
     CreateSuiteSyncOwnerError,
     SuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
-import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
-import { DeviceError } from '@suite-common/wallet-core';
-import { DeviceErrorType } from '@suite-common/wallet-types';
+import {
+    DelegatedIdentityKey,
+    DeviceErrorType,
+    TrezorDeviceWithState,
+} from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 import { Result, err } from '@trezor/type-utils';
 

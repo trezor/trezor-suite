@@ -1,6 +1,7 @@
 import { address } from '@solana/kit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
@@ -20,7 +21,6 @@ import {
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Account,
     AddressDisplayOptions,

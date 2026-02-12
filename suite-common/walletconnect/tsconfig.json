@@ -5,6 +5,7 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../connect-popup" },
+        { "path": "../device" },
         { "path": "../mev" },
         { "path": "../redux-utils" },
         { "path": "../suite-utils" },

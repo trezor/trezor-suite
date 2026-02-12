@@ -1,3 +1,4 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     SuiteSyncDataRootState,
     WithSuiteSyncAndDeviceState,
@@ -6,11 +7,7 @@ import {
 } from '@suite-common/suite-sync';
 import { getIsSuiteSyncLabelingActionEnabled } from '@suite-common/suite-sync/src/suiteSyncUtils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectIsExperimentalFeatureEnabled } from '@suite-native/settings';

@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';

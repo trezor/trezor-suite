@@ -6,7 +6,7 @@ import {
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 

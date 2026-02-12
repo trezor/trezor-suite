@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -10,11 +11,7 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import {
-    selectAccounts,
-    selectRawNetworkFeeInfo,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectAccounts, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 

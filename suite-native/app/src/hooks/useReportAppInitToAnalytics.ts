@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import {
+    selectDeviceLanguage,
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/device';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
     selectBaseCurrency,
     selectBitcoinAmountUnit,
-    selectDeviceLanguage,
     selectEnabledNetworks,
-    selectRememberedHiddenWalletsCount,
-    selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';

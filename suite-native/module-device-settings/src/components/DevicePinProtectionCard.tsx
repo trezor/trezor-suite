@@ -2,11 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectHasRunningDiscovery,
-    selectIsDeviceProtectedByPin,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByPin, selectSelectedDevice } from '@suite-common/device';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

@@ -1,13 +1,12 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     AccountsRootState,
-    DeviceRootState,
     FormDraftRootState,
     selectAccountByKey,
     selectFormDraft,
-    selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
     selectSendPrecomposedTx,

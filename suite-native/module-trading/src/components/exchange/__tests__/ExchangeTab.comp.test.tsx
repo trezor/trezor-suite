@@ -7,8 +7,8 @@ let mockIsPortfolioTrackerDevice = false;
 let mockHasBitcoinOnlyFirmware = false;
 let mockIsTradingExchangeEnabled = true;
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectIsDeviceInViewOnlyMode: () => mockIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice: () => mockIsPortfolioTrackerDevice,
     selectHasBitcoinOnlyFirmware: () => mockHasBitcoinOnlyFirmware,

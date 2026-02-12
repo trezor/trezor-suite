@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
-import {
-    selectIsDeviceBackupRequired,
-    selectIsDeviceBackupUnfinished,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceBackupRequired, selectIsDeviceBackupUnfinished } from '@suite-common/device';
 import {
     AppTabsRoutes,
     HomeStackRoutes,

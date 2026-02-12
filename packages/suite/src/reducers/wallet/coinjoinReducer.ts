@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
     MessageSystemRootState,
@@ -7,13 +8,7 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    accountsActions,
-    selectAccountByKey,
-    selectDeviceStatus,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';

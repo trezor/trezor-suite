@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { ThpStep } from '@suite-common/thp';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite/useSelector';

@@ -1,6 +1,7 @@
+import { deviceActions } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
+import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

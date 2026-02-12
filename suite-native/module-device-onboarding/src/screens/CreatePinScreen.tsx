@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
 import { ConnectorImage, usePinAction } from '@suite-native/device';

@@ -1,4 +1,4 @@
-import { selectDeviceUnavailableCapabilities } from '@suite-common/wallet-core';
+import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { AddressDisplayOptions, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
+import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
-import { initialWalletSettingsState, prepareDeviceReducer } from '@suite-common/wallet-core';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';

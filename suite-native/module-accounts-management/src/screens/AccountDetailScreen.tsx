@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import type { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectAccountByKey,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';

@@ -3,8 +3,8 @@ import {
     prepareBluetoothReducerCreator,
     prepareInitialState,
 } from '@suite-common/bluetooth';
+import { deviceActions } from '@suite-common/device';
 import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { deviceActions } from '@suite-common/wallet-core';
 
 import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 

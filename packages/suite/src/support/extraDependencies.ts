@@ -9,6 +9,7 @@ import {
     createSuiteSyncDesktopCompositionRoot,
 } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import type { DeviceReducerState } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     CommonServices,
@@ -24,7 +25,6 @@ import {
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainState,
-    DeviceReducerState,
     ExplorerConfig,
     FiatRatesState,
     SendState,
@@ -47,17 +47,17 @@ import { ensureRouterPath, getPrefixedURL, stripPrefixedURL } from 'src/utils/su
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import { createDisableLegacyMetadataIfNeeded } from '../actions/suite/metadata/disableLegacyMetadateIfNeeded';
-import * as suiteActions from '../actions/suite/suiteActions';
-import type { BioAuthState } from '../reducers/bioAuth';
-import { AppState, TrezorDevice } from '../types/suite';
 import {
     HistoryDep,
     SuiteRouterHistory,
     SuiteRouterHistoryDep,
     SuiteRouterHistoryDeps,
 } from './suite/suiteRouterHistory';
+import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
+import { createDisableLegacyMetadataIfNeeded } from '../actions/suite/metadata/disableLegacyMetadateIfNeeded';
+import * as suiteActions from '../actions/suite/suiteActions';
+import type { BioAuthState } from '../reducers/bioAuth';
+import { AppState, TrezorDevice } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
     transportReconnect: true,

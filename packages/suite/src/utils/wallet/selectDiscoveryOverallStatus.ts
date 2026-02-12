@@ -1,9 +1,9 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
 

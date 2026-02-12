@@ -2,10 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectIsDeviceProtectedByPassphrase,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByPassphrase, selectSelectedDevice } from '@suite-common/device';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

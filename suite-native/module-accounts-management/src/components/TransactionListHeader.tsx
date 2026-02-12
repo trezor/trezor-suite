@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     AccountsRootState,
     TransactionsRootState,
     selectAccountByKey,
-    selectIsPortfolioTrackerDevice,
     selectIsTestnetAccount,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';

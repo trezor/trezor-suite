@@ -1,13 +1,13 @@
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
 import {
-    processEntropyCheckResultThunk,
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
     selectSimulatedEntropyCheckFail,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { createThunk } from '@suite-common/redux-utils';
+import { BackupType } from '@suite-common/suite-types';
+import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';

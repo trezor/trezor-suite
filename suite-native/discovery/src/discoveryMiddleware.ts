@@ -1,3 +1,4 @@
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -5,11 +6,9 @@ import {
     accountsActions,
     changeCoinVisibility,
     changeNetworks,
-    deviceActions,
     discoveryActions,
     selectIsAnyNetworkEnabled,
     selectIsBitcoinEnabled,
-    selectSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';

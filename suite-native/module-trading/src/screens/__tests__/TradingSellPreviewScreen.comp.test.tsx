@@ -46,8 +46,8 @@ jest.mock('../../hooks/general/useWatchTrade', () => ({
 }));
 
 let mockIsDeviceConnected = true;
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
     selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 

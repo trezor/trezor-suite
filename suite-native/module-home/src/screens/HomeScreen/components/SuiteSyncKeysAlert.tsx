@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
