@@ -89,7 +89,9 @@ export const reportEvent = async ({
     loggerEnabled,
 }: ReportEventProps) => {
     if (loggerEnabled) {
-        const payload = Object.fromEntries(new URL(url).searchParams.entries());
+        const payload = Object.fromEntries(
+            [...new URL(url).searchParams.entries()].filter(([key]) => !key.startsWith('c_')),
+        );
         // eslint-disable-next-line no-console
         console.log(`[Analytics] '${type}'`, { type, url, retry, payload });
     }
