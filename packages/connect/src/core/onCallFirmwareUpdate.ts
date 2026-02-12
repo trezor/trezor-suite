@@ -91,6 +91,8 @@ const waitForThpPairingConfirmation = async ({
     }
 };
 
+const WAIT_FOR_RECONNECT_TIME = 2000;
+
 const waitForReconnectedDevice = async (
     { bootloader, method, intermediary }: ReconnectParams,
     {
@@ -131,6 +133,7 @@ const waitForReconnectedDevice = async (
 
     let reconnectedDevice: Device | undefined;
     let thpPairingError = false;
+    let waitTime = WAIT_FOR_RECONNECT_TIME;
     do {
         postMessage(
             createUiMessage(UI.FIRMWARE_RECONNECT, {
@@ -142,7 +145,8 @@ const waitForReconnectedDevice = async (
             }),
         );
 
-        await resolveAfter(2000);
+        await resolveAfter(waitTime);
+
         try {
             reconnectedDevice = deviceList.getOnlyDevice(device.descriptor.apiType);
         } catch {
@@ -196,8 +200,11 @@ const waitForReconnectedDevice = async (
                 uiPromises.rejectAll(error);
 
                 // error in THP pairing
-                if (error.code === 'Device_ThpPairingTagInvalid') {
-                    thpPairingError = true;
+                thpPairingError = error.code === 'Device_ThpPairingTagInvalid';
+                if (thpPairingError || error.code === 'Failure_ActionCancelled') {
+                    waitTime = 0;
+                } else {
+                    waitTime = WAIT_FOR_RECONNECT_TIME;
                 }
             }
         }
