@@ -10,7 +10,7 @@ import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
@@ -83,13 +83,10 @@ export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
     const dispatch = useDispatch();
-    const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchDeviceClick = () => {
-        if (!isDiscoveryRunning) {
-            dispatch(openSwitchDeviceDialog());
-            dispatch(setRecentlyConnectedDevicePath(null));
-        }
+        dispatch(openSwitchDeviceDialog());
+        dispatch(setRecentlyConnectedDevicePath(null));
     };
 
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -103,30 +100,21 @@ export const DeviceSelector = () => {
             zIndex={zIndices.popover /* to prevent it from appearing above modals */}
         >
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
-                <Tooltip
-                    isActive={isDiscoveryRunning}
-                    width="100%"
-                    placement="bottom"
-                    cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
-                    content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
+                <InnerContainer
+                    onClick={handleSwitchDeviceClick}
+                    tabIndex={0}
+                    data-testid="@menu/switch-device"
                 >
-                    <InnerContainer
-                        onClick={handleSwitchDeviceClick}
-                        $isDisabled={isDiscoveryRunning}
-                        tabIndex={0}
-                        data-testid="@menu/switch-device"
-                    >
-                        <SidebarDeviceStatus />
+                    <SidebarDeviceStatus />
 
-                        <ExpandedSidebarOnly>
-                            {selectedDevice && selectedDevice.state && (
-                                <CaretContainer>
-                                    <Icon size={20} name="caretCircleDown" />
-                                </CaretContainer>
-                            )}
-                        </ExpandedSidebarOnly>
-                    </InnerContainer>
-                </Tooltip>
+                    <ExpandedSidebarOnly>
+                        {selectedDevice && selectedDevice.state && (
+                            <CaretContainer>
+                                <Icon size={20} name="caretCircleDown" />
+                            </CaretContainer>
+                        )}
+                    </ExpandedSidebarOnly>
+                </InnerContainer>
             </Wrapper>
         </Tooltip>
     );

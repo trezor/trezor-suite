@@ -335,22 +335,29 @@ const completeDiscovery = (
     });
 };
 
+export const cancelDiscoveryThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/cancel`,
+    (device: TrezorDevice, { dispatch }) => {
+        // cancel with a custom error code so we can distinguish it from device cancellation
+        TrezorConnect.cancel(USER_UI_CANCEL_CODE);
+
+        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
+    },
+);
+
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState, extra }): Promise<void> => {
         try {
             let device: TrezorDevice = passedDevice;
 
-            const reselectDevice = (
-                deviceState: TrezorDeviceWithState['state'],
-                devicePath: DeviceUniquePath,
-            ) => {
+            const reselectDevice = (deviceState: TrezorDeviceWithState['state']) => {
                 const selectedDevice = selectDeviceByStaticSessionId(
                     getState(),
                     deviceState.staticSessionId,
                 );
                 if (!selectedDevice) {
-                    dispatch(cancelDiscoveryThunk(devicePath));
+                    dispatch(cancelDiscoveryThunk(device));
 
                     return device;
                 }
@@ -450,7 +457,7 @@ export const runDiscoveryThunk = createThunk(
                 );
             }
 
-            device = reselectDevice(deviceState, passedDevice.path);
+            device = reselectDevice(deviceState);
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
@@ -552,7 +559,7 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            device = reselectDevice(deviceState, device.path);
+            device = reselectDevice(deviceState);
 
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
@@ -632,7 +639,7 @@ export const runDiscoveryThunk = createThunk(
 );
 
 type StartDiscoveryThunkParams = {
-    device?: TrezorDevice;
+    device: TrezorDevice | undefined;
     isAddingHiddenWallet?: boolean;
     isAddingExistingWallet?: boolean;
 };
@@ -643,16 +650,13 @@ export const startDiscoveryThunk = createThunk(
         { device, isAddingHiddenWallet, isAddingExistingWallet }: StartDiscoveryThunkParams,
         { dispatch, getState },
     ): void => {
-        const selectedDevice = selectSelectedDevice(getState());
-        const actualDevice = device ?? selectedDevice;
-
-        if (!actualDevice) {
+        if (!device) {
             console.warn('startDiscoveryThunk: no device found');
 
             return;
         }
 
-        const currentDiscovery = selectDiscoveryByDevicePath(getState(), actualDevice.path);
+        const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (isDiscoveryInProgress(currentDiscovery)) {
             console.warn(
@@ -663,7 +667,7 @@ export const startDiscoveryThunk = createThunk(
         }
 
         dispatch(
-            discoveryActions.startDiscovery(actualDevice.path, {
+            discoveryActions.startDiscovery(device.path, {
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
             }),
@@ -674,7 +678,7 @@ export const startDiscoveryThunk = createThunk(
         // - or adding an existing hidden wallet,
         // - or adding initially a hidden wallet set by settings
         if (!isAddingHiddenWallet || isAddingExistingWallet) {
-            dispatch(runDiscoveryThunk(actualDevice));
+            dispatch(runDiscoveryThunk(device));
         }
     },
 );
@@ -826,16 +830,6 @@ export const submitPassphrase = createThunk(
                 passphraseOnDevice,
             },
         });
-    },
-);
-
-export const cancelDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    (device: TrezorDevice, { dispatch }) => {
-        // cancel with a custom error code so we can distinguish it from device cancellation
-        TrezorConnect.cancel(USER_UI_CANCEL_CODE);
-
-        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
     },
 );
 
