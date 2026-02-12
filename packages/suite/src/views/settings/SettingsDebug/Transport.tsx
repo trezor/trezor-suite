@@ -78,7 +78,7 @@ export const Transport = () => {
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);
                                 dispatch(setDebugMode({ transports: nextTransports }));
-                                TrezorConnect.setTransports({ transports: nextTransports });
+                                TrezorConnect.updateConnectSettings({ transports: nextTransports });
                             }}
                         />
                     </ActionColumn>
