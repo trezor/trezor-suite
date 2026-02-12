@@ -2,14 +2,22 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Box, Column, H2, Icon, Row, Select, intermediaryTheme } from '@trezor/components';
+import {
+    Box,
+    Button,
+    Column,
+    H2,
+    Row,
+    Spinner,
+    Tooltip,
+    intermediaryTheme,
+} from '@trezor/components';
 import { hexToRgba } from '@trezor/utils';
 
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
 import { ResultsInfo } from './components/ResultsInfo';
-import { sorting } from './constants';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
 const TopBar = styled.div`
@@ -46,6 +54,7 @@ export function App() {
         sort,
         debouncedQuery,
         allEvents,
+        isFiltering,
     } = useFilteredEvents();
 
     const hasActiveFilters = query || platform !== 'all' || sort !== 'az';
@@ -63,16 +72,22 @@ export function App() {
                     <ContentContainer>
                         <Column gap={12}>
                             <Row justifyContent="space-between" gap={20}>
-                                <Row gap={16} alignItems="center">
+                                <Row gap={40} alignItems="center">
                                     <H2>Analytics events docs</H2>
-                                    <Icon name="bookOpen" />
+
+                                    {isFiltering && <Spinner size={20} />}
                                 </Row>
-                                <Filter
-                                    setQuery={setQuery}
-                                    query={query}
-                                    setPlatform={setPlatform}
-                                    platform={platform}
-                                />
+                                <Tooltip content="Add event">
+                                    <Button
+                                        iconLeft="plus"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
+                                        size="small"
+                                    >
+                                        Add event
+                                    </Button>
+                                </Tooltip>
                             </Row>
                             <Row justifyContent="space-between" gap={16} alignItems="center">
                                 <ResultsInfo
@@ -83,15 +98,13 @@ export function App() {
                                     hasActiveFilters={hasActiveFilters}
                                     onClearAll={clearAll}
                                 />
-                                <Select
-                                    placeholder="Sort by"
-                                    value={sorting.find(s => s.value === sort) ?? sorting[0]}
-                                    onChange={option => {
-                                        setSort(option.value);
-                                    }}
-                                    size="small"
-                                    options={sorting}
-                                    maxWidth={200}
+                                <Filter
+                                    setQuery={setQuery}
+                                    query={query}
+                                    setPlatform={setPlatform}
+                                    platform={platform}
+                                    setSort={setSort}
+                                    sort={sort}
                                 />
                             </Row>
                         </Column>
