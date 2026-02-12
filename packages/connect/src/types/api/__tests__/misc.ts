@@ -29,14 +29,15 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
     }
 };
 
-export const setProxy = async (api: TrezorConnect) => {
-    const proxy = await api.setProxy({ proxy: 'socks://localhost:9050' });
+export const updateConnectSettings = async (api: TrezorConnect) => {
+    // proxy settings
+    const proxy = await api.updateConnectSettings({ proxy: 'socks://localhost:9050' });
     if (proxy.success) {
         proxy.payload.message.toLowerCase();
     } else {
         proxy.payload.error.toLowerCase();
     }
-    api.setProxy({
+    api.updateConnectSettings({
         proxy: {
             type: 5,
             host: 'localhost',
@@ -45,13 +46,22 @@ export const setProxy = async (api: TrezorConnect) => {
             timeout: 100000,
         },
     });
-    api.setProxy({ proxy: 'socks://localhost:9050' });
-    api.setProxy({ proxy: undefined });
+    api.updateConnectSettings({ proxy: 'socks://localhost:9050' });
+    api.updateConnectSettings({ proxy: undefined });
 
-    // @ts-expect-error
-    api.setProxy();
-    // @ts-expect-error
-    api.setProxy({});
-    // @ts-expect-error
-    api.setProxy();
+    // transports settings
+    api.updateConnectSettings({ transports: ['BridgeTransport'] });
+    api.updateConnectSettings({ transports: ['BridgeTransport', 'WebUsbTransport'] });
+    api.updateConnectSettings({ transports: [] });
+    // @ts-expect-error - invalid transport name
+    api.updateConnectSettings({ transports: ['InvalidTransport'] });
+
+    // both proxy and transports together
+    api.updateConnectSettings({ proxy: 'socks://localhost:9050', transports: ['BridgeTransport'] });
+
+    // empty object is valid (no-op)
+    api.updateConnectSettings({});
+
+    // @ts-expect-error - params are required
+    api.updateConnectSettings();
 };

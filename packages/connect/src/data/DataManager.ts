@@ -91,6 +91,13 @@ export class DataManager {
         return this.messages;
     }
 
+    public static updateSettings(update: Partial<ConnectSettings>) {
+        this.settings = {
+            ...this.settings,
+            ...update,
+        };
+    }
+
     public static getSettings(key?: undefined): ConnectSettings;
     public static getSettings<T extends keyof ConnectSettings>(key: T): ConnectSettings[T];
     public static getSettings(key?: keyof ConnectSettings) {

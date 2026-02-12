@@ -1,7 +1,9 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TypedEmitter, createDeferredManager } from '@trezor/utils';
+import { TypedEmitter, createDeferredManager, deepEqual } from '@trezor/utils';
 
+import { reconnectAllBackends } from './backend/BlockchainLink';
 import { initCoreState } from './core';
+import { DataManager } from './data/DataManager';
 import { parseConnectSettings } from './data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
@@ -19,6 +21,7 @@ import {
 } from './events';
 import { factory } from './factory';
 import type { ConnectSettings } from './types';
+import type { UpdateConnectSettings } from './types/api/updateConnectSettings';
 import { ConnectEvents } from './types/emitter';
 import { initLog } from './utils/debug';
 
@@ -130,12 +133,24 @@ const call: CallMethod = async params => {
     }
 };
 
-const setTransports = (payload: Pick<ConnectSettings, 'transports'>) => {
-    const core = coreManager.get();
-    if (!core) {
-        throw ERRORS.TypedError('Init_NotInitialized');
+const updateConnectSettings = async (params: UpdateConnectSettings) => {
+    const { proxy, transports } = params;
+
+    const settings = DataManager.getSettings();
+    if (proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
+        DataManager.updateSettings({ proxy });
+        await reconnectAllBackends();
     }
-    core.handleMessage({ type: TRANSPORT.SET_TRANSPORTS, payload });
+
+    if (transports !== undefined) {
+        const core = coreManager.get();
+        if (!core) {
+            return createErrorMessage(ERRORS.TypedError('Init_NotInitialized'));
+        }
+        core.handleMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+    }
+
+    return { success: true as const, payload: { message: 'success' } } as const;
 };
 
 const uiResponse = (response: UiResponseEvent) => {
@@ -163,7 +178,7 @@ const TrezorConnect = factory(
         eventEmitter,
         init,
         call,
-        setTransports,
+        updateConnectSettings,
         uiResponse,
         cancel,
         dispose,

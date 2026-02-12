@@ -733,7 +733,7 @@ export class Core extends EventEmitter {
                 break;
             }
             case TRANSPORT.SET_TRANSPORTS:
-                DataManager.getSettings().transports = message.payload.transports;
+                DataManager.updateSettings({ transports: message.payload.transports });
                 resetTransports(this.getCoreContext());
                 break;
 
