@@ -32,3 +32,7 @@ export { DataAnalytics } from './components/DataAnalytics';
 export * from './components/AssetLogo/AssetLogo';
 export { isNetworkSymbolWithIcon } from './constants/networks';
 export * from './components/TopAssets/TopAssets';
+export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
+export { TransactionNotification } from './components/Notifications/TransactionNotification';
+export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
+export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
