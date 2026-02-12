@@ -1,4 +1,5 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -8,7 +9,6 @@ import {
     getSelectedDevice,
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
-import { autoInitThpAfterDeviceConnectionThunk } from '@suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk';
 import { connectThpDeviceThunk } from '@suite-common/thp/src/connectThpDeviceThunk';
 import { thpActions } from '@suite-common/thp/src/thpActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -317,9 +317,11 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
     async ({ type, device }, { dispatch, getState }) => {
         const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+        // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
+        const isFwInstallation = selectIsFirmwareInstallationRunning(getState());
         switch (type) {
             case DEVICE.CONNECT:
-                if (getIsThpDevice(device)) {
+                if (getIsThpDevice(device) && !isFwInstallation) {
                     // awaited so that discoveryMiddleware knows what state THP is when processing deviceActions.connectDevice
                     await dispatch(connectThpDeviceThunk({ device }));
                 }
@@ -338,7 +340,13 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                         isAutoEjectEnabled,
                     }),
                 );
-                dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
+                if (getIsThpDevice(device) && !isFwInstallation) {
+                    // This needs to be re-selected to convert Device to TrezorDevice.
+                    const requestedDevice = selectDevices(getState()).find(
+                        d => d.path === device.path,
+                    );
+                    dispatch(acquireDevice({ requestedDevice }));
+                }
                 dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             default:

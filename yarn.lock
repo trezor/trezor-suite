@@ -11493,7 +11493,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@trezor/connect": "workspace:*"
