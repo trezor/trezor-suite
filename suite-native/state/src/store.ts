@@ -28,8 +28,27 @@ import { createNativeCompositionRoot, extraDependencies } from './extraDependenc
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
-type FullPreloadedState = Parameters<RootReducerShape>[0];
-export type PreloadedState = DeepPartial<FullPreloadedState> | undefined;
+export type FullPersistedAppState = Parameters<RootReducerShape>[0];
+
+type ExcludePersist<T> = Omit<T, '_persist'>;
+type ExcludeChildPersists<T> = {
+    [K in keyof T]: Omit<T[K], '_persist'>;
+};
+
+// Typescript hack: wallet is a nested combined reducer, so it has to be treated separately.
+// If there would be more nested combined reducer, recursion would be needed.
+type WalletCombinedPersistedReducer = NonNullable<FullPersistedAppState>['wallet'];
+type WalletCombinedReducer = ExcludeChildPersists<WalletCombinedPersistedReducer>;
+// Auxiliary type to strip _persist on the top level of rootReducer.
+type CleanFullPersistedAppState = ExcludePersist<NonNullable<FullPersistedAppState>>;
+// Complete state type of rootReducer, deeply stripped of all _persist keys
+export type FullAppState = ExcludeChildPersists<
+    Omit<CleanFullPersistedAppState, 'wallet'> & {
+        wallet: WalletCombinedReducer;
+    }
+>;
+
+export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
 
 const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
@@ -82,7 +101,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
     });
 
     const store = configureStore({
-        preloadedState: preloadedState as FullPreloadedState,
+        preloadedState: preloadedState as FullPersistedAppState,
         reducer: prepareRootReducers({ mmkvStorage }),
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
