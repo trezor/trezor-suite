@@ -31,14 +31,14 @@ expect(screen.getByText(getTranslation('path.to.translation'))).toBe(
 - When testing components suffix should be `.comp.test.tsx`.
 - When testing hooks suffix should be `.hook.test.ts`.
 - When testing types, suffix should be `.type-test.ts`, to prevent from being executed by jest. (For example: `packages/utils/tests/typedObjectFromEntries.type-test.ts`)
-- Fixtures are placed in `__mocks__` folders and have `mock` prefix.
-- `__mocks__` folder is placed in the root of the package, not in `src`.
+- Fixtures are placed in `mocks` folders and have `mock` prefix.
+- `mocks` folder is placed in the root of the package, not in `src`.
 
 ### Example:
 
 ```
 my-module/
-├── __mocks__/
+├── mocks/
 │   └── mockMyComponent.ts
 └── src/
     ├── __tests__/
@@ -73,12 +73,12 @@ tests.
 - Use `mock` prefix to distinguish it from type or original implementation. `Device` => `mockDevice`.
 - Prefer factories to static objects. A factory is better because it can provide an API to create a mock with desired
   changes. (`mockDevice(data: Partial<Device>): Device => ({ ... })`)
-- Put mocks into a `__mocks__` directory within the same package.
+- Put mocks into a `mocks` directory within the same package.
 - Export them from the package via a separate file. In this example:
   `import { mockDevice } from '@common/device-types/mocks'`
     ```
     device-types
-      - __mocks__
+      - mocks
          - mockDevice.ts
          - index.ts // If you need to export them in `package.json`
       - src
