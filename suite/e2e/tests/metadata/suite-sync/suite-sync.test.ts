@@ -54,8 +54,7 @@ test.describe(
             deviceSetup: { passphrase_protection: true },
         });
 
-        test.beforeEach(async ({ evoluClient, onboardingPage, metadataPage }) => {
-            evoluClient.wipeAndRestartServer();
+        test.beforeEach(async ({ onboardingPage, metadataPage }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
             await metadataPage.setupQuotaManager();
             await metadataPage.enableSuiteSync();

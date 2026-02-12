@@ -32,6 +32,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    tmpfs:
+      - /var/lib/postgresql/data
 
   suite-sync:
     image: ghcr.io/trezor/suite-sync:main
@@ -49,3 +51,5 @@ services:
     depends_on:
       quota-db:
         condition: service_healthy
+    tmpfs:
+      - /app/data

@@ -38,7 +38,6 @@ test.describe(
 
         test.beforeEach(async ({ evoluClient, onboardingPage }) => {
             await test.step('Seed Evolu relay server', async () => {
-                evoluClient.wipeAndRestartServer();
                 await evoluClient.init({ ownerSecret });
                 evoluClient.writeTo('wallet', walletSeed);
                 evoluClient.writeTo('account', accountSeed);

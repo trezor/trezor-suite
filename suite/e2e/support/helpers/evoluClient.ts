@@ -67,7 +67,7 @@ export class EvoluClient {
     @step()
     wipeAndRestartServer() {
         execSync(
-            'docker compose -f docker/docker-compose.suite-ci-e2e.yml up --force-recreate -d quota-db suite-sync',
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml restart quota-db suite-sync',
             {
                 cwd: '../../',
             },
