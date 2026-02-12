@@ -6,8 +6,8 @@
 - [Code Style Guide](skills/index.md) – How to contribute code style proposals
 - [Comments](skills/comments.md) – Comment formatting conventions
 - [Common Issues](skills/common-issues.md) – Known issues and their solutions
-- [Common Tasks](skills/common-tasks.md) – Dependency management, package creation, and troubleshooting
 - [Components](skills/components.md) – React component file structure and patterns
+- [Common Tasks](skills/common-tasks.md) – Dependency management, package creation, and troubleshooting
 - [Defensive Programming](skills/defensive-programming.md) – Exhaustive checks and safe defaults
 - [Development Commands](skills/development-commands.md) – Running apps, linting, testing, and building
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines.md) – Conventional Commits format and best practices
@@ -17,6 +17,7 @@
 - [Project Overview](skills/project-structure.md) – What Trezor Suite is and how the monorepo is organized
 - [Redux](skills/redux.md) – Redux Toolkit patterns and best practices
 - [Setup Requirements](skills/setup-requirements.md) – Prerequisites and initial environment setup
+- [Tests](skills/tests.md) – Test style guidelines and best practices
 - [Tests Commands](skills/tests-commands.md) – Running tests and test-related guidelines
 - [Tests](skills/tests.md) – Test style guidelines and best practices
 - [TypeScript](skills/typescript.md) – TypeScript-specific conventions

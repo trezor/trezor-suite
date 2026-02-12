@@ -14,12 +14,10 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-native/analytics"
-        },
-        { "path": "../../suite/analytics" },
         { "path": "../components" },
         { "path": "../eslint" },
+        { "path": "../react-utils" },
+        { "path": "../theme" },
         { "path": "../utils" }
     ]
 }

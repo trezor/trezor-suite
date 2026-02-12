@@ -14813,10 +14813,10 @@ __metadata:
   resolution: "@trezor/analytics-docs@workspace:packages/analytics-docs"
   dependencies:
     "@suite-common/analytics": "workspace:*"
-    "@suite-native/analytics": "workspace:*"
-    "@suite/analytics": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@vitejs/plugin-react": "npm:^4.7.0"
     react: "npm:19.1.0"
@@ -15513,6 +15513,16 @@ __metadata:
     socks-proxy-agent: "npm:8.0.5"
     ts-node: "npm:^10.9.2"
     ws: "npm:^8.18.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/requirements@workspace:packages/requirements":
+  version: 0.0.0-use.local
+  resolution: "@trezor/requirements@workspace:packages/requirements"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+    chalk: "npm:^5.6.2"
+    tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
 
