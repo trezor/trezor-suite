@@ -7,14 +7,15 @@
         "dev": "[ -f public/analytics.json ] || yarn build-data; vite",
         "build": "yarn build-data && vite build",
         "preview": "vite preview",
-        "type-check": "yarn g:tsc --build tsconfig.json"
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
-        "@suite-native/analytics": "workspace:*",
-        "@suite/analytics": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@vitejs/plugin-react": "^4.7.0",
         "react": "19.1.0",

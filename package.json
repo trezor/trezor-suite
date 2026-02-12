@@ -63,6 +63,8 @@
         "update-project-references": "yarn tsx ./scripts/updateProjectReferences.ts",
         "verify-project-references": "yarn update-project-references --test",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
+        "requirements:verify": "yarn workspace @trezor/requirements requirements:verify",
+        "requirements:fix": "yarn workspace @trezor/requirements requirements:fix",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons",
         "generate-package": "yarn workspace @trezor/scripts generate-package",
         "deps": "rimraf **/node_modules && yarn",

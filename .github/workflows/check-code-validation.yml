@@ -156,6 +156,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+      - name: Verify Requirements
+        run: yarn requirements:verify
       - name: Check Files for Correct Formatting
         run: yarn nx format:check
       - name: Verify TS Project References
@@ -172,6 +174,7 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
+
 
   releases-revision-checks:
     name: Releases revision Checks
