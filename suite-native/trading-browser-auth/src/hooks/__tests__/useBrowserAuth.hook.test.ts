@@ -264,7 +264,7 @@ describe('useBrowserAuth', () => {
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
         });
 
-        it('should log error when method is not supported', () => {
+        it('should log error and dispatch error message when method is not supported', () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
             const { result } = renderUseBrowserAuth();
@@ -286,6 +286,9 @@ describe('useBrowserAuth', () => {
                 expect.objectContaining({
                     message: 'Unable to open browser, no URI provided.',
                 }),
+            );
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
+                getTranslation('moduleTrading.browser.noURL'),
             );
         });
     });
