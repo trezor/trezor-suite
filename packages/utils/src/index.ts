@@ -33,6 +33,8 @@ export { isApproximatelyEqual } from './isApproximatelyEqual';
 export * from './isArrayMember';
 export * from './isFullPath';
 export * from './isHex';
+export * from './isNotNull';
+export * from './isNotNullOrUndefined';
 export * from './isNotUndefined';
 export * from './isUrl';
 export * from './isWhitelistedHost';
