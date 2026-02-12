@@ -5,6 +5,39 @@ import { useDebounce } from '@trezor/react-utils';
 import analyticsData from '../analytics.json';
 import type { EventDoc } from '../types';
 
+const VALID_PLATFORMS = ['all', 'desktop', 'mobile', 'shared'] as const;
+const VALID_SORTS = ['az', 'za', 'added', 'updated'] as const;
+
+function getParamsFromUrl(): {
+    query: string;
+    platform: (typeof VALID_PLATFORMS)[number];
+    sort: (typeof VALID_SORTS)[number];
+} {
+    const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+
+    const platformParam = params.get('platform') as (typeof VALID_PLATFORMS)[number];
+    const sortParam = params.get('sort') as (typeof VALID_SORTS)[number];
+
+    return {
+        query: params.get('q') ?? '',
+        platform: VALID_PLATFORMS.includes(platformParam) ? platformParam : 'all',
+        sort: VALID_SORTS.includes(sortParam) ? sortParam : 'az',
+    };
+}
+
+function updateUrl(query: string, platform: string, sort: string) {
+    if (typeof window === 'undefined') return;
+
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (platform !== 'all') params.set('platform', platform);
+    if (sort !== 'az') params.set('sort', sort);
+    const search = params.toString();
+    const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
+
+    window.history.replaceState(null, '', url);
+}
+
 type AnalyticsJsonShape = {
     events?: Record<string, EventDoc>;
 };
@@ -64,10 +97,11 @@ function cmpVerDesc(va?: string, vb?: string) {
 }
 
 export const useFilteredEvents = () => {
-    const [query, setQuery] = useState('');
-    const [sort, setSort] = useState<'az' | 'za' | 'added' | 'updated'>('az');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
-    const [platform, setPlatform] = useState<'all' | string>('all');
+    const initial = useMemo(getParamsFromUrl, []);
+    const [query, setQuery] = useState(initial.query);
+    const [sort, setSort] = useState<'az' | 'za' | 'added' | 'updated'>(initial.sort);
+    const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
+    const [platform, setPlatform] = useState<'all' | string>(initial.platform);
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
     const allEvents = useMemo(() => getEventsFromJson(analyticsData), []);
     const debounce = useDebounce();
@@ -79,6 +113,10 @@ export const useFilteredEvents = () => {
     useEffect(() => {
         debounce(() => setDebouncedQuery(query));
     }, [query, debounce]);
+
+    useEffect(() => {
+        updateUrl(debouncedQuery, platform, sort);
+    }, [debouncedQuery, platform, sort]);
 
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
