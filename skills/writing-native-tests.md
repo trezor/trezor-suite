@@ -33,7 +33,7 @@ You **MUST** use [testing](./testing.md) skill for running tests.
 For detailed API documentation and more examples, see:
 
 - [Suite Native Test Utils Documentation](../docs/tests/suite-native-test-utils.md)
-- [General Testing Guidelines](../docs/code-style-guide/tests.md)
+- [General Testing Guidelines](tests.md)
 
 ## Checklist
 
