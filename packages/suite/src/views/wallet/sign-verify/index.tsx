@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { getInputState } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
@@ -78,7 +77,7 @@ const SignVerify = () => {
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
-        inputState: getInputState(formErrors.signature) as ReturnType<typeof getInputState>,
+        hasError: !!formErrors.signature,
         bottomText: signatureError,
         'data-testid': '@sign-verify/signature',
         innerRef: signatureRef,
@@ -86,7 +85,7 @@ const SignVerify = () => {
     };
     const pubKeyProps = {
         label: translationString('TR_PUBLIC_KEY'),
-        inputState: getInputState(formErrors.pubKey) as ReturnType<typeof getInputState>,
+        hasError: !!formErrors.pubKey,
         bottomText: pubKeyError,
         'data-testid': '@sign-verify/pubKey',
         innerRef: pubKeyRef,
@@ -179,7 +178,7 @@ const SignVerify = () => {
                                     {...hexField}
                                 />
                             }
-                            inputState={getInputState(formErrors.message)}
+                            hasError={!!formErrors.message}
                             characterCount={{
                                 current: formValues.message?.length,
                                 max: MAX_LENGTH_MESSAGE,
@@ -198,7 +197,7 @@ const SignVerify = () => {
                                         label={<Translation id="TR_ADDRESS" />}
                                         account={selectedAccount.account}
                                         revealedAddresses={revealedAddresses}
-                                        inputState={getInputState(formErrors.path)}
+                                        hasError={!!formErrors.path}
                                         bottomText={pathError || null}
                                         data-testid="@sign-verify/sign-address"
                                         {...pathField}
@@ -325,7 +324,7 @@ const SignVerify = () => {
                                     name="address"
                                     label={<Translation id="TR_ADDRESS" />}
                                     type="text"
-                                    inputState={getInputState(formErrors.address)}
+                                    hasError={!!formErrors.address}
                                     bottomText={addressError || null}
                                     data-testid="@sign-verify/select-address"
                                     {...addressField}

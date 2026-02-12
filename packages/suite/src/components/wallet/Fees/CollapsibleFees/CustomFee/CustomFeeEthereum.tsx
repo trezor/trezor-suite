@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { FormState } from '@suite-common/wallet-types';
-import { getInputState, isEip1559 } from '@suite-common/wallet-utils';
+import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -173,7 +173,7 @@ export const CustomFeeEthereum = ({
                 label={<Translation id="TR_GAS_LIMIT" />}
                 locale={locale}
                 control={control}
-                inputState={getInputState(errors.feeLimit)}
+                hasError={!!errors.feeLimit}
                 name={FEE_LIMIT}
                 data-testid={FEE_LIMIT}
                 bottomText={
@@ -192,7 +192,7 @@ export const CustomFeeEthereum = ({
                         label={<Translation id="TR_MAX_FEE_PER_GAS" />}
                         locale={locale}
                         control={control}
-                        inputState={getInputState(errors.maxFeePerGas)}
+                        hasError={!!errors.maxFeePerGas}
                         rightContent={gweiInputAddon}
                         name={MAX_FEE_PER_GAS}
                         data-testid={MAX_FEE_PER_GAS}
@@ -214,7 +214,7 @@ export const CustomFeeEthereum = ({
                         label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}
                         locale={locale}
                         control={control}
-                        inputState={getInputState(errors.maxPriorityFeePerGas)}
+                        hasError={!!errors.maxPriorityFeePerGas}
                         rightContent={gweiInputAddon}
                         name={MAX_PRIORITY_FEE_PER_GAS}
                         data-testid={MAX_PRIORITY_FEE_PER_GAS}
@@ -227,7 +227,7 @@ export const CustomFeeEthereum = ({
                     label={<Translation id="TR_GAS_PRICE" />}
                     locale={locale}
                     control={control}
-                    inputState={getInputState(errors.feePerUnit)}
+                    hasError={!!errors.feePerUnit}
                     rightContent={gweiInputAddon}
                     name={FEE_PER_UNIT}
                     data-testid={FEE_PER_UNIT}

@@ -98,22 +98,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setIsExternalAddressCheckWarningDismissed(false);
     }, [address]);
 
-    const getInputState = () => {
-        if (addressError) {
-            return 'error';
-        }
-
-        if (hasAddressChecksummed) {
-            return 'default';
-        }
-
-        if (autocorrectMessage) {
-            return 'warning';
-        }
-
-        return undefined;
-    };
-
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
 
@@ -454,7 +438,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     return (
         <Input
-            inputState={getInputState()}
+            hasError={!!addressError}
             rightContent={<Icon name="qrCode" onClick={handleQrClick} />}
             label={<Translation id="RECIPIENT_ADDRESS" />}
             labelLeft={

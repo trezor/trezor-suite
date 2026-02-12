@@ -51,7 +51,7 @@ const optionToAddress = (option: AddressItem | null) =>
 type SignAddressInputProps = {
     account?: Account;
     revealedAddresses: RevealedAddresses;
-} & Omit<SelectProps, 'useKeyPressScroll'>;
+} & SelectProps;
 
 export const SignAddressInput = ({
     account,

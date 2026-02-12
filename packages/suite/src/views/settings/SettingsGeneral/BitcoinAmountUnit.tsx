@@ -18,7 +18,6 @@ export const BitcoinAmountUnit = () => {
             <TextColumn title={<Translation id="TR_BTC_UNITS" />} />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
                     value={{
                         label: UNIT_LABELS[
                             bitcoinAmountUnit as PROTO.AmountUnit.BITCOIN | PROTO.AmountUnit.SATOSHI

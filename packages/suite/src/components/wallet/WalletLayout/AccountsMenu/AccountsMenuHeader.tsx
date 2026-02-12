@@ -56,11 +56,7 @@ export const AccountsMenuHeader = () => {
             <Divider margin={{ top: 0, bottom: 12 }} />
             <Box margin={{ horizontal: 8 }}>
                 <ExpandedSidebarOnly>
-                    <Row
-                        justifyContent="space-between"
-                        gap={12}
-                        padding={{ right: !isEmpty ? 10 : 0 }}
-                    >
+                    <Row gap={12} padding={{ right: !isEmpty ? 10 : 0 }}>
                         {isDiscoveryRunning ? (
                             <SkeletonRectangle animate width="100%" height={38} />
                         ) : (

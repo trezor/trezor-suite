@@ -32,7 +32,6 @@ import { Text } from '../typography/Text/Text';
 export const allowedModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedModalFrameProps)[number]>;
 
-const MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
 
 const Container = styled.section<{ $elevation: Elevation }>`
@@ -97,7 +96,7 @@ const InnerModalBase = ({
 
     return (
         <Box maxWidth="95%" maxHeight="85vh" width={width} height={height}>
-            <Container $elevation={elevation} data-testid={dataTest} id={MODAL_CONTENT_ID}>
+            <Container $elevation={elevation} data-testid={dataTest}>
                 <Column height="100%">
                     {hasHeader && (
                         <Row
@@ -207,5 +206,5 @@ Modal.Backdrop = ModalBackdrop;
 Modal.Provider = ModalProvider;
 Modal.ModalBase = ModalBase;
 
-export { Modal, MODAL_CONTENT_ID };
+export { Modal };
 export type { ModalProps, ModalWidth };

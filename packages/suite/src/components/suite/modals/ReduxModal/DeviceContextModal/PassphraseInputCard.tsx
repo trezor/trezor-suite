@@ -117,7 +117,7 @@ export const PassphraseInputCard = ({
                             isMasked={!showPassword}
                             value={value}
                             bottomText={errorMessage}
-                            inputState={errorMessage ? 'error' : undefined}
+                            hasError={!!errorMessage}
                             rightContent={
                                 <Icon
                                     size={18}

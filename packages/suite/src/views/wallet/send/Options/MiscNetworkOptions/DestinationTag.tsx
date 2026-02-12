@@ -2,7 +2,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
+import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -93,7 +93,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
             {destinationEnabled ? (
                 <>
                     <Input
-                        inputState={getInputState(error)}
+                        hasError={!!error}
                         data-testid={inputName}
                         defaultValue={inputValue}
                         maxLength={

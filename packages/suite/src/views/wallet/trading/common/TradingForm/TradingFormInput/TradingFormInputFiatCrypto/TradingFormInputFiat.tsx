@@ -16,7 +16,6 @@ import {
     buildCurrencyShortOption,
     findToken,
     getFiatRateKey,
-    getInputState,
     getNetworkReserve,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -264,12 +263,12 @@ export const TradingFormInputFiat = ({
 
                 clearErrors(cryptoInputName);
             }}
-            inputState={getInputState(fiatInputError ?? cryptoInputError)}
+            hasError={!!(fiatInputError ?? cryptoInputError)}
             control={control}
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
-            rightContent={<TradingFormInputCurrency width={100} />}
+            rightContent={<TradingFormInputCurrency isClean />}
             data-testid="@trading/form/fiat-input"
         />
     );

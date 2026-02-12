@@ -4,22 +4,9 @@ import styled, { keyframes } from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import { InputState } from './types';
-import { UIVariant } from '../../config/types';
 import { Row } from '../Flex/Flex';
 import { Icon, IconName, IconVariant } from '../Icon/Icon';
-import { Text, TextVariant } from '../typography/Text/Text';
-
-export const mapInputStateToUIVariant = (inputState: InputState): UIVariant => {
-    const variantMap: Record<InputState, UIVariant> = {
-        error: 'destructive',
-        primary: 'primary',
-        warning: 'warning',
-        default: 'tertiary',
-    };
-
-    return variantMap[inputState];
-};
+import { Text } from '../typography/Text/Text';
 
 const slideDown = keyframes`
     from {
@@ -37,7 +24,7 @@ export const Container = styled.div`
 `;
 
 type BottomTextProps = {
-    inputState?: InputState;
+    hasError?: boolean;
     isDisabled?: boolean;
     iconComponent?: ReactNode;
     iconName?: IconName;
@@ -46,14 +33,15 @@ type BottomTextProps = {
 };
 
 export const BottomText = ({
-    inputState = 'default',
+    hasError,
     isDisabled,
     iconComponent,
     iconName,
     children,
     'data-testid': dataTestId,
 }: BottomTextProps) => {
-    const variant = isDisabled ? 'disabled' : mapInputStateToUIVariant(inputState);
+    // eslint-disable-next-line no-nested-ternary
+    const variant = isDisabled ? 'disabled' : hasError ? 'destructive' : 'tertiary';
 
     return (
         <Container>
@@ -64,7 +52,7 @@ export const BottomText = ({
                     ))}
                 <Text
                     data-testid={dataTestId}
-                    variant={variant as TextVariant}
+                    variant={variant}
                     typographyStyle="hint"
                     as="div"
                     flex="auto"

@@ -73,7 +73,6 @@ export const TorExternal = () => {
             />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
                     value={selectedOption}
                     options={options}
                     onChange={onChange}

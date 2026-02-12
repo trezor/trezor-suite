@@ -2,7 +2,6 @@ import { FieldPath, useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { FormState } from '@suite-common/wallet-types';
-import { getInputState } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -60,7 +59,7 @@ export const CustomFeeMisc = ({
             <NumberInput
                 locale={locale}
                 control={control}
-                inputState={getInputState(feePerUnitError)}
+                hasError={!!feePerUnitError}
                 rightContent={
                     <Text variant="tertiary" typographyStyle="label">
                         {feeUnits}

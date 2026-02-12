@@ -38,7 +38,7 @@ export const MessageSystemJsonEditor = ({
                 label="Message config"
                 rows={10}
                 value={value}
-                inputState={isValid ? 'default' : 'error'}
+                hasError={!isValid}
                 onChange={e => onChange(e.target.value)}
                 bottomText={
                     <Row justifyContent="space-between" alignItems="center">

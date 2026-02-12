@@ -8,7 +8,7 @@ import {
     selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -40,7 +40,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const analytics = useAnalytics();
     const inputValue = watch(INPUT_NAME);
     const error = errors[INPUT_NAME];
-    const inputState = getInputState(error);
+    const hasError = !!error;
     const prefix = account.networkType === 'ethereum' ? '0x' : undefined;
 
     const { ref: inputRef, ...inputField } = register(INPUT_NAME, {
@@ -75,7 +75,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
         }
     };
 
-    const isSubmitDisabled = inputState === 'error' || !inputValue;
+    const isSubmitDisabled = hasError || !inputValue;
 
     return (
         <Card>
@@ -96,7 +96,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
             </Row>
 
             <Textarea
-                inputState={inputState}
+                hasError={hasError}
                 data-testid={INPUT_NAME}
                 defaultValue={inputValue}
                 bottomText={error?.message || null}

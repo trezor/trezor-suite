@@ -60,7 +60,7 @@ type Position = {
     inset?: string | number;
 };
 
-const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit'] as const;
+const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit', 'text'] as const;
 type Cursor = (typeof cursors)[number];
 
 const userSelects = ['none', 'text', 'all', 'auto', 'inherit'] as const;

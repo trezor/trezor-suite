@@ -221,7 +221,6 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             <Select
                                 isSearchable={false}
                                 isClearable={false}
-                                isRenderedInModal={true}
                                 size="large"
                                 value={selectedDefaultAccount}
                                 options={selectableAccounts}

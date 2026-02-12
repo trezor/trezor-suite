@@ -317,8 +317,8 @@ export interface TradingFormInputFiatCryptoWrapProps {
 }
 
 export interface TradingFormInputCurrencyProps {
-    isClean?: boolean;
     width?: number;
+    isClean?: boolean;
 }
 
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {

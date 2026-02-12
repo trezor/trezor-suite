@@ -1,7 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Option, Select as SelectComponent, SelectProps } from './Select';
+import { Option, Select as SelectComponent, SelectProps, allowedSelectFrameProps } from './Select';
+import { getFramePropsStory } from '../../../utils/frameProps';
+import { inputSizes } from '../types';
 
 const values: any = {
     'None (default)': null,
@@ -31,36 +33,28 @@ export const Select: StoryObj<SelectProps> = {
     },
     args: {
         label: 'Label',
-        isClean: false,
+        hasError: false,
         isDisabled: false,
         isSearchable: false,
+        isLoading: false,
+        isClean: false,
         size: 'large',
-        minValueWidth: 'initial',
         isMenuOpen: undefined,
-        useKeyPressScroll: undefined,
+        ...getFramePropsStory(allowedSelectFrameProps).args,
     },
     argTypes: {
-        label: {
-            table: {
-                type: {
-                    summary: 'ReactNode',
-                },
-            },
-        },
-        isClean: {
-            control: {
-                type: 'boolean',
-            },
-        },
+        label: { control: 'text' },
         isDisabled: {
-            control: {
-                type: 'boolean',
-            },
+            control: 'boolean',
         },
         isSearchable: {
-            control: {
-                type: 'boolean',
-            },
+            control: 'boolean',
+        },
+        isLoading: {
+            control: 'boolean',
+        },
+        isClean: {
+            control: 'boolean',
         },
         bottomText: {
             control: { type: 'text' },
@@ -70,26 +64,23 @@ export const Select: StoryObj<SelectProps> = {
         labelRight: { control: 'text' },
         size: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
-            options: ['large', 'small'],
+            options: inputSizes,
         },
         minValueWidth: {
-            control: { type: 'text' },
+            control: 'number',
         },
         isMenuOpen: {
-            control: {
-                type: 'boolean',
-            },
+            control: 'boolean',
         },
-        useKeyPressScroll: {
-            control: {
-                type: 'boolean',
-            },
-        },
-        inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
+        hasError: { control: 'boolean' },
         placeholder: {
-            control: { type: 'text' },
+            control: 'text',
         },
+        'data-testid': {
+            control: 'text',
+        },
+        ...getFramePropsStory(allowedSelectFrameProps).argTypes,
     },
 };

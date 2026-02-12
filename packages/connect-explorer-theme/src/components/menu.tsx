@@ -57,14 +57,8 @@ const MenuCategory = styled.div`
 `;
 
 const SelectWrapper = styled.div`
+    margin: 0 2px;
     margin-bottom: 0.5rem;
-    .react-select__control {
-        border-style: solid;
-        border-color: ${({ theme }) => theme.borderElevation1};
-    }
-    .react-select__control:hover:not(:focus-within) {
-        border-color: ${({ theme }) => theme.borderElevation0};
-    }
 `;
 
 const Option = styled.div`
@@ -184,11 +178,9 @@ export function Menu({
                             <Label>{option.label}</Label>
                         </Option>
                     )}
-                    menuPosition="absolute"
                     menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
                     menuShouldScrollIntoView={false}
                     maxMenuHeight={400}
-                    isScrollToSelectedEnabled={false}
                     data-testid="@select-coin"
                 />
             </SelectWrapper>

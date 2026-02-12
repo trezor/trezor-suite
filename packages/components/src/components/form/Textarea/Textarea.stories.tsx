@@ -25,6 +25,7 @@ export const Textarea: StoryObj<typeof meta> = {
     render: Component,
     args: {
         isDisabled: false,
+        hasError: false,
         label: 'Label',
         rows: 5,
         maxLength: 500,
@@ -33,10 +34,9 @@ export const Textarea: StoryObj<typeof meta> = {
     },
     argTypes: {
         isDisabled: {
-            control: {
-                type: 'boolean',
-            },
+            control: 'boolean',
         },
+        hasError: { control: 'boolean' },
         label: {
             control: 'text',
         },
@@ -86,7 +86,6 @@ export const Textarea: StoryObj<typeof meta> = {
                 },
             },
         },
-        inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
         ...getFramePropsStory(allowedTextareaFrameProps).argTypes,
     },
 };

@@ -166,7 +166,7 @@ export const TradingOfferSellBankAccount = () => {
                             value={bankAccount}
                             isClearable={false}
                             options={bankAccounts}
-                            minValueWidth="70px"
+                            minValueWidth={70}
                             formatOptionLabel={(option: BankAccount) => (
                                 <Option>
                                     <AccountInfo>

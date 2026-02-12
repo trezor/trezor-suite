@@ -17,7 +17,6 @@ import {
     buildCurrencyShortOption,
     findToken,
     getDecimalsForBaseCurrency,
-    getInputState,
     isLowAnonymityWarning,
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
@@ -140,7 +139,7 @@ export const BaseCurrencyInput = ({
     const errorToDisplay = !error && baseCurrencyValue && amountError ? amountError : error;
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
-    const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay);
+    const hasError = !!errorToDisplay;
     const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
     const handleChange = (value: string) => handleFiatChange({ outputId, token, value });
@@ -188,7 +187,7 @@ export const BaseCurrencyInput = ({
             })}
             isClearable={false}
             isSearchable
-            minValueWidth="58px"
+            size="small"
             isClean
             data-testid={currencyInputName}
             onChange={async (selected: BaseCurrencyOption) => {
@@ -235,7 +234,7 @@ export const BaseCurrencyInput = ({
             labelLeft={labelLeft}
             locale={locale}
             control={control}
-            inputState={inputState}
+            hasError={hasError}
             onChange={handleChange}
             name={baseCurrencyInputName}
             data-testid={baseCurrencyInputName}

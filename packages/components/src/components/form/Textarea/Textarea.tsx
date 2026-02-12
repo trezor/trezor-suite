@@ -1,75 +1,40 @@
 import { ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Elevation, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
-import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Box } from '../../Box/Box';
+import { FloatingLabel } from '../FloatingLabel';
 import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
-import {
-    INPUT_PADDING_TOP,
-    InputWrapper,
-    LABEL_TRANSFORM,
-    Label,
-    baseInputStyle,
-    getInputStateBgColor,
-} from '../styles';
-import { InputState } from '../types';
+import { InputWrapper } from '../InputWrapper';
+import { INPUT_PADDING, commonInputStyles } from '../utils';
 
 export const allowedTextareaFrameProps = ['margin', 'flex'] as const satisfies FramePropsKeys[];
 
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextareaFrameProps)[number]>;
 
-const TextareaWrapper = styled(InputWrapper)<{
-    disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
-    $elevation: Elevation;
-    $inputState?: InputState;
-    $hasLabel: boolean;
-}>`
-    ${baseInputStyle}
-    padding: ${({ $hasLabel }) => ($hasLabel ? spacingsPx.xxl : spacingsPx.md)} 0
-        ${spacingsPx.md};
+const StyledTextarea = styled.textarea<{ $hasLabel?: boolean }>`
+    ${commonInputStyles}
 
-    &:focus-within {
-        border-color: ${({ theme }) => theme.borderElevation1};
-    }
-
-    /* overwrites :read-only:not(:disabled) since it's always true for div */
-    ${({ disabled, theme, $inputState, $elevation }) =>
-        !disabled &&
-        `
-        &:read-only:not(:disabled) {
-            background-color: ${getInputStateBgColor($inputState, theme, $elevation)};
-            color: ${theme.textDefault};
-        }
-    `}
-`;
-
-const StyledTextarea = styled.textarea<{ $inputState?: InputState; $elevation: Elevation }>`
-    ${baseInputStyle}
-    padding: 0 ${spacingsPx.md} 0;
-    border: none;
-    resize: none;
+    display: block;
     white-space: pre-wrap;
+    resize: none;
+    padding: ${INPUT_PADDING}px;
 
-    &:disabled {
-        cursor: not-allowed;
-        pointer-events: auto;
-    }
+    ${({ $hasLabel }) =>
+        $hasLabel &&
+        css`
+            margin-top: ${spacingsPx.xl};
+            padding-top: 0;
+        `}
 `;
 
-const TextareaLabel = styled(Label)`
-    top: ${INPUT_PADDING_TOP};
-    left: ${spacingsPx.md};
-
-    /* move up when input is focused OR has a placeholder OR has value  */
-    textarea:focus ~ &,
-    textarea:not(:placeholder-shown) ~ &,
-    textarea:not([placeholder='']):placeholder-shown ~ & {
-        transform: ${LABEL_TRANSFORM};
-    }
+// TODO: Just not use FloatingLabel in Textarea, but placeholder instead?
+const StyledFloatingLabel = styled(FloatingLabel)`
+    top: ${spacingsPx.xl};
 `;
 
 type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
@@ -83,6 +48,7 @@ export type TextareaProps = AllowedFrameProps &
         value?: string;
         characterCount?: CharacterCountProps['characterCount'];
         'data-testid'?: string;
+        placeholder?: string;
     };
 
 export const Textarea = ({
@@ -90,15 +56,14 @@ export const Textarea = ({
     maxLength,
     innerRef,
     label,
-    placeholder,
     rows = 5,
     characterCount,
     'data-testid': dataTest,
+    placeholder,
     ...rest
 }: TextareaProps) => {
-    const { elevation } = useElevation();
     const formCellProps = pickFormCellProps(rest);
-    const { isDisabled, inputState } = formCellProps;
+    const { isDisabled, hasError } = formCellProps;
     const textareaProps = Object.entries(rest).reduce((props, [propKey, propValue]) => {
         if (!(propKey in formCellProps)) {
             props[propKey as keyof TextareaHTMLProps] = propValue;
@@ -109,36 +74,37 @@ export const Textarea = ({
 
     return (
         <FormCell {...formCellProps}>
-            <TextareaWrapper
-                $hasLabel={!!label}
-                $inputState={inputState}
-                disabled={isDisabled}
-                $elevation={elevation}
-            >
+            <InputWrapper hasError={hasError} isDisabled={isDisabled}>
                 <StyledTextarea
-                    $elevation={elevation}
+                    $hasLabel={!!label}
                     spellCheck={false}
                     autoCorrect="off"
                     autoCapitalize="off"
                     maxLength={maxLength}
                     disabled={isDisabled ?? false}
-                    $inputState={inputState}
                     rows={rows}
                     data-testid={dataTest}
-                    placeholder={placeholder || ''} // needed for uncontrolled inputs
+                    placeholder={placeholder}
                     ref={innerRef}
                     value={value}
                     {...textareaProps}
                 />
-
-                <CharacterCount
-                    characterCount={characterCount}
-                    maxLength={maxLength}
-                    value={value}
-                />
-
-                {label && <TextareaLabel $isDisabled={isDisabled}>{label}</TextareaLabel>}
-            </TextareaWrapper>
+                {label && (
+                    <StyledFloatingLabel
+                        $isDisabled={isDisabled}
+                        $isActive={!!value || !!placeholder}
+                    >
+                        {label}
+                    </StyledFloatingLabel>
+                )}
+                <Box position={{ type: 'absolute', bottom: INPUT_PADDING, right: INPUT_PADDING }}>
+                    <CharacterCount
+                        characterCount={characterCount}
+                        maxLength={maxLength}
+                        value={value}
+                    />
+                </Box>
+            </InputWrapper>
         </FormCell>
     );
 };

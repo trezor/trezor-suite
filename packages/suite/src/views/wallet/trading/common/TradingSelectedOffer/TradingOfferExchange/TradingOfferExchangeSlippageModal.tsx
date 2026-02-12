@@ -220,12 +220,11 @@ export const TradingOfferExchangeSlippageModal = ({
                         <Input
                             value={customSlippage}
                             size="small"
-                            inputState={customSlippageError && 'error'}
+                            hasError={!!customSlippageError}
                             name="CustomSlippage"
                             data-testid="CustomSlippage"
                             onChange={changeCustomSlippage}
                             width={100}
-                            align="center"
                             // eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus
                         />
@@ -233,10 +232,7 @@ export const TradingOfferExchangeSlippageModal = ({
                 </Row>
 
                 {customSlippageError?.message && (
-                    <BottomText
-                        inputState={customSlippageError && 'error'}
-                        iconName="warningCircle"
-                    >
+                    <BottomText hasError={!!customSlippageError} iconName="warningCircle">
                         <Translation id={customSlippageError?.message} />
                     </BottomText>
                 )}

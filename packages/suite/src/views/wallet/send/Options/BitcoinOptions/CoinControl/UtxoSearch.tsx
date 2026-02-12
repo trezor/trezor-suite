@@ -42,7 +42,7 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
             onKeyDown={onKeyDown}
             value={searchQuery}
             maxLength={512}
-            showClearButton="always"
+            showClearButton={true}
             size="small"
             onClear={() => setSearch('')}
         />

@@ -66,7 +66,6 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
 
     return (
         <Tooltip
-            width="100%"
             isActive={!!tooltipMessage}
             tooltipMaxWidth={200}
             content={tooltipMessage}

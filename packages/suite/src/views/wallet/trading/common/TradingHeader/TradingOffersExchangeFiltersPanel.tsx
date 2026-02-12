@@ -63,7 +63,6 @@ export const TradingOffersExchangeFiltersPanel = () => {
         <Row alignItems="center" gap={spacings.md} flexWrap="wrap">
             <SelectWrapper>
                 <Select
-                    useKeyPressScroll
                     value={selectedRateOption}
                     onChange={option =>
                         setValue(TRADING_EXCHANGE_COMPARATOR_RATE_FILTER, option.value)
@@ -73,7 +72,6 @@ export const TradingOffersExchangeFiltersPanel = () => {
             </SelectWrapper>
             <SelectWrapper>
                 <Select
-                    useKeyPressScroll
                     value={selectedKycOption}
                     onChange={option =>
                         setValue(TRADING_EXCHANGE_COMPARATOR_KYC_FILTER, option.value)

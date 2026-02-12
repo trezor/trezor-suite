@@ -279,14 +279,6 @@ export const getConvertedOrDefaultFeeInfo = ({
     feeLimit: feeInfo?.feeLimit ?? 0,
 });
 
-export const getInputState = (
-    error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>>,
-) => {
-    if (error) {
-        return 'error';
-    }
-};
-
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 

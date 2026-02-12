@@ -83,7 +83,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                         value={assetCode}
                         innerRef={assetCodeRef}
                         {...assetCodeField}
-                        inputState={errors.assetCode ? 'error' : undefined}
+                        hasError={!!errors.assetCode}
                         bottomText={errors.assetCode?.message || null}
                     />
 
@@ -92,7 +92,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                         value={assetIssuer}
                         innerRef={assetIssuerRef}
                         {...assetIssuerField}
-                        inputState={errors.assetIssuer ? 'error' : undefined}
+                        hasError={!!errors.assetIssuer}
                         bottomText={errors.assetIssuer?.message || null}
                     />
                 </Column>

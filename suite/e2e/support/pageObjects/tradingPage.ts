@@ -313,9 +313,10 @@ export class TradingPage {
         if (currentCountry === countryLabel) {
             return;
         }
-        await this.countryOfResidenceDropdown.click();
-        await this.countryOfResidenceDropdown.getByRole('combobox').fill(countryLabel);
-        await this.countryOfResidenceOption(countryCode).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.countryOfResidenceDropdown,
+            this.countryOfResidenceOption(countryCode),
+        );
     }
 
     @step()
@@ -399,8 +400,10 @@ export class TradingPage {
 
     @step()
     async selectPaymentMethod(method: PaymentMethods) {
-        await this.paymentMethodDropdown.click();
-        await this.paymentMethodOption(method).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.paymentMethodDropdown,
+            this.paymentMethodOption(method),
+        );
     }
 
     @step()
@@ -627,12 +630,18 @@ export class TradingPage {
 
     @step()
     async getSelectedPaymentMethod() {
-        const dropdownText = await this.paymentMethodDropdown.textContent();
-        if (!dropdownText || typeof dropdownText !== 'string') {
-            throw new Error('Payment method dropdown is empty or not a string');
+        await expect(this.paymentMethodDropdown).not.toBeEmpty();
+        const dropdownText = (await this.paymentMethodDropdown.textContent())?.trim();
+        if (!dropdownText) {
+            throw new Error('Payment method dropdown is empty');
         }
 
-        return paymentMethodNameMap[dropdownText];
+        const mapped = paymentMethodNameMap[dropdownText];
+        if (!mapped) {
+            throw new Error(`Unknown payment method "${dropdownText}"`);
+        }
+
+        return mapped;
     }
 
     @step()
