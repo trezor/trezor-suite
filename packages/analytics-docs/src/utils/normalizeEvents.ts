@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
-import type { AttributeDoc, EventDoc } from './types';
-import { normalizeChangelog } from './utils/normalizeChangelog';
+import type { AttributeDoc, EventDoc } from '../types';
+import { normalizeChangelog } from './normalizeChangelog';
 
 export const normalizeEvents = (
     events: Array<EventDef<any, any> & { platform?: string }>,
@@ -28,6 +28,7 @@ export const normalizeEvents = (
                     name: event.name,
                     description: event.description,
                     descriptionTrigger: event.descriptionTrigger,
+                    possibleImprovements: event.possibleImprovements,
                     changelog: normalizeChangelog(event.changelog),
                     attributes,
                     platform: event.platform,

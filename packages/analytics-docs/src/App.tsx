@@ -72,7 +72,7 @@ export function App() {
                 </TopBar>
                 <Box padding={24}>
                     <ContentContainer>
-                        <Column gap={20}>{eventCards}</Column>
+                        <Column gap={40}>{eventCards}</Column>
                     </ContentContainer>
                 </Box>
             </Box>

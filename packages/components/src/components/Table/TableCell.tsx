@@ -15,6 +15,8 @@ import { Text } from '../typography/Text/Text';
 
 export const allowedTableCellFrameProps = [
     'padding',
+    'width',
+    'minWidth',
     'maxWidth',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableCellFrameProps)[number]>;

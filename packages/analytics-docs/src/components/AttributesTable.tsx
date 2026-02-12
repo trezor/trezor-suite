@@ -29,6 +29,7 @@ export function AttributesTable({ attributes }: { attributes: Record<string, Att
                     </>
                 }
                 paddingType="small"
+                defaultIsOpen={true}
             >
                 <Table>
                     <Table.Header>

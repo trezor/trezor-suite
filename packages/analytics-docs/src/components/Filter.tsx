@@ -14,7 +14,7 @@ export const Filter = ({ query, setQuery, setPlatform }: FilterProps) => (
             value={query}
             size="small"
             onChange={e => setQuery(e.target.value)}
-            placeholder="Search"
+            placeholder="Filter"
             showClearButton="always"
             onClear={() => setQuery('')}
         />

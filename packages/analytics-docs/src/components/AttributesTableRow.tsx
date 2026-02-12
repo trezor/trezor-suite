@@ -114,7 +114,7 @@ export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) =
     return (
         <>
             <Table.Row key={k} verticalAlign="top">
-                <Table.Cell>
+                <Table.Cell width={200}>
                     <Text typographyStyle="label" isMonospaced>
                         {k}
                     </Text>

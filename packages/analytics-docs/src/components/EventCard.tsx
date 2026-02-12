@@ -106,6 +106,15 @@ export function EventCard({ event }: { event: EventDoc }) {
                     <Markdown>{event.description}</Markdown>
                 </InfoItem>
             )}
+            {event.description && (
+                <InfoItem
+                    label="Possible improvements"
+                    typographyStyle="label"
+                    margin={{ top: 12 }}
+                >
+                    <Markdown>{event.possibleImprovements}</Markdown>
+                </InfoItem>
+            )}
 
             <AttributesTable attributes={event.attributes ?? {}} />
         </Card>
