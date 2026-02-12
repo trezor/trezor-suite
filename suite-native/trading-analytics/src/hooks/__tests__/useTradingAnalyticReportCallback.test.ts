@@ -6,7 +6,7 @@ import {
     TradingSellStep,
 } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
@@ -41,8 +41,8 @@ describe('useTradingAnalyticReportCallback', () => {
             preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
         });
 
-        it('should return sell analytics callback', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(
+        it('should return sell analytics callback', () => {
+            const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('sell'),
                 { preloadedState },
             );
@@ -70,8 +70,8 @@ describe('useTradingAnalyticReportCallback', () => {
             preloadedState.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
         });
 
-        it('should return exchange analytics callback', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(
+        it('should return exchange analytics callback', () => {
+            const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('exchange'),
                 { preloadedState },
             );
@@ -99,8 +99,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return null action (no analytics)', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(
+        it('should return null action (no analytics)', () => {
+            const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback(undefined),
                 { preloadedState },
             );
@@ -118,8 +118,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return null action (no analytics)', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(
+        it('should return null action (no analytics)', () => {
+            const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('buy'),
                 { preloadedState },
             );

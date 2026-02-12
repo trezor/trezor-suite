@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { EventType } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
@@ -33,13 +33,12 @@ describe('useExchangeAnalyticReportCallback', () => {
         };
     });
 
-    it('should call analytics on mount', async () => {
+    it('should call analytics on mount', () => {
         preloadedState!.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
 
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useExchangeAnalyticReportCallback(),
-            { preloadedState },
-        );
+        const { result } = renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(), {
+            preloadedState,
+        });
 
         result.current('exchange-form', 'continue');
 
@@ -53,11 +52,10 @@ describe('useExchangeAnalyticReportCallback', () => {
         });
     });
 
-    it('should work without quote', async () => {
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useExchangeAnalyticReportCallback(),
-            { preloadedState },
-        );
+    it('should work without quote', () => {
+        const { result } = renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(), {
+            preloadedState,
+        });
 
         result.current('exchange-form', 'continue');
 
@@ -70,10 +68,10 @@ describe('useExchangeAnalyticReportCallback', () => {
         });
     });
 
-    it('should allow to specify quote as parameter', async () => {
+    it('should allow to specify quote as parameter', () => {
         preloadedState!.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
 
-        const { result } = await renderHookWithStoreProviderAsync(
+        const { result } = renderHookWithStoreProvider(
             () => useExchangeAnalyticReportCallback(exchangeQuotes[3]),
             { preloadedState },
         );
@@ -93,8 +91,8 @@ describe('useExchangeAnalyticReportCallback', () => {
     it.each([
         [{ ...exchangeQuotes[0], send: 'unknown_cryptoID' as CryptoId }],
         [{ ...exchangeQuotes[0], receive: 'unknown_cryptoID' as CryptoId }],
-    ])('should work with unknown quote values', async quote => {
-        const { result } = await renderHookWithStoreProviderAsync(
+    ])('should work with unknown quote values', quote => {
+        const { result } = renderHookWithStoreProvider(
             () => useExchangeAnalyticReportCallback(quote),
             { preloadedState },
         );
