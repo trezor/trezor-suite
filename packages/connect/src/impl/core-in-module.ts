@@ -194,7 +194,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
             if (!transports?.length) {
                 newTransports = ['BridgeTransport', 'WebUsbTransport'];
             }
-            this._settings = parseConnectSettings({ ...this._settings, transports });
+            this._settings = parseConnectSettings({ ...this._settings, transports: newTransports });
             this.handleCoreMessage({
                 type: TRANSPORT.SET_TRANSPORTS,
                 payload: { transports: newTransports },
