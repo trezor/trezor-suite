@@ -3,22 +3,14 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { isTrezorDeviceWithState } from '@suite-common/device';
 import {
-    WriteModeRequiredForAllocation,
-    ensureDeviceHasQuotaThunk,
-    ensureOwnerHasAllocatedQuotaThunk,
-} from '@suite-common/suite-sync-quota-manager';
-import {
     EnsureSuiteSyncOwnerDep,
     RefreshSuiteSyncKeys,
     SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
 import { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
-import { GetDeviceHasAllowance } from './getDeviceHasAllowance';
-import { LoadSuiteSyncOwnerFromStateDep } from './owner/createLoadSuiteSyncOwnerFromState';
 
 /**
  * Device is not connected or device is in a state/configuration, that does not
@@ -30,30 +22,18 @@ export const SuiteSyncUnavailableOnDeviceError = (): SuiteSyncUnavailableOnDevic
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
-    hasAllowance: GetDeviceHasAllowance;
 } & EnsureSuiteSyncOwnerDep &
-    LoadSuiteSyncOwnerFromStateDep &
     EnsureDelegatedIdentityKeyDep &
     GetDeviceForStaticSessionIdDep;
 
 export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
-    async ({ device, isWriteMode }): ReturnType<RefreshSuiteSyncKeys> => {
+    async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
         if (!device || !isTrezorDeviceWithState(device)) {
             return err(SuiteSyncUnavailableOnDeviceError());
         }
 
         const deviceStaticId = device.state.staticSessionId;
-
-        const owner = await deps.loadSuiteSyncOwnerFromState({ deviceStaticId });
-
-        const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
-
-        // If device has an owner, is registered in quota manager and the owner
-        // already has an allowance, there's nothing to refresh — return success.
-        if (owner !== null && deps.hasAllowance({ walletDescriptor, deviceId: device.id })) {
-            return ok(owner);
-        }
 
         if (
             !device.connected || // disconnected device cannot resolve Evolu-Keys
@@ -62,7 +42,7 @@ export const createRefreshSuiteSync =
             return err(SuiteSyncUnavailableOnDeviceError());
         }
 
-        const getKeys = async () => {
+        const getDelegatedIdentityKeys = async () => {
             const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
             if (!delegatedKeyResult.success) {
@@ -76,13 +56,6 @@ export const createRefreshSuiteSync =
                 return err({ type: 'RefreshDeviceFailed' as const });
             }
 
-            await deps.dispatch(
-                ensureDeviceHasQuotaThunk({
-                    device: refreshedDevice,
-                    delegatedKey: delegatedKeyResult.payload,
-                }),
-            );
-
             const ownerResult = await deps.ensureSuiteSyncOwner({
                 device: refreshedDevice,
                 delegatedKey: delegatedKeyResult.payload,
@@ -92,26 +65,10 @@ export const createRefreshSuiteSync =
                 return ownerResult;
             }
 
-            const allocatedQuota = await deps.dispatch(
-                ensureOwnerHasAllocatedQuotaThunk({
-                    walletDescriptor,
-                    ownerId: ownerResult.payload.ownerId,
-                    delegatedKey: delegatedKeyResult.payload,
-                    isWriteMode,
-                }),
-            );
-
-            if (
-                allocatedQuota.success === false &&
-                allocatedQuota.error.type === 'WriteModeRequiredForAllocation'
-            ) {
-                return err(WriteModeRequiredForAllocation());
-            }
-
-            return ok(ownerResult.payload);
+            return ok({ owner: ownerResult.payload, delegatedKey: delegatedKeyResult.payload });
         };
 
-        const result = await getKeys();
+        const result = await getDelegatedIdentityKeys();
 
         if (!result.success) {
             const errType = result.error.type;
@@ -119,7 +76,6 @@ export const createRefreshSuiteSync =
             switch (errType) {
                 case 'DeviceError':
                 case 'DeviceCancelled':
-                case 'WriteModeRequiredForAllocation':
                     return err(result.error);
 
                 // Those errors are most likely due to Bug in the code or data corruption

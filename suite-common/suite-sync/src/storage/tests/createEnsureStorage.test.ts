@@ -1,6 +1,7 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import {
     SuiteSyncOwner,
+    asDelegatedIdentityKey,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
@@ -18,6 +19,8 @@ const OWNER_ABCD: SuiteSyncOwner = {
     ownerSecret: asSuiteSyncOwnerSecretHex('owner-secret-abcd'),
 };
 
+const DELEGATED_KEY = asDelegatedIdentityKey('delegated-key-abcd');
+
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 describe(createEnsureStorage.name, () => {
@@ -34,6 +37,7 @@ describe(createEnsureStorage.name, () => {
             },
             createSuiteStorage: null,
             refreshSuiteSyncKeys: null,
+            ensureQuota: null,
             getDeviceForStaticSessionId: null,
         });
 
@@ -60,6 +64,7 @@ describe(createEnsureStorage.name, () => {
             },
             createSuiteStorage: null,
             refreshSuiteSyncKeys: null,
+            ensureQuota: null,
             getDeviceForStaticSessionId: () => null,
         });
 
@@ -89,6 +94,7 @@ describe(createEnsureStorage.name, () => {
             },
             createSuiteStorage: null,
             refreshSuiteSyncKeys: () => Promise.resolve(refreshError),
+            ensureQuota: null,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -99,7 +105,67 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toBe(refreshError);
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device, isWriteMode: false });
+        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
+        expect(deps.createSuiteStorage).not.toHaveBeenCalled();
+    });
+
+    it('calls ensureQuota with correct params after refreshSuiteSyncKeys succeeds', async () => {
+        const device = mockSuiteDevice();
+        const newStorage = createSuiteSyncStorageMock();
+
+        const deps = createMockDeps<EnsureStorageDeps>({
+            defaultRelayUrl: 'wss://default-relay.example.com',
+            getRelayUrl: () => null,
+            suiteSyncStorageRepository: {
+                get: () => null,
+                set: mock(() => {}),
+                delete: null,
+            },
+            createSuiteStorage: () => newStorage,
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
+            getDeviceForStaticSessionId: () => device,
+        });
+
+        await createEnsureStorage(deps)({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
+
+        expect(deps.ensureQuota).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            delegatedKey: DELEGATED_KEY,
+            owner: OWNER_ABCD,
+            isWriteMode: false,
+        });
+    });
+
+    it('returns error when ensureQuota fails', async () => {
+        const device = mockSuiteDevice();
+        const quotaError = err({ type: 'WriteModeRequiredForAllocation' as const });
+
+        const deps = createMockDeps<EnsureStorageDeps>({
+            defaultRelayUrl: 'wss://default-relay.example.com',
+            getRelayUrl: () => null,
+            suiteSyncStorageRepository: {
+                get: () => null,
+                set: null,
+                delete: null,
+            },
+            createSuiteStorage: null,
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(quotaError),
+            getDeviceForStaticSessionId: () => device,
+        });
+
+        const result = await createEnsureStorage(deps)({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
+
+        expect(result).toBe(quotaError);
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
     });
 
@@ -116,7 +182,9 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () => Promise.resolve(ok(OWNER_ABCD)),
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -127,7 +195,7 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device, isWriteMode: false });
+        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
         expect(deps.createSuiteStorage).toHaveBeenCalledWith({
             suiteSyncOwner: OWNER_ABCD,
             relayUrl: 'wss://default-relay.example.com',
@@ -150,7 +218,9 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () => Promise.resolve(ok(OWNER_ABCD)),
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -178,7 +248,9 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () => Promise.resolve(ok(OWNER_ABCD)),
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -208,7 +280,9 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () => Promise.resolve(ok(OWNER_ABCD)),
+            refreshSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
         });
 
