@@ -74,7 +74,7 @@
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
-        "@tanstack/react-query": "5.90.16",
+        "@tanstack/react-query": "5.90.20",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
