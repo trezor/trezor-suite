@@ -19,6 +19,7 @@ export type AttributeDoc = {
 export type EventDoc = {
     name: string;
     description?: string;
+    possibleImprovements?: string;
     descriptionTrigger: string;
     changelog: NormalizedChangelog;
     attributes: Record<string, AttributeDoc>;
