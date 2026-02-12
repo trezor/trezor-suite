@@ -11535,7 +11535,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/thp@workspace:suite-common/thp"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -12048,7 +12047,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-screens: "npm:~4.18.0"
     react-native-svg: "npm:15.14.0"
-    react-native-tcp-socket: "npm:6.3.0"
+    react-native-tcp-socket: "npm:6.4.1"
     react-native-worklets: "npm:^0.6.1"
     react-redux: "npm:9.2.0"
     redux-persist: "npm:6.0.0"
@@ -13795,7 +13794,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/send@workspace:suite-native/send"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -39941,15 +39939,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-tcp-socket@npm:6.3.0":
-  version: 6.3.0
-  resolution: "react-native-tcp-socket@npm:6.3.0"
+"react-native-tcp-socket@npm:6.4.1":
+  version: 6.4.1
+  resolution: "react-native-tcp-socket@npm:6.4.1"
   dependencies:
     buffer: "npm:^5.4.3"
     eventemitter3: "npm:^4.0.7"
   peerDependencies:
     react-native: ">=0.60.0"
-  checksum: 10/6c7b4b00e52a733baf36f3aed07a833f35865670ae586e4fe2d1665e970eddc55606d0c00a94a8f077bccdcc0ecddb59226c26d363ca1db29b4039ae5c0dce35
+  checksum: 10/ba840118695438bf0b338042b8c4d0623de909e1f186276228400b4a02e30fbffbb24b7fe8a6a4c6c47effa29d5803bc4311b24887c086a6db817a6f0d959e29
   languageName: node
   linkType: hard
 
