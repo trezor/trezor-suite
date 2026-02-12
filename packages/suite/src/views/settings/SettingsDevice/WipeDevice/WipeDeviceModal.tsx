@@ -31,10 +31,18 @@ type StepCardProps = {
     description: ReactNode;
     actions: ReactNode;
     icon: IconName;
+    descriptionTypographyStyle?: 'body-md-strong' | 'inherit';
     state: 'default' | 'confirmed' | 'pending';
 };
 
-const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
+export const StepCard = ({
+    heading,
+    description,
+    actions,
+    icon,
+    state,
+    descriptionTypographyStyle = 'body-md-strong',
+}: StepCardProps) => {
     const iconIntent = state === 'confirmed' ? 'brand' : 'neutral';
     const iconPriority = state === 'confirmed' ? 'primary' : 'secondary';
     const textIntent = state === 'confirmed' ? 'brand' : 'neutral';
@@ -58,7 +66,9 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
                     <>
                         <Divider margin={0} />
                         <Column gap={16} padding={{ horizontal: 16, vertical: 12 }}>
-                            <Paragraph typographyStyle="body-md-strong">{description}</Paragraph>
+                            <Paragraph typographyStyle={descriptionTypographyStyle}>
+                                {description}
+                            </Paragraph>
                             <Row gap={12}>{actions}</Row>
                         </Column>
                     </>

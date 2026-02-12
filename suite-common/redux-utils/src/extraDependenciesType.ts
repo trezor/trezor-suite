@@ -56,7 +56,9 @@ export type ExtraDependenciesStatic = {
         >;
         forgetBluetoothDevice: SuiteCompatibleThunk<{
             bluetoothId: BluetoothDeviceId;
+            skipToggleModalConnection?: boolean;
             isOsUnpairingFinished?: boolean;
+            skipDisconnect?: boolean;
         }>;
     };
     selectors: {

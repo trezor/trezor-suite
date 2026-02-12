@@ -66,7 +66,7 @@ export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
 );
 
 export const selectIsBluetoothDeviceOsUnpairingRequired = (state: NativeBluetoothRootState) =>
-    selectIsDeviceOsUnpairingRequired(state);
+    Boolean(selectIsDeviceOsUnpairingRequired(state)?.isRequired);
 
 export const selectIsKnownBluetoothDevice = createMemoizedSelector(
     [selectKnownBluetoothDevices, selectDeviceId],

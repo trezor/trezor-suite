@@ -140,6 +140,13 @@ export const NotificationRenderer = ({
                 icon: 'gear',
             });
 
+        case 'device-forgotten':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
+                icon: 'check',
+            });
+
         case 'copy-to-clipboard':
             return renderNotificationView(render, notification, {
                 variant: 'success',

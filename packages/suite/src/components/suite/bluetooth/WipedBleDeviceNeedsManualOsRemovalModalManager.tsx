@@ -6,9 +6,13 @@ import { useSelector } from '../../../hooks/suite';
 export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
     const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
 
-    if (!wasBluetoothDeviceWiped) {
+    if (!wasBluetoothDeviceWiped?.isRequired) {
         return null;
     }
 
-    return <UnpairBluetoothDeviceFromOsModal />;
+    return (
+        <UnpairBluetoothDeviceFromOsModal
+            skipToggleModalConnection={wasBluetoothDeviceWiped.skipToggleModalConnection}
+        />
+    );
 };

@@ -4563,11 +4563,11 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_BULLET_FORGET: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_FORGET',
-        defaultMessage: 'Trezor Suite will forget this Trezor.',
+        defaultMessage: 'Trezor Suite will forget any existence of this Trezor.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED',
-        defaultMessage: 'Bluetooth pairing will be removed, and your Trezor will be disconnected.',
+        defaultMessage: 'Bluetooth pairing will be removed and Trezor will be disconnected.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED',
@@ -4576,6 +4576,56 @@ export const messages = defineMessages({
     TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
         defaultMessage: "Your wallet backup and funds stay intact—they won't be erased.",
+    },
+    TR_FORGET_DEVICE_MODAL_CONFIRM: {
+        id: 'TR_FORGET_DEVICE_MODAL_CONFIRM',
+        defaultMessage: 'Forget device',
+    },
+    TR_DEVICE_HAS_BEEN_FORGOTTEN: {
+        id: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
+        defaultMessage: 'Device forgotten',
+    },
+    TR_DEVICE_WILL_BE_FORGOTTEN: {
+        id: 'TR_DEVICE_WILL_BE_FORGOTTEN',
+        defaultMessage: 'Will be forgotten after disconnecting Trezor',
+    },
+    TR_FORGET_DEVICE_MODAL_FINISH_HEADING: {
+        id: 'TR_FORGET_DEVICE_MODAL_FINISH_HEADING',
+        defaultMessage: 'Remove from Bluetooth settings',
+    },
+    TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER: {
+        id: 'TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER',
+        defaultMessage: 'On your computer',
+    },
+    TR_FORGET_DEVICE_MODAL_ON_YOUR_TREZOR: {
+        id: 'TR_FORGET_DEVICE_MODAL_ON_YOUR_TREZOR',
+        defaultMessage: 'On your Trezor',
+    },
+    TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS: {
+        id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS',
+        defaultMessage:
+            '<b>Remove your Trezor from the <link>Bluetooth settings</link>.</b> If you don’t, you might have trouble pairing it again in the future.',
+    },
+    TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR: {
+        id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR',
+        defaultMessage:
+            '<b>Go to Pair & Connect and remove your computer.</b> This will prevent connection errors later.',
+    },
+    TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT: {
+        id: 'TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT',
+        defaultMessage: "I've removed it",
+    },
+    TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT: {
+        id: 'TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT',
+        defaultMessage: 'This device will be forgotten after you disconnect it.',
+    },
+    TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING: {
+        id: 'TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING',
+        defaultMessage: 'Finish forgetting this Trezor',
+    },
+    TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE: {
+        id: 'TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE',
+        defaultMessage: 'Disconnect your Trezor device from the phone.',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -10374,7 +10424,7 @@ export const messages = defineMessages({
     },
     TR_DONE_REMOVING_TREZOR_FROM_SETTINGS: {
         id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
-        defaultMessage: 'I’ve removed it',
+        defaultMessage: 'I’ve got it',
     },
     TR_SCAN_TREZORS_NEARBY: {
         id: 'TR_SCAN_TREZORS_NEARBY',
@@ -10408,7 +10458,7 @@ export const messages = defineMessages({
     TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION: {
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
         defaultMessage:
-            "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
+            'If you don’t remove your Trezor from your Bluetooth settings, you might have trouble pairing it again in the future.',
     },
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS: {
         defaultMessage: 'Unpair Bluetooth connection',
