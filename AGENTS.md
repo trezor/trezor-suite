@@ -17,10 +17,10 @@
 - [Project Overview](skills/project-structure.md) – What Trezor Suite is and how the monorepo is organized
 - [Redux](skills/redux.md) – Redux Toolkit patterns and best practices
 - [Setup Requirements](skills/setup-requirements.md) – Prerequisites and initial environment setup
-- [Testing](skills/testing.md) – Running tests and test-related guidelines
+- [Tests Commands](skills/tests-commands.md) – Running tests and test-related guidelines
+- [Tests Native](skills/tests-native.md) – Guidelines for writing tests for suite-native components, hooks and functions
 - [Tests](skills/tests.md) – Test style guidelines and best practices
 - [TypeScript](skills/typescript.md) – TypeScript-specific conventions
-- [Writing RN tests](skills/writing-native-tests.md) – Guidelines for writing tests for suite-native components, hooks and functions
 
 ## Formatting (mandatory)
 
