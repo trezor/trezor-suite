@@ -1,5 +1,4 @@
 import { Translation } from '@suite/intl';
-import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccounts,
     selectBlockchainState,
@@ -17,8 +16,8 @@ import {
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
-import { Column, Row } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { Row } from '@trezor/components';
+import { TransactionNotification } from '@trezor/product-components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -28,7 +27,6 @@ import type { NotificationRendererProps } from 'src/components/suite/notificatio
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Account } from 'src/types/wallet';
 import { getTxAnchor } from 'src/utils/suite/anchor';
 
 type TransactionRendererProps = NotificationViewProps &
@@ -42,90 +40,6 @@ type TransactionRendererProps = NotificationViewProps &
         | 'tx-approved'
         | 'tx-revoked'
     >;
-
-type TransactionRendererContentProps = {
-    notification: TransactionRendererProps['notification'];
-    account: Account;
-};
-
-const TransactionRendererContent = ({ notification, account }: TransactionRendererContentProps) => {
-    const amountTestId = `@toast/${notification.type}/amount`;
-
-    switch (notification.type) {
-        case 'tx-approved':
-        case 'tx-revoked': {
-            const { token, symbol } = notification;
-            const coingeckoId = getCoingeckoId(account.symbol);
-
-            return (
-                <Row gap={8} alignItems="center">
-                    <AssetLogo
-                        symbol={symbol}
-                        coingeckoId={coingeckoId ?? ''}
-                        contractAddress={token.contract}
-                        placeholder={token.name ?? symbol}
-                        size={20}
-                        shouldTryToFetch
-                    />
-                    <HiddenPlaceholder data-testid={amountTestId}>
-                        <Row display="inline-flex" gap={4} alignItems="baseline">
-                            {notification.type === 'tx-approved' &&
-                            notification.isInfiniteApproval ? (
-                                <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
-                            ) : (
-                                notification.formattedAmount
-                            )}
-                            <span>{getDisplaySymbol(token.symbol ?? notification.symbol)}</span>
-                        </Row>
-                    </HiddenPlaceholder>
-                </Row>
-            );
-        }
-        case 'tx-sent':
-        case 'tx-received': {
-            const { token, symbol } = notification;
-            const coingeckoId = getCoingeckoId(account.symbol);
-
-            return (
-                <Row gap={8} alignItems="center">
-                    {token ? (
-                        <AssetLogo
-                            symbol={symbol}
-                            coingeckoId={coingeckoId ?? ''}
-                            contractAddress={token.contract}
-                            placeholder={token.name ?? symbol}
-                            size={20}
-                            shouldTryToFetch
-                        />
-                    ) : (
-                        <CoinLogo symbol={symbol} size={20} />
-                    )}
-
-                    <HiddenPlaceholder data-testid={amountTestId}>
-                        {notification.formattedAmount}
-                    </HiddenPlaceholder>
-                </Row>
-            );
-        }
-        case 'tx-staked':
-        case 'tx-unstaked':
-        case 'tx-claimed':
-        case 'tx-confirmed':
-        default: {
-            const { symbol } = notification;
-
-            return (
-                <Row gap={8} alignItems="center">
-                    <CoinLogo symbol={symbol} size={20} />
-
-                    <HiddenPlaceholder data-testid={amountTestId}>
-                        {notification.formattedAmount}
-                    </HiddenPlaceholder>
-                </Row>
-            );
-        }
-    }
-};
 
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const { symbol, descriptor, txid, device } = props.notification;
@@ -151,6 +65,8 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         ? 'wallet-staking'
         : 'wallet-index';
     const isTradingRoute = !!routeName?.includes('wallet-trading');
+    const transactionToken = 'token' in props.notification ? props.notification.token : undefined;
+    const toastTestIdPrefix = `@toast/${props.notification.type}`;
 
     const handleTransactionClick = () => {
         const deviceToSelect = accountDevice || device;
@@ -190,32 +106,45 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
             message="TOAST_TX_COMPOSED"
             messageValues={{
                 content: (
-                    <Column gap={4}>
-                        <Translation
-                            id={props.message}
-                            values={{
-                                ...props.messageValues,
-                                account: (
-                                    <Row
-                                        display="inline-flex"
-                                        alignItems="center"
-                                        data-testid={`@toast/${props.notification.type}/account`}
-                                    >
-                                        <AccountLabeling
-                                            account={account}
-                                            showAccountTypeBadge
-                                            accountTypeBadgeSize="small"
-                                        />
-                                    </Row>
-                                ),
-                                confirmations,
-                            }}
-                        />
-                        <TransactionRendererContent
-                            account={account}
-                            notification={props.notification}
-                        />
-                    </Column>
+                    <TransactionNotification
+                        message={
+                            <Translation
+                                id={props.message}
+                                values={{
+                                    ...props.messageValues,
+                                    account: (
+                                        <Row
+                                            display="inline-flex"
+                                            alignItems="center"
+                                            data-testid={`${toastTestIdPrefix}/account`}
+                                        >
+                                            <AccountLabeling
+                                                account={account}
+                                                showAccountTypeBadge
+                                                accountTypeBadgeSize="small"
+                                            />
+                                        </Row>
+                                    ),
+                                    confirmations,
+                                }}
+                            />
+                        }
+                        notificationType={props.notification.type}
+                        symbol={props.notification.symbol}
+                        accountSymbol={account.symbol}
+                        token={transactionToken}
+                        amount={props.notification.formattedAmount}
+                        isInfiniteApproval={
+                            props.notification.type === 'tx-approved' &&
+                            props.notification.isInfiniteApproval
+                        }
+                        unlimitedApprovalLabel={<Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />}
+                        renderAmount={amount => (
+                            <HiddenPlaceholder data-testid={`${toastTestIdPrefix}/amount`}>
+                                {amount}
+                            </HiddenPlaceholder>
+                        )}
+                    />
                 ),
             }}
             action={
