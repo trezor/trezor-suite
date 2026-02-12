@@ -40,12 +40,15 @@ export function App() {
         setQuery,
         setSort,
         setPlatform,
+        clearAll,
         query,
         platform,
         sort,
         debouncedQuery,
         allEvents,
     } = useFilteredEvents();
+
+    const hasActiveFilters = query || platform !== 'all' || sort !== 'az';
 
     const eventCards = useMemo(
         () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),
@@ -77,6 +80,8 @@ export function App() {
                                     totalCount={allEvents.length}
                                     platform={platform}
                                     query={debouncedQuery}
+                                    hasActiveFilters={hasActiveFilters}
+                                    onClearAll={clearAll}
                                 />
                                 <Select
                                     placeholder="Sort by"
