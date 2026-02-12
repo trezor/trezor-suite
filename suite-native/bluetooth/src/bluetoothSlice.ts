@@ -19,13 +19,14 @@ export type NativeBluetoothRootState = {
     bluetooth: NativeBluetoothState;
 };
 
+export const bluetoothInitialState: NativeBluetoothState = {
+    ...prepareInitialState<BluetoothDevice>(),
+    permissionStatus: 'unavailable',
+};
+
 export const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
-    initialState: {
-        ...prepareInitialState<BluetoothDevice>(),
-        permissionStatus: 'unavailable',
-        shouldShowSystemUnpairingAlert: false,
-    },
+    initialState: bluetoothInitialState,
     reducers: {
         updatePermissionStatus: (state, { payload }: PayloadAction<BluetoothPermissionStatus>) => {
             // do not allow already stored 'blocked' to be overwritten with 'denied' on Android

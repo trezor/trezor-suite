@@ -26,7 +26,7 @@ type StorageActionPayload = {
     };
 };
 
-const connectPopupInitialState: ConnectPopupState = {
+export const connectPopupInitialState: ConnectPopupState = {
     activeCall: undefined,
     permissions: [],
 };

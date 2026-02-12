@@ -23,7 +23,7 @@ export type NativeSendRootState = {
     };
 };
 
-export const initialState: NativeSendState = {
+export const sendFormInitialState: NativeSendState = {
     ...commonInitialState,
     error: null,
     feeLevels: {},
@@ -31,7 +31,7 @@ export const initialState: NativeSendState = {
 
 export const sendFormSlice = createSliceWithExtraDeps({
     name: 'send',
-    initialState,
+    initialState: sendFormInitialState,
     reducers: {
         clearFeeLevels: state => {
             state.feeLevels = {};

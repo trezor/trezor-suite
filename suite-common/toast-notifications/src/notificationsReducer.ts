@@ -3,9 +3,9 @@ import { createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { notificationsActions } from './notificationsActions';
 import { NotificationsState } from './types';
 
-const initialState: NotificationsState = [];
+export const notificationsInitialState: NotificationsState = [];
 
-export const notificationsReducer = createReducer(initialState, builder => {
+export const notificationsReducer = createReducer(notificationsInitialState, builder => {
     builder
         .addCase(notificationsActions.close, (state, { payload }) => {
             const item = state.find(n => n.id === payload);

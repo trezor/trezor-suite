@@ -1,6 +1,7 @@
 export {
     type AnalyticsState,
     type AnalyticsRootState,
+    analyticsInitialState,
     prepareAnalyticsReducer,
     selectAnalyticsInstanceId,
     selectAnalyticsSessionId,

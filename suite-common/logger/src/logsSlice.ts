@@ -10,7 +10,7 @@ export type LogsSliceRootState = {
     logs: LogsSliceState;
 };
 
-const logsSliceInitialState: LogsSliceState = {
+export const logsSliceInitialState: LogsSliceState = {
     logEntries: [],
 };
 

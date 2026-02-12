@@ -20,7 +20,7 @@ type StorageActionPayload = {
     };
 };
 
-const walletConnectInitialState: WalletConnectState = {
+export const walletConnectInitialState: WalletConnectState = {
     sessions: [],
     pendingProposal: undefined,
 };

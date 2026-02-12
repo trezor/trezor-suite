@@ -16,7 +16,7 @@ export type AnalyticsState = {
 export type AnalyticsRootState = {
     analytics: AnalyticsState;
 };
-const analyticsInitialState: AnalyticsState = {
+export const analyticsInitialState: AnalyticsState = {
     sessionId: undefined,
     instanceId: undefined,
     enabled: undefined,

@@ -52,6 +52,7 @@ const initialState: FirmwareUpdateState = {
     firmwareChannel: 'production',
     switchFirmwareType: false, // NOTE: flag that indicates when the user intents to change the type of FW universal -> bitcoin-only
 };
+export const firmwareInitialState = initialState;
 
 type RootState = {
     firmware: typeof initialState;
