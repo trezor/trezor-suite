@@ -35,7 +35,17 @@ const ContentContainer = styled.div`
 `;
 
 export function App() {
-    const { filteredEvents, setQuery, setSort, setPlatform, query, platform } = useFilteredEvents();
+    const {
+        filteredEvents,
+        setQuery,
+        setSort,
+        setPlatform,
+        query,
+        platform,
+        sort,
+        debouncedQuery,
+        allEvents,
+    } = useFilteredEvents();
 
     const eventCards = useMemo(
         () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),
@@ -62,9 +72,15 @@ export function App() {
                                 />
                             </Row>
                             <Row justifyContent="space-between" gap={16} alignItems="center">
-                                <ResultsInfo />
+                                <ResultsInfo
+                                    filteredCount={filteredEvents.length}
+                                    totalCount={allEvents.length}
+                                    platform={platform}
+                                    query={debouncedQuery}
+                                />
                                 <Select
                                     placeholder="Sort by"
+                                    value={sorting.find(s => s.value === sort) ?? sorting[0]}
                                     onChange={option => {
                                         setSort(option.value);
                                     }}

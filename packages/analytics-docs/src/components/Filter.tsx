@@ -22,7 +22,7 @@ export const Filter = ({ query, setQuery, setPlatform, platform }: FilterProps) 
 
         <Select
             placeholder="Platform"
-            value={platform}
+            value={platforms.find(p => p.value === platform) ?? platforms[0]}
             onChange={option => {
                 setPlatform(option.value);
             }}
