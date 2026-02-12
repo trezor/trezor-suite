@@ -13,7 +13,7 @@ import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_URL = '';
 
-export const AnalyticsUrlControl = () => {
+export const AnalyticsLogging = () => {
     const customUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const dispatch = useDispatch();
