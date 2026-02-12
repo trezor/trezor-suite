@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
 
-import { G } from '@mobily/ts-belt';
-
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { BoxProps } from './Box';
 import { HStack } from './Stack';
@@ -68,7 +67,7 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
                 },
             },
             {
-                condition: G.isNotNullable(borderColor),
+                condition: isNotNullOrUndefined(borderColor),
                 style: {
                     borderColor: utils.colors[borderColor!],
                     borderWidth: utils.borders.widths.small,

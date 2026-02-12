@@ -1,4 +1,4 @@
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
@@ -30,7 +30,7 @@ import {
     isFormDraftKeyPrefix,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { NativeSendRootState } from './sendFormSlice';
 import { StatefulReviewOutput } from './types';
@@ -73,7 +73,7 @@ export const selectFeeLevelTransactionBytes = createMemoizedSelector(
 export const selectIsTransactionAlreadySigned = (state: NativeSendRootState) => {
     const serializedTx = selectSendSerializedTx(state);
 
-    return G.isNotNullable(serializedTx);
+    return isNotNullOrUndefined(serializedTx);
 };
 
 export const selectTransactionReviewOutputs = createSendMemoizedSelector(
@@ -158,7 +158,7 @@ export const selectIsTransactionReviewInProgress = (
         tokenContract,
     );
 
-    return G.isNotNullable(outputs) && A.isNotEmpty(outputs);
+    return isNotNullOrUndefined(outputs) && A.isNotEmpty(outputs);
 };
 
 export const selectIsDestinationTagOutputConfirmed = (
@@ -180,7 +180,7 @@ export const selectIsDestinationTagOutputConfirmed = (
     return pipe(
         outputs,
         A.find(output => output.type === 'destination-tag' && output.state === 'success'),
-        G.isNotNullable,
+        isNotNullOrUndefined,
     );
 };
 
@@ -208,7 +208,7 @@ export const selectIsReceiveAddressOutputConfirmed = (
                 (output.type === 'address' || output.type === 'regular_legacy') &&
                 output.state === 'success',
         ),
-        G.isNotNullable,
+        isNotNullOrUndefined,
     );
 };
 

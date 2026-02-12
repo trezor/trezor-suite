@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -21,6 +20,7 @@ import {
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
@@ -68,7 +68,7 @@ export const DeviceFirmwareCard = () => {
             return undefined;
         }
 
-        if (G.isNotNullable(deviceReleaseInfo)) {
+        if (isNotNullOrUndefined(deviceReleaseInfo)) {
             if (isFirmwareUpgradable) {
                 return {
                     title: <Translation id="firmware.updateCard.newVersionAvailable" />,

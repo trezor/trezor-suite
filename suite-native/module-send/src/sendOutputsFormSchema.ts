@@ -1,5 +1,3 @@
-import { G } from '@mobily/ts-belt';
-
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
@@ -13,7 +11,7 @@ import {
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
 import { FeeLevelsMaxAmount } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
     symbol?: NetworkSymbol;
@@ -189,7 +187,7 @@ const outputSchema = yup.object({
             'is-higher-than-balance',
             'You don’t have enough balance to send this amount.',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const isSendMaxEnabled = G.isNotNullable(this.from?.[1]?.value.setMaxOutputId);
+                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
 
                 return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
             },

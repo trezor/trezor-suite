@@ -1,7 +1,6 @@
-import { G } from '@mobily/ts-belt';
-
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { yup } from '../config';
 
@@ -23,8 +22,8 @@ export const xpubFormValidationSchema = yup.object({
                 if (!isAddressBasedNetwork(networkType)) return true;
 
                 return (
-                    G.isNotNullable(value) &&
-                    G.isNotNullable(symbol) &&
+                    isNotNullOrUndefined(value) &&
+                    isNotNullOrUndefined(symbol) &&
                     isAddressValid(value, symbol)
                 );
             },

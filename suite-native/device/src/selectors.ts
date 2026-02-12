@@ -1,4 +1,4 @@
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import {
     isHardRevisionCheckError,
@@ -58,7 +58,7 @@ import {
 } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
@@ -235,7 +235,7 @@ export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [selectDeviceModel],
-    model => G.isNotNullable(model) && getIsDeviceSetupSupported(model),
+    model => isNotNullOrUndefined(model) && getIsDeviceSetupSupported(model),
 );
 
 export const selectShouldFactoryResetBeVisible = createMemoizedSelector(

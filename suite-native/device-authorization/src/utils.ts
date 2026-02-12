@@ -1,7 +1,7 @@
-import { G } from '@mobily/ts-belt';
 import { UnknownAction } from '@reduxjs/toolkit';
 
 import { UI, UiRequestDeviceAction } from '@trezor/connect';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const pinButtonRequestCodes = [
     'ButtonRequest_PinEntry',
@@ -10,7 +10,8 @@ export const pinButtonRequestCodes = [
 
 export const isPinButtonRequestCode = (action: UnknownAction): action is UiRequestDeviceAction =>
     action.type === UI.REQUEST_BUTTON &&
-    G.isNotNullable(action.payload) &&
+    typeof action.payload === 'object' &&
+    isNotNullOrUndefined(action.payload) &&
     'code' in action.payload &&
     pinButtonRequestCodes.includes(action.payload.code as (typeof pinButtonRequestCodes)[number]);
 
@@ -19,7 +20,8 @@ export const isPassphraseButtonRequestCode = (
 ): action is UiRequestDeviceAction =>
     action.type === UI.REQUEST_PASSPHRASE_ON_DEVICE ||
     (action.type === UI.REQUEST_BUTTON &&
-        G.isNotNullable(action.payload) &&
+        typeof action.payload === 'object' &&
+        isNotNullOrUndefined(action.payload) &&
         'code' in action.payload &&
         action.payload.code === 'ButtonRequest_Other' &&
         'name' in action.payload &&
@@ -36,7 +38,8 @@ export const flowEndingButtonRequests = [
 
 export const isFlowEndingButtonRequest = (action: UnknownAction) =>
     action.type === UI.REQUEST_BUTTON &&
-    G.isNotNullable(action.payload) &&
+    typeof action.payload === 'object' &&
+    isNotNullOrUndefined(action.payload) &&
     'code' in action.payload &&
     flowEndingButtonRequests.includes(
         action.payload.code as (typeof flowEndingButtonRequests)[number],
@@ -44,6 +47,7 @@ export const isFlowEndingButtonRequest = (action: UnknownAction) =>
 
 export const isSuiteSyncButtonRequest = (action: UnknownAction) =>
     action.type === UI.REQUEST_BUTTON &&
-    G.isNotNullable(action.payload) &&
+    typeof action.payload === 'object' &&
+    isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&
     action.payload.name === 'secure_sync';

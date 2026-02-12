@@ -2,10 +2,9 @@ import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { G } from '@mobily/ts-belt';
-
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 
@@ -57,7 +56,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
             },
         },
         {
-            condition: G.isNotNullable(borderColor),
+            condition: isNotNullOrUndefined(borderColor),
             style: {
                 borderColor: utils.colors[borderColor!],
                 borderWidth: utils.borders.widths.small,

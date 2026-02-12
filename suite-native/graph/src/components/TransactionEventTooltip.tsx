@@ -2,7 +2,7 @@ import { Dimensions } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { G, N } from '@mobily/ts-belt';
+import { N } from '@mobily/ts-belt';
 
 import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { SignValue } from '@suite-common/suite-types';
@@ -17,6 +17,7 @@ import {
 import { EventTooltipComponentProps } from '@suite-native/react-native-graph/src/LineGraphProps';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 export type TransactionEventTooltipProps =
     EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
@@ -173,7 +174,7 @@ export const TransactionEventTooltip = ({
                         accountKey={accountKey}
                     />
                 )}
-                {G.isNotNullable(totalAmount) && (
+                {isNotNullOrUndefined(totalAmount) && (
                     <EventTooltipRow
                         title="In total"
                         signValue={totalAmount}
