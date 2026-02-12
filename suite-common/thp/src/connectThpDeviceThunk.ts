@@ -1,4 +1,3 @@
-import { selectFirmware } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
 import { Device } from '@trezor/connect';
 
@@ -14,7 +13,6 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
     `${THP_PREFIX}/connectThpDeviceThunk`,
     ({ device }, { dispatch, getState }) => {
         const credentials = selectThpCredentials(getState());
-        const isFwInstall = selectFirmware(getState()).status !== 'initial';
         const isThpInProgress = selectIsThpInProgress(getState());
 
         const credential = credentials.find(stateCredential =>
@@ -23,8 +21,7 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
             ),
         );
 
-        if (credential !== undefined && !isFwInstall && isThpInProgress) {
-            // Increment the counter only after FW installation and during a THP confirmation.
+        if (credential !== undefined && isThpInProgress) {
             dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
 
             const hasAutoConnectCredential = device?.thp?.credentials?.some(c => c?.autoconnect);

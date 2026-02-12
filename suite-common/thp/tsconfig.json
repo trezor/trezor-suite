@@ -4,7 +4,6 @@
     "references": [
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
