@@ -265,6 +265,7 @@ export const countries = {
     VU: { code: 'VU', codeAlpha3: 'VUT', flag: '🇻🇺', name: 'Vanuatu' },
     WF: { code: 'WF', codeAlpha3: 'WLF', flag: '🇼🇫', name: 'Wallis and Futuna' },
     WS: { code: 'WS', codeAlpha3: 'WSM', flag: '🇼🇸', name: 'Samoa' },
+    XK: { code: 'XK', codeAlpha3: 'XKX', flag: '🇽🇰', name: 'Kosovo' },
     YE: { code: 'YE', codeAlpha3: 'YEM', flag: '🇾🇪', name: 'Yemen' },
     YT: { code: 'YT', codeAlpha3: 'MYT', flag: '🇾🇹', name: 'Mayotte' },
     ZA: { code: 'ZA', codeAlpha3: 'ZAF', flag: '🇿🇦', name: 'South Africa' },
