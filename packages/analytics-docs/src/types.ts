@@ -11,7 +11,6 @@ export type NormalizedChangelog = {
 
 export type AttributeDoc = {
     description?: string;
-    limitations?: string;
     runtimeType?: string;
     changelog: NormalizedChangelog;
 };

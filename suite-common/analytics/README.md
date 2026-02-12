@@ -85,7 +85,7 @@ export const promoDashboardBannerEvent: EventDef<Attributes, EventType.PromoDash
             changelog: [{ version: '25.8.0', notes: 'added' }],
         },
         bannerType: {
-            limitations: 'only selected strings allowed (e.g. `tex` and `ts7`)',
+            description: 'only selected strings allowed (e.g. `tex` and `ts7`)',
             changelog: [{ version: '25.8.0', notes: 'added' }],
         },
     },

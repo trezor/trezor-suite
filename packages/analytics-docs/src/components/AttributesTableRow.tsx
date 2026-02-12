@@ -120,7 +120,7 @@ export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) =
                     </Text>
                 </Table.Cell>
                 <Table.Cell>
-                    <Text typographyStyle="label">
+                    <Text typographyStyle="label" overflow="auto">
                         <Syntax>{renderRuntimeType(attribute.runtimeType)}</Syntax>
                     </Text>
                 </Table.Cell>
