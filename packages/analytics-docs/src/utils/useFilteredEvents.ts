@@ -24,6 +24,34 @@ function parseVer(v?: string) {
     return [a, b, c] as const;
 }
 
+function isSubsequence(word: string, segment: string): boolean {
+    let qi = 0;
+    for (let hi = 0; hi < segment.length && qi < word.length; hi++) {
+        if (segment[hi] === word[qi]) qi++;
+    }
+
+    return qi === word.length;
+}
+
+function fuzzyMatch(query: string, haystack: string): boolean {
+    const tokens = query
+        .toLowerCase()
+        .trim()
+        .split(/[\s_\-/]+/)
+        .filter(Boolean);
+
+    if (tokens.length === 0) return true;
+
+    const segments = haystack.toLowerCase().split(/[/_]/);
+
+    for (const token of tokens) {
+        const found = segments.some(seg => isSubsequence(token, seg));
+        if (!found) return false;
+    }
+
+    return true;
+}
+
 function cmpVerDesc(va?: string, vb?: string) {
     const [a1, b1, c1] = parseVer(va);
     const [a2, b2, c2] = parseVer(vb);
@@ -62,9 +90,7 @@ export const useFilteredEvents = () => {
             .filter(e => {
                 if (!normalizedQuery) return true;
 
-                const haystack = [e.name ?? '', e.descriptionTrigger ?? ''].join(' ').toLowerCase();
-
-                return haystack.includes(normalizedQuery);
+                return fuzzyMatch(normalizedQuery, e.name);
             });
 
         return byPlatformAndQuery.sort((a, b) => {
