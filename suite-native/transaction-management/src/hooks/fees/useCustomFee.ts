@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -10,7 +9,7 @@ import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-com
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { FeesFormValues } from '../../feesFormSchema';
 import {
@@ -142,9 +141,9 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         ? customFeeLevel.fee
         : feeEstimate;
 
-    const hasFeePerByteError = G.isNotNullable(errors[FEE_PER_UNIT_FIELD_NAME]);
+    const hasFeePerByteError = isNotNullOrUndefined(errors[FEE_PER_UNIT_FIELD_NAME]);
     const isSubmittable =
-        G.isNotNullable(customFeeLevel) && !hasFeePerByteError && !isErrorBoxVisible;
+        isNotNullOrUndefined(customFeeLevel) && !hasFeePerByteError && !isErrorBoxVisible;
 
     return { feeValue, isFeeLoading, isErrorBoxVisible, isSubmittable };
 };

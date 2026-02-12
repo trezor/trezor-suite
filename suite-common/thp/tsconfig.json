@@ -9,6 +9,7 @@
         { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/protocol" }
+        { "path": "../../packages/protocol" },
+        { "path": "../../packages/utils" }
     ]
 }

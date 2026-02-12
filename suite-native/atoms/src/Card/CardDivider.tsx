@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { G } from '@mobily/ts-belt';
 import { SetRequired } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, NativeSpacing } from '@trezor/theme';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { Divider } from '../Divider';
 
@@ -19,7 +19,7 @@ const dividerStyle = prepareNativeStyle<SetRequired<CardDividerProps, 'horizonta
         marginHorizontal: -utils.spacings[horizontalPadding],
 
         extend: {
-            condition: G.isNotNullable(color),
+            condition: isNotNullOrUndefined(color),
             style: {
                 borderBottomColor: utils.colors[color!],
             },

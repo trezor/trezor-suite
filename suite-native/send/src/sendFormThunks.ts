@@ -1,4 +1,3 @@
-import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -34,7 +33,7 @@ import {
 } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
-import { typedObjectKeys } from '@trezor/utils';
+import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
 
@@ -226,7 +225,7 @@ export const sendTransactionThunk = createThunk<
                     tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
                     outputsCount: formValues.outputs.length,
                     selectedFee: formValues.selectedFee ?? 'normal',
-                    hasDestinationTag: G.isNotNullable(formValues.destinationTag),
+                    hasDestinationTag: isNotNullOrUndefined(formValues.destinationTag),
                     wasAppLeftDuringReview,
                 },
             });

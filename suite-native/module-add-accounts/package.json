@@ -29,6 +29,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "~15.0.8",
         "react": "19.1.0",
         "react-native": "0.81.5",

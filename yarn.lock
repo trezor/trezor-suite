@@ -11490,7 +11490,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/thp@workspace:suite-common/thp"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11500,6 +11499,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/protocol": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11591,7 +11591,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12240,7 +12239,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/suite-types": "workspace:*"
@@ -12259,6 +12257,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
@@ -12796,7 +12795,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-management@workspace:suite-native/module-accounts-management"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.0"
@@ -12866,6 +12864,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~15.0.8"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
@@ -13586,7 +13585,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/bottom-tabs": "npm:7.9.0"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
@@ -13610,6 +13608,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.12"
     expo-system-ui: "npm:~6.0.9"
     react: "npm:19.1.0"
@@ -13751,7 +13750,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/send@workspace:suite-native/send"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"

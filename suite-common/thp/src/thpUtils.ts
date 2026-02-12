@@ -1,7 +1,7 @@
-import { G } from '@mobily/ts-belt';
 import { UnknownAction } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 type ThpPairingRequestPayload = {
     name: 'thp_pairing_request' | 'thp_connection_request';
@@ -16,7 +16,8 @@ export const isThpPairingUIRequestButtonAction = (
     action: UnknownAction,
 ): action is ThpPairingRequestAction =>
     action.type === UI.REQUEST_BUTTON &&
-    G.isNotNullable(action.payload) &&
+    typeof action.payload === 'object' &&
+    isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&
     (action.payload.name === 'thp_pairing_request' ||
         action.payload.name === 'thp_connection_request');

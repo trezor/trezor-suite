@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
@@ -10,6 +8,7 @@ import { TextInputField, useFormContext } from '@suite-native/forms';
 import { decimalTransformer, integerTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { EIP1559CustomInputs } from './EIP1559CustomInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
@@ -31,7 +30,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
         trigger,
     } = useFormContext<FeesFormValues>();
 
-    const hasFeePerByteError = G.isNotNullable(errors[FEE_PER_UNIT_FIELD_NAME]);
+    const hasFeePerByteError = isNotNullOrUndefined(errors[FEE_PER_UNIT_FIELD_NAME]);
 
     const networkType = getNetworkType(symbol);
     const feeUnits = getFeeUnits(networkType);

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
 import { getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
@@ -13,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { percentageDiff } from '@suite-native/graph';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
@@ -59,7 +58,7 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
     }, [symbol, fiatCurrencyCode, isElectrumBackend]);
 
     useEffect(() => {
-        if (G.isNotNullable(currentValue) && G.isNotNullable(yesterdayValue)) {
+        if (isNotNullOrUndefined(currentValue) && isNotNullOrUndefined(yesterdayValue)) {
             setValuePercentageChange(percentageDiff(yesterdayValue, currentValue.toNumber()));
         }
     }, [currentValue, yesterdayValue]);

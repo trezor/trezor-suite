@@ -1,8 +1,9 @@
-import { A, F, G, pipe } from '@mobily/ts-belt';
+import { A, F, pipe } from '@mobily/ts-belt';
 
 import { SignValue } from '@suite-common/suite-types';
 import { TransactionType } from '@suite-common/wallet-types';
 import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { AddressesType, VinVoutAddress } from './types';
 
@@ -32,7 +33,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
                 }),
             );
         }),
-        A.filter(G.isNotNullable),
+        A.filter(isNotNullOrUndefined),
         A.concatMany,
         F.toMutable,
     );

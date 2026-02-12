@@ -1,10 +1,9 @@
-import { G } from '@mobily/ts-belt';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { Box, BoxProps } from './Box';
 
@@ -30,7 +29,7 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color; contain
         borderRadius: utils.borders.radii.round,
 
         extend: {
-            condition: G.isNotNullable(backgroundColor),
+            condition: isNotNullOrUndefined(backgroundColor),
             style: {
                 backgroundColor: utils.colors[backgroundColor as Color],
             },

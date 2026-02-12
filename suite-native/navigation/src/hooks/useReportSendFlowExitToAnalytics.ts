@@ -1,9 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { G } from '@mobily/ts-belt';
-
 import { AnalyticsSendFlowStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
 
@@ -26,7 +25,7 @@ const screenNameToAnalyticsLabelMap = {
 const isAnalyticsRelevantSendRoute = (
     routeName?: string,
 ): routeName is AnalyticsRelevantSendRoute =>
-    G.isNotNullable(routeName) && orderedRelevantScreensForAnalytics.includes(routeName);
+    isNotNullOrUndefined(routeName) && orderedRelevantScreensForAnalytics.includes(routeName);
 
 export const useReportSendFlowExitToAnalytics = () => {
     const [furthestSendStep, setFurthestSendStep] = useState<AnalyticsRelevantSendRoute | null>(
