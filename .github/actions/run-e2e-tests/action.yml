@@ -68,19 +68,27 @@ runs:
         node-version-file: ".nvmrc"
         cache: yarn
 
+    - name: Cache Playwright Browsers
+      id: playwright-cache
+      if: inputs.target == 'web'
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+
     - name: Install PW Dependencies
       shell: bash
       run: |
         echo "::group::Install PW Dependencies"
         echo "Installing Playwright dependencies"
-        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
+        time yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
         if [[ "${{ inputs.target }}" == "web" ]]; then
           echo "Installing conditional Web dependencies"
-          npx playwright install --with-deps
+          time npx playwright install --with-deps
         fi
         # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
         echo "Building message-system-sign-config"
-        yarn message-system-sign-config 1>/dev/null
+        time yarn message-system-sign-config 1>/dev/null
         echo "::endgroup::"
 
     - name: Pull Docker Images
@@ -89,7 +97,7 @@ runs:
         COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
       run: |
         echo "::group::Pull Docker Images"
-        docker compose pull --quiet ${{ inputs.containers }}
+        time docker compose pull --quiet ${{ inputs.containers }}
         echo "::endgroup::"
 
     - name: Run Playwright E2E Tests
@@ -126,9 +134,9 @@ runs:
           COVERAGE_OPT=""
         fi
 
-        docker compose up -d ${{ inputs.containers }}
+        time docker compose up -d ${{ inputs.containers }}
         echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
+        time yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
           --config=${{ inputs.pw-config }} \
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
           --pwc-disable-test-tags \
