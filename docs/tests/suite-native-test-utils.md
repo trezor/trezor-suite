@@ -152,6 +152,23 @@ describe('Counter', () => {
 });
 ```
 
+#### Injecting custom providers
+
+To inject custom provider, you can use `wrapper` option of either `render`, `renderWithBasicProvider` or
+`renderWithStoreProvider`.
+
+```tsx
+const renderCounterA = () =>
+    renderWithStoreProvider(<Counter />, { store, wrapper: MyCustomProvider });
+
+const renderCounterB = () =>
+    renderWithBasicProvider(<Counter />, {
+        wrapper: ({ children }) => (
+            <MyCustomProvider someProp={someValue}>{children}</MyCustomProvider>
+        ),
+    });
+```
+
 ## Testing hooks
 
 ```mermaid
@@ -180,7 +197,7 @@ For more information, please refer to the section about `renderWithBasicProvider
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 describe('useCounter', () => {
-    const renderUseCounter = () => renderHookWithBasicProvider(() => useCounterHookTest());
+    const renderUseCounter = () => renderHookWithBasicProvider(() => useCounter());
 
     it('should initialize with count 0', () => {
         const { result } = renderUseCounter();
@@ -219,7 +236,7 @@ import {
 
 describe('useCounter', () => {
     const renderUseCounter = (store: PreloadedState) =>
-        renderHookWithStoreProvider(() => useCounterHookTest(), { store });
+        renderHookWithStoreProvider(() => useCounter(), { store });
 
     it('should initialize with count from store', () => {
         const { result } = renderUseCounter({
@@ -238,7 +255,7 @@ import { act, initStore, renderHookWithStoreProvider } from '@suite-native/test-
 
 describe('useCounter', () => {
     const renderUseCounter = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useCounterHookTest(), { store });
+        renderHookWithStoreProvider(() => useCounter(), { store });
 
     it('should increment count and update store', () => {
         const store = initStore({ counter: { value: 0 } });
@@ -253,4 +270,21 @@ describe('useCounter', () => {
         expect(store.getActions()).toContainEqual({ type: 'counter/increment' });
     });
 });
+```
+
+#### Injecting custom providers
+
+To inject custom provider, you can use `wrapper` option of either `renderHook`, `renderHookWithBasicProvider` or
+`renderHookWithStoreProvider`.
+
+```tsx
+const renderUseCounterA = () =>
+    renderHookWithStoreProvider(() => useCounter(), { store, wrapper: MyCustomProvider });
+
+const renderUseCounterB = () =>
+    renderHookWithBasicProvider(() => useCounter(), {
+        wrapper: ({ children }) => (
+            <MyCustomProvider someProp={someValue}>{children}</MyCustomProvider>
+        ),
+    });
 ```
