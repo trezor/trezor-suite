@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
-import { getInputState, isInteger, localizeNumber } from '@suite-common/wallet-utils';
+import { isInteger, localizeNumber } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -59,7 +59,7 @@ export const LocktimeBlockHeight = ({ rightContent }: LocktimeBlockHeightProps) 
             control={control}
             name={inputName}
             locale={locale}
-            inputState={getInputState(error)}
+            hasError={!!error}
             onChange={() => composeTransaction()}
             rules={rules}
             bottomText={

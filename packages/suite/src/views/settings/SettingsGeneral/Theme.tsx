@@ -103,7 +103,6 @@ export const Theme = () => {
 
                 <ActionColumn>
                     <ActionSelect
-                        useKeyPressScroll
                         value={selectedValue}
                         options={optionGroups}
                         onChange={onChange}

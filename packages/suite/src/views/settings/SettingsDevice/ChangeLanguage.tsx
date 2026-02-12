@@ -54,7 +54,6 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
             <TextColumn title={<Translation id="TR_LANGUAGE" />} />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
                     value={selectedValue}
                     options={languageOptions}
                     onChange={onChange}

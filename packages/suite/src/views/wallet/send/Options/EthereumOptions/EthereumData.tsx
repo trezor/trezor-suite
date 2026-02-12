@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { isHexValid } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -100,7 +100,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                 </Row>
                 <Row gap={16}>
                     <Textarea
-                        inputState={getInputState(asciiError)}
+                        hasError={!!asciiError}
                         data-testid={inputAsciiName}
                         defaultValue={asciiValue}
                         maxLength={formInputsMaxLength.ethData}
@@ -114,7 +114,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                     />
                     <>=</>
                     <Textarea
-                        inputState={getInputState(hexError)}
+                        hasError={!!hexError}
                         data-testid={inputHexName}
                         defaultValue={hexValue}
                         maxLength={formInputsMaxLength.ethData}

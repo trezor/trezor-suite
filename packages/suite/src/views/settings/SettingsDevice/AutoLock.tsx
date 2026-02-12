@@ -65,7 +65,6 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
             />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
                     placeholder=""
                     onChange={handleChange}
                     options={[AUTO_LOCK_OPTIONS]}

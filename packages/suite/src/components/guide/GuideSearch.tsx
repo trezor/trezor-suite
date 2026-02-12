@@ -67,7 +67,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
                 onChange={e => setQuery(e.currentTarget.value)}
-                showClearButton="always"
+                showClearButton={true}
                 onClear={() => setQuery('')}
                 leftContent={
                     loading ? <Spinner size={24} /> : <Icon name="magnifyingGlass" size={24} />

@@ -28,7 +28,7 @@ const InputRow = ({ value, title, placeholder, base, defaultBase }: InputRowProp
             <Input
                 type="text"
                 innerRef={value.ref}
-                inputState={value.error ? 'error' : undefined}
+                hasError={!!value.error}
                 bottomText={value.error}
                 placeholder={placeholder}
                 {...value.field}
@@ -72,7 +72,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                     type="text"
                     placeholder={explorerConfig.default.base}
                     innerRef={input.fields.base.ref}
-                    inputState={input.fields.base.error ? 'error' : undefined}
+                    hasError={!!input.fields.base.error}
                     bottomText={input.fields.base.error}
                     rightContent={
                         <Button

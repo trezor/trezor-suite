@@ -22,7 +22,7 @@ export const TradingFormOfferFiatAmount = ({ amount }: TradingFormOfferFiatAmoun
             >
                 {formattedAmount}
             </Text>
-            <TradingFormInputCurrency isClean={false} />
+            <TradingFormInputCurrency width={100} />
         </Row>
     );
 };

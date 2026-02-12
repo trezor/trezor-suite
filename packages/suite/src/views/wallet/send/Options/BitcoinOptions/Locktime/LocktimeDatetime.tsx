@@ -5,7 +5,6 @@ import { getUnixTime } from 'date-fns';
 import { Translation, useTranslation } from '@suite/intl';
 import { getCurrentUTCDatetime, parseUTCdatetime } from '@suite-common/suite-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { getInputState } from '@suite-common/wallet-utils';
 import { Input, Row, Text } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -57,7 +56,7 @@ export const LocktimeDatetime = ({ rightContent }: LocktimeDatetimeProps) => {
 
     return (
         <Input
-            inputState={getInputState(error)}
+            hasError={!!error}
             defaultValue={inputValue}
             bottomText={
                 <Row justifyContent="space-between" width="100%">

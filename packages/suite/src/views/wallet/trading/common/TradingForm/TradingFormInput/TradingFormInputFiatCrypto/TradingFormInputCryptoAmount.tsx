@@ -14,7 +14,7 @@ import {
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
+import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
@@ -166,7 +166,7 @@ export const TradingFormInputCryptoAmount = ({
 
                 clearErrors(fiatInputName);
             }}
-            inputState={getInputState(cryptoInputError)}
+            hasError={!!cryptoInputError}
             control={control}
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}

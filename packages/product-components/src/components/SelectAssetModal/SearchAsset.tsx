@@ -45,7 +45,6 @@ export const SearchAsset = ({
                 </Row>
             )}
             data-testid={`${dataTestId}/select`}
-            isRenderedInModal
             openMenuOnFocus={false}
         />
     ) : undefined;

@@ -147,7 +147,7 @@ const Header = () => {
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={theme.variant === 'light'}
                         onClear={() => setSearch('')}
-                        showClearButton="always"
+                        showClearButton={true}
                         size="small"
                     />
                 </Box>

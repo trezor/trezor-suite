@@ -89,7 +89,7 @@ export const VotingDelegationsOptions = ({
                                     placeholder={translationString('TR_STAKING_DREP_ID')}
                                     value={selectedVotingDelegation.drepId}
                                     inputMode="text"
-                                    inputState={hasError ? 'error' : 'default'}
+                                    hasError={hasError}
                                     bottomText={
                                         hasError ? (
                                             <Translation id="TR_STAKING_INVALID_DREP_ID" />

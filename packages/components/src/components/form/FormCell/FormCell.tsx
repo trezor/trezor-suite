@@ -15,12 +15,12 @@ import { Column } from '../../Flex/Flex';
 import { IconName } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
-import { InputState } from '../types';
 
 export const allowedFormCellFrameProps = [
     'margin',
     'width',
     'maxWidth',
+    'flex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFormCellFrameProps)[number]>;
 
@@ -30,7 +30,8 @@ const formCellProps = [
     'labelRight',
     'bottomText',
     'bottomTextIconComponent',
-    'inputState',
+    'bottomTextIconName',
+    'hasError',
     'isDisabled',
     'className',
     ...allowedFormCellFrameProps,
@@ -55,7 +56,7 @@ export type FormCellProps = AllowedFrameProps & {
     bottomText?: ReactNode;
     bottomTextIconComponent?: ReactNode;
     bottomTextIconName?: IconName;
-    inputState?: InputState;
+    hasError?: boolean;
     isDisabled?: boolean;
     children: ReactNode;
     className?: string;
@@ -70,7 +71,7 @@ export const FormCell = ({
     bottomText,
     bottomTextIconComponent,
     bottomTextIconName,
-    inputState,
+    hasError,
     isDisabled,
     className,
     'data-testid': dataTestId,
@@ -96,7 +97,7 @@ export const FormCell = ({
                 {children}
                 {bottomText && (
                     <BottomText
-                        inputState={inputState}
+                        hasError={hasError}
                         isDisabled={isDisabled}
                         iconComponent={bottomTextIconComponent}
                         iconName={bottomTextIconName}

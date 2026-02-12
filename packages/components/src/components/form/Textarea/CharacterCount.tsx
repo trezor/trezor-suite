@@ -1,24 +1,11 @@
-import styled from 'styled-components';
+import { Box } from '../../Box/Box';
+import { Text } from '../../typography/Text/Text';
 
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
-
-const Container = styled.div`
-    position: absolute;
-    bottom: ${spacings.md - spacings.xxxs}px;
-    right: ${spacings.md}px;
-    padding: ${spacingsPx.xxxs} ${spacingsPx.xxs};
-    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
-    border-radius: ${borders.radii.xxs};
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.label};
-`;
-
-export interface CharacterCountProps {
+export type CharacterCountProps = {
     value?: string;
     maxLength?: number;
     characterCount?: boolean | { current: number | undefined; max: number };
-}
+};
 
 export const CharacterCount = ({ value, maxLength, characterCount }: CharacterCountProps) => {
     const getCharacterCount = () => {
@@ -38,5 +25,15 @@ export const CharacterCount = ({ value, maxLength, characterCount }: CharacterCo
         return null;
     }
 
-    return <Container>{formattedCharacterCount}</Container>;
+    return (
+        <Box
+            backgroundColor="backgroundTertiaryDefaultOnElevation1"
+            borderRadius={4}
+            padding={{ horizontal: 4, vertical: 2 }}
+        >
+            <Text variant="tertiary" typographyStyle="label" as="div">
+                {formattedCharacterCount}
+            </Text>
+        </Box>
+    );
 };

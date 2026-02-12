@@ -3,25 +3,21 @@ import { ChangeEvent } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import {
-    Input as InputComponent,
-    InputProps,
-    allowedInputFrameProps,
-    allowedInputTextProps,
-} from './Input';
+import { Input as InputComponent, InputProps, allowedInputFrameProps } from './Input';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { getTextPropsStory } from '../../typography/utils';
+import { inputSizes } from '../types';
 
 const meta: Meta<typeof InputComponent> = {
     title: '✏️ Form',
     args: {
-        value: 'Input',
+        value: 'Value',
         label: 'Label',
         isDisabled: false,
         size: 'large',
-        inputState: undefined,
+        hasError: false,
+        showClearButton: false,
+        isMasked: false,
         ...getFramePropsStory(allowedInputFrameProps).args,
-        ...getTextPropsStory(allowedInputTextProps).args,
     },
     argTypes: {
         bottomText: { control: 'text' },
@@ -33,19 +29,18 @@ const meta: Meta<typeof InputComponent> = {
         placeholder: { control: 'text' },
         size: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
-            options: ['large', 'small'],
+            options: inputSizes,
         },
-        inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
+        hasError: { control: { type: 'boolean' } },
         showClearButton: {
-            control: {
-                type: 'radio',
-            },
-            options: [null, 'hover', 'always'],
+            control: { type: 'boolean' },
+        },
+        isMasked: {
+            control: { type: 'boolean' },
         },
         ...getFramePropsStory(allowedInputFrameProps).argTypes,
-        ...getTextPropsStory(allowedInputTextProps).argTypes,
     },
 };
 export default meta;
@@ -58,6 +53,13 @@ export const Input: StoryObj<InputProps> = {
             updateArgs({ value: e.target.value });
         };
 
-        return <InputComponent value={value} onChange={handleValue} {...args} />;
+        return (
+            <InputComponent
+                value={value}
+                onChange={handleValue}
+                onClear={() => updateArgs({ value: '' })}
+                {...args}
+            />
+        );
     },
 };

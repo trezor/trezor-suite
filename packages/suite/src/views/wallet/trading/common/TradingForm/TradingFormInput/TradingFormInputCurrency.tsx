@@ -23,8 +23,8 @@ import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
 
 export const TradingFormInputCurrency = ({
-    isClean = true,
-    width = 100,
+    width,
+    isClean = false,
 }: TradingFormInputCurrencyProps) => {
     const context = useTradingFormContext();
     const { control, setAmountLimits, defaultCurrency } = context;
@@ -39,9 +39,7 @@ export const TradingFormInputCurrency = ({
     const options = useMemo(
         () =>
             currencies
-                ? [...currencies]
-                      .map(currency => buildTradingFiatOption(currency))
-                      .filter(currency => currency.value !== currentCurrency.value)
+                ? [...currencies].map(currency => buildTradingFiatOption(currency))
                 : buildCurrencyOptions({ selected: currentCurrency, areSatsDisplayed }),
         [currencies, currentCurrency, areSatsDisplayed],
     );
@@ -77,10 +75,10 @@ export const TradingFormInputCurrency = ({
                     options={options}
                     data-testid="@trading/form/fiat-currency-select"
                     isClearable={false}
-                    isClean={isClean}
                     size="small"
                     isSearchable
                     width={width}
+                    isClean={isClean}
                 />
             )}
         />

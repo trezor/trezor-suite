@@ -3,7 +3,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { StakeFormState } from '@suite-common/wallet-types';
-import { getInputState, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -155,7 +155,7 @@ export const StakeInputs = () => {
                     maxLength: formInputsMaxLength.amount,
                     rightContent: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
                     bottomText: errors[CRYPTO_INPUT]?.message ?? null,
-                    inputState: getInputState(cryptoError || fiatError),
+                    hasError: !!(cryptoError || fiatError),
                     onChange: onCryptoAmountChange,
                 }}
                 fiatInputProps={
@@ -171,7 +171,7 @@ export const StakeInputs = () => {
                                   <Text variant="tertiary">{baseCurrencyCode.toUpperCase()}</Text>
                               ),
                               bottomText: errors[FIAT_INPUT]?.message ?? null,
-                              inputState: getInputState(fiatError || cryptoError),
+                              hasError: !!(fiatError || cryptoError),
                               onChange: onFiatAmountChange,
                           }
                         : undefined

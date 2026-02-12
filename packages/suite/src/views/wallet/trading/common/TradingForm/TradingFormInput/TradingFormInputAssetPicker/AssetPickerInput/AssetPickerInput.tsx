@@ -34,12 +34,6 @@ const OpenModalButton = styled.button`
     }
 `;
 
-const SpinnerWrapper = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-`;
 export interface AssetPickerInputProps {
     name:
         | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
@@ -75,11 +69,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
         }
 
         if (isLoading) {
-            return (
-                <SpinnerWrapper>
-                    <Spinner size={24} isGrey={false} />
-                </SpinnerWrapper>
-            );
+            return <Spinner size={20} isGrey={false} />;
         }
 
         return undefined;

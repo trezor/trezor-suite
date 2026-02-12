@@ -1,7 +1,5 @@
 import { memo } from 'react';
-import { SelectInstance, StylesConfig, createFilter } from 'react-select';
-
-import { CSSObject } from 'styled-components';
+import { SelectInstance, createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { Select } from '@trezor/components';
@@ -13,13 +11,6 @@ const options = bip39.map(item => ({ label: item, value: item }));
 
 type Option = { label: string; value: string };
 
-const styles: StylesConfig<Option, boolean> = {
-    menuList: base => ({
-        ...(base as Record<string, CSSObject>),
-        maxHeight: '180px',
-    }),
-};
-
 export const WordInput = memo(() => {
     const { translationString } = useTranslation();
 
@@ -30,7 +21,6 @@ export const WordInput = memo(() => {
             isSearchable
             isClearable={false}
             isMenuOpen
-            styles={styles}
             noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }

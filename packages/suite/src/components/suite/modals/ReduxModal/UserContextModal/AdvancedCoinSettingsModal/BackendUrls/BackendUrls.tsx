@@ -71,7 +71,7 @@ export function BackendUrls({
                     <Input
                         data-testid="@settings/advance/url"
                         placeholder={input.placeholder}
-                        inputState={input.error ? 'error' : undefined}
+                        hasError={!!input.error}
                         bottomText={input.error?.message || null}
                         innerRef={inputRef}
                         maxLength={2048}

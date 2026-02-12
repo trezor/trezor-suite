@@ -106,7 +106,6 @@ export const Language = () => {
             />
             <ActionColumn>
                 <ActionSelect
-                    useKeyPressScroll
                     value={selectedValue}
                     options={options}
                     onChange={onChange}

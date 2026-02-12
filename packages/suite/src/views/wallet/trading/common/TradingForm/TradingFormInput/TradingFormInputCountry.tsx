@@ -61,10 +61,8 @@ export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps)
                     }}
                     data-testid="@trading/form/country-select"
                     isClearable={false}
-                    minValueWidth="160px"
+                    minValueWidth={160}
                     isSearchable
-                    // Keep menu anchored to the top (best query matches) instead of auto-scrolling to the currently selected option
-                    isScrollToSelectedEnabled={false}
                 />
             )}
         />

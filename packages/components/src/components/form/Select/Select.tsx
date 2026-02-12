@@ -1,423 +1,156 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
+import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import ReactSelect, {
+    ControlProps,
+    OptionProps,
+    Props as ReactSelectProps,
+    SelectInstance,
+    ValueContainerProps,
+} from 'react-select';
 
-import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    spacings,
-    spacingsPx,
-    typography,
-    typographyStylesBase,
-    zIndices,
-} from '@trezor/theme';
-
-import { Option as OptionType } from './types';
-import { FrameProps } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
-import { useElevation } from '../../ElevationContext/ElevationContext';
-import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
-import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     FormCell,
     FormCellProps,
     allowedFormCellFrameProps,
     pickFormCellProps,
 } from '../FormCell/FormCell';
-import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
 import { InputSize } from '../types';
 import {
     Control,
-    ControlComponentProps,
-    GroupHeading,
+    DropdownIndicator,
+    IndicatorsContainer,
+    LoadingIndicator,
     Option,
-    OptionComponentProps,
+    Placeholder,
+    SingleValue,
+    ValueContainer,
 } from './customComponents';
-import { useOnKeyDown } from './useOnKeyDown';
-
-const reactSelectClassNamePrefix = 'react-select';
+import { Option as OptionType } from './types';
+import { createSharedMenuStyles } from './utils';
+import { FrameProps } from '../../../utils/frameProps';
 
 export const allowedSelectFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
-const createSelectStyle = (
-    theme: DefaultTheme,
-    isRenderedInModal: boolean,
-    isClean: boolean,
-): StylesConfig<OptionType, boolean> => ({
-    menuPortal: base => ({
-        ...(base as Record<string, CSSObject>),
-        zIndex: isRenderedInModal ? zIndices.modal : zIndices.selectMenu,
-    }),
-    // menu styles are here because of the portal
-    menu: base => ({
-        ...(base as Record<string, CSSObject>),
-        // should be the same as menuStyle !!!
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1,
-        padding: spacings.sm,
-        minWidth: 140,
-        borderRadius: borders.radii.md,
-        background: theme.backgroundSurfaceElevation1,
-        outline: `1px solid ${theme.baseBorderSurfaceAction}`,
-        boxShadow: theme.boxShadowElevated,
-        animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
-        listStyleType: 'none',
-        overflow: 'hidden',
-        // when theme changes from light to dark
-        transition: 'background 0.3s',
-        border: 'none',
-        width: isClean ? 'fit-content' : 'auto',
-    }),
-    groupHeading: base => ({
-        ...(base as Record<string, CSSObject>),
-        margin: 0,
-        padding: spacings.xs,
-        ...{
-            ...typographyStylesBase.label,
-            lineHeight: `${typographyStylesBase.label.lineHeight}px`,
-        },
-        textTransform: 'initial',
-    }),
-    group: base => ({
-        ...(base as Record<string, CSSObject>),
-        padding: 0,
-
-        '& + &': {
-            paddingTop: spacingsPx.xxs,
-            marginTop: spacingsPx.xxs,
-        },
-    }),
-    option: (base, { isFocused }) => ({
-        ...(base as Record<string, CSSObject>),
-        padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
-        borderRadius: borders.radii.xxs,
-        background: isFocused ? theme.backgroundSurfaceElevation2 : 'transparent',
-
-        color: theme.textDefault,
-        ...{
-            ...typographyStylesBase.body,
-            lineHeight: `${typographyStylesBase.body.lineHeight}px`,
-        },
-        cursor: 'pointer',
-
-        '&:active': {
-            background: theme.backgroundSurfaceElevation0,
-        },
-    }),
-});
-
-type WrapperProps = TransientProps<
-    Pick<
-        SelectProps,
-        'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'isMenuOpen' | 'isSearchable'
-    >
-> & {
-    $isWithLabel: boolean;
-    $isWithPlaceholder: boolean;
-    $elevation: Elevation;
-    $isLoading?: boolean;
-};
-
-const SelectWrapper = styled.div<WrapperProps>`
-    /* stylelint-disable selector-class-pattern */
-    width: 100%;
-    position: relative;
-
-    ${({ $isClean }) =>
-        !$isClean &&
-        css`
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        `}
-
-    .${reactSelectClassNamePrefix}__dropdown-indicator {
-        align-items: center;
-        color: ${({ theme, $isDisabled }) =>
-            $isDisabled ? theme.iconDisabled : theme.iconSubdued};
-        padding: 0;
-        transition: transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1);
-        cursor: pointer;
-    }
-
-    .${reactSelectClassNamePrefix}__control {
-        padding: ${({ $isClean }) => ($isClean ? 0 : `0 ${spacingsPx.md}`)};
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        height: ${({ $isClean, $size }) => ($isClean ? 22 : $size && INPUT_HEIGHTS[$size])}px;
-        border-style: ${({ $isClean }) => ($isClean ? 'none' : 'solid')};
-        box-shadow: none;
-        cursor: pointer;
-        ${baseInputStyle};
-        background-color: ${({ $isClean }) => $isClean && 'transparent !important'};
-        border-color: ${({ $isClean }) => $isClean && 'transparent !important'};
-
-        &:hover:not(:focus-within) {
-            border-color: transparent;
-        }
-
-        &:focus-within {
-            .${reactSelectClassNamePrefix}__dropdown-indicator {
-                transform: rotate(180deg);
-            }
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__placeholder {
-        display: ${({ $isWithPlaceholder }) => !$isWithPlaceholder && 'none'};
-        color: ${({ theme, $isDisabled }) =>
-            $isDisabled ? theme.textDisabled : theme.textSubdued};
-        ${typography.body}
-    }
-
-    .${reactSelectClassNamePrefix}__value-container {
-        display: flex;
-        flex-wrap: nowrap;
-        min-width: ${({ $minValueWidth }) => $minValueWidth};
-        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        padding: 0;
-        padding-right: ${({ $isClean }) => ($isClean ? spacingsPx.xxs : spacingsPx.xl)};
-        border: none;
-    }
-
-    .${reactSelectClassNamePrefix}__single-value {
-        position: static;
-        display: ${({ $isLoading }) => ($isLoading ? 'none' : 'flex')};
-        align-items: center;
-        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        max-width: initial;
-        color: ${({ $isDisabled, theme }) =>
-            $isDisabled ? theme.textDisabled : theme.textDefault};
-        border-style: none;
-        transform: none;
-        margin: 0;
-
-        &:hover {
-            cursor: ${({ $isSearchable }) => ($isSearchable ? 'text' : 'pointer')};
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__single-value + .${reactSelectClassNamePrefix}__input-container {
-        margin-left: 0;
-    }
-
-    .${reactSelectClassNamePrefix}__input-container {
-        &:hover {
-            cursor: ${({ $isSearchable }) => ($isSearchable ? 'text' : 'pointer')};
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__input {
-        color: ${({ theme }) => theme.textDefault} !important;
-
-        ${typography.body};
-    }
-
-    ${({ $isClean, $size }) =>
-        !$isClean &&
-        css`
-            .${reactSelectClassNamePrefix}__indicators {
-                position: absolute;
-                top: ${$size === 'small' ? spacingsPx.xs : spacingsPx.md};
-                right: ${spacingsPx.md};
-            }
-        `}
-
-    .${reactSelectClassNamePrefix}__indicator-separator {
-        display: none;
-    }
-
-    .${reactSelectClassNamePrefix}__menu {
-        ${menuStyle};
-        border: none;
-        z-index: ${zIndices.base};
-    }
-
-    ${({ $isDisabled }) =>
-        $isDisabled &&
-        css`
-            pointer-events: auto;
-            cursor: not-allowed;
-        `}
-`;
-
-const SelectLabel = styled(Label)`
-    /* move up when input is focused OR has a placeholder OR has value  */
-    div:focus-within ~ &,
-    div:has(div.react-select__single-value:not(:empty)) ~ &,
-    div:has(div.react-select__placeholder:not(:empty)) ~ & {
-        transform: ${LABEL_TRANSFORM};
-    }
-`;
-
-const SpinnerWrapper = styled.div`
-    position: absolute;
-    top: 50%;
-    left: ${spacingsPx.md};
-    transform: translateY(-50%);
-`;
-
-// Prevent closing the menu when scrolling through options.
-const closeMenuOnScroll = (e: Event) =>
-    !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
-
 export type { Option } from './types';
 
-// Make sure isSearchable can't be defined if useKeyPressScroll===true
-// If useKeyPressScroll is false or undefined, isSearchable is a boolean value
-type KeyPressScrollProps =
-    | { useKeyPressScroll: true; isSearchable?: never }
-    | { useKeyPressScroll?: false; isSearchable?: boolean };
-
-export type SelectProps = KeyPressScrollProps &
-    AllowedFrameProps &
+export type SelectProps = AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen'> & {
-        isClean?: boolean;
+    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> & {
         label?: ReactNode;
         size?: InputSize;
-        minValueWidth?: string;
+        minValueWidth?: number;
+        isClean?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
-        /** @deprecated: workaround for issues with modal (GH #19376) */
-        isRenderedInModal?: boolean;
-        /** @deprecated: workaround for issues with scroll */
-        isScrollToSelectedEnabled?: boolean;
         onChange?: (value: OptionType, ref?: SelectInstance<OptionType, boolean> | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
     };
 
 export const Select = ({
-    isClean = false,
     label,
     size = 'large',
-    useKeyPressScroll,
+    isClean,
     isSearchable = false,
-    minValueWidth = 'initial',
+    minValueWidth,
     isMenuOpen,
-    components,
     onChange,
     placeholder,
     isLoading = false,
-    isRenderedInModal = false,
-    isScrollToSelectedEnabled = true,
     openMenuOnFocus = true,
+    components,
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
-    const { elevation } = useElevation();
     const theme = useTheme();
-    const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
-    const menuPortalTarget = isRenderedInModal ? document.body : null;
-    const formCellProps = pickFormCellProps(rest);
-    const { isDisabled } = formCellProps;
 
-    const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(rest.value);
+    const formCellProps = pickFormCellProps(rest);
+    const { isDisabled, hasError } = formCellProps;
+
+    const reactSelectProps = Object.entries(rest).reduce(
+        (props, [propKey, propValue]) => {
+            if (!(propKey in formCellProps)) {
+                (props as Record<string, unknown>)[propKey] = propValue;
+            }
+
+            return props;
+        },
+        {} as Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'>,
+    );
+
+    const closeMenuOnScroll = (e: Event) => {
+        const menuList = selectRef.current?.menuListRef;
+        if (!menuList) return false;
+
+        return !menuList.contains(e.target as Node);
+    };
 
     const handleOnChange = useCallback<Required<ReactSelectProps<OptionType>>['onChange']>(
-        (value, { action }) => {
+        value => {
             if (value) {
                 onChange?.(value, selectRef.current);
-                setSelectedOption(value);
-
-                if (!isMenuOpen && action === 'select-option') {
-                    if (!isRenderedInModal) {
-                        selectRef.current?.blur();
-                    } else {
-                        // Blur issue in modal, delay the blur to allow menu to close properly
-                        const timeoutId = setTimeout(() => {
-                            selectRef.current?.blur();
-                        }, 50);
-
-                        return () => {
-                            clearTimeout(timeoutId);
-                        };
-                    }
-                }
             }
 
             return null;
         },
-        [onChange, isMenuOpen, isRenderedInModal],
+        [onChange],
     );
 
-    /**
-     * This memoization is necessary to prevent jumping of the Select
-     * to the corder. This may happen when parent component re-renders
-     * and if this is not the same object for some reason it won't work.
-     */
     const memoizedComponents = useMemo(
         () => ({
-            Control: (controlProps: ControlComponentProps) => (
-                <Control {...controlProps} data-testid={dataTest} />
-            ),
-            Option: (optionProps: OptionComponentProps) => (
-                <Option
-                    {...optionProps}
+            Control: (controlProps: ControlProps) => (
+                <Control
+                    {...controlProps}
+                    hasError={hasError}
+                    size={size}
                     data-testid={dataTest}
-                    selectedOption={isScrollToSelectedEnabled ? selectedOption : undefined}
+                    isClean={isClean}
+                    label={label}
                 />
             ),
-            GroupHeading,
+            Option: (optionProps: OptionProps) => (
+                <Option {...optionProps} data-testid={dataTest} />
+            ),
+            IndicatorsContainer,
+            DropdownIndicator,
+            ValueContainer: (valueContainerProps: ValueContainerProps) => (
+                <ValueContainer
+                    {...valueContainerProps}
+                    minValueWidth={minValueWidth}
+                    hasLabel={!!label}
+                    size={size}
+                />
+            ),
+            SingleValue,
+            LoadingIndicator,
+            Placeholder,
             ...components,
         }),
-        [components, dataTest, selectedOption, isScrollToSelectedEnabled],
+        [dataTest, hasError, size, minValueWidth, label, isClean, components],
     );
 
     return (
         <FormCell {...formCellProps}>
-            <SelectWrapper
-                $isClean={isClean}
-                $elevation={elevation}
-                $isSearchable={isSearchable}
-                $size={size}
-                $minValueWidth={minValueWidth}
-                $isDisabled={isDisabled}
-                $isLoading={isLoading}
-                $isMenuOpen={isMenuOpen}
-                $isWithLabel={!!label}
-                $isWithPlaceholder={!!placeholder}
-            >
-                <ReactSelect
-                    ref={selectRef}
-                    onKeyDown={onKeyDown}
-                    classNamePrefix={reactSelectClassNamePrefix}
-                    openMenuOnFocus={openMenuOnFocus}
-                    closeMenuOnScroll={closeMenuOnScroll}
-                    menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
-                    menuPortalTarget={menuPortalTarget}
-                    onChange={handleOnChange}
-                    isSearchable={isSearchable}
-                    menuIsOpen={isMenuOpen}
-                    isDisabled={isDisabled ?? false}
-                    menuPlacement="auto"
-                    placeholder={placeholder || ''}
-                    {...rest}
-                    styles={{
-                        ...createSelectStyle(theme, isRenderedInModal, isClean),
-                        ...(rest.styles || {}),
-                    }}
-                    components={memoizedComponents}
-                />
-
-                {isLoading && (
-                    <SpinnerWrapper>
-                        <Spinner size={24} isGrey={false} />
-                    </SpinnerWrapper>
-                )}
-
-                {label && (
-                    <SelectLabel $size={size} $isDisabled={isDisabled}>
-                        {label}
-                    </SelectLabel>
-                )}
-            </SelectWrapper>
+            <ReactSelect
+                ref={selectRef}
+                openMenuOnFocus={openMenuOnFocus}
+                closeMenuOnScroll={closeMenuOnScroll}
+                menuPosition="fixed"
+                onChange={handleOnChange}
+                isSearchable={isSearchable}
+                menuIsOpen={isMenuOpen}
+                isDisabled={isDisabled ?? false}
+                isLoading={isLoading}
+                menuPlacement="auto"
+                placeholder={placeholder ?? ''}
+                unstyled
+                styles={createSharedMenuStyles<OptionType>(theme)}
+                components={memoizedComponents}
+                {...reactSelectProps}
+            />
         </FormCell>
     );
 };

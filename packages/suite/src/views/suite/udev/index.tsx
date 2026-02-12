@@ -106,7 +106,6 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                         <Select
                             isSearchable={false}
                             isClearable={false}
-                            isRenderedInModal={true}
                             value={target}
                             onChange={setSelectedTarget}
                             options={installers}

@@ -9,7 +9,6 @@ import {
     convertAmountUnitsToSubunits,
     findToken,
     formatNetworkAmount,
-    getInputState,
     getNetworkReserve,
     hasNetworkFeatures,
     isLowAnonymityWarning,
@@ -107,7 +106,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const withTokens = hasNetworkFeatures(account, 'tokens');
     const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
     const isLowAnonymity = isLowAnonymityWarning(outputError);
-    const inputState = isLowAnonymity ? 'warning' : getInputState(error);
+    const hasError = !!error;
     const bottomText = isLowAnonymity ? undefined : error?.message;
 
     const handleInputChange = (value: string) => handleAmountChange({ outputId, value });
@@ -193,7 +192,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             >
                 {showTokenCurrency && (
                     <NumberInput
-                        inputState={inputState}
+                        hasError={hasError}
                         locale={locale}
                         labelHoverRight={
                             !isSendMaxVisible &&

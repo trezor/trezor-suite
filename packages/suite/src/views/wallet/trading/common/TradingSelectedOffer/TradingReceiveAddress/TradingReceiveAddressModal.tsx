@@ -134,7 +134,7 @@ export const TradingReceiveAddressModal = () => {
                             ? tradingReceiveAddress.receiveAddress
                             : undefined
                     }
-                    inputState={form.formState.errors.address ? 'error' : undefined}
+                    hasError={!!form.formState.errors.address}
                     bottomText={form.formState.errors.address?.message || null}
                     innerRef={networkRef}
                     {...networkField}
@@ -156,7 +156,7 @@ export const TradingReceiveAddressModal = () => {
                                         ? tradingReceiveAddress.extraField
                                         : undefined
                                 }
-                                inputState={form.formState.errors.extraField ? 'error' : undefined}
+                                hasError={!!form.formState.errors.extraField}
                                 bottomText={form.formState.errors.extraField?.message || null}
                                 innerRef={descriptionRef}
                                 {...descriptionField}

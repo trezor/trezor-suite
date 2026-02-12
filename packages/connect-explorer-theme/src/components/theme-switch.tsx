@@ -30,7 +30,6 @@ export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
     return (
         <Select
             size="small"
-            isClean
             options={[
                 { value: 'light', label: options.light },
                 { value: 'dark', label: options.dark },
@@ -51,10 +50,6 @@ export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
             menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
             menuShouldScrollIntoView={false}
             menuPlacement="top"
-            components={{
-                DropdownIndicator: () => null,
-                IndicatorSeparator: () => null,
-            }}
             formatOptionLabel={(option, meta) => {
                 if (meta.context === 'value') {
                     return (

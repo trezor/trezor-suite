@@ -90,12 +90,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
         setTokenInfo(undefined);
         setContractAddress(addr);
     };
-    const getInputState = () => {
-        if (error) return 'error';
-
-        return undefined;
-    };
-
     const handleAddTokenButtonClick = () => {
         if (tokenInfo) {
             dispatch(addToken(account, tokenInfo));
@@ -130,7 +124,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 label={<Translation id="TR_ADD_TOKEN_LABEL" />}
                 value={contractAddress}
                 bottomText={error || null}
-                inputState={getInputState()}
+                hasError={!!error}
                 onChange={onChange}
             />
         </Modal>

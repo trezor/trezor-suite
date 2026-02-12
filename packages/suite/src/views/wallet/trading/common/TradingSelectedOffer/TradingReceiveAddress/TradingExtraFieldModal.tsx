@@ -86,7 +86,7 @@ export const TradingExtraFieldModal = () => {
                     <Input
                         data-testid="@trading/extra-field-input"
                         label={<Translation id="DESTINATION_TAG" />}
-                        inputState={form.formState.errors.extraField ? 'error' : undefined}
+                        hasError={!!form.formState.errors.extraField}
                         bottomText={form.formState.errors.extraField?.message || null}
                         innerRef={descriptionRef}
                         {...descriptionField}

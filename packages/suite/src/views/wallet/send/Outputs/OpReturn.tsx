@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -79,7 +79,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
             </Row>
             <Flex direction={isBelowTablet ? 'column' : 'row'} gap={16} alignItems="center">
                 <Textarea
-                    inputState={getInputState(asciiError)}
+                    hasError={!!asciiError}
                     data-testid={inputAsciiName}
                     defaultValue={asciiValue}
                     maxLength={formInputsMaxLength.opReturn}
@@ -91,7 +91,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                 />
                 <Text>=</Text>
                 <Textarea
-                    inputState={getInputState(hexError)}
+                    hasError={!!hexError}
                     data-testid={inputHexName}
                     defaultValue={hexValue}
                     maxLength={formInputsMaxLength.opReturn}

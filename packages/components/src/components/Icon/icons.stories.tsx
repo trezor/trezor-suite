@@ -103,7 +103,7 @@ const Render = (props: IconProps) => {
                     // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                     onClear={() => setSearch('')}
-                    showClearButton="always"
+                    showClearButton={true}
                 />
             </FloatingWrapper>
             <Wrapper>
