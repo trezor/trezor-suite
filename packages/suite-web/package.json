@@ -15,7 +15,7 @@
         "build:preview": "yarn build && yarn preview"
     },
     "dependencies": {
-        "@sentry/browser": "10.32.1",
+        "@sentry/browser": "10.38.0",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/suite": "workspace:*",
