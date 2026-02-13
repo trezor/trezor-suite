@@ -96,10 +96,12 @@ function cmpVerDesc(va?: string, vb?: string) {
     return 0;
 }
 
+export type Sort = 'az' | 'za' | 'added' | 'updated';
+
 export const useFilteredEvents = () => {
     const initial = useMemo(getParamsFromUrl, []);
     const [query, setQuery] = useState(initial.query);
-    const [sort, setSort] = useState<'az' | 'za' | 'added' | 'updated'>(initial.sort);
+    const [sort, setSort] = useState<Sort>(initial.sort);
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<'all' | string>(initial.platform);
     const [isPlatformSortFiltering, setIsPlatformSortFiltering] = useState(false);
