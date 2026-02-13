@@ -90,7 +90,8 @@ export const createEnsureStorage =
         });
 
         // correct approach would be to create a new storage anyway, but currently there is bug regarding the dispose function
-        const resolvedStorage = storage ?? deps.createSuiteStorage({ suiteSyncOwner: owner });
+        const resolvedStorage =
+            storage ?? (await deps.createSuiteStorage({ suiteSyncOwner: owner }));
 
         // Set the relay URL if quota is allocated or if storage was not yet initialized.
         if (quotaResult.success || quotaResult.error.type === 'WriteModeRequiredForAllocation') {

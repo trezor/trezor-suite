@@ -175,7 +175,9 @@ export const prepareTrezorEmulator = async ({
  */
 export const preparePreloadedReduxState = (...stateFragments: PreloadedState[]): string => {
     const initialStateAndFragments = [mockInitialAppState(), ...stateFragments];
-    const definedFragments = initialStateAndFragments.filter(fragment => fragment !== undefined);
+    const definedFragments = initialStateAndFragments.filter(
+        (fragment): fragment is NonNullable<typeof fragment> => fragment != null,
+    );
     const mergedState = mergeDeepObject(...definedFragments);
 
     return JSON.stringify(mergedState);

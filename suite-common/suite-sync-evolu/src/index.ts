@@ -12,3 +12,10 @@ export { AccountEvoluId } from './data/accountTable';
 export { AddressEvoluId } from './data/addressTable';
 export { OutputEvoluId } from './data/outputTable';
 export { WalletLabelId } from './data/walletTable';
+export { createEvoluErrorHandler } from './createEvoluErrorHandler';
+
+// Useful in e2e to easily create fixtures
+export { WalletEvoluSchema } from './data/walletTable';
+export { EvoluOutput } from './data/outputTable';
+export { AddressEvoluSchema } from './data/addressTable';
+export { AccountEvoluSchema } from './data/accountTable';

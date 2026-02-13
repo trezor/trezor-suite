@@ -1,3 +1,9 @@
+import {
+    AccountEvoluSchema,
+    AddressEvoluSchema,
+    EvoluOutput,
+    WalletEvoluSchema,
+} from '@suite-common/suite-sync-evolu';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asTxTargetId, asWalletDescriptor } from '@suite-common/wallet-types';
@@ -21,6 +27,15 @@ type SuiteSyncFixtureParams = {
     defaultTxId: string;
 };
 
+type WithNonNullLabel<T extends { label: unknown }> = Omit<T, 'label'> & {
+    label: NonNullable<T['label']>;
+};
+
+type WalletSeed = WithNonNullLabel<ReturnType<typeof WalletEvoluSchema.orThrow>>;
+type AccountSeed = WithNonNullLabel<ReturnType<typeof AccountEvoluSchema.orThrow>>;
+type AddressSeed = WithNonNullLabel<ReturnType<typeof AddressEvoluSchema.orThrow>>;
+type OutputSeed = WithNonNullLabel<ReturnType<typeof EvoluOutput.orThrow>>;
+
 const createSuiteSyncFixtures = ({
     ownerSecret,
     walletDescriptor,
@@ -29,38 +44,37 @@ const createSuiteSyncFixtures = ({
 }: SuiteSyncFixtureParams) => {
     const ownerId = createOwnerIdFromSecret(ownerSecret);
 
-    const walletSeed = {
+    const walletSeed = WalletEvoluSchema.orThrow({
         id: createWalletRowId(walletDescriptor),
         walletDescriptor,
         label: 'Evolu synced wallet',
-    };
+    }) as WalletSeed;
 
-    const accountSeed = {
+    const accountSeed = AccountEvoluSchema.orThrow({
         id: createAccountRowId(accountDescriptor, networkSymbol),
         accountDescriptor,
         networkSymbol,
         label: 'Evolu synced BTC account',
-    };
+    }) as AccountSeed;
 
-    const createAddressSeed = (address: string) => ({
-        id: createAddressRowId(address, networkSymbol),
-        label: 'Evolu synced BTC address',
-        address,
-        accountDescriptor,
-        networkSymbol,
-    });
+    const createAddressSeed = (address: string) =>
+        AddressEvoluSchema.orThrow({
+            id: createAddressRowId(address, networkSymbol),
+            label: 'Evolu synced BTC address',
+            address,
+            accountDescriptor,
+            networkSymbol,
+        }) as AddressSeed;
 
-    const createOutputSeed = (
-        txId: string = defaultTxId,
-        outputIndex: string = BTC_TX_TARGET_ID,
-    ) => ({
-        id: createOutputRowId(txId, asTxTargetId(outputIndex)),
-        accountDescriptor,
-        label: 'Evolu synced output',
-        networkSymbol,
-        outputIndex,
-        txId,
-    });
+    const createOutputSeed = (txId: string = defaultTxId, outputIndex: string = BTC_TX_TARGET_ID) =>
+        EvoluOutput.orThrow({
+            id: createOutputRowId(txId, asTxTargetId(outputIndex)),
+            accountDescriptor,
+            label: 'Evolu synced output',
+            networkSymbol,
+            outputIndex,
+            txId,
+        }) as OutputSeed;
 
     const buildExpectedWallet = <T extends string | null>({ label }: { label: T }) => ({
         id: createWalletRowId(walletDescriptor),

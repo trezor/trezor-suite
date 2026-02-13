@@ -64,10 +64,12 @@ const config = {
                 // modules exports defined in the package `exports` map.
                 '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/codegenv2/index.js`,
                 '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wkt/index.js`,
-                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/exports/expo-sqlite.js`,
+                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
                 '@evolu/common': `${rootNodeModulesPath}/@evolu/common/dist/src/index.js`,
                 '@evolu/common/evolu': `${rootNodeModulesPath}/@evolu/common/dist/src/Evolu/Internal.js`,
                 '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
+                '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
+                '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
                 // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
@@ -88,6 +90,45 @@ const config = {
                 // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
                 // In future we will need JS implementation of Cardano libs or C++ implementation
                 return getSourceFile('./cardanoPolyfills.js');
+            }
+
+            // Todo: This is hack because of the `unstable_enablePackageExports: false`.
+            //       See: https://github.com/trezor/trezor-suite/issues/20733
+            if (moduleName === '@evolu/react-native/expo-sqlite') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath +
+                            `/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/react-native') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/react-native/dist/src/index.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/common') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/common/dist/src/index.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/common/evolu') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/common/dist/src/Evolu/Internal.js`,
+                    ),
+                    type: 'sourceFile',
+                };
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {

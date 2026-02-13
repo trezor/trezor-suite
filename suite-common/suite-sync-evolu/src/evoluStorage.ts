@@ -1,12 +1,12 @@
-import { type Evolu, type SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
+import { type Evolu, createOwnerWebSocketTransport } from '@evolu/common';
 
 import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
 import { type CreateEvoluInstanceDep } from './createEvoluInstance';
-import { type AccountSchema, EvoluAccountTable } from './data/accountTable';
-import { AddressEvoluTable, type AddressLabelSchema } from './data/addressTable';
-import { OutputEvoluTable, type OutputLabelSchema } from './data/outputTable';
-import { EvoluWalletTable, type WalletLabelSchema } from './data/walletTable';
+import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
+import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable';
+import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
+import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
 
 export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
 
@@ -16,51 +16,45 @@ export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
  */
 export const createEvoluStorageFactory =
     (deps: CreateEvoluStorageFactoryDeps): CreateSuiteStorage =>
-    ({ suiteSyncOwner }): SuiteSyncStorage => {
+    async ({ suiteSyncOwner }): Promise<SuiteSyncStorage> => {
         /**
          * Dispose function of the connected owner. When owner is changed
          * (for example for RelayUrl change, this needs to be called).
          * @private
          */
 
-        let ownerDispose = () => {};
+        let unuseOwner = () => {};
 
-        const evolu = deps.createEvoluInstance({
+        const evolu = await deps.createEvoluInstance({
             suiteSyncOwner,
         });
 
         const updateRelayUrl = async (url: string) => {
             const owner = await evolu.appOwner;
 
-            const syncOwner: SyncOwner = {
-                id: owner.id,
-                encryptionKey: owner.encryptionKey,
-                writeKey: owner.writeKey,
-                transports: [createOwnerWebSocketTransport({ url, ownerId: owner.id })],
-            };
-
-            ownerDispose();
-            ownerDispose = evolu.useOwner(syncOwner);
+            unuseOwner();
+            unuseOwner = evolu.useOwner(owner, [
+                createOwnerWebSocketTransport({ url, ownerId: owner.id }),
+            ]);
         };
 
         return {
             data: {
-                accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountSchema>),
-                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletLabelSchema>),
-                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputLabelSchema>),
+                accounts: new EvoluAccountTable(
+                    evolu as unknown as Evolu<typeof AccountTableSchema>,
+                ),
+                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletTableSchema>),
+                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputTableSchema>),
                 addresses: new AddressEvoluTable(
-                    evolu as unknown as Evolu<typeof AddressLabelSchema>,
+                    evolu as unknown as Evolu<typeof AddressTableSchema>,
                 ),
             },
 
             updateRelayUrl,
             dispose: async () => {
-                ownerDispose();
-                // Todo: reload prevents app from reloading. Evolu has this tab-reload
-                //       to clear state as proper dispose is not yet implemented.
-                //       However we cannot effort the tab-reload.
-                //       See: https://github.com/evoluhq/evolu/issues/614
-                await evolu.resetAppOwner({ reload: false });
+                unuseOwner();
+                evolu[Symbol.asyncDispose]();
+                await Promise.resolve();
             },
         };
     };

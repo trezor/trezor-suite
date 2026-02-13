@@ -1,19 +1,22 @@
-import { type Evolu } from '@evolu/common';
+import { type EvoluError, type ReadonlyStore } from '@evolu/common';
 
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
 
 export const createEvoluErrorHandler =
-    (evolu: Evolu<any>, errorHandler: SuiteSyncErrorHandler) => () => {
-        const error = evolu.getError();
+    (evoluError: ReadonlyStore<EvoluError | null>, errorHandler: SuiteSyncErrorHandler) => () => {
+        const error = evoluError.get();
 
-        // early return if there is no error to handle
-        if (error === null) {
+        if (error == null) {
             return;
         }
 
         switch (error.type) {
             case 'ProtocolQuotaError':
+                if (!error.ownerId) {
+                    return;
+                }
+
                 errorHandler({
                     type: 'RelayQuotaExceeded',
                     ownerId: asSuiteSyncOwnerId(error.ownerId),

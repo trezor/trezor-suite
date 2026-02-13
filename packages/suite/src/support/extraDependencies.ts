@@ -41,7 +41,6 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { type SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -90,7 +89,7 @@ export type StoreAPIDep = {
     dispatch: (_: any) => any;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep;
+export type SuiteAppDeps = StoreAPIDep & HistoryDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -120,7 +119,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const suiteSync = createSuiteSyncDesktopCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
-        reloadApp: deps.reloadApp,
         platformEncryption,
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
