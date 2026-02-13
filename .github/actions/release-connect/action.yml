@@ -112,7 +112,6 @@ runs:
         FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
       run: |
         echo "FULL_URL is set to ${FULL_URL}"
-        node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
 
     - name: Build connect-explorer-webextension
@@ -129,7 +128,6 @@ runs:
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
-          packages/connect-examples/webextension-mv3/build
           packages/connect-examples/webextension-mv3-sw/build
 
     - name: Upload connect-explorer webextension artifacts
