@@ -66,13 +66,7 @@ jobs:
 
   build-web:
     if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and Upload Suite Web
-        uses: ./.github/actions/build-web
+    uses: ./.github/workflows/build-suite-web-e2e.yml
 
   extract-branch:
     if: github.repository == 'trezor/trezor-suite'
@@ -131,7 +125,6 @@ jobs:
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
-    runs-on: ubuntu-latest
     needs:
       - build-web
       - build-connect
@@ -140,22 +133,13 @@ jobs:
       fail-fast: false
       matrix:
         TEST_GROUP: [1, 2, 3, 4, 5]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 2
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        with:
-          target: "web"
-          pw-config: "./playwright-config/playwright-web-pr.config.ts"
-          test-group: ${{ matrix.TEST_GROUP }}
-          fail-fast: 7
-          currents-project-id: "Og0NOQ"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "web"
+      pw-config: "./playwright-config/playwright-web-pr.config.ts"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "7"
+      currents-project-id: "Og0NOQ"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

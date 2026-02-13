@@ -20,52 +20,26 @@ concurrency:
 jobs:
   build-app:
     if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build and Upload Suite Desktop
-        uses: ./.github/actions/build-desktop
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-24.04
     needs:
       - build-app
     strategy:
       fail-fast: false
       matrix:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: desktop-app-build-e2e
-
-      - name: Extract build artifact
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        with:
-          target: "desktop"
-          pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
-          workspace-dependencies: "@trezor/suite-desktop"
-          test-group: ${{ matrix.TEST_GROUP }}
-          fail-fast: false
-          currents-project-id: "4ytF0E"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "desktop"
+      pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
+      workspace-dependencies: "@trezor/suite-desktop"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "false"
+      currents-project-id: "4ytF0E"
+      currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
+      download-artifact-name: "desktop-app-build-e2e"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
