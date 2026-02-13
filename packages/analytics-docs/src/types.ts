@@ -1,5 +1,7 @@
 import type { AppVersion } from '@suite-common/analytics';
 
+export type Sort = 'az' | 'za' | 'added' | 'updated';
+
 export type NormalizedChangelog = {
     entries: {
         version: AppVersion;

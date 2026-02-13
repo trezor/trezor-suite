@@ -1,7 +1,7 @@
 import { Input, Row, Select } from '@trezor/components';
 
 import { platforms, sorting } from '../constants';
-import { Sort } from '../utils/useFilteredEvents';
+import type { Sort } from '../types';
 
 type FilterProps = {
     query: string;
