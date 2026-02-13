@@ -10,6 +10,7 @@ PLATFORM options:
     mobile, m       Use mobile icon (:iphone:)
     common, c       Use common icon (:commie:)
     desktop, d      Use desktop icon (:desktop_computer:) [default]
+    yanas, y        Use Yanas TM icon (:typical-yanas:)
     --help, -h      Show this help message
 
 Environment variables:
@@ -116,6 +117,8 @@ get_platform_icon() {
         icon=":commie:"
     elif [[ "$platform" == "desktop" || "$platform" == "d" ]]; then
         icon=":desktop_computer:"
+    elif [[ "$platform" == "yanas" || "$platform" == "y" ]]; then
+        icon=":typical-yanas:"
     fi
 
     echo "$icon"
