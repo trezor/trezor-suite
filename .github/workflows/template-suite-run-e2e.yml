@@ -1,0 +1,214 @@
+name: "Reusable Run Playwright E2E Tests"
+on:
+  workflow_call:
+    inputs:
+      target:
+        description: "Playwright target name. (web|desktop)"
+        required: true
+        type: string
+      pw-config:
+        description: "Path to the PW config to be used"
+        required: true
+        type: string
+      base-url:
+        description: "Base URL for E2E tests. Default: https://dev.suite.sldev.cz/suite-web/BRANCH_NAME/web/"
+        default: ""
+        required: false
+        type: string
+      containers:
+        description: "Docker containers to pull"
+        default: "trezor-user-env-unix bitcoin-regtest electrum-regtest quota-db suite-sync"
+        required: false
+        type: string
+      workspace-dependencies:
+        description: "Additional workspaces to install"
+        required: false
+        default: ""
+        type: string
+      test-group:
+        description: "Test group for orchestration"
+        required: true
+        type: string
+      fail-fast:
+        description: "Cancel test run if number of tests fail (number | false)"
+        default: "false"
+        required: false
+        type: string
+      currents-project-id:
+        description: "Currents project ID for reporting"
+        required: true
+        type: string
+      currents-ci-build-id:
+        description: "Custom CI build ID for Currents reporting, default is pr-run-RUN_ID-RUN_ATTEMPT"
+        required: false
+        type: string
+        default: "" # Will handle default logic in steps if empty, or just pass it explicitly from caller
+      release-build:
+        description: "Information for GitHub Reporter, only on Release workflows"
+        required: false
+        type: string
+      run-reporter:
+        description: "Flag to run GitHub Reporter, only on Release workflows"
+        required: false
+        type: string
+      enable-coverage:
+        description: "Enable code coverage collection with Currents"
+        required: false
+        default: "false"
+        type: string
+      download-artifact-name:
+        description: "Name of the artifact to download (e.g. desktop app build)"
+        required: false
+        type: string
+    secrets:
+      currents-record-key:
+        description: "Currents record key for reporting"
+        required: true
+      e2e-passphrase:
+        description: "Passphrase for E2E tests"
+        required: true
+      github-token:
+        description: "GitHub token for GitHub Reporter, only on Release workflows"
+        required: false
+      trezor-bot-app-id:
+        description: "App ID for Trezor Bot"
+        required: false
+      trezor-bot-private-key:
+        description: "Private Key for Trezor Bot"
+        required: false
+
+jobs:
+  run-e2e-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate GitHub App token
+        if: inputs.run-reporter == 'true'
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.trezor-bot-app-id }}
+          private-key: ${{ secrets.trezor-bot-private-key }}
+          
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+
+      - name: Extract Branch Name
+        id: extract_branch
+        shell: bash
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        if: inputs.target == 'web'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Download build artifact
+        if: inputs.download-artifact-name != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.download-artifact-name }}
+
+      - name: Extract build artifact
+        if: inputs.download-artifact-name != ''
+        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+
+      - name: Install PW Dependencies
+        shell: bash
+        run: |
+          yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
+
+      - name: Install Playwright Browsers
+        if: inputs.target == 'web'
+        shell: bash
+        run: |
+          npx playwright install --with-deps
+
+      - name: Build Message System Config
+        shell: bash
+        run: |
+          # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
+          yarn message-system-sign-config 1>/dev/null
+
+      - name: Pull Docker Images
+        shell: bash
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+        run: |
+          docker compose pull --quiet ${{ inputs.containers }}
+
+      - name: Run Playwright E2E Tests
+        shell: bash
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+          GITHUB_ACTION: true
+          CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
+          CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
+          CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
+          GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
+          PASSPHRASE: ${{ secrets.e2e-passphrase }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
+          RELEASE_BUILD: ${{ inputs.release-build }}
+          ELECTRON_DISABLE_SANDBOX: 1
+        run: |
+          if [[ -z "${{ inputs.base-url }}" ]]; then
+            BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
+          else
+            BASE_URL="${{ inputs.base-url }}"
+          fi
+          export BASE_URL
+          echo "Using BASE_URL: $BASE_URL"
+
+          # Handle default for CURRENTS_CI_BUILD_ID if empty
+          if [[ -z "${{ inputs.currents-ci-build-id }}" ]]; then
+             export CURRENTS_CI_BUILD_ID="pr-run-${{ github.run_id }}-${{ github.run_attempt }}"
+          fi
+
+          if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
+            REPORTER_OPT="--reporter=./support/reporters/gitHubReporter.ts"
+          else
+            REPORTER_OPT=""
+          fi
+
+          if [[ "${{ inputs.enable-coverage }}" == "true" ]]; then
+            COVERAGE_OPT="--pwc-coverage"
+          else
+            COVERAGE_OPT=""
+          fi
+
+          # Start services
+          docker compose up -d ${{ inputs.containers }}
+          
+          echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
+            --config=${{ inputs.pw-config }} \
+            --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
+            --pwc-disable-test-tags \
+            $COVERAGE_OPT \
+            --forbid-only \
+            $REPORTER_OPT
+
+      - name: Extract and Upload Logs
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/upload-test-logs
+        with:
+          test-group: ${{ inputs.test-group }}
+
+      - name: Docker Compose Down
+        shell: bash
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+        run: docker compose down
