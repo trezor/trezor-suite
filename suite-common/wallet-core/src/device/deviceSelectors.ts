@@ -38,7 +38,10 @@ import {
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
 import { DeviceRootState } from './deviceReducer';
-import { deviceInvariabilityCheck } from './services/deviceInvariabilityCheck';
+import {
+    deviceInvariabilityCheck,
+    rawDataToDeviceInvariabilityCheckDTO,
+} from './services/deviceInvariabilityCheck';
 import { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
@@ -416,8 +419,9 @@ export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
 
             return true;
         }
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
 
-        return deviceInvariabilityCheck({ device, previousData }).success;
+        return deviceInvariabilityCheck(dto).success;
     },
 );
 
