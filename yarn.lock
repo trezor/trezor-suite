@@ -11479,7 +11479,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    core-js: "npm:^3.47.0"
+    core-js: "npm:^3.48.0"
     fake-indexeddb: "npm:^6.2.5"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
@@ -15668,7 +15668,7 @@ __metadata:
     "@trezor/suite": "workspace:*"
     "@types/react": "npm:19.1.6"
     "@types/react-dom": "npm:19.1.6"
-    core-js: "npm:^3.47.0"
+    core-js: "npm:^3.48.0"
     history: "npm:^5.3.0"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.1.0"
@@ -22127,10 +22127,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.30.2, core-js@npm:^3.47.0":
-  version: 3.47.0
-  resolution: "core-js@npm:3.47.0"
-  checksum: 10/c02dc6a091c7e6799e3527dc06a428c44bbcff7f8f6ee700ff818b90aa2ebaf1f17b0234146e692811da97cda5a39a6095ecadec9fd1a74b1135103eb0e96cb1
+"core-js@npm:^3.30.2, core-js@npm:^3.48.0":
+  version: 3.48.0
+  resolution: "core-js@npm:3.48.0"
+  checksum: 10/08bb3cc9b3225b905e72370c18257a14bb5563946d9eb7496799e0ee4f13231768b980ffe98434df7dbd0f8209bd2c19519938a2fa94846b2c82c2d5aa804037
   languageName: node
   linkType: hard
 
