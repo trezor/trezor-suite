@@ -82,6 +82,7 @@ styled-components
 stylelint
 stylelint-config-standard
 svgo
+ts-morph
 vite
 vite-plugin-node-polyfills
 vite-plugin-wasm

@@ -1,6 +1,6 @@
 import { eslint } from '@trezor/eslint';
 
-// eslint-disable-next-line import/no-default-export
+ 
 export default [
     ...eslint,
     {
