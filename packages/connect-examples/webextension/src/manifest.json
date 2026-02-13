@@ -1,0 +1,12 @@
+{
+    "name": "@trezor/webextension-mv3-sw-ts",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "host_permissions": ["http://*/*", "https://*/*"]
+}
