@@ -39,6 +39,7 @@ import {
 } from './deviceConstants';
 import { DeviceRootState } from './deviceReducer';
 import { deviceInvariabilityCheck } from './services/deviceInvariabilityCheck';
+import { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -401,9 +402,23 @@ export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
     },
 );
 
+export const selectIsDeviceIdCheckSuccess = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => getIsDeviceIdValid(device) === true,
+);
+
 export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
     [selectSelectedDevice, selectSelectedPersistentDeviceData],
-    (device, previousData) => deviceInvariabilityCheck({ device, previousData }).success,
+    (device, previousData) => {
+        // just a failsafe in case memoization returned wrong results
+        if (device && previousData && device.id !== previousData.device_id) {
+            console.error('Device invariability check ID mismatch');
+
+            return true;
+        }
+
+        return deviceInvariabilityCheck({ device, previousData }).success;
+    },
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(
