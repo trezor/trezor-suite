@@ -29,7 +29,7 @@ export const useInactiveStellarTokens = (accountKey: AccountKey) => {
         selectCoinDefinitions(state, account?.symbol ?? 'xlm'),
     );
 
-    const isCoinDefinitionsLoading = coinDefinitions?.isLoading ?? true;
+    const isCoinDefinitionsLoading = coinDefinitions?.isLoading ?? false;
 
     useEffect(() => {
         if (!tokenMetadata) {
