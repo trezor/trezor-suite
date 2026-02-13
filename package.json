@@ -144,7 +144,6 @@
         "jest": "29.7.0",
         "jest-environment-node": "^29.7.0",
         "jest-expo": "^54.0.12",
-        "node-fetch": "^2.6.4",
         "node-gyp": "12.1.0",
         "nx": "^22.3.3",
         "patch-package": "8.0.1",

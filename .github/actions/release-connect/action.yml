@@ -109,8 +109,12 @@ runs:
       if: inputs.buildArtifacts == 'true'
       shell: bash
       env:
-        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
+        FULL_URL: https://${{ inputs.serverHostname }}/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup
       run: |
+        cd packages/connect-examples/webextension
+        yarn
+        yarn build
+        cd ../../../
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
 
@@ -128,7 +132,7 @@ runs:
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
-          packages/connect-examples/webextension-mv3-sw/build
+          packages/connect-examples/webextension/build
 
     - name: Upload connect-explorer webextension artifacts
       if: inputs.uploadArtifacts == 'true'

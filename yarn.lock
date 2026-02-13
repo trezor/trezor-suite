@@ -16014,9 +16014,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension-mv3-sw-ts":
+"@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension":
   version: 0.0.0-use.local
-  resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension-mv3-sw-ts"
+  resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension"
   dependencies:
     "@trezor/connect-webextension": "workspace:^"
     "@trezor/eslint": "workspace:^"
@@ -44381,7 +44381,6 @@ __metadata:
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
     jest-expo: "npm:^54.0.12"
-    node-fetch: "npm:^2.6.4"
     node-gyp: "npm:12.1.0"
     nx: "npm:^22.3.3"
     patch-package: "npm:8.0.1"

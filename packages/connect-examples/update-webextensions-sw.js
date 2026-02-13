@@ -3,16 +3,14 @@
  */
 
 const fs = require('fs');
-const fetch = require('node-fetch');
 const path = require('path');
 
-const rootPaths = ['webextension-mv3-sw'];
+const rootPaths = ['webextension'];
 
 const trezorConnectSrcIndex = process.argv.indexOf('--trezor-connect-src');
 const buildFolderIndex = process.argv.indexOf('--build-folder');
-const npmSrcIndex = process.argv.indexOf('--npm-src');
 
-const DEFAULT_SRC = 'https://connect.trezor.io/9/';
+const DEFAULT_SRC = 'https://suite.trezor.io/web/connect-popup';
 let trezorConnectSrc = DEFAULT_SRC;
 
 if (trezorConnectSrcIndex > -1) {
@@ -26,54 +24,19 @@ if (buildFolderIndex > -1) {
     console.log('buildFolder: ', buildFolder);
 }
 
-let npmSrc = '';
-if (npmSrcIndex > -1) {
-    npmSrc = process.argv[npmSrcIndex + 1];
-    console.log('npmSrc: ', npmSrc);
-}
-
 rootPaths.forEach(dir => {
     const rootPath = path.join(__dirname, dir);
-    const buildPath = path.join(rootPath, buildFolder);
-    const vendorPath = path.join(buildPath, 'vendor');
 
-    fs.rmSync(buildPath, { recursive: true, force: true });
-    if (!fs.existsSync(buildPath)) {
-        fs.mkdirSync(buildPath);
-    }
-    if (!fs.existsSync(vendorPath)) {
-        fs.mkdirSync(vendorPath);
-    }
-
-    if (npmSrc) {
-        fetch(npmSrc).then(res => {
-            const dest = fs.createWriteStream(
-                path.join(rootPath, buildFolder, 'vendor', 'trezor-connect-webextension.js'),
-            );
-            res.body.pipe(dest);
-        });
-    } else {
-        ['trezor-connect-webextension.js'].forEach(p => {
-            fs.copyFileSync(
-                path.join(__dirname, '../connect-webextension', 'build', p),
-                path.join(rootPath, buildFolder, 'vendor', p),
-            );
-        });
-    }
-
-    fs.readdirSync(path.join(rootPath, 'src')).forEach(p => {
-        // Some files like binary `.png` we just want to copy.
-        const isJustCopied = ['.png'].some(ext => p.endsWith(ext));
-        if (isJustCopied) {
-            fs.copyFileSync(path.join(rootPath, 'src', p), path.join(rootPath, buildFolder, p));
-
-            return;
-        }
-        fs.readFile(path.join(rootPath, 'src', p), 'utf-8', (err, contents) => {
+    fs.readdirSync(path.join(rootPath, 'build')).forEach(p => {
+        fs.readFile(path.join(rootPath, 'build', p), 'utf-8', (err, contents) => {
             if (err) {
                 console.log(err);
 
                 return;
+            }
+            const found = contents.startsWith(DEFAULT_SRC);
+            if (found) {
+                console.log(`Found ${DEFAULT_SRC} in ${p}, replacing with ${trezorConnectSrc}`);
             }
 
             const replaced = contents.replace(DEFAULT_SRC, trezorConnectSrc);
