@@ -7,8 +7,6 @@ import ReactSelect, {
     ValueContainerProps,
 } from 'react-select';
 
-import { useTheme } from 'styled-components';
-
 import {
     FormCell,
     FormCellProps,
@@ -19,8 +17,12 @@ import { InputSize } from '../types';
 import {
     Control,
     DropdownIndicator,
+    Group,
+    GroupHeading,
     IndicatorsContainer,
     LoadingIndicator,
+    Menu,
+    MenuList,
     Option,
     Placeholder,
     SingleValue,
@@ -65,7 +67,6 @@ export const Select = ({
     ...rest
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
-    const theme = useTheme();
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError } = formCellProps;
@@ -112,15 +113,19 @@ export const Select = ({
                 />
             ),
             Option: (optionProps: OptionProps) => (
-                <Option {...optionProps} data-testid={dataTest} />
+                <Option {...optionProps} size={size} data-testid={dataTest} />
             ),
+            Menu,
+            MenuList,
+            GroupHeading,
+            Group,
             IndicatorsContainer,
             DropdownIndicator,
             ValueContainer: (valueContainerProps: ValueContainerProps) => (
                 <ValueContainer
                     {...valueContainerProps}
                     minValueWidth={minValueWidth}
-                    hasLabel={!!label}
+                    hasLabel={!!label && !isClean}
                     size={size}
                 />
             ),
@@ -147,7 +152,7 @@ export const Select = ({
                 menuPlacement="auto"
                 placeholder={placeholder ?? ''}
                 unstyled
-                styles={createSharedMenuStyles<OptionType>(theme)}
+                styles={createSharedMenuStyles<OptionType>()}
                 components={memoizedComponents}
                 {...reactSelectProps}
             />

@@ -18,12 +18,14 @@ export const AccountSearchBox = () => {
     return (
         <Input
             value={searchString ?? ''}
+            isClean
             onChange={e => {
                 setSearchString(e.target.value);
             }}
             leftContent={
                 <Icon
                     name="magnifyingGlass"
+                    margin={{ left: 12, right: 20 }}
                     size={16}
                     variant="default"
                     onClick={() => {

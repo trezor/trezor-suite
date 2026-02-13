@@ -17,6 +17,7 @@ const meta: Meta<typeof InputComponent> = {
         hasError: false,
         showClearButton: false,
         isMasked: false,
+        isClean: false,
         ...getFramePropsStory(allowedInputFrameProps).args,
     },
     argTypes: {
@@ -38,6 +39,9 @@ const meta: Meta<typeof InputComponent> = {
             control: { type: 'boolean' },
         },
         isMasked: {
+            control: { type: 'boolean' },
+        },
+        isClean: {
             control: { type: 'boolean' },
         },
         ...getFramePropsStory(allowedInputFrameProps).argTypes,

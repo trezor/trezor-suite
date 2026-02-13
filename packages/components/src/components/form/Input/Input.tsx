@@ -23,11 +23,12 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedInputFrameProps)[number
 const StyledInput = styled.input<{
     $hasLabel?: boolean;
     $isMasked?: boolean;
+    $isClean?: boolean;
     $size: InputSize;
 }>`
     ${commonInputStyles}
 
-    padding: 0 ${INPUT_PADDING}px;
+    padding: 0 ${({ $isClean }) => ($isClean ? 0 : INPUT_PADDING)}px;
     padding-top: ${({ $hasLabel, $size }) => ($hasLabel ? mapSizeToPaddingTop($size) : 0)}px;
 
     ${({ $isMasked }) => $isMasked && `-webkit-text-security: disc;`}
@@ -48,6 +49,7 @@ export type InputProps = InputHTMLProps &
         showClearButton?: boolean;
         onClear?: () => void;
         isMasked?: boolean;
+        isClean?: boolean;
     };
 
 export const Input = ({
@@ -62,6 +64,7 @@ export const Input = ({
     placeholder,
     onClear,
     isMasked,
+    isClean,
     ...rest
 }: InputProps) => {
     const formCellProps = pickFormCellProps(rest);
@@ -79,12 +82,17 @@ export const Input = ({
 
     return (
         <FormCell {...formCellProps} data-testid={dataTest}>
-            <InputWrapper hasError={hasError} isDisabled={isDisabled ?? false} size={size}>
-                <Row height={mapSizeToHeight(size)}>
+            <InputWrapper
+                hasError={hasError}
+                isDisabled={isDisabled ?? false}
+                size={size}
+                isClean={isClean}
+            >
+                <Row height={isClean ? undefined : mapSizeToHeight(size)}>
                     {leftContent && (
                         <Row
                             flex="0 0 auto"
-                            padding={{ left: INPUT_PADDING }}
+                            padding={isClean ? undefined : { left: INPUT_PADDING }}
                             data-testid={`${dataTest}/input-addon`}
                         >
                             {leftContent}
@@ -99,16 +107,17 @@ export const Input = ({
                             autoCapitalize="off"
                             spellCheck={false}
                             disabled={isDisabled ?? false}
-                            $hasLabel={!!label}
+                            $hasLabel={!!label && !isClean}
                             ref={innerRef}
                             data-lpignore="true"
                             $isMasked={isMasked}
+                            $isClean={isClean}
                             $size={size}
                             placeholder={placeholder}
                             data-testid={dataTest}
                             {...inputProps}
                         />
-                        {label && (
+                        {label && !isClean && (
                             <FloatingLabel
                                 $isDisabled={isDisabled}
                                 $isActive={!!value || !!placeholder}
@@ -121,7 +130,7 @@ export const Input = ({
                     {(rightContent || hasShowClearButton) && (
                         <Row
                             flex="0 0 auto"
-                            padding={{ right: INPUT_PADDING }}
+                            padding={isClean ? undefined : { right: INPUT_PADDING }}
                             data-testid={`${dataTest}/input-addon`}
                             gap={12}
                         >

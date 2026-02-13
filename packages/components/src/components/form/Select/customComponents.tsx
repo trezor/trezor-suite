@@ -2,7 +2,11 @@ import { ReactNode, useEffect, useRef } from 'react';
 import {
     ControlProps,
     DropdownIndicatorProps,
+    GroupHeadingProps,
+    GroupProps,
     IndicatorsContainerProps,
+    MenuListProps,
+    MenuProps,
     OptionProps,
     PlaceholderProps,
     SingleValueProps,
@@ -10,17 +14,23 @@ import {
     components,
 } from 'react-select';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import type { Option as OptionType } from './types';
-import { Row } from '../../Flex/Flex';
+import { Box } from '../../Box/Box';
+import { Column, Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { FloatingLabel } from '../FloatingLabel';
 import { InputWrapper } from '../InputWrapper';
 import { InputSize } from '../types';
-import { INPUT_PADDING, mapSizeToHeight, mapSizeToPaddingTop } from '../utils';
+import {
+    INPUT_PADDING,
+    mapSizeToHeight,
+    mapSizeToPaddingTop,
+    mapSizeToTypographyStyle,
+} from '../utils';
 
 const DropdownWrapper = styled.div<{ $isOpen: boolean }>`
     transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -58,7 +68,7 @@ export const Control = ({
                 size={size}
                 isClean={isClean}
             >
-                {label && !isLoading && (
+                {label && !isLoading && !isClean && (
                     <FloatingLabel
                         $isActive={hasValue || !!placeholder || !!isSearchable}
                         $isDisabled={isDisabled}
@@ -81,11 +91,78 @@ export const Control = ({
     );
 };
 
-type OptionComponentProps = OptionProps<OptionType, boolean> & {
-    'data-testid'?: string;
+export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => {
+    const theme = useTheme();
+
+    return (
+        <components.Menu {...props}>
+            <Box
+                flex="1"
+                minWidth={140}
+                borderRadius={16}
+                backgroundColor="baseFillSurfaceModeless"
+                borderColor="baseBorderSurfaceModeless"
+                borderWidth={1}
+                shadow={theme.boxShadowElevated}
+                overflow="auto"
+                width="fit-content"
+            >
+                {children}
+            </Box>
+        </components.Menu>
+    );
 };
 
-export const Option = ({ 'data-testid': dataTest, ...props }: OptionComponentProps) => {
+export const MenuList = ({ children, ...props }: MenuListProps<OptionType, boolean>) => {
+    const isGrouped = props.selectProps.options.some(option => option.options);
+
+    return (
+        <components.MenuList
+            {...props}
+            innerProps={{
+                ...props.innerProps,
+                style: {
+                    ...props.innerProps.style,
+                    padding: 8,
+                },
+            }}
+        >
+            <Column gap={isGrouped ? 12 : 0}>{children}</Column>
+        </components.MenuList>
+    );
+};
+
+export const GroupHeading = ({ children, ...props }: GroupHeadingProps<OptionType, boolean>) =>
+    children ? (
+        <components.GroupHeading {...props}>
+            <Text
+                as="div"
+                variant="tertiary"
+                typographyStyle="label"
+                padding={{ horizontal: 8, vertical: 4 }}
+            >
+                {children}
+            </Text>
+        </components.GroupHeading>
+    ) : null;
+
+export const Group = ({ children, ...props }: GroupProps<OptionType, boolean>) => (
+    <components.Group {...props}>
+        <Column>{children}</Column>
+    </components.Group>
+);
+
+type OptionComponentProps = OptionProps<OptionType, boolean> & {
+    'data-testid'?: string;
+    size: InputSize;
+};
+
+export const Option = ({
+    'data-testid': dataTest,
+    size,
+    children,
+    ...props
+}: OptionComponentProps) => {
     const ref = useRef<HTMLDivElement>(undefined);
 
     useEffect(() => {
@@ -105,9 +182,24 @@ export const Option = ({ 'data-testid': dataTest, ...props }: OptionComponentPro
                     'data-testid': `${dataTest}/option/${
                         typeof props.data.value === 'string' ? props.data.value : props.label
                     }`,
+                    style: {
+                        ...props.innerProps.style,
+                        scrollMarginTop: 8,
+                    },
                 } as OptionProps<OptionType, boolean>['innerProps']
             }
-        />
+        >
+            <Box
+                borderRadius={8}
+                backgroundColor={props.isFocused ? 'stateFillElementGhostHovered' : undefined}
+                cursor="pointer"
+                padding={{ vertical: 6, horizontal: 8 }}
+            >
+                <Text as="div" typographyStyle={mapSizeToTypographyStyle(size)}>
+                    {children}
+                </Text>
+            </Box>
+        </components.Option>
     );
 };
 

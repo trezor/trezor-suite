@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -140,12 +140,16 @@ export const AddAccountModal = ({
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
 
-    const getAvailableAccountTypes = (network: Network) => {
+    const accountTypes = useMemo(() => {
+        if (!isSelectedNetworkEnabled || !selectedNetwork) {
+            return undefined;
+        }
+
         const defaultAccount: NetworkAccount = {
-            bip43Path: network.bip43Path,
+            bip43Path: selectedNetwork.bip43Path,
             accountType: 'normal',
         };
-        const otherAccounts = Object.values(network.accountTypes)
+        const otherAccounts = Object.values(selectedNetwork.accountTypes)
             /**
              * Filter out coinjoin account type if it is not visible.
              * Visibility of coinjoin account type depends on coinjoin feature config in message system.
@@ -156,11 +160,7 @@ export const AddAccountModal = ({
 
         // the default account is expected to be the first one
         return [defaultAccount, ...otherAccounts];
-    };
-
-    const accountTypes = isSelectedNetworkEnabled
-        ? getAvailableAccountTypes(selectedNetwork)
-        : undefined;
+    }, [isCoinjoinVisible, isDebug, isSelectedNetworkEnabled, selectedNetwork]);
 
     const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
 

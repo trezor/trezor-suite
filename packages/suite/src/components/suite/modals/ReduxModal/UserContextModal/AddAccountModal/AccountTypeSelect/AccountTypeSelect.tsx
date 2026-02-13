@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -29,7 +31,7 @@ interface AccountTypeSelectProps {
     selectedAccountType?: NetworkAccount;
 }
 
-export const AccountTypeSelect = ({
+const AccountTypeSelectComponent = ({
     selectedAccountType,
     accountTypes,
     networkType,
@@ -63,6 +65,7 @@ export const AccountTypeSelect = ({
     const options = accountTypes.map(buildAccountTypeOption);
     // the default, 'normal' account type is expected to be the first one
     const defaultAccountType = accountTypes[0];
+    const value = buildAccountTypeOption(selectedAccountType ?? defaultAccountType);
 
     const bip43PathToDescribe = selectedAccountType?.bip43Path ?? defaultAccountType.bip43Path;
 
@@ -73,7 +76,7 @@ export const AccountTypeSelect = ({
                 label={<Translation id="TR_ACCOUNT_TYPE" />}
                 isSearchable={false}
                 isClearable={false}
-                value={buildAccountTypeOption(selectedAccountType ?? defaultAccountType)}
+                value={value}
                 options={options}
                 formatOptionLabel={formatLabel}
                 onChange={(option: Option) => onSelectAccountType(option.value)}
@@ -90,3 +93,5 @@ export const AccountTypeSelect = ({
         </Column>
     );
 };
+
+export const AccountTypeSelect = memo(AccountTypeSelectComponent);
