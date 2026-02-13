@@ -27,7 +27,7 @@ type SuiteStorageCreatorParams = {
  * has its own Storage. Currently only Evolu storage is implemented, but in theory,
  * you can have different one as well.
  */
-export type CreateSuiteStorage = (params: SuiteStorageCreatorParams) => SuiteSyncStorage;
+export type CreateSuiteStorage = (params: SuiteStorageCreatorParams) => Promise<SuiteSyncStorage>;
 
 export type CreateSuiteStorageDep = {
     createSuiteStorage: CreateSuiteStorage;

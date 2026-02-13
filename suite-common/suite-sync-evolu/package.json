@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch",
+        "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8",
         "@noble/hashes": "^2.0.1",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
@@ -21,6 +21,7 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "@types/better-sqlite3": "^7.6.13",
         "better-sqlite3": "^12.1.1"
     }

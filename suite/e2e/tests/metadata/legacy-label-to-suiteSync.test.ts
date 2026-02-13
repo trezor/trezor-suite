@@ -41,7 +41,7 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await metadataPage.enableSuiteSync();
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
-            ).toHaveText(accountSeed.label);
+            ).toHaveText(accountSeed.label ?? '');
         });
     });
 });

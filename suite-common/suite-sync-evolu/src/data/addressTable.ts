@@ -3,8 +3,10 @@ import {
     NonEmptyString1000,
     QueryRows,
     createIdFromString,
+    createQueryBuilder,
     id,
     nullOr,
+    object,
 } from '@evolu/common';
 
 import {
@@ -27,22 +29,28 @@ export type AddressEvoluId = typeof AddressEvoluId.Type;
 export const createAddressEvoluId = (address: string, networkSymbol: NetworkSymbol) =>
     AddressEvoluId.from(createIdFromString(createSuiteSyncAddressId(address, networkSymbol)));
 
+const addressTableColumns = {
+    id: AddressEvoluId,
+    label: nullOr(NonEmptyString1000),
+    address: NonEmptyString1000,
+    accountDescriptor: NonEmptyString1000,
+    networkSymbol: NonEmptyString1000,
+};
+
+export const AddressEvoluSchema = object(addressTableColumns);
+
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
  *            compatible!
  */
-export const AddressLabelSchema = {
-    address: {
-        id: AddressEvoluId,
-        label: nullOr(NonEmptyString1000),
-        address: NonEmptyString1000,
-        accountDescriptor: NonEmptyString1000,
-        networkSymbol: NonEmptyString1000,
-    },
+export const AddressTableSchema = {
+    address: addressTableColumns,
 };
 
+const createQuery = createQueryBuilder(AddressTableSchema);
+
 export class AddressEvoluTable implements AddressTable {
-    constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
+    constructor(private evolu: Evolu<typeof AddressTableSchema>) {}
 
     update = ({ address, label, accountDescriptor, networkSymbol }: SuiteSyncAddress) => {
         const idResult = createAddressEvoluId(address, networkSymbol);
@@ -51,7 +59,7 @@ export class AddressEvoluTable implements AddressTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('address', {
+        const validated = AddressEvoluSchema.from({
             id: idResult.value,
             address,
             label: normalizeLabel(label),
@@ -59,14 +67,16 @@ export class AddressEvoluTable implements AddressTable {
             networkSymbol: networkSymbol as NetworkSymbol,
         });
 
-        if (!result.ok) {
-            return err(createSuiteSyncUpdateError(result.error));
+        if (!validated.ok) {
+            return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
+
+        this.evolu.upsert('address', validated.value);
 
         return ok();
     };
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('address').selectAll());
+    private getQuery = () => createQuery(db => db.selectFrom('address').selectAll());
 
     subscribe = ({ onChange }: EntityListener<SuiteSyncAddress>) => {
         const query = this.getQuery();

@@ -1,3 +1,6 @@
+import { Run } from '@evolu/common';
+import { EvoluPlatformDeps } from '@evolu/common/local-first';
+
 import {
     SuiteSyncAccount,
     SuiteSyncAddress,
@@ -10,9 +13,9 @@ import {
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { createDeferred } from '@trezor/utils';
 
+import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
 import { createEvoluInstanceFactory } from '../src/createEvoluInstance';
 import { createEvoluStorageFactory } from '../src/evoluStorage';
-import { createNodeEvoluDeps } from './utils/createNodeEvoluDeps';
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
@@ -21,20 +24,22 @@ const suiteSyncOwner: SuiteSyncOwner = {
     ),
 };
 
-const createTestStorage = (nameSuffix: string) => {
+const testCreateEvoluRun = () => testCreateRunWithEvoluDeps();
+
+const createTestStorage = async (nameSuffix: string, run: Run<EvoluPlatformDeps>) => {
     const createEvoluInstance = createEvoluInstanceFactory({
         suiteSyncErrorHandler: () => {},
-        evoluDeps: createNodeEvoluDeps(),
+        run,
         _evoluDbNameSuffix: nameSuffix,
     });
 
-    return createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
+    return await createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
 };
 
 describe(createEvoluStorageFactory.name, () => {
     it('stores wallet data and notifies subscribers', async () => {
-        const storage = createTestStorage('wallets');
-
+        await using run = await testCreateEvoluRun();
+        const storage = await createTestStorage('wallets', run);
         const receivedWallets: SuiteSyncWallet[][] = [];
         const resolved = createDeferred<void>();
 
@@ -63,7 +68,8 @@ describe(createEvoluStorageFactory.name, () => {
     });
 
     it('stores account data and notifies subscribers', async () => {
-        const storage = createTestStorage('accounts');
+        await using run = await testCreateEvoluRun();
+        const storage = await createTestStorage('accounts', run);
 
         const receivedAccounts: SuiteSyncAccount[][] = [];
         const resolved = createDeferred<void>();
@@ -101,7 +107,8 @@ describe(createEvoluStorageFactory.name, () => {
     });
 
     it('stores address data and notifies subscribers', async () => {
-        const storage = createTestStorage('addresses');
+        await using run = await testCreateEvoluRun();
+        const storage = await createTestStorage('addresses', run);
 
         const receivedAddresses: SuiteSyncAddress[][] = [];
         const resolved = createDeferred<void>();
@@ -141,7 +148,8 @@ describe(createEvoluStorageFactory.name, () => {
     });
 
     it('stores output data and notifies subscribers', async () => {
-        const storage = createTestStorage('outputs');
+        await using run = await testCreateEvoluRun();
+        const storage = await createTestStorage('outputs', run);
 
         const receivedOutputs: SuiteSyncOutput[][] = [];
         const resolved = createDeferred<void>();

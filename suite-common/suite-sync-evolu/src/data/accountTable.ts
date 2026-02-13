@@ -4,8 +4,10 @@ import {
     NonEmptyString1000,
     QueryRows,
     createIdFromString,
+    createQueryBuilder,
     id,
     nullOr,
+    object,
 } from '@evolu/common';
 
 import {
@@ -25,21 +27,27 @@ import { normalizeLabel } from './normalizeLabel';
 export const AccountEvoluId = id('AccountEvoluId');
 export type AccountEvoluId = typeof AccountEvoluId.Type;
 
+const accountTableColumns = {
+    id: AccountEvoluId,
+    accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
+    networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
+    label: nullOr(NonEmptyString1000),
+};
+
+export const AccountEvoluSchema = object(accountTableColumns);
+
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
  *            compatible!
  */
-export const AccountSchema = {
-    account: {
-        id: AccountEvoluId,
-        accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
-        networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
-        label: nullOr(NonEmptyString1000),
-    },
+export const AccountTableSchema = {
+    account: accountTableColumns,
 };
 
+const createQuery = createQueryBuilder(AccountTableSchema);
+
 export class EvoluAccountTable implements AccountTable {
-    constructor(private evolu: Evolu<typeof AccountSchema>) {}
+    constructor(private evolu: Evolu<typeof AccountTableSchema>) {}
 
     update = ({ networkSymbol, accountDescriptor, label }: SuiteSyncAccount) => {
         const idResult = AccountEvoluId.from(
@@ -50,21 +58,23 @@ export class EvoluAccountTable implements AccountTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('account', {
+        const validated = AccountEvoluSchema.from({
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
             label: normalizeLabel(label),
         });
 
-        if (!result.ok) {
-            return err(createSuiteSyncUpdateError(result.error));
+        if (!validated.ok) {
+            return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
+
+        this.evolu.upsert('account', validated.value);
 
         return ok();
     };
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('account').selectAll());
+    private getQuery = () => createQuery(db => db.selectFrom('account').selectAll());
 
     subscribe = ({ onChange }: EntityListener<SuiteSyncAccount>) => {
         const query = this.getQuery();

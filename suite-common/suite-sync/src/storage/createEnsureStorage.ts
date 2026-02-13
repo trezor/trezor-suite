@@ -69,7 +69,7 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const newStorage = deps.createSuiteStorage({
+        const newStorage = await deps.createSuiteStorage({
             suiteSyncOwner: owner,
         });
 

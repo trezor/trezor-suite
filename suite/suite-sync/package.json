@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@evolu/web": "^2.3.0",
+        "@evolu/web": "github:evoluhq/evolu#workspace=@evolu/web&head=common-v8",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/device": "workspace:*",

@@ -71,14 +71,14 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
             await expect
                 .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
-                .toHaveText(accountSeed.label, { timeout: 30_000 });
+                .toHaveText(accountSeed.label ?? '', { timeout: 30_000 });
         });
 
         await test.step('Verify wallet label is synced', async () => {
             await dashboardPage.openDeviceSwitcher();
             await expect
                 .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
-                .toHaveText(walletSeed.label);
+                .toHaveText(walletSeed.label ?? '');
             await dashboardPage.deviceSwitchingCloseButton.click();
         });
 
@@ -87,7 +87,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.receiveButton.click();
             await expect
                 .soft(metadataPage.address.label(addressSeed.address))
-                .toHaveText(addressSeed.label);
+                .toHaveText(addressSeed.label ?? '');
         });
 
         await test.step('Verify output label is synced', async () => {
@@ -99,7 +99,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
                         Number(outputSeed.outputIndex),
                     ),
                 )
-                .toHaveText(outputSeed.label);
+                .toHaveText(outputSeed.label ?? '');
         });
     });
 });

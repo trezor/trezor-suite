@@ -1,4 +1,5 @@
-import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
+import { createRun } from '@evolu/react-native';
+import { createEvoluDeps } from '@evolu/react-native/expo-sqlite';
 import { Dispatch } from '@reduxjs/toolkit';
 import { reloadAppAsync } from 'expo';
 
@@ -22,12 +23,14 @@ type SuiteSyncNativeCompositionRootDeps = {
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
-): SuiteSync =>
-    createSuiteSyncCompositionRoot({
+): SuiteSync => {
+    const run = createRun(createEvoluDeps());
+
+    return createSuiteSyncCompositionRoot({
         ...deps,
         createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
             const createEvoluInstance = createEvoluInstanceFactory({
-                evoluDeps: evoluReactNativeDeps,
+                run,
                 suiteSyncErrorHandler,
             });
 
@@ -36,3 +39,4 @@ export const createSuiteSyncNativeCompositionRoot = (
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         reloadApp: reloadAppAsync,
     });
+};

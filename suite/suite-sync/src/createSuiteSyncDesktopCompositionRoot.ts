@@ -1,4 +1,4 @@
-import { evoluWebDeps } from '@evolu/web';
+import { createEvoluDeps, createRun } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { DesktopAnalyticsDep } from '@suite/analytics';
@@ -31,13 +31,15 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
+    const run = createRun(createEvoluDeps());
+
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
         createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
             const createEvoluInstance = createEvoluInstanceFactory({
-                evoluDeps: evoluWebDeps,
+                run,
                 suiteSyncErrorHandler,
             });
 

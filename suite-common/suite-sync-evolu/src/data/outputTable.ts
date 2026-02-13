@@ -3,8 +3,10 @@ import {
     NonEmptyString1000,
     QueryRows,
     createIdFromString,
+    createQueryBuilder,
     id,
     nullOr,
+    object,
 } from '@evolu/common';
 
 import {
@@ -24,25 +26,31 @@ import { normalizeLabel } from './normalizeLabel';
 export const OutputEvoluId = id('OutputLabelId');
 export type OutputEvoluId = typeof OutputEvoluId.Type;
 
+const outputTableColumns = {
+    id: OutputEvoluId,
+    label: nullOr(NonEmptyString1000),
+    txId: NonEmptyString1000,
+    outputIndex: NonEmptyString1000, // Todo: rename: txTargetId
+    accountDescriptor: NonEmptyString1000,
+    networkSymbol: NonEmptyString1000,
+};
+
+export const EvoluOutput = object(outputTableColumns);
+
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
  *            compatible!
  *
  * Todo: Rename to `Target`?
  */
-export const OutputLabelSchema = {
-    output: {
-        id: OutputEvoluId,
-        label: nullOr(NonEmptyString1000),
-        txId: NonEmptyString1000,
-        outputIndex: NonEmptyString1000, // Todo: rename: txTargetId
-        accountDescriptor: NonEmptyString1000,
-        networkSymbol: NonEmptyString1000,
-    },
+export const OutputTableSchema = {
+    output: outputTableColumns,
 };
 
+const createQuery = createQueryBuilder(OutputTableSchema);
+
 export class OutputEvoluTable implements OutputTable {
-    constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
+    constructor(private evolu: Evolu<typeof OutputTableSchema>) {}
 
     update = ({ txId, txTargetId, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
         const idResult = OutputEvoluId.from(
@@ -53,7 +61,7 @@ export class OutputEvoluTable implements OutputTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('output', {
+        const validated = EvoluOutput.from({
             id: idResult.value,
             txId,
             outputIndex: `${txTargetId}`,
@@ -62,14 +70,16 @@ export class OutputEvoluTable implements OutputTable {
             networkSymbol: networkSymbol as NetworkSymbol,
         });
 
-        if (!result.ok) {
-            return err(createSuiteSyncUpdateError(result.error));
+        if (!validated.ok) {
+            return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
+
+        this.evolu.upsert('output', validated.value);
 
         return ok();
     };
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('output').selectAll());
+    private getQuery = () => createQuery(db => db.selectFrom('output').selectAll());
 
     subscribe = ({ onChange }: EntityListener<SuiteSyncOutput>) => {
         const query = this.getQuery();
