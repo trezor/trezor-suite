@@ -45,7 +45,6 @@ export const AppTabNavigator = () => {
         >
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
-            <Tab.Screen name={AppTabsRoutes.EarnStack} component={EarnStackNavigator} />
             {isTradingEnabled && (
                 <Tab.Screen
                     name={AppTabsRoutes.TradeStack}
@@ -55,6 +54,7 @@ export const AppTabNavigator = () => {
                     }}
                 />
             )}
+            <Tab.Screen name={AppTabsRoutes.EarnStack} component={EarnStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.Settings} component={SettingsScreen} />
         </Tab.Navigator>
     );
