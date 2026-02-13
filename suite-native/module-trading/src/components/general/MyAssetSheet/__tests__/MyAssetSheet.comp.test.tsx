@@ -124,7 +124,7 @@ describe('MyAssetSheet', () => {
         );
 
         expect(onClose).toHaveBeenCalledTimes(1);
-        expect(onClose).toHaveBeenCalledWith();
+        expect(onClose).toHaveBeenCalledWith(false);
     });
 
     it('should render formatted account type badge when defined', async () => {

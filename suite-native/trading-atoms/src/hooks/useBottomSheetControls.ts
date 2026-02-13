@@ -11,8 +11,10 @@ export const useBottomSheetControls = () => {
         setIsSheetVisible(true);
     }, []);
 
-    const hideSheet = useCallback(() => {
-        Keyboard.dismiss();
+    const hideSheet = useCallback((shouldHideKeyboard: boolean = true) => {
+        if (shouldHideKeyboard) {
+            Keyboard.dismiss();
+        }
         setIsSheetVisible(false);
     }, []);
 

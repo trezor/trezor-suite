@@ -39,11 +39,10 @@ export const BuyTradeableAssetPicker = () => {
             setSelectedValue(asset);
             if (shouldFocusInput) {
                 setShouldFocusInput(false);
-                // CryptoAmountInput is rendered disabled allow changes to propagate and
-                // allow bottom-sheet to hide first.
+                // CryptoAmountInput is rendered disabled allow changes to propagate
                 setTimeout(() => {
                     inputRef.current?.focus();
-                }, 300);
+                }, 0);
             }
         },
         [shouldFocusInput, setSelectedValue],
@@ -78,6 +77,7 @@ export const BuyTradeableAssetPicker = () => {
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onAssetSelect={onAssetSelect}
+                hideKeyboardOnAssetSelect={!shouldFocusInput}
             />
         </>
     );
