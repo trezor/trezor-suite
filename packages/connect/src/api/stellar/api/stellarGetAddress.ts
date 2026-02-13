@@ -117,6 +117,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 address: response.address,
+                mac: response.mac,
             });
 
             if (this.hasBundle) {

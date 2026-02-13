@@ -117,6 +117,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 address: response.address,
+                mac: response.mac,
             });
 
             if (this.hasBundle) {

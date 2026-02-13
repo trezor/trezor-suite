@@ -117,6 +117,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 address: response.address,
+                mac: response.mac,
             });
 
             if (this.hasBundle) {

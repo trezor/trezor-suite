@@ -119,6 +119,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 address: message.address,
+                mac: message.mac,
             });
 
             if (this.hasBundle) {
