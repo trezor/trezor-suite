@@ -1,8 +1,11 @@
-import { DefaultTheme, createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
+import type { SuiteThemeColors } from '@trezor/components';
 import { fontFamilies, typography } from '@trezor/theme';
 
-export const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
+type GlobalStyleTheme = SuiteThemeColors & { mode: 'light' | 'dark' };
+
+export const GlobalStyle = createGlobalStyle<{ theme: GlobalStyleTheme }>`
     input, textarea {
         outline: none;
     }
@@ -20,7 +23,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
 
     :root {
         min-height: 100%;
-        color-scheme: dark;
+        color-scheme: ${({ theme }) => theme.mode};
 
         --font-sans: ${fontFamilies.base};
     }

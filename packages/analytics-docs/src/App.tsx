@@ -1,24 +1,21 @@
 import { useMemo } from 'react';
 
-import {
-    Box,
-    Button,
-    Column,
-    H2,
-    Row,
-    Spinner,
-    Tooltip,
-    intermediaryTheme,
-} from '@trezor/components';
+import { Box, Button, Column, H2, Row, Spinner, Tooltip } from '@trezor/components';
+import type { SuiteThemeColors } from '@trezor/components';
 
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
 import { ResultsInfo } from './components/ResultsInfo';
+import { ThemeSwitch } from './components/ThemeSwitch';
 import { Content, ContentContainer, TopBar } from './components/layout/AppLayout';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
-export function App() {
+type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 'dark' };
+
+type AppProps = { theme: AppTheme };
+
+export function App({ theme }: AppProps) {
     const {
         filteredEvents,
         setQuery,
@@ -42,7 +39,7 @@ export function App() {
 
     return (
         <>
-            <GlobalStyle theme={{ variant: 'dark', ...intermediaryTheme.dark }} />
+            <GlobalStyle theme={theme} />
             <Box minHeight="100vh">
                 <TopBar>
                     <ContentContainer>
@@ -53,17 +50,20 @@ export function App() {
 
                                     {isFiltering && <Spinner size={20} />}
                                 </Row>
-                                <Tooltip content="Add event">
-                                    <Button
-                                        iconLeft="plus"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
-                                        size="small"
-                                    >
-                                        Add event
-                                    </Button>
-                                </Tooltip>
+                                <Row gap={16} alignItems="center">
+                                    <ThemeSwitch />
+                                    <Tooltip content="Add event">
+                                        <Button
+                                            iconLeft="plus"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
+                                            size="small"
+                                        >
+                                            Add event
+                                        </Button>
+                                    </Tooltip>
+                                </Row>
                             </Row>
                             <Row justifyContent="space-between" gap={16} alignItems="center">
                                 <ResultsInfo
