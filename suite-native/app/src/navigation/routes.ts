@@ -38,7 +38,7 @@ const settings = enhanceTabOption({
 export const rootTabsOptions = {
     ...homeStack,
     ...accountsStack,
-    ...earnStack,
     ...tradeStack,
+    ...earnStack,
     ...settings,
 };

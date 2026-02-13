@@ -32,8 +32,8 @@ export enum RootStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    EarnStack = 'EarnStack',
     TradeStack = 'TradeStack',
+    EarnStack = 'EarnStack',
     Settings = 'Settings',
 }
 
