@@ -154,6 +154,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                     batch.address_parameters.address_n_staking,
                 ),
                 address: response.address,
+                mac: response.mac,
             });
 
             if (this.hasBundle) {

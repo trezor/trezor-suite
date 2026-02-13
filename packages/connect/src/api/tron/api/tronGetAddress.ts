@@ -117,6 +117,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 address: message.address,
+                mac: message.mac,
             });
 
             if (this.hasBundle) {

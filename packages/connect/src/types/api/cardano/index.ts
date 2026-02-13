@@ -41,6 +41,7 @@ export interface CardanoAddress {
     serializedPath: string;
     serializedStakingPath: string;
     address: string;
+    mac?: string;
 }
 
 // cardanoGetNativeScriptHash
