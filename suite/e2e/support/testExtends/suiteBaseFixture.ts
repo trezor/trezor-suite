@@ -1,20 +1,26 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
-import { execSync } from 'child_process';
+import { Page, test as base } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { SetupEmu, TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
-import { getUrl, getVideoPath, isDesktopProject, mockRemoteMessageSystem } from '../common';
-import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { getUrl, isDesktopProject } from '../common';
+import { LaunchSuiteParams } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
-import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
+import {
+    cleanupTrezorUserEnv,
+    electronSetup,
+    electronTeardown,
+    trezorUserEnvStuckProtection,
+    webSetup,
+    wipeAndRestartEvoluServer,
+} from '../setup';
 
-type ElectronConf = Pick<
+export type ElectronConf = Pick<
     LaunchSuiteParams,
     'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
 >;
@@ -31,123 +37,19 @@ type TrezorUserEnv = Pick<
 >;
 
 type SuiteBaseFixture = {
+    wipeEvoluRelay: boolean;
+    wipeEvoluRelayExecution: void;
     startEmulator: boolean;
     setupEmulator: boolean;
     deviceSetup: SetupEmu;
-    device: DeviceFixture;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
+
+    device: DeviceFixture;
     url: string;
     trezorUserEnv: TrezorUserEnv;
     page: Page;
     exceptionLogger: void;
-};
-
-const electronSetup = async (
-    testInfo: TestInfo,
-    locale: string | undefined,
-    colorScheme: any,
-    electronConf: ElectronConf,
-) => {
-    const suite = await launchSuite({
-        locale,
-        colorScheme,
-        artefactFolder: testInfo.outputDir,
-        viewport: testInfo.project.use.viewport!,
-        ...electronConf,
-    });
-
-    // Mocks shell.openExternal to prevent opening real browser windows.
-    await suite.electronApp.evaluate(({ shell }) => {
-        shell.openExternal = (url: string) => {
-            console.warn(`[mock] shell.openExternal called with: ${url}`);
-
-            return Promise.resolve(); // satisfies the 'async' requirement implicitly
-        };
-    });
-
-    await suite.window
-        .context()
-        .tracing.start({ screenshots: true, snapshots: true, sources: true });
-    // this setting only takes effect for the renderer process. To emulate offline mode also in the main process, a custom runtime flag is used.
-    await suite.electronApp.context().setOffline(electronConf.offlineMode ?? false);
-
-    await mockRemoteMessageSystem(suite.window);
-
-    return suite;
-};
-
-const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: ElectronConf) => {
-    const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
-    await suite.window.context().tracing.stop({ path: tracePath });
-    testInfo.attachments.push({
-        name: 'electron-logs.txt',
-        path: `${testInfo.outputDir}/electron-logs.txt`,
-        contentType: 'text/plain',
-    });
-    testInfo.attachments.push({
-        name: 'trace',
-        path: tracePath,
-        contentType: 'application/zip',
-    });
-    const videoPath = getVideoPath(testInfo.outputDir);
-    if (videoPath) {
-        testInfo.attachments.push({
-            name: 'video',
-            path: videoPath,
-            contentType: 'video/webm',
-        });
-    }
-    const closePromise = suite.electronApp.close();
-    // Handle modal that asks to enable auto-start
-    if (electronConf.exposeConnectWs) {
-        await suite.window.getByTestId('@auto-start-before-quit/button-quit').click();
-    }
-    await closePromise;
-};
-
-const webSetup = async (browserContext: BrowserContext) => {
-    await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
-
-    // Need to allow this to be able to access bridge on localhost
-    // When running tests against suite deployed elsewhere
-    if (browserContext.browser()?.browserType().name() === 'chromium') {
-        await browserContext.grantPermissions(['local-network-access']);
-    }
-
-    const page = await browserContext.newPage();
-
-    // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
-    // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
-    await page.context().addInitScript(() => {
-        window.Playwright = true;
-    });
-    await page.goto('./');
-    await mockRemoteMessageSystem(page);
-
-    return page;
-};
-
-// Gives trezorUserEnv promise a 30s to complete, else restart tenv to recover from potential hangs
-const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const timeoutPromise = new Promise(
-        (_, reject) =>
-            (timeoutId = setTimeout(() => {
-                if (process.env.COMPOSE_FILE) {
-                    execSync('docker compose restart trezor-user-env-unix', { cwd: '../../' }); // restart tenv to fix potential hangs
-                }
-                reject(new Error('TrezorUserEnv action timed out'));
-            }, 30_000)),
-    );
-
-    const promiseWithClearingTimeout = async () => {
-        await promise;
-        clearTimeout(timeoutId);
-    };
-
-    await Promise.race([promiseWithClearingTimeout(), timeoutPromise]);
 };
 
 // This is the base Suite text fixture containing all the necessary setup and core page object
@@ -155,12 +57,26 @@ const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
 // and provide the necessary page object which is either electron window or web page
 // Extending our fixtures from currentsTest ensures Currents fixtures initialize first and quarantine works even for fails in beforeEach section
 const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
+    wipeEvoluRelay: false,
+    wipeEvoluRelayExecution: [
+        async ({ wipeEvoluRelay }, use) => {
+            if (wipeEvoluRelay) {
+                // Needs to happen before initializing browser/electron context
+                await wipeAndRestartEvoluServer();
+            }
+            await use();
+        },
+        { auto: true },
+    ],
     target: [PlaywrightTarget.Web, { option: true }],
     model: [undefined, { option: true }],
     firmwareVersion: [undefined, { option: true }],
     startEmulator: true,
     setupEmulator: true,
     deviceSetup: {},
+    electronConf: {},
+    ignoreJSExceptions: [],
+
     trezorUserEnv: async ({}, use) => {
         // This proxy limits the exposed methods from TrezorUserEnvLink and wraps the calls with test.step
         const TrezorUserEnvLinkProxy = new Proxy<TrezorUserEnv>(
@@ -182,27 +98,14 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         );
         await use(TrezorUserEnvLinkProxy);
     },
+
     device: [
         async (
             { startEmulator, setupEmulator, model, firmwareVersion, deviceSetup },
             use,
             testInfo,
         ) => {
-            const setupPromise = (async () => {
-                await TrezorUserEnvLink.logTestDetails(
-                    ` - - - EXECUTING TENV CLEANUP FOR TEST ${testInfo.titlePath.join(' - ')}`,
-                );
-                await TrezorUserEnvLink.stopBridge();
-                await TrezorUserEnvLink.stopEmu();
-                await TrezorUserEnvLink.connect();
-                await TrezorUserEnvLink.logTestDetails(
-                    ` - - - TENV CLEANUP COMPLETED FOR TEST ${testInfo.titlePath.join(' - ')}`,
-                );
-            })();
-
-            await base.step('Device environment cleanup', async () => {
-                await trezorUserEnvStuckProtection(setupPromise);
-            });
+            await cleanupTrezorUserEnv(testInfo);
 
             if (!model || !firmwareVersion) {
                 await use(undefined as unknown as DeviceFixture);
@@ -246,8 +149,6 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         },
         { auto: true },
     ],
-    electronConf: {},
-    ignoreJSExceptions: [],
 
     url: async ({ target }, use, testInfo) => {
         await use(getUrl(testInfo, target));
@@ -265,6 +166,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             await use(page);
         }
     },
+
     exceptionLogger: [
         async ({ page, ignoreJSExceptions }, use, testInfo) => {
             const errors: Error[] = [];
