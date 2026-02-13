@@ -71,6 +71,7 @@ describe('useBrowserAuth', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockLinkingURL = null;
+        mockDismissBrowser.mockResolvedValue({ type: WebBrowserResultType.DISMISS });
         ({ store } = initStore({ wallet: getWalletState() }));
     });
 
