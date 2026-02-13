@@ -54,19 +54,21 @@ test.describe(
             deviceSetup: { passphrase_protection: true },
         });
 
-        test.beforeEach(async ({ onboardingPage, metadataPage }) => {
+        test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-            await metadataPage.setupQuotaManager();
-            await metadataPage.enableSuiteSync();
         });
 
         test('Create new labels', async ({
+            page,
             evoluClient,
             dashboardPage,
             walletPage,
             metadataPage,
         }) => {
-            await test.step('Verify BTC account label is synced', async () => {
+            await metadataPage.setupQuotaManager();
+            await metadataPage.enableSuiteSync();
+            await test.step('Change account label', async () => {
+                await page.pause();
                 await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,

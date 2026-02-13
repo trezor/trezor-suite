@@ -66,6 +66,23 @@ export class EvoluClient {
 
     @step()
     wipeAndRestartServer() {
+        // Delete PostgreSQL data directory in quota-db
+        execSync(
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db rm -rf /var/lib/postgresql/data',
+            {
+                cwd: '../../',
+            },
+        );
+
+        // Delete application data directory in suite-sync
+        execSync(
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T suite-sync rm -rf /app/data',
+            {
+                cwd: '../../',
+            },
+        );
+
+        // Restart both containers
         execSync(
             'docker compose -f docker/docker-compose.suite-ci-e2e.yml restart quota-db suite-sync',
             {
