@@ -38,6 +38,24 @@ describe('TradeableAssetSheet', () => {
 
         expect(selectMock).toHaveBeenCalledTimes(1);
         expect(closeMock).toHaveBeenCalledTimes(1);
+        expect(closeMock).toHaveBeenCalledWith(undefined);
+    });
+
+    it('should call onAssetSelect with hideKeyboardOnAssetSelect=true when an item is pressed', async () => {
+        const closeMock = jest.fn();
+        const selectMock = jest.fn();
+
+        const { getByText } = await renderTradeableAssetsSheet({
+            onClose: closeMock,
+            onAssetSelect: selectMock,
+            hideKeyboardOnAssetSelect: true,
+        });
+
+        fireEvent.press(getByText('BTC'));
+
+        expect(selectMock).toHaveBeenCalledTimes(1);
+        expect(closeMock).toHaveBeenCalledTimes(1);
+        expect(closeMock).toHaveBeenCalledWith(true);
     });
 
     it('should render correct empty component', async () => {

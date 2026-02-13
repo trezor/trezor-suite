@@ -14,8 +14,9 @@ import {
 
 export type TradeableAssetsSheetProps = {
     isVisible: boolean;
-    onClose: () => void;
+    onClose: (shouldHideKeyboard?: boolean) => void;
     onAssetSelect: (symbol: TradeableAsset) => void;
+    hideKeyboardOnAssetSelect?: boolean;
     assets: TradeableAsset[];
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
@@ -36,6 +37,7 @@ export const TradeableAssetSheet = memo(
         isVisible,
         onClose,
         onAssetSelect,
+        hideKeyboardOnAssetSelect,
         assets,
         onFilterChange,
         onSelectedNetworkFilter,
@@ -43,8 +45,8 @@ export const TradeableAssetSheet = memo(
         testID,
     }: TradeableAssetsSheetProps) => {
         const onAssetSelectCallback = (asset: TradeableAsset) => {
-            onClose();
             onAssetSelect(asset);
+            onClose(hideKeyboardOnAssetSelect);
         };
 
         const listData = useFavouriteAssetsSectionList(assets);

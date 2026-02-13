@@ -20,7 +20,7 @@ import { MyAssetsDisabledListItem } from './MyAssetsDisabledListItem';
 export type MyAssetSheetProps = {
     tradingType: TradingType;
     isVisible: boolean;
-    onClose: () => void;
+    onClose: (shouldHideKeyboard?: boolean) => void;
     onAssetSelect: MyAssetListItemProps['onPress'];
 };
 
@@ -42,7 +42,7 @@ export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
         const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
             onAssetSelect(asset, account);
-            onClose();
+            onClose(false);
         };
 
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
