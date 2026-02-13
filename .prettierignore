@@ -147,3 +147,6 @@ packages/suite-data/files/videos/lottie/*.json
 /.nx/workspace-data
 
 favicon.js
+
+# Symlinks committed to repo, prettier can't handle them (that's ok; it will format the orig files anyway)
+docs/symlink/**

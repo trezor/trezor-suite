@@ -1,0 +1,1 @@
+../../../skills/naming.md
