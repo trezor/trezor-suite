@@ -72,3 +72,4 @@ export {
     isFwUpgradeNeededForSuiteSync,
     getIsSuiteSyncLabelingActionEnabled,
 } from './suiteSyncUtils';
+export { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';

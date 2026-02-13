@@ -14,7 +14,6 @@ export const initStoreForTests = (preloadedState: PreloadedState = {}) => {
     const { store } = initStore(
         {
             history: memoryHistory,
-            reloadApp: () => {}, // Mock for tests - noop function
         },
         undefined,
         { statePatch: preloadedState },

@@ -3,8 +3,10 @@ import {
     NonEmptyString1000,
     type QueryRows,
     createIdFromString,
+    createQueryBuilder,
     id,
     nullOr,
+    object,
 } from '@evolu/common';
 
 import {
@@ -22,24 +24,26 @@ import { normalizeLabel } from './normalizeLabel';
 export const WalletLabelId = id('WalletLabelId');
 export type WalletLabelId = typeof WalletLabelId.Type;
 
-/**
- * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
- *            compatible!
- */
-export const WalletLabelSchema = {
-    wallet: {
-        // This table will have only 1 record. As every wallet has its own secret, and therefore
-        // its own Evolu instance. So the Wallets label will always be just single.
-        id: WalletLabelId,
-        walletDescriptor: NonEmptyString1000,
-        label: nullOr(NonEmptyString1000),
-    },
+const walletTableColumns = {
+    // This table will have only 1 record. As every wallet has its own secret, and therefore
+    // its own Evolu instance. So the Wallets label will always be just single.
+    id: WalletLabelId,
+    walletDescriptor: NonEmptyString1000,
+    label: nullOr(NonEmptyString1000),
 };
 
-export class EvoluWalletTable implements WalletTable {
-    constructor(private evolu: Evolu<typeof WalletLabelSchema>) {}
+export const WalletEvoluSchema = object(walletTableColumns);
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('wallet').selectAll());
+export const WalletTableSchema = {
+    wallet: walletTableColumns,
+};
+
+const createQuery = createQueryBuilder(WalletTableSchema);
+
+export class EvoluWalletTable implements WalletTable {
+    constructor(private evolu: Evolu<typeof WalletTableSchema>) {}
+
+    private getQuery = () => createQuery(db => db.selectFrom('wallet').selectAll());
 
     update = ({ walletDescriptor, label }: SuiteSyncWallet) => {
         const idResult = WalletLabelId.from(createIdFromString(walletDescriptor));
@@ -48,15 +52,19 @@ export class EvoluWalletTable implements WalletTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('wallet', {
-            id: idResult.value,
+        const normalizedLabel = normalizeLabel(label);
+
+        const validated = WalletEvoluSchema.from({
+            id: createIdFromString(walletDescriptor),
             walletDescriptor,
-            label: normalizeLabel(label),
+            label: normalizedLabel,
         });
 
-        if (!result.ok) {
-            return err(createSuiteSyncUpdateError(result.error));
+        if (!validated.ok) {
+            return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
+
+        this.evolu.upsert('wallet', validated.value);
 
         return ok();
     };

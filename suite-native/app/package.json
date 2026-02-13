@@ -28,6 +28,8 @@
     },
     "dependencies": {
         "@bitcoinerlab/secp256k1": "1.2.0",
+        "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8",
+        "@evolu/react-native": "github:evoluhq/evolu#workspace=@evolu/react-native&head=common-v8",
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
         "@gorhom/bottom-sheet": "5.2.8",
         "@jest/reporters": "^29.7.0",

@@ -47,13 +47,23 @@ class DeviceOnboardingActions {
     async gotToNextWalletBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupTutorialStep${step}/nextButton`;
         await waitForVisible(by.id(buttonId));
+        // WalletBackupTutorialStep2 contains BackupRiskCardsAnimation which uses a Marquee
+        // component. Marquee's useFrameCallback fires every frame on the UI thread, preventing
+        // Espresso from detecting the app as idle. All steps are mounted simultaneously, so
+        // this affects taps on every step while the tutorial screen is in the navigation stack.
+        await device.disableSynchronization();
         await element(by.id(buttonId)).tap();
+        await device.enableSynchronization();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupRecapStep${step}/nextButton`;
         await waitForVisible(by.id(buttonId));
+        // WalletBackupTutorialScreen stays in the navigation stack during the entire Create
+        // Wallet flow including WalletBackupRecap, so the Marquee frame callback keeps running.
+        await device.disableSynchronization();
         await element(by.id(buttonId)).tap();
+        await device.enableSynchronization();
     }
 
     async goToNextWalletRecoveryRecapStep(step: number) {
@@ -99,7 +109,12 @@ class DeviceOnboardingActions {
         const buttonId = '@holdToConfirmButton';
         await waitForVisible(by.id(buttonId));
         const holdToConfirmButton = element(by.id(buttonId));
+        // Disable synchronization for the same reason as gotToNextWalletBackupTutorialStep:
+        // the Marquee frame callback keeps the app from going idle while WalletBackupTutorial
+        // is in the navigation stack.
+        await device.disableSynchronization();
         await holdToConfirmButton.longPress(3000);
+        await device.enableSynchronization();
     }
 
     async waitForUninitializedDeviceLanding() {

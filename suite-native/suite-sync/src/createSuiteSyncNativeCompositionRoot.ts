@@ -1,14 +1,17 @@
-import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
+import { createConsole, createConsoleFormatter } from '@evolu/common';
+import { createRun } from '@evolu/react-native';
+import { createEvoluDeps } from '@evolu/react-native/expo-sqlite';
 import { type Dispatch } from '@reduxjs/toolkit';
-import { reloadAppAsync } from 'expo';
 
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type SuiteSyncAnalyticsDep,
     createSuiteSyncCompositionRoot,
+    createSuiteSyncErrorHandler,
 } from '@suite-common/suite-sync';
 import {
+    createEvoluErrorHandler,
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
@@ -26,17 +29,25 @@ type SuiteSyncNativeCompositionRootDeps = {
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
-): SuiteSync =>
-    createSuiteSyncCompositionRoot({
-        ...deps,
-        createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
-            const createEvoluInstance = createEvoluInstanceFactory({
-                evoluDeps: evoluReactNativeDeps,
-                suiteSyncErrorHandler,
-            });
-
-            return createEvoluStorageFactory({ createEvoluInstance });
-        },
-        createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
-        reloadApp: reloadAppAsync,
+): SuiteSync => {
+    const console = createConsole({
+        level: 'warn',
+        formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
     });
+
+    const evoluDeps = createEvoluDeps({ console });
+    const run = createRun(evoluDeps);
+
+    const suiteSyncErrorHandler = createSuiteSyncErrorHandler({ dispatch: deps.dispatch });
+    evoluDeps.evoluError.subscribe(
+        createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
+    );
+
+    return createSuiteSyncCompositionRoot({
+        ...deps,
+        createSuiteStorage: createEvoluStorageFactory({
+            createEvoluInstance: createEvoluInstanceFactory({ run }),
+        }),
+        createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+    });
+};

@@ -15,8 +15,8 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ evoluClient, onboardingPage }) => {
-        await test.step('Seed Evolu relay server', () => {
-            evoluClient.init({ ownerSecret });
+        await test.step('Seed Evolu relay server', async () => {
+            await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('wallet', walletSeed);
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
