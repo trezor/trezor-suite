@@ -1,15 +1,20 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import {
+    QuotaManagerDisabled,
     WriteModeRequiredForAllocation,
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
-import type { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
+import {
+    QuotaManagerDisabledErrType,
+    WriteModeRequiredForAllocationErrType,
+} from '@suite-common/suite-sync-types';
 import { DelegatedIdentityKey, SuiteSyncOwner } from '@suite-common/suite-types';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
+import { isNotNull, isNotNullOrUndefined } from '@trezor/utils';
 
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 import { GetDeviceHasAllowance } from '../getDeviceHasAllowance';
@@ -17,6 +22,7 @@ import { GetDeviceHasAllowance } from '../getDeviceHasAllowance';
 export type EnsureQuotaDeps = {
     dispatch: Dispatch;
     hasAllowance: GetDeviceHasAllowance;
+    getIsQuotaManagerEnabled: () => boolean;
 } & GetDeviceForStaticSessionIdDep;
 
 export type EnsureQuotaParams = {
@@ -28,7 +34,7 @@ export type EnsureQuotaParams = {
 
 export type EnsureQuota = (
     params: EnsureQuotaParams,
-) => Promise<Result<void, WriteModeRequiredForAllocationErrType>>;
+) => Promise<Result<void, WriteModeRequiredForAllocationErrType | QuotaManagerDisabledErrType>>;
 
 export type EnsureQuotaDep = {
     ensureQuota: EnsureQuota;
@@ -41,15 +47,18 @@ export const createEnsureQuota =
 
         const device = deps.getDeviceForStaticSessionId(deviceStaticSessionId);
 
+        if (!deps.getIsQuotaManagerEnabled()) {
+            return err(QuotaManagerDisabled());
+        }
+
         if (
-            device?.id !== null &&
-            device?.id !== undefined &&
+            isNotNullOrUndefined(device?.id) &&
             deps.hasAllowance({ walletDescriptor, deviceId: device.id })
         ) {
             return ok(undefined);
         }
 
-        if (device !== null && isTrezorDeviceWithState(device)) {
+        if (isNotNull(device) && isTrezorDeviceWithState(device)) {
             await deps.dispatch(
                 ensureDeviceHasQuotaThunk({
                     device,
@@ -68,7 +77,7 @@ export const createEnsureQuota =
         );
 
         if (
-            allocatedQuota.success === false &&
+            !allocatedQuota.success &&
             allocatedQuota.error.type === 'WriteModeRequiredForAllocation'
         ) {
             return err(WriteModeRequiredForAllocation());

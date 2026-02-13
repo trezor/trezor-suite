@@ -1,3 +1,4 @@
+import { QuotaManagerDisabledErrType } from '@suite-common/suite-sync-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 /**
@@ -24,3 +25,7 @@ export const DEFAULT_QUOTA_MANAGER_URL = isDevEnv
  * Header used for signing add space to owner requests.
  */
 export const EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER = 'EvoluAddSpaceToOwnerV1';
+
+export const QuotaManagerDisabled = (): QuotaManagerDisabledErrType => ({
+    type: 'QuotaManagerDisabled',
+});

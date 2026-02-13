@@ -17,10 +17,6 @@ export type SuiteSyncUnavailableOnDeviceErrorType = {
     type: 'SuiteSyncUnavailableOnDeviceError';
 };
 
-export type WriteModeRequiredForAllocationErrType = {
-    type: 'WriteModeRequiredForAllocation';
-};
-
 export type RefreshSuiteSyncKeysResult = {
     owner: SuiteSyncOwner;
     delegatedKey: DelegatedIdentityKey;
