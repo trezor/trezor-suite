@@ -13,6 +13,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "react": "19.1.0",
-        "react-native-mmkv": "~4.0.0"
+        "react-native-mmkv": "~4.1.2"
     }
 }
