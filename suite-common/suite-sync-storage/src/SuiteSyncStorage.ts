@@ -20,7 +20,6 @@ export type SuiteSyncStorage = {
 
 type SuiteStorageCreatorParams = {
     suiteSyncOwner: SuiteSyncOwner;
-    relayUrl: string;
 };
 
 /**

@@ -1,6 +1,7 @@
 import { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 import { Device, StaticSessionId } from '@trezor/connect';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionId) => {
     const [walletDescriptor, deviceId] = deviceStaticSessionId.split('@');
@@ -31,8 +32,4 @@ export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
 ): device is TrezorDeviceWithState =>
-    device !== undefined &&
-    device.id !== null &&
-    device.state !== undefined &&
-    device.state !== null &&
-    device.state.staticSessionId !== undefined;
+    isNotNullOrUndefined(device?.id) && isNotNullOrUndefined(device.state?.staticSessionId);

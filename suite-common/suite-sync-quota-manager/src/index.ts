@@ -49,4 +49,4 @@ export {
 /**
  * Constants.
  */
-export { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';
+export { DEFAULT_DEVICE_SIZE_QUOTA, QuotaManagerDisabled } from './constants';

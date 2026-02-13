@@ -3,10 +3,8 @@ import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-ty
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import {
-    SuiteSyncUnavailableOnDeviceErrorType,
-    WriteModeRequiredForAllocationErrType,
-} from '../refreshSuiteSyncKeys';
+import { WriteModeRequiredForAllocationErrType } from '../quotaManagerTypes';
+import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';

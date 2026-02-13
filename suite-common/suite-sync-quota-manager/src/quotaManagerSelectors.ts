@@ -34,12 +34,4 @@ export const selectHasDeviceAllowance = (
     state: WithSuiteSyncQuotaManagerState,
     deviceId: string,
     walletDescriptor: WalletDescriptor,
-) => {
-    // Return success - ignore allowance if case quota manager is disabled.
-    if (!selectIsQuotaManagerEnabled(state)) return true;
-
-    return (
-        selectIsDeviceRegistered(state, deviceId) &&
-        selectHasOwnerAllowance(state, walletDescriptor)
-    );
-};
+) => selectIsDeviceRegistered(state, deviceId) && selectHasOwnerAllowance(state, walletDescriptor);

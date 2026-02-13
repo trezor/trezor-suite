@@ -7,10 +7,8 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import {
-    SuiteSyncUnavailableOnDeviceErrorType,
-    WriteModeRequiredForAllocationErrType,
-} from '../refreshSuiteSyncKeys';
+import { WriteModeRequiredForAllocationErrType } from '../quotaManagerTypes';
+import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
 type SubscribeSuiteSyncDataParams = {
     deviceStaticSessionId: StaticSessionId;
