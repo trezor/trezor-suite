@@ -81,7 +81,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Verify data are sync to Relay', async () => {
-            evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
+            await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
             await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
             await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
             await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });

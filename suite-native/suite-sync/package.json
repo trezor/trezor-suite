@@ -12,7 +12,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@evolu/react-native": "^14.2.0",
+        "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8",
+        "@evolu/react-native": "github:evoluhq/evolu#workspace=@evolu/react-native&head=common-v8",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",

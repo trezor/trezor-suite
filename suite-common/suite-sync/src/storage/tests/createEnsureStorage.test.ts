@@ -156,7 +156,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
+            createSuiteStorage: () => Promise.resolve(newStorage),
             refreshSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -189,7 +189,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
+            createSuiteStorage: () => Promise.resolve(newStorage),
             refreshSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () =>
@@ -221,7 +221,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
+            createSuiteStorage: () => Promise.resolve(newStorage),
             refreshSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -258,7 +258,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
+            createSuiteStorage: () => Promise.resolve(newStorage),
             refreshSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),

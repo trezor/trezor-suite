@@ -7,18 +7,13 @@ import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createSuiteSyncQuotaManagerCompositionRoot } from '@suite-common/suite-sync-quota-manager';
 import {
-    type CreateSuiteStorage,
+    type CreateSuiteStorageDep,
     type CreateSuiteSyncOwnerDep,
 } from '@suite-common/suite-sync-storage';
-import {
-    type SuiteSync,
-    type SuiteSyncAppReloaderDep,
-    type SuiteSyncErrorHandler,
-} from '@suite-common/suite-sync-types';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
-import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
@@ -53,14 +48,6 @@ import {
     selectSuiteSyncRelayUrl,
 } from './suiteSyncSelectors';
 
-type CreateSuiteStorageFactory = (deps: {
-    suiteSyncErrorHandler: SuiteSyncErrorHandler;
-}) => CreateSuiteStorage;
-
-type CreateSuiteStorageFactoryDep = {
-    createSuiteStorageFactory: CreateSuiteStorageFactory;
-};
-
 export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'>;
 
 export type SuiteSyncAnalyticsDep = {
@@ -73,10 +60,9 @@ type CreateSuiteSyncCompositionRootDeps = {
     trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'];
 } & SuiteSyncAnalyticsDep &
     EnsureDelegatedIdentityKeyDep &
-    CreateSuiteStorageFactoryDep &
+    CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
-    PlatformEncryptionDep &
-    SuiteSyncAppReloaderDep;
+    PlatformEncryptionDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -120,17 +106,11 @@ export const createSuiteSyncCompositionRoot = (
         getIsUsingTrezorRelay: () => isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
     });
 
-    const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({
-        dispatch: deps.dispatch,
-    });
-
-    const createSuiteStorage = deps.createSuiteStorageFactory({ suiteSyncErrorHandler });
-
     const ensureStorage = createEnsureStorage({
         refreshSuiteSyncKeys,
         ensureQuota,
         suiteSyncStorageRepository,
-        createSuiteStorage,
+        createSuiteStorage: deps.createSuiteStorage,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
         getOwnerHasAllowance,
@@ -186,7 +166,6 @@ export const createSuiteSyncCompositionRoot = (
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
             turnOffSuiteSyncForWallet,
-            reloadApp: deps.reloadApp,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
             getIsSuiteSyncEnabled,

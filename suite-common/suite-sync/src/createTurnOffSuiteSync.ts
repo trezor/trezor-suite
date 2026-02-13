@@ -2,7 +2,6 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { eraseFetchedData } from '@suite-common/suite-sync-quota-manager';
 import {
-    type SuiteSyncAppReloaderDep,
     type TurnOffSuiteSync,
     type TurnOffSuiteSyncForWalletDep,
 } from '@suite-common/suite-sync-types';
@@ -15,8 +14,7 @@ export type CreateTurnOffSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
     getAllDeviceSessionIds: () => StaticSessionId[];
-} & TurnOffSuiteSyncForWalletDep &
-    SuiteSyncAppReloaderDep;
+} & TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
@@ -42,7 +40,4 @@ export const createTurnOffSuiteSync =
         }
 
         deps.dispatch(eraseFetchedData());
-
-        // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
-        deps.reloadApp();
     };

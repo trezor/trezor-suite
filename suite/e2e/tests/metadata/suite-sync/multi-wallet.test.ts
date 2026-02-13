@@ -71,6 +71,7 @@ const expectedWalletTwoLabel = {
 };
 
 test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.slow();
     test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, metadataPage }) => {
@@ -152,12 +153,12 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
 
         await test.step('Verify data are synced to Relay', async () => {
             // Default wallet data
-            evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
+            await evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
             await evoluClient.expectInTable('wallet', [expectedDefaultWalletLabel], {
                 softExpect: true,
             });
             // Passphrase #1 data
-            evoluClient.init({ ownerSecret: walletOne.ownerSecret });
+            await evoluClient.init({ ownerSecret: walletOne.ownerSecret });
             await evoluClient.expectInTable('wallet', [expectedWalletOneLabel], {
                 softExpect: true,
             });
@@ -165,7 +166,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
                 softExpect: true,
             });
             // Passphrase #2 data
-            evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
+            await evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
             await evoluClient.expectInTable('wallet', [expectedWalletTwoLabel], {
                 softExpect: true,
             });

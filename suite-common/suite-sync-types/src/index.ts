@@ -73,8 +73,6 @@ export type {
     UpdateWalletLabelParams,
 } from './data/updateWalletLabel';
 
-export type { SuiteSyncAppReloader, SuiteSyncAppReloaderDep } from './suiteSyncAppReloader';
-
 export type {
     SuiteSyncErrorHandler,
     SuiteSyncOtherError,

@@ -64,10 +64,13 @@ const config = {
                 // modules exports defined in the package `exports` map.
                 '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/codegenv2/index.js`,
                 '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wkt/index.js`,
-                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/exports/expo-sqlite.js`,
+                '@evolu/react-native': `${rootNodeModulesPath}/@evolu/react-native/dist/src/index.js`,
+                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
                 '@evolu/common': `${rootNodeModulesPath}/@evolu/common/dist/src/index.js`,
                 '@evolu/common/evolu': `${rootNodeModulesPath}/@evolu/common/dist/src/Evolu/Internal.js`,
                 '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
+                '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
+                '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
                 // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
