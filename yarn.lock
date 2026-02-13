@@ -14584,6 +14584,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/test-utils@workspace:suite/test-utils":
+  version: 0.0.0-use.local
+  resolution: "@suite/test-utils@workspace:suite/test-utils"
+  dependencies:
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@testing-library/dom": "npm:^10.4.1"
+    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/user-event": "npm:^14.5.2"
+    "@trezor/suite": "workspace:*"
+    history: "npm:^5.3.0"
+    react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/tx-simulation@workspace:^, @suite/tx-simulation@workspace:suite/tx-simulation":
   version: 0.0.0-use.local
   resolution: "@suite/tx-simulation@workspace:suite/tx-simulation"
@@ -14765,7 +14782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^14.6.1":
+"@testing-library/user-event@npm:^14.5.2, @testing-library/user-event@npm:^14.6.1":
   version: 14.6.1
   resolution: "@testing-library/user-event@npm:14.6.1"
   peerDependencies:
