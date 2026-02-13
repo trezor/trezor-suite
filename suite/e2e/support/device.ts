@@ -32,6 +32,7 @@ const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
 export class DeviceFixture {
     public readonly hasTHP: boolean;
     public readonly hasSecureElement: boolean;
+    public readonly hasCanaryFirmware: boolean;
 
     constructor(
         public readonly model: Model,
@@ -39,6 +40,7 @@ export class DeviceFixture {
     ) {
         this.hasTHP = this.model === Model.T3W1;
         this.hasSecureElement = [Model.T3B1, Model.T3T1, Model.T3W1].includes(this.model);
+        this.hasCanaryFirmware = firmwareVersion.endsWith('-main');
     }
 
     @step()

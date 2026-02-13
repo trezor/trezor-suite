@@ -3,7 +3,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@smoke'] }, () => {
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
