@@ -57,7 +57,7 @@ export function App() {
         isFiltering,
     } = useFilteredEvents();
 
-    const hasActiveFilters = query || platform !== 'all' || sort !== 'az';
+    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
 
     const eventCards = useMemo(
         () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),

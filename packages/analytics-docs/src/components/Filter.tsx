@@ -1,13 +1,14 @@
 import { Input, Row, Select } from '@trezor/components';
 
 import { platforms, sorting } from '../constants';
+import { Sort } from '../utils/useFilteredEvents';
 
 type FilterProps = {
     query: string;
     platform: string;
     setQuery: (query: string) => void;
     setPlatform: (query: string) => void;
-    setSort: (sort: string) => void;
+    setSort: (sort: Sort) => void;
     sort: string;
 };
 
