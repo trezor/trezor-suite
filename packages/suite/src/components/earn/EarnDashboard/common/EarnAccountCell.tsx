@@ -1,61 +1,64 @@
-import styled from 'styled-components';
-
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { TokenDto } from '@suite-common/earn-api';
+import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { Column } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Column, Row } from '@trezor/components';
+import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
-import { AccountLabel, CoinBalance } from 'src/components/suite';
-
-const AccountCellContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: ${spacingsPx.md};
-    ${typography['body-sm']};
-    color: ${({ theme }) => theme.textSubdued};
-    cursor: inherit;
-`;
-
-const AccountLabelContainer = styled.div`
-    color: ${({ theme }) => theme.textDefault};
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+import { EarnAccountCellDetails } from './EarnAccountCellDetails';
+import { EarnTokenBalance } from './types';
 
 type EarnAccountCellProps = {
     account?: Account;
     symbol?: NetworkSymbol;
+    iconToken?: TokenDto;
+    showAssetNetworkIcon?: boolean;
+    tokenBalance?: EarnTokenBalance;
 };
 
-export const EarnAccountCell = ({ account, symbol }: EarnAccountCellProps) => {
+export const EarnAccountCell = ({
+    account,
+    symbol,
+    iconToken,
+    showAssetNetworkIcon = false,
+    tokenBalance,
+}: EarnAccountCellProps) => {
     const networkSymbol = account?.symbol ?? symbol;
+    const assetLogo =
+        iconToken && networkSymbol
+            ? {
+                  coingeckoId: getCoingeckoId(networkSymbol) ?? iconToken.coinGeckoId,
+                  placeholder: iconToken.symbol || iconToken.name || 'token',
+                  contractAddress: iconToken.address ?? null,
+                  showNetworkIcon: showAssetNetworkIcon,
+              }
+            : undefined;
 
     if (!networkSymbol) return null;
 
     return (
-        <AccountCellContainer>
+        <Row gap={16} cursor="inherit">
             <Column alignItems="center">
-                <CoinLogo size={32} symbol={networkSymbol} />
+                {assetLogo?.coingeckoId ? (
+                    <AssetLogo
+                        size={32}
+                        coingeckoId={assetLogo.coingeckoId}
+                        placeholder={assetLogo.placeholder}
+                        symbol={networkSymbol}
+                        contractAddress={assetLogo.contractAddress}
+                        showNetworkIcon={assetLogo.showNetworkIcon}
+                    />
+                ) : (
+                    <CoinLogo size={32} symbol={networkSymbol} type="tokenWithNetwork" />
+                )}
             </Column>
 
             <Column flex="1" overflow="hidden" gap={2}>
-                <AccountLabelContainer>
-                    {account ? (
-                        <AccountLabel
-                            account={account}
-                            showAccountTypeBadge={true}
-                            accountTypeBadgeSize="small"
-                        />
-                    ) : (
-                        symbol && getNetwork(symbol).name
-                    )}
-                </AccountLabelContainer>
-
-                {account && <CoinBalance value={account.formattedBalance} symbol={networkSymbol} />}
+                <EarnAccountCellDetails
+                    account={account}
+                    networkSymbol={networkSymbol}
+                    tokenBalance={tokenBalance}
+                />
             </Column>
-        </AccountCellContainer>
+        </Row>
     );
 };

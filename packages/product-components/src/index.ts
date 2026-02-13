@@ -11,7 +11,7 @@ export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
-export { CoinLogo } from './components/CoinLogo/CoinLogo';
+export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
 export { isCoinSymbol } from './constants/coins';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';

@@ -35,6 +35,7 @@
         {
             "path": "../../suite-common/device-authenticity"
         },
+        { "path": "../../suite-common/earn-api" },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"

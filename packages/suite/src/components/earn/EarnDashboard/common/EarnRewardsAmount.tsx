@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import { H4, type TextProps } from '@trezor/components';
 
 type EarnRewardsAmountProps = {
-    symbol: NetworkSymbol;
+    symbol: NetworkSymbol | TokenSymbol;
     rewards: string;
     apy: number | null;
     intent?: TextProps['intent'];
