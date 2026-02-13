@@ -122,7 +122,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const biometricsPersistedReducer = await preparePersistReducer({
+    const biometricsPersistedReducer = preparePersistReducer({
         reducer: biometricsSlice.reducer,
         persistedKeys: biometricsPersistWhitelist,
         key: biometricsSlice.name,
@@ -130,6 +130,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         migrations: {
             1: migrateBiometricsAtomToRedux,
         },
+        storage: deps.mmkvStorage,
     });
 
     const tradingPersistedReducer = preparePersistReducer({
