@@ -8885,6 +8885,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
         defaultMessage: 'Supply now',
     },
+    TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
+        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',
+        defaultMessage: '{amount} {displaySymbol} supplied',
+    },
     TR_EARN_DASHBOARD_ACTIVE: {
         id: 'TR_EARN_DASHBOARD_ACTIVE',
         defaultMessage: 'Active',

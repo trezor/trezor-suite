@@ -1,21 +1,56 @@
-import { Translation } from '@suite/intl';
-import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { Button, Card, Paragraph, Row, Table } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { useMemo } from 'react';
+
+import { YieldDto } from '@suite-common/earn-api';
+import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
+import {
+    selectDeviceSupportedNetworks,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
+import { Card, Table } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { EarnAccountCell } from '../common/EarnAccountCell';
+import { EarnYieldTableBody } from './EarnYieldTableBody';
+import { useAllYieldOpportunities } from './hooks/useAllYieldOpportunities';
+import { useBalances } from './hooks/useBalances';
+import { useYieldTableData } from './hooks/useYieldTableData';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 
+const isYieldOpportunityAvailable = (vault: YieldDto) =>
+    !vault.metadata.underMaintenance && !vault.metadata.deprecated;
+
 export const EarnYieldTable = () => {
     const visibleAccounts = useSelector(selectVisibleDeviceAccounts);
-    const ethereumAccounts = visibleAccounts.filter(account => account.symbol === 'eth');
-    const isYieldActive = ethereumAccounts.some(account =>
-        new BigNumber(account.formattedBalance).gt(0),
+    const normalAccounts = useMemo(
+        () => visibleAccounts.filter(account => account.accountType === NORMAL_ACCOUNT_TYPE),
+        [visibleAccounts],
     );
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const { yieldOpportunities, isYieldOpportunitiesLoading } = useAllYieldOpportunities();
+
+    const availableVaults = useMemo(
+        () => yieldOpportunities.filter(isYieldOpportunityAvailable),
+        [yieldOpportunities],
+    );
+
+    const visibleAccountSymbols = useMemo(
+        () => new Set(normalAccounts.map(account => account.symbol)),
+        [normalAccounts],
+    );
+    const { suppliedBalancesByYieldAndAddress } = useBalances({
+        vaults: availableVaults,
+        accounts: normalAccounts,
+    });
+    const { yieldAccountOpportunities, yieldNetworksNotActivated, isYieldActive } =
+        useYieldTableData({
+            availableVaults,
+            deviceSupportedNetworkSymbols,
+            suppliedBalancesByYieldAndAddress,
+            visibleAccounts: normalAccounts,
+            visibleAccountSymbols,
+        });
 
     const badge = getEarnDashboardBadgeState({
         isSectionActive: isYieldActive,
@@ -33,87 +68,11 @@ export const EarnYieldTable = () => {
             <Card paddingType="none">
                 <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                     <EarnDashboardTableHeader />
-
-                    <Table.Body>
-                        {ethereumAccounts.length === 0 ? (
-                            <Table.Row>
-                                <Table.Cell colSpan={5}>
-                                    <Paragraph
-                                        typographyStyle="body-md"
-                                        intent="neutral"
-                                        priority="secondary"
-                                    >
-                                        <Translation id="TR_ACCOUNT_NO_ACCOUNTS" />
-                                    </Paragraph>
-                                </Table.Cell>
-                            </Table.Row>
-                        ) : (
-                            ethereumAccounts.map(account => {
-                                const hasBalance = new BigNumber(account.formattedBalance).gt(0);
-
-                                return (
-                                    <Table.Row key={account.key}>
-                                        <Table.Cell>
-                                            <EarnAccountCell account={account} />
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            <Paragraph
-                                                typographyStyle="body-md"
-                                                intent="neutral"
-                                                priority="secondary"
-                                            >
-                                                <Translation id="TR_EARN_NOT_AVAILABLE" />
-                                            </Paragraph>
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            <Paragraph
-                                                typographyStyle="body-md"
-                                                intent="neutral"
-                                                priority="secondary"
-                                            >
-                                                <Translation id="TR_EARN_NOT_AVAILABLE" />
-                                            </Paragraph>
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            <Paragraph
-                                                typographyStyle="body-md"
-                                                intent="neutral"
-                                                priority="secondary"
-                                            >
-                                                <Translation id="TR_EARN_NOT_AVAILABLE" />
-                                            </Paragraph>
-                                        </Table.Cell>
-
-                                        <Table.Cell align="end">
-                                            <Row justifyContent="flex-end" gap={8}>
-                                                {hasBalance ? (
-                                                    <>
-                                                        <Button size="small">
-                                                            <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
-                                                        </Button>
-                                                        <Button
-                                                            size="small"
-                                                            intent="brand"
-                                                            priority="secondary"
-                                                        >
-                                                            <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
-                                                        </Button>
-                                                    </>
-                                                ) : (
-                                                    <Button size="small">
-                                                        <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
-                                                    </Button>
-                                                )}
-                                            </Row>
-                                        </Table.Cell>
-                                    </Table.Row>
-                                );
-                            })
-                        )}
-                    </Table.Body>
+                    <EarnYieldTableBody
+                        isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
+                        yieldAccountOpportunities={yieldAccountOpportunities}
+                        yieldNetworksNotActivated={yieldNetworksNotActivated}
+                    />
                 </Table>
             </Card>
         </EarnDashboardSection>

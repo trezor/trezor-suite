@@ -13,6 +13,8 @@ export type MetadataItem = string;
 export type XpubAddress = string;
 
 export type TokenSymbol = string & Branded<'TokenSymbol'>;
+export const toTokenSymbol = (value: string) => value as TokenSymbol;
+
 export type TokenAddress = string & Branded<'TokenAddress'>;
 export const toTokenAddress = (value: string) => value as TokenAddress;
 

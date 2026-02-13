@@ -1,0 +1,213 @@
+import { Translation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
+import {
+    getTradingPrefilledFromAccountData,
+    toTokenCryptoId,
+    tradingActions,
+} from '@suite-common/trading';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
+
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+
+import { type YieldAccountOpportunity } from './types';
+import { EarnAccountCell } from '../common/EarnAccountCell';
+import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
+
+type EarnYieldAccountOpportunityProps = {
+    opportunity: YieldAccountOpportunity;
+};
+
+export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpportunityProps) => {
+    const dispatch = useDispatch();
+    const { CryptoAmountFormatter } = useFormatters();
+
+    const hasMatchedToken = opportunity.matchedToken !== undefined;
+    const hasSuppliedBalance = new BigNumber(opportunity.suppliedAmount).gt(0);
+    const hasMatchedTokenWithBalance =
+        hasMatchedToken && new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+    const hasRewardsData = hasMatchedTokenWithBalance || hasSuppliedBalance;
+    const hasApy = opportunity.apyPercentage !== null;
+    const yearlyRewards = hasRewardsData
+        ? new BigNumber(opportunity.suppliedAmount)
+              .times(opportunity.vault.rewardRate.total)
+              .toString()
+        : '0';
+    const potentialRewards = hasRewardsData
+        ? new BigNumber(opportunity.suppliedAmount)
+              .plus(opportunity.additionalSupplyAmount)
+              .times(opportunity.vault.rewardRate.total)
+              .toString()
+        : '0';
+    const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
+    const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
+        symbol: opportunity.suppliedSymbol,
+        withSymbol: false,
+        isBalance: true,
+    });
+    const formattedAdditionalSupplyAmount = CryptoAmountFormatter.format(
+        opportunity.additionalSupplyAmount,
+        {
+            symbol: opportunity.suppliedSymbol,
+            withSymbol: false,
+            isBalance: true,
+        },
+    );
+    const navigateToTradingBuy = () => {
+        const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
+        const accountIndex = opportunity.account?.index ?? 0;
+        const accountType = opportunity.account?.accountType ?? 'normal';
+        const tokenAddress = opportunity.vault.token.address;
+
+        if (opportunity.account) {
+            const tokenCryptoId = tokenAddress
+                ? toTokenCryptoId(
+                      networkSymbol,
+                      getContractAddressForNetworkSymbol(networkSymbol, tokenAddress),
+                  )
+                : undefined;
+
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount(
+                    getTradingPrefilledFromAccountData(opportunity.account, tokenCryptoId),
+                ),
+            );
+        }
+
+        dispatch(
+            goto('wallet-trading-buy', {
+                params: {
+                    symbol: networkSymbol,
+                    accountIndex,
+                    accountType,
+                },
+            }),
+        );
+    };
+
+    return (
+        <Table.Row>
+            <Table.Cell>
+                <EarnAccountCell
+                    account={opportunity.account}
+                    symbol={opportunity.networkSymbol}
+                    iconToken={opportunity.vault.token}
+                    showAssetNetworkIcon
+                    tokenBalance={
+                        hasMatchedToken
+                            ? {
+                                  value: opportunity.additionalSupplyAmount,
+                                  symbol: opportunity.suppliedSymbol,
+                                  contractAddress: opportunity.suppliedContractAddress,
+                              }
+                            : undefined
+                    }
+                />
+            </Table.Cell>
+
+            <Table.Cell>
+                <ApyValue apy={opportunity.apyPercentage} />
+            </Table.Cell>
+
+            {hasRewardsData ? (
+                <>
+                    <Table.Cell>
+                        <Row width="100%" alignItems="center" justifyContent="space-between">
+                            <Column>
+                                <EarnRewardsAmount
+                                    symbol={opportunity.suppliedSymbol}
+                                    rewards={yearlyRewards}
+                                    apy={opportunity.apyPercentage}
+                                />
+
+                                {hasSuppliedBalance && (
+                                    <Paragraph
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
+                                        <Translation
+                                            id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
+                                            values={{
+                                                amount: formattedSuppliedAmount,
+                                                displaySymbol: opportunity.suppliedSymbol,
+                                            }}
+                                        />
+                                    </Paragraph>
+                                )}
+                            </Column>
+
+                            {hasApy && (
+                                <Icon name="arrowRight" variant="tertiary" size="mediumLarge" />
+                            )}
+                        </Row>
+                    </Table.Cell>
+
+                    <Table.Cell>
+                        {hasPotentialRewards && (
+                            <Column>
+                                <EarnRewardsAmount
+                                    symbol={opportunity.suppliedSymbol}
+                                    rewards={potentialRewards}
+                                    apy={opportunity.apyPercentage}
+                                    intent="brand"
+                                />
+
+                                <Paragraph
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation
+                                        id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
+                                        values={{
+                                            amount: formattedAdditionalSupplyAmount,
+                                            displaySymbol: opportunity.suppliedSymbol,
+                                        }}
+                                    />
+                                </Paragraph>
+                            </Column>
+                        )}
+                    </Table.Cell>
+                </>
+            ) : (
+                <Table.Cell colSpan={2} />
+            )}
+
+            <Table.Cell align="end">
+                <Row justifyContent="flex-end" gap={8}>
+                    {hasSuppliedBalance && (
+                        <>
+                            <Button size="small">
+                                <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
+                            </Button>
+                            <Button size="small" intent="brand" priority="secondary">
+                                <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
+                            </Button>
+                        </>
+                    )}
+
+                    {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
+                        <Button size="small" isDisabled={!opportunity.vault.status.enter}>
+                            <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
+                        </Button>
+                    )}
+
+                    {!hasSuppliedBalance && !hasMatchedTokenWithBalance && (
+                        <Button
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={navigateToTradingBuy}
+                        >
+                            <Translation id="TR_BUY" />
+                        </Button>
+                    )}
+                </Row>
+            </Table.Cell>
+        </Table.Row>
+    );
+};

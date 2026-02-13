@@ -19,7 +19,6 @@ import {
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -334,7 +333,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
             {state === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <Row gap={spacings.xxs}>
+                        <Row gap={4}>
                             <Icon name="warning" size={24} variant="warning" />
                             <Paragraph typographyStyle="body-md" intent="warning">
                                 <Translation

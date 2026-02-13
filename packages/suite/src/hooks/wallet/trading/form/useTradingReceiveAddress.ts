@@ -88,6 +88,7 @@ export const useTradingReceiveAddress = ({
 }: UseTradingReceiveAddressProps) => {
     const dispatch = useDispatch();
     const accounts = useSelector(state => state.wallet.accounts);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const device = useSelector(selectSelectedDevice);
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
 
@@ -237,6 +238,20 @@ export const useTradingReceiveAddress = ({
             }
         }
 
+        const preferredReceiveAccountKey =
+            persistedReceiveAccountKey ?? selectedAccount.account?.key;
+        if (preferredReceiveAccountKey) {
+            const preferredSuiteOption = selectAccountOptions.find(
+                option => option.account?.key === preferredReceiveAccountKey,
+            );
+
+            if (preferredSuiteOption) {
+                selectAccountOption(preferredSuiteOption);
+
+                return;
+            }
+        }
+
         const sendAccount =
             type === 'exchange'
                 ? accounts.find(account => account.key === sendAccountKey)
@@ -265,6 +280,7 @@ export const useTradingReceiveAddress = ({
         persistedReceiveAccountKey,
         persistedReceiveAddress,
         isPreviousRouteFromTradeSection,
+        selectedAccount.account?.key,
         selectAccountOption,
     ]);
 
