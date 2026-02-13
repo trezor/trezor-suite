@@ -1,16 +1,14 @@
-import { accountSeed } from './suite-sync/sync-from-relay.test';
-import { ownerSecret } from '../../fixtures/metadata/default-metadata-ids';
+import { accountSeed, ownerSecret } from '../../fixtures/metadata/suite-sync-data';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-test.describe('Labeling migration', {tag: ['@webOnly', '@specificFirmware', '@T3W1', '@T3T1'] }, () => {
-    test.use({ firmwareVersion: '2-main' });
+test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+    test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ metadataMock, evoluClient, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await test.step('Seed Evolu relay server', async () => {
-            evoluClient.wipeAndRestartServer();
             await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('account', accountSeed);
         });
