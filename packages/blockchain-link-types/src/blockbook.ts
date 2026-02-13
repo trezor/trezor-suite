@@ -1,20 +1,24 @@
-import type { RequiredKey } from '@trezor/type-utils';
+import type { OptionalKey, RequiredKey } from '@trezor/type-utils';
 
 import type {
-    AddressAlias,
+    AvailableVsCurrencies,
+    Address as BlockbookAddress,
+    Block as BlockbookBlock,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
     Tx as BlockbookTx,
     Utxo as BlockbookUtxo,
-    ContractInfo,
+    FiatTicker,
     MempoolTxidFilterEntries,
-    StakingPool,
     Vin,
     Vout,
+    WsAccountUtxoReq,
     WsBlockFilterReq,
     WsBlockFiltersBatchReq,
     WsBlockHashRes,
+    WsEstimateFeeRes,
     WsInfoRes,
+    WsMempoolFiltersReq,
 } from './blockbook-api';
 import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
 import type {
@@ -27,8 +31,6 @@ import type {
     RpcCallParams,
 } from './params';
 
-type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
-
 export type AccountUtxo = RequiredKey<BlockbookUtxo, 'address' | 'height' | 'value' | 'path'>[];
 
 export interface Subscribe {
@@ -39,24 +41,26 @@ export type ServerInfo = WsInfoRes;
 
 export type BlockHash = WsBlockHashRes;
 
-export interface Block {
-    page: number;
-    totalPages: number;
-    itemsOnPage: number;
-    hash: string;
-    height: number;
+export type Block = Omit<
+    RequiredKey<BlockbookBlock, 'page' | 'totalPages' | 'itemsOnPage'>,
+    'txs' | 'confirmations' | 'size' | 'version' | 'merkleRoot' | 'nonce' | 'bits' | 'difficulty'
+> & {
     txCount: number;
     txs: Transaction[];
-}
+};
 
-export interface FilterRequestParams {
-    scriptType: 'taproot' | 'taproot-noordinals';
-    M?: number;
-}
+type ScriptType = 'taproot' | 'taproot-noordinals';
 
-export interface MempoolFiltersParams extends FilterRequestParams {
-    fromTimestamp?: number;
-}
+export type FilterRequestParams = Omit<WsBlockFilterReq, 'scriptType' | 'blockHash'> & {
+    scriptType: ScriptType;
+};
+
+export type MempoolFiltersParams = Omit<
+    OptionalKey<WsMempoolFiltersReq, 'fromTimestamp'>,
+    'scriptType'
+> & {
+    scriptType: ScriptType;
+};
 
 export interface FilterResponse {
     P: number;
@@ -114,60 +118,37 @@ export type BEP1155 = BaseERC & {
     standard: 'BEP1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
-export interface AccountInfo {
-    address: string;
-    balance: string;
-    totalReceived: string;
-    totalSent: string;
-    txs: number;
-    addrTxCount?: number;
-    unconfirmedBalance: string;
-    unconfirmedTxs: number;
-    page?: number;
-    itemsOnPage: number;
-    totalPages: number;
-    nonTokenTxs?: number;
-    transactions?: Transaction[];
-    nonce?: string;
+export type AccountInfo = Omit<
+    RequiredKey<BlockbookAddress, 'totalReceived' | 'totalSent' | 'itemsOnPage' | 'totalPages'>,
+    'tokens' | 'transactions'
+> & {
     tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155 | BEP20 | BEP721 | BEP1155)[];
-    contractInfo?: ContractInfo;
-    addressAliases?: { [key: string]: AddressAlias };
-    stakingPools?: StakingPool[];
-}
+    transactions?: Transaction[];
+};
 
-export interface AccountUtxoParams {
-    descriptor: string;
-}
+export type AccountUtxoParams = WsAccountUtxoReq;
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
-export interface Transaction extends BlockbookTx {
-    fees: string; // optional in Tx, seems to always be there
+export type Transaction = Omit<RequiredKey<BlockbookTx, 'fees'>, 'tokenTransfers'> & {
     tokenTransfers?: (BlockbookTokenTransfer & {
         type: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
         standard: TokenStandard;
     })[];
-}
+};
 
 export interface Push {
     result: string;
 }
 
-export type Fee = {
-    feePerUnit: string;
-    feePerTx?: string;
-    feeLimit?: string;
-}[];
+export type Fee = Omit<RequiredKey<WsEstimateFeeRes, 'feePerUnit'>, 'eip1559'>[];
 
-export interface BlockNotification {
-    height: number;
-    hash: string;
-}
+export type BlockNotification = Pick<BlockbookBlock, 'hash' | 'height'>;
 
-export interface MempoolTransactionNotification extends Transaction {
-    confirmationETABlocks: number;
-    confirmationETASeconds: number;
-}
+export type MempoolTransactionNotification = RequiredKey<
+    Transaction,
+    'confirmationETASeconds' | 'confirmationETABlocks'
+>;
 
 export interface AddressNotification {
     address: string;
@@ -178,19 +159,15 @@ export interface FiatRatesNotification {
     rates: FiatRatesBySymbol;
 }
 
-export interface TimestampedFiatRates {
-    ts: number;
+export type TimestampedFiatRates = Omit<RequiredKey<FiatTicker, 'ts'>, 'error' | 'rates'> & {
     rates: FiatRatesBySymbol;
-}
+};
 
 export interface FiatRatesForTimestamp {
     tickers: TimestampedFiatRates[];
 }
 
-export interface AvailableCurrencies {
-    ts: number;
-    available_currencies: string[];
-}
+export type AvailableCurrencies = Omit<RequiredKey<AvailableVsCurrencies, 'ts'>, 'error'>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;

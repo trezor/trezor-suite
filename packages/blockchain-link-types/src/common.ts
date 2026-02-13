@@ -1,12 +1,16 @@
 import type tls from 'tls';
 
+import type { OptionalKey, RequiredKey } from '@trezor/type-utils';
+
 import { BaseCurrencyCode } from './baseCurrency';
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
     AddressAlias,
+    BalanceHistory,
+    Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
+    Utxo as BlockbookUtxo,
     ContractInfo,
-    MultiTokenValue,
     StakingPool,
 } from './blockbook-api';
 import type { SolanaStakingAccount } from './solana';
@@ -126,14 +130,12 @@ export type FiatRatesBySymbol = {
     [K in BaseCurrencyCode]?: number | undefined;
 };
 
-export interface AccountBalanceHistory {
-    time: number;
-    txs: number;
-    received: string;
-    sent: string;
-    sentToSelf?: string; // should always be there for blockbook >= 0.3.3
+export type AccountBalanceHistory = Omit<
+    OptionalKey<BalanceHistory, 'sentToSelf'>,
+    'txid' | 'rates'
+> & {
     rates: FiatRatesBySymbol;
-}
+};
 
 export interface Transaction {
     type: 'sent' | 'recv' | 'self' | 'joint' | 'contract' | 'failed' | 'unknown';
@@ -206,41 +208,32 @@ export interface AccountAddresses {
     anonymitySet?: AnonymitySet;
 }
 
-export interface Utxo {
-    txid: string;
-    vout: number;
+export type Utxo = Omit<
+    RequiredKey<BlockbookUtxo, 'address' | 'path'>,
+    'value' | 'height' | 'lockTime'
+> & {
     amount: string;
     blockHeight: number;
-    address: string;
-    path: string;
-    confirmations: number;
-    coinbase?: boolean;
     cardanoSpecific?: {
         unit: string;
     };
-}
+};
 
 export interface TokenAccount {
     publicKey: string;
     balance: string;
 }
 
-export interface TokenInfo {
-    standard: TokenStandard; // token standard: ERC20...
-    contract: string; // token address, token unit for ADA
-    balance?: string; // token balance
-    name?: string; // token name
-    symbol?: string; // token symbol
-    decimals: number; // token decimals or 0
-    accounts?: TokenAccount[]; // token accounts for solana
-    policyId?: string; // Cardano policy id
-    fingerprint?: string; // Cardano starting with "asset"
-    multiTokenValues?: MultiTokenValue[];
-    ids?: string[];
-    totalReceived?: string;
-    totalSent?: string;
+export type TokenInfo = Omit<
+    RequiredKey<OptionalKey<BlockbookToken, 'name'>, 'contract'>,
+    'type' | 'standard' | 'path' | 'transfers' | 'baseValue' | 'secondaryValue'
+> & {
+    standard: TokenStandard;
+    accounts?: TokenAccount[];
+    policyId?: string;
+    fingerprint?: string;
     // transfers: number, // total transactions?
-}
+};
 
 /**
  * This is Backend data for the account. Data can change over time as transactions happen.

@@ -21,6 +21,17 @@ export type UnionSubset<T, U extends T> = U;
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 /**
+ * Make property of the object optional.
+ *
+ * Example:
+ *  ```
+ *  type T = { a: number; b: number; };
+ *  const t: OptionalKey<T, 'a'> = { b: 0 }; // 'a' is optional
+ *  ```
+ */
+export type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
+
+/**
  * Get type of the object values.
  *
  * Example:
