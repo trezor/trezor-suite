@@ -78,7 +78,7 @@
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "devDependencies": {
-        "@babel/preset-env": "7.28.5",
+        "@babel/preset-env": "7.28.6",
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@types/bytebuffer": "^5.0.49",
