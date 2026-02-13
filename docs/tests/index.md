@@ -2,9 +2,11 @@
 
 This chapter contains information about tests.
 
-- [e2e playwright suite](./e2e-playwright-suite.md)
-- [e2e playwright contribution guide](./e2e-playwright-contribution-guide.md)
+- [Suite Playwright E2E](../symlink/tests/e2e-playwright-suite.md)
+- [Suite E2E in CI](../symlink/tests/e2e-ci.md)
+- [Playwright contribution guide](../symlink/tests/e2e-playwright-contribution-guide.md)
+- [GitHub Test Reporter](../symlink/tests/e2e-github-reporter.md)
 - [regtest](./regtest.md)
 - [@suite-native/test-utils](./suite-native-test-utils.md)
 
-See also general [code-style-guide/tests](../code-style-guide/tests.md) for more information about writing tests in Trezor Suite.
+See also general [code-style-guide/tests](../symlink/code-style-guide/tests.md) for more information about writing tests in Trezor Suite.
