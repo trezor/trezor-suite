@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     TradingCountryCode,
@@ -13,7 +14,7 @@ import {
     selectTradingPrefilledFromAccount,
     useTradingAssets,
 } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkConfigWithoutTestnets, networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
@@ -36,9 +37,16 @@ export const useTradingBuyFormDefaultValues = (
         ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
         : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
+
+    // For testnet accounts, use default currency instead of casting to mainnet-only type
+    const isTestnetAccount = !!networks[accountSymbol]?.testnet;
+    const defaultNetworkSymbol: NetworkConfigWithoutTestnets['symbol'] = isTestnetAccount
+        ? TRADING_DEFAULT_CRYPTO_CURRENCY
+        : (accountSymbol as NetworkConfigWithoutTestnets['symbol']);
+
     const defaultCrypto = useMemo(
-        () => createAssetOptionFromCryptoId(cryptoId as CryptoId | undefined),
-        [createAssetOptionFromCryptoId, cryptoId],
+        () => createAssetOptionFromCryptoId(cryptoId as CryptoId | undefined, defaultNetworkSymbol),
+        [createAssetOptionFromCryptoId, cryptoId, defaultNetworkSymbol],
     );
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
