@@ -20,7 +20,7 @@ const Syntax = styled.span`
 `;
 
 type AttributesTableRowProps = {
-    k: string;
+    attributeKey: string;
     attributes: Record<string, AttributeDoc>;
 };
 
@@ -106,17 +106,17 @@ const renderRuntimeType = (t?: string) => {
     ));
 };
 
-export const AttributesTableRow = ({ k, attributes }: AttributesTableRowProps) => {
-    const attribute = attributes[k];
+export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTableRowProps) => {
+    const attribute = attributes[attributeKey];
     const { changelog } = attribute;
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
 
     return (
         <>
-            <Table.Row key={k} verticalAlign="top">
+            <Table.Row key={attributeKey} verticalAlign="top">
                 <Table.Cell width={200}>
                     <Text typographyStyle="label" isMonospaced>
-                        {k}
+                        {attributeKey}
                     </Text>
                 </Table.Cell>
                 <Table.Cell>

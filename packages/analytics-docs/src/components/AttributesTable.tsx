@@ -51,7 +51,11 @@ export function AttributesTable({ attributes }: { attributes: Record<string, Att
                     </Table.Header>
                     <Table.Body>
                         {keys.map(key => (
-                            <AttributesTableRow attributes={attributes} k={key} key={key} />
+                            <AttributesTableRow
+                                attributes={attributes}
+                                attributeKey={key}
+                                key={key}
+                            />
                         ))}
                     </Table.Body>
                 </Table>

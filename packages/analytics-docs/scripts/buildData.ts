@@ -109,7 +109,12 @@ const eventsCount = Object.keys(normalizedEvents).length;
 
 const outputPath = path.resolve(__dirname, '../src/analytics.json');
 
-fs.writeFileSync(outputPath, JSON.stringify(data, null, 2), 'utf-8');
+// Compact JSON (no pretty-print) reduces file size significantly for large event sets.
+// Use PRETTY_ANALYTICS_JSON=1 for development if you need to inspect the file.
+const pretty = process.env.PRETTY_ANALYTICS_JSON === '1';
+const json = pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data);
+
+fs.writeFileSync(outputPath, json, 'utf-8');
 
 // eslint-disable-next-line no-console
 console.log(`[analytics-docs] analytics.json generated (${eventsCount} events)`);
