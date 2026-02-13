@@ -5,17 +5,45 @@ import { Option, Select as SelectComponent, SelectProps, allowedSelectFrameProps
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { inputSizes } from '../types';
 
-const values: any = {
-    'None (default)': null,
-    Low: { label: 'low', value: 'low' },
-    Medium: { label: 'medium', value: 'medium' },
-    High: { label: 'high', value: 'high' },
-    Custom: { label: 'custom', value: 'custom' },
+const groupedValues: Record<string, Record<string, Option>> = {
+    Common: {
+        Low: { label: 'Low', value: 'low' },
+        Medium: { label: 'Medium', value: 'medium' },
+        High: { label: 'High', value: 'high' },
+        Custom: { label: 'Custom', value: 'custom' },
+        Auto: { label: 'Auto', value: 'auto' },
+        Default: { label: 'Default', value: 'default' },
+    },
+    Performance: {
+        Eco: { label: 'Eco', value: 'eco' },
+        Balanced: { label: 'Balanced', value: 'balanced' },
+        Turbo: { label: 'Turbo', value: 'turbo' },
+        Extreme: { label: 'Extreme', value: 'extreme' },
+        Burst: { label: 'Burst', value: 'burst' },
+        Sustained: { label: 'Sustained', value: 'sustained' },
+    },
+    Security: {
+        Standard: { label: 'Standard', value: 'standard' },
+        Strict: { label: 'Strict', value: 'strict' },
+        Hardened: { label: 'Hardened', value: 'hardened' },
+        Maximum: { label: 'Maximum', value: 'maximum' },
+        Paranoid: { label: 'Paranoid', value: 'paranoid' },
+        Lockdown: { label: 'Lockdown', value: 'lockdown' },
+    },
+    Network: {
+        Offline: { label: 'Offline', value: 'offline' },
+        Limited: { label: 'Limited', value: 'limited' },
+        Normal: { label: 'Normal', value: 'normal' },
+        Preferred: { label: 'Preferred', value: 'preferred' },
+        Priority: { label: 'Priority', value: 'priority' },
+        Realtime: { label: 'Realtime', value: 'realtime' },
+    },
 };
 
-const options = Object.keys(values)
-    .filter((k: string) => values[k])
-    .map((k: string) => values[k]);
+const groupedOptions = Object.entries(groupedValues).map(([label, values]) => ({
+    label,
+    options: Object.values(values),
+}));
 
 const meta: Meta<typeof SelectComponent> = {
     title: '✏️ Form',
@@ -29,7 +57,14 @@ export const Select: StoryObj<SelectProps> = {
         const [{ option }, updateArgs] = useArgs();
         const setOption = (option2: Option) => updateArgs({ option: option2 });
 
-        return <SelectComponent {...args} value={option} onChange={setOption} options={options} />;
+        return (
+            <SelectComponent
+                {...args}
+                value={option}
+                onChange={setOption}
+                options={groupedOptions}
+            />
+        );
     },
     args: {
         label: 'Label',
