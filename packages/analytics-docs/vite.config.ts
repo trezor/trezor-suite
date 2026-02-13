@@ -26,6 +26,7 @@ const iconsRequirePlugin = (): Plugin => ({
 
 /* eslint-disable-next-line import/no-default-export */
 export default defineConfig({
+    base: process.env.BASE_PATH ?? '/',
     plugins: [
         iconsRequirePlugin(),
         react(),
