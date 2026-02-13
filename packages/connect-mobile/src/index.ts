@@ -8,10 +8,33 @@ import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     DEEPLINK_VERSION,
-    DEFAULT_DOMAIN,
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
 import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
+
+type BuildUrlParams = {
+    method: string;
+    id: number;
+    params: any;
+    connectSrc: string | undefined;
+    callbackUrl: string;
+    manifest?: Manifest;
+};
+
+const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: BuildUrlParams) => {
+    const urlWithParams = new URL(callbackUrl);
+    urlWithParams.searchParams.set('id', id.toString());
+
+    return (
+        removeTrailingSlashes(connectSrc || DEFAULT_DOMAIN_MAJOR_VER) +
+        `/deeplink/${DEEPLINK_VERSION}/` +
+        `?method=${method}` +
+        `&params=${encodeURIComponent(JSON.stringify(params))}` +
+        `&callback=${encodeURIComponent(urlWithParams.toString())}` +
+        (manifest?.appName ? `&appName=${encodeURIComponent(manifest.appName)}` : '') +
+        (manifest?.appIcon ? `&appIcon=${encodeURIComponent(manifest.appIcon)}` : '')
+    );
+};
 
 interface ConnectSettingsMobile {
     manifest: Manifest;
@@ -27,20 +50,14 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     private messageID = 0;
 
     private manifest?: Manifest;
-    private deeplinkUrl: string = `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`;
-    private deeplinkCallbackUrl?: string;
-    private deeplinkOpen?: (url: string) => void;
 
     public updateConnectSettings(_params: UpdateConnectSettings) {
         return Promise.resolve(createErrorMessage(ERRORS.TypedError('Method_InvalidPackage')));
     }
 
-    private validateConnectSrc(connectSrc?: string) {
-        if (!connectSrc) return DEFAULT_DOMAIN_MAJOR_VER;
-        if (connectSrc === 'trezorsuite://connect') return connectSrc;
-
-        return corsValidator(connectSrc);
-    }
+    private openDeeplink: (method: string, id: number, params: any) => void = () => {
+        throw ERRORS.TypedError('Init_NotInitialized');
+    };
 
     public init({
         manifest,
@@ -59,10 +76,26 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         if (!deeplinkCallbackUrl) {
             throw new Error('TrezorConnect native requires "deeplinkCallbackUrl" setting.');
         }
+        try {
+            new URL(deeplinkCallbackUrl);
+        } catch {
+            throw new Error('Provided "deeplinkCallbackUrl" is not valid.');
+        }
 
-        this.deeplinkUrl = `${removeTrailingSlashes(this.validateConnectSrc(connectSrc))}/deeplink/${DEEPLINK_VERSION}/`;
-        this.deeplinkOpen = deeplinkOpen;
-        this.deeplinkCallbackUrl = deeplinkCallbackUrl;
+        const validConnectSrc =
+            connectSrc === 'trezorsuite://connect' ? connectSrc : corsValidator(connectSrc);
+
+        this.openDeeplink = (method, id, params) => {
+            const url = buildUrl({
+                method,
+                id,
+                params,
+                connectSrc: validConnectSrc,
+                callbackUrl: deeplinkCallbackUrl,
+                manifest: this.manifest,
+            });
+            deeplinkOpen(url);
+        };
 
         return Promise.resolve();
     }
@@ -71,17 +104,8 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         this.messageID++;
         this.messagePromises[this.messageID] = createDeferred();
         const { method, ...restParams } = params;
-        if (!this.deeplinkOpen) {
-            throw new Error('TrezorConnect native requires "deeplinkOpen" setting.');
-        }
-        if (!this.deeplinkCallbackUrl) {
-            throw new Error('TrezorConnect native requires "deeplinkCallbackUrl" setting.');
-        }
-        const callbackUrl = this.buildCallbackUrl(this.deeplinkCallbackUrl, {
-            id: this.messageID,
-        });
-        const url = this.buildUrl(method, restParams, callbackUrl);
-        this.deeplinkOpen(url);
+
+        this.openDeeplink(method, this.messageID, restParams);
 
         return this.messagePromises[this.messageID].promise;
     }
@@ -100,6 +124,9 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     public dispose() {
         this.eventEmitter.removeAllListeners();
         this.manifest = undefined;
+        this.openDeeplink = () => {
+            throw ERRORS.TypedError('Init_NotInitialized');
+        };
 
         return Promise.resolve(undefined);
     }
@@ -167,35 +194,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
             });
             delete this.messagePromises[id as any];
         });
-    }
-
-    private buildUrl(method: string, params: any, callback: string) {
-        let url =
-            `${this.deeplinkUrl}` +
-            `?method=${method}` +
-            `&params=${encodeURIComponent(JSON.stringify(params))}` +
-            `&callback=${encodeURIComponent(callback)}`;
-        if (this.manifest?.appName) {
-            url += `&appName=${encodeURIComponent(this.manifest.appName)}`;
-        }
-        if (this.manifest?.appIcon) {
-            url += `&appIcon=${encodeURIComponent(this.manifest.appIcon)}`;
-        }
-
-        return url;
-    }
-
-    private buildCallbackUrl(url: string, params: Record<string, string | number>) {
-        try {
-            const urlWithParams = new URL(url);
-            Object.entries(params).forEach(([key, value]) => {
-                urlWithParams.searchParams.set(key, value.toString());
-            });
-
-            return urlWithParams.toString();
-        } catch {
-            throw new Error('Provided "deeplinkCallbackUrl" is not valid.');
-        }
     }
 }
 
