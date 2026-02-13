@@ -208,6 +208,14 @@ export const expect = baseExpect.extend({
             [Model.T3T1]?: Partial<NormalizedDisplayContent>;
         },
     ) {
+        if (device.hasCanaryFirmware) {
+            return {
+                pass: true,
+                message: () =>
+                    'Skipping display content check for canary firmware as it is frequently changing and breaking tests.',
+            };
+        }
+
         // default T3W1 model
         let expectedContent = expected[Model.T3W1];
 

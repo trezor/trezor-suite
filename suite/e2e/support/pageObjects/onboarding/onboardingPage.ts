@@ -221,7 +221,7 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.device.firmwareVersion.endsWith('-main')) {
+        if (this.device.hasCanaryFirmware) {
             await this.disableFirmwareRevisionCheck();
         }
 
