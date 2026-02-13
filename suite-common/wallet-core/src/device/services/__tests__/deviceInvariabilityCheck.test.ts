@@ -1,7 +1,10 @@
 import { defaultDevicePersistentData, mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { deviceInvariabilityCheck } from '../deviceInvariabilityCheck';
+import {
+    deviceInvariabilityCheck,
+    rawDataToDeviceInvariabilityCheckDTO,
+} from '../deviceInvariabilityCheck';
 
 const deviceId = 'asdf1234';
 const defaultFeatures = { internal_model: DeviceModelInternal.T3B1, unit_color: 1 } as const;
@@ -14,13 +17,15 @@ describe(deviceInvariabilityCheck.name, () => {
             ...defaultFeatures,
             device_id: deviceId,
         };
-        const result = deviceInvariabilityCheck({ device, previousData });
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
+        const result = deviceInvariabilityCheck(dto);
         expect(result).toEqual({ success: true, payload: undefined });
     });
 
     it('returns success when there is no previous record', () => {
         const device = mockConnectDevice({ id: deviceId }, defaultFeatures);
-        const result = deviceInvariabilityCheck({ device, previousData: undefined });
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData: undefined });
+        const result = deviceInvariabilityCheck(dto);
         expect(result).toEqual({ success: true, payload: undefined });
     });
 
@@ -34,7 +39,8 @@ describe(deviceInvariabilityCheck.name, () => {
             ...defaultFeatures,
             device_id: deviceId,
         };
-        const result = deviceInvariabilityCheck({ device, previousData });
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
+        const result = deviceInvariabilityCheck(dto);
         expect(result).toEqual({
             success: false,
             error: {
@@ -51,7 +57,8 @@ describe(deviceInvariabilityCheck.name, () => {
             ...defaultFeatures,
             device_id: deviceId,
         };
-        const result = deviceInvariabilityCheck({ device, previousData });
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
+        const result = deviceInvariabilityCheck(dto);
         expect(result).toEqual({
             success: false,
             error: {
@@ -71,7 +78,8 @@ describe(deviceInvariabilityCheck.name, () => {
             ...defaultFeatures,
             device_id: deviceId,
         };
-        const result = deviceInvariabilityCheck({ device, previousData });
+        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
+        const result = deviceInvariabilityCheck(dto);
         expect(result).toEqual({
             success: false,
             error: {

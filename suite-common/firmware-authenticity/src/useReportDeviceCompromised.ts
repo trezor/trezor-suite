@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFirmwareChannel } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     type DeviceRootState,
     deviceInvariabilityCheck,
@@ -124,9 +124,35 @@ const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
         selectPersistentDeviceDataById(state, device?.id),
     );
     const idCheckSuccess = getIsDeviceIdValid(device);
+
+    const isDeviceKnown = getIsDeviceKnown(device);
+    const isBootloaderMode = device?.features?.bootloader_mode === true;
+    const currentModel = device?.features?.internal_model;
+    const currentColor = device?.features?.unit_color;
+    const hasPreviousRecord = previousData !== undefined;
+    const previousModel = previousData?.internal_model;
+    const previousColor = previousData?.unit_color;
+
     const invariabilityCheckResult = useMemo(
-        () => deviceInvariabilityCheck({ device, previousData }),
-        [device, previousData],
+        () =>
+            deviceInvariabilityCheck({
+                isDeviceKnown,
+                isBootloaderMode,
+                currentModel,
+                currentColor,
+                hasPreviousRecord,
+                previousModel,
+                previousColor,
+            }),
+        [
+            isDeviceKnown,
+            isBootloaderMode,
+            currentModel,
+            currentColor,
+            hasPreviousRecord,
+            previousModel,
+            previousColor,
+        ],
     );
 
     useEffect(() => {
