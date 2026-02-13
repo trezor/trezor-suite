@@ -74,6 +74,9 @@ export const Feature = {
     deviceAuthenticityCheckOptiga: 'security.deviceAuthenticityCheck.optiga',
     deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
 
+    idCheck: 'security.deviceMetaChecks.id',
+    invariabilityCheck: 'security.deviceMetaChecks.invariability',
+
     trading: {
         buy: 'trading.buy',
         sell: 'trading.sell',

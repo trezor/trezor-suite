@@ -6,13 +6,12 @@ import {
 } from '@suite-common/firmware-authenticity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
-    getIsDeviceIdValid,
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
+    selectIsDeviceIdCheckSuccess,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 
 import { AppState } from 'src/types/suite';
@@ -96,9 +95,23 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
     return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
 };
 
+export const selectIsDeviceIdCheckEnabledAndFailed = (state: AppState) => {
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.idCheck);
+    const isDeviceIdValid = selectIsDeviceIdCheckSuccess(state);
+
+    return !isDisabledByMessageSystem && !isDeviceIdValid;
+};
+
+export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AppState) => {
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.invariabilityCheck);
+    const isDeviceInvariabilityCheckSuccess = selectIsDeviceInvariabilityCheckSuccess(state);
+
+    return !isDisabledByMessageSystem && !isDeviceInvariabilityCheckSuccess;
+};
+
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
-    const isDeviceIdValid = getIsDeviceIdValid(selectSelectedDevice(state));
-    const deviceInvariabilitySuccess = selectIsDeviceInvariabilityCheckSuccess(state);
+    const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);
+    const isDeviceInvariabilityCheckFailed = selectIsDeviceInvariabilityEnabledAndFailed(state);
 
     const isFirmwareCheckEnabledAndFailed =
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
@@ -108,8 +121,8 @@ export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean =
     const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);
 
     return (
-        !isDeviceIdValid ||
-        !deviceInvariabilitySuccess ||
+        isDeviceIdCheckFailed ||
+        isDeviceInvariabilityCheckFailed ||
         (!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
         isEntropyCheckEnabledAndFailed
     );
