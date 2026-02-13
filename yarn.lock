@@ -13792,7 +13792,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
   dependencies:
+    "@suite-common/device": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -13809,6 +13811,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-qr-code: "npm:2.0.18"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
