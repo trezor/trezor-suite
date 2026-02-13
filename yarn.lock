@@ -15421,7 +15421,7 @@ __metadata:
     minimatch: "npm:^10.1.1"
     prettier: "npm:^3.8.1"
     semver: "npm:^7.7.1"
-    sort-package-json: "npm:^3.6.0"
+    sort-package-json: "npm:^3.6.1"
     tsx: "npm:^4.21.0"
     yargs: "npm:^18.0.0"
   languageName: unknown
@@ -42640,9 +42640,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "sort-package-json@npm:3.6.0"
+"sort-package-json@npm:^3.6.1":
+  version: 3.6.1
+  resolution: "sort-package-json@npm:3.6.1"
   dependencies:
     detect-indent: "npm:^7.0.2"
     detect-newline: "npm:^4.0.1"
@@ -42653,7 +42653,7 @@ __metadata:
     tinyglobby: "npm:^0.2.15"
   bin:
     sort-package-json: cli.js
-  checksum: 10/1489edd177dc325c1e5fbfa55e9583dfea8caa950363b43f797d99986f00b722644275f4dfd5491265519365d6394a5fec9fe5d360ed83b74317fdc9fc071ba1
+  checksum: 10/e4bcf8432b570143e94b6b302fc941fd0b564e8f9f423bc55ae469c81e6f84c35e456f024d8d186a2ec6ca120407444e6ceb5a5f0feb7c877c159ef716f651ed
   languageName: node
   linkType: hard
 
