@@ -1,6 +1,6 @@
 import { Evolu, SimpleName, getOrThrow } from '@evolu/common';
 import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { execSync } from 'child_process';
 import { diff } from 'jest-diff';
 import { isEqual, omit, orderBy } from 'lodash';
@@ -62,16 +62,6 @@ export class EvoluClient {
         }
 
         return this._evolu;
-    }
-
-    @step()
-    wipeAndRestartServer() {
-        execSync(
-            'docker compose -f docker/docker-compose.suite-ci-e2e.yml up --force-recreate -d quota-db suite-sync',
-            {
-                cwd: '../../',
-            },
-        );
     }
 
     @step()
@@ -151,3 +141,23 @@ export class EvoluClient {
         }).toPass({ timeout });
     }
 }
+
+export const wipeAndRestartEvoluServer = async () => {
+    await test.step('Wipe Evolu Relay data', () => {
+        execSync(
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T suite-sync rm -rf /app/data',
+            {
+                cwd: '../../',
+            },
+        );
+    });
+
+    await test.step('Restart Evolu Relay server', () => {
+        execSync(
+            'docker compose -f docker/docker-compose.suite-ci-e2e.yml restart quota-db suite-sync',
+            {
+                cwd: '../../',
+            },
+        );
+    });
+};

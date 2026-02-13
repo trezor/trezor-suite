@@ -1,6 +1,9 @@
 import { AnalyticsDesktopEvents } from '@suite/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
+import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+
+import { LaunchSuiteParams } from '../electron';
 export type Requests = ReturnType<typeof urlSearchParams>[];
 
 /**
@@ -40,3 +43,19 @@ declare global {
         store?: any;
     }
 }
+
+export type ElectronConf = Pick<
+    LaunchSuiteParams,
+    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
+>;
+export type TrezorUserEnv = Pick<
+    TrezorUserEnvLinkClass,
+    | 'logTestDetails'
+    | 'startBridge'
+    | 'stopBridge'
+    | 'connect'
+    | 'disconnect'
+    | 'generateBlock'
+    | 'mineBlocks'
+    | 'sendToAddressAndMineBlock'
+>;
