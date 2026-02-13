@@ -11,6 +11,11 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../storage" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        }
     ]
 }

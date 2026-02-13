@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { BiometricOverlay } from './BiometricOverlay';
@@ -7,8 +7,8 @@ import {
     selectBiometricsError,
     selectIsBiometricsEnabled,
     selectShouldUserBeAuthenticated,
-} from '../biometricsSlice';
-import { handleBiometricsAppStateChangeThunk } from '../biometricsThunks';
+} from '../biometricsSelectors';
+import { handleBiometricsAppStateChangeThunk } from '../biometricsSlice';
 
 export const BiometricsModalRenderer = () => {
     const dispatch = useDispatch();

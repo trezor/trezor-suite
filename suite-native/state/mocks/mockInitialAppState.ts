@@ -26,6 +26,7 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
 import { bannerFlagsInitialState } from '@suite-native/banner-flags';
+import { biometricsSliceInitialState } from '@suite-native/biometrics';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { deviceOnboardingSliceInitialState } from '@suite-native/device-onboarding';
@@ -51,6 +52,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     app: appSliceInitialState,
     appSettings: appSettingsInitialState,
     bannerFlags: bannerFlagsInitialState,
+    biometrics: biometricsSliceInitialState,
     bluetooth: bluetoothInitialState,
     connectPopup: connectPopupInitialState,
     device: deviceInitialState,
