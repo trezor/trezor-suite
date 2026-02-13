@@ -28,93 +28,84 @@ const addressSeed = {
     networkSymbol: 'btc',
 };
 
-test.describe(
-    'Suite Sync - Labelling',
-    { tag: ['@webOnly', '@specificFirmware', '@T3W1', '@T3T1'] },
-    () => {
-        test.use({
-            deviceSetup: { passphrase_protection: true },
-        });
+test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+    test.use({ wipeEvoluRelay: true });
 
-        test.beforeEach(async ({ evoluClient, onboardingPage }) => {
-            await test.step('Seed Evolu relay server', async () => {
-                evoluClient.wipeAndRestartServer();
-                await evoluClient.init({ ownerSecret });
-                evoluClient.writeTo('wallet', walletSeed);
-                evoluClient.writeTo('account', accountSeed);
-                evoluClient.writeTo('address', addressSeed);
-            });
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+    test.beforeEach(async ({ evoluClient, onboardingPage }) => {
+        await test.step('Seed Evolu relay server', async () => {
+            await evoluClient.init({ ownerSecret });
+            evoluClient.writeTo('wallet', walletSeed);
+            evoluClient.writeTo('account', accountSeed);
+            evoluClient.writeTo('address', addressSeed);
         });
+        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+    });
 
-        test('Sync labels from server', async ({
-            target,
-            device,
-            dashboardPage,
-            walletPage,
-            metadataPage,
-        }) => {
-            await test.step('Enable Suite Sync', async () => {
-                await metadataPage.setupQuotaManager();
-                await metadataPage.initiateSuiteSyncSetup();
-                if (isWebProject(target)) {
-                    // eslint-disable-next-line playwright/no-conditional-expect
-                    await expect(device).toShowOnDisplay({
-                        T3W1: {
-                            header: { title: 'Suite Sync' },
-                            body: [
-                                [
-                                    'Allow Trezor Suite',
-                                    '\n',
-                                    'on Chrome to use',
-                                    '\n',
-                                    'Suite Sync with this',
-                                    '\n',
-                                    'Trezor?',
-                                ],
+    test('Sync labels from server', async ({
+        target,
+        device,
+        dashboardPage,
+        walletPage,
+        metadataPage,
+    }) => {
+        await test.step('Enable Suite Sync', async () => {
+            await metadataPage.setupQuotaManager();
+            await metadataPage.initiateSuiteSyncSetup();
+            if (isWebProject(target)) {
+                // eslint-disable-next-line playwright/no-conditional-expect
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Suite Sync' },
+                        body: [
+                            [
+                                'Allow Trezor Suite',
+                                '\n',
+                                'on Chrome to use',
+                                '\n',
+                                'Suite Sync with this',
+                                '\n',
+                                'Trezor?',
                             ],
-                            actions: { right_button: 'Confirm' },
-                        },
-                        T3T1: {
-                            body: [
-                                [
-                                    'Allow Trezor Suite to use',
-                                    '\n',
-                                    'Suite Sync with this',
-                                    '\n',
-                                    'Trezor?',
-                                ],
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            [
+                                'Allow Trezor Suite to use',
+                                '\n',
+                                'Suite Sync with this',
+                                '\n',
+                                'Trezor?',
                             ],
-                        },
-                    });
-                }
-                await metadataPage.confirmSuiteSyncSetup();
-            });
-
-            await test.step('Verify BTC account label is synced', async () => {
-                await walletPage
-                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
-                    .click();
-                await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
-                    .toHaveText(accountSeed.label, { timeout: 30_000 });
-            });
-
-            await test.step('Verify wallet label is synced', async () => {
-                await dashboardPage.openDeviceSwitcher();
-                await expect
-                    .soft(metadataPage.wallet.walletLabel(WALLET_INDEX))
-                    .toHaveText(walletSeed.label);
-                await dashboardPage.deviceSwitchingCloseButton.click();
-            });
-
-            await test.step('Verify address label is synced', async () => {
-                await walletPage.openAccount();
-                await walletPage.receiveButton.click();
-                await expect
-                    .soft(metadataPage.address.label(addressSeed.address))
-                    .toHaveText(addressSeed.label);
-            });
+                        ],
+                    },
+                });
+            }
+            await metadataPage.confirmSuiteSyncSetup();
         });
-    },
-);
+
+        await test.step('Verify BTC account label is synced', async () => {
+            await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
+            await expect
+                .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                .toHaveText(accountSeed.label, { timeout: 30_000 });
+        });
+
+        await test.step('Verify wallet label is synced', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await expect
+                .soft(metadataPage.wallet.walletLabel(WALLET_INDEX))
+                .toHaveText(walletSeed.label);
+            await dashboardPage.deviceSwitchingCloseButton.click();
+        });
+
+        await test.step('Verify address label is synced', async () => {
+            await walletPage.openAccount();
+            await walletPage.receiveButton.click();
+            await expect
+                .soft(metadataPage.address.label(addressSeed.address))
+                .toHaveText(addressSeed.label);
+        });
+    });
+});

@@ -4,39 +4,27 @@ import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import { SetupEmu, TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import { SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { getUrl, getVideoPath, isDesktopProject, mockRemoteMessageSystem } from '../common';
-import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
-
-type ElectronConf = Pick<
-    LaunchSuiteParams,
-    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
->;
-type TrezorUserEnv = Pick<
-    TrezorUserEnvLinkClass,
-    | 'logTestDetails'
-    | 'startBridge'
-    | 'stopBridge'
-    | 'connect'
-    | 'disconnect'
-    | 'generateBlock'
-    | 'mineBlocks'
-    | 'sendToAddressAndMineBlock'
->;
+import { wipeAndRestartEvoluServer } from '../helpers/evoluClient';
+import { ElectronConf, TrezorUserEnv } from '../types';
 
 type SuiteBaseFixture = {
+    wipeEvoluRelay: boolean;
+    wipeEvoluRelayExecution: void;
     startEmulator: boolean;
     setupEmulator: boolean;
     deviceSetup: SetupEmu;
-    device: DeviceFixture;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
+    device: DeviceFixture;
     url: string;
     trezorUserEnv: TrezorUserEnv;
     page: Page;
@@ -155,6 +143,17 @@ const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
 // and provide the necessary page object which is either electron window or web page
 // Extending our fixtures from currentsTest ensures Currents fixtures initialize first and quarantine works even for fails in beforeEach section
 const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
+    wipeEvoluRelay: false,
+    wipeEvoluRelayExecution: [
+        async ({ wipeEvoluRelay }, use) => {
+            if (wipeEvoluRelay) {
+                // Needs to happen before initializing browser/electron context
+                await wipeAndRestartEvoluServer();
+            }
+            await use();
+        },
+        { auto: true },
+    ],
     target: [PlaywrightTarget.Web, { option: true }],
     model: [undefined, { option: true }],
     firmwareVersion: [undefined, { option: true }],
