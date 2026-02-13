@@ -1,0 +1,22 @@
+import type { PropsWithChildren } from 'react';
+
+import { IntlProviderForTests } from '@suite/intl';
+import { MockedFormatterProvider } from '@suite-common/formatters';
+import {
+    ConnectedThemeProvider,
+    ResponsiveContextProvider,
+    SuiteServicesProvider,
+} from '@trezor/suite';
+import { extraDependenciesDesktopMock } from '@trezor/suite/src/support/tests/extraDependenciesDesktop.mock';
+
+export const BasicProviderForTests = ({ children }: PropsWithChildren) => (
+    <SuiteServicesProvider services={extraDependenciesDesktopMock.services}>
+        <ConnectedThemeProvider>
+            <ResponsiveContextProvider>
+                <IntlProviderForTests>
+                    <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                </IntlProviderForTests>
+            </ResponsiveContextProvider>
+        </ConnectedThemeProvider>
+    </SuiteServicesProvider>
+);

@@ -126,7 +126,7 @@ const patchConfirm = (statePatch: any) =>
     );
 
 type RootReducerShape = typeof rootReducer;
-type PreloadedState = Partial<AppState>;
+export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
 export type SuiteStoreDeps = HistoryDep & SuiteSyncAppReloaderDep;
