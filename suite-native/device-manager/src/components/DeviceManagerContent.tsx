@@ -92,12 +92,7 @@ export const DeviceManagerContent = () => {
 
         // When user selects BTC only device in device switcher, redirect to homescreen out of the earn section.
         if (isOnEarnScreenRoute && isBitcoinOnlyFirmware) {
-            navigation.reset({
-                index: 0,
-                routes: [
-                    { name: AppTabsRoutes.HomeStack, params: { screen: HomeStackRoutes.Home } },
-                ],
-            });
+            navigation.navigate(AppTabsRoutes.HomeStack, { screen: HomeStackRoutes.Home });
         }
 
         dispatch(selectDeviceThunk({ device: selectedDevice }));
