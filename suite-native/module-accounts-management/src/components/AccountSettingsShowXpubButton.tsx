@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
-import { AccountsRootState, selectAccountByKey, showXpubOnDevice } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
@@ -43,7 +43,6 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
     const showXpub = useCallback(() => {
         if (!device || !account) return;
 
-        showXpubOnDevice(device, account);
         if (isDeviceBackupRequired) {
             openWalletBackupWarningSheet();
         } else {
@@ -113,6 +112,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 onClose={closeXpubQRSheet}
                 symbol={account.symbol}
                 qrCodeData={accountXpub}
+                accountKey={accountKey}
             />
         </>
     );
