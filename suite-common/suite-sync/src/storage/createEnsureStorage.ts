@@ -84,9 +84,9 @@ export const createEnsureStorage =
             isWriteMode,
         });
 
-        if (quotaResult.success || quotaResult.error.type === 'QuotaManagerDisabled') {
+        if (quotaResult.success) {
             // Only set the relay URL for transport in case that quota manager is enabled or has quota for device.
-            newStorage.updateRelayUrl(url);
+            await newStorage.updateRelayUrl(url);
         }
 
         deps.suiteSyncStorageRepository.set(storageId, newStorage);

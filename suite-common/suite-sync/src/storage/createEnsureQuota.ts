@@ -1,15 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import {
-    QuotaManagerDisabled,
     WriteModeRequiredForAllocation,
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
-import {
-    QuotaManagerDisabledErrType,
-    WriteModeRequiredForAllocationErrType,
-} from '@suite-common/suite-sync-types';
+import { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
 import { DelegatedIdentityKey, SuiteSyncOwner } from '@suite-common/suite-types';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
@@ -34,7 +30,7 @@ export type EnsureQuotaParams = {
 
 export type EnsureQuota = (
     params: EnsureQuotaParams,
-) => Promise<Result<void, WriteModeRequiredForAllocationErrType | QuotaManagerDisabledErrType>>;
+) => Promise<Result<void, WriteModeRequiredForAllocationErrType>>;
 
 export type EnsureQuotaDep = {
     ensureQuota: EnsureQuota;
@@ -47,15 +43,15 @@ export const createEnsureQuota =
 
         const device = deps.getDeviceForStaticSessionId(deviceStaticSessionId);
 
-        if (!deps.getIsQuotaManagerEnabled()) {
-            return err(QuotaManagerDisabled());
+        if (device === null || !isNotNullOrUndefined(device.id)) {
+            return ok();
         }
 
         if (
-            isNotNullOrUndefined(device?.id) &&
-            deps.hasAllowance({ walletDescriptor, deviceId: device.id })
+            deps.hasAllowance({ walletDescriptor, deviceId: device.id }) ||
+            !deps.getIsQuotaManagerEnabled()
         ) {
-            return ok(undefined);
+            return ok();
         }
 
         if (isNotNull(device) && isTrezorDeviceWithState(device)) {
@@ -83,5 +79,5 @@ export const createEnsureQuota =
             return err(WriteModeRequiredForAllocation());
         }
 
-        return ok(undefined);
+        return ok();
     };
