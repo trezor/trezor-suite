@@ -14062,7 +14062,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@suite-native/config": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
