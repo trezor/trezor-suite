@@ -16,7 +16,7 @@ export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
  */
 export const createEvoluStorageFactory =
     (deps: CreateEvoluStorageFactoryDeps): CreateSuiteStorage =>
-    ({ suiteSyncOwner, relayUrl }): SuiteSyncStorage => {
+    ({ suiteSyncOwner }): SuiteSyncStorage => {
         /**
          * Dispose function of the connected owner. When owner is changed
          * (for example for RelayUrl change, this needs to be called).
@@ -42,8 +42,6 @@ export const createEvoluStorageFactory =
             ownerDispose();
             ownerDispose = evolu.useOwner(syncOwner);
         };
-
-        updateRelayUrl(relayUrl); // This updates the relay
 
         return {
             data: {

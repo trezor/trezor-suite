@@ -8,6 +8,7 @@ import type { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
+import { isNotNull } from '@trezor/utils';
 
 import { EnsureQuotaDep } from './createEnsureQuota';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
@@ -51,7 +52,7 @@ export const createEnsureStorage =
 
         const storage = deps.suiteSyncStorageRepository.get(storageId);
 
-        if (storage !== null) {
+        if (isNotNull(storage)) {
             return ok(storage);
         }
 
@@ -69,6 +70,13 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
+        const relayUrl = deps.getRelayUrl();
+        const url = isNotNull(relayUrl) && relayUrl.trim() !== '' ? relayUrl : deps.defaultRelayUrl;
+
+        const newStorage = deps.createSuiteStorage({
+            suiteSyncOwner: owner,
+        });
+
         const quotaResult = await deps.ensureQuota({
             deviceStaticSessionId,
             delegatedKey,
@@ -76,15 +84,10 @@ export const createEnsureStorage =
             isWriteMode,
         });
 
-        if (!quotaResult.success) {
-            return quotaResult;
+        if (quotaResult.success || quotaResult.error.type === 'QuotaManagerDisabled') {
+            // Only set the relay URL for transport in case that quota manager is enabled or has quota for device.
+            newStorage.updateRelayUrl(url);
         }
-
-        const relayUrl = deps.getRelayUrl();
-        const newStorage = deps.createSuiteStorage({
-            suiteSyncOwner: owner,
-            relayUrl: relayUrl !== null && relayUrl.trim() !== '' ? relayUrl : deps.defaultRelayUrl,
-        });
 
         deps.suiteSyncStorageRepository.set(storageId, newStorage);
 
