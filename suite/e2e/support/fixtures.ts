@@ -122,9 +122,7 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new PaginationControl(page));
     },
     evoluClient: async ({}, use) => {
-        const evoluClient = new EvoluClient();
-        evoluClient.wipeAndRestartServer();
-        await use(evoluClient);
+        await use(new EvoluClient());
     },
 });
 

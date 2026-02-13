@@ -33,6 +33,7 @@ test.describe(
     { tag: ['@webOnly', '@specificFirmware', '@T3W1', '@T3T1'] },
     () => {
         test.use({
+            wipeEvoluRelay: true,
             deviceSetup: { passphrase_protection: true },
         });
 

@@ -13,6 +13,7 @@ import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
+import { wipeAndRestartEvoluServer } from '../helpers/evoluClient';
 
 type ElectronConf = Pick<
     LaunchSuiteParams,
@@ -33,10 +34,12 @@ type TrezorUserEnv = Pick<
 type SuiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
+    wipeEvoluRelay: boolean;
     deviceSetup: SetupEmu;
-    device: DeviceFixture;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
+
+    device: DeviceFixture;
     url: string;
     trezorUserEnv: TrezorUserEnv;
     page: Page;
@@ -160,7 +163,11 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     firmwareVersion: [undefined, { option: true }],
     startEmulator: true,
     setupEmulator: true,
+    wipeEvoluRelay: false,
     deviceSetup: {},
+    electronConf: {},
+    ignoreJSExceptions: [],
+
     trezorUserEnv: async ({}, use) => {
         // This proxy limits the exposed methods from TrezorUserEnvLink and wraps the calls with test.step
         const TrezorUserEnvLinkProxy = new Proxy<TrezorUserEnv>(
@@ -182,6 +189,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         );
         await use(TrezorUserEnvLinkProxy);
     },
+
     device: [
         async (
             { startEmulator, setupEmulator, model, firmwareVersion, deviceSetup },
@@ -246,14 +254,21 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         },
         { auto: true },
     ],
-    electronConf: {},
-    ignoreJSExceptions: [],
 
     url: async ({ target }, use, testInfo) => {
         await use(getUrl(testInfo, target));
     },
 
-    page: async ({ target, locale, colorScheme, context, electronConf }, use, testInfo) => {
+    page: async (
+        { target, locale, colorScheme, context, electronConf, wipeEvoluRelay },
+        use,
+        testInfo,
+    ) => {
+        if (wipeEvoluRelay) {
+            // Needs to happen before initilizing page context
+            await wipeAndRestartEvoluServer();
+        }
+
         if (isDesktopProject(target)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             enhancePage(suite.window);
