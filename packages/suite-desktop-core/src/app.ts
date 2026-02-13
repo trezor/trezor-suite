@@ -175,6 +175,7 @@ const init = async () => {
     app.commandLine.appendSwitch('gtk-version', '3');
 
     await app.whenReady();
+    process.crash();
 
     // Load bridge module first, it is required in both UI and daemon mode
     const interceptor = createElectronSessionInterceptor();
