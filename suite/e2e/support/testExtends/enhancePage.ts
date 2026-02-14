@@ -3,6 +3,8 @@ import { writeFileSync } from 'fs';
 import { get, isMatch, set } from 'lodash';
 import { join } from 'path';
 
+import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+
 declare module '@playwright/test' {
     interface Page {
         // Locators
@@ -33,13 +35,14 @@ declare module '@playwright/test' {
             expectedValue: unknown,
             options?: { timeout?: number },
         ): Promise<void>;
-        getReduxObject(objectPath: string): Promise<any>;
+        getReduxObject(objectPath?: string): Promise<any>;
         resetMousePosition(): Promise<void>;
         runWithReduxDump<T>(
             action: () => Promise<T>,
             options?: { slice?: string; filePrefix?: string },
         ): Promise<void>;
         selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
+        disableDebugMode(): Promise<void>;
     }
 }
 
@@ -84,8 +87,12 @@ export const enhancePage = (page: Page): Page => {
         }).toPass({ timeout: 5000 });
     };
 
-    page.getReduxObject = async (objectPath: string) => {
+    page.getReduxObject = async (objectPath?: string) => {
         const state = await page.evaluate(() => window.store.getState());
+
+        if (!objectPath) {
+            return state;
+        }
 
         return get(state, objectPath);
     };
@@ -147,17 +154,16 @@ export const enhancePage = (page: Page): Page => {
         action: () => Promise<T>,
         options?: { slice?: string; filePrefix?: string },
     ): Promise<void> {
-        const slice = options?.slice ?? 'wallet';
-        const prefix = options?.filePrefix ?? slice;
+        const prefix = options?.filePrefix ?? options?.slice ?? 'redux_dump';
         const ts = new Date().toISOString().replace(/[:.]/g, '-');
 
-        const beforeRaw = await page.getReduxObject(slice);
+        const beforeRaw = await page.getReduxObject(options?.slice);
         const beforePath = join(process.cwd(), `${prefix}_before_${ts}.json`);
         writeFileSync(beforePath, JSON.stringify(beforeRaw, null, 2), 'utf-8');
 
         await action();
 
-        const afterRaw = await page.getReduxObject(slice);
+        const afterRaw = await page.getReduxObject(options?.slice);
         const afterPath = join(process.cwd(), `${prefix}_after_${ts}.json`);
         writeFileSync(afterPath, JSON.stringify(afterRaw, null, 2), 'utf-8');
 
@@ -170,6 +176,16 @@ You can use a diff tool to compare the state before and after the action.
 
     page.resetMousePosition = async function () {
         await page.mouse.move(0, 0); // reset mouse position to avoid hover issues
+    };
+
+    page.disableDebugMode = async function () {
+        await test.step('Disable Debug mode', async () => {
+            await page.ensureStoreOnDesktop();
+            await page.evaluate(action => window.store.dispatch(action), {
+                type: SuiteActions.SET_DEBUG_MODE,
+                payload: { showDebugMenu: false },
+            });
+        });
     };
 
     return page;

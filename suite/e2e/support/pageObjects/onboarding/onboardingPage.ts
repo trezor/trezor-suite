@@ -125,7 +125,7 @@ export class OnboardingPage {
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
         // that differs from production version, so we disable it again after onboarding is done
         if (!options?.keepDebugModeEnabled) {
-            await this.disableDebugMode();
+            await this.page.disableDebugMode();
         }
         await this.page.discoveryShouldFinish();
     }
@@ -179,15 +179,6 @@ export class OnboardingPage {
                 },
             ],
         );
-    }
-
-    @step()
-    async disableDebugMode() {
-        await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_DEBUG_MODE,
-            payload: { showDebugMenu: false },
-        });
     }
 
     @step()

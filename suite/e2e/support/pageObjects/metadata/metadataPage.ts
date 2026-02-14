@@ -65,6 +65,7 @@ export class MetadataPage {
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncUrlInput.fill('http://127.0.0.1:4000');
         await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();
+        await this.page.disableDebugMode();
 
         // Select Suite Sync as the labeling method
         await this.settingsPage.navigateTo('application');
@@ -94,5 +95,6 @@ export class MetadataPage {
         await this.settingsPage.debugTab.quotaManagerCheckbox.click();
         await this.settingsPage.debugTab.quotaManagerUrlInput.fill('http://127.0.0.1:4001');
         await this.settingsPage.debugTab.quotaManagerUrlSaveButton.click();
+        await this.page.disableDebugMode();
     }
 }

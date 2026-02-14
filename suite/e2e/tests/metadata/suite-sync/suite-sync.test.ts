@@ -50,7 +50,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ onboardingPage, metadataPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
         await metadataPage.setupQuotaManager();
         await metadataPage.enableSuiteSync();
     });

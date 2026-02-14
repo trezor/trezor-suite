@@ -158,7 +158,16 @@ export class SettingsPage {
             application: () => this.applicationTabButton.click(),
             coins: () => this.coinsTabButton.click(),
             device: () => this.deviceTabButton.click(),
-            debug: () => this.debugTabButton.click(),
+            debug: async () => {
+                // We cannot rely on the debug tab button being visible in the menu
+                const isDebugEnabled = await this.page.getReduxObject(
+                    'suite.settings.debug.showDebugMenu',
+                );
+                if (!isDebugEnabled) {
+                    await this.toggleDebugModeInSettings();
+                }
+                await this.debugTabButton.click();
+            },
             connect: () => this.connectTabButton.click(),
         };
         await tabNavigation[tab]();

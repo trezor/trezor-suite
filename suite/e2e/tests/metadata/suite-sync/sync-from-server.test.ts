@@ -38,7 +38,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
         });
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
     });
 
     test('Sync labels from server', async ({
