@@ -8,9 +8,6 @@ export const POPUP = {
     CORE_LOADED: 'popup-core-loaded',
     // Message from window.opener to popup.js. Send settings to popup. This is first message from window.opener to popup.
     INIT: 'popup-init',
-    // Message to webextensions, opens "trezor-usb-permission.html" within webextension
-    EXTENSION_USB_PERMISSIONS: 'open-usb-permissions',
-    // Message called from both [popup > iframe] then [iframe > popup] in this exact order.
     // Firstly popup call iframe to resolve popup promise in Core
     // Then iframe reacts to POPUP.HANDSHAKE message and sends ConnectSettings, transport information and requested method details back to popup
     HANDSHAKE: 'popup-handshake',
@@ -53,10 +50,6 @@ export interface PopupContentScriptLoaded {
     payload: { id: string; contentScriptVersion: number };
 }
 
-export interface PopupExtensionUsbPermissions {
-    type: typeof POPUP.EXTENSION_USB_PERMISSIONS;
-    payload: typeof undefined;
-}
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
     payload: typeof undefined;
@@ -70,7 +63,6 @@ export type PopupEvent =
     | PopupInit
     | PopupHandshake
     | PopupContentScriptLoaded
-    | PopupExtensionUsbPermissions
     | PopupCloseWindow
     | PopupClosedMessage;
 

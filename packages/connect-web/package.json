@@ -37,16 +37,13 @@
         "CHANGELOG.md"
     ],
     "scripts": {
-        "predev": "node webpack/generate_dev_cert.js",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
-        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "rm -rf build && yarn build:inline && yarn build:webextension",
+        "build": "rm -rf build && yarn build:inline",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
@@ -69,9 +66,7 @@
         "@types/w3c-web-usb": "^1.0.10",
         "@types/web": "^0.0.197",
         "babel-loader": "^10.0.0",
-        "html-webpack-plugin": "5.6.5",
         "rimraf": "^6.0.1",
-        "selfsigned": "^2.4.1",
         "terser-webpack-plugin": "^5.3.16",
         "tsx": "^4.21.0",
         "webpack": "5.104.1",

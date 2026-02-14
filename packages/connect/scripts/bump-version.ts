@@ -26,7 +26,6 @@ const connectPaths = [
     './packages/connect/README.md',
     './packages/connect-common/src/data/version.ts',
     './packages/connect-web/package.json',
-    './packages/connect-web/src/webextension/trezor-usb-permissions.js',
     './packages/connect-webextension/package.json',
     './packages/connect-mobile/package.json',
 ];

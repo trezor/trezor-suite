@@ -75,7 +75,6 @@ react-inspector
 remark-gemoji
 remark-gfm
 scroll-into-view-if-needed
-selfsigned
 semver
 socks-proxy-agent
 stream-browserify
