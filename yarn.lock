@@ -14964,7 +14964,6 @@ __metadata:
     babel-plugin-styled-components: "npm:^2.1.4"
     codemirror-json-schema: "npm:^0.7.8"
     codemirror-json5: "npm:^1.0.3"
-    concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^13.0.1"
     eslint-plugin-mdx: "npm:^3.6.2"
     html-webpack-plugin: "npm:5.6.5"
@@ -15051,9 +15050,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     "@types/web": "npm:^0.0.197"
     babel-loader: "npm:^10.0.0"
-    html-webpack-plugin: "npm:5.6.5"
     rimraf: "npm:^6.0.1"
-    selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.16"
     tsx: "npm:^4.21.0"
     webpack: "npm:5.104.1"
@@ -17151,15 +17148,6 @@ __metadata:
     "@types/node": "npm:*"
     form-data: "npm:^4.0.4"
   checksum: 10/944d52214791ebba482ca1393a4f0d62b0dbac5f7343ff42c128b75d5356d8bcefd4df77771b55c1acd19d118e16e9bd5d2792819c51bc13402d1c87c0975435
-  languageName: node
-  linkType: hard
-
-"@types/node-forge@npm:^1.3.0":
-  version: 1.3.8
-  resolution: "@types/node-forge@npm:1.3.8"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/ba0c6f97717f4a5c9f534eb2b12e445ff37d4a14ec34c2115789b87cc9c50652d97e0bbe3b9261ae9e3f12ee266a728c1b382d3f0f21d829418922090e1dc1d7
   languageName: node
   linkType: hard
 
@@ -21882,7 +21870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^8.0.0, concurrently@npm:^8.2.2":
+"concurrently@npm:^8.0.0":
   version: 8.2.2
   resolution: "concurrently@npm:8.2.2"
   dependencies:
@@ -36357,7 +36345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:^1, node-forge@npm:^1.2.1, node-forge@npm:^1.3.1":
+"node-forge@npm:^1.2.1, node-forge@npm:^1.3.1":
   version: 1.3.3
   resolution: "node-forge@npm:1.3.3"
   checksum: 10/f41c31b9296771a4b8c955d58417471712f54f324603a35f8e6cbac19d5e6eaaf5fd5fd14584dfedecbf46a05438ded6eee60a5f2f0822fc5061aaa073cfc75d
@@ -41670,16 +41658,6 @@ __metadata:
     extend-shallow: "npm:^2.0.1"
     kind-of: "npm:^6.0.0"
   checksum: 10/cedfda3a9238f66942d92531fe043dd134702a462cdc9e254cd6aa418c66ca0d229900e4da78ffd1a07051e7b239251c4dc4748e9d1c76bf41a37bff7a478556
-  languageName: node
-  linkType: hard
-
-"selfsigned@npm:^2.4.1":
-  version: 2.4.1
-  resolution: "selfsigned@npm:2.4.1"
-  dependencies:
-    "@types/node-forge": "npm:^1.3.0"
-    node-forge: "npm:^1"
-  checksum: 10/52536623f1cfdeb2f8b9198377f2ce7931c677ea69421238d1dc1ea2983bbe258e56c19e7d1af87035cad7270f19b7e996eaab1212e724d887722502f68e17f2
   languageName: node
   linkType: hard
 

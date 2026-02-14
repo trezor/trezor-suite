@@ -2,8 +2,6 @@ import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import prod from './prod.webpack.config';
-
 // Generate inline script hosted on https://connect.trezor.io/X/trezor-connect.js
 // This is compiled and polyfilled npm package without Core logic
 
@@ -23,9 +21,38 @@ const config: webpack.Configuration = {
         libraryExport: 'default',
     },
 
-    module: prod.module,
-    resolve: prod.resolve,
-    performance: prod.performance,
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader'],
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-typescript'],
+                    },
+                },
+            },
+        ],
+    },
+    // todo: this block is identical in connect-web
+    resolve: {
+        modules: ['node_modules'],
+        mainFields: ['browser', 'module', 'main'],
+        extensions: ['.ts', '.js'],
+        fallback: {
+            fs: false, // ignore "fs" import in markdown-it-imsize
+            path: false, // ignore "path" import in markdown-it-imsize
+        },
+    },
+    performance: {
+        hints: false,
+    },
 
     optimization: {
         minimizer: [

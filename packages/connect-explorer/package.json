@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "dev": "concurrently \"yarn dev:explorer\" \"PORT=8089 NO_HTTPS=true yarn workspace @trezor/connect-web dev\"",
+        "dev": "yarn dev:explorer",
         "dev:explorer": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next -p 8088",
         "build": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next build && rm -rf build && mv out build",
         "build:webextension": "BUILD_TARGET=webextension yarn build && yarn g:rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts && bash ./webpack/replace-next-filenames.sh",
@@ -53,7 +53,6 @@
         "@types/redux-logger": "^3.0.13",
         "@types/web": "^0.0.197",
         "babel-plugin-styled-components": "^2.1.4",
-        "concurrently": "^8.2.2",
         "copy-webpack-plugin": "^13.0.1",
         "eslint-plugin-mdx": "^3.6.2",
         "html-webpack-plugin": "5.6.5",
