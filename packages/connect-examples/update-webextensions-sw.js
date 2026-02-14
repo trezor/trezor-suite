@@ -26,9 +26,15 @@ if (buildFolderIndex > -1) {
 
 rootPaths.forEach(dir => {
     const rootPath = path.join(__dirname, dir);
+    const buildPath = path.join(rootPath, 'build');
 
-    fs.readdirSync(path.join(rootPath, 'build')).forEach(p => {
-        fs.readFile(path.join(rootPath, 'build', p), 'utf-8', (err, contents) => {
+    fs.readdirSync(buildPath).forEach(p => {
+        // Skip TypeScript source files - they should no longer exist
+        if (p.endsWith('.ts') || p.endsWith('.tsx')) {
+            return;
+        }
+
+        fs.readFile(path.join(buildPath, p), 'utf-8', (err, contents) => {
             if (err) {
                 console.log(err);
 
@@ -41,7 +47,7 @@ rootPaths.forEach(dir => {
 
             const replaced = contents.replace(DEFAULT_SRC, trezorConnectSrc);
 
-            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', err2 => {
+            fs.writeFile(path.join(buildPath, p), replaced, 'utf-8', err2 => {
                 if (err2) {
                     console.log(err2);
 
