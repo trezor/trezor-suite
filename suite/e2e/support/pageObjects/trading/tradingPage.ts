@@ -5,13 +5,13 @@ import { messages } from '@suite/intl';
 import { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { Assets } from './assets';
+import { Assets } from '../assets';
 import { FeeSection } from './feeSection';
-import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
-import { calculatePercentageOfBalance, getCountryLabel, step } from '../common';
-import { expect } from '../testExtends/customMatchers';
-import { PaymentMethods, PercentageOfBalanceParams } from '../types';
-import { DevicePrompt } from './devicePrompt';
+import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
+import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
+import { expect } from '../../testExtends/customMatchers';
+import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
+import { DevicePrompt } from '../devicePrompt';
 import { ReceiveAccount } from './receiveAccount';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
@@ -33,11 +33,9 @@ export class TradingPage {
     // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
-    readonly form: Locator;
     readonly buyButton: Locator;
     readonly sellTabButton: Locator;
     readonly quoteProvider: Locator;
-    readonly bestOfferSection: Locator;
     readonly bestOfferAmount: Locator;
     readonly buyBestOfferButton: Locator;
     readonly youPayFiatInput: Locator;
@@ -67,9 +65,7 @@ export class TradingPage {
     // Confirmation modal
     readonly modal: Locator;
     readonly confirmOnTrezorButton: Locator;
-    readonly confirmationSection: Locator;
     readonly confirmationAccount: Locator;
-    readonly confirmationAccountDropdown: Locator;
     readonly confirmationCryptoAmount: Locator;
     readonly confirmationFiatAmount: Locator;
     readonly confirmationProvider: Locator;
@@ -77,9 +73,6 @@ export class TradingPage {
     readonly confirmationPaymentMethod: Locator;
     readonly confirmationPaymentId: Locator;
     readonly confirmationExchangeType: Locator;
-    readonly confirmationTransactionId: Locator;
-    readonly copyTransactionIdButton: Locator;
-    readonly finishTransactionButton: Locator;
     readonly confirmOnTrezorAndSend: Locator;
     // Swap
     readonly sendAddressInput: Locator;
@@ -105,11 +98,9 @@ export class TradingPage {
 
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
-        this.form = this.page.getByTestId('@trading/form');
         this.buyButton = this.page.getByTestId('@trading/menu/wallet-trading-buy');
         this.sellTabButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
         this.quoteProvider = this.page.getByTestId(quoteProviderLocator);
-        this.bestOfferSection = this.page.getByTestId('@trading/best-offer');
         this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
         this.buyBestOfferButton = this.page.getByTestId('@trading/form/buy-button');
         this.youPayFiatInput = this.page.getByTestId('@trading/form/fiat-input');
@@ -141,11 +132,7 @@ export class TradingPage {
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-button',
         );
-        this.confirmationSection = this.page.getByTestId('@trading/selected-offer');
         this.confirmationAccount = this.page.getByTestId('@trading/form/verify/account');
-        this.confirmationAccountDropdown = this.page.getByTestId(
-            '@trading/verify-options/account/input',
-        );
         this.confirmationCryptoAmount = this.page.getByTestId('@trading/form/info/crypto-amount');
         this.confirmationFiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
         this.confirmationProvider = this.page.getByTestId('@trading/form/info/provider');
@@ -153,13 +140,6 @@ export class TradingPage {
         this.confirmationPaymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
         this.confirmationPaymentId = this.page.getByTestId('@trading/form/verify/extra-id');
         this.confirmationExchangeType = this.page.getByTestId('@trading/offer/info/exchange-type');
-        this.confirmationTransactionId = this.page.getByTestId('@trading/transaction-id');
-        this.copyTransactionIdButton = this.page
-            .getByTestId('@trading/form/info')
-            .getByRole('button', { name: 'Copy' });
-        this.finishTransactionButton = this.page.getByTestId(
-            '@trading/offer/continue-transaction-button',
-        );
         this.confirmOnTrezorAndSend = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-and-send',
         );

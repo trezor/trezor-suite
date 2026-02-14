@@ -3,9 +3,9 @@ import { Locator, Page, Response } from '@playwright/test';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { step } from '../common';
-import { solanaUrlPattern } from '../mocks/tradingMock';
-import { expect } from '../testExtends/customMatchers';
+import { step } from '../../common';
+import { solanaUrlPattern } from '../../mocks/tradingMock';
+import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
 
