@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { step } from '../common';
+import { step } from '../../common';
 
 export class ReceiveAccount {
     readonly receiveAddressPicker: Locator;
