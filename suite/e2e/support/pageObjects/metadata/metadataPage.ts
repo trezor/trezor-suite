@@ -8,6 +8,7 @@ import { AddressMetadata } from './addressMetadata';
 import { OutputMetadata } from './outputMetadata';
 import { WalletMetadata } from './walletMetadata';
 import { DeviceFixture } from '../../device';
+import { QUOTA_URL, RELAY_URL } from '../../helpers/evoluClient';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {
@@ -63,7 +64,7 @@ export class MetadataPage {
 
         // Configure Suite Sync relay URL in Debug settings
         await this.settingsPage.navigateTo('debug');
-        await this.settingsPage.debugTab.suiteSyncUrlInput.fill('http://127.0.0.1:4000');
+        await this.settingsPage.debugTab.suiteSyncUrlInput.fill(RELAY_URL);
         await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();
 
         // Select Suite Sync as the labeling method
@@ -92,7 +93,7 @@ export class MetadataPage {
     async setupQuotaManager() {
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.quotaManagerCheckbox.click();
-        await this.settingsPage.debugTab.quotaManagerUrlInput.fill('http://127.0.0.1:4001');
+        await this.settingsPage.debugTab.quotaManagerUrlInput.fill(QUOTA_URL);
         await this.settingsPage.debugTab.quotaManagerUrlSaveButton.click();
     }
 }

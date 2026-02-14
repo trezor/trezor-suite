@@ -1,4 +1,4 @@
-import { Evolu, SimpleName, getOrThrow } from '@evolu/common';
+import { Evolu, SimpleName } from '@evolu/common';
 import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
 import { expect, test } from '@playwright/test';
 import { execSync } from 'child_process';
@@ -14,32 +14,43 @@ import { step } from '../common';
 type TableName = keyof typeof Schema;
 const allTables = Object.keys(Schema) as TableName[];
 
+export const RELAY_URL = 'http://localhost:4000';
+export const QUOTA_URL = 'http://localhost:4001';
+const RELAY_HEALTH_URL = 'http://localhost:4002';
+const EVOLU_LOCAL_SERVER_NOT_RUNNING_ERROR =
+    'Evolu relay is not running on localhost. Please start the Docker environment:\n' +
+    'yarn workspace "@trezor/suite-e2e" docker:suite-sync';
+
 export class EvoluClient {
     private _evolu?: Evolu<typeof Schema>;
 
     @step()
-    async init({
+    async checkServerRunning() {
+        await fetch(RELAY_HEALTH_URL).catch(() => {
+            throw new Error(EVOLU_LOCAL_SERVER_NOT_RUNNING_ERROR);
+        });
+    }
+
+    @step()
+    init({
         ownerSecret,
-        //TODO: replace with one source definition
-        relayUrl = 'http://localhost:4000',
+        relayUrl = RELAY_URL,
     }: {
         ownerSecret: SuiteSyncOwnerSecretHex;
         relayUrl?: string;
     }) {
-        const { deps } = await createNodeEvoluDeps();
+        const deps = createNodeEvoluDeps();
 
         const owner = createEvoluAppOwnerFromTrezorData({ data: ownerSecret });
         if (!owner.ok) {
             throw new Error(`Failed to parse owner: ${JSON.stringify(owner.error)}`);
         }
 
-        //db name just on client side
-        //TODO: I think it is not used not at all because of how deps are created
         const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
-        const databaseName = getOrThrow(SimpleName.from(`trezor-suite-e2e-${sanitizedOwnerId}`));
+        const clientDatabaseName = SimpleName.orThrow(`trezor-suite-e2e-${sanitizedOwnerId}`);
 
         this._evolu = createEvolu(deps)(Schema, {
-            name: databaseName,
+            name: clientDatabaseName,
             transports: [
                 createOwnerWebSocketTransport({
                     url: relayUrl,
@@ -47,7 +58,6 @@ export class EvoluClient {
                 }),
             ],
             externalAppOwner: owner.value,
-            // This turns on the Encryption-at-rest (encryption of the SQLLite file),
             encryptionKey: owner.value.encryptionKey,
         });
 
