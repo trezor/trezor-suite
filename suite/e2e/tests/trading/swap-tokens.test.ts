@@ -59,7 +59,7 @@ test.describe('Trading - Swap tokens', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 },
                 receiveAddress,
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectSuiteReceiveAccount(0);
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
             });
         });

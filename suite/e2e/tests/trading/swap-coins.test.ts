@@ -83,7 +83,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                 },
                 receiveAddress,
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
         });

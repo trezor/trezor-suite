@@ -35,7 +35,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
             await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
@@ -82,7 +82,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
         });
