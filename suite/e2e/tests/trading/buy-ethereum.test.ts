@@ -27,7 +27,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
     }) => {
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openTradingGlobalButton.click();
-            await tradingPage.selectBuyAsset({
+            await tradingPage.assets.selectBuyAsset({
                 searchFilter: 'Ethereum',
                 networkFilter: 'eth',
                 assetCryptoId: getCryptoId('eth'),
@@ -36,7 +36,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 amount: fiatAmount,
                 cryptoCurrency: 'ethereum',
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectAddSuiteReceiveAccount(0);
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
                 },
             });
             await expect(tradingPage.bestOfferAmount).toContainText('0.018615 ETH');

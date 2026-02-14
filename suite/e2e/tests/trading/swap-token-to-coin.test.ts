@@ -58,7 +58,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 },
                 receiveAddress,
                 selectReceiveAddress: async () => {
-                    await tradingPage.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
         });

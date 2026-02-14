@@ -3,15 +3,16 @@ import { CryptoId } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import { TradingCountryCode } from '@suite-common/trading';
-import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { Assets } from './assets';
 import { FeeSection } from './feeSection';
 import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
 import { calculatePercentageOfBalance, getCountryLabel, step } from '../common';
 import { expect } from '../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../types';
 import { DevicePrompt } from './devicePrompt';
+import { ReceiveAccount } from './receiveAccount';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
@@ -24,10 +25,10 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
     'Revolut Pay': 'revolutPay',
 };
 
-type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
-
 export class TradingPage {
     readonly fees: FeeSection;
+    readonly assets: Assets;
+    readonly receiveAccount: ReceiveAccount;
 
     // Input and general
     readonly offerSpinner: Locator;
@@ -50,42 +51,6 @@ export class TradingPage {
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
-
-    // `From` field asset picker in swap/sell form
-    readonly sellAssetPickerInput: Locator;
-    readonly sellAssetPickerSearchInput: Locator;
-    readonly sellAssetPickerNetworkFilter: Locator;
-    readonly sellAssetPickerDisplaySymbol: Locator;
-
-    readonly sellAssetPickerNetworkFilterOption = (tab: AssetPickerNetworkFilter) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-sell/search/select-option/${tab}`);
-
-    readonly sellAssetPickerTokenOption = (networkSymbol?: NetworkSymbol, tokenSymbol?: string) =>
-        this.page.getByTestId(
-            `@trading/form/select-crypto-for-sell/token/${networkSymbol}/${tokenSymbol}`,
-        );
-    readonly sellAssetPickerAccountOption = (networkSymbol?: NetworkSymbol) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-sell/account/${networkSymbol}`);
-
-    // `To` field asset picker in swap/buy form
-    readonly buyAssetPickerInput: Locator;
-    readonly buyAssetPickerSearchInput: Locator;
-    readonly buyAssetPickerNetworkFilter: Locator;
-    readonly buyAssetPickerDisplaySymbol: Locator;
-
-    readonly buyAssetPickerNetworkFilterOption = (tab: AssetPickerNetworkFilter) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-buy/search/select-option/${tab}`);
-
-    readonly buyAssetPickerTokenOption = (networkSymbol?: NetworkSymbol, tokenSymbol?: string) =>
-        this.page.getByTestId(
-            `@trading/form/select-crypto-for-buy/token/${networkSymbol}/${tokenSymbol}`,
-        );
-    readonly buyAssetPickerAccountOption = (networkSymbol?: NetworkSymbol) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-buy/account/${networkSymbol}`);
-    readonly buyAssetPickerTopAssetOption = (id: CryptoId) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-buy/top-assets/asset/${id}`);
-    readonly buyAssetPickerAssetOption = (id: CryptoId) =>
-        this.page.getByTestId(`@trading/form/select-crypto-for-buy/asset/${id}`);
 
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
@@ -130,34 +95,13 @@ export class TradingPage {
     // Sell
     readonly sellBestOfferButton: Locator;
 
-    // receive account & receive address
-    readonly receiveAddressPicker: Locator;
-    readonly selectedReceiveAccount: Locator;
-
-    readonly receiveAccountModal: Locator;
-    readonly receiveAccountModalSuiteOption: Locator;
-    readonly receiveAccountModalAddSuiteOption: Locator;
-    readonly receiveAccountModalNonSuiteOption: Locator;
-
-    readonly receiveAddressModal: Locator;
-    readonly receiveAddressModalConfirmButton: Locator;
-    readonly receiveAddressInput: Locator;
-
-    readonly extraFieldModal: Locator;
-    readonly extraFieldModalConfirmButton: Locator;
-    readonly extraFieldSwitch: Locator;
-    readonly extraFieldInput: Locator;
-
-    readonly bitcoinReceiveAddressModal: Locator;
-    readonly bitcoinReceiveAddressModalOption: Locator;
-
-    readonly findAccountButton: Locator;
-
     constructor(
         private page: Page,
         private readonly devicePrompt: DevicePrompt,
     ) {
         this.fees = new FeeSection(page);
+        this.assets = new Assets(page);
+        this.receiveAccount = new ReceiveAccount(page);
 
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
@@ -182,32 +126,6 @@ export class TradingPage {
         );
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@trading/form/country-select/input',
-        );
-
-        this.sellAssetPickerInput = this.page.getByTestId(
-            '@trading/form/select-crypto-for-sell/input',
-        );
-        this.sellAssetPickerDisplaySymbol = this.page.getByTestId(
-            '@trading/form/select-crypto-for-sell/display-symbol',
-        );
-        this.sellAssetPickerSearchInput = this.page.getByTestId(
-            '@trading/form/select-crypto-for-sell/search',
-        );
-        this.sellAssetPickerNetworkFilter = this.page.getByTestId(
-            '@trading/form/select-crypto-for-sell/search/select/input',
-        );
-
-        this.buyAssetPickerInput = this.page.getByTestId(
-            '@trading/form/select-crypto-for-buy/input',
-        );
-        this.buyAssetPickerDisplaySymbol = this.page.getByTestId(
-            '@trading/form/select-crypto-for-buy/display-symbol',
-        );
-        this.buyAssetPickerSearchInput = this.page.getByTestId(
-            '@trading/form/select-crypto-for-buy/search',
-        );
-        this.buyAssetPickerNetworkFilter = this.page.getByTestId(
-            '@trading/form/select-crypto-for-buy/search/select/input',
         );
 
         this.paymentMethodDropdown = this.page.getByTestId(
@@ -260,43 +178,6 @@ export class TradingPage {
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         // Sell
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
-
-        // receive account & receive address
-        this.receiveAddressPicker = this.page.getByTestId('@trading/receive-address-picker');
-        this.selectedReceiveAccount = this.page.getByTestId('@trading/selected-receive-account');
-
-        this.receiveAccountModal = this.page.getByTestId('@trading/receive-account-modal');
-        this.receiveAccountModalSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/suite',
-        );
-        this.receiveAccountModalAddSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/add-suite',
-        );
-        this.receiveAccountModalNonSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/non-suite',
-        );
-
-        this.receiveAddressModal = this.page.getByTestId('@trading/receive-address-modal');
-        this.receiveAddressModalConfirmButton = this.page.getByTestId(
-            '@trading/receive-address-modal/confirm-button',
-        );
-        this.receiveAddressInput = this.page.getByTestId('@trading/receive-address-input');
-
-        this.extraFieldModal = this.page.getByTestId('@trading/extra-field-modal');
-        this.extraFieldModalConfirmButton = this.page.getByTestId(
-            '@trading/extra-field-modal/confirm-button',
-        );
-        this.extraFieldSwitch = this.page.getByTestId('@trading/extra-field-switch');
-        this.extraFieldInput = this.page.getByTestId('@trading/extra-field-input');
-
-        this.bitcoinReceiveAddressModal = this.page.getByTestId(
-            '@trading/bitcoin-receive-address-modal',
-        );
-        this.bitcoinReceiveAddressModalOption = this.page.getByTestId(
-            '@trading/bitcoin-receive-address-modal/option',
-        );
-
-        this.findAccountButton = this.page.getByTestId('@find-account');
     }
 
     @step()
@@ -332,125 +213,11 @@ export class TradingPage {
     }
 
     @step()
-    async selectSellAsset({
-        searchFilter,
-        networkFilter,
-        networkSymbol,
-        tokenSymbol,
-    }: {
-        searchFilter?: string;
-        networkFilter?: AssetPickerNetworkFilter;
-        networkSymbol?: NetworkSymbol;
-        tokenSymbol?: string;
-    }) {
-        await this.sellAssetPickerInput.click();
-
-        if (networkFilter) {
-            await this.sellAssetPickerNetworkFilter.click();
-            await this.sellAssetPickerNetworkFilterOption(networkFilter).click();
-        }
-
-        if (searchFilter) {
-            await this.sellAssetPickerSearchInput.pressSequentially(searchFilter, { delay: 250 });
-            await this.sellAssetPickerSearchInput.blur();
-        }
-
-        if (networkSymbol && tokenSymbol) {
-            await this.sellAssetPickerTokenOption(networkSymbol, tokenSymbol).click();
-        } else if (networkSymbol) {
-            await this.sellAssetPickerAccountOption(networkSymbol).click();
-        }
-    }
-
-    @step()
-    async selectBuyAsset({
-        searchFilter,
-        networkFilter,
-        assetCryptoId,
-        networkSymbol,
-        tokenSymbol,
-    }: {
-        searchFilter?: string;
-        networkFilter?: AssetPickerNetworkFilter;
-
-        assetCryptoId?: CryptoId;
-        networkSymbol?: NetworkSymbol;
-        tokenSymbol?: string;
-    }) {
-        await this.buyAssetPickerInput.click();
-
-        if (networkFilter) {
-            await this.buyAssetPickerNetworkFilter.click();
-            await this.buyAssetPickerNetworkFilterOption(networkFilter).click();
-        }
-
-        if (searchFilter) {
-            await this.buyAssetPickerSearchInput.pressSequentially(searchFilter, { delay: 250 });
-            await this.buyAssetPickerSearchInput.blur();
-        }
-
-        if (networkSymbol && tokenSymbol) {
-            await this.buyAssetPickerTokenOption(networkSymbol, tokenSymbol).click();
-        } else if (networkSymbol) {
-            await this.buyAssetPickerAccountOption(networkSymbol).click();
-        } else if (assetCryptoId) {
-            await this.buyAssetPickerAssetOption(assetCryptoId).click();
-        }
-    }
-
-    @step()
     async selectPaymentMethod(method: PaymentMethods) {
         await this.page.selectDropdownOptionWithRetry(
             this.paymentMethodDropdown,
             this.paymentMethodOption(method),
         );
-    }
-
-    @step()
-    async selectSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
-        await this.receiveAddressPicker.click();
-        await expect(this.receiveAccountModal).toBeVisible();
-
-        await this.receiveAccountModalSuiteOption.nth(index).click();
-
-        if (symbol === 'btc') {
-            await expect(this.bitcoinReceiveAddressModal).toBeVisible();
-            await this.bitcoinReceiveAddressModalOption.nth(0).click();
-            await expect(this.bitcoinReceiveAddressModal).toBeHidden();
-        }
-
-        await expect(this.receiveAccountModal).toBeHidden();
-    }
-
-    @step()
-    async selectNonSuiteReceiveAccount(receiveAddress: string, extraField?: string) {
-        await this.receiveAddressPicker.click();
-        await expect(this.receiveAccountModal).toBeVisible();
-
-        await this.receiveAccountModalNonSuiteOption.nth(0).click();
-        await this.receiveAddressInput.fill(receiveAddress);
-
-        if (extraField) {
-            await expect(this.extraFieldSwitch).not.toBeChecked();
-            await this.extraFieldSwitch.check();
-            await this.extraFieldInput.fill(extraField);
-        }
-
-        await this.receiveAddressModalConfirmButton.click();
-    }
-
-    @step()
-    async selectAddSuiteReceiveAccount(index: number) {
-        await this.receiveAddressPicker.click();
-        await expect(this.receiveAccountModal).toBeVisible();
-
-        await this.receiveAccountModalAddSuiteOption.nth(0).click();
-        await this.findAccountButton.click();
-
-        await this.page.discoveryShouldFinish();
-
-        await expect(this.receiveAccountModal).toBeVisible();
-        await this.receiveAccountModalSuiteOption.nth(index).click();
     }
 
     @step()
@@ -560,15 +327,15 @@ export class TradingPage {
         amount,
     }: {
         amount: string;
-        sellAsset: Parameters<TradingPage['selectSellAsset']>[0] & { assetCryptoId: CryptoId };
-        buyAsset: Omit<Parameters<TradingPage['selectBuyAsset']>[0], 'assetCryptoId'> & {
+        sellAsset: Parameters<Assets['selectSellAsset']>[0] & { assetCryptoId: CryptoId };
+        buyAsset: Omit<Parameters<Assets['selectBuyAsset']>[0], 'assetCryptoId'> & {
             assetCryptoId: CryptoId;
         };
         receiveAddress?: string;
         selectReceiveAddress?: () => Promise<void>;
     }) {
-        await this.selectSellAsset(sellAsset);
-        await this.selectBuyAsset(buyAsset);
+        await this.assets.selectSellAsset(sellAsset);
+        await this.assets.selectBuyAsset(buyAsset);
 
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(
@@ -706,19 +473,19 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.buyAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.buyAssetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You sell')).toBeVisible();
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
     }
 
