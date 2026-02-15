@@ -73,8 +73,8 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await solanaFeePromise;
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
         });
 
         await test.step('Confirm sell', async () => {
@@ -84,16 +84,16 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(tradingPage.confirmationAccount).toHaveText('Solana #1');
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
+            await expect(tradingPage.confirmation.account).toHaveText('Solana #1');
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.initiateSendConfirmation();
+            await tradingPage.confirmation.initiateSendConfirmation();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
@@ -123,9 +123,9 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 'TR_TRADING_DETAIL_PROCESSING',
                 { values: { providerName: provider, type: 'sell' } },
             );
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
             const supportLink = page.locator('a[href*="support.moonpay.com"]');
             await expect(supportLink).toBeVisible({ timeout: 10000 });
         });
@@ -143,24 +143,32 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await solanaFeePromise;
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-            await tradingPage.selectedOfferProvider.click();
+            await tradingPage.quotes.selectedProvider.click();
         });
 
         await test.step('Check compared offers', async () => {
-            await expect(tradingPage.youPayCryptoInput).toHaveValue(cryptoAmount);
-            await expect(tradingPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
-            await expect(tradingPage.paymentMethodDropdown).toHaveText(paymentMethodName);
-            await tradingPage.validateSellQuotes(sellQuotesSolana);
+            await expect(tradingPage.inputs.cryptoAmount).toHaveValue(cryptoAmount);
+            await expect(tradingPage.quotes.refreshTime).toHaveText(
+                /Offers refresh in(0:2[5-9]|0:30)/,
+            );
+            await expect(tradingPage.inputs.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await tradingPage.quotes.validateSellQuotes(
+                sellQuotesSolana,
+                tradingPage.inputs.getSelectedPaymentMethod,
+            );
         });
 
         await test.step('Change payment method to Bank Transfer', async () => {
-            await tradingPage.selectPaymentMethod('bankTransfer');
-            await tradingPage.validateSellQuotes(sellQuotesSolana);
+            await tradingPage.inputs.selectPaymentMethod('bankTransfer');
+            await tradingPage.quotes.validateSellQuotes(
+                sellQuotesSolana,
+                tradingPage.inputs.getSelectedPaymentMethod,
+            );
         });
 
         await test.step('Select second offer and check correct values are sent in trade request', async () => {
             const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
-            await tradingPage.selectThisQuoteButton.nth(1).click();
+            await tradingPage.quotes.selectButton.nth(1).click();
             await tradingPage.sellBestOfferButton.click();
             await expect.soft(sellTradePromise).toHavePayload(
                 {

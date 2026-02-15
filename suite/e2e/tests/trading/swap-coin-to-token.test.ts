@@ -67,12 +67,12 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
         });
 
         await test.step('Confirm the Swap trade', async () => {
-            await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.initiateSendConfirmation();
+            await tradingPage.confirmation.initiateSendConfirmation();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
@@ -99,16 +99,16 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
             );
-            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
+            await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(
                 formattedSendAmount,
             );
-            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
+            await expect(tradingPage.confirmation.cryptoAmount.last()).toHaveText(
                 formattedReceiveAmount,
             );
-            await expect(tradingPage.confirmationExchangeType).toHaveTranslation(
+            await expect(tradingPage.confirmation.exchangeType).toHaveTranslation(
                 'TR_EXCHANGE_FLOAT',
             );
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
         });
 
         await test.step('Return to account swap form', async () => {

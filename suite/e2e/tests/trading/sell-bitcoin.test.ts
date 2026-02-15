@@ -47,8 +47,8 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm({ cryptoAmount });
-            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
             await tradingPage.fees.expectBitcoinFeeCalculated();
         });
 
@@ -63,17 +63,17 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(tradingPage.confirmationAccount).toHaveText('Bitcoin #1');
-            await expect(tradingPage.confirmationPaymentId).toHaveText(providerPaymentId);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
+            await expect(tradingPage.confirmation.account).toHaveText('Bitcoin #1');
+            await expect(tradingPage.confirmation.paymentId).toHaveText(providerPaymentId);
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.initiateSendConfirmation();
+            await tradingPage.confirmation.initiateSendConfirmation();
             await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(

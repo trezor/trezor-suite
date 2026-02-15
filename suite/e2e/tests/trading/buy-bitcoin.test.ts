@@ -38,22 +38,30 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
-            await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
-            await tradingPage.selectedOfferProvider.click();
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(tradingPage.quotes.provider).toHaveText(bestBuyProvider);
+            await tradingPage.quotes.selectedProvider.click();
         });
 
         await test.step('Check compared offers', async () => {
-            await expect(tradingPage.youPayFiatInput).toHaveValue(formattedFiatWithoutSymbol);
-            await expect(tradingPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
-            await expect(tradingPage.youPayFiatInput).toHaveValue(localizeNumber(fiatAmount));
-            await expect(tradingPage.paymentMethodDropdown).toHaveText(paymentMethodName);
-            await tradingPage.validateBuyQuotes(buyQuotesBTC);
+            await expect(tradingPage.inputs.fiatAmount).toHaveValue(formattedFiatWithoutSymbol);
+            await expect(tradingPage.quotes.refreshTime).toHaveText(
+                /Offers refresh in(0:2[5-9]|0:30)/,
+            );
+            await expect(tradingPage.inputs.fiatAmount).toHaveValue(localizeNumber(fiatAmount));
+            await expect(tradingPage.inputs.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await tradingPage.quotes.validateBuyQuotes(
+                buyQuotesBTC,
+                tradingPage.inputs.getSelectedPaymentMethod,
+            );
         });
 
         await test.step('Change payment method to Bank Transfer', async () => {
-            await tradingPage.selectPaymentMethod('bankTransfer');
-            await tradingPage.validateBuyQuotes(buyQuotesBTC);
+            await tradingPage.inputs.selectPaymentMethod('bankTransfer');
+            await tradingPage.quotes.validateBuyQuotes(
+                buyQuotesBTC,
+                tradingPage.inputs.getSelectedPaymentMethod,
+            );
         });
 
         await test.step('Change fiat input to trigger offer update', async () => {
@@ -61,14 +69,17 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                 await route.fulfill({ json: buyQuotesBTCUpdate });
             });
             const quoteRequestPromise = page.waitForRequest(invityEndpoint.buyQuotes);
-            await tradingPage.youPayFiatInput.fill(updateFiatAmount);
+            await tradingPage.inputs.fiatAmount.fill(updateFiatAmount);
             await quoteRequestPromise;
-            await tradingPage.validateBuyQuotes(buyQuotesBTCUpdate);
+            await tradingPage.quotes.validateBuyQuotes(
+                buyQuotesBTCUpdate,
+                tradingPage.inputs.getSelectedPaymentMethod,
+            );
         });
 
         await test.step('Select second offer', async () => {
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await tradingPage.selectThisQuoteButton.nth(1).click();
+            await tradingPage.quotes.selectButton.nth(1).click();
             await tradingPage.buyBestOfferButton.click();
             await expect(tradeRequestPromise).toHavePayload(
                 { trade: { ...buyQuotesBTCUpdate[5], receiveAddress } },
@@ -114,9 +125,9 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',
             );
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(bestBuyProvider);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(bestBuyProvider);
         });
 
         await test.step('Return to account buy form', async () => {

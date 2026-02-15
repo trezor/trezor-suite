@@ -91,12 +91,12 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         const solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
 
         await test.step('Confirm the Swap trade', async () => {
-            await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.swapBestOfferButton.click();
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.openConfirmAndSendModal();
+            await tradingPage.confirmation.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             const transformedExpectedAddress = transformAddress(sendAddress, 'fullLine');
@@ -193,16 +193,16 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         }
 
         await test.step('Verify all transaction values', async () => {
-            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
+            await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(
                 formattedSendAmount,
             );
-            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
+            await expect(tradingPage.confirmation.cryptoAmount.last()).toHaveText(
                 formattedReceiveAmount,
             );
-            await expect(tradingPage.confirmationExchangeType).toHaveTranslation(
+            await expect(tradingPage.confirmation.exchangeType).toHaveTranslation(
                 'TR_EXCHANGE_FLOAT',
             );
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
         });
     });
 });

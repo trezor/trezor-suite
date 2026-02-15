@@ -3,11 +3,11 @@ import { CryptoId } from 'invity-api';
 
 import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 
-import { step } from '../common';
+import { step } from '../../common';
 
 type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
 
-export class Assets {
+export class TradingAssetsModal {
     // `From` field asset picker in swap/sell form
     readonly sellAssetPickerInput: Locator;
     readonly sellAssetPickerSearchInput: Locator;
