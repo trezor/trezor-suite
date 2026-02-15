@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect-web';
 
 import { test } from '../../support/fixtures';
 
-test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@desktopOnly'] }, () => {
+test.describe('TrezorConnect.signTransaction', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();

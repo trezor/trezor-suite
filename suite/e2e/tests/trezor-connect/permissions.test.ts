@@ -4,7 +4,7 @@ import TrezorConnect from '@trezor/connect-web';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () => {
+test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
@@ -39,7 +39,9 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
                 coin: 'btc',
             });
 
-            await expect(connectPermissionsModal.processParagraph).toHaveText('node');
+            await expect(connectPermissionsModal.processParagraph).toHaveText(
+                /^(node|MainThread)$/,
+            );
             await expect(connectPermissionsModal.rememberCheckbox).toHaveTranslation(
                 'TR_CONNECT_MODAL_REMEMBER',
             );
@@ -68,7 +70,9 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
                 path: "m/44'/0'/0'/0/0",
                 coin: 'btc',
             });
-            await expect(connectPermissionsModal.processParagraph).toHaveText('node');
+            await expect(connectPermissionsModal.processParagraph).toHaveText(
+                /^(node|MainThread)$/,
+            );
         },
     );
 });
