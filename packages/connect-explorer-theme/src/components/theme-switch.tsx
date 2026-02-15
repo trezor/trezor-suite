@@ -46,7 +46,6 @@ export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
                       }
                     : undefined
             }
-            menuPosition="absolute"
             menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
             menuShouldScrollIntoView={false}
             menuPlacement="top"
