@@ -14,10 +14,10 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
         await test.step('Navigate to Buy form and wait for it to be loaded', async () => {
             await walletPage.openTradingGlobalButton.click();
 
-            await expect(tradingPage.youPayFiatInput).toHaveValue(''); // waits for trading form to load
+            await expect(tradingPage.inputs.fiatAmount).toHaveValue(''); // waits for trading form to load
             await tradingPage.assets.buyAssetPickerInput.click({ trial: true }); // checking actionability of the dropdown, which means page is properly loaded
 
-            await tradingPage.selectFiatCurrency('eur');
+            await tradingPage.inputs.selectFiatCurrency('eur');
         });
 
         await test.step('Input amount above maximum', async () => {
@@ -25,7 +25,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
                 await route.fulfill({ json: buyQuotesNegativeMax });
             });
             await expect(page.getByText('Receive account')).toBeVisible();
-            await tradingPage.youPayFiatInput.fill('1000000000');
+            await tradingPage.inputs.fiatAmount.fill('1000000000');
             await expect(page.getByText('Maximum is 5000000 EUR')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
         });
@@ -35,7 +35,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
                 await route.fulfill({ json: buyQuotesNegativeMin });
             });
             await expect(page.getByText('Receive account')).toBeVisible();
-            await tradingPage.youPayFiatInput.fill('0.01');
+            await tradingPage.inputs.fiatAmount.fill('0.01');
             await expect(page.getByText('Minimum is 96.61 EUR')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
         });
@@ -45,12 +45,12 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
                 await route.fulfill({ json: {} });
             });
             await expect(page.getByText('Receive account')).toBeVisible();
-            await tradingPage.youPayFiatInput.fill('5000');
+            await tradingPage.inputs.fiatAmount.fill('5000');
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
-            await expect(tradingPage.selectedOfferProvider).toBeHidden();
+            await expect(tradingPage.quotes.selectedProvider).toBeHidden();
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
-            await expect(tradingPage.selectThisQuoteButton).toBeHidden();
+            await expect(tradingPage.quotes.selectButton).toBeHidden();
         });
     });
 });

@@ -39,7 +39,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                     await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
                 },
             });
-            await expect(tradingPage.bestOfferAmount).toContainText('0.018615 ETH');
+            await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');
         });
 
         await test.step('Confirm Trade', async () => {
@@ -54,9 +54,9 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',
             );
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
         });
 
         await test.step('Return to account buy form', async () => {

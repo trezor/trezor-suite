@@ -79,8 +79,8 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 maxFeePerGas,
                 maxPriorityFeePerGas,
             });
-            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
         });
 
         await test.step('Confirm sell', async () => {
@@ -90,16 +90,16 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
+            await expect(tradingPage.confirmation.account).toHaveText('Ethereum #1');
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.openConfirmAndSendModal();
+            await tradingPage.confirmation.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
             await devicePrompt.waitForPromptAndClick();
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);

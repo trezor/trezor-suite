@@ -4,7 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 
-export class ReceiveAccount {
+export class TradingReceiveAccount {
     readonly receiveAddressPicker: Locator;
     readonly selectedReceiveAccount: Locator;
 

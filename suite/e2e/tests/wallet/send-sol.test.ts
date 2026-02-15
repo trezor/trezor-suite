@@ -43,7 +43,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                 stream: TestStream.NotDefined,
             }),
         },
-        async ({ device, walletPage, tradingPage, devicePrompt }) => {
+        async ({ page, device, walletPage, tradingPage, devicePrompt }) => {
             let maxFee: number;
             let sendMaxAmountWithReserve: string;
 
@@ -83,7 +83,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
             await test.step('Trigger Review & Send Modal', async () => {
                 await tradingPage.sendButton.click();
 
-                await expect(tradingPage.modal).toBeVisible();
+                await expect(page.modal).toBeVisible();
                 await expect(devicePrompt.sendButton).toBeDisabled();
             });
 

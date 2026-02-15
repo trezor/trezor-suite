@@ -40,8 +40,8 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                 searchFilter: 'Jupiter',
                 assetCryptoId: cryptoId,
             });
-            await tradingPage.waitForOffersSync();
-            await tradingPage.youPayFiatCryptoSwitchButton.click();
+            await tradingPage.quotes.waitForSync();
+            await tradingPage.inputs.fiatCryptoSwitchButton.click();
             const isCryptoInput = true;
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
@@ -51,8 +51,8 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
             });
-            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quoteProvider).toHaveText(provider);
+            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quotes.provider).toHaveText(provider);
         });
 
         await test.step('Confirm the trade', async () => {
@@ -72,9 +72,9 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_BUY_DETAIL_SUCCESS_TITLE',
             );
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
         });
 
         await test.step('Return to account buy form', async () => {
