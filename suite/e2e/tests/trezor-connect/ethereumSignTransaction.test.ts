@@ -4,7 +4,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe(
     'TrezorConnect.ethereumSignTransaction',
-    { tag: ['@group=connect', '@desktopOnly'] },
+    { tag: ['@T3T1', '@T3W1', '@desktopOnly'] },
     () => {
         test.use({ electronConf: { exposeConnectWs: true } });
         test.beforeEach(async ({ onboardingPage }) => {
