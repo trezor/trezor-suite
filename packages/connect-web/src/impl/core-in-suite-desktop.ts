@@ -67,17 +67,21 @@ export class CoreInSuiteDesktop implements ConnectImpl {
     }
 
     public async init({ manifest, version }: ConnectImplSettings): Promise<void> {
-        const permission = await navigator.permissions
-            .query({
-                // @ts-expect-error outdated type definitions
-                name: 'local-network-access',
-            })
-            .catch(() => undefined);
-        if (permission) {
-            this.localNetworkPermissionState = permission.state;
-            permission.onchange = () => {
+        // navigator should be always present in the runtime
+        // but since in tests we run this code in node.js for convenience, we can make this check optional
+        if (typeof navigator !== 'undefined' && navigator?.permissions?.query) {
+            const permission = await navigator.permissions
+                .query({
+                    // @ts-expect-error outdated type definitions
+                    name: 'local-network-access',
+                })
+                .catch(() => undefined);
+            if (permission) {
                 this.localNetworkPermissionState = permission.state;
-            };
+                permission.onchange = () => {
+                    this.localNetworkPermissionState = permission.state;
+                };
+            }
         }
 
         // manifest is required in all implementations. for core-in-suite-desktop, also manifest.appName is required
