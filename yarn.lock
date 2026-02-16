@@ -10933,6 +10933,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/calldata@workspace:suite-common/calldata":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/calldata@workspace:suite-common/calldata"
+  dependencies:
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    viem: "npm:^2.39.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
@@ -46273,9 +46285,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.45.0":
-  version: 2.45.0
-  resolution: "viem@npm:2.45.0"
+"viem@npm:^2.39.0, viem@npm:^2.45.0":
+  version: 2.45.1
+  resolution: "viem@npm:2.45.1"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -46290,7 +46302,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/16aa3028ab7e48acc6429cf9089403cdfdd85d4083827741d19d1e53b2b163fb0d0113c0ee4f212349d6cab9d58d8565db104894d9218de6efc5ef9ac2339ecf
+  checksum: 10/88838ca073a0de832b35aa97ef8202d33566cec67680b5e8951a41c94ba4be5b360f9a6991fb21a16ab744b6e80bd5b4bd8983b8de387ed56e131038d7dca47e
   languageName: node
   linkType: hard
 
