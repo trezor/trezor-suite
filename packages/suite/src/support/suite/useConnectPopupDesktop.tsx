@@ -20,50 +20,51 @@ export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const popupCall = useSelector(selectConnectPopupCall);
+    const lifecycle = useSelector(state => state.suite.lifecycle);
     const initialized = useRef(false);
 
     useEffect(() => {
         const init = async () => {
-            if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
-                desktopApi.on('connect-popup/call', async params => {
-                    await queuePopupCall();
-                    const deferred = getPopupCallDeferred(true);
-                    dispatch(
-                        connectPopupCallThunk({
-                            method: params.method as CallMethodKeys,
-                            payload: params.payload,
-                            source: {
-                                type: CALL_SOURCE_DESKTOP_WS,
-                                process: params.process ?? {
-                                    name: 'Unknown',
-                                    fullPath: 'Unknown',
-                                    warning: true,
-                                },
-                                origin: params.origin,
-                                manifest: params.manifest,
+            if (lifecycle.status !== 'ready') return;
+            if (!desktopApi.available || !(await desktopApi.connectPopupEnabled())) return;
+            desktopApi.on('connect-popup/call', async params => {
+                await queuePopupCall();
+                const deferred = getPopupCallDeferred(true);
+                dispatch(
+                    connectPopupCallThunk({
+                        method: params.method as CallMethodKeys,
+                        payload: params.payload,
+                        source: {
+                            type: CALL_SOURCE_DESKTOP_WS,
+                            process: params.process ?? {
+                                name: 'Unknown',
+                                fullPath: 'Unknown',
+                                warning: true,
                             },
-                        }),
-                    );
-                    const response = await deferred.promise;
-                    desktopApi.connectPopupResponse({ ...response, id: params.id });
-                });
-                desktopApi.on('connect-popup/cancel', params => {
-                    dispatch(connectPopupCancelThunk(params));
-                });
-                desktopApi.on('app/auto-start/popup-request', () => {
-                    dispatch(openModal({ type: 'auto-start-before-quit' }));
-                });
+                            origin: params.origin,
+                            manifest: params.manifest,
+                        },
+                    }),
+                );
+                const response = await deferred.promise;
+                desktopApi.connectPopupResponse({ ...response, id: params.id });
+            });
+            desktopApi.on('connect-popup/cancel', params => {
+                dispatch(connectPopupCancelThunk(params));
+            });
+            desktopApi.on('app/auto-start/popup-request', () => {
+                dispatch(openModal({ type: 'auto-start-before-quit' }));
+            });
 
-                // Prevent multiple initializations
-                if (!initialized.current) {
-                    initialized.current = true;
+            // Prevent multiple initializations
+            if (!initialized.current) {
+                initialized.current = true;
 
-                    desktopApi.connectPopupReady();
+                desktopApi.connectPopupReady();
 
-                    analytics.report({
-                        type: events.connectPopupInitEvent.name,
-                    });
-                }
+                analytics.report({
+                    type: events.connectPopupInitEvent.name,
+                });
             }
         };
         init();
@@ -75,7 +76,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch, analytics]);
+    }, [dispatch, analytics, lifecycle.status]);
 
     // App focus control
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
