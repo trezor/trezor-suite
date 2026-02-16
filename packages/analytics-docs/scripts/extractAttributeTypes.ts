@@ -16,43 +16,42 @@ const FORMAT_FLAGS =
 
 const toPosix = (p: string) => p.split(path.sep).join(path.posix.sep);
 
-export const findUp = (fileName: string, startDir: string) => {
-    let dir = startDir;
-    while (true) {
+export function findUp(fileName: string, startDir: string): string | undefined {
+    let dir: string | undefined = startDir;
+    while (dir !== undefined) {
         const candidate = path.join(dir, fileName);
         if (fs.existsSync(candidate)) return candidate;
-
         const parent = path.dirname(dir);
-        if (parent === dir) return undefined;
-        dir = parent;
+        dir = parent === dir ? undefined : parent;
     }
-};
 
-export const findPackageRoot = (anyPathInsidePackage: string) => {
+    return undefined;
+}
+
+export function findPackageRoot(anyPathInsidePackage: string): string | undefined {
     const pkgJson = findUp('package.json', path.dirname(anyPathInsidePackage));
 
     return pkgJson ? path.dirname(pkgJson) : undefined;
-};
+}
 
-const unwrapExpression = (expr: import('ts-morph').Expression) => {
+function unwrapExpression(expr: import('ts-morph').Expression): import('ts-morph').Expression {
     let e = expr;
-
     while (Node.isParenthesizedExpression(e)) e = e.getExpression();
     while (Node.isAsExpression(e)) e = e.getExpression();
     while (Node.isSatisfiesExpression(e)) e = e.getExpression();
     while (Node.isNonNullExpression(e)) e = e.getExpression();
 
     return e;
-};
+}
 
-const getStringFromCompilerInitializer = (init: ts.Expression | undefined): string | undefined => {
+function getLiteralTextFromCompilerNode(init: ts.Expression | undefined): string | undefined {
     if (!init) return undefined;
     if (ts.isStringLiteral(init) || ts.isNoSubstitutionTemplateLiteral(init)) return init.text;
 
     return undefined;
-};
+}
 
-const resolvePropertyAccessToString = (expr: import('ts-morph').Expression): string | undefined => {
+function resolvePropertyAccessToLiteral(expr: import('ts-morph').Expression): string | undefined {
     const e = unwrapExpression(expr);
     if (!Node.isPropertyAccessExpression(e)) return undefined;
 
@@ -61,31 +60,22 @@ const resolvePropertyAccessToString = (expr: import('ts-morph').Expression): str
 
     for (const d of symbol.getDeclarations()) {
         const n = d.compilerNode;
-
-        if (ts.isEnumMember(n)) {
-            const v = getStringFromCompilerInitializer(n.initializer);
-            if (v) return v;
-        }
-
-        if (ts.isPropertyAssignment(n)) {
-            const v = getStringFromCompilerInitializer(n.initializer);
+        if (ts.isEnumMember(n) || ts.isPropertyAssignment(n)) {
+            const v = getLiteralTextFromCompilerNode(n.initializer);
             if (v) return v;
         }
     }
 
     return undefined;
-};
+}
 
-const evalStringValue = (expr: import('ts-morph').Expression): string | undefined => {
+function evalStringValue(expr: import('ts-morph').Expression): string | undefined {
     const e = unwrapExpression(expr);
-
     if (Node.isStringLiteral(e) || Node.isNoSubstitutionTemplateLiteral(e)) {
         return e.getLiteralText();
     }
-
-    const resolved = resolvePropertyAccessToString(e);
+    const resolved = resolvePropertyAccessToLiteral(e);
     if (resolved) return resolved;
-
     const t = e.getType();
     if (t.isStringLiteral()) {
         const v = t.getLiteralValue();
@@ -94,27 +84,28 @@ const evalStringValue = (expr: import('ts-morph').Expression): string | undefine
     }
 
     return undefined;
-};
+}
 
-const stripUndefined = (t: Type) => {
+function stripUndefinedFromUnion(t: Type): Type {
     if (!t.isUnion()) return t;
-    const non = t.getUnionTypes().filter(u => !u.isUndefined());
+    const nonUndef = t.getUnionTypes().filter(u => !u.isUndefined());
 
-    return non.length === 1 ? non[0] : t;
-};
+    return nonUndef.length === 1 ? nonUndef[0] : t;
+}
 
-const unwrapAttributeDefValueType = (attributeType: Type, isOptionalProp: boolean) => {
-    const base = isOptionalProp ? stripUndefined(attributeType) : attributeType;
-
+function getAttributeValueType(attributeType: Type, isOptional: boolean): Type {
+    const base = isOptional ? stripUndefinedFromUnion(attributeType) : attributeType;
     const aliasArgs = base.getAliasTypeArguments();
     const typeArgs = aliasArgs.length ? aliasArgs : base.getTypeArguments();
 
     return typeArgs[0] ?? base;
-};
+}
 
-const escapeSingleQuotes = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+function escapeSingleQuotes(s: string): string {
+    return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
 
-const formatType = (t: Type, contextNode: import('ts-morph').Node): string => {
+function formatTypeAsString(t: Type, contextNode: import('ts-morph').Node): string {
     if (t.isStringLiteral()) {
         const v = t.getLiteralValue();
 
@@ -129,144 +120,159 @@ const formatType = (t: Type, contextNode: import('ts-morph').Node): string => {
 
     if (t.isUnion()) {
         const parts = t.getUnionTypes();
-
         if (parts.length > 80) return t.getText(contextNode, FORMAT_FLAGS);
-
-        const rendered = parts.map(p => formatType(p, contextNode));
-        const uniq: string[] = [];
-        for (const r of rendered) if (!uniq.includes(r)) uniq.push(r);
+        const rendered = parts.map(p => formatTypeAsString(p, contextNode));
+        const uniq = [...new Set(rendered)];
 
         return uniq.join('\n| ');
     }
 
     return t.getText(contextNode, FORMAT_FLAGS);
-};
+}
 
-const isOptionalPropertySymbol = (sym: import('ts-morph').Symbol): boolean => {
+function isOptionalProperty(sym: import('ts-morph').Symbol): boolean {
     const decl = sym.getDeclarations()[0];
     if (!decl) return false;
-
     if (Node.isPropertySignature(decl)) return decl.hasQuestionToken();
     if (Node.isPropertyDeclaration(decl)) return decl.hasQuestionToken();
 
     return false;
-};
+}
 
-const getEventNameFromEventObject = (varDecl: import('ts-morph').VariableDeclaration) => {
+function getEventNameFromDeclaration(
+    varDecl: import('ts-morph').VariableDeclaration,
+): string | undefined {
     const init = varDecl.getInitializer();
     if (!init) return undefined;
-
     const expr = unwrapExpression(init);
     if (!Node.isObjectLiteralExpression(expr)) return undefined;
-
     const nameProp = expr.getProperty('name');
     if (!nameProp || !Node.isPropertyAssignment(nameProp)) return undefined;
-
     const rhs = nameProp.getInitializer();
-    if (!rhs) return undefined;
 
-    return evalStringValue(rhs);
-};
+    return rhs ? evalStringValue(rhs) : undefined;
+}
 
-const getEventDefTypeArgs = (varDecl: import('ts-morph').VariableDeclaration) => {
+function getEventDefTypeArgs(
+    varDecl: import('ts-morph').VariableDeclaration,
+): { attributesType: Type; nameType?: Type } | undefined {
     const typeNode = varDecl.getTypeNode();
     const typeRef = typeNode?.asKind(ts.SyntaxKind.TypeReference);
     if (typeRef) {
         const typeName = typeRef.getTypeName();
         if (Node.isIdentifier(typeName) && typeName.getText() === 'EventDef') {
             const typeArgs = typeRef.getTypeArguments();
-            if (typeArgs.length < 1) return undefined;
-
-            return {
-                attributesType: typeArgs[0].getType(),
-                nameType: typeArgs[1]?.getType(),
-            };
+            if (typeArgs.length >= 1) {
+                return {
+                    attributesType: typeArgs[0].getType(),
+                    nameType: typeArgs[1]?.getType(),
+                };
+            }
         }
     }
-
     const t = varDecl.getType();
     const alias = t.getAliasSymbol();
     if (!alias || alias.getName() !== 'EventDef') return undefined;
-
     const args = t.getAliasTypeArguments();
     if (args.length < 1) return undefined;
 
     return { attributesType: args[0], nameType: args[1] };
-};
+}
 
-export const extractAttributeTypesByEventName = (
-    opts: ExtractOptions,
-): AttributeTypesByEventName => {
+function extractAttributeTypesFromType(
+    attributesType: Type,
+    varDecl: import('ts-morph').VariableDeclaration,
+): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const p of attributesType.getProperties()) {
+        const optional = isOptionalProperty(p);
+        const propType = p.getTypeAtLocation(varDecl);
+        const valueType = getAttributeValueType(propType, optional);
+        out[p.getName()] = formatTypeAsString(valueType, varDecl);
+    }
+
+    return out;
+}
+
+function tryGetEventName(
+    varDecl: import('ts-morph').VariableDeclaration,
+    typeArgs: { attributesType: Type; nameType?: Type },
+): string | undefined {
+    const fromObject = getEventNameFromDeclaration(varDecl);
+    if (fromObject) return fromObject;
+    if (typeArgs.nameType?.isStringLiteral()) {
+        const lit = typeArgs.nameType.getLiteralValue();
+
+        return typeof lit === 'string' ? lit : undefined;
+    }
+
+    return undefined;
+}
+
+function collectFromSourceFile(sf: import('ts-morph').SourceFile): {
+    result: AttributeTypesByEventName;
+    unresolved: Array<{ file: string; exportName: string }>;
+} {
+    const result: AttributeTypesByEventName = {};
+    const unresolved: Array<{ file: string; exportName: string }> = [];
+
+    if (sf.getFilePath().endsWith('.d.ts')) return { result, unresolved };
+
+    for (const v of sf.getVariableDeclarations()) {
+        if (!v.isExported()) continue;
+        const typeArgs = getEventDefTypeArgs(v);
+        if (!typeArgs) continue;
+
+        const eventName = tryGetEventName(v, typeArgs);
+        if (!eventName) {
+            unresolved.push({
+                file: sf.getFilePath(),
+                exportName: v.getName() ?? '<anonymous>',
+            });
+            continue;
+        }
+        result[eventName] = extractAttributeTypesFromType(typeArgs.attributesType, v);
+    }
+
+    return { result, unresolved };
+}
+
+function createProjectAndAddSources(opts: ExtractOptions): Project {
     const project = new Project({
         tsConfigFilePath: opts.tsConfigFilePath,
         skipAddingFilesFromTsConfig: true,
     });
-
-    const absGlobs = opts.eventFileGlobs.map(g => {
-        const abs = path.isAbsolute(g) ? g : path.resolve(g);
-
-        return toPosix(abs);
-    });
-
+    const absGlobs = opts.eventFileGlobs.map(g =>
+        toPosix(path.isAbsolute(g) ? g : path.resolve(g)),
+    );
     project.addSourceFilesAtPaths(absGlobs);
     project.resolveSourceFileDependencies();
 
-    const result: AttributeTypesByEventName = {};
-    const unresolvedNames: Array<{ file: string; exportName: string }> = [];
+    return project;
+}
+
+export function extractAttributeTypesByEventName(opts: ExtractOptions): AttributeTypesByEventName {
+    const project = createProjectAndAddSources(opts);
+    const merged: AttributeTypesByEventName = {};
+    const allUnresolved: Array<{ file: string; exportName: string }> = [];
 
     for (const sf of project.getSourceFiles()) {
-        if (sf.getFilePath().endsWith('.d.ts')) continue;
-
-        for (const v of sf.getVariableDeclarations()) {
-            if (!v.isExported()) continue;
-
-            const typeArgs = getEventDefTypeArgs(v);
-            if (!typeArgs) continue;
-
-            let eventName = getEventNameFromEventObject(v);
-
-            if (!eventName && typeArgs.nameType?.isStringLiteral()) {
-                const lit = typeArgs.nameType.getLiteralValue();
-                if (typeof lit === 'string') eventName = lit;
-            }
-
-            if (!eventName) {
-                unresolvedNames.push({
-                    file: sf.getFilePath(),
-                    exportName: v.getName() ?? '<anonymous>',
-                });
-                continue;
-            }
-
-            const attributeTypes: Record<string, string> = {};
-            const { attributesType } = typeArgs;
-
-            for (const p of attributesType.getProperties()) {
-                const attrName = p.getName();
-                const optional = isOptionalPropertySymbol(p);
-
-                const propType = p.getTypeAtLocation(v);
-                const valueType = unwrapAttributeDefValueType(propType, optional);
-
-                attributeTypes[attrName] = formatType(valueType, v);
-            }
-
-            result[eventName] = attributeTypes;
-        }
+        const { result, unresolved } = collectFromSourceFile(sf);
+        Object.assign(merged, result);
+        allUnresolved.push(...unresolved);
     }
 
-    if (unresolvedNames.length) {
+    if (allUnresolved.length > 0) {
         console.warn(
-            `[analytics-docs] extractAttributeTypes: Could not resolve event name for ${unresolvedNames.length} exports`,
+            `[analytics-docs] extractAttributeTypes: could not resolve event name for ${allUnresolved.length} exports`,
         );
-
         console.warn(
-            unresolvedNames
+            allUnresolved
                 .slice(0, 30)
                 .map(x => `  - ${x.exportName} (${x.file})`)
                 .join('\n'),
         );
     }
 
-    return result;
-};
+    return merged;
+}

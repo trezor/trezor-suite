@@ -3,37 +3,43 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import type { AttributeDoc, EventDoc } from '../types';
 import { normalizeChangelog } from './normalizeChangelog';
 
-export const normalizeEvents = (
-    events: Array<EventDef<any, any> & { platform?: string }>,
-): Record<string, EventDoc> =>
-    Object.fromEntries(
-        events.map(event => {
-            const attributes: Record<string, AttributeDoc> = Object.fromEntries(
-                (Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]).map(
-                    ([name, attribute]) => [
-                        name,
-                        {
-                            description: attribute.description,
-                            runtimeType: undefined,
-                            changelog: normalizeChangelog(attribute.changelog),
-                        },
-                    ],
-                ),
-            );
+function toAttributeDoc([name, attribute]: [string, AttributeDef<unknown>]): [
+    string,
+    AttributeDoc,
+] {
+    return [
+        name,
+        {
+            description: attribute.description,
+            runtimeType: undefined,
+            changelog: normalizeChangelog(attribute.changelog),
+        },
+    ];
+}
 
-            return [
-                event.name,
-                {
-                    name: event.name,
-                    description: event.description,
-                    descriptionTrigger: event.descriptionTrigger,
-                    possibleImprovements: event.possibleImprovements,
-                    changelog: normalizeChangelog(event.changelog),
-                    attributes,
-                    platform: event.platform,
-                },
-            ];
-        }),
+function toEventDoc(event: EventDef<unknown, unknown> & { platform?: string }): [string, EventDoc] {
+    const attributes = Object.fromEntries(
+        (Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]).map(
+            toAttributeDoc,
+        ),
     );
 
-export { AttributeDoc };
+    return [
+        event.name,
+        {
+            name: event.name,
+            description: event.description,
+            descriptionTrigger: event.descriptionTrigger,
+            possibleImprovements: event.possibleImprovements,
+            changelog: normalizeChangelog(event.changelog),
+            attributes,
+            platform: event.platform ?? '',
+        },
+    ];
+}
+
+export const normalizeEvents = (
+    events: Array<EventDef<unknown, unknown> & { platform?: string }>,
+): Record<string, EventDoc> => Object.fromEntries(events.map(toEventDoc));
+
+export type { AttributeDoc };
