@@ -12,13 +12,15 @@ import { QUOTA_URL, RELAY_URL } from '../../helpers/evoluClient';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {
-    readonly metadataModal: Locator;
-    readonly copyAddressButton: Locator;
     readonly account: AccountMetadata;
     readonly output: OutputMetadata;
     readonly wallet: WalletMetadata;
     readonly address: AddressMetadata;
 
+    readonly metadataModal: Locator;
+    readonly copyAddressButton: Locator;
+    readonly suiteSyncBanner: Locator;
+    readonly suiteSyncBannerButton: Locator;
     readonly metadataProviderButton = (provider: MetadataProvider) =>
         this.page.getByTestId(`@modal/metadata-provider/${provider}-button`);
 
@@ -28,13 +30,15 @@ export class MetadataPage {
         private readonly settingsPage: SettingsPage,
         private readonly devicePrompt: DevicePrompt,
     ) {
-        this.metadataModal = page.getByTestId('@modal/metadata-provider');
-        this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
-
         this.account = new AccountMetadata(page);
         this.output = new OutputMetadata(page);
         this.wallet = new WalletMetadata(page);
         this.address = new AddressMetadata(page);
+
+        this.metadataModal = page.getByTestId('@modal/metadata-provider');
+        this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
+        this.suiteSyncBanner = page.getByTestId('@notification/suite-sync-keys');
+        this.suiteSyncBannerButton = page.getByTestId('@notification/suite-sync-keys/button');
     }
 
     @step()

@@ -172,7 +172,10 @@ export class DashboardPage {
     }
 
     @step()
-    async addUnusedHiddenWallet(passphrase: string) {
+    async addUnusedHiddenWallet(
+        passphrase: string,
+        options?: { suiteSync?: 'enable' | 'decline' },
+    ) {
         await this.addHiddenWalletButton.click();
         await this.addNewHiddenWalletButton.click();
         await this.openUnusedWalletButton2.click();
@@ -194,6 +197,18 @@ export class DashboardPage {
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
+
+        if (options?.suiteSync === 'enable') {
+            await this.device.expectToContainOnDisplay('Suite Sync');
+            await this.devicePrompt.confirmOnDevicePromptIsShown();
+            await this.device.pressYes();
+            // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+            await this.page.waitForTimeout(2000);
+        } else if (options?.suiteSync === 'decline') {
+            await this.device.expectToContainOnDisplay('Suite Sync');
+            await this.devicePrompt.confirmOnDevicePromptIsShown();
+            await this.device.pressNo();
+        }
 
         await expect(
             this.devicePrompt.confirmOnDevicePrompt,

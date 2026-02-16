@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
     Model,
@@ -15,18 +17,9 @@ import {
 const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
     [Model.T3T1]: { x: 125, y: 150 },
     [Model.T3W1]: { x: 200, y: 480 },
-    [Model.T1B1]: {
-        x: 0,
-        y: 0,
-    },
-    [Model.T2T1]: {
-        x: 0,
-        y: 0,
-    },
-    [Model.T3B1]: {
-        x: 0,
-        y: 0,
-    },
+    [Model.T1B1]: { x: 0, y: 0 },
+    [Model.T2T1]: { x: 0, y: 0 },
+    [Model.T3B1]: { x: 0, y: 0 },
 };
 
 export class DeviceFixture {
@@ -266,5 +259,20 @@ export class DeviceFixture {
             [Model.T3B1]: { x: 0, y: 0 },
         };
         await TrezorUserEnvLink.clickEmu(EMULATOR_FEE_INFO_COORDINATES[this.model]);
+    }
+
+    @step()
+    async expectToContainOnDisplay(expectedText: string) {
+        await expect(async () => {
+            const displayBodyContent = (await this.getDisplayContent()).body;
+            const flattenedLines = displayBodyContent.map(line => line.join(' '));
+            const found = flattenedLines.some(line => line.includes(expectedText));
+
+            if (!found) {
+                throw new Error(
+                    `Expected text "${expectedText}" not found on the device display. Actual display text:\n"${JSON.stringify(flattenedLines, null, 2)}"`,
+                );
+            }
+        }).toPass({ timeout: 5_000 });
     }
 }

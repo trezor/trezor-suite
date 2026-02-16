@@ -1,5 +1,4 @@
 import {
-    WALLET_INDEX,
     accountDescriptor,
     ownerId,
     ownerSecret,
@@ -8,6 +7,7 @@ import {
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
+const defaultWalletIndex = 0;
 const expectedWallet = {
     updatedAt: null,
     isDeleted: null,
@@ -70,11 +70,11 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         await test.step('Change wallet label', async () => {
             await dashboardPage.openDeviceSwitcher();
             await metadataPage.wallet.changeLabel({
-                index: WALLET_INDEX,
+                index: defaultWalletIndex,
                 label: expectedWallet.label,
             });
             await expect
-                .soft(metadataPage.wallet.walletLabel(WALLET_INDEX))
+                .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
                 .toHaveText(expectedWallet.label);
             await dashboardPage.deviceSwitchingCloseButton.click();
         });
