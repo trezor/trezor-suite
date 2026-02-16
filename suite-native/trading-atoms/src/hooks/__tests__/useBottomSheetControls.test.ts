@@ -28,7 +28,7 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(true);
         });
 
-        it('should be false after hideTradeableAssetsSheet call and Keyboard.dismiss should be called two times by default', () => {
+        it('should be false after hideSheet call and Keyboard.dismiss should be called two times by default', () => {
             const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
@@ -41,7 +41,7 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be false after hideTradeableAssetsSheet call with shouldHideKeyboard=true and Keyboard.dismiss should be called two times', () => {
+        it('should be false after hideSheet call with shouldHideKeyboard=true and Keyboard.dismiss should be called two times', () => {
             const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
@@ -54,7 +54,7 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be false after hideTradeableAssetsSheet call with shouldHideKeyboard=false and Keyboard.dismiss should be called only once', () => {
+        it('should be false after hideSheet call with shouldHideKeyboard=false and Keyboard.dismiss should be called only once', () => {
             const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
