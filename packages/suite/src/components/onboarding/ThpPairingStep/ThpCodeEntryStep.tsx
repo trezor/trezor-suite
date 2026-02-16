@@ -8,7 +8,8 @@ import TrezorConnect from '@trezor/connect';
 import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 
-export const ThpPairingStep = () => {
+// reflection of components/firmware/ThpPairing/ThpCodeEntryStep
+export const ThpCodeEntryStep = () => {
     const intl = useIntl();
 
     const abort = useCallback(

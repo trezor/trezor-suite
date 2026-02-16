@@ -4,11 +4,12 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-type StepThpPairingRequestProps = {
+type ThpPairingConfirmStepProps = {
     modalHeading: ReactNode;
 };
 
-export const StepThpPairingRequest = ({ modalHeading }: StepThpPairingRequestProps) => (
+// reflection of components/onboarding/ThpPairing/ThpPairingConfirmStep
+export const ThpPairingConfirmStep = ({ modalHeading }: ThpPairingConfirmStepProps) => (
     <Modal.ModalBase
         onCancel={undefined} // intentionally NOT cancellable here,  cancellable on the device only
         data-testid="@firmware-modal"

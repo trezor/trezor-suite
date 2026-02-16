@@ -6,6 +6,7 @@ import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDispatch } from 'src/hooks/suite';
 
+// reflection of components/firmware/ThpPairing/ThpPairingStartStep
 export const ThpPairingStartStep = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();

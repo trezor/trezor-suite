@@ -7,11 +7,12 @@ import { spacings } from '@trezor/theme';
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
 import { useDispatch } from '../../../hooks/suite';
 
-type StepThpStartProps = {
+type ThpPairingStartStepProps = {
     modalHeading: ReactNode;
 };
 
-export const StepThpStart = ({ modalHeading }: StepThpStartProps) => {
+// reflection of components/onboarding/ThpPairing/ThpPairingStartStep
+export const ThpPairingStartStep = ({ modalHeading }: ThpPairingStartStepProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 

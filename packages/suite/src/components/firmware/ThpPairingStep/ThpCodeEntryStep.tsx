@@ -6,11 +6,12 @@ import { spacings } from '@trezor/theme';
 
 import { ThpPairingCodeEntry } from '../../../components/connection/thp/ThpPairingCodeEntry';
 
-type StepThpPairingProps = {
+type ThpCodeEntryStepProps = {
     modalHeading: ReactNode;
 };
 
-export const StepThpPairing = ({ modalHeading }: StepThpPairingProps) => (
+// reflection of components/onboarding/ThpPairing/ThpCodeEntryStep
+export const ThpCodeEntryStep = ({ modalHeading }: ThpCodeEntryStepProps) => (
     <Modal.ModalBase
         onCancel={undefined} // intentionally NOT cancellable here, cancellable on the device only
         data-testid="@firmware-modal"

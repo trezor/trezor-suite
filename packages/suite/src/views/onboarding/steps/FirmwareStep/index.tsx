@@ -10,6 +10,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { MODAL } from 'src/actions/suite/constants';
 import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
@@ -17,10 +18,6 @@ import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';
 import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnectedStep';
-import { ThpPairingConfirmStep } from '../ThpPairingConfirmStep';
-import { ThpPairingFailedStep } from '../ThpPairingFailedStep';
-import { ThpPairingStartStep } from '../ThpPairingStartStep';
-import { ThpPairingStep } from '../ThpPairingStep';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
@@ -143,24 +140,7 @@ export const FirmwareStep = () => {
     }
 
     if (thpStep !== null) {
-        if (device === undefined) {
-            return <DeviceDisconnectedStep />;
-        }
-
-        switch (thpStep) {
-            case 'BeforeConnectionInfo':
-                return <ThpPairingStartStep />;
-            case 'ConfirmOnlyConnection':
-            case 'ConfirmConnectionBeforePairing':
-                return <ThpPairingConfirmStep device={device} />;
-            case 'CodeEntry':
-                return <ThpPairingStep />;
-            case 'CodeInvalid':
-                return <ThpPairingFailedStep />;
-
-            default:
-                exhaustive(thpStep);
-        }
+        return <ThpPairingStep thpStep={thpStep} />;
     }
 
     switch (status) {
