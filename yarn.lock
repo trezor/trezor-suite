@@ -14759,6 +14759,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@vitejs/plugin-react": "npm:^4.7.0"
