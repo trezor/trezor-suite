@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,7 +18,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     paddingTop: utils.spacings.sp32,
     paddingBottom: utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp16,
@@ -26,7 +25,6 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 const contentStyle = prepareNativeStyle(_ => ({
     width: '100%',
-    alignItems: 'center',
 }));
 
 const buttonStyle = prepareNativeStyle(_ => ({
@@ -52,13 +50,17 @@ export const UninitializedConnectedDeviceState = () => {
     return (
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing="sp24" style={applyStyle(contentStyle)}>
-                <ConfirmOnTrezorAnimation />
+                {/* Prevents translation clipping on CenteredTitleHeader in some languages. */}
+                <Box alignItems="center">
+                    <ConfirmOnTrezorAnimation />
+                </Box>
                 <CenteredTitleHeader
                     title={<Translation id="moduleHome.emptyState.uninitializedDevice.title" />}
                     subtitle={
                         <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
                     }
                     testID="@homescreen/uninitializedConnectedDeviceText"
+                    alignSelf="stretch"
                 />
                 <Button size="large" onPress={handleAddAccount} style={applyStyle(buttonStyle)}>
                     <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
