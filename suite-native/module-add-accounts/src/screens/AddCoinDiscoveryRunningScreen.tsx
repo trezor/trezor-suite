@@ -9,6 +9,7 @@ import {
     DeviceRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
+    selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -34,7 +35,9 @@ export const AddCoinDiscoveryRunningScreen = ({
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
-
+    const discoveryInfo = useSelector(selectDiscoveryForSelectedDevice);
+    const passphraseModalCancelled =
+        discoveryInfo?.status === 'failed' && discoveryInfo?.errorCode === 'Method_Interrupted';
     const hasPassphraseIncorrectError = useSelector(selectHasPassphraseIncorrectError);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
@@ -102,7 +105,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             return;
         }
 
-        if (!hasDiscovery && hasPassphraseIncorrectError) {
+        if (!hasDiscovery && (hasPassphraseIncorrectError || passphraseModalCancelled)) {
             setLoadingResult('error');
         }
 
@@ -117,6 +120,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         loadingResult,
         networkSymbol,
         hasPassphraseIncorrectError,
+        passphraseModalCancelled,
     ]);
 
     return (
