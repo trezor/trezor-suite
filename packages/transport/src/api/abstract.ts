@@ -211,6 +211,12 @@ export abstract class AbstractApi extends TypedEmitter<{
             };
         }
     };
+
+    public clearLock(path: string) {
+        if (this.lock[path]) {
+            this.lock[path] = { read: false, write: false };
+        }
+    }
 }
 
 export type AbstractApiAwaitedResult<K extends keyof AbstractApi> = AbstractApi[K] extends (

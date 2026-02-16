@@ -410,6 +410,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         });
     };
 
+    const clearLock = (session: string) => {
+        api.clearLock(session);
+    };
+
     const dispose = () => {
         sessionsBackground.dispose();
         api.dispose();
@@ -425,5 +429,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         receive,
         dispose,
         sessionsClient,
+        clearLock,
     };
 };
