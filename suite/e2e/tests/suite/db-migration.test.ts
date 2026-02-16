@@ -54,7 +54,7 @@ test.describe(
                 await test.step(`Load suite in old version ${migrateFromVersion}`, async () => {
                     await page.goto(`${suiteDevInstance}/${migrateFromVersion}`);
                     await page.locator('[data-test="@onboarding/continue-button"]').click();
-                    await page.locator('[data-test="@onboarding/complete-onboarding"]').click();
+                    await page.locator('[data-test="@onboarding/exit-app-button"]').click();
                     await expect(page.locator('[data-test="@suite/loading"]')).toBeHidden();
                     await page.locator('[data-test="@passphrase-type/standard"]').click();
                     await discoveryBar.waitFor({ state: 'visible', timeout: 45000 });
