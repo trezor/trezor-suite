@@ -6173,10 +6173,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:15.5.7":
-  version: 15.5.7
-  resolution: "@next/env@npm:15.5.7"
-  checksum: 10/11f971691018bd62a5bf253fc843fb2a6cf1431468f5c3a9d4d41753a6ff3e8bf7f539f46aba3f58f8bac59e681bf05fb5d771ac08d7dbd966a601257e1368bf
+"@next/env@npm:15.5.11":
+  version: 15.5.11
+  resolution: "@next/env@npm:15.5.11"
+  checksum: 10/c9b9b1a99e169954f296da357557ba25afee0a188ec6cb024493b984806deb8793f20c7671a9b62c3de5f7cc40e52fb7817123f6ab83dc1304a2d2df12dbada9
   languageName: node
   linkType: hard
 
@@ -15110,7 +15110,7 @@ __metadata:
     git-url-parse: "npm:^15.0.0"
     intersection-observer: "npm:^0.12.2"
     match-sorter: "npm:^6.3.1"
-    next: "npm:^15.5.7"
+    next: "npm:^15.5.10"
     next-seo: "npm:^6.6.0"
     next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
@@ -15161,7 +15161,7 @@ __metadata:
     eslint-plugin-mdx: "npm:^3.6.2"
     html-webpack-plugin: "npm:5.6.6"
     json5: "npm:^2.2.3"
-    next: "npm:^15.5.7"
+    next: "npm:^15.5.10"
     next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
     nextra-theme-docs: "npm:^2.13.4"
@@ -36297,11 +36297,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^15.5.7":
-  version: 15.5.7
-  resolution: "next@npm:15.5.7"
+"next@npm:^15.5.10":
+  version: 15.5.11
+  resolution: "next@npm:15.5.11"
   dependencies:
-    "@next/env": "npm:15.5.7"
+    "@next/env": "npm:15.5.11"
     "@next/swc-darwin-arm64": "npm:15.5.7"
     "@next/swc-darwin-x64": "npm:15.5.7"
     "@next/swc-linux-arm64-gnu": "npm:15.5.7"
@@ -36352,7 +36352,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10/bfac0cbac41b36227ec91d3a0727561f73dfc35d6a78eafd0200528ef95fa2e9d2dba5a8c8922864b4f4e4321ae6a07c6cf8f5766ac3192ad03e68516c3a458a
+  checksum: 10/402d7eab5b2bda90890d7a7ae283d0bbad8009c21c3910e601e78b07f723b5ea8dbb0e6044d8ae6c1ff9f92c717d9b260f613c1ef6d392259de1447ebb96cbaa
   languageName: node
   linkType: hard
 
