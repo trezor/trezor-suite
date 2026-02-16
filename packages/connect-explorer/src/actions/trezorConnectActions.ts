@@ -1,6 +1,6 @@
 import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
+import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect-web';
 
 import type { Dispatch, Field, GetState } from '../types';
 import {
@@ -47,10 +47,6 @@ export const init =
                 type: event.type,
                 device: event.payload,
             });
-        });
-
-        TrezorConnect.on(TRANSPORT_EVENT, _event => {
-            // this type of event should not be emitted in "popup mode"
         });
 
         // Get default coreMode from URL params (?core-mode=auto)
