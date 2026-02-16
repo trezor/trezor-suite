@@ -62,7 +62,8 @@ const getPackageRoots = (): string[] => {
     return [...new Set(roots)];
 };
 
-const getEventFileGlobs = (packageRoots: string[]): string[] => packageRoots.flatMap(root => [
+const getEventFileGlobs = (packageRoots: string[]): string[] =>
+    packageRoots.flatMap(root => [
         path.join(root, 'src/**/*.{ts,tsx}'),
         path.join(root, 'dist/**/*.d.ts'),
     ]);
