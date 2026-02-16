@@ -1,6 +1,16 @@
 import { useState } from 'react';
 
-import { Badge, Card, H3, IconButton, InfoItem, Row, Tooltip } from '@trezor/components';
+import {
+    Badge,
+    Card,
+    H3,
+    IconButton,
+    InfoItem,
+    Row,
+    Tooltip,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
 
 import type { EventDoc } from '../types';
 import { AddedBadge } from './AddedBadge';
@@ -37,8 +47,8 @@ function toEventName(input: string): string {
 
 const Header = ({ event }: { event: EventDoc }) => {
     const [isCopied, setIsCopied] = useState<boolean>(false);
-
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
+    const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
     if (!event.name) return null;
 
@@ -47,8 +57,14 @@ const Header = ({ event }: { event: EventDoc }) => {
 
     return (
         <>
-            <Row justifyContent="space-between" alignItems="center" margin={{ bottom: 8 }}>
-                <Row gap={16} alignItems="center">
+            <Row
+                justifyContent="space-between"
+                alignItems="center"
+                margin={{ bottom: 8 }}
+                gap={isMobile ? 0 : 8}
+                flexWrap={isMobile ? 'wrap' : undefined}
+            >
+                <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
                     <H3>{event.name} </H3>
                     <Row gap={4}>
                         <Tooltip content="Copy event name">

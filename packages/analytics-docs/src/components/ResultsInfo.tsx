@@ -1,4 +1,4 @@
-import { Box, Link, Paragraph, Row } from '@trezor/components';
+import { Link, Paragraph, Row } from '@trezor/components';
 
 type ResultsInfoProps = {
     filteredCount: number;
@@ -18,7 +18,12 @@ export const ResultsInfo = ({
     onClearAll,
 }: ResultsInfoProps) => (
     <Row gap={8} alignItems="center" flex="1">
-        <Paragraph typographyStyle="label" variant="tertiary">
+        <Paragraph
+            typographyStyle="label"
+            variant="tertiary"
+            wordBreak="keep-all"
+            textWrap="nowrap"
+        >
             Showing <strong>{filteredCount}</strong> of <strong>{totalCount}</strong> events
             {platform !== 'all' ? (
                 <>
@@ -32,14 +37,12 @@ export const ResultsInfo = ({
                     matching <strong>{query.trim()}</strong>
                 </>
             ) : null}
-            .
-        </Paragraph>
-        {hasActiveFilters && onClearAll && (
-            <Box cursor="pointer">
+            .{' '}
+            {hasActiveFilters && onClearAll && (
                 <Link onClick={onClearAll} typographyStyle="label">
-                    Clear filters
+                    (clear filters)
                 </Link>
-            </Box>
-        )}
+            )}
+        </Paragraph>
     </Row>
 );
