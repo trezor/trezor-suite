@@ -5,35 +5,35 @@ const connect: webpack.Configuration = {
     module: {
         rules: [
             {
-                test: /pinger\/pingWorker.ts/i,
+                test: /pinger[\\/]pingWorker.ts/i,
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/ping-worker.[contenthash].js',
                 },
             },
             {
-                test: /workers\/blockbook\/index/i,
+                test: /workers[\\/]blockbook[\\/]index/i,
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/blockbook-worker.[contenthash].js',
                 },
             },
             {
-                test: /workers\/ripple\/index/i,
+                test: /workers[\\/]ripple[\\/]index/i,
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/ripple-worker.[contenthash].js',
                 },
             },
             {
-                test: /workers\/blockfrost\/index/i,
+                test: /workers[\\/]blockfrost[\\/]index/i,
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/blockfrost-worker.[contenthash].js',
                 },
             },
             {
-                test: /workers\/stellar\/index/i,
+                test: /workers[\\/]stellar[\\/]index/i,
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/stellar-worker.[contenthash].js',
