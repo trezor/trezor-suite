@@ -26,12 +26,12 @@ type SuiteSyncBannerInteraction = 'keys-needed' | 'firmware-upgrade-needed';
 
 const bannerConfigs: Record<SuiteSyncBannerInteraction, BannerConfig> = {
     'keys-needed': {
-        testId: '@notification/suite-sync-keys/button',
+        testId: '@notification/suite-sync-keys',
         buttonLabel: 'TR_SUITE_SYNC_GET_KEYS',
         description: 'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
     },
     'firmware-upgrade-needed': {
-        testId: '@notification/suite-sync-firmware-update/button',
+        testId: '@notification/suite-sync-firmware-update',
         buttonLabel: 'TR_SUITE_SYNC_FIRMWARE_UPDATE',
         description: 'TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER',
     },
@@ -67,12 +67,13 @@ const SuiteSyncBannerContent = ({
                 <Banner.Button
                     isDisabled={!isDeviceConnected}
                     onClick={onClick}
-                    data-testid={config.testId}
+                    data-testid={`${config.testId}/button`}
                 >
                     <Translation id={config.buttonLabel} />
                 </Banner.Button>
             </Tooltip>
         }
+        data-testid={config.testId}
         description={<Translation id={config.description} />}
     />
 );

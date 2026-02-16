@@ -85,25 +85,28 @@ export class EvoluClient {
     }
 
     @step()
-    async readFrom(table: TableName) {
-        return await this.evolu.loadQuery(
-            this.evolu.createQuery(db => db.selectFrom(table).selectAll()),
+    async subscribeToTable(table: TableName) {
+        const ownerId = (await this.evolu.appOwner).id;
+        const query = this.evolu.createQuery(db =>
+            db.selectFrom(table).where('ownerId', '=', ownerId).selectAll(),
         );
+
+        return this.evolu.subscribeQuery(query)(() => {
+            const rows = this.evolu.getQueryRows(query);
+            console.error(
+                `Evolu subscription update for table "${table}": ${JSON.stringify(rows, null, 2)}`,
+            );
+        });
     }
 
-    // Suite sync by design will first return data from local storage
-    // and then update it with data from the server.
-    // Because of that we need to retry reads until we get expected data
     @step()
-    async readWithRetryFrom(table: TableName) {
-        const result = await expect(async () => {
-            const data = await this.readFrom(table);
-            expect(data).not.toEqual([]);
+    async readFrom(table: TableName) {
+        const ownerId = (await this.evolu.appOwner).id;
+        const query = this.evolu.createQuery(db =>
+            db.selectFrom(table).where('ownerId', '=', ownerId).selectAll(),
+        );
 
-            return data;
-        }).toPass({ timeout: 5_000 });
-
-        return result;
+        return await this.evolu.loadQuery(query);
     }
 
     @step()
@@ -122,6 +125,9 @@ export class EvoluClient {
         }).toPass({ timeout: 3_000, intervals: [1000, 2000, 2500] });
     }
 
+    // Suite sync by design will first return data from local storage
+    // and then update it with data from the server.
+    // Because of that we need to retry reads until we get expected data
     @step()
     async expectInTable<T extends TableName>(
         table: T,
@@ -135,6 +141,7 @@ export class EvoluClient {
         const omitFields = options?.omit ?? ['id', 'createdAt'];
         const timeout = options?.timeout ?? 5_000;
         const expectFn = options?.softExpect ? expect.soft : expect;
+        const expectedOrdered = orderBy(expectedData, ['label']);
 
         await expectFn(async () => {
             const actualData = await this.readFrom(table);
@@ -142,7 +149,6 @@ export class EvoluClient {
             // Unfortunately label is the only guaranteed property for ordering
             // might not be sufficient for more advance test scenarios. YAGNI for now.
             const actualOrdered = orderBy(actualOmitted, ['label']);
-            const expectedOrdered = orderBy(expectedData, ['label']);
             if (!isEqual(expectedOrdered, actualOrdered)) {
                 throw new Error(
                     `Table "${table}" data does not match.\nDiff:\n${diff(expectedOrdered, actualOrdered)}`,
