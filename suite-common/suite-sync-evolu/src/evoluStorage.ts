@@ -58,7 +58,7 @@ export const createEvoluStorageFactory =
             updateRelayUrl,
             dispose: async () => {
                 ownerDispose();
-                // Todo: reload prevets app from reloading. Evolu has this tab-reload
+                // Todo: reload prevents app from reloading. Evolu has this tab-reload
                 //       to clear state as proper dispose is not yet implemented.
                 //       However we cannot effort the tab-reload.
                 //       See: https://github.com/evoluhq/evolu/issues/614

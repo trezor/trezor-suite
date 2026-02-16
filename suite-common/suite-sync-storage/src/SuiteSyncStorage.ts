@@ -1,7 +1,6 @@
-import { SuiteSyncOwner } from '@suite-common/suite-sync-types';
-
 import { SuiteSyncTable } from './SuiteSyncTable';
 import { SuiteSyncSchema } from './data/SuiteSyncSchema';
+import { SuiteSyncOwner } from './owner/suiteSyncOwner';
 
 type SuiteSyncStorageData = {
     [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;

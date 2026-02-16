@@ -1,10 +1,8 @@
 import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
+import { CreateSuiteSyncOwnerError, type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
 import type { DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
-
-import { SuiteSyncOwner } from './suiteSyncOwner';
 
 export type EnsureSuiteSyncOwnerParams = {
     device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;

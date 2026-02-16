@@ -3,6 +3,16 @@ export type {
     CreateSuiteStorage,
     CreateSuiteStorageDep,
 } from './SuiteSyncStorage';
+export {
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
+    deserializeSuiteSyncOwner,
+    serializeSuiteSyncOwner,
+    type SuiteSyncOwner,
+    type SuiteSyncOwnerId,
+    type SuiteSyncOwnerSecretHex,
+    type SuiteSyncOwnerSerialized,
+} from './owner/suiteSyncOwner';
 export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
 export type {

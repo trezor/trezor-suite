@@ -7,7 +7,7 @@ import { AppRememberedPermission } from '@suite-common/connect-popup/src/connect
 import type { MessageState } from '@suite-common/message-system';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,

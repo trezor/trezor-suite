@@ -2,7 +2,7 @@ import { selectKnownDevices } from '@suite-common/bluetooth';
 import { MetadataState } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';

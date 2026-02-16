@@ -1,5 +1,5 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
+import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';

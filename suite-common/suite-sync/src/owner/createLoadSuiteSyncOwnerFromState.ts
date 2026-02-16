@@ -5,7 +5,7 @@ import {
     SuiteSyncOwner,
     SuiteSyncOwnerSerialized,
     deserializeSuiteSyncOwner,
-} from '@suite-common/suite-sync-types';
+} from '@suite-common/suite-sync-storage';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

@@ -1,5 +1,6 @@
-import { SuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { Result } from '@trezor/type-utils';
+
+import type { SuiteSyncOwner } from './owner/suiteSyncOwner';
 
 export type CreateSuiteSyncOwnerError = { type: 'CreateSuiteSyncOwnerError'; message: string };
 

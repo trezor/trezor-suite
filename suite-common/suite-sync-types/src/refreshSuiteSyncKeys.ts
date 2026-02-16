@@ -1,8 +1,7 @@
+import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
-
-import { SuiteSyncOwner } from './owner/suiteSyncOwner';
 
 type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;

@@ -2,7 +2,7 @@ import {
     SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
-} from '@suite-common/suite-sync-types';
+} from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
