@@ -10,7 +10,7 @@ const Wrap = styled.div`
     margin-top: 16px;
 `;
 
-export function AttributesTable({ attributes }: { attributes: Record<string, AttributeDoc> }) {
+export const AttributesTable = ({ attributes }: { attributes: Record<string, AttributeDoc> }) => {
     const keys = Object.keys(attributes);
 
     if (keys.length === 0) {
@@ -62,4 +62,4 @@ export function AttributesTable({ attributes }: { attributes: Record<string, Att
             </CollapsibleBox>
         </Wrap>
     );
-}
+};

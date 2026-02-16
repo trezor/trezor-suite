@@ -61,7 +61,7 @@ export const ContentContainer = styled.div`
     width: 100%;
 `;
 
-export function App({ theme }: AppProps) {
+export const App = ({ theme }: AppProps) => {
     const {
         filteredEvents,
         setQuery,
@@ -153,4 +153,4 @@ export function App({ theme }: AppProps) {
             </Box>
         </>
     );
-}
+};
