@@ -15,7 +15,7 @@ import {
     DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
-import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { transferStorageThunk } from './storage/transferStorageThunk';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
@@ -26,9 +26,6 @@ type AllocateMoreOwnerQuotaParams = {
 export const increaseOwnerQuotaThunk =
     ({ ownerId }: AllocateMoreOwnerQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
-        const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
-        if (!isQuotaManagerEnabled) return;
-
         const device = selectSelectedDevice(getState());
 
         if (!device || !isTrezorDeviceWithState(device)) {

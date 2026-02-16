@@ -2,15 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     eraseFetchedDataDebug,
-    quotaManagerEnabledUpdated,
-    selectIsQuotaManagerEnabled,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
 import { yup } from '@suite-common/validators';
-import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
@@ -18,13 +16,9 @@ export const SuiteSyncQuotaManager = () => {
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
-    const isQuotaManagerEnabled = useSelector(selectIsQuotaManagerEnabled);
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
-
-    const handleQuotaManagerEnableToggle = () =>
-        dispatch(quotaManagerEnabledUpdated({ isEnabled: !isQuotaManagerEnabled }));
 
     const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
 
@@ -49,13 +43,6 @@ export const SuiteSyncQuotaManager = () => {
         <Card>
             <VStack spacing="sp12">
                 <Text variant="titleSmall">Suite Sync Quota Manager</Text>
-                <HStack justifyContent="space-between">
-                    <Text>Quota Manager</Text>
-                    <CheckBox
-                        isChecked={isQuotaManagerEnabled}
-                        onChange={handleQuotaManagerEnableToggle}
-                    />
-                </HStack>
                 <Form form={form}>
                     <VStack>
                         <TextInputField label="Quota Manager URL" name="suiteSyncQuotaManagerUrl" />

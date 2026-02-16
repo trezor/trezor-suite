@@ -16,11 +16,6 @@ export const quotaManagerFetchError = createAction(
     (payload: { error: string; path?: string }) => ({ payload }),
 );
 
-export const quotaManagerEnabledUpdated = createAction(
-    `${QUOTA_MANAGER_PREFIX}/setEnabled`,
-    (payload: { isEnabled: boolean }) => ({ payload }),
-);
-
 export const quotaManagerDeviceFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/deviceFetched`,
     (payload: { deviceId: string; totalStorageSize: number; unspentStorageSize: number }) => ({
@@ -53,6 +48,5 @@ export const suiteSyncQuotaManagerActions = {
     quotaManagerFetchError,
     quotaManagerDeviceFetched,
     quotaManagerOwnerFetched,
-    quotaManagerEnabledUpdated,
     eraseFetchedDataDebug,
 };

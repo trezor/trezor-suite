@@ -28,9 +28,7 @@ const createTestStorage = (nameSuffix: string) => {
         _evoluDbNameSuffix: nameSuffix,
     });
 
-    const relayUrl = 'http://localhost:4000';
-
-    return createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner, relayUrl });
+    return createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
 };
 
 describe(createEvoluStorageFactory.name, () => {

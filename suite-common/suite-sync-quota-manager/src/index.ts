@@ -17,7 +17,6 @@ export { increaseOwnerQuotaThunk } from './increaseOwnerQuotaThunk';
  */
 export {
     updateQuotaManagerBaseUrl,
-    quotaManagerEnabledUpdated,
     quotaManagerDeviceFetched,
     quotaManagerFetchError,
     suiteSyncQuotaManagerActions,
@@ -29,7 +28,6 @@ export {
  */
 export {
     selectQuotaManagerBaseUrl,
-    selectIsQuotaManagerEnabled,
     selectOwnersAllowance,
     selectRegisteredDevices,
     selectIsDeviceRegistered,

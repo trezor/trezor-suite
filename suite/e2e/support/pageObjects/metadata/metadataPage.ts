@@ -96,7 +96,6 @@ export class MetadataPage {
     @step()
     async setupQuotaManager() {
         await this.settingsPage.navigateTo('debug');
-        await this.settingsPage.debugTab.quotaManagerCheckbox.click();
         await this.settingsPage.debugTab.quotaManagerUrlInput.fill(QUOTA_URL);
         await this.settingsPage.debugTab.quotaManagerUrlSaveButton.click();
     }

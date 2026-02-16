@@ -13,7 +13,6 @@ export class DebugTab {
     readonly addNewMessageButton: Locator;
     readonly jsonEditor: Locator;
     readonly addMessageButton: Locator;
-    readonly quotaManagerCheckbox: Locator;
     readonly quotaManagerUrlInput: Locator;
     readonly quotaManagerUrlSaveButton: Locator;
 
@@ -31,9 +30,6 @@ export class DebugTab {
         this.jsonEditor = page.getByTestId('@settings/debug/message-system/json-editor-textarea');
         this.addMessageButton = page.getByTestId(
             '@settings/debug/message-system/json-editor-add-message-button',
-        );
-        this.quotaManagerCheckbox = page.getByTestId(
-            '@settings/debug/enable-quota-manager-checkbox',
         );
         this.quotaManagerUrlInput = page.getByTestId('@settings/debug/quota-manager-url-input');
         this.quotaManagerUrlSaveButton = page.getByTestId(

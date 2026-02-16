@@ -69,18 +69,8 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
         }
     });
 
-    it('returns early when quota manager is disabled', async () => {
-        const getState = createGetState({ enabled: false });
-        const dispatch = jest.fn();
-
-        await ensureDeviceHasQuotaThunk({ delegatedKey, device })(dispatch, getState);
-
-        expect(checkStorageByPublicKeyMock).not.toHaveBeenCalled();
-        expect(dispatch).not.toHaveBeenCalled();
-    });
-
     it('dispatches device fetched when storage already exists', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch = jest.fn();
 
         checkStorageByPublicKeyMock.mockResolvedValue(ok({ totalSpace: 5000, unspentSpace: 1200 }));
@@ -107,7 +97,7 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
     });
 
     it('dispatches quota manager error for non-404 failures', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch = jest.fn();
 
         checkStorageByPublicKeyMock.mockResolvedValue(
@@ -127,7 +117,7 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
     });
 
     it('requests registration when storage is missing', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch: ReturnType<typeof jest.fn> = jest.fn((action: unknown) => {
             if (typeof action === 'function')
                 return (action as (...args: any[]) => any)(dispatch, getState);
