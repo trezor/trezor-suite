@@ -22,6 +22,7 @@ import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
+import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { InitialStep } from './steps/InitialStep';
@@ -193,7 +194,21 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             if (!wordCount) return;
 
                             dispatch(setWordsCount(wordCount));
-                            dispatch(setStatus('select-recovery-type'));
+
+                            // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
+                            // For 24 words, show the recovery type selection
+                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                                deviceModelInternal,
+                                wordCount,
+                                'standard',
+                            );
+
+                            if (shouldSkipSelection) {
+                                dispatch(setAdvancedRecovery(true));
+                                dispatch(checkSeed());
+                            } else {
+                                dispatch(setStatus('select-recovery-type'));
+                            }
                         }}
                         data-testid="@recovery/continue-button"
                     >
