@@ -6,6 +6,15 @@ permissions:
 
 # Deploy to https://dev.suite.sldev.cz/analytics-docs on every merge to develop (same as storybook deploy flow)
 on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "packages/analytics-docs/**"
+      - "suite/analytics/**"
+      - "suite-common/analytics/**"
+      - "suite-native/analytics/**"
+      - ".github/workflows/build-analytics-docs.yml"
   push:
     branches:
       - develop
