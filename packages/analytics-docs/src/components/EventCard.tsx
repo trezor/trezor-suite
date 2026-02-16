@@ -32,8 +32,7 @@ const getPlatformDirectory = (platform: string) => {
     }
 };
 
-function toEventName(input: string): string {
-    return (
+const toEventName = (input: string): string => (
         input
             .split(/[/_-]+/)
             .map((part, index) =>
@@ -43,7 +42,6 @@ function toEventName(input: string): string {
             )
             .join('') + 'Event'
     );
-}
 
 const Header = ({ event }: { event: EventDoc }) => {
     const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -110,8 +108,7 @@ const Header = ({ event }: { event: EventDoc }) => {
     );
 };
 
-export function EventCard({ event }: { event: EventDoc }) {
-    return (
+export const EventCard = ({ event }: { event: EventDoc }) => (
         <Card paddingType="small">
             <Header event={event} />
             <InfoItem label="Trigger" typographyStyle="label">
@@ -135,4 +132,3 @@ export function EventCard({ event }: { event: EventDoc }) {
             <AttributesTable attributes={event.attributes ?? {}} />
         </Card>
     );
-}

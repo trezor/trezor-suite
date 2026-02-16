@@ -10,7 +10,7 @@ export type UrlParams = {
     sort: UrlSort;
 };
 
-export function getParamsFromUrl(): UrlParams {
+export const getParamsFromUrl = (): UrlParams => {
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
 
     const platformParam = params.get('platform') as UrlPlatform;
@@ -21,9 +21,9 @@ export function getParamsFromUrl(): UrlParams {
         platform: VALID_PLATFORMS.includes(platformParam) ? platformParam : 'all',
         sort: VALID_SORTS.includes(sortParam) ? sortParam : 'az',
     };
-}
+};
 
-export function updateUrl(query: string, platform: string, sort: string): void {
+export const updateUrl = (query: string, platform: string, sort: string): void => {
     if (typeof window === 'undefined') return;
 
     const params = new URLSearchParams();
@@ -34,4 +34,4 @@ export function updateUrl(query: string, platform: string, sort: string): void {
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
 
     window.history.replaceState(null, '', url);
-}
+};
