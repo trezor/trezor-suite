@@ -48,10 +48,11 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
             await device.powerOn();
         });
 
-        await test.step('Retry recovery with basic type', async () => {
+        await test.step('Retry recovery with 12 words (automatically uses advanced recovery)', async () => {
             await onboardingPage.retryRecoveryButton.click({ timeout: 15_000 });
+            // For T1B1 with 12 words, Standard recovery is disabled, so it automatically uses Advanced recovery
             await recoveryModal.selectWordCount(12);
-            await recoveryModal.selectRecoveryButton('standard').click();
+            // No recovery type selection needed - it goes directly to advanced recovery
             // Emulator isn't sometimes ready to accept confirm right away. Retry approach doesn't work.
             await page.waitForTimeout(500);
         });
@@ -61,8 +62,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
             await device.pressYes();
         });
 
-        await test.step('Ensure input field for basic recovery is visible', async () => {
-            await expect(page.getByTestId('@word-input-select/input')).toBeVisible();
+        await test.step('Ensure input field for advanced recovery is visible', async () => {
+            await expect(recoveryModal.wordInputAtIndex(1)).toBeVisible();
         });
 
         // Note: Completion of reading device data requires support in trezor-user-env

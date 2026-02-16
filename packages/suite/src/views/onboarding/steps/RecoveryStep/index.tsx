@@ -7,6 +7,7 @@ import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboarding
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
+import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
@@ -46,7 +47,21 @@ export const RecoveryStep = () => {
                     <SelectWordCount
                         onSelect={number => {
                             setWordsCount(number);
-                            setStatus('select-recovery-type');
+                            // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
+                            // For 24 words, show the recovery type selection
+                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                                deviceModelInternal,
+                                number,
+                                'standard',
+                            );
+
+                            if (shouldSkipSelection) {
+                                setAdvancedRecovery(true);
+                                dispatch(updateAnalytics({ recoveryType: 'advanced' }));
+                                recoverDevice();
+                            } else {
+                                setStatus('select-recovery-type');
+                            }
                         }}
                     />
                 </RecoveryStepBox>
