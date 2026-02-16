@@ -2,14 +2,12 @@ import { useState } from 'react';
 
 import {
     eraseFetchedDataDebug,
-    quotaManagerEnabledUpdated,
-    selectIsQuotaManagerEnabled,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Checkbox, Column, Input } from '@trezor/components';
+import { Button, Column, Input } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SettingsSection } from 'src/components/settings/SettingsSection';
@@ -21,7 +19,6 @@ export const QuotaManagerSettings = () => {
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
-    const isQuotaManagerEnabled = useSelector(selectIsQuotaManagerEnabled);
     const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
@@ -42,25 +39,8 @@ export const QuotaManagerSettings = () => {
 
     const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
 
-    const toggleIsQuotaManagerEnabled = () => {
-        dispatch(quotaManagerEnabledUpdated({ isEnabled: !isQuotaManagerEnabled }));
-    };
-
     return (
         <SettingsSection title="Quota Manager">
-            <SectionItem>
-                <TextColumn
-                    title="Enable Quota Manager API"
-                    description="This enables the Quota Manager API for Suite Sync."
-                />
-                <ActionColumn>
-                    <Checkbox
-                        data-testid="@settings/debug/enable-quota-manager-checkbox"
-                        isChecked={isQuotaManagerEnabled}
-                        onClick={toggleIsQuotaManagerEnabled}
-                    />
-                </ActionColumn>
-            </SectionItem>
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>

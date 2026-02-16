@@ -12,7 +12,6 @@ export default createMigration<SuiteDBSchema>('26.1.0', async (db, tx) => {
 
     tx.objectStore('suiteSyncQuotaManager').put(
         {
-            enabled: false,
             baseUrl: null,
             registeredDevices: [],
             ownersAllowance: [],

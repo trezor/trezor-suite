@@ -4,14 +4,12 @@ import {
     eraseFetchedDataDebug,
     quotaManagerDeviceFetched,
     quotaManagerDeviceUnspentStorageFetched,
-    quotaManagerEnabledUpdated,
     quotaManagerOwnerFetched,
     updateQuotaManagerBaseUrl,
 } from './quotaManagerActions';
 import { type OwnerAllowance, type RegisteredDevice } from './types';
 
 export type SuiteSyncQuotaManagerState = {
-    enabled: boolean; // user can enable/disable Quota Manager in settings and quota manager is disabled automatically when relay URL is not Trezor ones
     baseUrl: string | null;
 
     registeredDevices: RegisteredDevice[];
@@ -19,7 +17,6 @@ export type SuiteSyncQuotaManagerState = {
 };
 
 export const quotaManagerInitialState: SuiteSyncQuotaManagerState = {
-    enabled: true,
     baseUrl: null,
     registeredDevices: [],
     ownersAllowance: [],
@@ -39,15 +36,6 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
             .addCase(eraseFetchedDataDebug, state => {
                 state.registeredDevices = [];
                 state.ownersAllowance = [];
-            })
-            .addCase(quotaManagerEnabledUpdated, (state, { payload }) => {
-                state.enabled = payload.isEnabled;
-
-                // we clear the data when the QM is disabled
-                if (payload.isEnabled === false) {
-                    state.registeredDevices = [];
-                    state.ownersAllowance = [];
-                }
             })
             .addCase(quotaManagerDeviceFetched, (state, { payload }) => {
                 const existingDevice = state.registeredDevices.find(

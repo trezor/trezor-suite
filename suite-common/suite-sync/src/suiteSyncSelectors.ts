@@ -2,7 +2,9 @@ import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/de
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { StaticSessionId } from '@trezor/connect';
+import { isNotNull } from '@trezor/utils';
 
+import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { SuiteSyncState } from './suiteSyncSlice';
 import { SuiteSyncInteraction } from './suiteSyncTypes';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
@@ -19,8 +21,13 @@ export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): bo
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
-    state.suiteSync.settings.suiteSyncRelayUrl;
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) => {
+    const { suiteSyncRelayUrl: storedUrl } = state.suiteSync.settings;
+
+    return isNotNull(storedUrl) && storedUrl.trim() !== ''
+        ? storedUrl
+        : DEFAULT_SUITE_SYNC_RELAY_URL;
+};
 
 export const selectSuiteSyncOwnerForDeviceStaticId = (
     state: WithSuiteSyncAndDeviceState,

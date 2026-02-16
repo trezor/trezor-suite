@@ -3,7 +3,7 @@ import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
 
-import { WriteModeRequiredForAllocationErrType } from '../quotaManagerTypes';
+import { WriteModeRequiredForAllocationErrType } from './quotaManagerTypes';
 
 export type HttpErrType = { type: 'HttpError' };
 

@@ -10,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';
 import { quotaManagerDeviceFetched, quotaManagerFetchError } from './quotaManagerActions';
-import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByPublicKey } from './storage/checkStorage';
 import { registerStorageThunk } from './storage/registerStorageThunk';
 import { prepareMessageBufferEvoluSignRegistrationRequest } from './util/prepareMessageBufferEvoluSignRegistrationRequest';
@@ -25,10 +25,7 @@ type EnsureDeviceHasQuotaParams = {
 export const ensureDeviceHasQuotaThunk =
     ({ device, delegatedKey }: EnsureDeviceHasQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
-        const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
-
-        if (!isQuotaManagerEnabled) return;
 
         const delegatedKeyPublic = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
 

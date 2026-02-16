@@ -20,7 +20,7 @@ import {
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
 import { quotaManagerOwnerFetched } from './quotaManagerActions';
-import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
 import { transferStorageThunk } from './storage/transferStorageThunk';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
@@ -49,10 +49,6 @@ export const ensureOwnerHasAllocatedQuotaThunk =
         isWriteMode,
     }: EnsureOwnerHasAllocatedQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any): ReturnType<EnsureOwnerHasAllocatedQuota> => {
-        const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
-
-        if (!isQuotaManagerEnabled) return ok();
-
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
 
         const hasOwnerStorage = await checkStorageByOwnerId({
