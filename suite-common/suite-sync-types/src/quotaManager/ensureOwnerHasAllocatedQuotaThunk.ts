@@ -1,7 +1,8 @@
-import { DelegatedIdentityKey, SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
 
+import { SuiteSyncOwnerId } from '../owner/suiteSyncOwner';
 import { WriteModeRequiredForAllocationErrType } from '../refreshSuiteSyncKeys';
 
 export type HttpErrType = { type: 'HttpError' };

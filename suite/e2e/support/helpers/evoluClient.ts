@@ -6,7 +6,7 @@ import { diff } from 'jest-diff';
 import { isEqual, omit, orderBy } from 'lodash';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
-import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
+import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-types';
 
 import { createNodeEvoluDeps } from './createEvoluNodeDeps';
 import { step } from '../common';

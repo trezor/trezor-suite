@@ -4,6 +4,7 @@ import {
     selectSuiteSyncAccountAddressesByAccount,
     selectSuiteSyncAccountLabel,
     selectSuiteSyncOutputLabelsByAccount,
+    selectSuiteSyncOwnerForDeviceStaticId,
     suiteSyncToBip329,
 } from '@suite-common/suite-sync';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
@@ -168,7 +169,7 @@ export const exportMetadataToBip329File = createThunk<
             let labelsToExport: Bip329Label[] = [];
 
             if (isSuiteSyncEnabled) {
-                const owner = device?.suiteSyncOwner;
+                const owner = selectSuiteSyncOwnerForDeviceStaticId(state, staticSessionId);
                 if (owner === undefined) {
                     showExportErrorToast();
 

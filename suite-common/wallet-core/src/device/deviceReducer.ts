@@ -135,7 +135,6 @@ const connectDevice = (
                 ? Number(device.firstConnectedTimestamp ?? currentTime)
                 : currentTime,
         ts: currentTime,
-        suiteSyncOwner: null,
     };
     // connected device is unacquired/unreadable
     if (!device.features) {
@@ -205,7 +204,6 @@ const connectDevice = (
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
-        suiteSyncOwner: null,
     };
 
     // update affected devices
@@ -329,7 +327,6 @@ const addAuthorizedDevice = (
         useEmptyPassphrase,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         state,
-        suiteSyncOwner: null,
     };
 
     draft.devices.push(newDevice);
@@ -434,7 +431,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: {},
         passwords: {},
-        suiteSyncOwner: null,
     };
     draft.devices.push(newDevice);
 };
@@ -697,17 +693,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     // expected to exist; device must have been connected or changed for this action to happen
                     if (data === undefined) return;
                     data.delegatedIdentityKey = delegatedKey;
-                },
-            )
-            .addCase(
-                deviceActions.setSuiteSyncOwner,
-                (state, { payload: { deviceStaticId, owner } }) => {
-                    const index = state.devices.findIndex(
-                        d => d.features && d.state && d.state.staticSessionId === deviceStaticId,
-                    );
-
-                    if (!state.devices[index]) return;
-                    state.devices[index].suiteSyncOwner = owner;
                 },
             )
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {

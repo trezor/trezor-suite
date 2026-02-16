@@ -5,7 +5,8 @@ import {
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { SuiteSyncOwnerId, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { SuiteSyncOwnerId } from '@suite-common/suite-sync-types';
+import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 

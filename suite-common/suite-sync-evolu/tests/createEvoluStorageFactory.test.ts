@@ -8,7 +8,7 @@ import {
     SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
-} from '@suite-common/suite-types';
+} from '@suite-common/suite-sync-types';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { createDeferred } from '@trezor/utils';
 

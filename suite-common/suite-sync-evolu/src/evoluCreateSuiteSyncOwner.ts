@@ -1,5 +1,5 @@
 import { CreateSuiteSyncOwner, CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
-import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
+import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';

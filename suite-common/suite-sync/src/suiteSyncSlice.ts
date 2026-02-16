@@ -1,6 +1,10 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
+import { EncryptedHex } from '@suite-common/platform-encryption';
+import {
+    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    SuiteSyncOwnerSerialized,
+} from '@suite-common/suite-sync-types';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -35,6 +39,7 @@ export type SuiteSyncSettings = {
 export type SuiteSyncState = {
     settings: SuiteSyncSettings;
     suiteSyncErrors: Record<StaticSessionId, SuiteSyncErrorType>;
+    suiteSyncOwners: Record<StaticSessionId, EncryptedHex<SuiteSyncOwnerSerialized>>;
 };
 
 export const initialSuiteSyncState: SuiteSyncState = {
@@ -44,6 +49,7 @@ export const initialSuiteSyncState: SuiteSyncState = {
         suiteSyncRelayUrl: null,
     },
     suiteSyncErrors: {},
+    suiteSyncOwners: {},
 };
 
 export const suiteSyncSlice = createSlice({
@@ -77,6 +83,21 @@ export const suiteSyncSlice = createSlice({
                 state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
             }
         },
+        setSuiteSyncOwner: (
+            state,
+            {
+                payload,
+            }: PayloadAction<{
+                deviceStaticId: StaticSessionId;
+                owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
+            }>,
+        ) => {
+            if (payload.owner === null) {
+                delete state.suiteSyncOwners[payload.deviceStaticId];
+            } else {
+                state.suiteSyncOwners[payload.deviceStaticId] = payload.owner;
+            }
+        },
     },
 });
 
@@ -85,6 +106,7 @@ export const {
     updateSuiteSyncDebugEnabled,
     setSuiteSyncRelayUrl,
     setSuiteSyncError,
+    setSuiteSyncOwner,
 } = suiteSyncSlice.actions;
 
 export const suiteSyncReducer = suiteSyncSlice.reducer;

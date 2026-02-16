@@ -1,7 +1,6 @@
 import { Evolu } from '@evolu/common';
 
-import { SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
-import { asSuiteSyncOwnerId } from '@suite-common/suite-types';
+import { SuiteSyncErrorHandler , asSuiteSyncOwnerId } from '@suite-common/suite-sync-types';
 
 export const createEvoluErrorHandler =
     (evolu: Evolu<any>, errorHandler: SuiteSyncErrorHandler) => () => {

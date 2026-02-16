@@ -1,5 +1,5 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-types';
+import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
@@ -90,9 +90,9 @@ describe(selectSuiteSyncInteraction.name, () => {
         expect(result).toBe('firmware-upgrade-needed');
     });
 
-    it('interaction is "keys-needed" when device has suiteSyncOwner set', () => {
+    it('interaction is "keys-needed" when Suite Sync owner key is missing', () => {
         const state = createMockState(
-            { suiteSyncOwner: null },
+            {},
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
@@ -108,11 +108,15 @@ describe(selectSuiteSyncInteraction.name, () => {
 
     it('no interaction needed', () => {
         const state = createMockState(
-            { suiteSyncOwner: asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key') },
+            {},
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
                     isSuiteSyncEnabled: true,
+                },
+                suiteSyncOwners: {
+                    [DEVICE_STATIC_SESSION_ID_123]:
+                        asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key'),
                 },
             },
         );

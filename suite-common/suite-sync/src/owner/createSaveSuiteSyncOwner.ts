@@ -1,21 +1,22 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { SuiteSyncOwner, serializeSuiteSyncOwner } from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
+import { SuiteSyncOwner, serializeSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
+
+import { setSuiteSyncOwner } from '../suiteSyncSlice';
 
 export type SaveSuiteSyncOwnerDeps = {
     dispatch: Dispatch;
 } & PlatformEncryptionDep;
 
-type SaveSuiteSyncOwnerParms = {
+type SaveSuiteSyncOwnerParams = {
     deviceStaticId: StaticSessionId;
     suiteSyncOwner: SuiteSyncOwner;
 };
 
-export type SaveSuiteSyncOwner = (params: SaveSuiteSyncOwnerParms) => Promise<void>;
+export type SaveSuiteSyncOwner = (params: SaveSuiteSyncOwnerParams) => Promise<void>;
 
 export type SaveSuiteSyncOwnerDep = {
     saveSuiteSyncOwner: SaveSuiteSyncOwner;
@@ -40,7 +41,7 @@ export const createSaveSuiteSyncOwner =
                  * User is therefore required to have device connected.
                  */
                 case 'EncryptionUnavailable': {
-                    deps.dispatch(deviceActions.setSuiteSyncOwner({ deviceStaticId, owner: null }));
+                    deps.dispatch(setSuiteSyncOwner({ deviceStaticId, owner: null }));
 
                     return;
                 }
@@ -50,7 +51,7 @@ export const createSaveSuiteSyncOwner =
             }
         }
 
-        deps.dispatch(deviceActions.setSuiteSyncOwner({ deviceStaticId, owner: result.payload }));
+        deps.dispatch(setSuiteSyncOwner({ deviceStaticId, owner: result.payload }));
 
         return;
     };

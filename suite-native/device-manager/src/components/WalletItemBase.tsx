@@ -1,7 +1,11 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectIsSuiteSyncDebugEnabled } from '@suite-common/suite-sync';
+import {
+    WithSuiteSyncAndDeviceState,
+    selectIsSuiteSyncDebugEnabled,
+    selectSuiteSyncOwnerForDeviceStaticId,
+} from '@suite-common/suite-sync';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -62,11 +66,15 @@ const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
 
+    const deviceStaticSessionId = device?.state?.staticSessionId;
+
+    const suiteSyncOwner = useSelector((state: WithSuiteSyncAndDeviceState) =>
+        selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId),
+    );
+
     if (!isLabellingAllowed || !device || !isSuiteSyncDebugEnabled) {
         return null;
     }
-
-    const deviceStaticSessionId = device.state?.staticSessionId;
 
     if (deviceStaticSessionId === undefined) {
         return null;
@@ -79,7 +87,7 @@ const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
         ' @ ' +
         deviceId.slice(-8) +
         ' E: ' +
-        device.suiteSyncOwner?.slice(-8);
+        suiteSyncOwner?.slice(-8);
 
     return <Text>{evoluDebug}</Text>;
 };

@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { SuiteSyncOwnerId } from './owner/suiteSyncOwner';
 
 export type CreateSuiteSyncErrorHandlerDep = {
     dispatch: Dispatch;

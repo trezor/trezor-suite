@@ -1,6 +1,7 @@
 import { mocked } from 'jest-mock';
 
-import { asDelegatedIdentityKey, asSuiteSyncOwnerId } from '@suite-common/suite-types';
+import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-types';
+import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 

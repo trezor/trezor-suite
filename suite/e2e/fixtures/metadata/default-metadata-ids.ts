@@ -1,6 +1,6 @@
 import { OwnerId } from '@evolu/common';
 
-import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
+import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-types';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 // Ids for default mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle'
