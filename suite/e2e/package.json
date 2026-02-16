@@ -32,6 +32,7 @@
         "@suite-common/feedback": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

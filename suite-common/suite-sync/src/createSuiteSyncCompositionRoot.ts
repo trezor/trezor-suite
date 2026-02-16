@@ -10,11 +10,7 @@ import {
     SuiteSyncAppReloaderDep,
     SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
-import {
-    selectAllDeviceStaticIds,
-    selectDeviceByStaticSessionId,
-    selectSuiteSyncOwnerForDeviceStaticId,
-} from '@suite-common/wallet-core';
+import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
@@ -43,7 +39,11 @@ import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createE
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
 import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
 import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
+import {
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncOwnerForDeviceStaticId,
+    selectSuiteSyncRelayUrl,
+} from './suiteSyncSelectors';
 
 type CreateSuiteStorageFactory = (deps: {
     suiteSyncErrorHandler: SuiteSyncErrorHandler;

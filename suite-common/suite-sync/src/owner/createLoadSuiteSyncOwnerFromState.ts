@@ -5,10 +5,11 @@ import {
     SuiteSyncOwner,
     SuiteSyncOwnerSerialized,
     deserializeSuiteSyncOwner,
-} from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
+} from '@suite-common/suite-sync-types';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
+
+import { setSuiteSyncOwner } from '../suiteSyncSlice';
 
 export type LoadSuiteSyncOwnerFromStateDeps = {
     getDeviceSuiteSyncOwner: (
@@ -56,7 +57,7 @@ export const createLoadSuiteSyncOwnerFromState =
                  */
                 case 'EncryptionUnavailable':
                 case 'DecryptionFailed': {
-                    deps.dispatch(deviceActions.setSuiteSyncOwner({ deviceStaticId, owner: null }));
+                    deps.dispatch(setSuiteSyncOwner({ deviceStaticId, owner: null }));
 
                     return null;
                 }

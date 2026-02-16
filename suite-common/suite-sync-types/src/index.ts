@@ -1,4 +1,14 @@
 export type { SuiteSync, SuiteSyncDep } from './SuiteSync';
+export {
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
+    deserializeSuiteSyncOwner,
+    serializeSuiteSyncOwner,
+    type SuiteSyncOwner,
+    type SuiteSyncOwnerId,
+    type SuiteSyncOwnerSecretHex,
+    type SuiteSyncOwnerSerialized,
+} from './owner/suiteSyncOwner';
 export type {
     SuiteSyncStorageRepositoryDep,
     CreateSuiteSyncStorageRepository,

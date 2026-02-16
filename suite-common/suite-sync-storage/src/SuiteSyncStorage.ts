@@ -1,4 +1,4 @@
-import { SuiteSyncOwner } from '@suite-common/suite-types/';
+import { SuiteSyncOwner } from '@suite-common/suite-sync-types';
 
 import { SuiteSyncTable } from './SuiteSyncTable';
 import { SuiteSyncSchema } from './data/SuiteSyncSchema';

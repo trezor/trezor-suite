@@ -193,7 +193,6 @@ export const mockSuiteDevice = (
             ts: 0,
             buttonRequests: [],
             metadata: {},
-            suiteSyncOwner: null,
             ...dev,
             ...device,
             state: dev?.state,

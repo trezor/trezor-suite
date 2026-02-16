@@ -30,7 +30,6 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.forgetDevice,
             // ?
             deviceActions.setDeviceState,
-            deviceActions.setSuiteSyncOwner,
             deviceActions.setDiscovered,
         )(action)
     ) {

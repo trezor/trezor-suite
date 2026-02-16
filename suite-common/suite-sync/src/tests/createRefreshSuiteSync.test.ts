@@ -2,13 +2,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
 import { mockNotExpected } from '@suite-common/dependency-injection';
-import { EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import {
-    TrezorDevice,
-    asDelegatedIdentityKey,
+    EnsureSuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
-} from '@suite-common/suite-types';
+} from '@suite-common/suite-sync-types';
+import { TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
 import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSyncKeys';

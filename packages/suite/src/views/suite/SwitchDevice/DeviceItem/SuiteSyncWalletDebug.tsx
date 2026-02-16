@@ -3,6 +3,8 @@ import {
     isSuiteSyncSupportedByDevice,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncEnabled,
+    selectSuiteSyncOwnerForDeviceStaticId,
+    setSuiteSyncOwner,
 } from '@suite-common/suite-sync';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
@@ -21,6 +23,9 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
     const legacyMetadataState = useSelector(state => state.metadata);
 
     const deviceStaticSessionId = device.state?.staticSessionId;
+    const suiteSyncOwner = useSelector(state =>
+        selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId),
+    );
 
     const isSuiteSyncDebug =
         isSuiteSyncDebugEnabled &&
@@ -39,7 +44,7 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
         }
 
         dispatch(
-            deviceActions.setSuiteSyncOwner({
+            setSuiteSyncOwner({
                 deviceStaticId: device.state.staticSessionId,
                 owner: null,
             }),
@@ -66,11 +71,11 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip
-                        content={<Code>{JSON.stringify(device.suiteSyncOwner, null, 2)}</Code>}
+                        content={<Code>{JSON.stringify(suiteSyncOwner, null, 2)}</Code>}
                     >
-                        <Text typographyStyle="hint" intent="accentViolet">
+                        <Text typographyStyle="hint" intent="accentViolet"
                             E:
-                            <Code>{device.suiteSyncOwner?.slice(-8)}</Code>
+                            <Code>{suiteSyncOwner?.slice(-8)}</Code>
                         </Text>
                     </Tooltip>
                 </>
