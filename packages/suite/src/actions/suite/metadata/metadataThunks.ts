@@ -170,7 +170,7 @@ export const exportMetadataToBip329File = createThunk<
 
             if (isSuiteSyncEnabled) {
                 const owner = selectSuiteSyncOwnerForDeviceStaticId(state, staticSessionId);
-                if (owner === undefined) {
+                if (owner === null) {
                     showExportErrorToast();
 
                     return;

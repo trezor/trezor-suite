@@ -52,6 +52,7 @@ export const preloadStore = async () => {
             bioAuth,
             firmware,
             suiteSyncSettings,
+            suiteSyncOwners,
             suiteSyncQuotaManager,
         ] = await Promise.all([
             db.getItemByPK('suiteSettings', 'suite'),
@@ -79,6 +80,7 @@ export const preloadStore = async () => {
             db.getItemByPK('bioAuth', 'bioAuth'),
             db.getItemByPK('firmware', 'firmware'),
             db.getItemByPK('suiteSyncSettings', 'suiteSyncSettings'),
+            db.getItemsWithKeys('suiteSyncOwners'),
             db.getItemByPK('suiteSyncQuotaManager', 'suiteSyncQuotaManager'),
         ]);
 
@@ -110,6 +112,7 @@ export const preloadStore = async () => {
                 explorer,
                 firmware,
                 suiteSyncSettings,
+                suiteSyncOwners,
                 suiteSyncQuotaManager,
             },
         } as const;

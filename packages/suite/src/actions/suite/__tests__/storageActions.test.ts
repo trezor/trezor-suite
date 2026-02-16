@@ -1,5 +1,8 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { asEncryptedHex } from '@suite-common/platform-encryption';
+import { setSuiteSyncOwner } from '@suite-common/suite-sync';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
@@ -17,6 +20,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -24,6 +28,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
+import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { configureStore } from 'src/support/tests/configureStore';
@@ -39,6 +44,7 @@ const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
+const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -86,7 +92,7 @@ const tx2 = getWalletTransaction({
     symbol: 'btc',
 });
 
-type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSyncQuotaManager'> & {
+type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager'> & {
     wallet: Partial<
         Pick<
             AppState['wallet'],
@@ -105,6 +111,10 @@ type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSyncQuotaManager'>
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
+        action || ({ type: 'foo' } as any),
+    ),
+    suiteSync: suiteSyncReducer(
+        prevState ? prevState.suiteSync : undefined,
         action || ({ type: 'foo' } as any),
     ),
     suiteSyncQuotaManager: quotaManagerSliceReducer(
@@ -164,6 +174,7 @@ const updateStore = (store: mockStoreType) => {
         const action = store.getActions().pop();
         const prevState = store.getState();
         store.getState().suite = getInitialState(prevState, action).suite;
+        store.getState().suiteSync = getInitialState(prevState, action).suiteSync;
         store.getState().device = getInitialState(prevState, action).device;
         store.getState().wallet = getInitialState(prevState, action).wallet;
         store.getActions().push(action);
@@ -461,5 +472,27 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
+    });
+
+    it('should store SuiteSyncOwner on setSuiteSyncOwner and remove it on forgetDevice', async () => {
+        const owner = asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key');
+        const deviceStaticId = dev1.state!.staticSessionId!;
+        const store = mockStore(getInitialState());
+        updateStore(store);
+
+        store.dispatch(
+            setSuiteSyncOwner({
+                deviceStaticId,
+                owner,
+            }),
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toEqual('owner-key');
+
+        await store.dispatch(storageActions.forgetDevice(dev1));
+
+        expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
     });
 });

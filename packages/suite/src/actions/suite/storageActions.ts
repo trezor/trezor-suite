@@ -1,6 +1,8 @@
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { MetadataState } from '@suite-common/metadata-types';
+import { EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -25,6 +27,7 @@ import {
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
+import { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -254,6 +257,7 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
 
     return Promise.all([
         db.removeItemByPK('devices', staticSessionId),
+        db.removeItemByPK('suiteSyncOwners', staticSessionId),
         db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
         db.removeItemByIndex('txs', 'deviceState', staticSessionId),
         db.removeItemByIndex('graph', 'deviceState', staticSessionId),
@@ -489,6 +493,23 @@ export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetSt
         true,
     );
 };
+
+type SaveSuiteSyncOwnerParams = {
+    deviceStaticId: StaticSessionId;
+    owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
+};
+
+export const saveSuiteSyncOwner =
+    ({ deviceStaticId, owner }: SaveSuiteSyncOwnerParams) =>
+    () => {
+        if (!db.isAccessible()) return;
+
+        if (owner === null) {
+            return db.removeItemByPK('suiteSyncOwners', deviceStaticId);
+        }
+
+        return db.addItem('suiteSyncOwners', owner, deviceStaticId, true);
+    };
 
 export const saveSuiteSyncQuotaManager = () => (_dispatch: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;

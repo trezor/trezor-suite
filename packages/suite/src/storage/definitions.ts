@@ -5,7 +5,9 @@ import type { DBSchema } from 'idb';
 import { AnalyticsState } from '@suite-common/analytics-redux';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
+import { EncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
@@ -22,6 +24,7 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
 import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
@@ -142,6 +145,10 @@ export interface SuiteDBSchema extends DBSchema {
     suiteSyncSettings: {
         key: 'suiteSyncSettings';
         value: DesktopSuiteSyncState['settings'];
+    };
+    suiteSyncOwners: {
+        key: StaticSessionId;
+        value: EncryptedHex<SuiteSyncOwnerSerialized>;
     };
     suiteSyncQuotaManager: {
         key: 'suiteSyncQuotaManager';

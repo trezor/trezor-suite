@@ -8,6 +8,7 @@ import {
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
+import { typedObjectFromEntries } from '@trezor/utils';
 
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
@@ -43,13 +44,25 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
 
                 if (
                     actionWithPayload.type === STORAGE.LOAD &&
-                    actionWithPayload.payload.suiteSyncSettings
+                    (actionWithPayload.payload.suiteSyncSettings ||
+                        actionWithPayload.payload.suiteSyncOwners)
                 ) {
                     return {
                         ...state,
                         settings: {
                             ...state.settings,
                             ...actionWithPayload.payload.suiteSyncSettings,
+                        },
+                        suiteSyncOwners: {
+                            ...state.suiteSyncOwners,
+
+                            // We need to transform array of { key, value } from storage to the Record
+                            ...typedObjectFromEntries(
+                                actionWithPayload.payload.suiteSyncOwners.map(({ key, value }) => [
+                                    key,
+                                    value,
+                                ]),
+                            ),
                         },
                     } satisfies SuiteSyncState;
                 }

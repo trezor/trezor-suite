@@ -25,10 +25,10 @@ export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
 export const selectSuiteSyncOwnerForDeviceStaticId = (
     state: WithSuiteSyncAndDeviceState,
     deviceStaticSessionId: StaticSessionId | undefined,
-): EncryptedHex<SuiteSyncOwnerSerialized> | undefined =>
+): EncryptedHex<SuiteSyncOwnerSerialized> | null =>
     deviceStaticSessionId !== undefined
-        ? state.suiteSync.suiteSyncOwners[deviceStaticSessionId]
-        : undefined;
+        ? (state.suiteSync.suiteSyncOwners[deviceStaticSessionId] ?? null)
+        : null;
 
 export const selectSuiteSyncInteraction = (
     state: WithSuiteSyncAndDeviceState,
@@ -58,7 +58,7 @@ export const selectSuiteSyncInteraction = (
         return 'firmware-upgrade-needed';
     }
 
-    if (selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId) === undefined) {
+    if (selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId) === null) {
         return 'keys-needed';
     }
 
