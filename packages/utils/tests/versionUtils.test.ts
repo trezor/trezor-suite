@@ -7,6 +7,8 @@ import {
     normalizeVersion,
 } from '../src/versionUtils';
 
+type VersionArray = [number, number, number] | [number, number, number, number];
+
 const fixture = [
     [[1, 0, 0], '1.0.0-beta'],
     [[1, 0, 1]],
@@ -14,7 +16,7 @@ const fixture = [
     [[1, 1, 1]],
     [[1, 20, 1], '1.20.1-prerelase', '1.20.1-foo.4.5.6'],
     [[2, 1, 1]],
-] satisfies ([number, number, number] | string)[][];
+] satisfies (VersionArray | string)[][];
 
 const testMatrix = (
     testCase: (first: any, second: any) => any,
@@ -70,7 +72,7 @@ describe('versionUtils', () => {
             expect(isVersionArray([-1])).toEqual(false);
             expect(isVersionArray([1, 2, -1])).toEqual(false);
             expect(isVersionArray([])).toEqual(false);
-            expect(isVersionArray([1, 2, 3, 4])).toEqual(false);
+            expect(isVersionArray([1, 2, 3, 4, 5])).toEqual(false);
             expect(isVersionArray([1])).toEqual(false);
             expect(isVersionArray([1, 2])).toEqual(false);
         });
@@ -78,6 +80,7 @@ describe('versionUtils', () => {
         it('valid cases', () => {
             expect(isVersionArray([0, 1, 2])).toEqual(true);
             expect(isVersionArray([1, 2, 3])).toEqual(true);
+            expect(isVersionArray([1, 2, 3, 4])).toEqual(true);
         });
     });
 
@@ -90,6 +93,32 @@ describe('versionUtils', () => {
         it('returns false if version is outside of range', () => {
             expect(isWithinRange('0.9.9', '1.0.0', [2, 0, 0])).toBe(false);
             expect(isWithinRange([2, 0, 1], '1.0.0', '2.0.0')).toBe(false);
+        });
+    });
+
+    describe('4-element version arrays', () => {
+        it('compares 4-element arrays correctly', () => {
+            expect(isNewer([1, 0, 0, 1], [1, 0, 0, 0])).toBe(true);
+            expect(isNewer([1, 0, 0, 0], [1, 0, 0, 1])).toBe(false);
+            expect(isEqual([1, 0, 0, 1], [1, 0, 0, 1])).toBe(true);
+            expect(isNewerOrEqual([1, 0, 0, 1], [1, 0, 0, 0])).toBe(true);
+        });
+
+        it('compares 3-element and 4-element arrays (treats missing 4th as 0)', () => {
+            expect(isEqual([1, 0, 0], [1, 0, 0, 0])).toBe(true);
+            expect(isNewer([1, 0, 0, 1], [1, 0, 0])).toBe(true);
+            expect(isNewer([1, 0, 0], [1, 0, 0, 1])).toBe(false);
+        });
+
+        it('parses 4-element version strings', () => {
+            expect(isNewer('1.0.0.1', '1.0.0')).toBe(true);
+            expect(isEqual('1.0.0.0', '1.0.0')).toBe(true);
+            expect(isNewer('1.0.0.2', '1.0.0.1')).toBe(true);
+        });
+
+        it('parses 4-element version strings with suffixes', () => {
+            expect(isEqual('1.0.0.1-beta', [1, 0, 0, 1])).toBe(true);
+            expect(isEqual('1.0.0.1+build', [1, 0, 0, 1])).toBe(true);
         });
     });
 });
