@@ -11,6 +11,7 @@ import {
 import { events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAllSuccessfulAccountsToList } from '@suite-common/wallet-core';
@@ -360,6 +361,7 @@ export const walletConnectInitThunk = createThunk(
         const core = new Core({
             projectId: PROJECT_ID,
             telemetryEnabled: false,
+            logger: isDevEnv ? 'warn' : 'silent',
         });
 
         walletKit = await WalletKit.init({
