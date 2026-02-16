@@ -48,23 +48,8 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         transferStorageThunkMock.mockReturnValue(jest.fn());
     });
 
-    it('returns early when quota manager is disabled', async () => {
-        const getState = createGetState({ enabled: false });
-        const dispatch = jest.fn();
-
-        await ensureOwnerHasAllocatedQuotaThunk({
-            ownerId,
-            delegatedKey,
-            walletDescriptor,
-            isWriteMode: false,
-        })(dispatch, getState);
-
-        expect(checkStorageByOwnerIdMock).not.toHaveBeenCalled();
-        expect(dispatch).not.toHaveBeenCalled();
-    });
-
     it('dispatches owner fetched when storage already exists', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch = jest.fn();
 
         checkStorageByOwnerIdMock.mockResolvedValue(ok({ totalSpace: 2048 }));
@@ -94,7 +79,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
     });
 
     it('dispatches quota manager error for non-404 failures', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch = jest.fn();
 
         checkStorageByOwnerIdMock.mockResolvedValue(
@@ -112,7 +97,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
     });
 
     it('requests storage transfer when owner storage is missing', async () => {
-        const getState = createGetState({ enabled: true });
+        const getState = createGetState();
         const dispatch: ReturnType<typeof jest.fn> = jest.fn((action: unknown) => {
             if (typeof action === 'function')
                 return (action as (...args: any[]) => any)(dispatch, getState);

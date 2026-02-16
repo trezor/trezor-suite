@@ -3,10 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import {
-    selectHasDeviceAllowance,
-    selectIsQuotaManagerEnabled,
-} from '@suite-common/suite-sync-quota-manager';
+import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import {
     SuiteSync,
@@ -106,7 +103,8 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
         hasAllowance: ({ walletDescriptor, deviceId }) =>
             selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
-        getIsQuotaManagerEnabled: toGetter(deps.getState, selectIsQuotaManagerEnabled),
+        defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
+        getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
     });
 
     const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({
@@ -120,7 +118,6 @@ export const createSuiteSyncCompositionRoot = (
         ensureQuota,
         suiteSyncStorageRepository,
         createSuiteStorage,
-        defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
     });

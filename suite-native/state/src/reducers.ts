@@ -324,7 +324,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const quotaManagerPersistedReducer = preparePersistReducer({
         reducer: suiteSyncQuotaManagerReducer,
-        persistedKeys: ['baseUrl', 'enabled', 'registeredDevices', 'ownersAllowance'],
+        persistedKeys: ['baseUrl', 'registeredDevices', 'ownersAllowance'],
         key: 'suiteSyncQuotaManager',
         version: 1,
         storage: deps.mmkvStorage,

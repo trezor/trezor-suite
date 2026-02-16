@@ -16,8 +16,7 @@ import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 
 export type EnsureStorageDeps = {
-    defaultRelayUrl: string;
-    getRelayUrl: () => string | null;
+    getRelayUrl: () => string;
 } & SuiteSyncStorageRepositoryDep &
     CreateSuiteStorageDep &
     RefreshSuiteSyncKeysDep &
@@ -70,9 +69,6 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const relayUrl = deps.getRelayUrl();
-        const url = isNotNull(relayUrl) && relayUrl.trim() !== '' ? relayUrl : deps.defaultRelayUrl;
-
         const newStorage = deps.createSuiteStorage({
             suiteSyncOwner: owner,
         });
@@ -86,7 +82,7 @@ export const createEnsureStorage =
 
         if (quotaResult.success) {
             // Only set the relay URL for transport in case that quota manager is enabled or has quota for device.
-            await newStorage.updateRelayUrl(url);
+            await newStorage.updateRelayUrl(deps.getRelayUrl());
         }
 
         deps.suiteSyncStorageRepository.set(storageId, newStorage);
