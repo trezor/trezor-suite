@@ -8,11 +8,12 @@ import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk'
 import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
 import { useDispatch } from '../../../hooks/suite';
 
-type StepThpFailedProps = {
+type ThpCodeInvalidStepProps = {
     modalHeading: ReactNode;
 };
 
-export const StepThpFailed = ({ modalHeading }: StepThpFailedProps) => {
+// reflection of components/onboarding/ThpPairing/ThpCodeInvalidStep
+export const ThpCodeInvalidStep = ({ modalHeading }: ThpCodeInvalidStepProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 

@@ -8,7 +8,8 @@ import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connecti
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDispatch } from 'src/hooks/suite';
 
-export const ThpPairingFailedStep = () => {
+// reflection of components/firmware/ThpPairing/ThpCodeInvalidStep
+export const ThpCodeInvalidStep = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
 

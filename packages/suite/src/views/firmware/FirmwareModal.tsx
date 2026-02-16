@@ -6,6 +6,7 @@ import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
+import { ThpPairingStep } from 'src/components/firmware/ThpPairingStep/ThpPairingStep';
 import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
@@ -14,10 +15,6 @@ import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
-import { StepThpFailed } from './Steps/StepThpFailed';
-import { StepThpPairing } from './Steps/StepThpPairing';
-import { StepThpPairingRequest } from './Steps/StepThpPairingRequest';
-import { StepThpStart } from './Steps/StepThpStart';
 import * as modalActions from '../../actions/suite/modalActions';
 import { FirmwareInstallationProgressCheck } from '../../components/firmware';
 
@@ -60,23 +57,7 @@ export const FirmwareModal = ({
 
     const getContent = () => {
         if (thpStep !== null) {
-            switch (thpStep) {
-                case 'BeforeConnectionInfo':
-                    return <StepThpStart modalHeading={heading} />;
-                case 'ConfirmConnectionBeforePairing':
-                case 'ConfirmOnlyConnection':
-                    return device !== undefined ? (
-                        <StepThpPairingRequest modalHeading={heading} />
-                    ) : null;
-                case 'CodeEntry':
-                    return device !== undefined ? <StepThpPairing modalHeading={heading} /> : null;
-
-                case 'CodeInvalid':
-                    return <StepThpFailed modalHeading={heading} />;
-
-                default:
-                    exhaustive(thpStep);
-            }
+            return <ThpPairingStep thpStep={thpStep} heading={heading} />;
         }
 
         switch (status) {
