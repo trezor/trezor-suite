@@ -11,7 +11,6 @@ import {
     SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
-import { StaticSessionId } from '@trezor/connect';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
@@ -70,13 +69,10 @@ export const createSuiteSyncCompositionRoot = (
 
     const subscriptionStorage = createSubscriptionStorage();
 
-    const findSuiteSyncOwnerForDeviceStaticId = (deviceStaticId: StaticSessionId) =>
-        selectSuiteSyncOwnerForDeviceStaticId(deps.getState(), deviceStaticId);
-
     const loadSuiteSyncOwnerFromState = createLoadSuiteSyncOwnerFromState({
         dispatch: deps.dispatch,
         platformEncryption: deps.platformEncryption,
-        getDeviceSuiteSyncOwner: findSuiteSyncOwnerForDeviceStaticId,
+        getDeviceSuiteSyncOwner: toGetter(deps.getState, selectSuiteSyncOwnerForDeviceStaticId),
     });
 
     const ensureSuiteSyncOwner = createEnsureSuiteSyncOwner({

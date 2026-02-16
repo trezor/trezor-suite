@@ -7,6 +7,7 @@ import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import {
+    setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
@@ -192,6 +193,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncSettings());
+            }
+
+            if (setSuiteSyncOwner.match(action)) {
+                api.dispatch(storageActions.saveSuiteSyncOwner(action.payload));
             }
 
             if (

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.3.0
+
+- create `suiteSyncOwners` object store
+
 ## 26.2.0
 
 - remove saved transactions to force refetch with correct token symbol casing
