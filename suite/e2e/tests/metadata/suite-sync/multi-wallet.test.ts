@@ -1,6 +1,6 @@
 import { OwnerId } from '@evolu/common';
 
-import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
+import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import {

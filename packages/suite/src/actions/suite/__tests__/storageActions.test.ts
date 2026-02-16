@@ -2,7 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {

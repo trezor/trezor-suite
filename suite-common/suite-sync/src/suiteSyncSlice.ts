@@ -1,10 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
-    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
-    SuiteSyncOwnerSerialized,
-} from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
@@ -53,6 +51,16 @@ export const initialSuiteSyncState: SuiteSyncState = {
     suiteSyncOwners: {},
 };
 
+type SetSuiteSyncErrorAction = PayloadAction<{
+    deviceStaticSessionId: StaticSessionId;
+    error: SuiteSyncErrorType | null;
+}>;
+
+type SetSuiteSyncOwnerAction = PayloadAction<{
+    deviceStaticId: StaticSessionId;
+    owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
+}>;
+
 export const suiteSyncSlice = createSlice({
     name: 'suiteSync',
     initialState: initialSuiteSyncState,
@@ -69,30 +77,14 @@ export const suiteSyncSlice = createSlice({
         setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
         },
-        setSuiteSyncError: (
-            state,
-            {
-                payload,
-            }: PayloadAction<{
-                deviceStaticSessionId: StaticSessionId;
-                error: SuiteSyncErrorType | null;
-            }>,
-        ) => {
+        setSuiteSyncError: (state, { payload }: SetSuiteSyncErrorAction) => {
             if (payload.error === null) {
                 delete state.suiteSyncErrors[payload.deviceStaticSessionId];
             } else {
                 state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
             }
         },
-        setSuiteSyncOwner: (
-            state,
-            {
-                payload,
-            }: PayloadAction<{
-                deviceStaticId: StaticSessionId;
-                owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
-            }>,
-        ) => {
+        setSuiteSyncOwner: (state, { payload }: SetSuiteSyncOwnerAction) => {
             if (payload.owner === null) {
                 delete state.suiteSyncOwners[payload.deviceStaticId];
             } else {

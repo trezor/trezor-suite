@@ -70,10 +70,8 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
                     <Text typographyStyle="hint" intent="accentViolet">
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
-                    <Tooltip
-                        content={<Code>{JSON.stringify(suiteSyncOwner, null, 2)}</Code>}
-                    >
-                        <Text typographyStyle="hint" intent="accentViolet"
+                    <Tooltip content={<Code>{JSON.stringify(suiteSyncOwner, null, 2)}</Code>}>
+                        <Text typographyStyle="hint" intent="accentViolet">
                             E:
                             <Code>{suiteSyncOwner?.slice(-8)}</Code>
                         </Text>

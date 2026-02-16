@@ -1,6 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import { SuiteSyncOwnerId } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 

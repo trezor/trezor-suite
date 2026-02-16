@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { SuiteSyncOwner, serializeSuiteSyncOwner } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwner, serializeSuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

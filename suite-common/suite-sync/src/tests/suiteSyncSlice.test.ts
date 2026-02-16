@@ -1,5 +1,5 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceActions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';

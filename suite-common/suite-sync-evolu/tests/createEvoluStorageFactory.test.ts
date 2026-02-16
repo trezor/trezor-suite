@@ -2,13 +2,11 @@ import {
     SuiteSyncAccount,
     SuiteSyncAddress,
     SuiteSyncOutput,
-    SuiteSyncWallet,
-} from '@suite-common/suite-sync-storage';
-import {
     SuiteSyncOwner,
+    SuiteSyncWallet,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
-} from '@suite-common/suite-sync-types';
+} from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { createDeferred } from '@trezor/utils';
 
