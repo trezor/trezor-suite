@@ -314,6 +314,17 @@ describe('useExchangeForm', () => {
 
             expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
         });
+
+        it('should clear receiveAsset when sendAsset has same cryptoId as receiveAsset', () => {
+            const { result } = renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', btcAsset);
+                result.current.setValue('sendAsset', btcAsset);
+            });
+
+            expect(result.current.getValues('receiveAsset')).toBeUndefined();
+        });
     });
 
     describe('receiveAccount', () => {
