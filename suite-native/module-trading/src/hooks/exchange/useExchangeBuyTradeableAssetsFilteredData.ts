@@ -1,11 +1,19 @@
 import { useSelector } from 'react-redux';
 
-import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectExchangeBuyTradeableAssets,
+} from '@suite-native/trading-state';
 
+import { useExchangeFormContext } from './useExchangeFormContext';
 import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFilteredData';
 
 export const useExchangeBuyTradeableAssetsFilteredData = () => {
-    const assets = useSelector(selectExchangeBuyTradeableAssets);
+    const { watch } = useExchangeFormContext();
+    const sendAsset = watch('sendAsset');
+    const assets = useSelector((state: TradingRootState) =>
+        selectExchangeBuyTradeableAssets(state, sendAsset?.cryptoId),
+    );
 
     return useTradeableAssetsFilteredData({ assets });
 };

@@ -62,13 +62,16 @@ export const selectExchangeBuyTradeableAssets = createMemoizedSelector(
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
         ({ wallet }) => wallet.trading.info.coins,
+        (_state: TradingRootState, forbiddenCryptoId?: string) => forbiddenCryptoId,
     ],
-    (cryptoIds, coins) => {
+    (cryptoIds, coins, forbiddenCryptoId) => {
         if (!coins || !cryptoIds) {
             return [];
         }
 
-        return cryptoIds.map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
+        return cryptoIds
+            .filter(cryptoId => cryptoId !== forbiddenCryptoId)
+            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
     },
 );
 
