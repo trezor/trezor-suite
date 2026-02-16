@@ -58,6 +58,8 @@ export const compareVersionsDesc = (va?: string, vb?: string): number => {
     return 0;
 };
 
-export const getEventAddedVersion = (e: EventDoc): string | undefined => e.changelog?.addedInVersion;
+export const getEventAddedVersion = (e: EventDoc): string | undefined =>
+    e.changelog?.addedInVersion;
 
-export const getEventUpdatedVersion = (e: EventDoc): string | undefined => e.changelog?.lastUpdatedInVersion ?? e.changelog?.addedInVersion;
+export const getEventUpdatedVersion = (e: EventDoc): string | undefined =>
+    e.changelog?.lastUpdatedInVersion ?? e.changelog?.addedInVersion;

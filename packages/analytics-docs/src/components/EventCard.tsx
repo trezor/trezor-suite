@@ -32,16 +32,15 @@ const getPlatformDirectory = (platform: string) => {
     }
 };
 
-const toEventName = (input: string): string => (
-        input
-            .split(/[/_-]+/)
-            .map((part, index) =>
-                index === 0
-                    ? part.toLowerCase()
-                    : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
-            )
-            .join('') + 'Event'
-    );
+const toEventName = (input: string): string =>
+    input
+        .split(/[/_-]+/)
+        .map((part, index) =>
+            index === 0
+                ? part.toLowerCase()
+                : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
+        )
+        .join('') + 'Event';
 
 const Header = ({ event }: { event: EventDoc }) => {
     const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -109,26 +108,22 @@ const Header = ({ event }: { event: EventDoc }) => {
 };
 
 export const EventCard = ({ event }: { event: EventDoc }) => (
-        <Card paddingType="small">
-            <Header event={event} />
-            <InfoItem label="Trigger" typographyStyle="label">
-                <Markdown>{event.descriptionTrigger}</Markdown>
+    <Card paddingType="small">
+        <Header event={event} />
+        <InfoItem label="Trigger" typographyStyle="label">
+            <Markdown>{event.descriptionTrigger}</Markdown>
+        </InfoItem>
+        {event.description && (
+            <InfoItem label="Description" typographyStyle="label" margin={{ top: 12 }}>
+                <Markdown>{event.description}</Markdown>
             </InfoItem>
-            {event.description && (
-                <InfoItem label="Description" typographyStyle="label" margin={{ top: 12 }}>
-                    <Markdown>{event.description}</Markdown>
-                </InfoItem>
-            )}
-            {event.possibleImprovements && (
-                <InfoItem
-                    label="Possible improvements"
-                    typographyStyle="label"
-                    margin={{ top: 12 }}
-                >
-                    <Markdown>{event.possibleImprovements}</Markdown>
-                </InfoItem>
-            )}
+        )}
+        {event.possibleImprovements && (
+            <InfoItem label="Possible improvements" typographyStyle="label" margin={{ top: 12 }}>
+                <Markdown>{event.possibleImprovements}</Markdown>
+            </InfoItem>
+        )}
 
-            <AttributesTable attributes={event.attributes ?? {}} />
-        </Card>
-    );
+        <AttributesTable attributes={event.attributes ?? {}} />
+    </Card>
+);

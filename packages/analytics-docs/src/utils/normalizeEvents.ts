@@ -7,13 +7,13 @@ const toAttributeDoc = ([name, attribute]: [string, AttributeDef<unknown>]): [
     string,
     AttributeDoc,
 ] => [
-        name,
-        {
-            description: attribute.description,
-            runtimeType: undefined,
-            changelog: normalizeChangelog(attribute.changelog),
-        },
-    ];
+    name,
+    {
+        description: attribute.description,
+        runtimeType: undefined,
+        changelog: normalizeChangelog(attribute.changelog),
+    },
+];
 
 type NormalizableEvent = (
     | EventDef<Record<string, AttributeDef<unknown>>, string>
