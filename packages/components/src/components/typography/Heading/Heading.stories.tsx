@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { H1, H2, H3, H4 } from './Heading';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { allowedTextFrameProps, allowedTextTextProps, textVariants } from '../Text/Text';
+import { allowedTextFrameProps, allowedTextTextProps, textIntents } from '../Text/Text';
 import { getTextPropsStory } from '../utils';
 
 const Wrapper = styled.div`
@@ -31,11 +31,11 @@ export const Heading: StoryObj<typeof H1> = {
         ...getFramePropsStory(allowedTextFrameProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: textVariants,
+            options: textIntents,
         },
         ...getTextPropsStory(allowedTextTextProps).argTypes,
         ...getFramePropsStory(allowedTextFrameProps).argTypes,

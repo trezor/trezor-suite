@@ -57,7 +57,7 @@ export const TradingRefreshTime = ({
                         <ProgressPie valueInPercents={progress} />
                     </ProgressPieWrap>
                     <TimerText data-testid="@trading/refresh-time-text">
-                        <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                             {label}
                         </Paragraph>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>

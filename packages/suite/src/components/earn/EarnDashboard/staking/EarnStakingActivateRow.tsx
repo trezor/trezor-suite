@@ -46,7 +46,7 @@ export const EarnStakingActivateRow = ({ symbol }: { symbol: NetworkSymbol }) =>
             </Table.Cell>
 
             <Table.Cell colSpan={2}>
-                <Paragraph typographyStyle="body" variant="tertiary">
+                <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                         values={{

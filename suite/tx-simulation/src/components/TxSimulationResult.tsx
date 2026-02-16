@@ -50,7 +50,7 @@ export function TxSimulationResult({
                         }}
                         justifyContent="center"
                     >
-                        <Text variant="tertiary">
+                        <Text intent="neutral" priority="secondary">
                             <Translation id="TR_SIMULATION_NO_ASSETS" />
                         </Text>
                     </Row>

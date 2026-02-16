@@ -41,7 +41,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
             <H3>
                 <Translation id="TR_TOR_ENABLE" />
             </H3>
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_ONION_BACKEND_TOR_NEEDED" />
             </Paragraph>
         </Modal>

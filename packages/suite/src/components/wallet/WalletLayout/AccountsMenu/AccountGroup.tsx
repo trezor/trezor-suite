@@ -119,7 +119,8 @@ export const AccountGroup = ({
                                 </IconWrapper>
                             )}
                             <Text
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 typographyStyle="label"
                                 margin={{ left: keepOpen ? spacings.sm : undefined }}
                                 // Optical fix

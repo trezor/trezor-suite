@@ -58,7 +58,8 @@ export const NotificationView = ({
 }: NotificationViewProps) => {
     const { isBelowTablet } = useLayoutSize();
     const defaultIcon = icon ?? getNotificationIcon(variant);
-    const colorVariant = seen ? 'tertiary' : 'default';
+    const isSeen = seen;
+    const colorVariant = isSeen ? 'tertiary' : 'default';
 
     // NotificationView only supports a single action so even if an array is passed, only the first action is used
     const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
@@ -72,10 +73,18 @@ export const NotificationView = ({
                     defaultIcon
                 ))}
             <Column gap={spacings.xxs} margin={{ right: 'auto' }}>
-                <Paragraph typographyStyle={seen ? 'hint' : 'callout'} variant={colorVariant}>
+                <Paragraph
+                    typographyStyle={seen ? 'hint' : 'callout'}
+                    intent="neutral"
+                    priority={isSeen ? 'secondary' : 'primary'}
+                >
                     <Translation id={message} values={messageValues} />
                 </Paragraph>
-                <Paragraph typographyStyle="label" variant={colorVariant}>
+                <Paragraph
+                    typographyStyle="label"
+                    intent="neutral"
+                    priority={isSeen ? 'secondary' : 'primary'}
+                >
                     <FormattedDateWithBullet value={id} />
                 </Paragraph>
             </Column>

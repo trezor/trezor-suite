@@ -218,7 +218,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         rules={cryptoAmountRules}
                         control={control}
                         rightContent={
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 {withTokens && token ? token?.symbol : displayTicker}
                             </Text>
                         }

@@ -137,7 +137,8 @@ export const GroupHeading = ({ children, ...props }: GroupHeadingProps<OptionTyp
         <components.GroupHeading {...props}>
             <Text
                 as="div"
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 typographyStyle="label"
                 padding={{ horizontal: 8, vertical: 4 }}
             >
@@ -254,7 +255,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps) => (
 export const LoadingIndicator = () => <Spinner size={20} isGrey={false} />;
 
 export const Placeholder = ({ children }: PlaceholderProps<OptionType>) => (
-    <Text ellipsisLineCount={1} variant="disabled" as="div">
+    <Text ellipsisLineCount={1} isDisabled as="div">
         {children}
     </Text>
 );

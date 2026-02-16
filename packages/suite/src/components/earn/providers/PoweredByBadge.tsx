@@ -19,7 +19,7 @@ type PoweredByBadgeProps = {
 export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
     return (
         <Row gap={8}>
-            <Text variant="tertiary">
+            <Text intent="neutral" priority="secondary">
                 <Translation id="TR_STAKE_PROVIDED_BY" />
             </Text>
             <ImageWrapper>

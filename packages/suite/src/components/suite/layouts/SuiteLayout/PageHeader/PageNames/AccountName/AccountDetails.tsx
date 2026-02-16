@@ -135,7 +135,12 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
                     {isBalanceShown && (
-                        <Text variant="tertiary" typographyStyle="label" as="div">
+                        <Text
+                            intent="neutral"
+                            priority="secondary"
+                            typographyStyle="label"
+                            as="div"
+                        >
                             <Row gap={4}>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
                                     <FormattedCryptoAmount

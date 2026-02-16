@@ -16,7 +16,7 @@ interface TradingReceiveAddressEmptyProps {
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
     <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
         <Text typographyStyle="body">{title}</Text>
-        <Text typographyStyle="hint" variant="tertiary">
+        <Text typographyStyle="hint" intent="neutral" priority="secondary">
             {text}
         </Text>
     </Column>
@@ -76,7 +76,8 @@ export const TradingReceiveAddress = () => {
                                 <Address
                                     value={receiveAddress}
                                     typographyStyle="hint"
-                                    variant="tertiary"
+                                    intent="neutral"
+                                    priority="secondary"
                                     isTruncated
                                 />
                             </>
@@ -86,11 +87,15 @@ export const TradingReceiveAddress = () => {
                                     <Address
                                         value={receiveAddress}
                                         typographyStyle="body"
-                                        variant="default"
+                                        intent="neutral"
                                         isTruncated
                                     />
                                 ) : (
-                                    <Text typographyStyle="hint" variant="tertiary">
+                                    <Text
+                                        typographyStyle="hint"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
                                         <Translation id="TR_RECEIVE_ACCOUNT_NOT_SELECTED" />
                                     </Text>
                                 )}

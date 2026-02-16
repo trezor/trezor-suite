@@ -27,7 +27,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
         >
             {txMaxFee ? (
                 <Column alignItems="flex-end">
-                    <Text variant="default" typographyStyle={typographyStyle}>
+                    <Text intent="neutral" typographyStyle={typographyStyle}>
                         <FormattedCryptoAmount
                             data-testid="@trading/quote/maximum-fee-amount"
                             disableHiddenPlaceholder
@@ -38,7 +38,8 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
 
                     <Text
                         data-testid="@trading/quote/maximum-fee-fiat-amount"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         typographyStyle="hint"
                     >
                         <BaseCurrencyValue
@@ -50,7 +51,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                     </Text>
                 </Column>
             ) : (
-                <Text variant="tertiary" typographyStyle={typographyStyle}>
+                <Text intent="neutral" priority="secondary" typographyStyle={typographyStyle}>
                     <Translation id="TO_BE_CALCULATED" />
                 </Text>
             )}

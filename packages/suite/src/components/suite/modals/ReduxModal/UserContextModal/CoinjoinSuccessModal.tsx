@@ -71,7 +71,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                 <H3>
                     <Translation id="TR_COINJOIN_COMPLETED" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_COINJOIN_COMPLETED_DESCRIPTION" />
                 </Paragraph>
             </Column>

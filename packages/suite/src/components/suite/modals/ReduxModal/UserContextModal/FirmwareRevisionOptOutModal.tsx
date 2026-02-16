@@ -45,7 +45,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
             <H3>
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE" />
             </H3>
-            <Paragraph variant="tertiary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
             </Paragraph>
             <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">

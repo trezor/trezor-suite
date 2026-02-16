@@ -29,14 +29,14 @@ export const AssetCardTokensAndStakingInfo = ({
             <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
                 <Row gap={8}>
                     <Icon name="piggyBankFilled" size={20} variant="tertiary" />
-                    <Text typographyStyle="hint" variant="tertiary">
+                    <Text typographyStyle="hint" intent="neutral" priority="secondary">
                         <Translation id="TR_NAV_STAKING" />
                     </Text>
                 </Row>
                 {assetStakingBalance && (
                     <>
                         <HiddenPlaceholder>
-                            <Text typographyStyle="hint" variant="tertiary">
+                            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                                 <CoinBalance value={assetStakingBalance} symbol={symbol} />
                             </Text>
                         </HiddenPlaceholder>
@@ -53,7 +53,7 @@ export const AssetCardTokensAndStakingInfo = ({
             <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
                 <Row gap={8}>
                     <TokenIconSetWrapper accounts={accounts} symbol={symbol} />
-                    <Text typographyStyle="hint" variant="tertiary">
+                    <Text typographyStyle="hint" intent="neutral" priority="secondary">
                         <Translation id="TR_NAV_TOKENS" />
                     </Text>
                 </Row>

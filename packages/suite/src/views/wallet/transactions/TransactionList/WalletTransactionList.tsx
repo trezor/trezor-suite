@@ -17,7 +17,7 @@ import { useVisibleTransactions } from './useFetchTransactions';
 export const NoVisibleTransactions = () => (
     <Card>
         <Column alignItems="center">
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <Translation id="TR_NO_VISIBLE_TRANSACTIONS" />
             </Text>
         </Column>

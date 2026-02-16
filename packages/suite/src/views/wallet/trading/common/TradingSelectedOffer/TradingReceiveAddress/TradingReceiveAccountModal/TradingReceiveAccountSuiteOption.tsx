@@ -75,7 +75,8 @@ export const TradingReceiveAccountSuiteOption = ({
                     {!isUtxoBasedNetwork && (
                         <Address
                             value={address ?? null}
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             typographyStyle="hint"
                             isTruncated
                         />
@@ -87,7 +88,7 @@ export const TradingReceiveAccountSuiteOption = ({
                 <Column alignItems="flex-end">
                     <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
 
-                    <Text typographyStyle="hint" variant="tertiary">
+                    <Text typographyStyle="hint" intent="neutral" priority="secondary">
                         <HiddenPlaceholder>
                             <BaseCurrencyAmountFormatter
                                 value={fiatAmount ?? BASE_CURRENCY_ZERO}

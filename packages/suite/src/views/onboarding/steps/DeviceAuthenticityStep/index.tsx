@@ -130,7 +130,8 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
                         <Column key={icon} gap={24} alignItems="center">
                             <Icon name={icon} size={32} />
                             <Paragraph
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 typographyStyle="hint"
                                 align="center"
                                 textWrap="pretty"

@@ -226,7 +226,7 @@ export const TokenRow = ({
                                 showLoadingSkeleton
                             />
                         )}
-                        <Text variant="tertiary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
                             {/* TODO(stellar): I think it would be better to display the asset code as a symbol. */}
                             <FormattedCryptoAmount
                                 value={token.balance}

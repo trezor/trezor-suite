@@ -56,10 +56,10 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                         </Paragraph>
                     </Row>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                             <Translation id="TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE" />
                         </Paragraph>
-                        <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                             ≈
                             <BaseCurrencyValue
                                 amount={CARDANO_STAKING_REGISTRATION_DEPOSIT}
@@ -77,7 +77,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                         </Paragraph>
                     </Row>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                             {selectedVotingDelegation.drepId}
                         </Paragraph>
                     </Row>

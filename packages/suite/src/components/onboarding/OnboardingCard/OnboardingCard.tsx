@@ -113,7 +113,8 @@ export const OnboardingCard = ({
                                 {description && (
                                     <Paragraph
                                         typographyStyle="body"
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         align="center"
                                         width="80%"
                                     >

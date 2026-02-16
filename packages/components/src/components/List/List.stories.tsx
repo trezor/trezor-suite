@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { spacings } from '@trezor/theme';
 
 import { List as ListComponent, allowedListFrameProps, allowedListTextProps } from './List';
-import { bulletVerticalAlignments, listVariants } from './types';
+import { bulletVerticalAlignments, listIntents } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Icon, IconProps } from '../Icon/Icon';
 import { getTextPropsStory } from '../typography/utils';
@@ -71,8 +71,8 @@ export const List: StoryObj<typeof ListComponent> = {
                 type: 'select',
             },
         },
-        variant: {
-            options: listVariants,
+        intent: {
+            options: listIntents,
             control: {
                 type: 'select',
             },

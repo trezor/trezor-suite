@@ -77,7 +77,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                                     name={isWalletConnect ? 'walletConnect' : 'plugs'}
                                     variant="tertiary"
                                 />
-                                <Text variant="tertiary">
+                                <Text intent="neutral" priority="secondary">
                                     <Translation
                                         id={
                                             isWalletConnect

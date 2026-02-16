@@ -23,7 +23,7 @@ const Callout = ({ items, title }: CalloutProps) => (
             <H4>
                 <Translation id={title} />
             </H4>
-            <List gap={spacings.xs} typographyStyle="hint" variant="tertiary">
+            <List gap={spacings.xs} typographyStyle="hint" intent="neutral" priority="secondary">
                 {items.map(({ iconName, label }, index) => (
                     <List.Item key={index} bulletComponent={<Icon name={iconName} />}>
                         <Translation id={label} />
@@ -40,7 +40,7 @@ export const MultiShareBackupStep5 = () => (
             <H4>
                 <Translation id="TR_MULTI_SHARE_BACKUP_GREAT" />
             </H4>
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT" />
             </Paragraph>
         </Column>

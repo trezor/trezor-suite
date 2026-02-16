@@ -22,7 +22,7 @@ export const StepThpPairing = ({ modalHeading }: StepThpPairingProps) => (
                     <Translation id="TR_THP_ENTER_ONE_TIME_CODE" />
                 </Text>
                 <Column alignItems="start" gap={spacings.xl}>
-                    <Text variant="tertiary" typographyStyle="body">
+                    <Text intent="neutral" priority="secondary" typographyStyle="body">
                         <Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />
                     </Text>
                     <ThpPairingCodeEntry />

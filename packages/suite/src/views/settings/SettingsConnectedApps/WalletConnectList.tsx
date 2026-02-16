@@ -21,7 +21,7 @@ export const WalletConnectList = () => {
                 <H3 align="center">
                     <Translation id="TR_NO_CONNECTED_APPS" />
                 </H3>
-                <Text align="center" variant="tertiary">
+                <Text align="center" intent="neutral" priority="secondary">
                     <Translation id="TR_NO_CONNECTED_APPS_DESCRIPTION" />
                 </Text>
             </Column>
@@ -45,7 +45,9 @@ export const WalletConnectList = () => {
                         <Column flex="1">
                             <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
                                 <Text>{session.peer.metadata.name}</Text>
-                                <Text variant="tertiary">{session.peer.metadata.url}</Text>
+                                <Text intent="neutral" priority="secondary">
+                                    {session.peer.metadata.url}
+                                </Text>
                                 {session.validation === 'VALID' && (
                                     <Badge intent="info" iconLeft="shieldCheckFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
@@ -63,7 +65,7 @@ export const WalletConnectList = () => {
                                 )}
                             </Row>
 
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 {getSessionNetworks(session)
                                     .map(network => network.name)
                                     .join(', ')}

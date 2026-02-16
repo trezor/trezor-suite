@@ -106,7 +106,8 @@ export const TokensTable = ({
                                             isActive={isZeroBalanceOpen}
                                             text="ZERO_BALANCE_TOKENS"
                                             typographyStyle="hint"
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                         />
                                     </Table.Cell>
                                     <Table.Cell colSpan={hideRates ? 2 : 4} />

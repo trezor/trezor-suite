@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -165,7 +165,6 @@ export const Coin = ({
     onSettings,
 }: CoinProps) => {
     const { elevation } = useElevation();
-    const theme = useTheme();
 
     const onSettingsClick =
         onSettings &&
@@ -194,7 +193,7 @@ export const Coin = ({
             {label ? (
                 <NameWrapper>
                     <Paragraph typographyStyle="hint">{name}</Paragraph>
-                    <Paragraph typographyStyle="label" color={theme.textSubdued}>
+                    <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
                         <Translation id={label} />
                     </Paragraph>
                 </NameWrapper>

@@ -15,7 +15,7 @@ export const PayoutCardFrequencyRewards = ({
             <Paragraph typographyStyle="titleMedium">
                 <Translation id="TR_STAKE_DAYS" values={{ count: rewardFrequency }} />
             </Paragraph>
-            <Paragraph typographyStyle="hint" variant="tertiary">
+            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                 <Translation id="TR_STAKE_NEXT_PAYOUT_FREQUENCY" />
             </Paragraph>
         </>

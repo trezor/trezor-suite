@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
-import { Badge, Icon, Row, Text, TextVariant } from '@trezor/components';
+import { Badge, Icon, Row, Text, TextProps } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -21,7 +21,9 @@ type DropdownRowProps = {
     isActive: boolean;
     text?: TranslationKey;
     typographyStyle?: TypographyStyle;
-    variant?: TextVariant;
+    intent?: TextProps['intent'];
+    priority?: TextProps['priority'];
+    isDisabled?: TextProps['isDisabled'];
     shouldDisplayIcon?: boolean;
     nftName?: ReactNode;
     nftItemsCount?: number;
@@ -30,7 +32,9 @@ type DropdownRowProps = {
 export const DropdownRow = ({
     isActive,
     typographyStyle = 'body',
-    variant = 'tertiary',
+    intent = 'neutral',
+    priority = 'secondary',
+    isDisabled = false,
     text,
     shouldDisplayIcon = true,
     nftName,
@@ -52,7 +56,12 @@ export const DropdownRow = ({
                 </HiddenPlaceholder>
             ) : (
                 text && (
-                    <Text typographyStyle={typographyStyle} variant={variant}>
+                    <Text
+                        typographyStyle={typographyStyle}
+                        intent={intent}
+                        priority={priority}
+                        isDisabled={isDisabled}
+                    >
                         <Translation id={text} />
                     </Text>
                 )

@@ -119,7 +119,12 @@ const Render = (props: IconProps) => {
                 )}
             </Wrapper>
             {MAX_RENDERED_ICONS < filteredIconsCount && (
-                <Paragraph align="center" variant="tertiary" margin={{ top: 40 }}>
+                <Paragraph
+                    align="center"
+                    intent="neutral"
+                    priority="secondary"
+                    margin={{ top: 40 }}
+                >
                     For performance reasons showing <strong>{MAX_RENDERED_ICONS}</strong> of{' '}
                     <strong>{filteredIconsCount}</strong> icons. <br />
                     Try to adjust filter.

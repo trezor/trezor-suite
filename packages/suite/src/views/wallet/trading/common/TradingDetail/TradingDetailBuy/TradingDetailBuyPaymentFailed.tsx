@@ -41,7 +41,7 @@ export const TradingDetailBuyPaymentFailed = ({
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
                 </H3>
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
                 </Paragraph>
             </Column>

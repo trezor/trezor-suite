@@ -406,7 +406,12 @@ export const TradingFormApproval = () => {
                         </IconWrapper>
 
                         <Column>
-                            <Paragraph typographyStyle="body" variant="tertiary" align="start">
+                            <Paragraph
+                                typographyStyle="body"
+                                intent="neutral"
+                                priority="secondary"
+                                align="start"
+                            >
                                 <Translation
                                     id={
                                         allowanceState.approvalType === 'APPROVE'
@@ -416,7 +421,12 @@ export const TradingFormApproval = () => {
                                 />
                             </Paragraph>
 
-                            <Paragraph typographyStyle="body" variant="tertiary" align="start">
+                            <Paragraph
+                                typographyStyle="body"
+                                intent="neutral"
+                                priority="secondary"
+                                align="start"
+                            >
                                 <Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />
                             </Paragraph>
 
@@ -441,7 +451,7 @@ export const TradingFormApproval = () => {
                                     <Address
                                         isTruncated
                                         value={tx.approvalTxid}
-                                        variant="primary"
+                                        intent="brand"
                                         typographyStyle="body"
                                     />
                                 </Link>

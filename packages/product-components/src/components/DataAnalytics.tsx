@@ -36,7 +36,7 @@ export const DataAnalytics = ({
                             defaultMessage="Anonymous data collection"
                         />
                     </Text>
-                    <Text typographyStyle="label" variant="tertiary">
+                    <Text typographyStyle="label" intent="neutral" priority="secondary">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
                             values={{
@@ -58,7 +58,11 @@ export const DataAnalytics = ({
                                                 defaultMessage="You data is private"
                                             />
                                         </Text>
-                                        <Text typographyStyle="label" variant="tertiary">
+                                        <Text
+                                            typographyStyle="label"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
                                             <FormattedMessage
                                                 id="TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION"
                                                 defaultMessage="We don't gather sensitive personal data like balances, transactions, or profile details."
@@ -74,7 +78,11 @@ export const DataAnalytics = ({
                                                 defaultMessage="What data do we collect"
                                             />
                                         </Text>
-                                        <Text typographyStyle="label" variant="tertiary">
+                                        <Text
+                                            typographyStyle="label"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
                                             <FormattedMessage
                                                 id="TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION"
                                                 defaultMessage="We collect data on app performance, user interaction, and potential technical issues to enhance the user experience."

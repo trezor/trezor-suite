@@ -98,7 +98,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
             width={600}
         >
             <Column gap={spacings.sm}>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_UDEV_DOWNLOAD_DESC" />
                 </Paragraph>
                 {target ? (

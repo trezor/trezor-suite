@@ -141,7 +141,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         </H2>
                         <Paragraph
                             typographyStyle="hint"
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             margin={{ top: spacings.xs }}
                         >
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
@@ -154,7 +155,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         </H2>
                         <Paragraph
                             typographyStyle="hint"
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             margin={{ top: spacings.xs }}
                         >
                             <Translation

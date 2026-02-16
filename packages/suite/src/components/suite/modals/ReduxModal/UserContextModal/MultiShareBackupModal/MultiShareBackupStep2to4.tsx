@@ -33,7 +33,8 @@ const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemP
             <Icon size="extraLarge" name={icon} />
             <Paragraph
                 typographyStyle="hint"
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 align={direction === 'column' ? 'center' : 'start'}
             >
                 {children}
@@ -78,7 +79,7 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
             title="TR_VERIFY_TREZOR_OWNERSHIP"
             state={step === 'backup-seed' ? 'done' : 'default'}
         >
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION" />
             </Paragraph>
             <Grid margin={{ top: spacings.md }} columns={2} gap={spacings.sm}>
@@ -95,7 +96,7 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
             title="TR_CREATE_SHARES"
             state={step === 'verify-ownership' ? 'pending' : 'default'}
         >
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_CREATE_SHARES_EXPLANATION" />{' '}
                 <Translation id="TR_CREATE_SHARES_EXAMPLE" />
             </Paragraph>

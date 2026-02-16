@@ -45,7 +45,7 @@ export const AccountItemRightSide = ({
     }
 
     return (
-        <Text typographyStyle="hint" variant="tertiary">
+        <Text typographyStyle="hint" intent="neutral" priority="secondary">
             <BaseCurrency
                 isLoading={isFiatLoading}
                 customFiatValue={customFiatValue}

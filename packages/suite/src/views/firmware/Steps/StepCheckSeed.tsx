@@ -53,7 +53,7 @@ export const StepCheckSeed = ({
                 ),
                 description: (
                     <>
-                        <Paragraph variant="tertiary">
+                        <Paragraph intent="neutral" priority="secondary">
                             <Translation
                                 id={
                                     isDeviceBackedUp
@@ -62,7 +62,7 @@ export const StepCheckSeed = ({
                                 }
                             />
                         </Paragraph>
-                        <Paragraph variant="tertiary">
+                        <Paragraph intent="neutral" priority="secondary">
                             <Translation
                                 id={
                                     isDeviceBackedUp
@@ -81,7 +81,7 @@ export const StepCheckSeed = ({
             ? {
                   heading: <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />,
                   description: (
-                      <Paragraph variant="tertiary">
+                      <Paragraph intent="neutral" priority="secondary">
                           <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
                       </Paragraph>
                   ),
@@ -92,7 +92,7 @@ export const StepCheckSeed = ({
                       <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
                   ),
                   description: (
-                      <Paragraph variant="tertiary">
+                      <Paragraph intent="neutral" priority="secondary">
                           <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />
                       </Paragraph>
                   ),

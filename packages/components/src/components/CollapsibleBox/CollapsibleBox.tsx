@@ -169,7 +169,8 @@ export const CollapsibleBox = ({
                         typographyStyle={mapSizeToSubheadingTypography({
                             $headingSize: headingSize,
                         })}
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                     >
                         {subHeading}
                     </Text>
@@ -178,7 +179,7 @@ export const CollapsibleBox = ({
             <Toggle>
                 <Row gap={spacings.sm}>
                     {toggleLabel && (
-                        <Text typographyStyle="hint" variant="tertiary">
+                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
                             {toggleLabel}
                         </Text>
                     )}

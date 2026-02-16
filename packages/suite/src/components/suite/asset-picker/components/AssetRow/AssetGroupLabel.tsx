@@ -12,7 +12,7 @@ export type AssetGroupLabelProps = {
 export function AssetGroupLabel({ label }: AssetGroupLabelProps) {
     return (
         <Row padding={{ horizontal: 8 }}>
-            <Text typographyStyle="hint" variant="default" as="div" ellipsisLineCount={1}>
+            <Text typographyStyle="hint" intent="neutral" as="div" ellipsisLineCount={1}>
                 {isTranslationKey(label) ? <Translation id={label} /> : label}
             </Text>
         </Row>

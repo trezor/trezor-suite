@@ -282,7 +282,7 @@ export const ApproveModal = ({
                             )}
                             <Column>
                                 {provider?.companyName && <Text>{provider.companyName}</Text>}
-                                <Text typographyStyle="hint" variant="tertiary">
+                                <Text typographyStyle="hint" intent="neutral" priority="secondary">
                                     {contractAddress}
                                 </Text>
                             </Column>
@@ -317,7 +317,8 @@ export const ApproveModal = ({
                             <Paragraph
                                 margin={{ top: spacings.xxs }}
                                 typographyStyle="hint"
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                             >
                                 <Translation
                                     id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
@@ -346,7 +347,8 @@ export const ApproveModal = ({
                             <Paragraph
                                 margin={{ top: spacings.xxs }}
                                 typographyStyle="hint"
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                             >
                                 <Translation
                                     id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"

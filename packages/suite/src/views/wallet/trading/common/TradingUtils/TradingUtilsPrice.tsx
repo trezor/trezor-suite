@@ -64,7 +64,7 @@ export const TradingUtilsPrice = ({
 
     return (
         <div>
-            <Paragraph typographyStyle="hint" variant="tertiary">
+            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                 {showProviderAdjustedAmountTooltip ? (
                     <Tooltip
                         hasIcon
@@ -129,7 +129,8 @@ export const TradingUtilsPrice = ({
                                     )}
                                     {symbol && receiveAmount && (
                                         <Text
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                             typographyStyle="hint"
                                             margin={{ left: spacings.xxl }}
                                         >

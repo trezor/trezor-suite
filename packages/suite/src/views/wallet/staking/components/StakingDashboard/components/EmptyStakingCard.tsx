@@ -172,7 +172,7 @@ export const EmptyStakingCard = () => {
                                     values={{ apy: formatApyValue(apy), displaySymbol }}
                                 />
                             </H3>
-                            <Paragraph variant="tertiary" maxWidth={700}>
+                            <Paragraph intent="neutral" priority="secondary" maxWidth={700}>
                                 {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
                                     <Translation
                                         id={
@@ -207,7 +207,9 @@ export const EmptyStakingCard = () => {
                                     </Column>
                                     <Column gap={spacings.xxs}>
                                         <H4>{feature.title}</H4>
-                                        <Paragraph variant="tertiary">{feature.text}</Paragraph>
+                                        <Paragraph intent="neutral" priority="secondary">
+                                            {feature.text}
+                                        </Paragraph>
                                     </Column>
                                 </Row>
                             ))}

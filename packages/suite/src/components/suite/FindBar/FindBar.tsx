@@ -96,7 +96,8 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 {query && count > 0 && (
                                     <Paragraph
                                         typographyStyle="label"
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         minWidth={30}
                                         align="end"
                                     >
@@ -106,7 +107,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 {query && count === 0 && (
                                     <Paragraph
                                         typographyStyle="label"
-                                        variant="destructive"
+                                        intent="critical"
                                         align="end"
                                     >
                                         <Translation id="TR_FIND_NOT_FOUND" />

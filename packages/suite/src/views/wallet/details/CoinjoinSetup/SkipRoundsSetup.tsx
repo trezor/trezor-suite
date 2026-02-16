@@ -45,7 +45,7 @@ export const SkipRoundsSetup = ({ accountKey, skipRounds }: SkipRoundsSetupProps
                     <Text as="div" typographyStyle="body" margin={{ bottom: spacings.xxs }}>
                         <Translation id="TR_SKIP_ROUNDS_HEADING" />
                     </Text>
-                    <Paragraph variant="tertiary" typographyStyle="hint">
+                    <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                         <Translation id="TR_SKIP_ROUNDS_DESCRIPTION" />
                     </Paragraph>
                 </div>

@@ -58,7 +58,7 @@ export const NoSearchResults = () => {
                         }}
                     />
                 </Paragraph>
-                <Paragraph align="center" variant="tertiary" textWrap="pretty">
+                <Paragraph align="center" intent="neutral" priority="secondary" textWrap="pretty">
                     <Translation
                         id={getTip(tip.current)}
                         values={{

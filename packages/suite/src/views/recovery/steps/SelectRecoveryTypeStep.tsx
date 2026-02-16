@@ -46,7 +46,11 @@ export const SelectRecoveryTypeStep = ({
                                         }
                                     />
                                 </Paragraph>
-                                <Paragraph typographyStyle="hint" variant="tertiary">
+                                <Paragraph
+                                    typographyStyle="hint"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
                                     <Translation
                                         id={
                                             type === 'standard'

@@ -9,10 +9,11 @@ import {
     allowedInfoItemFrameProps,
     allowedInfoItemTextProps,
 } from './InfoItem';
-import { infoItemVariants, infoItemVerticalAlignments } from './types';
+import { infoItemVerticalAlignments } from './types';
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { flexDirection } from '../Flex/FlexProp';
+import { textIntents, textPriorities } from '../typography/Text/Text';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta<typeof InfoItemComponent> = {
@@ -27,7 +28,8 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         ...getFramePropsStory(allowedInfoItemFrameProps).args,
         direction: 'column',
         label: 'Label',
-        variant: 'tertiary',
+        intent: 'neutral',
+        priority: 'secondary',
         typographyStyle: 'hint',
     },
     argTypes: {
@@ -57,8 +59,14 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
                 type: 'number',
             },
         },
-        variant: {
-            options: infoItemVariants,
+        intent: {
+            options: textIntents,
+            control: {
+                type: 'select',
+            },
+        },
+        priority: {
+            options: textPriorities,
             control: {
                 type: 'select',
             },

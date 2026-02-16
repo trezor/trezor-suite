@@ -61,7 +61,8 @@ export const TotalSent = () => {
                         label={<Translation id="TOTAL_SENT" />}
                         direction="row"
                         verticalAlignment="start"
-                        variant="default"
+                        intent="neutral"
+                        priority="primary"
                         typographyStyle="body"
                     >
                         <ChildOrSkeleton isLoading={areFeesLoading}>

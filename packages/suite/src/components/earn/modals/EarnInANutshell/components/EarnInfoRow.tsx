@@ -24,7 +24,12 @@ export const EarnInfoRow = ({
                     (content.isBadge ? (
                         <Badge size="small">{content.text}</Badge>
                     ) : (
-                        <Paragraph variant="tertiary" typographyStyle="hint" textWrap="nowrap">
+                        <Paragraph
+                            intent="neutral"
+                            priority="secondary"
+                            typographyStyle="hint"
+                            textWrap="nowrap"
+                        >
                             {content.text}
                         </Paragraph>
                     ))}
@@ -32,7 +37,7 @@ export const EarnInfoRow = ({
         }
     >
         {subheading && isExpanded && (
-            <Paragraph variant="tertiary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                 {subheading}
             </Paragraph>
         )}

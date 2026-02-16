@@ -199,7 +199,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         />
                     </Row>
                     <Row justifyContent="space-between" gap={12}>
-                        <InfoSegments typographyStyle="hint" variant="tertiary" gap={6}>
+                        <InfoSegments
+                            typographyStyle="hint"
+                            intent="neutral"
+                            priority="secondary"
+                            gap={6}
+                        >
                             {transaction ? (
                                 <TransactionTimestamp showDate transaction={transaction} />
                             ) : (
@@ -249,7 +254,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             </Labeling>
                         </InfoSegments>
                         {shallDisplayBaseCurrency && (
-                            <Text typographyStyle="hint" variant="tertiary" as="div">
+                            <Text
+                                typographyStyle="hint"
+                                intent="neutral"
+                                priority="secondary"
+                                as="div"
+                            >
                                 <BaseCurrencyValue
                                     amount={formatNetworkAmount(utxo.amount, account.symbol, false)}
                                     symbol={network.symbol}

@@ -7,7 +7,7 @@ import { BigNumber } from '@trezor/utils';
 import { TxSimulationSummary } from './TxSimulationSummary';
 
 interface TxSimulationAssetRowProps {
-    variant: Required<TextProps['variant']>;
+    variant: 'default' | 'primary' | 'tertiary' | 'destructive';
     amountPrefix?: '+' | '-';
     amount: AssetDiff['in'][number] | AssetDiff['out'][number];
     fiatAmount?: string;
@@ -26,14 +26,22 @@ export function TxSimulationAssetRow({
     fiatCurrency,
 }: TxSimulationAssetRowProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    let textProps: Pick<TextProps, 'intent' | 'priority'> = { intent: 'neutral' };
+    if (variant === 'primary') {
+        textProps = { intent: 'brand' };
+    } else if (variant === 'tertiary') {
+        textProps = { intent: 'neutral', priority: 'secondary' };
+    } else if (variant === 'destructive') {
+        textProps = { intent: 'critical' };
+    }
 
     return (
         <>
-            <Text variant={variant} data-testid={dataTestId} flex="1">
+            <Text {...textProps} data-testid={dataTestId} flex="1">
                 <TxSimulationSummary amount={amount} assetDiff={assetDiff} />
             </Text>
             {fiatAmount && (
-                <Text variant="tertiary">
+                <Text intent="neutral" priority="secondary">
                     {amountPrefix ? `${amountPrefix} ` : ''}
                     <BaseCurrencyAmountFormatter
                         value={asBaseCurrencyAmount(new BigNumber(fiatAmount))}

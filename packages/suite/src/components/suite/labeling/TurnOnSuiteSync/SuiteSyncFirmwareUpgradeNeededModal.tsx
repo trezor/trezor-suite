@@ -59,7 +59,7 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
             }
         >
             <Card paddingType="large">
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation
                         id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION"
                         values={{ name: deviceLabel }}

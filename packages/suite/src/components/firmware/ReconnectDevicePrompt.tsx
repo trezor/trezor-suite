@@ -230,7 +230,8 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                         ) : (
                             <Paragraph
                                 typographyStyle="hint"
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 align="center"
                                 margin={{ top: spacings.xs }}
                             >

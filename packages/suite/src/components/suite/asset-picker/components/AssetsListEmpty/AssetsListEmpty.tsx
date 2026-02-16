@@ -59,7 +59,8 @@ export const AssetsListEmpty = ({
                 <Paragraph
                     textWrap="balance"
                     typographyStyle="hint"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     align="center"
                     maxWidth={320}
                 >
@@ -88,7 +89,8 @@ export const AssetsListEmpty = ({
                     textWrap="balance"
                     align="center"
                     maxWidth={320}
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     typographyStyle="hint"
                 >
                     <Translation id={description} />

@@ -1,27 +1,9 @@
-import { DefaultTheme } from 'styled-components';
-
-import { CSSColor, TypographyStyle } from '@trezor/theme';
+import { Color, TypographyStyle } from '@trezor/theme';
 
 import { BulletListDirection, BulletListItemState, BulletSize } from './types';
 
-type colorMapArgs = {
-    $state: BulletListItemState;
-    theme: DefaultTheme;
-};
-
 type sizeMapArgs = {
     $size: BulletSize;
-};
-
-export const mapStateToColor = ({ $state, theme }: colorMapArgs) => {
-    const colorMap: Record<BulletListItemState, CSSColor> = {
-        active: theme.textDefault,
-        default: theme.textDefault,
-        done: theme.textPrimaryDefault,
-        pending: theme.textSubdued,
-    };
-
-    return colorMap[$state];
 };
 
 export const mapSizeToDimension = ({ $size }: sizeMapArgs) => {
@@ -57,4 +39,15 @@ export const mapPropsToTypographyStyle = (
     };
 
     return typographyStyleMap[direction][state];
+};
+
+export const mapStateToTextColor = ($state: BulletListItemState): Color => {
+    const colorMap: Record<BulletListItemState, Color> = {
+        active: 'textDefault',
+        default: 'textDefault',
+        done: 'textPrimaryDefault',
+        pending: 'textSubdued',
+    };
+
+    return colorMap[$state];
 };

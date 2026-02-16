@@ -138,7 +138,12 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 <Card fillType="flat">
                     <Row gap={spacings.md}>
                         <ProgressBar value={isTorError ? 100 : progress} />
-                        <Paragraph variant="tertiary" typographyStyle="body" textWrap="nowrap">
+                        <Paragraph
+                            intent="neutral"
+                            priority="secondary"
+                            typographyStyle="body"
+                            textWrap="nowrap"
+                        >
                             {isTorError ? (
                                 <Translation id="TR_FAILED" />
                             ) : (

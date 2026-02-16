@@ -5,18 +5,20 @@ import { SpacingValuesNew } from '@trezor/theme';
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
 import { Icon, IconVariant } from '../Icon/Icon';
-import { Text, TextVariant } from '../typography/Text/Text';
-import { TextProps, TextPropsKeys } from '../typography/utils';
+import { Text, TextIntent, TextProps } from '../typography/Text/Text';
+import { TextProps as TextPropsCommon, TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoSegmentsTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
-type AllowedTextProps = Pick<TextProps, (typeof allowedInfoSegmentsTextProps)[number]>;
+type AllowedTextProps = Pick<TextPropsCommon, (typeof allowedInfoSegmentsTextProps)[number]>;
 
 export const allowedInfoSegmentsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoSegmentsFrameProps)[number]>;
 
 export type InfoSegmentsProps = AllowedFrameProps &
     AllowedTextProps & {
-        variant?: TextVariant;
+        intent?: TextIntent;
+        priority?: TextProps['priority'];
+        isDisabled?: TextProps['isDisabled'];
         'data-testid'?: string;
         gap?: SpacingValuesNew;
         children: Array<ReactNode>;
@@ -25,13 +27,32 @@ export type InfoSegmentsProps = AllowedFrameProps &
 export const InfoSegments = ({
     children,
     typographyStyle,
-    variant,
+    intent,
+    priority,
+    isDisabled,
     margin,
     gap = 4,
     'data-testid': dataTestId,
 }: InfoSegmentsProps) => {
     const validChildren = Children.toArray(children).filter(child => Boolean(child));
     const id = useId();
+    let iconVariant: IconVariant = 'default';
+
+    if (isDisabled) {
+        iconVariant = 'disabled';
+    } else if (intent === 'warning') {
+        iconVariant = 'warning';
+    } else if (intent === 'info') {
+        iconVariant = 'info';
+    } else if (intent === 'critical') {
+        iconVariant = 'destructive';
+    } else if (intent === 'accentViolet') {
+        iconVariant = 'purple';
+    } else if (intent === 'brand') {
+        iconVariant = 'primary';
+    } else if (priority === 'secondary') {
+        iconVariant = 'tertiary';
+    }
 
     return (
         <Text
@@ -39,18 +60,16 @@ export const InfoSegments = ({
             as="div"
             typographyStyle={typographyStyle}
             margin={margin}
-            variant={variant}
+            intent={intent}
+            priority={priority}
+            isDisabled={isDisabled}
         >
             <Row gap={gap} flexWrap="wrap">
                 {validChildren.map((child, index) => (
                     <Fragment key={`${id}-${index}`}>
                         {child}
                         {index < validChildren.length - 1 && (
-                            <Icon
-                                name="dotOutlineFilled"
-                                size={16}
-                                variant={variant as IconVariant}
-                            />
+                            <Icon name="dotOutlineFilled" size={16} variant={iconVariant} />
                         )}
                     </Fragment>
                 ))}

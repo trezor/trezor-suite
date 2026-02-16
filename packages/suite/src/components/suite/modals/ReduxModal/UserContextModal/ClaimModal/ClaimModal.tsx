@@ -220,7 +220,8 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                                         justifyContent="flex-end"
                                                     >
                                                         <Paragraph
-                                                            variant="tertiary"
+                                                            intent="neutral"
+                                                            priority="secondary"
                                                             typographyStyle="hint"
                                                         >
                                                             <BaseCurrencyValue
@@ -260,7 +261,11 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                             symbol={account.symbol}
                                         />
                                     </Paragraph>
-                                    <Paragraph typographyStyle="label" variant="tertiary">
+                                    <Paragraph
+                                        typographyStyle="label"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
                                         <BaseCurrencyValue
                                             showApproximationIndicator
                                             amount={claimableAmount}

@@ -67,7 +67,7 @@ export const SubTabsItem = ({
                     {children}
                 </Text>
                 {count > 0 && (
-                    <Text typographyStyle={mapSizeToTypography(size)} variant="disabled">
+                    <Text typographyStyle={mapSizeToTypography(size)} isDisabled>
                         {count}
                     </Text>
                 )}

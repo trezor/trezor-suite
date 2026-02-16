@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 
 import { SelectBarOrientation, SelectBarSize } from './types';
-import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextVariant } from './utils';
+import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
 import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { useMediaQuery } from '../../../utils/useMediaQuery';
@@ -178,7 +178,8 @@ export const SelectBar = <V extends ValueTypes>({
             {label && (
                 <Text
                     case="capitalize"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     typographyStyle={mapSizeToTypographyStyle(size)}
                 >
                     {label}
@@ -201,11 +202,14 @@ export const SelectBar = <V extends ValueTypes>({
                                 selectedOptionIn !== undefined
                                     ? selectedOptionIn === option.value
                                     : false;
+                            const textIntent = mapStateToTextIntent(isSelected);
 
                             return (
                                 <Text
                                     key={String(option.value)}
-                                    variant={mapStateToTextVariant(isDisabled, isSelected)}
+                                    intent={textIntent.intent}
+                                    priority={textIntent.priority}
+                                    isDisabled={isDisabled}
                                     typographyStyle={mapSizeToTypographyStyle(size, isSelected)}
                                     textWrap="nowrap"
                                     as="div"

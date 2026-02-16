@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
@@ -8,18 +8,12 @@ import { BadgeIntent, BadgeSize } from './types';
 import {
     mapIntentToBackgroundColor,
     mapIntentToIconColor,
-    mapIntentToTextColor,
     mapSizeToIconSize,
     mapSizeToPadding,
     mapSizeToTypographyStyle,
 } from './utils';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import { Box } from '../Box/Box';
 import { Row } from '../Flex/Flex';
 import { Icon, IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
@@ -36,20 +30,6 @@ export type BadgeProps = AllowedFrameProps & {
     'data-testid'?: string;
 };
 
-type BadgeContainerProps = {
-    $size: BadgeSize;
-    $intent: BadgeIntent;
-} & TransientProps<AllowedFrameProps>;
-
-// TODO: Replace with Box component
-const Container = styled.div<BadgeContainerProps>`
-    display: inline-flex;
-    border-radius: ${borders.radii.full};
-    background: ${({ $intent, theme }) => mapIntentToBackgroundColor($intent, theme)};
-
-    ${withFrameProps}
-`;
-
 export const Badge = ({
     size = 'medium',
     intent = 'neutral',
@@ -60,7 +40,8 @@ export const Badge = ({
     ...rest
 }: BadgeProps) => {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedBadgeFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedBadgeFrameProps, false);
+    const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
 
     const iconProps = {
         color: mapIntentToIconColor(intent, theme),
@@ -68,20 +49,27 @@ export const Badge = ({
     };
 
     return (
-        <Container $size={size} $intent={intent} data-testid={dataTest} {...frameProps}>
+        <Box
+            display="inline-flex"
+            data-testid={dataTest}
+            borderRadius={borders.radii.full}
+            backgroundColor={mapIntentToBackgroundColor(intent)}
+            {...frameProps}
+        >
             <Row gap={4} padding={mapSizeToPadding(size)}>
                 {iconLeft && <Icon name={iconLeft} {...iconProps} />}
                 <Text
                     as="div"
                     typographyStyle={mapSizeToTypographyStyle(size)}
-                    color={mapIntentToTextColor(intent, theme)}
+                    intent={intent}
+                    priority={textPriority}
                     textWrap="nowrap"
                 >
                     {children}
                 </Text>
                 {iconRight && <Icon name={iconRight} {...iconProps} />}
             </Row>
-        </Container>
+        </Box>
     );
 };
 

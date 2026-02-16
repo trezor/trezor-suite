@@ -61,7 +61,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
             <H2>
                 <Translation id="TR_UNHIDE_TOKEN_TITLE" />
             </H2>
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
                 <Translation id="TR_UNHIDE_TOKEN_TEXT" />
             </Paragraph>
             <Card margin={{ top: spacings.xl }}>

@@ -36,6 +36,8 @@ type StepCardProps = {
 
 const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
     const variant = state === 'confirmed' ? 'primary' : 'tertiary';
+    const textIntent = state === 'confirmed' ? 'brand' : 'neutral';
+    const textPriority = state === 'confirmed' ? 'primary' : 'secondary';
 
     return (
         <Card paddingType="none" fillType={state === 'pending' ? 'flat' : 'default'}>
@@ -46,7 +48,7 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
                         variant={variant}
                         size={20}
                     />
-                    <Text typographyStyle="hint" variant={variant}>
+                    <Text typographyStyle="hint" intent={textIntent} priority={textPriority}>
                         {heading}
                     </Text>
                 </Row>

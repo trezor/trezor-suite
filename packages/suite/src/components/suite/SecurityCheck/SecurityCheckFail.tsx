@@ -30,7 +30,7 @@ export const SecurityCheckFail = ({
             <H2>
                 <Translation id={heading} />
             </H2>
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation id={text} />
             </Paragraph>
         </Column>

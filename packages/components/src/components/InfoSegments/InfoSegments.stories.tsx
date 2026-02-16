@@ -7,7 +7,7 @@ import {
     allowedInfoSegmentsTextProps,
 } from './InfoSegments';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { textVariants } from '../typography/Text/Text';
+import { textIntents } from '../typography/Text/Text';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta<typeof InfoSegmentsComponent> = {
@@ -23,11 +23,11 @@ export const InfoSegments: StoryObj<InfoSegmentsProps> = {
         ...getTextPropsStory(allowedInfoSegmentsTextProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: textVariants,
+            options: textIntents,
         },
         ...getFramePropsStory(allowedInfoSegmentsFrameProps).argTypes,
         ...getTextPropsStory(allowedInfoSegmentsTextProps).argTypes,

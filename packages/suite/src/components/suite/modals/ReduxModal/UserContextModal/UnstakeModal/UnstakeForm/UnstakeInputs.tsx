@@ -101,7 +101,11 @@ export const UnstakeInputs = () => {
                     control,
                     rules: cryptoInputRules,
                     maxLength: formInputsMaxLength.amount,
-                    rightContent: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
+                    rightContent: (
+                        <Text intent="neutral" priority="secondary">
+                            {networkDisplaySymbol}
+                        </Text>
+                    ),
                     hasError: !!(cryptoError || fiatError),
                     onChange: onCryptoAmountChange,
                 }}
@@ -115,7 +119,9 @@ export const UnstakeInputs = () => {
                               rules: fiatInputRules,
                               maxLength: formInputsMaxLength.fiat,
                               rightContent: (
-                                  <Text variant="tertiary">{baseCurrencyCode.toUpperCase()}</Text>
+                                  <Text intent="neutral" priority="secondary">
+                                      {baseCurrencyCode.toUpperCase()}
+                                  </Text>
                               ),
                               hasError: !!(fiatError || cryptoError),
                               onChange: onFiatAmountChange,
@@ -140,7 +146,7 @@ export const UnstakeInputs = () => {
                     <BaseCurrencyValue amount={amount} symbol={symbol} showApproximationIndicator>
                         {({ value }) =>
                             value ? (
-                                <Text typographyStyle="label" variant="tertiary">
+                                <Text typographyStyle="label" intent="neutral" priority="secondary">
                                     {value}
                                 </Text>
                             ) : null
@@ -183,7 +189,7 @@ export const UnstakeInputs = () => {
                                     {isRewardsVisible && (
                                         <>
                                             {' + '}
-                                            <Text variant="primary">
+                                            <Text intent="brand">
                                                 <BaseCurrencyValue
                                                     amount={restakedReward}
                                                     symbol={symbol}
@@ -209,7 +215,7 @@ export const UnstakeInputs = () => {
                                               value={restakedReward}
                                               symbol={symbol}
                                           />
-                                          <Text variant="primary">
+                                          <Text intent="brand">
                                               <BaseCurrencyValue
                                                   amount={restakedReward}
                                                   symbol={symbol}

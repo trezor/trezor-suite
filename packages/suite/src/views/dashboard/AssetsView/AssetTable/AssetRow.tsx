@@ -159,7 +159,11 @@ export const AssetRow = memo(
                                 />
 
                                 {!assetNativeCryptoBalance.eq(0) && (
-                                    <Text typographyStyle="hint" color={theme.textSubdued}>
+                                    <Text
+                                        typographyStyle="hint"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
                                         <AmountUnitSwitchWrapper symbol={symbol}>
                                             <CoinBalance
                                                 value={assetNativeCryptoBalance}
@@ -170,7 +174,7 @@ export const AssetRow = memo(
                                 )}
                             </Column>
                         ) : (
-                            <Text variant="destructive" typographyStyle="hint" textWrap="nowrap">
+                            <Text intent="critical" typographyStyle="hint" textWrap="nowrap">
                                 <Row gap={spacings.xxs}>
                                     <Icon name="warning" color={theme.iconAlertRed} size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />

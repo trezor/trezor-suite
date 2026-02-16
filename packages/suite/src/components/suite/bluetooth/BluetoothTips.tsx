@@ -22,7 +22,7 @@ export const BluetoothTips = ({ onReScanClick, header, device }: BluetoothTipsPr
                     {device !== undefined &&
                         (device.connectionStatus.type === 'connection-error' ||
                             device.connectionStatus.type === 'pairing-error') && (
-                            <Text variant="tertiary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                 {device.connectionStatus.error}
                             </Text>
                         )}

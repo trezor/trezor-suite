@@ -52,7 +52,9 @@ export type AddressProps = {
     isDeviceRendered?: boolean;
     'data-testid'?: string;
     typographyStyle?: TextProps['typographyStyle'];
-    variant?: TextProps['variant'];
+    intent?: TextProps['intent'];
+    priority?: TextProps['priority'];
+    isDisabled?: TextProps['isDisabled'];
     isCopyAllowed?: boolean;
     onCopy?: () => void;
 };
@@ -63,7 +65,9 @@ export const Address = ({
     isChunked,
     isDeviceRendered = false,
     typographyStyle,
-    variant,
+    intent,
+    priority,
+    isDisabled,
     'data-testid': dataTestId,
     isCopyAllowed = false,
     onCopy,
@@ -120,7 +124,9 @@ export const Address = ({
         >
             <Text
                 typographyStyle={typographyStyle}
-                variant={variant}
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
                 isTabular
                 overflowWrap="anywhere"
             >

@@ -7,12 +7,7 @@ import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
 import { DEFAULT_INTENT } from './consts';
 import { BannerIntent } from './types';
-import {
-    mapIntentToBackgroundColor,
-    mapIntentToIcon,
-    mapIntentToIconColor,
-    mapIntentToTextColor,
-} from './utils';
+import { mapIntentToBackgroundColor, mapIntentToIcon, mapIntentToIconColor } from './utils';
 import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
@@ -49,6 +44,7 @@ export const Banner = ({
     ...rest
 }: BannerProps) => {
     const theme = useTheme();
+    const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
 
     const withIcon = icon !== undefined;
     const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps, false);
@@ -75,14 +71,15 @@ export const Banner = ({
                 <Row flex="1" flexWrap="wrap" gap={12}>
                     <Column flex="1 1 360px" maxWidth="100%">
                         {title && (
-                            <H4 typographyStyle="body" color={mapIntentToTextColor(intent, theme)}>
+                            <H4 typographyStyle="body" intent={intent} priority={textPriority}>
                                 {title}
                             </H4>
                         )}
                         {description && (
                             <Paragraph
                                 typographyStyle="hint"
-                                color={mapIntentToTextColor(intent, theme)}
+                                intent={intent}
+                                priority={textPriority}
                             >
                                 {description}
                             </Paragraph>

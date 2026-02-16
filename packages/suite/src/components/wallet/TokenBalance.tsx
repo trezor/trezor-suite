@@ -23,7 +23,7 @@ export function TokenBalance({ contractAddress, tokenBalance }: TokenBalanceProp
                 contractAddress={contractAddress}
             />
             {tokenBalance.fiatAmount && (
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <BaseCurrencyAmountFormatter
                         value={tokenBalance.fiatAmount}
                         currency={fiatCurrency}

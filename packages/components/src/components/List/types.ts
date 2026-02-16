@@ -1,8 +1,8 @@
 import { uiAlignments } from '../../config/types';
-import { textVariants } from '../typography/Text/Text';
+import { textIntents } from '../typography/Text/Text';
 
-export const listVariants = textVariants;
-export type ListVariant = (typeof listVariants)[number];
+export const listIntents = textIntents;
+export type ListIntent = (typeof listIntents)[number];
 
 export const bulletVerticalAlignments = uiAlignments;
 export type BulletVerticalAlignment = (typeof bulletVerticalAlignments)[number];

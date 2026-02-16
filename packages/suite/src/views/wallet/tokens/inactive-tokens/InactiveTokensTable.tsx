@@ -185,7 +185,11 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                     />
                                     <Row gap={spacings.xs}>
                                         <Text typographyStyle="body">{token.name}</Text>
-                                        <Text typographyStyle="body" variant="tertiary">
+                                        <Text
+                                            typographyStyle="body"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
                                             {token.symbol}
                                         </Text>
                                     </Row>
@@ -200,7 +204,11 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                         </Text>
                                     }
                                 >
-                                    <DashedText variant="tertiary" typographyStyle="hint">
+                                    <DashedText
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="hint"
+                                    >
                                         {token.homeDomain || '-'}
                                     </DashedText>
                                 </Tooltip>

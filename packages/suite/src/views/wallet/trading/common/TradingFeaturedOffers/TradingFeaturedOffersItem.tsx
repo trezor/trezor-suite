@@ -1,5 +1,5 @@
 import { SellFiatTrade } from 'invity-api';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import {
@@ -105,7 +105,6 @@ const actionButtonText = (
 };
 
 export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemProps) => {
-    const theme = useTheme();
     const {
         form: {
             state: { isFormLoading },
@@ -126,7 +125,7 @@ export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemP
                     <OfferBadgeWrap>
                         {tag && <Badge intent="neutral">{tag}</Badge>}
                         {infoNote && (
-                            <Text typographyStyle="label" color={theme.textSubdued}>
+                            <Text typographyStyle="label" intent="neutral" priority="secondary">
                                 {infoNote}
                             </Text>
                         )}

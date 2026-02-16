@@ -87,7 +87,7 @@ export const HeaderBreadcrumb = () => {
                     <Translation id="TR_GUIDE_DASHBOARD" />
                 )}
             </TextButton>
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 /
             </Text>
             <TextButton

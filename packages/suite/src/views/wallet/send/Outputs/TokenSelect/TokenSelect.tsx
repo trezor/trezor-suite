@@ -132,13 +132,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
-                                <Text variant="default" typographyStyle="body">
+                                <Text intent="neutral" typographyStyle="body">
                                     {selectedToken?.name ||
                                         getNetworkDisplaySymbolName(account.symbol)}
                                 </Text>
                             </Row>
                             <Row>
-                                <Text variant="tertiary" typographyStyle="hint">
+                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                     <HiddenPlaceholder>
                                         <FormattedCryptoAmount
                                             value={
@@ -159,7 +159,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             </Row>
                             {networkTokenContractAddress && (
                                 <Row justifyContent="flex-start">
-                                    <Text variant="tertiary" typographyStyle="hint">
+                                    <Text
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="hint"
+                                    >
                                         <Row gap={spacings.xxs}>
                                             <Translation
                                                 id={getTokenAddressTranslationId(
@@ -178,7 +182,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                     isTruncated
                                                     value={networkTokenContractAddress}
                                                     typographyStyle="hint"
-                                                    variant="tertiary"
+                                                    intent="neutral"
+                                                    priority="secondary"
                                                     isCopyAllowed
                                                     onCopy={() => {
                                                         dispatch(

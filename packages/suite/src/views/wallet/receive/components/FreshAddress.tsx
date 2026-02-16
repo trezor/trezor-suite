@@ -33,7 +33,7 @@ const TooltipLabel = ({
     accountType: string;
 }) => {
     const addressLabel = (
-        <H4 variant="tertiary" typographyStyle="hint">
+        <H4 intent="neutral" priority="secondary" typographyStyle="hint">
             <Translation id={multipleAddresses ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
         </H4>
     );

@@ -22,7 +22,12 @@ export const SelectNetwork = ({
 
     return (
         <div>
-            <Paragraph variant="tertiary" margin={{ bottom: 12 }} typographyStyle="hint">
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                margin={{ bottom: 12 }}
+                typographyStyle="hint"
+            >
                 {heading}
             </Paragraph>
             <CoinList

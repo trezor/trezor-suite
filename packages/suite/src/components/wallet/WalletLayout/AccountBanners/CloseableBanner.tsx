@@ -32,7 +32,7 @@ export const CloseableBanner = ({
         margin={margin}
         description={
             <Column gap={spacings.xxs} flex="1" alignItems="flex-start" justifyContent="stretch">
-                <Text typographyStyle="highlight" variant="info">
+                <Text typographyStyle="highlight" intent="info">
                     {title}
                 </Text>
 

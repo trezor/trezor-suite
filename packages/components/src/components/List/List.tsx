@@ -6,7 +6,7 @@ import { SpacingValues, spacings, spacingsPx } from '@trezor/theme';
 
 import { ListContext } from './ListContext';
 import { ListItem } from './ListItem';
-import { BulletVerticalAlignment, ListStyleType, ListVariant } from './types';
+import { BulletVerticalAlignment, ListIntent, ListStyleType } from './types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -14,9 +14,9 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps, makePropsTransient } from '../../utils/transientProps';
-import { Text } from '../typography/Text/Text';
+import { Text, TextProps } from '../typography/Text/Text';
 import {
-    TextProps,
+    TextProps as TextPropsCommon,
     TextPropsKeys,
     pickAndPrepareTextProps,
     withTextProps,
@@ -33,7 +33,7 @@ export const allowedListTextProps = [
     'typographyStyle',
     'textWrap',
 ] as const satisfies TextPropsKeys[];
-export type AllowedTextProps = Pick<TextProps, (typeof allowedListTextProps)[number]>;
+export type AllowedTextProps = Pick<TextPropsCommon, (typeof allowedListTextProps)[number]>;
 
 type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps> & {
     $gap: SpacingValues;
@@ -59,7 +59,9 @@ export type ListProps = AllowedFrameProps &
         bulletComponent?: ReactNode;
         bulletGap?: SpacingValues;
         bulletAlignment?: BulletVerticalAlignment;
-        variant?: ListVariant;
+        intent?: ListIntent;
+        priority?: TextProps['priority'];
+        isDisabled?: TextProps['isDisabled'];
         listStyleType?: ListStyleType;
     };
 
@@ -69,7 +71,9 @@ export const List = ({
     bulletAlignment = 'center',
     bulletComponent,
     listStyleType,
-    variant,
+    intent,
+    priority,
+    isDisabled,
     children,
     ...rest
 }: ListProps) => {
@@ -80,7 +84,7 @@ export const List = ({
         <ListContext.Provider
             value={{ bulletGap, bulletAlignment, bulletComponent, listStyleType }}
         >
-            <Text as="div" variant={variant}>
+            <Text as="div" intent={intent} priority={priority} isDisabled={isDisabled}>
                 <Container
                     {...makePropsTransient({ gap, listStyleType })}
                     {...frameProps}

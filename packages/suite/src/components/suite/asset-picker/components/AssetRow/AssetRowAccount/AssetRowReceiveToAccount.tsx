@@ -39,7 +39,7 @@ export function AssetRowReceiveToAccount({
                         />
                     </Text>
                     {supportsTokens && (
-                        <Text typographyStyle="hint" variant="tertiary">
+                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
                             <Translation id="TR_INCLUDING_TOKENS" />
                         </Text>
                     )}

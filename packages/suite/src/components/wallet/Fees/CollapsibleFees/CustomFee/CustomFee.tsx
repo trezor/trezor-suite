@@ -70,10 +70,10 @@ export const CustomFee = ({ showCurrentFee }: CustomFeeProps) => {
             </Column>
             {shouldShowTxSize && (
                 <Row alignItems="baseline" justifyContent="space-between">
-                    <Text variant="tertiary" typographyStyle="hint">
+                    <Text intent="neutral" priority="secondary" typographyStyle="hint">
                         <Translation id="TR_SIZE" />:
                     </Text>
-                    <Text variant="default" typographyStyle="hint">
+                    <Text intent="neutral" typographyStyle="hint">
                         {cachedBytes} <Translation id="TR_BYTES" />
                     </Text>
                 </Row>

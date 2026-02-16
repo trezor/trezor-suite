@@ -151,7 +151,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         <Column gap={spacings.xxs}>
                             <Row gap={spacings.sm}>
                                 <Text>{pendingProposal.params.proposer.metadata.name}</Text>
-                                <Text variant="tertiary">
+                                <Text intent="neutral" priority="secondary">
                                     {pendingProposal.params.proposer.metadata.url}
                                 </Text>
                             </Row>
@@ -201,9 +201,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                         )}
                                         <Text>
                                             {network.name}
-                                            {network.required && (
-                                                <Text variant="destructive">*</Text>
-                                            )}
+                                            {network.required && <Text intent="critical">*</Text>}
                                         </Text>
                                     </NetworkItemWrapper>
                                 </Tooltip>

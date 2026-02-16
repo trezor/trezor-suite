@@ -57,7 +57,8 @@ export const TradingDetailSellPaymentSending = ({
     const txId =
         trade.txid && account ? (
             <TradingDetailTxId
-                variant={state === 'done' ? 'tertiary' : 'default'}
+                intent="neutral"
+                priority={state === 'done' ? 'secondary' : 'primary'}
                 value={trade.txid}
                 account={account}
             />

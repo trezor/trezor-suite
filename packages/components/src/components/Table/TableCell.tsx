@@ -96,7 +96,8 @@ export const TableCell = ({
             <Text
                 as="div"
                 typographyStyle={isHeader ? 'hint' : typographyStyle}
-                variant={isHeader ? 'tertiary' : 'default'}
+                intent="neutral"
+                priority={isHeader ? 'secondary' : 'primary'}
             >
                 <Content $align={align}>{children}</Content>
             </Text>

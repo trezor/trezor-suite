@@ -99,7 +99,8 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                             <Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />
                         </H3>
                         <Paragraph
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             typographyStyle="hint"
                             align="center"
                             textWrap="balance"

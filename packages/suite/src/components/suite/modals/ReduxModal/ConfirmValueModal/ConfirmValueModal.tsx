@@ -277,7 +277,11 @@ export const ConfirmValueModal = ({
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                                     }
                                 >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        textWrap="pretty"
+                                    >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
                                     </Paragraph>
                                 </BulletList.Item>
@@ -286,7 +290,11 @@ export const ConfirmValueModal = ({
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                                     }
                                 >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        textWrap="pretty"
+                                    >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
                                     </Paragraph>
                                 </BulletList.Item>
@@ -295,7 +303,11 @@ export const ConfirmValueModal = ({
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
                                     }
                                 >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        textWrap="pretty"
+                                    >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
                                     </Paragraph>
                                 </BulletList.Item>

@@ -26,13 +26,14 @@ export const TransactionTargetLayout = ({
 
     const commonProps = {
         typographyStyle: 'body',
-        variant: 'tertiary',
+        intent: 'neutral',
+        priority: 'secondary',
         as: 'div',
     } as const;
 
     const amounts = (
         <>
-            <Text {...commonProps} variant="default" align="end">
+            <Text {...commonProps} align="end">
                 {amount && (
                     <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
                 )}

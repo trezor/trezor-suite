@@ -61,7 +61,7 @@ export const LocktimeDatetime = ({ rightContent }: LocktimeDatetimeProps) => {
             bottomText={
                 <Row justifyContent="space-between" width="100%">
                     <Text>{error?.message || ''}</Text>
-                    <Text variant="tertiary">
+                    <Text intent="neutral" priority="secondary">
                         <Translation
                             id="LOCKTIME_CURRENT_UTC"
                             values={{ datetime: getCurrentUTCDatetime() }}

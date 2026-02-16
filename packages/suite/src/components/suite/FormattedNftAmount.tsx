@@ -77,7 +77,7 @@ export const FormattedNftAmount = ({
                                 href={`${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${token.id}`}
                                 typographyStyle={linkTypographyStyle}
                             >
-                                <Text maxWidth={145} ellipsisLineCount={1} variant="primary">
+                                <Text maxWidth={145} ellipsisLineCount={1} intent="brand">
                                     {token.id}
                                 </Text>
                             </TrezorLink>
@@ -108,7 +108,7 @@ export const FormattedNftAmount = ({
                     typographyStyle={linkTypographyStyle}
                 >
                     <Row gap={spacings.zero}>
-                        <Text maxWidth={145} ellipsisLineCount={1} variant="primary">
+                        <Text maxWidth={145} ellipsisLineCount={1} intent="brand">
                             <HiddenPlaceholder>
                                 <RedactNumericalValue value={transfer.amount} />
                             </HiddenPlaceholder>

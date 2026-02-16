@@ -56,7 +56,7 @@ export const EnterPassphrase = ({
                                 <>
                                     <Row gap={spacings.sm}>
                                         <Icon variant="info" name="warningCircle" size={16} />
-                                        <Paragraph variant="info" typographyStyle="callout">
+                                        <Paragraph intent="info" typographyStyle="callout">
                                             <Translation
                                                 id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
                                                 values={{
@@ -73,7 +73,11 @@ export const EnterPassphrase = ({
                                     </Row>
                                     <Row gap={spacings.sm}>
                                         <Icon name="warning" size={16} />
-                                        <Paragraph variant="tertiary" typographyStyle="hint">
+                                        <Paragraph
+                                            intent="neutral"
+                                            priority="secondary"
+                                            typographyStyle="hint"
+                                        >
                                             <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
                                         </Paragraph>
                                     </Row>
@@ -81,7 +85,11 @@ export const EnterPassphrase = ({
                             ) : (
                                 <Row gap={spacings.sm}>
                                     <Icon name="password" size={16} />
-                                    <Paragraph variant="tertiary" typographyStyle="hint">
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="hint"
+                                    >
                                         <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
                                     </Paragraph>
                                 </Row>
@@ -94,7 +102,8 @@ export const EnterPassphrase = ({
                                     <Row gap={spacings.sm}>
                                         <Icon name="hash" size={16} />
                                         <Paragraph
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                             typographyStyle="hint"
                                             flex="1"
                                         >
@@ -120,7 +129,8 @@ export const EnterPassphrase = ({
                                             <Row gap={spacings.sm} justifyContent="space-between">
                                                 <Paragraph
                                                     typographyStyle="label"
-                                                    variant="tertiary"
+                                                    intent="neutral"
+                                                    priority="secondary"
                                                 >
                                                     <Translation id="TR_PASSPHRASE_NON_ASCII_CHARS_WARNING" />
                                                 </Paragraph>
@@ -147,7 +157,8 @@ export const EnterPassphrase = ({
                                         <Row gap={spacings.sm}>
                                             <Icon name="lightbulb" size={16} />
                                             <Paragraph
-                                                variant="tertiary"
+                                                intent="neutral"
+                                                priority="secondary"
                                                 typographyStyle="hint"
                                                 flex="1"
                                             >
@@ -160,7 +171,7 @@ export const EnterPassphrase = ({
                                         <Column gap={spacings.sm}>
                                             {[1, 2, 3].map(item => (
                                                 <Card fillType="flat" paddingType="tiny" key={item}>
-                                                    <H4 typographyStyle="callout" variant="primary">
+                                                    <H4 typographyStyle="callout" intent="brand">
                                                         <Translation
                                                             id={
                                                                 `TR_PASSPHRASE_EXAMPLES_ITEM${item}_HEADING` as TranslationKey

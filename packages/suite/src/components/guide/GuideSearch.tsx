@@ -91,7 +91,8 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                     <Paragraph
                         data-testid="@guide/search/no-results"
                         typographyStyle="hint"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         margin={{ top: 12 }}
                     >
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />

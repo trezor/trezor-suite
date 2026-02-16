@@ -11,9 +11,11 @@ export const SecurityChecklist = ({ items }: SecurityChecklistProps) => (
     <List gap={spacings.xl}>
         {items.map((item, index) => (
             <List.Item bulletComponent={item.icon} key={index}>
-                <Paragraph variant="tertiary">{item.content}</Paragraph>
+                <Paragraph intent="neutral" priority="secondary">
+                    {item.content}
+                </Paragraph>
                 {item.subtitle ? (
-                    <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                         {item.subtitle}
                     </Paragraph>
                 ) : null}

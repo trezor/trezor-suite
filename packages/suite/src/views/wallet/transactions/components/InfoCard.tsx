@@ -27,7 +27,8 @@ export const InfoCard = (props: InfoCardProps) => {
             <Column>
                 <H4
                     typographyStyle="label"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     data-testid="@wallet/transactions/summary-card/title"
                     case="uppercase"
                     margin={{ bottom: 12 }}
@@ -57,7 +58,12 @@ export const InfoCard = (props: InfoCardProps) => {
                             <HiddenPlaceholder>
                                 <Row data-testid="@wallet/transactions/summary-card/secondary-value">
                                     <Sign value="positive" placeholderOnly />
-                                    <Text variant="tertiary" typographyStyle="hint" as="div">
+                                    <Text
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="hint"
+                                        as="div"
+                                    >
                                         {props.secondaryValue}
                                     </Text>
                                 </Row>
@@ -66,7 +72,8 @@ export const InfoCard = (props: InfoCardProps) => {
 
                         {!props.isNumeric && props.secondaryValue && (
                             <Text
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 typographyStyle="hint"
                                 as="div"
                                 data-testid="@wallet/transactions/summary-card/secondary-value"

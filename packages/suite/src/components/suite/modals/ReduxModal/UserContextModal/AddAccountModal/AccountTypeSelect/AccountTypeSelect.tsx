@@ -82,7 +82,7 @@ const AccountTypeSelectComponent = ({
                 onChange={(option: Option) => onSelectAccountType(option.value)}
                 openMenuOnFocus={false}
             />
-            <Paragraph variant="tertiary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                 <AccountTypeDescription
                     bip43Path={bip43PathToDescribe}
                     accountType={selectedAccountType?.accountType || 'normal'}

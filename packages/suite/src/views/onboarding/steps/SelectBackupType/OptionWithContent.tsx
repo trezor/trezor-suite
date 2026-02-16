@@ -180,7 +180,9 @@ export const OptionWithContent = ({
                     </Text>
                     {tags}
                 </Row>
-                <Text variant="tertiary">{children}</Text>
+                <Text intent="neutral" priority="secondary">
+                    {children}
+                </Text>
             </OptionText>
         </Option>
     );

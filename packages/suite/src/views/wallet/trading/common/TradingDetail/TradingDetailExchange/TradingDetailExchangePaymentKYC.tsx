@@ -26,7 +26,12 @@ export const TradingDetailExchangePaymentKYC = ({
             <H3 data-testid="@trading/transaction/detail/status">
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />
             </H3>
-            <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
+            <Paragraph
+                typographyStyle="hint"
+                intent="neutral"
+                priority="secondary"
+                textWrap="pretty"
+            >
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TEXT" />
             </Paragraph>
         </Column>

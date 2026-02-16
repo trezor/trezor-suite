@@ -71,11 +71,11 @@ const Item = ({
                 <Paragraph
                     data-testid={dataTestId}
                     typographyStyle="titleSmall"
-                    variant={isReward ? 'primary' : 'default'}
+                    intent={isReward ? 'brand' : 'neutral'}
                 >
                     {title}
                 </Paragraph>
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     {description}
                 </Paragraph>
             </>

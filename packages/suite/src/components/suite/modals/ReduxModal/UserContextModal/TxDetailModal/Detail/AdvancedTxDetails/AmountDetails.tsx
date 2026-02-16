@@ -107,12 +107,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     (tx.targets.length || tx.type === 'joint') && (
                         <Table.Row>
                             <Table.Cell>
-                                <Text variant="tertiary">
+                                <Text intent="neutral" priority="secondary">
                                     <Translation id="AMOUNT" />
                                 </Text>
                             </Table.Cell>
                             <Table.Cell align="end">
-                                <Text variant="default">
+                                <Text intent="neutral">
                                     <FormattedCryptoAmount
                                         value={displayAmount.abs().toString()}
                                         symbol={tx.symbol}
@@ -121,7 +121,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 </Text>
                             </Table.Cell>
                             <Table.Cell align="end">
-                                <Text variant="default">
+                                <Text intent="neutral">
                                     <BaseCurrencyValue
                                         amount={displayAmount.abs().toString()}
                                         symbol={tx.symbol}
@@ -131,7 +131,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 </Text>
                             </Table.Cell>
                             <Table.Cell align="end">
-                                <Text variant="default">
+                                <Text intent="neutral">
                                     <BaseCurrencyValue
                                         amount={displayAmount.abs().toString()}
                                         symbol={tx.symbol}
@@ -144,13 +144,13 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     <Table.Row key={i}>
                         <Table.Cell>
                             {i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
-                                <Text variant="tertiary">
+                                <Text intent="neutral" priority="secondary">
                                     <Translation id="AMOUNT" />
                                 </Text>
                             ) : undefined}
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={formatNetworkAmount(transfer.amount, tx.symbol)}
                                     symbol={tx.symbol}
@@ -159,7 +159,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue
                                     amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                     symbol={tx.symbol}
@@ -169,7 +169,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue
                                     amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                     symbol={tx.symbol}
@@ -197,13 +197,13 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     {i === 0 &&
                                     !tx.targets.length &&
                                     !tx.internalTransfers.length ? (
-                                        <Text variant="tertiary">
+                                        <Text intent="neutral" priority="secondary">
                                             <Translation id="AMOUNT" />
                                         </Text>
                                     ) : undefined}
                                 </Table.Cell>
                                 <Table.Cell align="end">
-                                    <Text variant="default">
+                                    <Text intent="neutral">
                                         <AmountComponent
                                             transfer={transfer}
                                             withLink={true}
@@ -215,7 +215,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 </Table.Cell>
                                 <Table.Cell align="end">
                                     {selectedAccount.account && (
-                                        <Text variant="default">
+                                        <Text intent="neutral">
                                             <BaseCurrencyValue
                                                 amount={convertAmountSubunitsToUnits(
                                                     transfer.amount,
@@ -231,7 +231,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 </Table.Cell>
                                 <Table.Cell align="end">
                                     {selectedAccount.account && (
-                                        <Text variant="default">
+                                        <Text intent="neutral">
                                             <BaseCurrencyValue
                                                 amount={convertAmountSubunitsToUnits(
                                                     transfer.amount,
@@ -249,12 +249,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {cardanoWithdrawal && (
                     <Table.Row>
                         <Table.Cell>
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <Translation id="TR_TX_WITHDRAWAL" />
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={cardanoWithdrawal}
                                     symbol={tx.symbol}
@@ -263,7 +263,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue
                                     amount={cardanoWithdrawal}
                                     symbol={tx.symbol}
@@ -273,7 +273,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue amount={cardanoWithdrawal} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
@@ -282,12 +282,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {cardanoDeposit && (
                     <Table.Row>
                         <Table.Cell>
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <Translation id="TR_TX_DEPOSIT" />
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={cardanoDeposit}
                                     symbol={tx.symbol}
@@ -296,7 +296,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue
                                     amount={cardanoDeposit}
                                     symbol={tx.symbol}
@@ -306,7 +306,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue amount={cardanoDeposit} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
@@ -316,12 +316,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {isTxFeePaid(tx) && (
                     <Table.Row>
                         <Table.Cell>
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <Translation id="TR_TX_FEE" />
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={fee}
                                     symbol={tx.symbol}
@@ -330,7 +330,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue
                                     amount={fee}
                                     symbol={tx.symbol}
@@ -340,7 +340,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Text>
                         </Table.Cell>
                         <Table.Cell align="end">
-                            <Text variant="default">
+                            <Text intent="neutral">
                                 <BaseCurrencyValue amount={fee} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>

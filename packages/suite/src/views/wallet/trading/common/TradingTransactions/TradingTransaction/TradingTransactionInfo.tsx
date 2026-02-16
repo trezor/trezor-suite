@@ -19,7 +19,8 @@ export const TradingTransactionInfo = ({ trade }: TradingTransactionInfoProps) =
     return (
         <InfoSegments
             data-testid="@trading/transactions/info"
-            variant="tertiary"
+            intent="neutral"
+            priority="secondary"
             typographyStyle="label"
             margin={{ top: spacings.xs }}
         >

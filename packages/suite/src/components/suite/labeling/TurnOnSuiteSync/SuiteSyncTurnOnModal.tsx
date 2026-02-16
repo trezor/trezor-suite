@@ -77,7 +77,7 @@ export const SuiteSyncTurnOnModal = ({
         >
             <Column gap={16}>
                 <Card paddingType="large">
-                    <List gap={16} variant="tertiary">
+                    <List gap={16} intent="neutral" priority="secondary">
                         <List.Item
                             bulletComponent={
                                 <IconCircle

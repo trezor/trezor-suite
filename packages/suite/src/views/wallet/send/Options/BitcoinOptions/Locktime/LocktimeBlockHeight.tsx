@@ -65,7 +65,7 @@ export const LocktimeBlockHeight = ({ rightContent }: LocktimeBlockHeightProps) 
             bottomText={
                 <Row justifyContent="space-between" width="100%">
                     <Text>{error?.message || ''}</Text>
-                    <Text variant="tertiary">
+                    <Text intent="neutral" priority="secondary">
                         <Translation
                             id="LOCKTIME_CURRENT_BLOCKHEIGHT"
                             values={{ blockheight: localizeNumber(blockchainHeight, locale) }}

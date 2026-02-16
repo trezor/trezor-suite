@@ -57,14 +57,14 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
                     localCurrency={localCurrency}
                 />
             </Row>
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <AmountUnitSwitchWrapper symbol={symbol}>
                     <CoinBalance value={cryptoValue} symbol={symbol} />
                 </AmountUnitSwitchWrapper>
             </Text>
         </Column>
     ) : (
-        <Note variant="destructive" iconName="warning">
+        <Note intent="critical" iconName="warning">
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
         </Note>
     );

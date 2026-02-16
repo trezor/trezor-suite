@@ -62,7 +62,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                         values={{ version: suiteNewVersion }}
                     />
                 </H4>
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
                 </Paragraph>
                 <Card maxHeight={400} overflow="auto" margin={{ top: spacings.sm }}>

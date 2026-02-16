@@ -30,7 +30,7 @@ export function AssetRowAccountWithBalance({
                     <Text typographyStyle="body" ellipsisLineCount={1} maxWidth="100%">
                         {getNetworkDisplaySymbolName(account.symbol)}
                     </Text>
-                    <Text variant="tertiary" typographyStyle="hint">
+                    <Text intent="neutral" priority="secondary" typographyStyle="hint">
                         {getDisplaySymbol(account.symbol)}
                     </Text>
                 </Column>

@@ -119,7 +119,7 @@ export const TradingOfferExchangeDetails = ({
                             cursor="pointer"
                             onClick={() => setIsSlippageModalOpen(true)}
                         >
-                            <Text variant="primary" typographyStyle="hint">
+                            <Text intent="brand" typographyStyle="hint">
                                 {exchangeQuote.swapSlippage}%
                             </Text>
 

@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import { SpacingValues, spacings } from '@trezor/theme';
 
-import { InfoItemVariant, InfoItemVerticalAlignment } from './types';
+import { InfoItemVerticalAlignment } from './types';
 import {
+    mapIntentToIconVariant,
     mapTypographyStyleToIconGap,
     mapTypographyStyleToIconSize,
     mapTypographyStyleToLabelGap,
@@ -21,14 +22,14 @@ import { TransientProps } from '../../utils/transientProps';
 import { Flex, Row } from '../Flex/Flex';
 import { FlexDirection } from '../Flex/FlexProp';
 import { Icon, IconName } from '../Icon/Icon';
-import { Text } from '../typography/Text/Text';
-import { TextProps, TextPropsKeys } from '../typography/utils';
+import { Text, TextIntent, TextPriority } from '../typography/Text/Text';
+import { TextProps as TextPropsCommon, TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoItemTextProps = [
     'typographyStyle',
     'ellipsisLineCount',
 ] as const satisfies TextPropsKeys[];
-type AllowedTextProps = Pick<TextProps, (typeof allowedInfoItemTextProps)[number]>;
+type AllowedTextProps = Pick<TextPropsCommon, (typeof allowedInfoItemTextProps)[number]>;
 
 export const allowedInfoItemFrameProps = [
     'margin',
@@ -52,7 +53,9 @@ export type InfoItemProps = AllowedFrameProps &
         direction?: FlexDirection;
         iconName?: IconName;
         label: ReactNode;
-        variant?: InfoItemVariant;
+        intent?: TextIntent;
+        priority?: TextPriority;
+        isDisabled?: boolean;
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
         gap?: SpacingValues;
@@ -66,7 +69,9 @@ export const InfoItem = ({
     direction = 'column',
     iconName,
     typographyStyle = 'hint',
-    variant = 'tertiary',
+    intent = 'neutral',
+    priority = 'secondary',
+    isDisabled = false,
     gap,
     labelWidth,
     verticalAlignment = 'center',
@@ -75,6 +80,7 @@ export const InfoItem = ({
 }: InfoItemProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedInfoItemFrameProps);
     const isRow = direction === 'row';
+    const iconVariant = mapIntentToIconVariant({ intent, priority, isDisabled });
 
     return (
         <Container data-testid={dataTestId} {...frameProps}>
@@ -93,11 +99,13 @@ export const InfoItem = ({
                         <Icon
                             name={iconName}
                             size={mapTypographyStyleToIconSize(typographyStyle)}
-                            variant={variant}
+                            variant={iconVariant}
                         />
                     )}
                     <Text
-                        variant={variant}
+                        intent={intent}
+                        priority={priority}
+                        isDisabled={isDisabled}
                         typographyStyle={typographyStyle}
                         as="div"
                         ellipsisLineCount={ellipsisLineCount ?? 1}

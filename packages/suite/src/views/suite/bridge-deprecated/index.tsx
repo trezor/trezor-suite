@@ -45,7 +45,7 @@ export const BridgeDeprecated = () => {
                 <H3>
                     <Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation
                         id="TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION"
                         values={{

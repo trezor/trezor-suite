@@ -69,7 +69,7 @@ export const CardanoMinAmountInfo = () => {
                     </Tooltip>
                 }
             >
-                <Text variant="tertiary">
+                <Text intent="neutral" priority="secondary">
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={subunitsToUnits({
