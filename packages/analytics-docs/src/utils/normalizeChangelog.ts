@@ -12,18 +12,13 @@ export type NormalizedChangelog = {
 export const normalizeChangelog = (
     changelog?: Array<{ version: AppVersion; notes: string }>,
 ): NormalizedChangelog => {
-    if (!changelog || changelog.length === 0) {
-        return { entries: [] };
-    }
-
-    const entries = changelog;
-
-    const addedInVersion = entries[0].version;
-    const last = entries[entries.length - 1].version;
+    if (!changelog?.length) return { entries: [] };
+    const first = changelog[0].version;
+    const last = changelog[changelog.length - 1].version;
 
     return {
-        entries,
-        addedInVersion,
-        lastUpdatedInVersion: last !== addedInVersion ? last : undefined,
+        entries: changelog,
+        addedInVersion: first,
+        lastUpdatedInVersion: last !== first ? last : undefined,
     };
 };
