@@ -316,7 +316,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const suiteSyncPersistedReducer = preparePersistReducer({
         reducer: suiteSyncReducer,
-        persistedKeys: ['settings'],
+        persistedKeys: ['settings', 'suiteSyncOwners'],
         key: 'suiteSync',
         version: 1,
         storage: deps.mmkvStorage,

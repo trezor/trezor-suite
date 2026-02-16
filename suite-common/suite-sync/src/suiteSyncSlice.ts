@@ -5,6 +5,7 @@ import {
     SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
     SuiteSyncOwnerSerialized,
 } from '@suite-common/suite-sync-types';
+import { deviceActions } from '@suite-common/wallet-core';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -98,6 +99,16 @@ export const suiteSyncSlice = createSlice({
                 state.suiteSyncOwners[payload.deviceStaticId] = payload.owner;
             }
         },
+    },
+    extraReducers: builder => {
+        builder.addCase(deviceActions.forgetDevice, (state, { payload }) => {
+            const staticSessionId = payload.device.state?.staticSessionId;
+
+            if (!staticSessionId) return;
+
+            delete state.suiteSyncOwners[staticSessionId];
+            delete state.suiteSyncErrors[staticSessionId];
+        });
     },
 });
 
