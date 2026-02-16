@@ -2320,7 +2320,7 @@ export const messages = {
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
                 copyLabel: 'Hold to copy',
             },
-            adaInfo: 'Your ADA stays fully accesible while earning rewards.',
+            adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
@@ -2330,7 +2330,7 @@ export const messages = {
         apy: 'Annual percentage yield',
         stakingCanBeManaged: 'Staking can be currently managed only in',
         trezorDesktop: 'Trezor Suite for desktop or web.',
-        adaStaysFullyAccessuble: 'Your ADA stays fully accesible while earning rewards.',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
             providerReducingRewards:
                 'Your current provider is reducing ADA rewards. Update your provider on desktop and earn {apy}% APY.',
