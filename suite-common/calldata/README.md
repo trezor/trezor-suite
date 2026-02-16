@@ -1,0 +1,159 @@
+# @suite-common/calldata
+
+## Overview
+
+Type-safe calldata builder for blockchain transactions. Validates inputs, normalizes values, applies configurable policies (error/warning/ignore), and encodes transaction data.
+
+Built with chain-agnostic core - add validators and encoders for any chain. Currently implements EVM using viem.
+
+## Usage
+
+```typescript
+import { Calldata } from '@suite-common/calldata';
+import { asAmountSubunit } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+const result = Calldata.evm.erc20.approve(
+    {
+        spender: '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
+        amount: asAmountSubunit(new BigNumber('1000000')),
+    },
+    { sender: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3' },
+);
+
+if (result.isValid) {
+    console.log(result.data);
+} else {
+    console.log(result.errors);
+}
+```
+
+The second argument is context - additional data for validation (e.g., sender address for self-transfer detection). Required fields depend on the builder.
+
+## Architecture
+
+### Flow
+
+```
+Input → Validate → Normalize → Inspect → Policy → Encode → Calldata
+```
+
+1. **Validate** - check raw input format (e.g., valid address string)
+2. **Normalize** - transform to typed value (e.g., lowercase address)
+3. **Inspect** - check normalized value for issues (e.g., zero address, self-transfer)
+4. **Policy** - categorize issues as `error`, `warning`, or `ignore`
+5. **Encode** - if no errors, encode params to calldata
+
+### Validator
+
+Validators use `createValidator` factory with three stages:
+
+```typescript
+const validateAddress = createValidator({
+    validate: [isValidAddress],
+    normalize: input => input.toLowerCase(),
+    inspect: [isZeroAddress, isSameAsSender],
+});
+```
+
+- `validate` - array of checks, stops at first failure
+- `normalize` - transforms valid input to typed output
+- `inspect` - optional checks on normalized value, collects all issues
+
+### Policy
+
+Policies map issue codes to severities:
+
+```typescript
+const policy = createPolicy({
+    ZERO_ADDRESS: 'error',
+    SELF_ADDRESS: 'warning',
+    ZERO_AMOUNT: 'ignore',
+});
+```
+
+### Param
+
+Combines validator with policy:
+
+```typescript
+const spenderParam = createParam({
+    validate: validateAddress,
+    policy: createPolicy({ ZERO_ADDRESS: 'warning' }),
+});
+```
+
+### Encoder
+
+Encoders are chain-specific - implement one per chain.
+
+EVM encoder uses viem's `encodeFunctionData`.
+
+```typescript
+const encode = createEvmEncoder(EVM_ABI.erc20.approve);
+```
+
+### Builder
+
+Combines params with encoder:
+
+```typescript
+const buildApprove = createBuilder({
+    params: {
+        spender: spenderParam,
+        amount: amountParam,
+    },
+    encode: createEvmEncoder(EVM_ABI.erc20.approve),
+});
+```
+
+Parameter names (`spender`, `amount`) are derived directly from the ABI - TypeScript will error on wrong param names or types.
+
+## Adding New Calls
+
+1. **Add ABI to constants**
+
+```typescript
+// constants/evm.ts
+export const EVM_ABI = {
+    erc20: {
+        approve: parseAbi(['function approve(address spender, uint256 amount)']),
+        transfer: parseAbi(['function transfer(address to, uint256 amount)']),
+    },
+};
+```
+
+2. **Create builder**
+
+```typescript
+// builder/evm/myMethod.ts
+const recipientParam = createParam({
+    validate: validateAddress,
+    policy: createPolicy({ ZERO_ADDRESS: 'error' }),
+});
+
+const amountParam = createParam({
+    validate: validateUint256,
+});
+
+export const buildMyMethod = createBuilder({
+    params: {
+        recipient: recipientParam,
+        amount: amountParam,
+    },
+    encode: createEvmEncoder(EVM_ABI.myContract.myMethod),
+});
+```
+
+3. **Export from Calldata**
+
+```typescript
+// calldata.ts
+export const Calldata = {
+    evm: {
+        myContract: {
+            myMethod: buildMyMethod,
+        },
+    },
+};
+```
