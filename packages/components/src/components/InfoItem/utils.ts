@@ -2,7 +2,8 @@ import { SpacingValues, TypographyStyle, spacings } from '@trezor/theme';
 
 import { InfoItemVerticalAlignment } from './types';
 import { FlexAlignItems } from '../Flex/FlexProp';
-import { IconSize } from '../Icon/Icon';
+import { IconSize, IconVariant } from '../Icon/Icon';
+import { TextIntent, TextPriority } from '../typography/Text/Text';
 
 export const mapVerticalAlignmentToAlignItems = (
     verticalAlignment: InfoItemVerticalAlignment,
@@ -64,4 +65,35 @@ export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): 
     };
 
     return gapMap[typographyStyle];
+};
+
+type MapIntentToIconVariantArgs = {
+    intent: TextIntent;
+    priority: TextPriority;
+    isDisabled: boolean;
+};
+
+export const mapIntentToIconVariant = ({
+    intent,
+    priority,
+    isDisabled,
+}: MapIntentToIconVariantArgs): IconVariant => {
+    if (isDisabled) return 'disabled';
+
+    switch (intent) {
+        case 'warning':
+            return 'warning';
+        case 'info':
+            return 'info';
+        case 'critical':
+            return 'destructive';
+        case 'accentViolet':
+            return 'purple';
+        case 'brand':
+            return 'primary';
+        case 'accentOrange':
+            return 'warning';
+        case 'neutral':
+            return priority === 'secondary' ? 'tertiary' : 'default';
+    }
 };

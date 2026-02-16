@@ -36,7 +36,13 @@ export const RotatingPhrases = ({ interval = 10000 }: RotatingPhrasesProps) => {
 
     return (
         <Card fillType="flat" paddingType="large">
-            <H4 typographyStyle="callout" variant="tertiary" align="center" margin={{ bottom: 12 }}>
+            <H4
+                typographyStyle="callout"
+                intent="neutral"
+                priority="secondary"
+                align="center"
+                margin={{ bottom: 12 }}
+            >
                 <Translation id="TR_DYK_TITLE" />
             </H4>
             <div role="status" aria-live="polite" aria-atomic>

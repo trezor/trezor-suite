@@ -138,7 +138,7 @@ export const SupportFeedbackSelection = () => {
                             <LabelHeadline>
                                 <Translation id="TR_BUG" />
                             </LabelHeadline>
-                            <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                                 <Translation id="TR_GUIDE_BUG_LABEL" />
                             </Paragraph>
                         </Label>
@@ -153,7 +153,7 @@ export const SupportFeedbackSelection = () => {
                             <LabelHeadline>
                                 <Translation id="TR_SUGGESTION" />
                             </LabelHeadline>
-                            <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                                 <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
                             </Paragraph>
                         </Label>
@@ -172,7 +172,11 @@ export const SupportFeedbackSelection = () => {
                                     <Translation id="TR_GUIDE_FORUM" />
                                     <Icon size={20} name="arrowUpRight" />
                                 </LabelHeadline>
-                                <Paragraph typographyStyle="hint" variant="tertiary">
+                                <Paragraph
+                                    typographyStyle="hint"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
                                     <Translation id="TR_GUIDE_FORUM_LABEL" />
                                 </Paragraph>
                             </Label>

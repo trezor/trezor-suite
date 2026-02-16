@@ -58,7 +58,7 @@ export const BridgeUnavailable = () => {
                 <H3>
                     <Translation id="TR_BRIDGE" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     {hasTransport ? description : <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />}
                 </Paragraph>
             </Column>

@@ -87,14 +87,15 @@ export const MessageSystemExperimentDetail = ({
                 label={experiment.id}
                 typographyStyle="highlight"
                 iconName="lightbulb"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 {experimentName ? (
                     <Text>
                         <strong>Name:</strong> {experimentName ?? 'Unknown experiment'}
                     </Text>
                 ) : (
-                    <Text variant="warning">Unknown experiment</Text>
+                    <Text intent="warning">Unknown experiment</Text>
                 )}
             </InfoItem>
 
@@ -102,7 +103,8 @@ export const MessageSystemExperimentDetail = ({
                 label="Groups"
                 typographyStyle="highlight"
                 iconName="usersThree"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 <Row margin={{ vertical: spacings.md }}>
                     <BarTrack>

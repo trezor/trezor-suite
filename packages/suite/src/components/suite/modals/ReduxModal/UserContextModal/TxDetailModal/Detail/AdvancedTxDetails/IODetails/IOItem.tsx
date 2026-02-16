@@ -59,7 +59,7 @@ export const IOItem = ({
                             {anonymity && <UtxoAnonymity anonymity={anonymity} />}
                             {amount &&
                                 (typeof amount === 'string' && symbol ? (
-                                    <Text variant="tertiary" as="div">
+                                    <Text intent="neutral" priority="secondary" as="div">
                                         <FormattedCryptoAmount
                                             value={
                                                 isNetworkSymbol(symbol)

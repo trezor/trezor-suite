@@ -63,7 +63,12 @@ export const ApproveModalTypeSelector = ({
                             <Translation id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE" />
                         </Text>
                     </Row>
-                    <Paragraph margin={{ top: 4 }} typographyStyle="hint" variant="tertiary">
+                    <Paragraph
+                        margin={{ top: 4 }}
+                        typographyStyle="hint"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation
                             id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
                             values={translationValues}
@@ -84,7 +89,12 @@ export const ApproveModalTypeSelector = ({
                             />
                         </Text>
                     </Row>
-                    <Paragraph margin={{ top: 4 }} typographyStyle="hint" variant="tertiary">
+                    <Paragraph
+                        margin={{ top: 4 }}
+                        typographyStyle="hint"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation
                             id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
                             values={translationValues}

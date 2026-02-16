@@ -28,7 +28,7 @@ export const StakeAvailableBalance = ({ formattedBalance, symbol }: StakeAvailab
             >
                 {({ value }) =>
                     value ? (
-                        <Text typographyStyle="label" variant="tertiary">
+                        <Text typographyStyle="label" intent="neutral" priority="secondary">
                             {value}
                         </Text>
                     ) : null

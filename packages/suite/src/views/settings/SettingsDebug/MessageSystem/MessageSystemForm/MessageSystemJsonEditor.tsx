@@ -76,7 +76,7 @@ export const MessageSystemJsonEditor = ({
                     {!isValid && (
                         <Column gap={spacings.xxs}>
                             {errors.map((error, index) => (
-                                <Text variant="destructive" key={index}>
+                                <Text intent="critical" key={index}>
                                     <strong>{error.field}</strong> {error.message}
                                 </Text>
                             ))}

@@ -77,7 +77,7 @@ const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentP
             {!isWebUsbTransport && (
                 <Row gap={8} alignItems="center" justifyContent="center" height={36}>
                     <Spinner size={16} isGrey={false} />
-                    <Text variant="primary">
+                    <Text intent="brand">
                         <Translation
                             id={
                                 isBluetoothMode
@@ -335,7 +335,12 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     />
                     <Row gap={24}>
                         <Divider margin={0} />
-                        <Text typographyStyle="hint" variant="tertiary" case="uppercase">
+                        <Text
+                            typographyStyle="hint"
+                            intent="neutral"
+                            priority="secondary"
+                            case="uppercase"
+                        >
                             or
                         </Text>
                         <Divider margin={0} />

@@ -29,10 +29,10 @@ export const ConnectCallSource = () => {
                         : 'trezorConnect'
                 }
             />
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
-                <Text variant="default">
+                <Text intent="neutral">
                     {connectPopupCall.source?.manifest?.appName || connectPopupCall.source?.origin}
                 </Text>
             </Text>

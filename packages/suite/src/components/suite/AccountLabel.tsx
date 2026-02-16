@@ -14,7 +14,9 @@ interface AccountLabelProps {
     // Defensive programming to prevent passing 'accountLabel' by mistake.
     // Labeling shall be solved (selected for) only here!
     account: Omit<Account, 'accountLabel'>;
-    variant?: TextProps['variant'];
+    intent?: TextProps['intent'];
+    priority?: TextProps['priority'];
+    isDisabled?: TextProps['isDisabled'];
     typographyStyle?: TextProps['typographyStyle'];
     rowProps?: Omit<FlexProps, 'children'>;
 }
@@ -24,7 +26,9 @@ export const AccountLabel = ({
     accountTypeBadgeSize = 'medium',
     account,
     typographyStyle,
-    variant,
+    intent,
+    priority,
+    isDisabled,
     rowProps,
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
@@ -44,7 +48,13 @@ export const AccountLabel = ({
 
     return (
         <Row gap={12} overflow="hidden" maxWidth="100%" {...rowProps}>
-            <Text variant={variant} typographyStyle={typographyStyle} ellipsisLineCount={1}>
+            <Text
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
+                typographyStyle={typographyStyle}
+                ellipsisLineCount={1}
+            >
                 {accountLabel}
             </Text>
             {showAccountTypeBadge && (

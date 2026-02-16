@@ -27,7 +27,12 @@ export const OnboardingOption = ({
             <Column gap={2}>
                 <H4>{heading}</H4>
                 {description && (
-                    <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
+                    <Paragraph
+                        typographyStyle="hint"
+                        intent="neutral"
+                        priority="secondary"
+                        textWrap="pretty"
+                    >
                         {description}
                     </Paragraph>
                 )}

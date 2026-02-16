@@ -19,7 +19,8 @@ export function AssetPickerAccountLabel({ accountKey }: AssetPickerAccountLabelP
         <AccountLabel
             account={account}
             showAccountTypeBadge={true}
-            variant="tertiary"
+            intent="neutral"
+            priority="secondary"
             typographyStyle="label"
         />
     );

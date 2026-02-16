@@ -88,7 +88,12 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
                         <Translation id={texts.heading} />
                     </Text>
                     {texts.description && (
-                        <Paragraph variant="tertiary" align="center" margin={{ top: 12 }}>
+                        <Paragraph
+                            intent="neutral"
+                            priority="secondary"
+                            align="center"
+                            margin={{ top: 12 }}
+                        >
                             <Translation id={texts.description} />
                         </Paragraph>
                     )}

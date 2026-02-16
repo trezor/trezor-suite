@@ -63,7 +63,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             <H2>
                 <Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />
             </H2>
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
                 <Translation id={getAddressTypeText(addressType)} />
             </Paragraph>
             <Card margin={{ top: spacings.xl }}>

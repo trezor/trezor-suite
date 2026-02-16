@@ -41,7 +41,11 @@ export const PassphraseMismatchModal = ({
                     <H3 data-testid="@passphrase-mismatch-header">
                         <Translation id="TR_PASSPHRASE_MISMATCH" />
                     </H3>
-                    <Text data-testid="@passphrase-mismatch-description" variant="tertiary">
+                    <Text
+                        data-testid="@passphrase-mismatch-description"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation id="TR_PASSPHRASE_MISMATCH_DESCRIPTION" />
                     </Text>
                 </Column>

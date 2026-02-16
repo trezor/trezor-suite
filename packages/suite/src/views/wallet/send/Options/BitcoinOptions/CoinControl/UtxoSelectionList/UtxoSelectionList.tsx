@@ -65,7 +65,7 @@ export const UtxoSelectionList = ({
                         <Paragraph typographyStyle="body" margin={{ bottom: 4 }}>
                             {heading}
                         </Paragraph>
-                        <Paragraph typographyStyle="body" variant="tertiary">
+                        <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
                             {description}
                         </Paragraph>
                     </div>

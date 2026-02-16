@@ -21,7 +21,7 @@ const InputRow = ({ value, title, placeholder, base, defaultBase }: InputRowProp
         <Row gap={spacings.sm} alignItems="flex-start">
             <Input value={base} type="text" placeholder={defaultBase} isDisabled={true} />
 
-            <Text variant="tertiary" margin={{ top: spacings.md }}>
+            <Text intent="neutral" priority="secondary" margin={{ top: spacings.md }}>
                 /
             </Text>
 

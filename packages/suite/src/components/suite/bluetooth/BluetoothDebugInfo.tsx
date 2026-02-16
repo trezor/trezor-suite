@@ -18,7 +18,7 @@ const TimeAgo = ({ timestamp }: { timestamp: number }) => {
 
     return (
         <Text>
-            <Text variant="warning">{secAgo}</Text>&nbsp;s ago
+            <Text intent="warning">{secAgo}</Text>&nbsp;s ago
         </Text>
     );
 };
@@ -54,7 +54,7 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
                 )}
                 <TimeAgo timestamp={device.lastUpdatedTimestamp} />
             </InfoSegments>
-            <Text typographyStyle="hint" variant="purple">
+            <Text typographyStyle="hint" intent="accentViolet">
                 <Code>{device.macAddress}</Code>
             </Text>
         </>

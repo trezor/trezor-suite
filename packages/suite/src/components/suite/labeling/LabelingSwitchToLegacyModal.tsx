@@ -31,12 +31,12 @@ export const LabelingSwitchToLegacyModal = ({
                 bulletComponent={<Icon name="dot" variant="tertiary" size={32} />}
             >
                 <List.Item>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED" />
                     </Paragraph>
                 </List.Item>
                 <List.Item>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE" />
                     </Paragraph>
                 </List.Item>

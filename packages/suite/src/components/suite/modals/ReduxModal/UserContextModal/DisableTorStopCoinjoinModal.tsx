@@ -54,7 +54,7 @@ export const DisableTorStopCoinjoinModal = ({
                         </Paragraph>
                     }
                 />
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE" />
                 </Paragraph>
             </Column>

@@ -46,7 +46,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 <H3>
                     <Translation id="TR_CANCEL_COINJOIN" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_CANCEL_COINJOIN_QUESTION" />
                 </Paragraph>
             </Column>

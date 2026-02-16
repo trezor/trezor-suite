@@ -57,7 +57,7 @@ export function AssetPickerInputContent({ value, dataTestId }: AssetPickerInputC
                     {displayName}
                 </Text>
                 {showNetwork && (
-                    <Text variant="tertiary" typographyStyle="label">
+                    <Text intent="neutral" priority="secondary" typographyStyle="label">
                         {networkName}
                     </Text>
                 )}

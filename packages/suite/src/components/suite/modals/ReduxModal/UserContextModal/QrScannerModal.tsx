@@ -76,7 +76,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                     {error && (
                         <Card height="100%">
                             <Column height="100%" justifyContent="center" alignItems="center">
-                                <Paragraph variant="destructive">
+                                <Paragraph intent="critical">
                                     <Translation id="TR_GENERIC_ERROR_TITLE" />
                                 </Paragraph>
                                 <Paragraph>{error}</Paragraph>
@@ -109,7 +109,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                     )}
                 </ContentWrapper>
                 <Row gap={spacings.xs} justifyContent="center">
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
                     </Paragraph>
                     <LearnMoreButton url={HELP_CENTER_QR_CODE_URL} />

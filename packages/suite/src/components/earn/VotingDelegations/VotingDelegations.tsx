@@ -27,7 +27,7 @@ export const VotingDelegations = () => {
                 }
                 toggleIconName="caretDown"
                 toggleLabel={
-                    <Text variant="default" typographyStyle="callout">
+                    <Text intent="neutral" typographyStyle="callout">
                         <Translation
                             id={
                                 selectedVotingDelegation.type === 'another_drep'

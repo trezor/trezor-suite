@@ -35,7 +35,7 @@ export const TxSimulationBanner = ({
                         onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
                         verticalAlignment="center"
                     >
-                        <Text variant="default" typographyStyle="hint">
+                        <Text intent="neutral" typographyStyle="hint">
                             <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />
                         </Text>
                     </Checkbox>

@@ -102,7 +102,7 @@ export const ConnectAddressConfirmation = () => {
                     {popupCall.exported ? (
                         <Row alignItems="center" gap={spacings.sm}>
                             <Icon name="checkCircle" size={32} variant="primary" />
-                            <H3 variant="primary">
+                            <H3 intent="brand">
                                 <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
                             </H3>
                         </Row>

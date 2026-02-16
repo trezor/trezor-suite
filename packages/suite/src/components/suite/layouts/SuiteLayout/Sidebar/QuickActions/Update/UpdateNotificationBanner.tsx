@@ -156,7 +156,7 @@ export const UpdateNotificationBanner = ({
                             <Text>
                                 <Translation id={translationHeader} />
                             </Text>
-                            <Text variant="primary">
+                            <Text intent="brand">
                                 <Translation id={translationCallToAction} />
                             </Text>
                         </Column>

@@ -116,7 +116,7 @@ export const TradingDetailSell = () => {
                         <H3>
                             <Translation id="TR_SELL_HEADER_TITLE" />
                         </H3>
-                        <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                             <Translation
                                 id="TR_TRADING_HEADER_DESCRIPTION"
                                 values={{

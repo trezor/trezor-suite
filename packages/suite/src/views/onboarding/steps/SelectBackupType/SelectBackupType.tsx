@@ -120,7 +120,7 @@ export const SelectBackupType = ({
                         }}
                     >
                         <OptionText data-testid={dataTest}>
-                            <Text variant="tertiary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
                             <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>

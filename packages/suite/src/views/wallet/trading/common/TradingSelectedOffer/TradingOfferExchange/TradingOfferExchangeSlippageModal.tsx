@@ -205,7 +205,7 @@ export const TradingOfferExchangeSlippageModal = ({
             }
         >
             <Column gap={spacings.md}>
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />
                 </Text>
 

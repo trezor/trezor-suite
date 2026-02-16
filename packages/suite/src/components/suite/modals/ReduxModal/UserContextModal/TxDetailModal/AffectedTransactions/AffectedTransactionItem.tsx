@@ -30,7 +30,7 @@ export const AffectedTransactionItem = ({ tx, isAccountOwned }: AffectedTransact
         <InfoSegments>
             {tx.blockTime && <FormattedDate value={new Date(tx.blockTime * 1000)} date time />}
 
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <HiddenPlaceholder>
                     <Address value={tx.txid} isTruncated />
                 </HiddenPlaceholder>

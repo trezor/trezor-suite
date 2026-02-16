@@ -43,10 +43,8 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
             </H3>
             <Column gap={spacings.xxs} margin={{ top: spacings.xs }}>
                 <ProgressBar value={progress?.percent || 0} />
-                <Paragraph variant="tertiary" typographyStyle="body" align="end">
-                    <Text variant="primary">
-                        {bytesToHumanReadable(progress?.transferred || 0)}
-                    </Text>
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="body" align="end">
+                    <Text intent="brand">{bytesToHumanReadable(progress?.transferred || 0)}</Text>
                     {' / '}
                     {bytesToHumanReadable(progress?.total || 0)}
                 </Paragraph>

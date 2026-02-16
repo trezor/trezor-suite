@@ -160,7 +160,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                             values={{ providerName }}
                         />
                     </Text>
-                    <Text variant="tertiary">
+                    <Text intent="neutral" priority="secondary">
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO"
                             values={{ providerName }}

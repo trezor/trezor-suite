@@ -5,7 +5,7 @@ import { CSSColor, Color, TypographyStyle } from '@trezor/theme';
 import { BadgeIntent, BadgeSize } from './types';
 import { Padding } from '../../utils/frameProps';
 
-export const mapIntentToBackgroundColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
+export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
     const colorMap: Record<BadgeIntent, Color> = {
         brand: 'backgroundPrimarySubtleOnElevation0',
         neutral: 'backgroundNeutralSubtleOnElevation0',
@@ -14,19 +14,7 @@ export const mapIntentToBackgroundColor = (intent: BadgeIntent, theme: DefaultTh
         critical: 'backgroundAlertRedSubtleOnElevation0',
     };
 
-    return theme[colorMap[intent]];
-};
-
-export const mapIntentToTextColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
-    const colorMap: Record<BadgeIntent, Color> = {
-        brand: 'textPrimaryDefault',
-        neutral: 'textSubdued',
-        info: 'textAlertBlue',
-        warning: 'textAlertYellow',
-        critical: 'textAlertRed',
-    };
-
-    return theme[colorMap[intent]];
+    return colorMap[intent];
 };
 
 export const mapIntentToIconColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {

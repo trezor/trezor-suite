@@ -82,7 +82,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                         key={`${message.id}-${index}`}
                         intent={message.variant}
                         description={
-                            <Text as="div" variant="default">
+                            <Text as="div" intent="neutral">
                                 <Row gap={24} alignItems="flex-start">
                                     <Column flex="1" gap={spacings.md}>
                                         <MessageSystemManagerDetail message={message} />

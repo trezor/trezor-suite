@@ -144,7 +144,7 @@ export const TransactionReviewSummary = ({
                         <Note iconName="broadcast">
                             <Translation id="BROADCAST" />
                             {': '}
-                            <Text variant="destructive">
+                            <Text intent="critical">
                                 <Translation id="TR_OFF" />
                             </Text>
                         </Note>

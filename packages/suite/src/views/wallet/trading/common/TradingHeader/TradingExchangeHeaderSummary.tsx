@@ -1,5 +1,4 @@
 import { CryptoId } from 'invity-api';
-import { useTheme } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import {
@@ -26,7 +25,6 @@ export const TradingExchangeHeaderSummary = ({
     sendCurrency,
     receiveCurrency,
 }: TradingExchangeHeaderSummaryProps) => {
-    const theme = useTheme();
     const context = useTradingFormContext<TradingExchangeType>();
     const { account } = context;
     const { symbol } = account;
@@ -58,7 +56,7 @@ export const TradingExchangeHeaderSummary = ({
                     </H3>
                 )}
             </Row>
-            <Text typographyStyle="hint" color={theme.textSubdued}>
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <Translation
                     id="TR_EXCHANGE_FEES_INFO"
                     values={{

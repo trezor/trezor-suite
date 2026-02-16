@@ -51,7 +51,7 @@ export const PayoutCardNextRewards = ({
                         <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
                     )}
                 </Paragraph>
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_NEXT_PAYOUT" />
                 </Paragraph>
             </>

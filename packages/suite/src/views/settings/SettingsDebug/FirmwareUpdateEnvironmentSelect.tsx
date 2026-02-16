@@ -39,7 +39,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
                             Set firmware channel for testing unsigned and signed. Remember you have
                             to reload the web app or desktop in order for it to be fully applied.
                         </Text>
-                        <Text variant="info">
+                        <Text intent="info">
                             If you select production, the binaries will be cached.
                         </Text>
                     </Column>

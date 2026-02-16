@@ -22,7 +22,8 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
     return (
         <Row margin={{ top: spacings.sm }} gap={spacings.xs}>
             <Text
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 typographyStyle="label"
                 as="div"
                 data-testid="@trading/transaction-id"

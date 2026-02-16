@@ -55,20 +55,20 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
     return isSuiteSyncEnabled ? (
         <Row gap={spacings.xxs}>
             🐞
-            {legacyMetadataState.enabled && <Text variant="purple">[Legacy]</Text>}
+            {legacyMetadataState.enabled && <Text intent="accentViolet">[Legacy]</Text>}
             {isSuiteSyncEnabled && (
                 <>
-                    <Text typographyStyle="hint" variant="warning">
+                    <Text typographyStyle="hint" intent="warning">
                         <Code>{walletDescriptor.slice(-8)}</Code>
                     </Text>
                     @
-                    <Text typographyStyle="hint" variant="purple">
+                    <Text typographyStyle="hint" intent="accentViolet">
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip
                         content={<Code>{JSON.stringify(device.suiteSyncOwner, null, 2)}</Code>}
                     >
-                        <Text typographyStyle="hint" variant="purple">
+                        <Text typographyStyle="hint" intent="accentViolet">
                             E:
                             <Code>{device.suiteSyncOwner?.slice(-8)}</Code>
                         </Text>

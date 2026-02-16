@@ -98,7 +98,7 @@ export const PassphraseInputCard = ({
                             {deviceModel && (
                                 <Image alt="Trezor" image={`TREZOR_${deviceModel}`} height={34} />
                             )}
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
                             </Text>
                             <Icon margin={{ left: 'auto' }} name="caretRight" variant="tertiary" />

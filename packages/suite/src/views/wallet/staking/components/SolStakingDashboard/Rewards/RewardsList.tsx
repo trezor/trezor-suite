@@ -66,7 +66,8 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                             <Column gap={10} key={reward.epoch} data-testid={TEST_ID}>
                                 <Text
                                     typographyStyle="callout"
-                                    variant="tertiary"
+                                    intent="neutral"
+                                    priority="secondary"
                                     data-testid={`${TEST_ID}/date`}
                                 >
                                     <FormattedDate

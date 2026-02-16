@@ -13,7 +13,7 @@ type MessageSystemConditionGroupProps = {
 export const MessageSystemConditionGroup = ({ conditions }: MessageSystemConditionGroupProps) => {
     if (!conditions || conditions.length === 0) {
         return (
-            <InfoItem label="Conditions" iconName="checkFat" variant="default">
+            <InfoItem label="Conditions" iconName="checkFat" intent="neutral" priority="primary">
                 -
             </InfoItem>
         );
@@ -28,7 +28,12 @@ export const MessageSystemConditionGroup = ({ conditions }: MessageSystemConditi
 
                 <MessageSystemCondition label="Settings" iconName="coins" data={settings} />
 
-                <InfoItem label="Country codes" iconName="globe" variant="default">
+                <InfoItem
+                    label="Country codes"
+                    iconName="globe"
+                    intent="neutral"
+                    priority="primary"
+                >
                     {countryCodes ? countryCodes.join(', ') : '-'}
                 </InfoItem>
             </Row>

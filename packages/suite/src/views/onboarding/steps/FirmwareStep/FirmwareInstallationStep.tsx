@@ -36,7 +36,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
             // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
             return (
                 <Column alignItems="center" gap={12}>
-                    <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                         <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
                     </Paragraph>
                     <WebUsbButton size="medium">

@@ -18,6 +18,7 @@ import {
     commonButtonStyles,
     mapPropsToCSS,
     mapPropsToColor,
+    mapPropsToColorToken,
     mapSizeToBorderRadius,
     mapSizeToIconSize,
     mapSizeToTypographyStyle,
@@ -77,6 +78,7 @@ export const Button = ({
     const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
     const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
     const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
+    const textColor = mapPropsToColorToken(intent, priority, buttonProps.disabled, isInverse);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
@@ -112,7 +114,7 @@ export const Button = ({
                     <Text
                         as="div"
                         typographyStyle={mapSizeToTypographyStyle(size)}
-                        color={color}
+                        color={textColor}
                         ellipsisLineCount={1}
                     >
                         {children}
@@ -122,7 +124,7 @@ export const Button = ({
                     <Icon name={iconRight ?? 'arrowLineUpRight'} {...iconProps} />
                 )}
                 {shortcut?.length && (
-                    <Text as="div" color={color}>
+                    <Text as="div" color={textColor}>
                         <ShortcutBadge shortcut={shortcut} />
                     </Text>
                 )}

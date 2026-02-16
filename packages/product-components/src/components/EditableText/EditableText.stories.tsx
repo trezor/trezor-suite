@@ -62,7 +62,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
                 <Text typographyStyle="body">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
-                <Text typographyStyle="hint" variant="tertiary" align="end">
+                <Text typographyStyle="hint" intent="neutral" priority="secondary" align="end">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
             </Column>
@@ -151,7 +151,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
             options: [undefined, 'example'],
             mapping: {
                 undefined,
-                example: <Text variant="destructive">Display value</Text>,
+                example: <Text intent="critical">Display value</Text>,
             },
         },
         gap: {

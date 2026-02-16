@@ -81,7 +81,7 @@ const NftsRow = ({
                     <DropdownRow
                         isActive={isCollectionOpen}
                         typographyStyle="body"
-                        variant="default"
+                        intent="neutral"
                         nftName={NftName}
                         nftItemsCount={!isEmptyCollection ? nftItemsCount : undefined}
                         shouldDisplayIcon={!isEmptyCollection}

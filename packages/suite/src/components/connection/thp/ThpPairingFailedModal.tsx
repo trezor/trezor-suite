@@ -43,7 +43,7 @@ export const ThpPairingFailedModal = () => {
         >
             <Column gap={16} margin={{ top: 16 }}>
                 <ThpPairingCodeEntry disabled lastCode={lastThpCode} />
-                <Paragraph variant="destructive">
+                <Paragraph intent="critical">
                     <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
                 </Paragraph>
             </Column>

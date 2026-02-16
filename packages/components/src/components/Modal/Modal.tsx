@@ -121,7 +121,8 @@ const InnerModalBase = ({
                                         {heading && <H3 data-testid="@modal/header">{heading}</H3>}
                                         {description && (
                                             <Text
-                                                variant="tertiary"
+                                                intent="neutral"
+                                                priority="secondary"
                                                 typographyStyle="hint"
                                                 ellipsisLineCount={2}
                                                 as="div"

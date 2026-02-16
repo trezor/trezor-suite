@@ -166,7 +166,8 @@ export const WalletInstance = ({
                         <Row justifyContent="space-between">
                             <Text
                                 as="div"
-                                variant={isSelected ? 'default' : 'tertiary'}
+                                intent="neutral"
+                                priority={isSelected ? 'primary' : 'secondary'}
                                 typographyStyle={isSelected ? 'highlight' : 'body'}
                             >
                                 {instance.state?.staticSessionId ? (

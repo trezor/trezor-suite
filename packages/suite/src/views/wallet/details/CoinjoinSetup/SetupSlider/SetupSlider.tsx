@@ -86,7 +86,12 @@ export const SetupSlider = ({
                     $width={inputWidth}
                 />
             </Row>
-            <Paragraph typographyStyle="hint" margin={{ vertical: 8 }} variant="tertiary">
+            <Paragraph
+                typographyStyle="hint"
+                margin={{ vertical: 8 }}
+                intent="neutral"
+                priority="secondary"
+            >
                 {description}
             </Paragraph>
             <Range

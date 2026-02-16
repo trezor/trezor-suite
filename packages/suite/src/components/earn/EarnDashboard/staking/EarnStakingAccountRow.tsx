@@ -162,7 +162,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                         />
 
                         {isStakingActive && (
-                            <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                                 <Translation
                                     id="TR_EARN_STAKING_DASHBOARD_STAKED"
                                     values={{
@@ -195,12 +195,12 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                             symbol={account.symbol}
                             rewards={potentialRewards}
                             apy={apy}
-                            variant="primary"
+                            intent="brand"
                         />
                     )}
 
                     {!isCardanoNetworkType && apy && (
-                        <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                             <Translation
                                 id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
                                 values={{
@@ -232,7 +232,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
             {state === 'insufficient-funds' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <Paragraph typographyStyle="body" variant="tertiary">
+                        <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
                             <Translation
                                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                                 values={{
@@ -280,7 +280,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                     <CurrentRewardsCell />
 
                     <Table.Cell>
-                        <Paragraph typographyStyle="body" variant="tertiary">
+                        <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
                             <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
                         </Paragraph>
                     </Table.Cell>
@@ -303,7 +303,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                     <CurrentRewardsCell />
 
                     <Table.Cell>
-                        <Paragraph typographyStyle="body" variant="tertiary">
+                        <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
                             <Translation
                                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                                 values={{
@@ -332,7 +332,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                     <Table.Cell colSpan={2}>
                         <Row gap={spacings.xxs}>
                             <Icon name="warning" size={24} variant="warning" />
-                            <Paragraph typographyStyle="body" variant="warning">
+                            <Paragraph typographyStyle="body" intent="warning">
                                 <Translation
                                     id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"
                                     values={{ apy: formatApyValue(apy) }}

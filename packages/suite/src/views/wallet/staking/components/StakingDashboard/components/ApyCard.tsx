@@ -16,7 +16,7 @@ export const ApyCard = ({ apy }: ApyCardProps) => (
                 <Paragraph typographyStyle="titleMedium">
                     <ApyValue apy={apy} />
                 </Paragraph>
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_APY" />
                 </Paragraph>
             </Column>

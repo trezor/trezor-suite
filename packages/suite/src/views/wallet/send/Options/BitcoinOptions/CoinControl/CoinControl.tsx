@@ -184,12 +184,12 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         isDisabled={!hasEligibleUtxos}
                         onClick={handleAllUtxosSelected}
                     >
-                        <Text variant="tertiary">
+                        <Text intent="neutral" priority="secondary">
                             <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
                         </Text>
                     </Checkbox>
 
-                    <Text variant="tertiary">
+                    <Text intent="neutral" priority="secondary">
                         <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
                     </Text>
                 </Row>

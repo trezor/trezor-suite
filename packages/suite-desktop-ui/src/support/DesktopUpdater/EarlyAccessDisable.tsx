@@ -48,7 +48,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                 <H3>
                     <Translation id="TR_EARLY_ACCESS" />
                 </H3>
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
                     <br />
                     <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
@@ -75,7 +75,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                 <H3>
                     <Translation id="TR_EARLY_ACCESS" />
                 </H3>
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />
                     <br />
                     <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />

@@ -45,7 +45,7 @@ export const FeeCard = ({
                 <Column>
                     <Row justifyContent="space-between">
                         <Text typographyStyle="highlight">{topLeftChild}</Text>
-                        <Text variant="tertiary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
                             {isLoading ? <SkeletonRectangle animate={true} /> : topRightChild}
                         </Text>
                     </Row>
@@ -53,7 +53,7 @@ export const FeeCard = ({
                         <Text>
                             {isLoading ? <SkeletonRectangle animate={true} /> : bottomLeftChild}
                         </Text>
-                        <Text variant="tertiary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
                             {isLoading ? <SkeletonRectangle animate={true} /> : bottomRightChild}
                         </Text>
                     </Row>

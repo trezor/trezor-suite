@@ -65,7 +65,11 @@ export const DashboardSection = forwardRef(
                                         )}
                                     </Row>
                                 </Row>
-                                {subheading && <Text variant="tertiary">{subheading}</Text>}
+                                {subheading && (
+                                    <Text intent="neutral" priority="secondary">
+                                        {subheading}
+                                    </Text>
+                                )}
                             </Column>
                         )}
                         <Collapsible.Content overflow="unset">{children}</Collapsible.Content>

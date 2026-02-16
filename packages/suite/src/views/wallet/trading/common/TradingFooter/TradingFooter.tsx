@@ -19,7 +19,7 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => {
 
     return (
         <Column alignItems="center" margin={{ top: 48 }} gap={12}>
-            <Text typographyStyle="hint" variant="tertiary">
+            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                 <Translation
                     id="TR_TRADING_TERMS"
                     values={{
@@ -30,7 +30,7 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => {
                 />
             </Text>
 
-            <InfoSegments typographyStyle="hint" variant="tertiary">
+            <InfoSegments typographyStyle="hint" intent="neutral" priority="secondary">
                 <Link href={TREZOR_SUITE_TOS_URL}>
                     <Translation id="TR_TERMS_OF_USE_TREZOR" />
                 </Link>

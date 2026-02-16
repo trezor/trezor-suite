@@ -62,13 +62,14 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                     label={
                         <Row gap={spacings.md}>
                             <Translation id="TR_CANCEL_TX_FEE" />
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <FeeRate feeRate={feePerByte} networkType={networkType} />
                             </Text>
                         </Row>
                     }
                     typographyStyle="body"
-                    variant="default"
+                    intent="neutral"
+                    priority="primary"
                 >
                     <Column gap={spacings.md} alignItems="flex-end">
                         <FormattedCryptoAmount
@@ -76,7 +77,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             value={fee ?? undefined}
                             symbol={tx.symbol}
                         />
-                        <Text variant="tertiary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="label">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee ?? '0'}
@@ -92,7 +93,8 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                     direction="row"
                     label={<Translation id="TR_CANCEL_TX_RETURN_TO_YOUR_WALLET" />}
                     typographyStyle="body"
-                    variant="default"
+                    intent="neutral"
+                    priority="primary"
                 >
                     <Column gap={spacings.md} alignItems="flex-end">
                         <FormattedCryptoAmount
@@ -100,7 +102,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             value={formattedOutputAmount}
                             symbol={tx.symbol}
                         />
-                        <Text variant="tertiary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="label">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedOutputAmount}

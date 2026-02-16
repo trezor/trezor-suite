@@ -13,6 +13,8 @@ export const StakingFeature = ({ icon, title, description }: StakingFeatureProps
     <section>
         <IconCircle name={icon} variant="primary" size={80} />
         <H3 margin={{ top: spacings.md }}>{title}</H3>
-        <Paragraph variant="tertiary">{description}</Paragraph>
+        <Paragraph intent="neutral" priority="secondary">
+            {description}
+        </Paragraph>
     </section>
 );

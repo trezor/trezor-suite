@@ -120,11 +120,12 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="highlight"
-                                variant="default"
+                                intent="neutral"
+                                priority="primary"
                                 gap={0}
                                 width="fit-content"
                             >
-                                <Text variant="tertiary" typographyStyle="hint">
+                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Text>
                             </InfoItem>

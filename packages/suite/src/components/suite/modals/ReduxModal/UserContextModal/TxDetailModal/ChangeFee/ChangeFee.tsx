@@ -88,7 +88,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                             value={fee}
                             symbol={tx.symbol}
                         />
-                        <Text variant="tertiary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="label">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee}

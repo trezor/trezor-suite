@@ -18,10 +18,10 @@ export function AccountAmount({ account }: AccountAmountProps) {
 
     return (
         <Column alignItems="flex-end">
-            <Text variant="default" typographyStyle="body">
+            <Text intent="neutral" typographyStyle="body">
                 <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isBalance />
             </Text>
-            <Text variant="tertiary" typographyStyle="hint">
+            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                 <BaseCurrencyValue
                     symbol={account.symbol}
                     amount={accountBalance}

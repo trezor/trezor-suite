@@ -12,7 +12,7 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
 
     if (!devices || devices.length === 0) {
         return (
-            <InfoItem label="Devices" iconName="devices" variant="default">
+            <InfoItem label="Devices" iconName="devices" intent="neutral" priority="primary">
                 -
             </InfoItem>
         );
@@ -36,7 +36,8 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                     </Collapsible.Toggle>
                 }
                 iconName="devices"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 <Collapsible.Content>
                     {devices.map((device, index) => (

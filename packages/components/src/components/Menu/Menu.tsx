@@ -79,7 +79,7 @@ const MenuItem = ({
                     variant={isDisabled ? 'disabled' : 'default'}
                 />
             )}
-            <Text variant={isDisabled ? 'disabled' : 'default'} textWrap="nowrap">
+            <Text intent="neutral" isDisabled={isDisabled} textWrap="nowrap">
                 {label}
             </Text>
             {iconRight && (

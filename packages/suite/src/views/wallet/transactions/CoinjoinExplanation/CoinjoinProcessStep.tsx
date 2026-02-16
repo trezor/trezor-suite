@@ -110,7 +110,7 @@ export const CoinjoinProcessStep = ({
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>
         <StepTitle>{title}</StepTitle>
-        <StepDescription typographyStyle="body" variant="tertiary">
+        <StepDescription typographyStyle="body" intent="neutral" priority="secondary">
             {description}
         </StepDescription>
     </Container>

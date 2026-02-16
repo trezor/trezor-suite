@@ -9,6 +9,7 @@ import {
     IconVariant,
     Row,
     Text,
+    TextProps,
     getColorForIconVariant,
     iconSizes,
 } from '@trezor/components';
@@ -46,6 +47,31 @@ type UpdateRowProps = {
     onClick?: () => void;
 };
 
+const mapIconVariantToTextProps = (
+    variant: IconVariant,
+): Pick<TextProps, 'intent' | 'priority' | 'isDisabled'> => {
+    switch (variant) {
+        case 'default':
+            return { intent: 'neutral' };
+        case 'tertiary':
+            return { intent: 'neutral', priority: 'secondary' };
+        case 'primary':
+            return { intent: 'brand' };
+        case 'info':
+            return { intent: 'info' };
+        case 'warning':
+            return { intent: 'warning' };
+        case 'destructive':
+            return { intent: 'critical' };
+        case 'disabled':
+            return { intent: 'neutral', isDisabled: true };
+        case 'purple':
+            return { intent: 'accentViolet' };
+        default:
+            return { intent: 'neutral' };
+    }
+};
+
 export const TooltipRow = ({
     leftItem,
     children,
@@ -55,6 +81,7 @@ export const TooltipRow = ({
     onClick,
 }: UpdateRowProps) => {
     const theme = useTheme();
+    const textProps = mapIconVariantToTextProps(variant);
 
     return (
         <Pointer onClick={onClick}>
@@ -70,7 +97,7 @@ export const TooltipRow = ({
                                 size={iconSizes.extraSmall}
                             />
                         </IconCircleWrapper>
-                        <Text variant={variant}>{children}</Text>
+                        <Text {...textProps}>{children}</Text>
                     </Row>
                 </Column>
             </Row>

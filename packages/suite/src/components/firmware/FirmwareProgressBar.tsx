@@ -29,7 +29,7 @@ export const FirmwareProgressBar = () => {
     return (
         <Box width="100%">
             <Column margin={{ vertical: spacings.md, horizontal: spacings.lg }}>
-                <Text typographyStyle="hint" variant="tertiary">
+                <Text typographyStyle="hint" intent="neutral" priority="secondary">
                     {operation ? <Translation id={mapOperationToTranslationId[operation]} /> : ' '}
                 </Text>
 

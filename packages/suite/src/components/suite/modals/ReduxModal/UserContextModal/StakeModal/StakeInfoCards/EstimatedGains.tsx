@@ -71,12 +71,13 @@ export const EstimatedGains = () => {
     return (
         <Column gap={spacings.lg}>
             <Column>
-                <Paragraph variant="primary" typographyStyle="titleMedium">
+                <Paragraph intent="brand" typographyStyle="titleMedium">
                     {apy}%
                 </Paragraph>
                 <Paragraph
                     typographyStyle="hint"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     margin={{ bottom: negativeSpacings.xxxxl }}
                 >
                     <Translation id="TR_STAKE_APY_ABBR" />
@@ -86,8 +87,10 @@ export const EstimatedGains = () => {
             <Column gap={spacings.sm} hasDivider>
                 {gains.map(({ label, value }, index) => (
                     <Grid key={index} columns={3}>
-                        <Paragraph variant="tertiary">{label}</Paragraph>
-                        <Text variant="primary">
+                        <Paragraph intent="neutral" priority="secondary">
+                            {label}
+                        </Paragraph>
+                        <Text intent="brand">
                             <FormattedCryptoAmount value={value} symbol={account.symbol} />
                         </Text>
                         <Paragraph align="end">
@@ -96,7 +99,7 @@ export const EstimatedGains = () => {
                     </Grid>
                 ))}
             </Column>
-            <Paragraph variant="tertiary">
+            <Paragraph intent="neutral" priority="secondary">
                 <Translation
                     id="TR_STAKING_YOUR_EARNINGS"
                     values={{

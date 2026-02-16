@@ -16,7 +16,7 @@ export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => 
                 }
             />
         </H3>
-        <Paragraph variant="tertiary">
+        <Paragraph intent="neutral" priority="secondary">
             <Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />
         </Paragraph>
     </Modal>

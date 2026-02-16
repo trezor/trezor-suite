@@ -73,7 +73,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
             <Table.Cell align="end">
                 <Text typographyStyle="hint">
                     {fresh ? (
-                        <Text variant="tertiary">
+                        <Text intent="neutral" priority="secondary">
                             <Translation id="RECEIVE_TABLE_NOT_USED" />
                         </Text>
                     ) : (

@@ -4,7 +4,7 @@ import { SpacingValuesNew, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletListContext';
 import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
-import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToColor } from './utils';
+import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToTextColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
@@ -65,7 +65,7 @@ const Bullet = styled.div<{
             : $isDarkTheme
               ? theme.textDefaultInverted
               : theme.backgroundNeutralDisabled};
-    color: ${mapStateToColor};
+    color: ${({ $state, theme }) => theme[mapStateToTextColor($state)]};
     ${({ $size }) => ($size === 'small' ? typography.label : typography.hint)}
 
     ${({ $state, $isOrdered, theme }) =>
@@ -205,7 +205,7 @@ export const BulletListItem = ({
                 <Text
                     as="div"
                     typographyStyle={mapPropsToTypographyStyle(direction, state)}
-                    color={mapStateToColor({ $state: state, theme })}
+                    color={mapStateToTextColor(state)}
                     ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
                 >
                     {title}

@@ -44,7 +44,12 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
                 </Text>
             </Row>
             {hasAmount && network && (
-                <Text typographyStyle="hint" variant="tertiary" margin={{ left: 32 }}>
+                <Text
+                    typographyStyle="hint"
+                    intent="neutral"
+                    priority="secondary"
+                    margin={{ left: 32 }}
+                >
                     <BaseCurrencyValue
                         amount={amount.toString()}
                         tokenAddress={contractAddress as TokenAddress}

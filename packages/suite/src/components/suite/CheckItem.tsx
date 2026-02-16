@@ -23,7 +23,7 @@ export const CheckItem = ({
         <Column alignItems="flex-start" gap={spacings.xs}>
             <Paragraph>{title}</Paragraph>
             {description && (
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                     {description}
                 </Paragraph>
             )}

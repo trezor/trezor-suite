@@ -9,10 +9,18 @@ import { Account } from 'src/types/wallet';
 type TradingDetailTxIdProps = {
     value: string;
     account: Account;
-    variant?: TextProps['variant'];
+    intent?: TextProps['intent'];
+    priority?: TextProps['priority'];
+    isDisabled?: TextProps['isDisabled'];
 };
 
-export const TradingDetailTxId = ({ value, account, variant }: TradingDetailTxIdProps) => {
+export const TradingDetailTxId = ({
+    value,
+    account,
+    intent,
+    priority,
+    isDisabled,
+}: TradingDetailTxIdProps) => {
     const dispatch = useDispatch();
 
     return (
@@ -30,7 +38,15 @@ export const TradingDetailTxId = ({ value, account, variant }: TradingDetailTxId
                 )
             }
         >
-            <Address isTruncated isChunked={false} isCopyAllowed value={value} variant={variant} />
+            <Address
+                isTruncated
+                isChunked={false}
+                isCopyAllowed
+                value={value}
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
+            />
         </Link>
     );
 };

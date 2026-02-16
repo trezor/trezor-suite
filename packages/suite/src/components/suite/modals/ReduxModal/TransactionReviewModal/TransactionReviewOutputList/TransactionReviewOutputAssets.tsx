@@ -68,7 +68,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
                         getCoinLogo()
                     )}
                     <Text
-                        variant={type === 'receive' ? 'primary' : 'destructive'}
+                        intent={type === 'receive' ? 'brand' : 'critical'}
                         data-testid={`@modal/assets/${type}/crypto`}
                     >
                         {type === 'receive' ? ' + ' : ' - '}
@@ -81,7 +81,8 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             data-testid={`@modal/assets/${type}`}
         >
             <Text
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 typographyStyle="hint"
                 data-testid={`@modal/assets/${type}/fiat`}
             >
@@ -104,7 +105,7 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
                 label={
                     <Text
                         margin={{ left: spacings.xxl }}
-                        variant="primary"
+                        intent="brand"
                         data-testid="@modal/assets/receive/label"
                     >
                         + {receive.amount} {receive.fiatCurrency}

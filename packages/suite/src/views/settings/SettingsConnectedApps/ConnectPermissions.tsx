@@ -43,7 +43,8 @@ export const ConnectPermissions = () => {
                 </H3>
                 <Text
                     align="center"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     data-testid="@settings/connect-apps/no-apps"
                 >
                     <Translation id="TR_NO_CONNECTED_APPS_DESCRIPTION" />
@@ -69,7 +70,9 @@ export const ConnectPermissions = () => {
                                 {app.manifest?.appName ? (
                                     <>
                                         <Text>{app.manifest.appName}</Text>
-                                        <Text variant="tertiary">{app.origin}</Text>
+                                        <Text intent="neutral" priority="secondary">
+                                            {app.origin}
+                                        </Text>
                                     </>
                                 ) : (
                                     <Text>{app.origin}</Text>
@@ -77,7 +80,7 @@ export const ConnectPermissions = () => {
 
                                 {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>
-                            <Text variant="tertiary">
+                            <Text intent="neutral" priority="secondary">
                                 <PermissionsList>
                                     {app.types.map(permission => (
                                         <li key={permission}>{getPermissionText(permission)}</li>

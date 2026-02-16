@@ -174,7 +174,7 @@ export const Card = ({
         <Container $fillType={fillType} $hasLabel={!!label} {...frameProps}>
             {label && (
                 <Box padding={mapPaddingTypeToLabelPadding({ paddingType })}>
-                    <Text as="div" variant="tertiary">
+                    <Text as="div" intent="neutral" priority="secondary">
                         {label}
                     </Text>
                 </Box>

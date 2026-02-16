@@ -166,7 +166,7 @@ export const ConnectErrorModal = () => {
                 <Column gap={spacings.xs}>
                     <Row alignItems="center" gap={spacings.sm}>
                         <Icon name="warning" size={32} variant={getVariant()} />
-                        <H3 variant={getVariant()}>{getTitle()}</H3>
+                        <H3 intent={isCancelled ? 'warning' : 'critical'}>{getTitle()}</H3>
                     </Row>
                     <ConnectCallSource />
                     <Paragraph>{getSubtitle()}</Paragraph>

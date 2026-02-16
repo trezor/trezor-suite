@@ -46,7 +46,7 @@ export const BigAmountValue = ({
                 </WholeValue>
             </Text>
             {!shouldRedactNumbers && (
-                <Text typographyStyle="hint" variant="tertiary">
+                <Text typographyStyle="hint" intent="neutral" priority="secondary">
                     <DecimalValue>
                         {separator}
                         {fractional}

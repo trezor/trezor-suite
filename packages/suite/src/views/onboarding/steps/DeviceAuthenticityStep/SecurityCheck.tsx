@@ -228,10 +228,10 @@ const SecurityCheckContent = ({
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">
             <Column gap={spacings.sm}>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_YOU_HAVE_CONNECTED" />
                 </Paragraph>
-                <Paragraph typographyStyle="titleMedium" variant="primary">
+                <Paragraph typographyStyle="titleMedium" intent="brand">
                     {device?.name}
                     {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
                 </Paragraph>

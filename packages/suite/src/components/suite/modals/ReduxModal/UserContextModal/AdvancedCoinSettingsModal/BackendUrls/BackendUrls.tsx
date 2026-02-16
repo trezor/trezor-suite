@@ -44,8 +44,9 @@ export function BackendUrls({
                             <Row gap={spacings.sm}>
                                 <Text
                                     overflowWrap="anywhere"
-                                    variant={
-                                        url === blockchain[symbol]?.url ? 'default' : 'tertiary'
+                                    intent="neutral"
+                                    priority={
+                                        url === blockchain[symbol]?.url ? 'primary' : 'secondary'
                                     }
                                 >
                                     {url}

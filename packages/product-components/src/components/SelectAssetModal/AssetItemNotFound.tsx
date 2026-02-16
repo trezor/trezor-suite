@@ -31,7 +31,7 @@ export const AssetItemNotFound = ({
                     right: 'auto',
                 }}
             >
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     {noItemsAvailablePlaceholder.body}
                 </Text>
             </Paragraph>

@@ -42,7 +42,7 @@ export const AuthenticateDeviceInititalStep = ({
                     key={icon}
                     bulletComponent={<Icon name={icon} size="extraLarge" variant="primary" />}
                 >
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id={text} />
                     </Paragraph>
                 </List.Item>

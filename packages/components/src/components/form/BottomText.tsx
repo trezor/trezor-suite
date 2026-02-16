@@ -42,6 +42,8 @@ export const BottomText = ({
 }: BottomTextProps) => {
     // eslint-disable-next-line no-nested-ternary
     const variant = isDisabled ? 'disabled' : hasError ? 'destructive' : 'tertiary';
+    const textIntent = hasError ? 'critical' : 'neutral';
+    const textPriority = hasError ? 'primary' : 'secondary';
 
     return (
         <Container>
@@ -52,7 +54,9 @@ export const BottomText = ({
                     ))}
                 <Text
                     data-testid={dataTestId}
-                    variant={variant}
+                    intent={textIntent}
+                    priority={textPriority}
+                    isDisabled={isDisabled}
                     typographyStyle="hint"
                     as="div"
                     flex="auto"

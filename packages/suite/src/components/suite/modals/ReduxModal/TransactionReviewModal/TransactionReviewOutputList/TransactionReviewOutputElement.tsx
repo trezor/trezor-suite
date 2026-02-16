@@ -139,7 +139,11 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                         isTabular={false}
                     />
                     {shallDisplayBaseCurrency && isFiatVisible && (
-                        <Text variant="tertiary" data-testid="@modal/fiat-amount">
+                        <Text
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@modal/fiat-amount"
+                        >
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}
@@ -219,7 +223,7 @@ export const TransactionReviewOutputElement = ({
                                     <InfoItem
                                         label={
                                             <Text
-                                                variant="default"
+                                                intent="neutral"
                                                 data-testid="@modal/output-headline"
                                             >
                                                 {line.label}

@@ -38,7 +38,11 @@ export const EarnYieldTable = () => {
                         {ethereumAccounts.length === 0 ? (
                             <Table.Row>
                                 <Table.Cell colSpan={5}>
-                                    <Paragraph typographyStyle="body" variant="tertiary">
+                                    <Paragraph
+                                        typographyStyle="body"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
                                         <Translation id="TR_ACCOUNT_NO_ACCOUNTS" />
                                     </Paragraph>
                                 </Table.Cell>
@@ -54,19 +58,31 @@ export const EarnYieldTable = () => {
                                         </Table.Cell>
 
                                         <Table.Cell>
-                                            <Paragraph typographyStyle="body" variant="tertiary">
+                                            <Paragraph
+                                                typographyStyle="body"
+                                                intent="neutral"
+                                                priority="secondary"
+                                            >
                                                 <Translation id="TR_EARN_NOT_AVAILABLE" />
                                             </Paragraph>
                                         </Table.Cell>
 
                                         <Table.Cell>
-                                            <Paragraph typographyStyle="body" variant="tertiary">
+                                            <Paragraph
+                                                typographyStyle="body"
+                                                intent="neutral"
+                                                priority="secondary"
+                                            >
                                                 <Translation id="TR_EARN_NOT_AVAILABLE" />
                                             </Paragraph>
                                         </Table.Cell>
 
                                         <Table.Cell>
-                                            <Paragraph typographyStyle="body" variant="tertiary">
+                                            <Paragraph
+                                                typographyStyle="body"
+                                                intent="neutral"
+                                                priority="secondary"
+                                            >
                                                 <Translation id="TR_EARN_NOT_AVAILABLE" />
                                             </Paragraph>
                                         </Table.Cell>

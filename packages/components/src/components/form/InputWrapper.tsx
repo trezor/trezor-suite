@@ -60,7 +60,8 @@ export const InputWrapper = ({
     const content = (
         <Text
             typographyStyle={mapSizeToTypographyStyle(size)}
-            variant={isDisabled ? 'disabled' : 'default'}
+            intent="neutral"
+            isDisabled={isDisabled}
             as="div"
             width="100%"
         >

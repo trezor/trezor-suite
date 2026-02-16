@@ -27,17 +27,17 @@ const PassphraseWalletBestPracticesContent = ({
             </H3>
             <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="hint">
                 <List.Item bulletComponent={<Icon name="newspaper" size={16} />}>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
                     </Paragraph>
                 </List.Item>
                 <List.Item bulletComponent={<Icon name="copy" size={16} />}>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
                     </Paragraph>
                 </List.Item>
                 <List.Item bulletComponent={<Icon name="eyeSlash" size={16} />}>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
                     </Paragraph>
                 </List.Item>
@@ -46,7 +46,7 @@ const PassphraseWalletBestPracticesContent = ({
         <Banner
             margin={{ top: spacings.sm }}
             description={
-                <Text variant="warning" typographyStyle="callout">
+                <Text intent="warning" typographyStyle="callout">
                     <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
                 </Text>
             }

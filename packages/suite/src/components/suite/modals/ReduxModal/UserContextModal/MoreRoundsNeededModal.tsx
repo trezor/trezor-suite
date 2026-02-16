@@ -26,7 +26,7 @@ export const MoreRoundsNeededModal = () => {
                 <H3>
                     <Translation id="TR_COINJOIN_ENDED" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_MORE_ROUNDS_NEEDED_DESCRIPTION" />
                 </Paragraph>
             </Column>

@@ -29,13 +29,13 @@ export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipPr
                 <Tooltip
                     content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
                 >
-                    <H3 margin={{ right: 4 }} variant="tertiary">
+                    <H3 margin={{ right: 4 }} intent="neutral" priority="secondary">
                         {typeof label === 'string' ? <Translation id={label} /> : label}
                     </H3>
                 </Tooltip>
             ) : (
                 <FakeTooltipContainer>
-                    <H3 margin={{ right: 4 }} variant="tertiary">
+                    <H3 margin={{ right: 4 }} intent="neutral" priority="secondary">
                         {typeof label === 'string' ? <Translation id={label} /> : label}
                     </H3>
                 </FakeTooltipContainer>

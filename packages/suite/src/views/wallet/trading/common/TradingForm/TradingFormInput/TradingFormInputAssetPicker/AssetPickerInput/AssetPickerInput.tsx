@@ -95,7 +95,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
                 data-testid={`${dataTestId}/input`}
                 labelLeft={
                     label && (
-                        <Text typographyStyle="body" color="textSubdued">
+                        <Text typographyStyle="body" intent="neutral" priority="secondary">
                             <Translation id={label} />
                         </Text>
                     )

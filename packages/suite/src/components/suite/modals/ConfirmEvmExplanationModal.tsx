@@ -115,7 +115,12 @@ export const ConfirmEvmExplanationModal = ({
                     </CoinLogoRight>
                 )}
             </ImageWrapper>
-            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xl }}>
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="hint"
+                margin={{ top: spacings.xl }}
+            >
                 <Translation
                     id={descriptionTranslationsIds[route]}
                     values={{

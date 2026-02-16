@@ -69,7 +69,7 @@ export const ConfirmOnDevicePillContent = ({
                 {successText && hasSteps && activeStep > steps && (
                     <Text
                         typographyStyle="callout"
-                        variant="primary"
+                        intent="brand"
                         data-testid="@prompts/confirm-on-device/success"
                     >
                         {successText}

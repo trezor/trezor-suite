@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Note as NoteComponent, NoteProps, allowedNoteFrameProps } from './Note';
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { textIntents, textPriorities } from '../typography/Text/Text';
 
 const meta: Meta<typeof NoteComponent> = {
     title: 'Note',
@@ -13,6 +14,9 @@ export default meta;
 export const Note: StoryObj<NoteProps> = {
     args: {
         iconName: 'info',
+        intent: 'neutral',
+        priority: 'secondary',
+        isDisabled: false,
         children: 'Example tooltip',
         ...getFramePropsStory(allowedNoteFrameProps).args,
     },
@@ -21,6 +25,23 @@ export const Note: StoryObj<NoteProps> = {
             options: variables.ICONS,
             control: {
                 type: 'select',
+            },
+        },
+        intent: {
+            options: textIntents,
+            control: {
+                type: 'select',
+            },
+        },
+        priority: {
+            options: textPriorities,
+            control: {
+                type: 'radio',
+            },
+        },
+        isDisabled: {
+            control: {
+                type: 'boolean',
             },
         },
         ...getFramePropsStory(allowedNoteFrameProps).argTypes,

@@ -161,7 +161,11 @@ export const NavItem = (props: NavigationItemProps) => {
                     </Paragraph>
 
                     {itemsCount && (
-                        <Paragraph variant="tertiary" typographyStyle={typographyStyle}>
+                        <Paragraph
+                            intent="neutral"
+                            priority="secondary"
+                            typographyStyle={typographyStyle}
+                        >
                             {itemsCount}
                         </Paragraph>
                     )}

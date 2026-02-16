@@ -71,7 +71,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
             <H3>
                 <Translation id="TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS" />
             </H3>
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
                 <Translation id="TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION" />
             </Paragraph>
             {hasDeeplinkFailed && (

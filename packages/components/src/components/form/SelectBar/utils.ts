@@ -2,7 +2,7 @@ import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { SelectBarSize } from './types';
 import { Padding } from '../../../utils/frameProps';
-import { TextVariant } from '../../typography/Text/Text';
+import { TextIntent, TextPriority } from '../../typography/Text/Text';
 
 export const mapSizeToTypographyStyle = (
     size: SelectBarSize,
@@ -31,8 +31,15 @@ export const mapSizeToPadding = (size: SelectBarSize): Padding => {
     return paddingMap[size];
 };
 
-export const mapStateToTextVariant = (isDisabled: boolean, isSelected: boolean): TextVariant => {
-    if (isDisabled) return 'disabled';
+export const mapStateToTextIntent = (
+    isSelected: boolean,
+): {
+    intent: TextIntent;
+    priority?: TextPriority;
+} => {
+    if (isSelected) {
+        return { intent: 'brand' };
+    }
 
-    return isSelected ? 'primary' : 'tertiary';
+    return { intent: 'neutral', priority: 'secondary' };
 };

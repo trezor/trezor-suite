@@ -48,7 +48,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
     const CurrentVersion = () => (
         <>
             <Column alignItems="center" gap={spacings.xxs}>
-                <Text typographyStyle="label" variant="tertiary">
+                <Text typographyStyle="label" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                 </Text>
                 <Text typographyStyle="hint">
@@ -82,7 +82,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     <CurrentVersion />
                 ))}
             <Column alignItems="center" gap={spacings.xxs}>
-                <Text typographyStyle="label" variant="tertiary">
+                <Text typographyStyle="label" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
                 </Text>
                 <Tooltip
@@ -128,7 +128,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     <Text
                         typographyStyle="hint"
                         data-testid="@firmware/offer-version/new"
-                        variant="primary"
+                        intent="brand"
                     >
                         {futureFirmwareType ? translationString(futureFirmwareType) : ''}
                         {nextVersion ? ` ${nextVersion}` : ''}

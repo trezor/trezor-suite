@@ -152,6 +152,21 @@ export const mapPropsToColor = (
     return theme[colorMap[inverseKey][priority][intent]];
 };
 
+export const mapPropsToColorToken = (
+    intent: ButtonIntent,
+    priority: ButtonPriority,
+    isDisabled: boolean,
+    isInverse: boolean,
+): Color => {
+    const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+
+    if (isDisabled) {
+        return colorMapDisabled[inverseKey];
+    }
+
+    return colorMap[inverseKey][priority][intent];
+};
+
 const backgroundMapDisabled: Record<InverseKey, Record<ButtonPriority, Color>> = {
     normal: {
         primary: 'stateFillElementBoldDisabled',

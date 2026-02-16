@@ -36,10 +36,10 @@ export const CurrentFee = () => {
 
     return (
         <Row justifyContent="space-between">
-            <Text variant="tertiary" typographyStyle="hint">
+            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                 <Translation id={currentFeeRateLabel} />
             </Text>
-            <Text variant="default" typographyStyle="hint">
+            <Text intent="neutral" typographyStyle="hint">
                 <Row alignItems="center" gap={spacings.xxs}>
                     <Text>
                         <FeeRate feeRate={currentFeeRate} networkType={networkType} />

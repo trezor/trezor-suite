@@ -25,7 +25,7 @@ export function AssetDetails({ name, displaySymbol, ...props }: AssetDetailsProp
                 {name}
             </Text>
             <Row gap={8} alignItems="center">
-                <Text typographyStyle="hint" variant="tertiary">
+                <Text typographyStyle="hint" intent="neutral" priority="secondary">
                     {displaySymbol}
                 </Text>
                 {badge !== name && <Badge size="small">{badge}</Badge>}

@@ -94,7 +94,7 @@ export const AssetItem = ({
                                 </BadgeWrapper>
                             )}
                         </Row>
-                        <Text typographyStyle="hint" variant="tertiary">
+                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
                             {displaySymbol}
                         </Text>
                     </Column>

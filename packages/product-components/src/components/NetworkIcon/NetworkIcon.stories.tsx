@@ -32,7 +32,7 @@ export const All: StoryObj = {
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <Paragraph margin={{ bottom: 8 }} variant="tertiary">
+                        <Paragraph margin={{ bottom: 8 }} intent="neutral" priority="secondary">
                             {networkSymbol}
                         </Paragraph>
                         {isNetworkSymbolWithIcon(networkSymbol) && (

@@ -105,7 +105,9 @@ export const ConnectPermissionsModal = () => {
                                             <Text data-testid="@connect-permissions-modal/app-name">
                                                 {source.manifest.appName}
                                             </Text>
-                                            <Text variant="tertiary">{source.origin}</Text>
+                                            <Text intent="neutral" priority="secondary">
+                                                {source.origin}
+                                            </Text>
                                         </>
                                     ) : (
                                         <Text>{source.origin}</Text>

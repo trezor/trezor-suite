@@ -7,7 +7,7 @@ import { ContentFlex } from '../../../../../support/suite/ContentFlex';
 
 export const TradingFormFeesDisclamer = () => (
     <ContentFlex gap={spacings.sm}>
-        <Paragraph variant="tertiary">
+        <Paragraph intent="neutral" priority="secondary">
             <Translation id="TR_TRADING_FEES_CALCULATION_DISCLAIMER" />
         </Paragraph>
         <Button

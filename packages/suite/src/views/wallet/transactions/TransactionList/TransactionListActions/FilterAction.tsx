@@ -102,11 +102,11 @@ export const FilterAction = () => {
                                 <Column>
                                     <Text
                                         typographyStyle="callout"
-                                        variant={
+                                        intent={
                                             Boolean(suspiciousTransactionsHidden) ===
                                             Boolean(option.id)
-                                                ? 'primary'
-                                                : undefined
+                                                ? 'brand'
+                                                : 'neutral'
                                         }
                                     >
                                         {option.label}
@@ -114,7 +114,8 @@ export const FilterAction = () => {
                                     {'description' in option && option.description && (
                                         <Paragraph
                                             typographyStyle="label"
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                             textWrap="pretty"
                                         >
                                             {option.description}

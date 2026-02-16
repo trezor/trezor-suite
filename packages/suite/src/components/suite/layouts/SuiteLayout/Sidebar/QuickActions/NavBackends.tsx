@@ -32,7 +32,12 @@ const BackendRow = ({
                     <Text typographyStyle="hint" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}
                     </Text>
-                    <Text typographyStyle="label" variant="tertiary" case="capitalize">
+                    <Text
+                        typographyStyle="label"
+                        intent="neutral"
+                        priority="secondary"
+                        case="capitalize"
+                    >
                         {type}
                     </Text>
                 </Column>

@@ -75,7 +75,8 @@ export const TradingTransactionsList = () => {
                 <Paragraph
                     data-testid="@trading/transactions/no-transaction"
                     align="center"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="TR_BUY_NOT_TRANSACTIONS" />
                 </Paragraph>

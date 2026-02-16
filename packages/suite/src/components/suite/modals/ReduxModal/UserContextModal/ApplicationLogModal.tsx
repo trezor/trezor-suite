@@ -107,7 +107,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                     <H4>
                         <Translation id="LOG_INCLUDE_BALANCE_TITLE" />
                     </H4>
-                    <Paragraph variant="tertiary" typographyStyle="hint">
+                    <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                         <Translation id="LOG_INCLUDE_BALANCE_DESCRIPTION" />
                     </Paragraph>
                 </Column>

@@ -66,7 +66,7 @@ export const TradingUtxoReceiveAddressOption = ({
                 {!!address.received && address.received !== '0' && (
                     <Column alignItems="flex-end">
                         <CoinBalance value={balanceInUnits} symbol={account.symbol} />
-                        <Text typographyStyle="hint" variant="tertiary">
+                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
                             <BaseCurrencyAmountFormatter
                                 value={fiatAmount ?? BASE_CURRENCY_ZERO}
                                 currency={baseCurrency}

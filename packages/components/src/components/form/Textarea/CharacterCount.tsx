@@ -31,7 +31,7 @@ export const CharacterCount = ({ value, maxLength, characterCount }: CharacterCo
             borderRadius={4}
             padding={{ horizontal: 4, vertical: 2 }}
         >
-            <Text variant="tertiary" typographyStyle="label" as="div">
+            <Text intent="neutral" priority="secondary" typographyStyle="label" as="div">
                 {formattedCharacterCount}
             </Text>
         </Box>

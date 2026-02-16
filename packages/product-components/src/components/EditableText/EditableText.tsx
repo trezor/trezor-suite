@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
     FrameProps,
@@ -181,7 +181,6 @@ export const EditableText = ({
     'data-testid': dataTestId,
     ...rest
 }: EditableTextProps) => {
-    const theme = useTheme();
     const [isEditable, setIsEditable] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [savingStatus, setSavingStatus] = useState<SavingStatus>('idle');
@@ -448,7 +447,7 @@ export const EditableText = ({
                             ellipsisLineCount={1}
                             as="div"
                             pointerEvents="none"
-                            color={isActive ? theme.baseContentPrimary : undefined}
+                            color={isActive ? 'baseContentPrimary' : undefined}
                         >
                             {displayValue}
                         </Text>

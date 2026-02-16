@@ -27,7 +27,7 @@ export function AssetAmount({
 
     return (
         <Column alignItems="flex-end">
-            <Text variant="default" typographyStyle="body">
+            <Text intent="neutral" typographyStyle="body">
                 <FormattedCryptoAmount
                     value={amount}
                     symbol={symbol}
@@ -37,12 +37,12 @@ export function AssetAmount({
             </Text>
 
             {fiatAmount && (
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
                 </Text>
             )}
             {!fiatAmount && fiatFallackText && (
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>
             )}

@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
@@ -40,12 +40,11 @@ const UnderlinedBlock = styled(NextGenerationTextBlock)`
 
 const Title = () => {
     const { isBelowLaptop } = useLayoutSize();
-    const theme = useTheme();
 
     return (
         <Text
             typographyStyle={isBelowLaptop ? 'titleSmall' : 'titleMedium'}
-            color={theme.baseContentPrimaryInverse}
+            color="baseContentPrimaryInverse"
             flex="1"
         >
             <Translation
@@ -61,12 +60,11 @@ const Title = () => {
 
 const Description = () => {
     const { isBelowDesktop } = useLayoutSize();
-    const theme = useTheme();
 
     return (
         <Text
             typographyStyle={isBelowDesktop ? 'callout' : 'titleSmall'}
-            color={theme.baseContentBrandInverse}
+            color="baseContentBrandInverse"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION" />
         </Text>

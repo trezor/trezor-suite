@@ -16,7 +16,7 @@ export const MessageSystemCondition = <T extends Record<string, unknown>>({
     const list: ReadonlyArray<T> = data == null ? [] : Array.isArray(data) ? data : [data];
 
     return (
-        <InfoItem label={label} iconName={iconName} variant="default">
+        <InfoItem label={label} iconName={iconName} intent="neutral" priority="primary">
             {list.length === 0
                 ? '-'
                 : list.flatMap((item, i) =>

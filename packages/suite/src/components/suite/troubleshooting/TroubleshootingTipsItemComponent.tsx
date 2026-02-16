@@ -21,7 +21,7 @@ export const TroubleshootingTipsItemComponent = ({ item }: TroubleshootingTipsIt
         <Column>
             <Paragraph typographyStyle="body">{item.heading}</Paragraph>
             {item.description && (
-                <Paragraph typographyStyle="hint" variant="tertiary">
+                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                     {item.description}
                 </Paragraph>
             )}

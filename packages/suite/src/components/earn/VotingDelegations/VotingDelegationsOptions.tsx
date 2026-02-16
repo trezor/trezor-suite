@@ -69,7 +69,7 @@ export const VotingDelegationsOptions = ({
     return (
         <Column gap={8}>
             {hasTitle && (
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_STAKE_CHANGE_DELEGATE" />
                 </Text>
             )}
@@ -101,7 +101,7 @@ export const VotingDelegationsOptions = ({
                     </React.Fragment>
                 ))}
             </Column>
-            <Text variant="tertiary" typographyStyle="hint" margin={{ top: 8 }}>
+            <Text intent="neutral" priority="secondary" typographyStyle="hint" margin={{ top: 8 }}>
                 <Translation id="TR_STAKING_DELEGATION_INFO_TEXT" />
             </Text>
         </Column>

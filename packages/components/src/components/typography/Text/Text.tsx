@@ -1,10 +1,11 @@
 import { HTMLProps, ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import { CSSColor, Color, Colors, borders, spacingsPx } from '@trezor/theme';
+import { Color, borders, spacingsPx } from '@trezor/theme';
 
-import { uiVariants } from '../../../config/types';
+import { TextIntent, TextPriority, textIntents, textPriorities } from './types';
+import { mapIntentToCSS } from './utils';
 import {
     FrameProps,
     FramePropsKeys,
@@ -18,6 +19,9 @@ import {
     pickAndPrepareTextProps,
     withTextProps,
 } from '../utils';
+
+export { textIntents, textPriorities };
+export type { TextIntent, TextPriority };
 
 export const allowedTextTextProps = [
     'typographyStyle',
@@ -45,64 +49,78 @@ export const allowedTextFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
-export const textVariants = [...uiVariants, 'purple'] as const;
-export type TextVariant = (typeof textVariants)[number];
-
-type ExclusiveColorOrVariant =
-    | { variant?: TextVariant; color?: undefined }
+type ExclusiveColorOrIntent =
     | {
-          variant?: undefined;
-          // TODO: Type to color tokens
-          color?: string;
+          intent?: TextIntent;
+          priority?: TextPriority;
+          isDisabled?: boolean;
+          color?: undefined;
+      }
+    | {
+          intent?: undefined;
+          priority?: undefined;
+          isDisabled?: undefined;
+          color?: Color;
       };
 
-const variantColorMap: Record<TextVariant, Color> = {
-    default: 'textDefault',
-    primary: 'textPrimaryDefault',
-    secondary: 'textSecondaryHighlight',
-    tertiary: 'textSubdued',
-    info: 'textAlertBlue',
-    warning: 'textAlertYellow',
-    destructive: 'textAlertRed',
-    purple: 'textAlertPurple',
-    disabled: 'textDisabled',
+type ColorProps = {
+    theme: DefaultTheme;
+} & {
+    $intent?: TextIntent;
+    $priority?: TextPriority;
+    $isDisabled?: boolean;
+    $color?: Color;
 };
 
-type ColorProps = {
-    theme: Colors;
-} & TransientProps<ExclusiveColorOrVariant>;
-
-const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSColor | string => {
+const getColorForText = ({
+    $intent,
+    $priority = 'primary',
+    $isDisabled,
+    theme,
+    $color,
+}: ColorProps): RuleSet<object> => {
     if ($color !== undefined) {
-        return $color;
+        return css`
+            color: ${theme[$color]};
+        `;
     }
 
-    return $variant !== undefined ? theme[variantColorMap[$variant]] : 'inherit';
+    if ($intent === undefined) {
+        return css`
+            color: inherit;
+        `;
+    }
+
+    return css`
+        color: ${mapIntentToCSS($intent, $priority, Boolean($isDisabled), theme)};
+    `;
 };
 
-type StyledTextProps = ExclusiveColorOrVariant & {
+type StyledTextProps = {
+    $intent?: TextIntent;
+    $priority?: TextPriority;
+    $isDisabled?: boolean;
+    $color?: Color;
     $isMonospaced?: boolean;
     $isHighlighted?: boolean;
     $isTabular?: boolean;
 } & TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
-    color: ${getColorForTextVariant};
+    ${getColorForText};
 
     ${({ $isMonospaced }) =>
         $isMonospaced &&
         css`
             font-family: monospace;
         `}
-
     ${({ $isTabular }) =>
         $isTabular &&
         css`
             font-variant-numeric: tabular-nums;
             letter-spacing: 0 !important;
         `}
-
-    ${({ $isHighlighted }) =>
+        ${({ $isHighlighted }) =>
         $isHighlighted &&
         css`
             display: inline;
@@ -111,9 +129,7 @@ const StyledText = styled.span<StyledTextProps>`
             background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
             box-decoration-break: clone;
         `}
-
-    ${withTextProps}
-    ${withFrameProps}
+        ${withTextProps} ${withFrameProps};
 `;
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
@@ -125,12 +141,14 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     as?: string;
     'data-testid'?: string;
     role?: string;
-} & ExclusiveColorOrVariant &
+} & ExclusiveColorOrIntent &
     AllowedFrameProps &
     AllowedTextTextProps;
 
 export const Text = ({
-    variant,
+    intent = 'neutral',
+    priority = 'primary',
+    isDisabled = false,
     color,
     children,
     className,
@@ -149,7 +167,10 @@ export const Text = ({
 
     return (
         <StyledText
-            {...(variant !== undefined ? { $variant: variant } : { $color: color })}
+            $intent={intent}
+            $priority={priority}
+            $isDisabled={isDisabled}
+            $color={color}
             className={className}
             as={as}
             onClick={onClick}

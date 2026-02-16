@@ -17,17 +17,6 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     return colorMap[intent];
 };
 
-export const mapIntentToTextColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
-    const colorMap: Record<BannerIntent, Color> = {
-        brand: 'textPrimaryDefault',
-        info: 'textAlertBlue',
-        warning: 'textAlertYellow',
-        critical: 'textAlertRed',
-        neutral: 'textSubdued',
-    };
-
-    return theme[colorMap[intent]];
-};
 export const mapIntentToIconColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
     const colorMap: Record<BannerIntent, Color> = {
         brand: 'iconPrimaryDefault',

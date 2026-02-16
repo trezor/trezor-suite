@@ -29,7 +29,8 @@ export const MessageSystemManagerTranslations = ({
                         </TextButton>
                     </Collapsible.Toggle>
                 }
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 iconName="translate"
             >
                 <div>

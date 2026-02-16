@@ -83,7 +83,8 @@ const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps)
                                             isActive={isEmptyCollectionsOpen}
                                             text="EMPTY_NFT_COLLECTIONS"
                                             typographyStyle="hint"
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                         />
                                     </Table.Cell>
                                 </Table.Row>

@@ -275,7 +275,8 @@ export const TradingFormOffer = () => {
                 <Card>
                     <Paragraph
                         typographyStyle="hint"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         align="center"
                         margin={{ vertical: 8 }}
                         data-testid="trading-offer-found-none"

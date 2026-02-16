@@ -63,11 +63,11 @@ export const TradingInfoItem = ({
     return (
         <Column width="100%" gap={8}>
             <Row justifyContent="space-between">
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id={label} />
                 </Text>
                 {(showAccountLabel || isExternalExchange) && (
-                    <Text variant="tertiary" typographyStyle="hint" as="div">
+                    <Text intent="neutral" priority="secondary" typographyStyle="hint" as="div">
                         <Row>
                             {accountLabelPrefix}&nbsp;
                             {isExternalExchange && (
@@ -113,7 +113,7 @@ export const TradingInfoItem = ({
                         <Column alignItems="start">
                             <Text>{displayName}</Text>
                             {showNetwork && (
-                                <Text variant="tertiary" typographyStyle="hint">
+                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                     {networkName}
                                 </Text>
                             )}
@@ -123,7 +123,7 @@ export const TradingInfoItem = ({
                         <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
                         {currencyInfo?.symbol && (
-                            <Text variant="tertiary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                                 <BaseCurrencyValue
                                     amount={amount}
                                     symbol={currencyInfo.symbol}

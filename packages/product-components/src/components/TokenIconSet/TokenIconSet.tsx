@@ -134,7 +134,7 @@ export const TokenIconSet = ({
             {visibleTokensContent}
             {length > 3 && isCountVisible && (
                 <CountContainer $size={size}>
-                    <Text typographyStyle={mapSizeToTypographyStyle(size)} variant="default">
+                    <Text typographyStyle={mapSizeToTypographyStyle(size)} intent="neutral">
                         +{length - MAX_VISIBLE_TOKENS}
                     </Text>
                 </CountContainer>

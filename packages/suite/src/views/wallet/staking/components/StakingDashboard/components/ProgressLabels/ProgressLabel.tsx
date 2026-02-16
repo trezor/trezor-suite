@@ -44,14 +44,14 @@ const getProgressStateIcon = (progressState: ProgressLabelState) => {
     }
 };
 
-const getProgressStateVariant = (progressState: ProgressLabelState) => {
+const getProgressStateTextProps = (progressState: ProgressLabelState) => {
     switch (progressState) {
         case 'active':
-            return 'warning';
+            return { intent: 'warning' } as const;
         case 'done':
-            return 'primary';
+            return { intent: 'brand' } as const;
         default:
-            return 'tertiary';
+            return { intent: 'neutral', priority: 'secondary' } as const;
     }
 };
 
@@ -138,6 +138,8 @@ export const ProgressLabel = ({
         };
     }, [currentHeight]);
 
+    const textProps = getProgressStateTextProps(progressState);
+
     return (
         <ProgressLabelItem
             data-testid={`${dataTestId}/container`}
@@ -149,7 +151,8 @@ export const ProgressLabel = ({
                 {getProgressStateIcon(progressState)}
                 <Text
                     as="div"
-                    variant={getProgressStateVariant(progressState)}
+                    intent={textProps.intent}
+                    priority={textProps.priority}
                     typographyStyle="hint"
                 >
                     {children}

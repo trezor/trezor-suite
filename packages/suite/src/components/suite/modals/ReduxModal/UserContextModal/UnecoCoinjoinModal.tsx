@@ -52,7 +52,7 @@ export const UnecoCoinjoinModal = () => {
                 <H3>
                     <Translation id="TR_UNECO_COINJOIN_TITLE" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation
                         id="TR_UNECO_COINJOIN_EXPLANATION"
                         values={{

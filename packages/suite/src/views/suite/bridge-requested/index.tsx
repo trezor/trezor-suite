@@ -109,7 +109,7 @@ export const BridgeRequested = () => {
                 <H3>
                     <Translation id="TR_TREZOR_CONNECT" />
                 </H3>
-                <Paragraph variant="tertiary">
+                <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_BRIDGE_REQUESTED_DESCRIPTION" />
                 </Paragraph>
             </Column>

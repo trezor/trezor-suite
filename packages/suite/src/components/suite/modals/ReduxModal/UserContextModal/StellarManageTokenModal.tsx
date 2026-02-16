@@ -148,7 +148,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     </Button>
                 }
             >
-                <Text typographyStyle="body" variant="tertiary">
+                <Text typographyStyle="body" intent="neutral" priority="secondary">
                     <Translation id="TR_DEACTIVATE_TOKEN_BALANCE_WARNING" />
                 </Text>
             </Modal>
@@ -275,7 +275,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         >
             <FormProvider {...methods}>
                 <Column gap={spacings.lg}>
-                    <Text typographyStyle="body" variant="tertiary">
+                    <Text typographyStyle="body" intent="neutral" priority="secondary">
                         {mode === 'activate' ? (
                             <Translation
                                 id={descriptionId}

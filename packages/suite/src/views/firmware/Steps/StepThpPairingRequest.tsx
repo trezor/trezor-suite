@@ -19,7 +19,7 @@ export const StepThpPairingRequest = ({ modalHeading }: StepThpPairingRequestPro
                 <Text typographyStyle="highlight">
                     <Translation id="TR_THP_CONFIRM_SECURE_CONNECTION" />
                 </Text>
-                <Text variant="tertiary" typographyStyle="body" align="center">
+                <Text intent="neutral" priority="secondary" typographyStyle="body" align="center">
                     <Translation id="TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION" />
                 </Text>
             </Column>

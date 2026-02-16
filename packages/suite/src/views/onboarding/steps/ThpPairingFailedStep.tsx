@@ -32,7 +32,7 @@ export const ThpPairingFailedStep = () => {
         >
             <Column gap={24} alignItems="center">
                 <ThpPairingFailedForFirmwareInstallation />
-                <Paragraph variant="destructive">
+                <Paragraph intent="critical">
                     <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
                 </Paragraph>
             </Column>

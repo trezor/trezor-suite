@@ -51,12 +51,13 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
             <InfoItem
                 label={<Translation id={title} />}
                 typographyStyle="body"
-                variant="default"
+                intent="neutral"
+                priority="primary"
                 gap={8}
                 maxWidth={500}
             >
                 <Column gap={12}>
-                    <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                         {description}
                     </Paragraph>
                     {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}

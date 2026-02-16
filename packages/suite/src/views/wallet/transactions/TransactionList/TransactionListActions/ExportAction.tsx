@@ -113,7 +113,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
                         />
                     </Note>
                 ) : (
-                    <Text variant="disabled">
+                    <Text isDisabled>
                         <Translation id="TR_EXPORT_SEARCH_FILTER_INACTIVE" />
                     </Text>
                 )

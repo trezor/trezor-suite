@@ -37,7 +37,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
                 <H3>
                     <Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />
                 </H3>
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                     <Translation id="TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER" />{' '}
                     <Translation id="TR_UPDATE_MODAL_RESTART_NEEDED" />
                 </Paragraph>

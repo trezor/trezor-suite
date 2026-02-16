@@ -1,5 +1,5 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import {
@@ -101,7 +101,6 @@ export interface TradingOffersItemProps {
 
 export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
     const dispatch = useDispatch();
-    const theme = useTheme();
     const context = useTradingFormContext();
     const {
         form: {
@@ -163,7 +162,11 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                             <Row alignItems="center" flexWrap="wrap" gap={spacings.xs}>
                                 {tag && <Badge intent="neutral">{tag}</Badge>}
                                 {infoNote && (
-                                    <Text typographyStyle="label" color={theme.textSubdued}>
+                                    <Text
+                                        typographyStyle="label"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
                                         {infoNote}
                                     </Text>
                                 )}

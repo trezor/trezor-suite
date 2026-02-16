@@ -16,7 +16,13 @@ type MessageSystemManagerDetailProps = {
 
 export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDetailProps) => (
     <>
-        <InfoItem label={message.id} typographyStyle="highlight" iconName="note" variant="default">
+        <InfoItem
+            label={message.id}
+            typographyStyle="highlight"
+            iconName="note"
+            intent="neutral"
+            priority="primary"
+        >
             <MessageSystemManagerTranslations messages={message.content} />
         </InfoItem>
         {message.context && (
@@ -24,7 +30,8 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
                 label="Context"
                 iconName="codeBlockFilled"
                 typographyStyle="highlight"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 {toCommaSeparated(message.context.domain)}
             </InfoItem>
@@ -34,7 +41,8 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
                 label="Features"
                 iconName="checkFat"
                 typographyStyle="highlight"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 <StyledList>
                     {message.feature.map(feature => (
@@ -51,7 +59,8 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
                 label="CTA"
                 iconName="cursorClick"
                 typographyStyle="highlight"
-                variant="default"
+                intent="neutral"
+                priority="primary"
             >
                 <div>
                     <MessageSystemManagerTranslations messages={message.cta.label} />

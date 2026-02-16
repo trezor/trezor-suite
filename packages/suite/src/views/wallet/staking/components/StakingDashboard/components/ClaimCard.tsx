@@ -72,14 +72,14 @@ export const ClaimCard = () => {
 
     const content = (
         <>
-            <Paragraph typographyStyle="titleSmall" variant="primary">
+            <Paragraph typographyStyle="titleSmall" intent="brand">
                 <FormattedCryptoAmount
                     data-testid="@staking/can-claim"
                     value={claimableAmount}
                     symbol={selectedAccount?.symbol}
                 />
             </Paragraph>
-            <Paragraph typographyStyle="hint" variant="tertiary">
+            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
                 <BaseCurrencyValue
                     showApproximationIndicator
                     amount={claimableAmount}

@@ -33,7 +33,12 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
             <H4>
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE" />
             </H4>
-            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xxs }}>
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="hint"
+                margin={{ top: spacings.xxs }}
+            >
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
             </Paragraph>
             <Row gap={spacings.xs} margin={{ top: spacings.md }}>

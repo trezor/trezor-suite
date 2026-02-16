@@ -28,7 +28,8 @@ export const SettingsSection = ({ title, icon, children, tooltipText }: Settings
                     {title}
                 </Tooltip>
             }
-            variant="default"
+            intent="neutral"
+            priority="primary"
             typographyStyle="titleSmall"
             verticalAlignment="start"
         >

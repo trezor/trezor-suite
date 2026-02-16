@@ -19,7 +19,7 @@ export const CurrentDelegate = ({ account }: CurrentDelegateProps) => {
 
     return (
         <Column gap={8}>
-            <Text variant="tertiary" typographyStyle="hint">
+            <Text intent="neutral" priority="secondary" typographyStyle="hint">
                 <Translation id="TR_STAKE_CURRENT_DELEGATE" />
             </Text>
             {currentDelegateDrepId ? (

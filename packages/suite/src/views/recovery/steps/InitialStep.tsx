@@ -56,7 +56,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                 >
                     <Paragraph
                         typographyStyle="label"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         margin={{ top: spacings.xxs }}
                     >
                         <Translation
@@ -77,7 +78,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                 >
                     <Paragraph
                         typographyStyle="label"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         margin={{ top: spacings.xxs }}
                     >
                         <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />

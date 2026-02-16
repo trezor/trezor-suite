@@ -19,7 +19,9 @@ export const EarnInANutshellProcesses = ({ items }: EarnInANutshellProcessesProp
                 key={index}
                 heading={
                     <Row gap={8}>
-                        <Text variant="tertiary">{heading}</Text>
+                        <Text intent="neutral" priority="secondary">
+                            {heading}
+                        </Text>
                         {badge && <Badge size="small">{badge}</Badge>}
                     </Row>
                 }

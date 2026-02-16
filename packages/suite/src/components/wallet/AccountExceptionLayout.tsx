@@ -36,7 +36,12 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                 />
             )}
             <H2>{props.title}</H2>
-            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xs }}>
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="hint"
+                margin={{ top: spacings.xs }}
+            >
                 {props.description}
             </Paragraph>
             {props.actions && (

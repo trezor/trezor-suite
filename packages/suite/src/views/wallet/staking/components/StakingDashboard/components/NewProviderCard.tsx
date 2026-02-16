@@ -68,7 +68,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                                 values={{ apy: formatApyValue(apy) }}
                             />
                         </H3>
-                        <Paragraph variant="tertiary" maxWidth={700}>
+                        <Paragraph intent="neutral" priority="secondary" maxWidth={700}>
                             <Translation
                                 id={
                                     isStakedWithFiveBinaries

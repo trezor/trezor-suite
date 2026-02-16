@@ -33,7 +33,7 @@ const AmountItem = ({ labelTranslationKey, shouldSendInSats, amount, symbol }: A
 
     return (
         <Column>
-            <Text variant="tertiary" typographyStyle="label">
+            <Text intent="neutral" priority="secondary" typographyStyle="label">
                 <Translation id={labelTranslationKey} />
             </Text>
             <FormattedCryptoAmount value={value} symbol={symbol} />
@@ -163,7 +163,11 @@ export const DecreasedOutputs = () => {
                                         />
                                     )}
                                     <Column margin={{ left: 'auto' }}>
-                                        <Text variant="tertiary" typographyStyle="label">
+                                        <Text
+                                            intent="neutral"
+                                            priority="secondary"
+                                            typographyStyle="label"
+                                        >
                                             <Translation id="TR_RECIPIENT_ADDRESS" />
                                         </Text>
                                         <HiddenPlaceholder>

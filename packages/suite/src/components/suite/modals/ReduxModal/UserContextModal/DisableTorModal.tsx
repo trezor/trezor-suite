@@ -85,7 +85,8 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                     <Column>
                                         <Paragraph>{getNetwork(symbol).name}</Paragraph>
                                         <Paragraph
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                             typographyStyle="hint"
                                             ellipsisLineCount={1}
                                         >
@@ -112,7 +113,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                     <H3>
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION" />
                     </H3>
-                    <Paragraph variant="tertiary">
+                    <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE" />
                     </Paragraph>
                 </Column>

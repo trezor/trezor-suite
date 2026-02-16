@@ -30,7 +30,7 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
                 {hasTitleOrAddon && (
                     <Row gap={12} justifyContent="space-between">
                         {title && (
-                            <Text typographyStyle="hint" variant="tertiary">
+                            <Text typographyStyle="hint" intent="neutral" priority="secondary">
                                 {title}
                             </Text>
                         )}
@@ -38,7 +38,7 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
                     </Row>
                 )}
 
-                <Text typographyStyle="hint" as="div" variant="default" overflowWrap="anywhere">
+                <Text typographyStyle="hint" as="div" intent="neutral" overflowWrap="anywhere">
                     {content}
                 </Text>
             </Column>

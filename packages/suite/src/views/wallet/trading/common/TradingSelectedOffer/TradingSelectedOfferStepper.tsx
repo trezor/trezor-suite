@@ -20,7 +20,10 @@ export const TradingSelectedOfferStepper = ({ steps }: TradingSelectedOfferStepp
         {steps.map((step, index) => (
             <Fragment key={index}>
                 <Row flex="1" justifyContent="center">
-                    <Text variant={step.isActive ? 'primary' : 'tertiary'}>
+                    <Text
+                        intent={step.isActive ? 'brand' : 'neutral'}
+                        priority={step.isActive ? 'primary' : 'secondary'}
+                    >
                         <Translation id={step.translationId} />
                     </Text>
                 </Row>

@@ -102,7 +102,7 @@ const PassphraseWalletIsEmptyContent = ({
                     </Paragraph>
                     {!areAllNetworksEnabled && (
                         <Row gap={spacings.xs} flexWrap="wrap">
-                            <Paragraph variant="tertiary" typographyStyle="hint">
+                            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
                                 <Translation id="TR_CHECKED_BALANCES_ON" />:
                             </Paragraph>
                             <Row gap={spacings.xxs} flexWrap="wrap">

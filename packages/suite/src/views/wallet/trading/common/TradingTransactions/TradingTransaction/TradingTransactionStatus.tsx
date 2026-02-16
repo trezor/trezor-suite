@@ -1,13 +1,15 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-import { DefaultTheme, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type TradingTransaction, exchangeUtils, sellUtils } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';
 
+type TradingTransactionStatusIntent = 'warning' | 'critical' | 'brand';
+
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
-const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
+const getBuyTradeData = (status: BuyTradeStatus) => {
     const message = getBuyStatusMessage(status);
 
     switch (message) {
@@ -15,58 +17,58 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
             return {
                 icon: 'clock',
-                color: theme.textAlertYellow,
+                intent: 'warning',
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
             return {
                 icon: 'clock',
-                color: theme.textAlertYellow,
+                intent: 'warning',
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.textAlertRed,
+                intent: 'critical',
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.textPrimaryDefault,
+                intent: 'brand',
                 statusMessageId: message,
             } as const;
         // no default
     }
 };
 
-const getSellTradeData = (status: SellTradeStatus, theme: DefaultTheme) => {
+const getSellTradeData = (status: SellTradeStatus) => {
     const message = sellUtils.getStatusMessage(status);
 
     switch (message) {
         case 'TR_SELL_STATUS_PENDING':
             return {
                 icon: 'clock',
-                color: theme.textAlertYellow,
+                intent: 'warning',
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.textAlertRed,
+                intent: 'critical',
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.textPrimaryDefault,
+                intent: 'brand',
                 statusMessageId: message,
             } as const;
         // no default
     }
 };
 
-const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) => {
+const getExchangeTradeData = (status: ExchangeTradeStatus) => {
     const message = exchangeUtils.getStatusMessage(status);
 
     switch (message) {
@@ -74,25 +76,25 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) 
         case 'TR_EXCHANGE_STATUS_CONVERTING':
             return {
                 icon: 'clock',
-                color: theme.textAlertYellow,
+                intent: 'warning',
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_KYC':
             return {
                 icon: 'warning',
-                color: theme.textAlertYellow,
+                intent: 'warning',
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.textAlertRed,
+                intent: 'critical',
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.textPrimaryDefault,
+                intent: 'brand',
                 statusMessageId: message,
             } as const;
         // no default
@@ -104,16 +106,16 @@ type StatusData =
     | ReturnType<typeof getSellTradeData>
     | ReturnType<typeof getExchangeTradeData>;
 
-const getData = (trade: TradingTransaction, theme: DefaultTheme): StatusData | null => {
+const getData = (trade: TradingTransaction): StatusData | null => {
     if (!trade.data.status) return null;
 
     switch (trade.tradeType) {
         case 'buy':
-            return getBuyTradeData(trade.data.status, theme);
+            return getBuyTradeData(trade.data.status);
         case 'sell':
-            return getSellTradeData(trade.data.status, theme);
+            return getSellTradeData(trade.data.status);
         default:
-            return getExchangeTradeData(trade.data.status, theme);
+            return getExchangeTradeData(trade.data.status);
     }
 };
 
@@ -121,16 +123,32 @@ interface TradingTransactionStatusProps {
     trade: TradingTransaction;
 }
 
+const mapIntentToIconColor = (intent: TradingTransactionStatusIntent) => {
+    switch (intent) {
+        case 'warning':
+            return 'iconAlertYellow';
+        case 'critical':
+            return 'iconAlertRed';
+        case 'brand':
+            return 'iconPrimaryDefault';
+    }
+};
+
 export const TradingTransactionStatus = ({ trade }: TradingTransactionStatusProps) => {
     const theme = useTheme();
-    const data = getData(trade, theme);
+    const data = getData(trade);
 
     if (!data) return null;
 
     return (
         <Row>
-            <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
-            <Text color={data.color} data-testid="@trading/transactions/status">
+            <Icon
+                color={theme[mapIntentToIconColor(data.intent)]}
+                size={10}
+                name={data.icon}
+                margin={{ right: 4 }}
+            />
+            <Text intent={data.intent} data-testid="@trading/transactions/status">
                 <Translation id={data.statusMessageId} />
             </Text>
         </Row>
