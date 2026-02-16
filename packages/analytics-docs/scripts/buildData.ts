@@ -5,7 +5,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { EventDef } from '@suite-common/analytics';
 
-import { extractAttributeTypesByEventName, findPackageRoot, findUp } from './extractAttributeTypes';
+import { EventDoc } from '../src/types';
+import {
+    AttributeTypesByEventName,
+    extractAttributeTypesByEventName,
+    findPackageRoot,
+    findUp,
+} from '../src/utils/extractAttributeTypes';
 import { normalizeEvents } from '../src/utils/normalizeEvents';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,17 +24,19 @@ const PACKAGES = [
     '@suite-native/analytics',
 ] as const;
 
-async function loadEventsFromPackage(
+const loadEventsFromPackage = async (
     packageName: string,
-): Promise<Array<EventDef<unknown, string>>> {
+): Promise<Array<EventDef<unknown, string>>> => {
     const packageRoot = path.dirname(require.resolve(`${packageName}/package.json`));
     const eventsPath = path.join(packageRoot, 'src', 'events', 'index.ts');
     const module = await import(pathToFileURL(eventsPath).href);
 
     return Object.values(module) as Array<EventDef<unknown, string>>;
-}
+};
 
-async function loadAllEvents(): Promise<Array<EventDef<unknown, string> & { platform: string }>> {
+const loadAllEvents = async (): Promise<
+    Array<EventDef<unknown, string> & { platform: string }>
+> => {
     const [shared, desktop, mobile] = await Promise.all(
         PACKAGES.map(name => loadEventsFromPackage(name)),
     );
@@ -36,35 +44,33 @@ async function loadAllEvents(): Promise<Array<EventDef<unknown, string> & { plat
     const lists = [shared, desktop, mobile];
 
     return lists.flatMap((list, i) => list.map(event => ({ ...event, platform: platforms[i] })));
-}
+};
 
-function getTsConfigPath(): string {
+const getTsConfigPath = (): string => {
     const docgenPath = path.resolve(__dirname, '../tsconfig.docgen.json');
     if (fs.existsSync(docgenPath)) return docgenPath;
     const up = findUp('tsconfig.json', path.resolve(__dirname, '..'));
 
     return up ?? path.resolve(repoRoot, 'tsconfig.json');
-}
+};
 
-function getPackageRoots(): string[] {
+const getPackageRoots = (): string[] => {
     const roots = PACKAGES.map(name =>
         findPackageRoot(require.resolve(`${name}/package.json`)),
     ).filter((x): x is string => Boolean(x));
 
     return [...new Set(roots)];
-}
+};
 
-function getEventFileGlobs(packageRoots: string[]): string[] {
-    return packageRoots.flatMap(root => [
+const getEventFileGlobs = (packageRoots: string[]): string[] => packageRoots.flatMap(root => [
         path.join(root, 'src/**/*.{ts,tsx}'),
         path.join(root, 'dist/**/*.d.ts'),
     ]);
-}
 
-function mergeRuntimeTypes(
-    events: Record<string, import('../src/types').EventDoc>,
-    attributeTypesByEventName: import('./extractAttributeTypes').AttributeTypesByEventName,
-): void {
+const mergeRuntimeTypes = (
+    events: Record<string, EventDoc>,
+    attributeTypesByEventName: AttributeTypesByEventName,
+): void => {
     for (const [eventName, eventDoc] of Object.entries(events)) {
         const eventTypes = attributeTypesByEventName[eventName];
         if (!eventTypes) continue;
@@ -74,16 +80,13 @@ function mergeRuntimeTypes(
             if (runtimeType) attrDoc.runtimeType = runtimeType;
         }
     }
-}
+};
 
-function writeOutput(
-    data: { events: Record<string, import('../src/types').EventDoc> },
-    outputPath: string,
-): void {
+const writeOutput = (data: { events: Record<string, EventDoc> }, outputPath: string): void => {
     const pretty = process.env.PRETTY_ANALYTICS_JSON === '1';
     const json = pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data);
     fs.writeFileSync(outputPath, json, 'utf-8');
-}
+};
 
 const allEvents = await loadAllEvents();
 const normalizedEvents = normalizeEvents(allEvents);
