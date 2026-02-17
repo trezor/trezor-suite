@@ -19,7 +19,7 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
+import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
@@ -36,7 +36,7 @@ export const TradingBuyFormInputs = () => {
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
-    const { device, setAmountLimits, getValues, setValue } = context;
+    const { device, setAmountLimits, getValues, setValue, quotes } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -102,8 +102,11 @@ export const TradingBuyFormInputs = () => {
             </TradingFormCard>
 
             <TradingFormCard>
-                <TradingFormSection>
+                {!!quotes.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
+                )}
+
+                <TradingFormSection>
                     <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 </TradingFormSection>
                 <TradingSelectedOfferProvider />
