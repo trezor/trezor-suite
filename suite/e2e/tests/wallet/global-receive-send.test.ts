@@ -27,7 +27,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Filter and select account', async () => {
-            await tradingPage.findAccountButton.click();
+            await tradingPage.receiveAccount.findAccountButton.click();
             await page.getByText('All networks').click();
             await page
                 .getByTestId('undefined/select-option/eth')
