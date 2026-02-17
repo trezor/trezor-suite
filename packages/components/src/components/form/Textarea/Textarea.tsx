@@ -84,7 +84,7 @@ export const Textarea = ({
                     disabled={isDisabled ?? false}
                     rows={rows}
                     data-testid={dataTest}
-                    placeholder={placeholder}
+                    placeholder={label ? placeholder || ' ' : placeholder}
                     ref={innerRef}
                     value={value}
                     {...textareaProps}

@@ -113,7 +113,7 @@ export const Input = ({
                             $isMasked={isMasked}
                             $isClean={isClean}
                             $size={size}
-                            placeholder={placeholder}
+                            placeholder={label && !isClean ? placeholder || ' ' : placeholder}
                             data-testid={dataTest}
                             {...inputProps}
                         />

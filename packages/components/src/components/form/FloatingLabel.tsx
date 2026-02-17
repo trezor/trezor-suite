@@ -26,7 +26,8 @@ export const FloatingLabel = styled.label<FloatingLabelProps>`
             transform: var(--transform);
         `}
 
-    :is(input, textarea):focus ~ & {
+    :is(input, textarea):focus ~ &,
+    :is(input, textarea):not(:placeholder-shown) ~ & {
         transform: var(--transform);
     }
 
