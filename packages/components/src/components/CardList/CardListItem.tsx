@@ -1,4 +1,5 @@
-import { GhostContainer, type GhostContainerProps, Row } from '@trezor/components';
+import { Row } from '../Flex/Flex';
+import { GhostContainer, type GhostContainerProps } from '../GhostContainer/GhostContainer';
 
 export type CardListItemProps = Omit<GhostContainerProps, 'borderRadius' | 'padding'>;
 

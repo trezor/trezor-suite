@@ -1,15 +1,9 @@
-import {
-    Card,
-    type CardProps,
-    Column,
-    FrameProps,
-    FramePropsKeys,
-    Text,
-    type TextPropsKeys,
-    type TextStyleProps,
-} from '@trezor/components';
-
 import { CardListItem } from './CardListItem';
+import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { Card, type CardProps } from '../Card/Card';
+import { Column } from '../Flex/Flex';
+import { Text } from '../typography/Text/Text';
+import type { TextPropsKeys, TextProps as TextStyleProps } from '../typography/utils';
 
 export const allowedCardListFrameProps = [
     'margin',

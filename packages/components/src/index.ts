@@ -27,6 +27,15 @@ export {
     type BulletListItemState,
 } from './components/BulletList/BulletList';
 export { Card, type CardProps } from './components/Card/Card';
+export {
+    CardList,
+    allowedCardListFrameProps,
+    allowedCardListTextProps,
+    type CardListProps,
+    type AllowedCardListFrameProps,
+    type AllowedCardListTextProps,
+} from './components/CardList/CardList';
+export { CardListItem, type CardListItemProps } from './components/CardList/CardListItem';
 export { Collapsible, type CollapsibleProps } from './components/Collapsible/Collapsible';
 export {
     CollapsibleBox,
