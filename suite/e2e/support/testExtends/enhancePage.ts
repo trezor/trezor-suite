@@ -33,7 +33,7 @@ declare module '@playwright/test' {
             expectedValue: unknown,
             options?: { timeout?: number },
         ): Promise<void>;
-        getReduxObject(objectPath: string): Promise<any>;
+        getReduxObject(objectPath?: string): Promise<any>;
         resetMousePosition(): Promise<void>;
         runWithReduxDump<T>(
             action: () => Promise<T>,
@@ -84,8 +84,12 @@ export const enhancePage = (page: Page): Page => {
         }).toPass({ timeout: 5000 });
     };
 
-    page.getReduxObject = async (objectPath: string) => {
+    page.getReduxObject = async (objectPath?: string) => {
         const state = await page.evaluate(() => window.store.getState());
+
+        if (!objectPath) {
+            return state;
+        }
 
         return get(state, objectPath);
     };
@@ -147,17 +151,16 @@ export const enhancePage = (page: Page): Page => {
         action: () => Promise<T>,
         options?: { slice?: string; filePrefix?: string },
     ): Promise<void> {
-        const slice = options?.slice ?? 'wallet';
-        const prefix = options?.filePrefix ?? slice;
+        const prefix = options?.filePrefix ?? options?.slice ?? 'redux_dump';
         const ts = new Date().toISOString().replace(/[:.]/g, '-');
 
-        const beforeRaw = await page.getReduxObject(slice);
+        const beforeRaw = await page.getReduxObject(options?.slice);
         const beforePath = join(process.cwd(), `${prefix}_before_${ts}.json`);
         writeFileSync(beforePath, JSON.stringify(beforeRaw, null, 2), 'utf-8');
 
         await action();
 
-        const afterRaw = await page.getReduxObject(slice);
+        const afterRaw = await page.getReduxObject(options?.slice);
         const afterPath = join(process.cwd(), `${prefix}_after_${ts}.json`);
         writeFileSync(afterPath, JSON.stringify(afterRaw, null, 2), 'utf-8');
 
