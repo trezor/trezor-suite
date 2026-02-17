@@ -9,31 +9,27 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    test(`Global receive`, async ({
-        page,
-        devicePrompt,
-        settingsPage,
-        tradingPage,
-        walletPage,
-    }) => {
+    test(`Global receive`, async ({ page, devicePrompt, tradingPage, walletPage }) => {
         await test.step('Open receive form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-receive').click();
             await expect(devicePrompt.header).toHaveTranslation('TR_NAV_RECEIVE');
         });
 
         await test.step('Add ETH account', async () => {
-            await page.getByTestId('@global-send-receive/add-account').click();
-            await settingsPage.coinsTab.networkButton('eth').click();
+            await tradingPage.assets.addAccountButton.click();
+            await page.getByTestId('@settings/wallet/network/eth').click();
+            await tradingPage.receiveAccount.findAccountButton.click();
         });
 
         await test.step('Filter and select account', async () => {
-            await tradingPage.receiveAccount.findAccountButton.click();
-            await page.getByText('All networks').click();
-            await page
-                .getByTestId('undefined/select-option/eth')
-                .getByText('Ethereum', { exact: true })
+            await tradingPage.assets.filterByNetwork('eth');
+            await tradingPage.assets
+                .receiveAssetPickerOption({
+                    accountType: 'normal',
+                    accountSymbol: 'eth',
+                    index: 2,
+                })
                 .click();
-            await page.getByTestId(`@global-receive-account/normal/eth/2`).click();
         });
 
         await test.step('Generate and compare addresses', async () => {
@@ -56,17 +52,22 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
     });
 
-    test(`Global send`, async ({ page, devicePrompt }) => {
+    test(`Global send`, async ({ page, devicePrompt, tradingPage }) => {
         await test.step('Open send form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-send').click();
             await expect(devicePrompt.header).toHaveTranslation('TR_NAV_SEND');
         });
 
         await test.step('Bitcoin account selection', async () => {
-            await page.getByText('All networks').click();
-            await page.getByTestId('undefined/select-option/btc').click();
-            await page.getByTestId('@search-asset-input').fill('3');
-            await page.getByTestId(`@global-send-account/normal/btc/2`).click();
+            await tradingPage.assets.filterByNetwork('btc');
+            await tradingPage.assets.searchAsset('3');
+            await tradingPage.assets
+                .sendAssetPickerOption({
+                    accountType: 'normal',
+                    accountSymbol: 'btc',
+                    index: 2,
+                })
+                .click();
         });
 
         await test.step('Send form validation', async () => {

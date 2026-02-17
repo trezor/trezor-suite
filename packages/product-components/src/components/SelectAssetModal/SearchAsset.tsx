@@ -7,7 +7,6 @@ export type SearchAssetProps = {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
-    'data-testid'?: string;
     selectConfig?: SearchAssetSelectConfig;
     autoFocus?: boolean;
 };
@@ -16,11 +15,11 @@ export const SearchAsset = ({
     searchPlaceholder,
     search,
     setSearch,
-    'data-testid': dataTestId,
     selectConfig,
     autoFocus = false,
 }: SearchAssetProps) => {
     const { options, selectedOption } = useNetworkSelect(selectConfig);
+    const dataTestIdBase = '@asset-picker/search';
 
     const networkSelect = selectConfig ? (
         <Select
@@ -34,8 +33,8 @@ export const SearchAsset = ({
                     gap={8}
                     data-testid={
                         meta.context === 'menu'
-                            ? `${dataTestId}/select-option/${option.value ?? 'all-networks'}`
-                            : `${dataTestId}/select-option-value/${option.value ?? 'all-networks'}`
+                            ? `${dataTestIdBase}/filter/select-option/${option.value ?? 'all-networks'}`
+                            : `${dataTestIdBase}/filter/select-option-value/${option.value ?? 'all-networks'}`
                     }
                 >
                     {option.value && <CoinLogo size={20} symbol={option.value} type="network" />}
@@ -44,14 +43,14 @@ export const SearchAsset = ({
                     </Text>
                 </Row>
             )}
-            data-testid={`${dataTestId}/select`}
+            data-testid={`${dataTestIdBase}/filter`}
             openMenuOnFocus={false}
         />
     ) : undefined;
 
     return (
         <Input
-            data-testid={dataTestId ?? '@search-asset-input'}
+            data-testid={`${dataTestIdBase}/input`}
             placeholder={searchPlaceholder}
             value={search}
             onChange={event => setSearch(event.target.value)}

@@ -83,7 +83,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 case 'account':
                     return (
                         <AssetRowAccountWithBalance
-                            dataTestId={`@global-send-account/${item.account.accountType}/${item.account.symbol}/${item.account.index}`}
+                            dataTestId={`@asset-picker/option/${item.account.accountType}/${item.account.symbol}/${item.account.index}`}
                             account={item.account}
                             onClick={handleAccountClick}
                         />
@@ -92,6 +92,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 case 'token':
                     return (
                         <AssetRowToken
+                            dataTestId={`@asset-picker/option/${item.account.accountType}/${item.account.symbol}/${item.account.index}/token/${item.token.symbol}`}
                             token={item.token}
                             account={item.account}
                             onClick={handleTokenClick}
