@@ -22,7 +22,6 @@ export const FirmwareProgressBar = () => {
     > = {
         installing: 'TR_INSTALLING',
         restarting: 'TR_RESTARTING_TREZOR',
-        thp: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
         completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
     };
 

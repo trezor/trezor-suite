@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
@@ -9,12 +9,16 @@ import { useDispatch } from '../../../hooks/suite';
 
 type ThpPairingStartStepProps = {
     modalHeading: ReactNode;
+    isLoading?: boolean;
 };
 
 // reflection of components/onboarding/ThpPairing/ThpPairingStartStep
-export const ThpPairingStartStep = ({ modalHeading }: ThpPairingStartStepProps) => {
-    const [isLoading, setIsLoading] = useState(false);
+export const ThpPairingStartStep = (props: ThpPairingStartStepProps) => {
+    const [isLoading, setIsLoading] = useState(props.isLoading);
     const dispatch = useDispatch();
+    useEffect(() => {
+        setIsLoading(props.isLoading);
+    }, [props.isLoading]);
 
     const onClick = () => {
         setIsLoading(true);
@@ -25,7 +29,7 @@ export const ThpPairingStartStep = ({ modalHeading }: ThpPairingStartStepProps) 
         <Modal.ModalBase
             onCancel={undefined} // intentionally NOT cancellable here,  cancellable on the device only
             data-testid="@firmware-modal"
-            heading={modalHeading}
+            heading={props.modalHeading}
             bottomContent={
                 <Modal.Button onClick={onClick} isLoading={isLoading}>
                     <Translation id="TR_CONTINUE" />

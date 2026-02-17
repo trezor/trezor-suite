@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 
@@ -7,9 +7,12 @@ import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/Onboard
 import { useDispatch } from 'src/hooks/suite';
 
 // reflection of components/firmware/ThpPairing/ThpPairingStartStep
-export const ThpPairingStartStep = () => {
-    const [isLoading, setIsLoading] = useState(false);
+export const ThpPairingStartStep = (props: { isLoading?: boolean }) => {
+    const [isLoading, setIsLoading] = useState(props.isLoading);
     const dispatch = useDispatch();
+    useEffect(() => {
+        setIsLoading(props.isLoading);
+    }, [props.isLoading]);
 
     const onClick = () => {
         setIsLoading(true);

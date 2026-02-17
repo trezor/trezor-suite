@@ -122,15 +122,11 @@ export const FirmwareInstallationScreenContent = ({
     }, [dispatch, isTemporaryRememeberAllowed, resetReducer, setIsFirmwareInstallationRunning]);
 
     const handleFirmwareUpdateFinished = useCallback(() => {
-        console.warn(
-            'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
-        );
-
-        if (operation !== 'thp') {
+        if (status !== 'thp-pairing') {
             setIsFirmwareInstallationRunning(false);
         }
         onFirmwareInstallationSuccess();
-    }, [operation, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
+    }, [status, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
         navigation.goBack();
@@ -219,7 +215,7 @@ export const FirmwareInstallationScreenContent = ({
     }, []);
 
     const isError = status === 'error';
-    const isDone = status === 'done' || operation === 'completed' || operation === 'thp';
+    const isDone = status === 'thp-pairing' || status === 'done' || operation === 'completed';
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
         const isStarting = (status === 'started' && operation === null) || status === 'initial';

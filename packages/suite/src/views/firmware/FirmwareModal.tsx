@@ -1,7 +1,6 @@
 import { ReactNode, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -36,8 +35,6 @@ export const FirmwareModal = ({
         useFirmwareDesktopUpdate();
     const device = useSelector(selectSelectedDevice);
 
-    const thpStep = useSelector(selectThpStep);
-
     const dispatch = useDispatch();
     const [isChecked, setIsChecked] = useState(false);
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
@@ -57,10 +54,6 @@ export const FirmwareModal = ({
     };
 
     const getContent = () => {
-        if (thpStep !== null) {
-            return <ThpPairingStep thpStep={thpStep} heading={heading} />;
-        }
-
         switch (status) {
             case 'error':
                 return <StepError error={error} onClose={handleClose} />;
@@ -107,6 +100,9 @@ export const FirmwareModal = ({
                         isCustomFirmwareUploaded={isCustomFirmwareUploaded}
                     />
                 );
+            case 'thp-pairing':
+                return <ThpPairingStep heading={heading} />;
+
             case 'done':
                 return (
                     <StepDone

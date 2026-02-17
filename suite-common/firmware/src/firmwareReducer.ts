@@ -10,6 +10,7 @@ import {
     FirmwareReconnect,
     FirmwareType,
     UI,
+    UiRequestConfirmation,
 } from '@trezor/connect';
 import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
@@ -102,6 +103,14 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.setFirmwareChannel, (state, { payload }) => {
             state.firmwareChannel = payload;
         })
+        .addMatcher<UiRequestConfirmation>(
+            action => action.type === UI.REQUEST_CONFIRMATION,
+            (state, action) => {
+                if (state.status === 'started' && action.payload.view === 'thp-pairing-start') {
+                    state.status = 'thp-pairing';
+                }
+            },
+        )
         .addMatcher<FirmwareUpdateUiEvent>(
             (action: FirmwareUpdateUiEvent) =>
                 action.type === UI.FIRMWARE_RECONNECT ||
