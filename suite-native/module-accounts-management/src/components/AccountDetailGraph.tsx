@@ -10,8 +10,13 @@ import {
     selectAccountTokenFiatBalance,
 } from '@suite-native/accounts';
 import { VStack } from '@suite-native/atoms';
-import { Graph, TimeSwitch, useGraphAtoms, useGraphForSingleAccount } from '@suite-native/graph';
-import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
+import {
+    Graph,
+    TimeSwitch,
+    selectIsHistoryEnabledAccountByAccountKey,
+    useGraphAtoms,
+    useGraphForSingleAccount,
+} from '@suite-native/graph';
 
 import { AccountDetailHeader } from './AccountDetailHeader';
 import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';

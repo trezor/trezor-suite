@@ -21,8 +21,10 @@ import {
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { getAccountListSections } from '@suite-native/accounts';
-import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
+import {
+    getAccountListSections,
+    sortAccountsByNetworksAndAccountTypes,
+} from '@suite-native/accounts';
 import {
     NativeStakingRootState,
     doesCoinSupportStaking,

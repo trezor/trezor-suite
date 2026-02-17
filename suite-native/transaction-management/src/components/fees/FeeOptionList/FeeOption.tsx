@@ -22,8 +22,11 @@ import {
 } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
+import {
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    EmptyAmountSkeleton,
+} from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
