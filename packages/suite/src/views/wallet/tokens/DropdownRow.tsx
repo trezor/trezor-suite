@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
-import { Badge, Icon, Row, Text, TextProps } from '@trezor/components';
+import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';

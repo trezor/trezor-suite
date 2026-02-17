@@ -1,13 +1,14 @@
 import { useFormatters } from '@suite-common/formatters';
 import { AssetDiff } from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Text, TextProps } from '@trezor/components';
+import { Text, type TextProps } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { TxSimulationSummary } from './TxSimulationSummary';
 
 interface TxSimulationAssetRowProps {
-    variant: 'default' | 'primary' | 'tertiary' | 'destructive';
+    intent: NonNullable<TextProps['intent']>;
+    priority?: TextProps['priority'];
     amountPrefix?: '+' | '-';
     amount: AssetDiff['in'][number] | AssetDiff['out'][number];
     fiatAmount?: string;
@@ -17,7 +18,8 @@ interface TxSimulationAssetRowProps {
 }
 
 export function TxSimulationAssetRow({
-    variant,
+    intent,
+    priority,
     amountPrefix,
     amount,
     fiatAmount,
@@ -26,18 +28,10 @@ export function TxSimulationAssetRow({
     fiatCurrency,
 }: TxSimulationAssetRowProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    let textProps: Pick<TextProps, 'intent' | 'priority'> = { intent: 'neutral' };
-    if (variant === 'primary') {
-        textProps = { intent: 'brand' };
-    } else if (variant === 'tertiary') {
-        textProps = { intent: 'neutral', priority: 'secondary' };
-    } else if (variant === 'destructive') {
-        textProps = { intent: 'critical' };
-    }
 
     return (
         <>
-            <Text {...textProps} data-testid={dataTestId} flex="1">
+            <Text intent={intent} priority={priority} data-testid={dataTestId} flex="1">
                 <TxSimulationSummary amount={amount} assetDiff={assetDiff} />
             </Text>
             {fiatAmount && (
