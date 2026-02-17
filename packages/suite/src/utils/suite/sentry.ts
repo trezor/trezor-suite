@@ -22,6 +22,11 @@ export const withSentryScope = Sentry.withScope;
 
 export const captureSentryMessage = Sentry.captureMessage;
 
+/**
+ * Sets a tag to allow or disallow sending Sentry reports. Until then, they are sent, but heavily redacted, see redactSentryEvent function.
+ * Note that in case of Suite Desktop, Sentry tags are shared between Renderer and Main process, sentry has its own IPC:
+ * https://docs.sentry.io/platforms/javascript/guides/electron/features/inter-process-communication/,
+ */
 export const allowSentryReport = (value: boolean) => {
     Sentry.setTag(ALLOW_REPORT_TAG, value);
 };
