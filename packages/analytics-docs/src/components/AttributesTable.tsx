@@ -1,14 +1,7 @@
-import styled from 'styled-components';
-
-import { Badge, CollapsibleBox, Table, Text } from '@trezor/components';
+import { Badge, Box, CollapsibleBox, Table, Text } from '@trezor/components';
 
 import type { AttributeDoc } from '../types';
 import { AttributesTableRow } from './AttributesTableRow';
-
-const Wrap = styled.div`
-    margin-bottom: 8px;
-    margin-top: 16px;
-`;
 
 export const AttributesTable = ({ attributes }: { attributes: Record<string, AttributeDoc> }) => {
     const keys = Object.keys(attributes);
@@ -18,7 +11,7 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
     }
 
     return (
-        <Wrap>
+        <Box margin={{ bottom: 8, top: 16 }}>
             <CollapsibleBox
                 heading={
                     <>
@@ -60,6 +53,6 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
                     </Table.Body>
                 </Table>
             </CollapsibleBox>
-        </Wrap>
+        </Box>
     );
 };

@@ -30,12 +30,9 @@ type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 
 type AppProps = { theme: AppTheme };
 
 export const TopBar = styled.div`
-    gap: 12px;
-
+    padding: 12px 24px;
     background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
-
-    padding: 12px 24px;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         backdrop-filter: blur(20px);
@@ -48,10 +45,10 @@ export const TopBar = styled.div`
 `;
 
 export const Content = styled.div`
-    margin: 20px 10px;
+    padding: 20px 10px;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 140px 20px 20px;
+        margin: 130px 20px 20px;
     }
 `;
 

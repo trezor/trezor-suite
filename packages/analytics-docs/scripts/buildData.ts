@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { EventDef } from '@suite-common/analytics';
 
-import { EventDoc } from '../src/types';
+import { EventDoc, platforms } from '../src/types';
 import {
     AttributeTypesByEventName,
     extractAttributeTypesByEventName,
@@ -15,7 +15,7 @@ import {
 import { normalizeEvents } from '../src/utils/normalizeEvents';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
+const cjsRequire = createRequire(import.meta.url);
 const repoRoot = path.resolve(__dirname, '../../..');
 
 const PACKAGES = [
@@ -27,7 +27,7 @@ const PACKAGES = [
 const loadEventsFromPackage = async (
     packageName: string,
 ): Promise<Array<EventDef<unknown, string>>> => {
-    const packageRoot = path.dirname(require.resolve(`${packageName}/package.json`));
+    const packageRoot = path.dirname(cjsRequire.resolve(`${packageName}/package.json`));
     const eventsPath = path.join(packageRoot, 'src', 'events', 'index.ts');
     const module = await import(pathToFileURL(eventsPath).href);
 
@@ -40,7 +40,6 @@ const loadAllEvents = async (): Promise<
     const [shared, desktop, mobile] = await Promise.all(
         PACKAGES.map(name => loadEventsFromPackage(name)),
     );
-    const platforms: Array<'shared' | 'desktop' | 'mobile'> = ['shared', 'desktop', 'mobile'];
     const lists = [shared, desktop, mobile];
 
     return lists.flatMap((list, i) => list.map(event => ({ ...event, platform: platforms[i] })));
@@ -56,7 +55,7 @@ const getTsConfigPath = (): string => {
 
 const getPackageRoots = (): string[] => {
     const roots = PACKAGES.map(name =>
-        findPackageRoot(require.resolve(`${name}/package.json`)),
+        findPackageRoot(cjsRequire.resolve(`${name}/package.json`)),
     ).filter((x): x is string => Boolean(x));
 
     return [...new Set(roots)];
@@ -89,24 +88,28 @@ const writeOutput = (data: { events: Record<string, EventDoc> }, outputPath: str
     fs.writeFileSync(outputPath, json, 'utf-8');
 };
 
-const allEvents = await loadAllEvents();
-const normalizedEvents = normalizeEvents(allEvents);
+const run = async () => {
+    const allEvents = await loadAllEvents();
+    const normalizedEvents = normalizeEvents(allEvents);
 
-const tsConfigPath = getTsConfigPath();
-const packageRoots = getPackageRoots();
-const eventFileGlobs = getEventFileGlobs(packageRoots);
+    const tsConfigPath = getTsConfigPath();
+    const packageRoots = getPackageRoots();
+    const eventFileGlobs = getEventFileGlobs(packageRoots);
 
-const attributeTypesByEventName = extractAttributeTypesByEventName({
-    tsConfigFilePath: tsConfigPath,
-    eventFileGlobs,
-});
+    const attributeTypesByEventName = extractAttributeTypesByEventName({
+        tsConfigFilePath: tsConfigPath,
+        eventFileGlobs,
+    });
 
-mergeRuntimeTypes(normalizedEvents, attributeTypesByEventName);
+    mergeRuntimeTypes(normalizedEvents, attributeTypesByEventName);
 
-const outputPath = path.resolve(__dirname, '../src/analytics.json');
-writeOutput({ events: normalizedEvents }, outputPath);
+    const outputPath = path.resolve(__dirname, '../src/analytics.json');
+    writeOutput({ events: normalizedEvents }, outputPath);
 
-// eslint-disable-next-line no-console
-console.log(
-    `[analytics-docs] analytics.json generated (${Object.keys(normalizedEvents).length} events)`,
-);
+    // eslint-disable-next-line no-console
+    console.log(
+        `[analytics-docs] analytics.json generated (${Object.keys(normalizedEvents).length} events)`,
+    );
+};
+
+void run();
