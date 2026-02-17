@@ -1,11 +1,7 @@
 import { Text } from 'react-native';
 
-import {
-    type TestStore,
-    getTranslation,
-    initStore,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { TradingDeviceConnectionGuard } from '../TradingDeviceConnectionGuard';
 

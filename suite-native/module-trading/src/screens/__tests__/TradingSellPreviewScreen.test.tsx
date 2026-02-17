@@ -1,8 +1,8 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     PreloadedState,
     act,
-    getTranslation,
     renderWithStoreProviderAsync,
     waitFor,
 } from '@suite-native/test-utils';

@@ -5,3 +5,4 @@ export * from './Translate';
 export * from './types';
 export * from './localeSlice';
 export * from './languages';
+export { getTranslation } from './getTranslation';
