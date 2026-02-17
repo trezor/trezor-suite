@@ -138,12 +138,19 @@ test.describe(
 
                 await test.step('Compare the address of the first transaction', async () => {
                     await dashboardPage.deviceSwitchingCloseButton.click();
-                    const firstTxLabel = page
-                        .getByTestId('@wallet/transaction/target-address')
-                        .first();
+                    await page.getByTestId('@wallet/transaction-item').first().click();
+                    // replace the with better locator once merged to develop
+                    // await page.getByTestId('@tx-detail/inputs-and-outputs').click();
+                    await page.getByText('Inputs & outputs').click();
+                    await page.getByTestId('@tx-detail/txid-value').last().hover();
+                    const firstTxLabel = page.getByTestId('@tooltip');
                     await expect(firstTxLabel).toBeVisible();
-                    const afterMigrationTxLabel = firstTxLabel;
-                    await expect(afterMigrationTxLabel).toHaveText(originalTxLabel);
+                    const afterMigrationTxLabel = (await firstTxLabel.textContent())?.replace(
+                        /\s/g,
+                        '',
+                    );
+                    expect(afterMigrationTxLabel).toEqual(originalTxLabel);
+                    await page.modalCloseButton.click();
                 });
 
                 // go to receive tab, trigger show address to make sure passphrase is properly cached
@@ -156,13 +163,22 @@ test.describe(
                     await expect(page.getByTestId('@modal')).toBeHidden();
                 });
 
-                await test.step('Reconnect Emulator', async () => {
+                await test.step('Reconnect Emulator and confirm passphrase', async () => {
                     await device.powerOn();
                     await onboardingPage.disableNecessaryFirmwareChecks({
                         skipSuiteLoadedCheck: true,
                     });
+                    await dashboardPage.passphraseInput.fill(walletPassphrase);
+                    await dashboardPage.passphraseSubmitButton.click();
+                    await expect(dashboardPage.passphraseInput).toBeHidden();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await devicePrompt.waitForPromptAndConfirm();
                     await dashboardPage.openDeviceSwitcher();
-                    await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
+                    await expect(
+                        page
+                            .getByTestId('@modal/switch-device')
+                            .getByTestId('@deviceStatus-connected'),
+                    ).toBeVisible();
                     await dashboardPage.deviceSwitchingCloseButton.first().click();
                 });
 

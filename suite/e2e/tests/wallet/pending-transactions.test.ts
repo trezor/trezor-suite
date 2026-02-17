@@ -86,14 +86,15 @@ test.describe(
                             '@transaction-item/0/prepending/heading',
                         ),
                     ).toBeVisible();
+                    await expect(
+                        page.getByTestId('@transaction-group/pending/count'),
+                    ).toContainText((index + 1).toString());
+
                     await pendingTransactionsList
                         .getByTestId('@transaction-item/0/heading')
                         .click();
 
-                    await expect(
-                        page.getByTestId('@transaction-group/pending/count'),
-                    ).toContainText((index + 1).toString());
-                    const txid = await page.getByTestId('@tx-detail/txid-value').getAttribute('id');
+                    const txid = await page.getByTestId('@tx-detail/txid-value').textContent();
                     if (!txid) {
                         throw new Error('Transaction ID not found');
                     }
@@ -138,7 +139,7 @@ test.describe(
                     address: accounts.miner_account.address,
                     txids: [],
                 });
-                await page.waitForTimeout(2000);
+                await page.waitForTimeout(2000); // wait for block to be processed
                 await walletPage
                     .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 })
                     .click();
@@ -181,7 +182,6 @@ test.describe(
             });
 
             await test.step('New group of transactions appears with the previously pending transaction now confirmed', async () => {
-                // and new group of transactions appears with the previously pending transaction now confirmed
                 const confirmedTransactionsAccount1 = page.getByTestId(
                     '@wallet/accounts/transaction-list/confirmed/group/0',
                 );
