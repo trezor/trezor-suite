@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
 
-import { ThpStep } from '@suite-common/thp';
-import { exhaustive } from '@trezor/type-utils';
+import { selectThpStep } from '@suite-common/thp';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { ThpCodeEntryStep } from './ThpCodeEntryStep';
 import { ThpCodeInvalidStep } from './ThpCodeInvalidStep';
@@ -9,14 +10,16 @@ import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
 
 // reflection of components/onboarding/ThpPairingStep/ThpPairingStep.tsx
-export const ThpPairingStep = ({
-    thpStep,
-    heading,
-}: {
-    thpStep: NonNullable<ThpStep>;
-    heading: ReactNode;
-}) => {
-    switch (thpStep) {
+export const ThpPairingStep = ({ heading }: { heading: ReactNode }) => {
+    const thpStep = useSelector(selectThpStep);
+    const prevStepRef = useRef(thpStep);
+    if (thpStep) {
+        prevStepRef.current = thpStep;
+    }
+
+    // render thpState if set or last known step. fallback to ThpPairingStartStep with loader
+    const step = thpStep ?? prevStepRef.current;
+    switch (step) {
         case 'BeforeConnectionInfo':
             return <ThpPairingStartStep modalHeading={heading} />;
         case 'ConfirmOnlyConnection':
@@ -28,6 +31,6 @@ export const ThpPairingStep = ({
             return <ThpCodeInvalidStep modalHeading={heading} />;
 
         default:
-            exhaustive(thpStep);
+            return <ThpPairingStartStep modalHeading={heading} isLoading />;
     }
 };

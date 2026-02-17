@@ -1,7 +1,8 @@
 export type FirmwareStatus =
     | 'initial' // initial state
-    | 'check-seed' // ask user if they have seed properly backed up
     | 'started' // progress - firmware update has started, waiting for events from trezor-connect
+    | 'thp-pairing' // progress - firmware update has started, waiting for events from trezor-connect
+    | 'check-seed' // ask user if they have seed properly backed up
     | 'done'; // firmware successfully installed
 
 /**

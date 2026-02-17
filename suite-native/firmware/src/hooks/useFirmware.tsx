@@ -122,15 +122,15 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
                 title: 'firmware.firmwareUpdateProgress.confirming.title',
                 subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
+        } else if (operation === 'completed' || status === 'thp-pairing' || status === 'done') {
+            text = {
+                title: 'firmware.firmwareUpdateProgress.completed.title',
+                subtitle: 'firmware.firmwareUpdateProgress.completed.subtitle',
+            };
         } else if (operation === 'restarting') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.restarting.title',
                 subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
-            };
-        } else if (operation === 'completed' || operation === 'thp' || status === 'done') {
-            text = {
-                title: 'firmware.firmwareUpdateProgress.completed.title',
-                subtitle: 'firmware.firmwareUpdateProgress.completed.subtitle',
             };
         }
 

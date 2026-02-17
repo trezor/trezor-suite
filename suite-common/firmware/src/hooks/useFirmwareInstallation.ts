@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
-import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
+import { THP_BUTTON_REQUESTS_NAMES, selectThpStep } from '@suite-common/thp';
 import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -46,7 +46,7 @@ const determineIfDeviceWillBeWiped = (
 };
 
 export type FirmwareOperationStatus = {
-    operation: 'installing' | 'restarting' | 'thp' | 'completed' | null;
+    operation: 'installing' | 'restarting' | 'completed' | null;
     progress: number;
 };
 
@@ -105,7 +105,6 @@ export const useFirmwareInstallation = () => {
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
-    const isThpInProgress = useSelector(selectIsThpInProgress);
     const thpStep = useSelector(selectThpStep);
     const switchFirmwareType = useSelector(selectSwitchFirmwareType);
 
@@ -176,10 +175,6 @@ export const useFirmwareInstallation = () => {
         firmware.uiEvent?.type === 'button';
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {
-        if (isThpInProgress) {
-            return { operation: 'thp', progress: 100 };
-        }
-
         if (firmware.status === 'done') {
             return {
                 operation: 'completed',
@@ -208,7 +203,7 @@ export const useFirmwareInstallation = () => {
         }
 
         return { operation: null, progress: 0 };
-    }, [isThpInProgress, firmware.status, progressEvent, reconnectEvent]);
+    }, [firmware.status, progressEvent, reconnectEvent]);
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);

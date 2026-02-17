@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectThpStep } from '@suite-common/thp';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -24,7 +23,6 @@ export const FirmwareStep = () => {
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
-    const thpStep = useSelector(selectThpStep);
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
@@ -139,10 +137,6 @@ export const FirmwareStep = () => {
         return <DeviceDisconnectedStep />;
     }
 
-    if (thpStep !== null) {
-        return <ThpPairingStep thpStep={thpStep} />;
-    }
-
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
@@ -165,6 +159,9 @@ export const FirmwareStep = () => {
                     onSuccess={goToNextStepAndResetReducer}
                 />
             );
+        case 'thp-pairing': {
+            return <ThpPairingStep />;
+        }
 
         // This step does not make sense in onboarding; when installing firmware
         // for the first time, there is no seed to be backed up before the firmware update.
