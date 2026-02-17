@@ -1,19 +1,22 @@
 import styled from 'styled-components';
 
-import type { SuiteThemeColors } from '@trezor/components';
-import { Badge, Box, CardList, Column, H3, Text, variables } from '@trezor/components';
+import type { IconProps, SuiteThemeColors } from '@trezor/components';
+import { Badge, Box, CardList, Column, H3, Icon, Text, variables } from '@trezor/components';
 
 import { HEADER_HEIGHT } from '../constants';
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
 import { getEventId } from '../utils/filterUtils';
 
-const SCROLL_OFFSET_TOP = 110;
+const getEventChangeProps = (event: EventDoc, version: string) =>
+    event.changelog?.addedInVersion === version
+        ? { name: 'plus' as const, variant: 'primary' as const }
+        : { name: 'arrowsClockwiseFilled' as const, variant: 'warning' as const };
 
 const scrollToEvent = (eventName: string) => {
     const el = document.getElementById(getEventId(eventName));
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_TOP;
+    const y = el.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
     window.scrollTo({ top: y, behavior: 'smooth' });
 };
 
@@ -69,6 +72,11 @@ export const VersionsSidebar = ({ versionsWithEvents }: VersionsSidebarProps) =>
                                     key={event.name}
                                 >
                                     <Text typographyStyle="label">{event.name}</Text>
+
+                                    <Icon
+                                        {...(getEventChangeProps(event, version) as IconProps)}
+                                        size="small"
+                                    />
                                 </CardList.Item>
                             ))}
                     </CardList>
