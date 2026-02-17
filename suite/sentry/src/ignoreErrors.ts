@@ -14,4 +14,8 @@ export const ignoreErrors = [
 
     // Common Electron lifecycle errors
     /.*Frame property was accessed after it navigated or was destroyed.*/, // Renderer process already closed while main is still responding to its IPC
+
+    // nodeJS deprecation errors
+    /.*DEP0040.*punycode.*/, // used deep within tech stack, not much we can do about it atm
+    /.*DEP0169.*url\.parse\(\).*/, // TODO https://github.com/trezor/trezor-suite/issues/25255
 ] satisfies Options['ignoreErrors'];
