@@ -17,10 +17,14 @@ export const pickButtonProps = ({
     priority = 'primary',
 }: CommonButtonProps) => {
     const isLink = href !== undefined;
+    const handlePointerDown = (event: React.PointerEvent<HTMLElement>) => {
+        event.currentTarget.setPointerCapture(event.pointerId);
+    };
 
     return {
         as: isLink ? 'a' : 'button',
         disabled: isLink ? false : isDisabled || isLoading,
+        onPointerDown: handlePointerDown,
         onClick,
         type: isLink ? undefined : type,
         tabIndex,
