@@ -8,6 +8,7 @@ export {
     selectThpAutoconnectStep,
     selectThpLastResult,
     selectThpCredentials,
+    selectThpLastCode,
 } from './thpSelectors';
 export { thpActions } from './thpActions';
 export * from './thpUtils';

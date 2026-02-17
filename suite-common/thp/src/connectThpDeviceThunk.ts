@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Device } from '@trezor/connect';
 
 import { THP_PREFIX, thpActions } from './thpActions';
-import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './thpConstants';
+import { CONNECTION_COUNTER_LIMIT } from './thpConstants';
 import { selectIsThpInProgress, selectThpCredentials } from './thpSelectors';
 
 type ConnectThpDeviceThinkParams = {
@@ -27,7 +27,7 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
             const hasAutoConnectCredential = device?.thp?.credentials?.some(c => c?.autoconnect);
             const shallShowAutoConnectDialog =
                 // subtract 1 because the counter has just been incremented
-                credential.connectionCounter === NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT - 1 &&
+                credential.connectionCounter === CONNECTION_COUNTER_LIMIT - 1 &&
                 !hasAutoConnectCredential;
 
             dispatch(

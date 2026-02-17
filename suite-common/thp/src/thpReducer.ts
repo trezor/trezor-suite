@@ -4,19 +4,14 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { ThpSuiteCredentials } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DeviceButtonRequest,
     DeviceThpCredentialsChanged,
+    DeviceThpPairingStatusChanged,
     UI,
-    UiRequestConfirmation,
-    UiRequestThpPairing,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
 import { thpActions } from './thpActions';
-import {
-    NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT,
-    THP_BUTTON_REQUESTS_NAMES,
-} from './thpConstants';
+import { CONNECTION_COUNTER_LIMIT, THP_BUTTON_REQUESTS_NAMES } from './thpConstants';
 
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 
@@ -39,7 +34,7 @@ export type ThpState = {
     step: ThpStep;
     autoconnectStep: ThpAutoconnectStep | null;
     lastThpCode?: string;
-    lastResult?: 'finished' | 'canceled';
+    lastResult?: 'finished' | 'canceled' | 'failed';
     credentials: ThpSuiteCredentials[];
 };
 
@@ -76,8 +71,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
 
                 if (
                     credentialToUpdate !== undefined &&
-                    credentialToUpdate.connectionCounter <
-                        NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT
+                    credentialToUpdate.connectionCounter < CONNECTION_COUNTER_LIMIT
                 ) {
                     credentialToUpdate.connectionCounter = credentialToUpdate.connectionCounter + 1;
                 }
@@ -123,6 +117,42 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 },
             )
             .addMatcher(
+                action => action.type === DEVICE.THP_PAIRING_STATUS_CHANGED,
+                (state, action: DeviceThpPairingStatusChanged) => {
+                    const { payload } = action;
+                    if (payload.status === 'finished') {
+                        state.step = null;
+                        state.lastThpCode = undefined;
+                        state.lastResult = 'finished';
+
+                        // find credential and increment connectionCounter or set autoconnectStep
+                        const credential = state.credentials.find(stateCredential =>
+                            payload.device.thp?.credentials.some(
+                                deviceCredential =>
+                                    deviceCredential.credential === stateCredential.credential,
+                            ),
+                        );
+                        if (
+                            credential &&
+                            !credential.autoconnect &&
+                            credential.connectionCounter < CONNECTION_COUNTER_LIMIT
+                        ) {
+                            credential.connectionCounter += 1;
+                            if (credential.connectionCounter === CONNECTION_COUNTER_LIMIT) {
+                                state.autoconnectStep = 'AutoconnectInfo';
+                            }
+                        }
+                    } else if (payload.status === 'invalid-tag') {
+                        state.step = 'CodeInvalid';
+                        state.lastThpCode = payload.tag;
+                    } else if (payload.status === 'canceled' || payload.status === 'failed') {
+                        state.step = null;
+                        state.lastThpCode = undefined;
+                        state.lastResult = payload.status;
+                    }
+                },
+            )
+            .addMatcher(
                 action => action.type === UI.REQUEST_BUTTON,
                 (state, action: AnyAction) => {
                     const actionName: THPButtonRequestName = action.payload.name;
@@ -140,30 +170,11 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 },
             )
             // This is the THP flow in Firmware Update
-            .addMatcher<DeviceButtonRequest | UiRequestThpPairing | UiRequestConfirmation>(
-                action => action.type === UI.REQUEST_CONFIRMATION || action.type === DEVICE.BUTTON,
-                (state, action) => {
-                    // The THP device is ready for pairing, wait for user action
-                    if (action.type === UI.REQUEST_CONFIRMATION) {
-                        if (action.payload.view === 'thp-pairing-start') {
-                            state.step = 'BeforeConnectionInfo';
-                        }
-                        if (action.payload.view === 'thp-pairing-failed') {
-                            state.step = 'CodeInvalid';
-                        }
-                    }
-
-                    // Handle button requests in the THP pairing
-                    if (action.type === DEVICE.BUTTON) {
-                        if (action.payload.name === 'thp_pairing_request') {
-                            state.step = 'ConfirmConnectionBeforePairing';
-                        }
-                        if (action.payload.name === 'thp_connection_request') {
-                            state.step = 'ConfirmOnlyConnection';
-                        }
-                        if (action.payload.name === 'thp_autoconnect_credential_request') {
-                            state.autoconnectStep = 'Autoconnect';
-                        }
+            .addMatcher(
+                action => action.type === UI.REQUEST_CONFIRMATION,
+                state => {
+                    if (state.step !== 'CodeInvalid') {
+                        state.step = 'BeforeConnectionInfo';
                     }
                 },
             )
