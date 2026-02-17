@@ -13,6 +13,10 @@ const vendor = USE_HW ? 4617 : 0;
 const id = USE_NODE_BRIDGE ? expect.any(String) : undefined;
 const apiType = 'usb' as const;
 const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : undefined;
+const model = USE_NODE_BRIDGE && USE_HW ? expect.any(Number) : undefined;
+const sessionOwner = USE_NODE_BRIDGE
+    ? expect.toBeOneOf([expect.any(String), undefined])
+    : undefined;
 
 /**
  * internal path has variable length
@@ -22,7 +26,18 @@ const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : un
  */
 export const pathLength = 1;
 
-export const descriptor = { debug, debugSession, path, product, vendor, type, id, apiType };
+export const descriptor = {
+    debug,
+    debugSession,
+    path,
+    product,
+    vendor,
+    type,
+    id,
+    apiType,
+    model,
+    sessionOwner,
+};
 
 export const errorCase1 =
     !USE_NODE_BRIDGE && !USE_HW
