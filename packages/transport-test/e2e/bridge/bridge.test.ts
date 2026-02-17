@@ -4,7 +4,7 @@ import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { descriptor as expectedDescriptor, pathLength } from './expect';
-import { assertSuccess } from '../api/utils';
+import { assertFailure, assertSuccess } from '../api/utils';
 
 const emulatorStartOpts = { model: Model.T2T1, version: '2-latest', wipe: true } as const;
 
@@ -332,6 +332,32 @@ describe('bridge', () => {
             ]);
 
             await Promise.all([bridge.receive({ session }), bridge.enumerate()]);
+        });
+    }
+
+    if (env.USE_NODE_BRIDGE) {
+        test('abort endpoint https://github.com/trezor/trezor-suite/pull/24927', async () => {
+            const abortController = new AbortController();
+
+            // Send a GetFeatures message to the device
+            const sendResult = await bridge.send({ session, name: 'RebootToBootloader', data: {} });
+            assertSuccess(sendResult);
+            expect(sendResult).toEqual({ success: true, payload: undefined });
+
+            // Start receive with abort signal, but abort it after a short delay
+            const receivePromise = bridge.receive({ session, signal: abortController.signal });
+            // Give the receive operation time to start pending on the bridge
+            await new Promise(resolve => setTimeout(resolve, 50));
+            // Abort the signal
+            abortController.abort();
+
+            // Verify the receive operation was aborted
+            const receiveResult = await receivePromise;
+            assertFailure(receiveResult);
+            expect(receiveResult.error).toContain('Aborted by signal');
+
+            // TODO: doing any other operation with the device after this point (abort -> usb reset) results
+            // in malformed protocol format. It appears that the only way to recover is by reconnecting the device :man-shrugging:
         });
     }
 });
