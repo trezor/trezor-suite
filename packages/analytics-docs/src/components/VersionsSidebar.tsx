@@ -1,16 +1,20 @@
 import styled from 'styled-components';
 
-import { Badge, Box, CardList, Column, H3, Text, variables } from '@trezor/components';
 import type { SuiteThemeColors } from '@trezor/components';
+import { Badge, Box, CardList, Column, H3, Text, variables } from '@trezor/components';
 
 import { HEADER_HEIGHT } from '../constants';
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
 import { getEventId } from '../utils/filterUtils';
 
+const SCROLL_OFFSET_TOP = 110;
+
 const scrollToEvent = (eventName: string) => {
     const el = document.getElementById(getEventId(eventName));
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_TOP;
+    window.scrollTo({ top: y, behavior: 'smooth' });
 };
 
 export const SIDEBAR_WIDTH = 280;
@@ -53,17 +57,18 @@ export const VersionsSidebar = ({ versionsWithEvents }: VersionsSidebarProps) =>
                         {version}
                     </Badge>
 
-                    <CardList>
+                    <CardList margin={{ top: 8 }}>
                         {events
                             .sort((a: EventDoc, b: EventDoc) =>
                                 (a.name ?? '').localeCompare(b.name ?? ''),
                             )
                             .map(event => (
                                 <CardList.Item
+                                    paddingType="small"
                                     onClick={() => scrollToEvent(event.name)}
                                     key={event.name}
                                 >
-                                    <Text>{event.name}</Text>
+                                    <Text typographyStyle="label">{event.name}</Text>
                                 </CardList.Item>
                             ))}
                     </CardList>

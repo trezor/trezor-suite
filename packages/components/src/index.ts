@@ -35,7 +35,12 @@ export {
     type AllowedCardListFrameProps,
     type AllowedCardListTextProps,
 } from './components/CardList/CardList';
-export { CardListItem, type CardListItemProps } from './components/CardList/CardListItem';
+export {
+    CardListItem,
+    cardListItemPaddingTypes,
+    type CardListItemProps,
+    type CardListItemPaddingType,
+} from './components/CardList/CardListItem';
 export { Collapsible, type CollapsibleProps } from './components/Collapsible/Collapsible';
 export {
     CollapsibleBox,
