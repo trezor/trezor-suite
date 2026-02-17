@@ -65,7 +65,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const leftContent = useMemo(() => {
         if (value) {
             // @ts-expect-error
-            return <AssetPickerInputContent name={name} value={value} dataTestId={dataTestId} />;
+            return <AssetPickerInputContent name={name} value={value} />;
         }
 
         if (isLoading) {
@@ -73,7 +73,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
         }
 
         return undefined;
-    }, [value, isLoading, name, dataTestId]);
+    }, [value, isLoading, name]);
 
     return (
         <OpenModalButton
@@ -92,7 +92,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
                     !value && !isLoading && placeholder ? translationString(placeholder) : undefined
                 }
                 isDisabled={disabled}
-                data-testid={`${dataTestId}/input`}
+                data-testid={`${dataTestId ?? '@asset-picker'}/input`}
                 labelLeft={
                     label && (
                         <Text typographyStyle="body-md" intent="neutral" priority="secondary">

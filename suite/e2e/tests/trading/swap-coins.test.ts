@@ -74,7 +74,6 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                 sellAsset: {
                     searchFilter: 'Solana #1',
                     networkSymbol: 'sol',
-                    assetCryptoId: getCryptoId('sol'),
                 },
                 buyAsset: {
                     searchFilter: 'Bitcoin',

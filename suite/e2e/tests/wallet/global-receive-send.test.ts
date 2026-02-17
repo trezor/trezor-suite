@@ -66,7 +66,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
             await page.getByText('All networks').click();
             await page.getByTestId('undefined/select-option/btc').click();
             await page.getByTestId('@search-asset-input').fill('3');
-            await page.getByTestId(`@global-send-account/normal/btc/2/btc`).click();
+            await page.getByTestId(`@global-send-account/normal/btc/2`).click();
         });
 
         await test.step('Send form validation', async () => {

@@ -22,8 +22,6 @@ export interface TradingFormInputSellAssetProps {
 
     includedCryptoIds: CryptoId[] | undefined;
     excludedCryptoId?: CryptoId | undefined;
-
-    dataTestId: string;
 }
 
 export const TradingFormInputSellAsset = memo(function TradingFormInputSellAssetInner({
@@ -32,7 +30,6 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
     inputName,
     inputDisabled,
     inputBottomText,
-    dataTestId,
     onAssetSelect,
     includedCryptoIds,
     excludedCryptoId,
@@ -55,14 +52,13 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
                 placeholder={inputPlaceholder}
                 isDisabled={inputDisabled}
                 onClick={modal.openModal}
-                dataTestId={dataTestId}
+                dataTestId="@trading/sell/asset-picker"
                 bottomText={inputBottomText}
             />
             {modal.open && (
                 <AssetPickerModal
                     heading={inputLabel}
                     closeModal={modal.closeModal}
-                    dataTestId={dataTestId}
                     onAssetSelect={onAssetSelect}
                 />
             )}

@@ -21,8 +21,6 @@ export interface TradingFormInputBuyAssetProps {
 
     includedCryptoIds: CryptoId[];
     excludedCryptoId?: CryptoId | undefined;
-
-    dataTestId: string;
 }
 
 export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetInner({
@@ -30,7 +28,6 @@ export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetIn
     inputLabel,
     inputName,
     inputDisabled,
-    dataTestId,
     includedCryptoIds,
     excludedCryptoId,
     onAssetSelect,
@@ -53,13 +50,12 @@ export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetIn
                 placeholder={inputPlaceholder}
                 isDisabled={inputDisabled}
                 onClick={modal.openModal}
-                dataTestId={dataTestId}
+                dataTestId="@trading/buy/asset-picker"
             />
             {modal.open && (
                 <AssetPickerModal
                     heading={inputLabel}
                     closeModal={modal.closeModal}
-                    dataTestId={dataTestId}
                     onAssetSelect={onAssetSelect}
                 />
             )}

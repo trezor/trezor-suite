@@ -19,12 +19,7 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
                 onClick(asset);
             }}
         >
-            <Row
-                data-testid={dataTestId ? `${dataTestId}/${asset.id}` : undefined}
-                gap={12}
-                overflow="hidden"
-                maxWidth="100%"
-            >
+            <Row data-testid={dataTestId} gap={12} overflow="hidden" maxWidth="100%">
                 {asset.isNativeToken ? (
                     <CoinLogo
                         size={40}

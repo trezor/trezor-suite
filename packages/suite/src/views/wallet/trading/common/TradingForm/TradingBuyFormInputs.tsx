@@ -96,7 +96,6 @@ export const TradingBuyFormInputs = () => {
                         inputDisabled={hasBitcoinOnlyFirmware(device)}
                         onAssetSelect={handleCryptoSelect}
                         includedCryptoIds={buySupportedCryptoIds}
-                        dataTestId="@trading/form/select-crypto-for-buy"
                     />
                 </TradingFormSection>
                 {cryptoSelect && !isLoading && <TradingReceiveAddress />}

@@ -88,7 +88,6 @@ export const TradingSellFormInputs = () => {
                         <AssetPickerInputBalance name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT} />
                     }
                     includedCryptoIds={sellSupportedCryptoIds}
-                    dataTestId="@trading/form/select-crypto-for-sell"
                     onAssetSelect={handleSellAssetSelect}
                 />
                 <Column gap={8}>

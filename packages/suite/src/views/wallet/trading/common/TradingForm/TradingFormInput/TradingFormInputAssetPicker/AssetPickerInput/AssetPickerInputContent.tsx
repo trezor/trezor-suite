@@ -9,9 +9,7 @@ import { NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet
 import { Column, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
-export type AssetPickerInputContentProps = {
-    dataTestId?: string;
-} & (
+export type AssetPickerInputContentProps = {} & (
     | {
           name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
           value: TradingAssetSellOption;
@@ -24,7 +22,7 @@ export type AssetPickerInputContentProps = {
       }
 );
 
-export function AssetPickerInputContent({ value, dataTestId }: AssetPickerInputContentProps) {
+export function AssetPickerInputContent({ value }: AssetPickerInputContentProps) {
     const {
         isNativeToken,
         networkSymbol,
@@ -53,9 +51,7 @@ export function AssetPickerInputContent({ value, dataTestId }: AssetPickerInputC
                 />
             )}
             <Column alignItems="start">
-                <Text data-testid={dataTestId ? `${dataTestId}/display-symbol` : undefined}>
-                    {displayName}
-                </Text>
+                <Text data-testid="@asset-picker/display-symbol">{displayName}</Text>
                 {showNetwork && (
                     <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                         {networkName}

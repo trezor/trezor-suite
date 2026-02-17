@@ -66,7 +66,6 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await tradingPage.fillSellForm({
                 cryptoAmount,
                 networkSymbolOrTokenId: 'sol',
-                cryptoCurrency: 'solana',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
             await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
@@ -134,7 +133,6 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         await test.step('Fill input amount and opens offer comparison', async () => {
             await tradingPage.fillSellForm({
                 cryptoAmount,
-                cryptoCurrency: 'solana',
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved

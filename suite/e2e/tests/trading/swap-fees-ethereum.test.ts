@@ -41,7 +41,6 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 amount: sendAmount,
                 sellAsset: {
                     networkSymbol: 'eth',
-                    assetCryptoId: getCryptoId('eth'),
                 },
                 buyAsset: {
                     searchFilter: 'Bitcoin',
