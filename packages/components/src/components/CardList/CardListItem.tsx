@@ -1,10 +1,11 @@
+import type { Padding } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
 import { GhostContainer, type GhostContainerProps } from '../GhostContainer/GhostContainer';
 
 export const cardListItemPaddingTypes = ['normal', 'small'] as const;
 export type CardListItemPaddingType = (typeof cardListItemPaddingTypes)[number];
 
-const paddingMap: Record<CardListItemPaddingType, { vertical: number; horizontal: number }> = {
+const paddingMap: Record<CardListItemPaddingType, Padding> = {
     normal: { vertical: 16, horizontal: 20 },
     small: { vertical: 8, horizontal: 12 },
 };
