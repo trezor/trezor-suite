@@ -16,15 +16,15 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Add ETH account', async () => {
-            await tradingPage.assets.addAccountButton.click();
+            await tradingPage.assetPicker.globalAddAccountButton.click();
             await page.getByTestId('@settings/wallet/network/eth').click();
             await tradingPage.receiveAccount.findAccountButton.click();
         });
 
         await test.step('Filter and select account', async () => {
-            await tradingPage.assets.filterByNetwork('eth');
-            await tradingPage.assets
-                .receiveAssetPickerOption({
+            await tradingPage.assetPicker.filterByNetwork('eth');
+            await tradingPage.assetPicker
+                .receiveOption({
                     accountType: 'normal',
                     accountSymbol: 'eth',
                     index: 2,
@@ -59,10 +59,10 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Bitcoin account selection', async () => {
-            await tradingPage.assets.filterByNetwork('btc');
-            await tradingPage.assets.searchAsset('3');
-            await tradingPage.assets
-                .sendAssetPickerOption({
+            await tradingPage.assetPicker.filterByNetwork('btc');
+            await tradingPage.assetPicker.searchAsset('3');
+            await tradingPage.assetPicker
+                .sendOption({
                     accountType: 'normal',
                     accountSymbol: 'btc',
                     index: 2,
