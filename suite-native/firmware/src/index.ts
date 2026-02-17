@@ -1,6 +1,7 @@
 export * from './nativeFirmwareSlice';
 export * from './components/UpdateProgressIndicatorDemo';
 export * from './components/FirmwareVersionCard';
+export * from './components/FirmwareInstallationScreenContent';
 export * from './components/FirmwareLanguageCard';
 export * from './components/ConfirmBottomSheet';
 export * from './components/ConfirmFirmwareUpdateScreenFooter';

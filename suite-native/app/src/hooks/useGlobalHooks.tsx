@@ -4,11 +4,11 @@ import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity'
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
+    useDetectDeviceError,
     useDeviceCompromisedNotification,
     useRenderDeviceDangerBanner,
     useRetryFwAuthenticityChecks,
 } from '@suite-native/device';
-import { useDetectDeviceError } from '@suite-native/device/src/hooks/useDetectDeviceError';
 import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
 
