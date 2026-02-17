@@ -95,7 +95,7 @@ const initSettings = (settings: Partial<ConnectSettings> = {}) => {
     }
 };
 
-const init = async (settings: Partial<ConnectSettings> = {}) => {
+const init = async (settings: Partial<ConnectSettings>) => {
     if (coreManager.get() || coreManager.getPending()) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
