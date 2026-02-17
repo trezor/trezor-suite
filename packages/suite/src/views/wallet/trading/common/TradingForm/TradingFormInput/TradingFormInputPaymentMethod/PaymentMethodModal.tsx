@@ -1,0 +1,51 @@
+import { useCallback } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
+
+import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TRADING_FORM_PROVIDER_SELECT,
+    TradingPaymentMethodListProps,
+} from '@suite-common/trading';
+import { Modal } from '@trezor/components';
+import { CardList } from '@trezor/product-components';
+
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
+import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+
+interface Props {
+    onClose: () => void;
+    heading?: TranslationKey;
+}
+
+export const PaymentMethodModal = ({ onClose, heading }: Props) => {
+    const { paymentMethods, setValue } = useTradingFormContext<TradingTradeBuySellType>();
+
+    const selectPaymentMethod = useCallback(
+        (paymentMethod: TradingPaymentMethodListProps) => {
+            // setValue is a union type that cannot be called directly, so we need to assert it
+            const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
+            setValueTyped(TRADING_FORM_PAYMENT_METHOD_SELECT, paymentMethod);
+            setValueTyped(TRADING_FORM_PROVIDER_SELECT, undefined);
+            onClose();
+        },
+        [setValue, onClose],
+    );
+
+    return (
+        <Modal
+            width={400}
+            onCancel={onClose}
+            heading={heading ? <Translation id={heading} /> : undefined}
+        >
+            <CardList>
+                {paymentMethods.map(item => (
+                    <CardList.Item key={item.value} onClick={() => selectPaymentMethod(item)}>
+                        {item.label}
+                    </CardList.Item>
+                ))}
+            </CardList>
+        </Modal>
+    );
+};
