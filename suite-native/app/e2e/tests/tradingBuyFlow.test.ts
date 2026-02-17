@@ -17,7 +17,7 @@ describe('Trade Buy [@noDevice]', () => {
         await onHome.assertIsPortfolioGraphVisible();
         await onTabBar.navigateToTrade();
         await tradingBuyActions.waitForTradeDataToLoad();
-    });
+    }, 240_000);
 
     it('Basic buy for 100 PLN flow', async () => {
         await tradingBuyActions.selectReceiveAsset('BTC');

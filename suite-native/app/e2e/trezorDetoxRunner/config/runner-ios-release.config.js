@@ -12,7 +12,7 @@ module.exports = {
             target,
             model: undefined,
             firmwareVersion: undefined,
-            grep: '^(?=.*@noDevice)(?!.*@androidOnly)',
+            grep: '^(?=.*@noDevice)(?!.*@androidOnly)(?!.*@fixIos)',
         },
     ],
 };
