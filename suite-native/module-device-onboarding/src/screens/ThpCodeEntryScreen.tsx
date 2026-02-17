@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectIsDeviceThpLocked } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import {
     DeviceOnboardingStackParamList,
@@ -18,14 +19,15 @@ export const ThpCodeEntryScreen = ({
     const { initiateThpConnection } = useInitiateThpConnection();
 
     const thpStep = useSelector(selectThpStep);
+    const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
 
     useEffect(() => {
         if (thpStep === 'BeforeConnectionInfo') {
             navigation.replace(DeviceOnboardingStackRoutes.ThpPairingInfo);
-        } else if (thpStep === null) {
+        } else if (!isDeviceThpLocked) {
             navigation.replace(DeviceOnboardingStackRoutes.ThpPairingSuccess);
         }
-    }, [thpStep, navigation]);
+    }, [thpStep, isDeviceThpLocked, navigation]);
 
     return (
         <NonClosableDeviceOnboardingScreen>
