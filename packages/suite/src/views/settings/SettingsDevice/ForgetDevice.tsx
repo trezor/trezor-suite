@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -12,70 +12,22 @@ import {
 } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { forgetSingleDevicePersistentDataThunk } from '@suite-common/wallet-core';
 import {
-    Button,
-    Card,
-    Column,
-    Divider,
-    Icon,
-    IconName,
-    List,
-    Modal,
-    ModalProps,
-    Paragraph,
-    Row,
-    Text,
-} from '@trezor/components';
+    forgetSingleDevicePersistentDataThunk,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
+import { Button, Card, Column, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
 
 import { unpairCurrentBondThunk } from 'src/actions/bluetooth/bluetoothEraseBondsThunk';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
+import { goto } from 'src/actions/suite/routerActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { UnpairBluetoothDeviceFromOsModal } from 'src/components/suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
+import { ForgetBluetoothDeviceFromOsModal } from 'src/components/suite/bluetooth/ForgetBluetoothDeviceFromOsModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StepCard } from './WipeDevice/WipeDeviceModal';
 
-type StepCardProps = {
-    heading: ReactNode;
-    description: ReactNode;
-    actions: ReactNode;
-    icon: IconName;
-    state: 'default' | 'confirmed' | 'pending';
-};
-
-const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
-    const priority = state === 'confirmed' ? 'primary' : 'tertiary';
-    const textIntent = state === 'confirmed' ? 'brand' : 'neutral';
-    const textPriority = state === 'confirmed' ? 'primary' : 'secondary';
-
-    return (
-        <Card paddingType="none" fillType={state === 'pending' ? 'flat' : 'default'}>
-            <Column>
-                <Row gap={8} padding={{ horizontal: 16, vertical: 12 }}>
-                    <Icon
-                        name={state === 'confirmed' ? 'check' : icon}
-                        priority={priority}
-                        size={20}
-                    />
-                    <Text typographyStyle="body-sm" intent={textIntent} priority={textPriority}>
-                        {heading}
-                    </Text>
-                </Row>
-                {state === 'default' && (
-                    <>
-                        <Divider margin={0} />
-                        <Column gap={16} padding={{ horizontal: 16, vertical: 12 }}>
-                            <Paragraph typographyStyle="body-md-strong">{description}</Paragraph>
-                            <Row gap={12}>{actions}</Row>
-                        </Column>
-                    </>
-                )}
-            </Column>
-        </Card>
-    );
-};
 type ForgetStep = 'confirmation' | 'remove-from-os' | 'remove-from-trezor';
 
 const ConfirmationContent = ({
@@ -201,6 +153,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
 
     const handleTrezorRemovalConfirm = () => {
         forgetDevice({ skipBluetoothForget: true });
+        dispatch(goto('suite-index'));
     };
 
     const handleOpenBluetoothSettings = () => {
@@ -241,8 +194,9 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
         // in handleConfirmClick after bleUnpair.
         if (wasBluetoothConnectedRef.current) {
             return (
-                <UnpairBluetoothDeviceFromOsModal
-                    onFinish={() => forgetDevice({ skipBluetoothForget: true })}
+                <ForgetBluetoothDeviceFromOsModal
+                    onDone={() => forgetDevice({ skipBluetoothForget: true })}
+                    onFinish={onCancel}
                 />
             );
         }
@@ -327,6 +281,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
 export const ForgetDevice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const hasRunningDiscovery = useSelector(selectHasRunningDiscovery);
 
     if (!selectedDevice || !deviceUtils.isDeviceAcquired(selectedDevice)) {
         return null;
@@ -344,7 +299,11 @@ export const ForgetDevice = () => {
                     description={<Translation id="TR_FORGET_DEVICE_DESCRIPTION" />}
                 />
                 <ActionColumn>
-                    <ActionButton onClick={handleClick} intent="warning">
+                    <ActionButton
+                        onClick={handleClick}
+                        intent="warning"
+                        isDisabled={hasRunningDiscovery}
+                    >
                         <Translation id="TR_FORGET" />
                     </ActionButton>
                 </ActionColumn>

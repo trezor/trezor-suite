@@ -10229,7 +10229,7 @@ export const messages = defineMessages({
     },
     TR_DONE_REMOVING_TREZOR_FROM_SETTINGS: {
         id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
-        defaultMessage: 'I’ve removed it',
+        defaultMessage: 'I’ve got it',
     },
     TR_SCAN_TREZORS_NEARBY: {
         id: 'TR_SCAN_TREZORS_NEARBY',
@@ -10263,7 +10263,7 @@ export const messages = defineMessages({
     TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION: {
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
         defaultMessage:
-            "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
+            'If you don’t remove your Trezor from your Bluetooth settings, you might have trouble pairing it again in the future.',
     },
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS: {
         defaultMessage: 'Unpair Bluetooth connection',

@@ -449,7 +449,6 @@
   "TR_BLUETOOTH_PAIRING": "Pairing",
   "TR_BLUETOOTH_PAIRING_FAILED": "Pairing failed",
   "TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS": "Remove your Trezor from Bluetooth settings",
-  "TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION": "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
   "TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING": "Your Trezor needs to be paired manually",
   "TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT": "Your system doesn’t support automatic pairing in Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.",
   "TR_BLUETOOTH_SCAN_AGAIN": "Scan again",
