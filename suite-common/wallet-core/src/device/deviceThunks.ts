@@ -23,8 +23,6 @@ import {
     getSelectedDevice,
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
-import { connectThpDeviceThunk } from '@suite-common/thp/src/connectThpDeviceThunk';
-import { thpActions } from '@suite-common/thp/src/thpActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
@@ -174,9 +172,7 @@ export const acquireDevice = createThunk(
         const response = await TrezorConnect.getFeatures({ device });
 
         if (!response.success) {
-            if (response.payload.code === 'Device_ThpPairingTagInvalid') {
-                dispatch(thpActions.invalidCode());
-            } else {
+            if (response.payload.code !== 'Device_ThpPairingTagInvalid') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'acquire-error',
@@ -184,9 +180,6 @@ export const acquireDevice = createThunk(
                         error: response.payload.error,
                     }),
                 );
-                if (device?.thp !== undefined) {
-                    dispatch(thpActions.cancelThpFlow());
-                }
             }
         } else if (startDiscovery) {
             dispatch(
@@ -317,16 +310,12 @@ type DeviceConnectThunksParams = {
 
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    async ({ type, device }, { dispatch, getState }) => {
+    ({ type, device }, { dispatch, getState }) => {
         const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
         // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
         const isFwInstallation = selectIsFirmwareInstallationRunning(getState());
         switch (type) {
             case DEVICE.CONNECT:
-                if (getIsThpDevice(device) && !isFwInstallation) {
-                    // awaited so that discoveryMiddleware knows what state THP is when processing deviceActions.connectDevice
-                    await dispatch(connectThpDeviceThunk({ device }));
-                }
                 dispatch(
                     deviceActions.connectDevice({
                         device,
