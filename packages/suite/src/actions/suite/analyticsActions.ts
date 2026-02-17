@@ -3,7 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,

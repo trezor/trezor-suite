@@ -116,7 +116,10 @@ test.describe(
                 const deviceModalRequest = analytics.findLatestRequestByType(
                     events.routerLocationChangeEvent.name,
                 );
-                expect(deviceModalRequest).toHaveProperty('c_type', events.routerLocationChangeEvent.name);
+                expect(deviceModalRequest).toHaveProperty(
+                    'c_type',
+                    events.routerLocationChangeEvent.name,
+                );
             });
         });
 
@@ -134,7 +137,9 @@ test.describe(
                 await analytics.waitForAnalyticsRequests(3);
 
                 expect(analytics.requests.length).toBeGreaterThan(1);
-                expect(analytics.findLatestRequestByLegacyType(events.suiteReadyEvent.name)).toBeDefined();
+                expect(
+                    analytics.findLatestRequestByLegacyType(events.suiteReadyEvent.name),
+                ).toBeDefined();
                 expect(
                     analytics.findLatestRequestByLegacyType(events.settingsAnalyticsEvent.name),
                 ).toBeDefined();
@@ -163,7 +168,9 @@ test.describe(
                     analytics.findLatestRequestByLegacyType(events.settingsAnalyticsEvent.name),
                 ).toBeDefined();
                 expect(
-                    analytics.findLatestRequestByLegacyType(events.settingsGeneralChangeFiatEvent.name),
+                    analytics.findLatestRequestByLegacyType(
+                        events.settingsGeneralChangeFiatEvent.name,
+                    ),
                 ).not.toBeDefined();
             });
         });

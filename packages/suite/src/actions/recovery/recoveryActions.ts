@@ -1,4 +1,4 @@
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';

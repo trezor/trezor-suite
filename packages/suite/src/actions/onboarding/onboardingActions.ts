@@ -1,4 +1,4 @@
-import { events, OnboardingAnalytics, asTypedDesktopAnalytics } from '@suite/analytics';
+import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';

@@ -1,4 +1,4 @@
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
