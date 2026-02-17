@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
@@ -34,8 +34,8 @@ test.describe(
 
                 await test.step('Validate SuiteReady event', () => {
                     const suiteReadyEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<EventType.SuiteReady>
-                    >(EventType.SuiteReady);
+                        ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
+                    >(events.suiteReadyEvent.name);
                     expect(suiteReadyEvent).toContainSubObject({
                         language: 'en-US',
                         enabledNetworks: 'btc',
@@ -61,8 +61,8 @@ test.describe(
 
                 await test.step('Validate DeviceConnect event', () => {
                     const deviceConnectEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<EventType.DeviceConnect>
-                    >(EventType.DeviceConnect);
+                        ExtractByEventType<(typeof events.deviceConnectEvent)['name']>
+                    >(events.deviceConnectEvent.name);
                     expect(deviceConnectEvent).toContainSubObject({
                         mode: 'normal',
                         firmware: firmwareVersion,
@@ -82,8 +82,8 @@ test.describe(
 
                 await test.step('Validate TransportType event', () => {
                     const transportTypeEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<EventType.TransportType>
-                    >(EventType.TransportType);
+                        ExtractByEventType<(typeof events.transportTypeEvent)['name']>
+                    >(events.transportTypeEvent.name);
                     expect(transportTypeEvent.type).toBe('BridgeTransport');
                     expect(parseInt(transportTypeEvent.version, 10)).not.toBeNaN();
                 });
@@ -92,7 +92,7 @@ test.describe(
                     await device.powerOff();
                     await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
                     expect(
-                        analytics.findLatestRequestByLegacyType(EventType.DeviceDisconnect),
+                        analytics.findLatestRequestByLegacyType(events.deviceDisconnectEvent.name),
                     ).toBeDefined();
                 });
             },
@@ -166,22 +166,22 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
 
         await test.step('Wait for analytics events and validate event types', async () => {
             await analytics.waitForAnalyticsRequests(4);
-            expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
-            expect(analytics.requests[1]).toHaveProperty('c_type', EventType.RouterLocationChange);
-            expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SuiteReady);
+            expect(analytics.requests[0]).toHaveProperty('c_type', events.settingsAnalyticsEvent.name);
+            expect(analytics.requests[1]).toHaveProperty('c_type', events.routerLocationChangeEvent.name);
+            expect(analytics.requests[2]).toHaveProperty('c_type', events.suiteReadyEvent.name);
         });
 
         await test.step('Validate SettingsAnalytics event', () => {
             const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SettingsAnalytics>
-            >(EventType.SettingsAnalytics);
+                ExtractByEventType<(typeof events.settingsAnalyticsEvent)['name']>
+            >(events.settingsAnalyticsEvent.name);
             expect(settingsAnalyticsEvent.value).toBe('true');
         });
 
         await test.step('Validate SuiteReady event reflects changed settings', () => {
             const suiteReadyEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SuiteReady>
-            >(EventType.SuiteReady);
+                ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
+            >(events.suiteReadyEvent.name);
             expect(suiteReadyEvent).toContainSubObject({
                 language: 'en-US',
                 enabledNetworks: 'eth,thod',

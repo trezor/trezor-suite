@@ -5,7 +5,6 @@ export {
     type FirmwareSource,
     AppUpdateEventStatus,
 } from './definitions';
-export { EventType } from './constants';
 export { asTypedDesktopAnalytics } from './asTypedDesktopAnalytics';
 export type { AnalyticsDesktopEvents, SuiteReadyPayload } from './analyticsEvents';
 

@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
@@ -136,8 +136,8 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                     expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
 
                     const newAccountEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<EventType.AccountsNewAccount>
-                    >(EventType.AccountsNewAccount);
+                        ExtractByEventType<(typeof events.accountsNewAccountEvent)['name']>
+                    >(events.accountsNewAccountEvent.name);
                     expect(newAccountEvent.symbol).toEqual(coin.symbol);
                     expect(newAccountEvent.path).toEqual(coin.path);
                     expect(newAccountEvent.type).toEqual('normal');

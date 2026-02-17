@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { formatAddress } from '../../support/common';
@@ -67,8 +67,8 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await element.first().click();
 
                 const selectWalletEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.SelectWalletType>
-                >(EventType.SelectWalletType);
+                    ExtractByEventType<(typeof events.selectWalletTypeEvent)['name']>
+                >(events.selectWalletTypeEvent.name);
                 expect(selectWalletEvent.type).toEqual('hidden');
             });
 

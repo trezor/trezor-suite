@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -27,15 +27,10 @@ type TransactionDetailSheetProps = {
 
 type SheetType = 'parameters' | 'values' | 'inputs';
 
-type TransactionSheetAnalyticsEventType =
-    | EventType.TransactionDetailParameters
-    | EventType.TransactionDetailCompareValues
-    | EventType.TransactionDetailInputOutput;
-
-const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEventType> = {
-    parameters: EventType.TransactionDetailParameters,
-    values: EventType.TransactionDetailCompareValues,
-    inputs: EventType.TransactionDetailInputOutput,
+const sheetToAnalyticsEventMap: Record<SheetType, string> = {
+    parameters: events.transactionDetailParametersEvent.name,
+    values: events.transactionDetailCompareValuesEvent.name,
+    inputs: events.transactionDetailInputOutputEvent.name,
 };
 
 const triggerStyle = prepareNativeStyle(() => ({

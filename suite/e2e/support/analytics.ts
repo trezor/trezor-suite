@@ -1,6 +1,5 @@
 import { Page } from '@playwright/test';
 
-import { EventType } from '@suite/analytics';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
 
 import { step } from './common';
@@ -35,7 +34,7 @@ export class AnalyticsFixture {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
-    findLatestRequestByType(eventType: EventType) {
+    findLatestRequestByType(eventType: string) {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 

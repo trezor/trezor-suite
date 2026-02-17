@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -39,8 +39,8 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await page.getByTestId(`@settings/fiat-select/option/${Currency.EUR}`).click();
 
                 const settingsGeneralChangeFiatEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.SettingsGeneralChangeFiat>
-                >(EventType.SettingsGeneralChangeFiat);
+                    ExtractByEventType<(typeof events.settingsGeneralChangeFiatEvent)['name']>
+                >(events.settingsGeneralChangeFiatEvent.name);
                 expect(settingsGeneralChangeFiatEvent.fiat).toBe('eur');
             });
 
@@ -54,8 +54,8 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.changeTheme(Theme.Dark);
 
                 const settingsGeneralChangeThemeEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.SettingsGeneralChangeTheme>
-                >(EventType.SettingsGeneralChangeTheme);
+                    ExtractByEventType<(typeof events.settingsGeneralChangeThemeEvent)['name']>
+                >(events.settingsGeneralChangeThemeEvent.name);
                 expect(settingsGeneralChangeThemeEvent.platformTheme).toBe(Theme.Light);
                 expect(settingsGeneralChangeThemeEvent.previousTheme).toBe(Theme.Light);
                 expect(settingsGeneralChangeThemeEvent.previousAutodetectTheme).toBe('true');
@@ -71,8 +71,8 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.changeLanguage(Language.Spanish);
 
                 const settingsGeneralChangeLanguageEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.SettingsGeneralChangeLanguage>
-                >(EventType.SettingsGeneralChangeLanguage);
+                    ExtractByEventType<(typeof events.settingsGeneralChangeLanguageEvent)['name']>
+                >(events.settingsGeneralChangeLanguageEvent.name);
                 expect(settingsGeneralChangeLanguageEvent.language).toBe('es-ES');
                 expect(settingsGeneralChangeLanguageEvent.previousLanguage).toBe('en-US');
                 expect(settingsGeneralChangeLanguageEvent.autodetectLanguage).toBe('false');
@@ -90,8 +90,8 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 ).not.toBeChecked();
 
                 const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.SettingsAnalytics>
-                >(EventType.SettingsAnalytics);
+                    ExtractByEventType<(typeof events.settingsAnalyticsEvent)['name']>
+                >(events.settingsAnalyticsEvent.name);
                 expect(settingsAnalyticsEvent.value).toBe('false');
             });
 

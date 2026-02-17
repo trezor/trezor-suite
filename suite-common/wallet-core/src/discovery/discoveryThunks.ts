@@ -1,6 +1,6 @@
 import { ThunkDispatch } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import {
     AnyAction,
     ExtraDependencies,
@@ -283,7 +283,7 @@ const trackCompleteDiscoveryResult = (
     typedObjectEntries(accountsBySymbol).forEach(([symbol, accounts]) => {
         if (isNetworkSymbol(symbol)) {
             analytics.report({
-                type: EventType.CoinDiscovery,
+                type: events.coinDiscoveryEvent.name,
                 payload: {
                     discoveryId: deviceStaticSessionId,
                     symbol,
