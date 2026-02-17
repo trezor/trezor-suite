@@ -78,7 +78,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                     if (status === 'finished' || status === 'canceled') {
                         analytics.report({
                             type: sharedEvents.deviceConnectionDeviceConfirmationEvent.name,
-                            payload: { option: status === 'finished' ? 'confirmed' : 'close' },
+                            payload: { option: status },
                         });
                     }
                 }

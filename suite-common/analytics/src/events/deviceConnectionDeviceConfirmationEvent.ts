@@ -2,7 +2,7 @@ import { EventType } from '../constants';
 import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
-    option?: AttributeDef<'confirmed' | 'close'>;
+    option?: AttributeDef<'finished' | 'canceled'>;
 };
 
 export const deviceConnectionDeviceConfirmationEvent: EventDef<
@@ -10,13 +10,16 @@ export const deviceConnectionDeviceConfirmationEvent: EventDef<
     EventType.DeviceConnectionDeviceConfirmation
 > = {
     name: EventType.DeviceConnectionDeviceConfirmation,
-    descriptionTrigger: 'User finish THP pairing (successfully  or cancelled)',
+    descriptionTrigger: 'User confirms/cancels THP connection',
     changelog: [{ version: '?', notes: 'added' }],
 
     attributes: {
         option: {
-            changelog: [{ version: '?', notes: 'added' }],
-            description: '‘confirmed’ on successful THP connection, ‘close’ if cancelled',
+            changelog: [
+                { version: '?', notes: 'added' },
+                { version: '26.3.0', notes: 'option values changed to ‘finished’ | ‘canceled’' },
+            ],
+            description: '‘finished’ if THP connection is confirmed, ‘canceled’ if canceled',
         },
     },
 };
