@@ -147,7 +147,7 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     AllowedTextTextProps;
 
 export const Text = ({
-    intent = 'neutral',
+    intent,
     priority = 'primary',
     isDisabled = false,
     color,
