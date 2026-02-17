@@ -2,14 +2,20 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_NAMES } from '@suite-native/icons';
 
-import { BUTTON_COLOR_SCHEMES, BUTTON_SIZES } from '../../Button/Button';
-import { TextButton as TextButtonComponent, TextButtonProps } from '../../Button/TextButton';
+import { BUTTON_SIZES } from '../../Button/Button';
+import {
+    TEXT_BUTTON_VARIANTS,
+    TextButton as TextButtonComponent,
+    TextButtonProps,
+} from '../../Button/TextButton';
 
 type TextButtonStory = StoryObj<TextButtonProps>;
 
 const meta: Meta<TextButtonProps> = {
     title: 'Atoms/Buttons',
     component: TextButtonComponent,
+    // Reanimated useSharedValue is used under the hood, so we need to mount the component again when `variant` is changed.
+    render: args => <TextButtonComponent {...args} key={args.variant} />, //
 };
 
 export default meta;
@@ -22,7 +28,7 @@ export const TextButton: TextButtonStory = {
         },
         variant: {
             control: { type: 'select' },
-            options: BUTTON_COLOR_SCHEMES,
+            options: TEXT_BUTTON_VARIANTS,
         },
         size: {
             control: { type: 'select' },

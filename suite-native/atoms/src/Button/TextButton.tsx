@@ -13,7 +13,8 @@ import { HStack } from '../Stack';
 import { pressTimingConfig } from '../constants';
 import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
 
-export type TextButtonVariant = 'primary' | 'tertiary' | 'blue';
+export const TEXT_BUTTON_VARIANTS = ['primary', 'tertiary', 'blue'] as const;
+export type TextButtonVariant = (typeof TEXT_BUTTON_VARIANTS)[number];
 
 export type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     isUnderlined?: boolean;
