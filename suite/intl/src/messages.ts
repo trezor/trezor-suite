@@ -4468,9 +4468,17 @@ export const messages = defineMessages({
         id: 'TR_FORGET_DEVICE_MODAL_CONFIRM',
         defaultMessage: 'Forget device',
     },
+    TR_DEVICE_HAS_BEEN_FORGOTTEN: {
+        id: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
+        defaultMessage: 'Device forgotten',
+    },
+    TR_DEVICE_WILL_BE_FORGOTTEN: {
+        id: 'TR_DEVICE_WILL_BE_FORGOTTEN',
+        defaultMessage: 'Will be forgotten after disconnecting Trezor',
+    },
     TR_FORGET_DEVICE_MODAL_FINISH_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_FINISH_HEADING',
-        defaultMessage: 'Finish forgetting this Trezor',
+        defaultMessage: 'Remove from Bluetooth settings',
     },
     TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER: {
         id: 'TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER',
@@ -4483,12 +4491,12 @@ export const messages = defineMessages({
     TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS: {
         id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS',
         defaultMessage:
-            '<b>Remove your Trezor device from the <link>Bluetooth settings</link>.</b> If not, you might have trouble pairing it again in the future.',
+            '<b>Remove your Trezor from the <link>Bluetooth settings</link>.</b> If you don’t, you might have trouble pairing it again in the future.',
     },
     TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR: {
         id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR',
         defaultMessage:
-            'Go to <b>Pair & Connect</b> and remove your phone. This will prevent connection errors later.',
+            '<b>Go to Pair & Connect and remove your computer.</b> This will prevent connection errors later.',
     },
     TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT: {
         id: 'TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT',

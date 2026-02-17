@@ -7,9 +7,11 @@ import {
     selectDeviceBluetoothId,
     selectDevices,
     selectIsDeviceConnectedViaBluetooth,
+    selectIsThpDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { forgetSingleDevicePersistentDataThunk } from '@suite-common/wallet-core';
 import {
     Button,
@@ -33,11 +35,7 @@ import { UnpairBluetoothDeviceFromOsModal } from 'src/components/suite/bluetooth
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-type ForgetStep =
-    | 'confirmation'
-    | 'waiting-for-disconnect'
-    | 'remove-from-os'
-    | 'remove-from-trezor';
+import { StepCard } from './WipeDevice/WipeDeviceModal';
 
 type StepCardProps = {
     heading: ReactNode;
@@ -78,6 +76,7 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
         </Card>
     );
 };
+type ForgetStep = 'confirmation' | 'remove-from-os' | 'remove-from-trezor';
 
 const ConfirmationContent = ({
     isBluetoothDevice,
@@ -124,6 +123,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const analytics = useAnalytics();
     const isBluetoothConnectedDevice = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bluetoothId = useSelector(selectDeviceBluetoothId);
+    const isThpDevice = Boolean(useSelector(selectIsThpDevice));
 
     // Capture initial BLE connection state — bleUnpair disconnects the device,
     // which would flip the live selector to false and break our flow logic.
@@ -133,54 +133,65 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
         return null;
     }
 
-    const isBluetoothDevice = !!selectedDevice.features?.capabilities?.includes('Capability_BLE');
-    const isDeviceConnected = !!selectedDevice.connected;
-
-    const forgetDevice = ({ skipBluetoothForget }: { skipBluetoothForget?: boolean } = {}) => {
+    const forgetDevice = async ({
+        skipBluetoothForget,
+        toastType = 'device-forgotten',
+    }: {
+        skipBluetoothForget?: boolean;
+        toastType?: 'device-forgotten' | 'device-will-be-forgotten';
+    } = {}) => {
         const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);
-        dispatch(
+
+        await dispatch(
             forgetSingleDevicePersistentDataThunk({
                 deviceId: selectedDevice.id,
                 suppressOsUnpairingModal: true,
                 skipBluetoothForget,
             }),
         );
+
         instances.forEach(instance => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
         });
+
+        dispatch(
+            notificationsActions.addToast({
+                type: toastType,
+            }),
+        );
+
         analytics.report({ type: events.switchDeviceForgetEvent.name });
         onCancel?.();
     };
 
     const handleConfirmClick = async () => {
-        if (!isBluetoothDevice) {
-            if (isDeviceConnected) {
-                // TS3/5 connected: inform user, forget after disconnect
-                setStep('waiting-for-disconnect');
+        try {
+            if (!isThpDevice) {
+                // TS3/5 (non-Bluetooth): forget immediately, regardless of connection status
+                await forgetDevice({ toastType: 'device-will-be-forgotten' });
+
+                return;
+            }
+
+            if (wasBluetoothConnectedRef.current) {
+                // TS7 connected: bleUnpair first (user confirms on device via
+                // TrezorConnect's own "Follow instructions" UI), then show
+                // the "Remove from Bluetooth settings" modal.
+                // Note: we do NOT call forgetBluetoothDeviceThunk here because
+                // bleUnpair already disconnects the peripheral, making OS-level
+                // forget fail with "Peripheral not found". The user will handle
+                // OS removal manually via UnpairBluetoothDeviceFromOsModal.
+                if (bluetoothId) {
+                    await dispatch(unpairCurrentBondThunk({ bluetoothId, skipDisconnect: true }));
+                }
+
+                setStep('remove-from-os');
             } else {
-                // TS3/5 disconnected: forget immediately
-                forgetDevice();
+                // TS7 disconnected: start with OS BT removal step
+                setStep('remove-from-os');
             }
-
-            return;
-        }
-
-        if (wasBluetoothConnectedRef.current) {
-            // TS7 connected: bleUnpair first (user confirms on device via
-            // TrezorConnect's own "Follow instructions" UI), then show
-            // the "Remove from Bluetooth settings" modal.
-            // Note: we do NOT call forgetBluetoothDeviceThunk here because
-            // bleUnpair already disconnects the peripheral, making OS-level
-            // forget fail with "Peripheral not found". The user will handle
-            // OS removal manually via UnpairBluetoothDeviceFromOsModal.
-            if (bluetoothId) {
-                await dispatch(unpairCurrentBondThunk({ bluetoothId, skipDisconnect: true }));
-            }
-
-            setStep('remove-from-os');
-        } else {
-            // TS7 disconnected: start with OS BT removal step
-            setStep('remove-from-os');
+        } catch (error) {
+            console.error('Error in handleConfirmClick:', error);
         }
     };
 
@@ -216,31 +227,9 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                 }
             >
                 <ConfirmationContent
-                    isBluetoothDevice={isBluetoothDevice}
+                    isBluetoothDevice={isThpDevice}
                     isBluetoothConnectedDevice={isBluetoothConnectedDevice}
                 />
-            </Modal>
-        );
-    }
-
-    // TS3/5 connected: inform user the device will be forgotten after disconnecting
-    if (step === 'waiting-for-disconnect') {
-        return (
-            <Modal
-                onCancel={onCancel}
-                heading={<Translation id="TR_FORGET_DEVICE_MODAL_HEADING" />}
-                width={600}
-                bottomContent={
-                    <Modal.Button onClick={() => forgetDevice()}>
-                        <Translation id="TR_FORGET_DEVICE_MODAL_CONFIRM" />
-                    </Modal.Button>
-                }
-            >
-                <Card paddingType="large">
-                    <Paragraph intent="neutral" priority="secondary">
-                        <Translation id="TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT" />
-                    </Paragraph>
-                </Card>
             </Modal>
         );
     }
@@ -267,6 +256,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             >
                 <Column gap={16}>
                     <StepCard
+                        descriptionTypographyStyle="inherit"
                         heading={<Translation id="TR_FORGET_DEVICE_MODAL_ON_YOUR_COMPUTER" />}
                         description={
                             <Translation
@@ -303,6 +293,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                         state={osRemovalConfirmed ? 'confirmed' : 'default'}
                     />
                     <StepCard
+                        descriptionTypographyStyle="inherit"
                         heading={<Translation id="TR_FORGET_DEVICE_MODAL_ON_YOUR_TREZOR" />}
                         description={
                             <Translation
@@ -321,7 +312,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                                 <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                             </Button>
                         }
-                        icon="deviceMobile"
+                        icon="trezorSafe7"
                         state={osRemovalConfirmed ? 'default' : 'pending'}
                     />
                 </Column>

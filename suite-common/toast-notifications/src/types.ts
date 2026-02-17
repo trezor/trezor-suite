@@ -97,6 +97,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'wipe-code-changed'
               | 'wipe-code-removed'
               | 'device-wiped'
+              | 'device-forgotten'
+              | 'device-will-be-forgotten'
               | 'backup-success'
               | 'backup-failed'
               | 'sign-message-success'
