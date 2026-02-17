@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-bridge",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "main": "src/index",
     "license": "See LICENSE.md in repo root",
     "private": true,
