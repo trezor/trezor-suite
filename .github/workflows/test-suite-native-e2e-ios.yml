@@ -104,6 +104,11 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
 
+      # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
+      - name: Sign message system config
+        working-directory: ./suite-common/message-system
+        run: yarn sign-config
+
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
@@ -146,11 +151,13 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: LjEjiV
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           npx detox clean-framework-cache && npx detox build-framework-cache
           yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --headless
 
       - name: "Store test artifacts"
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: ios-tests
