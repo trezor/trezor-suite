@@ -63,3 +63,39 @@ export const getEventAddedVersion = (e: EventDoc): string | undefined =>
 
 export const getEventUpdatedVersion = (e: EventDoc): string | undefined =>
     e.changelog?.lastUpdatedInVersion ?? e.changelog?.addedInVersion;
+
+/** Safe DOM id for scrolling to an event card. */
+export const getEventId = (eventName: string): string => `event-${eventName.replace(/\//g, '-')}`;
+
+export type VersionWithEvents = {
+    version: string;
+    events: EventDoc[];
+};
+
+/** Returns versions (desc by last updated) with events that were added or updated in that version. */
+export const getVersionsWithEvents = (events: EventDoc[]): VersionWithEvents[] => {
+    const versionToEvents = new Map<string, EventDoc[]>();
+
+    for (const event of events) {
+        const added = event.changelog?.addedInVersion;
+        const updated = event.changelog?.lastUpdatedInVersion ?? added;
+
+        if (added) {
+            const list = versionToEvents.get(added) ?? [];
+            list.push(event);
+            versionToEvents.set(added, list);
+        }
+        if (updated && updated !== added) {
+            const list = versionToEvents.get(updated) ?? [];
+            list.push(event);
+            versionToEvents.set(updated, list);
+        }
+    }
+
+    const versions = Array.from(versionToEvents.keys()).sort(compareVersionsDesc);
+
+    return versions.map(version => ({
+        version,
+        events: versionToEvents.get(version) ?? [],
+    }));
+};
