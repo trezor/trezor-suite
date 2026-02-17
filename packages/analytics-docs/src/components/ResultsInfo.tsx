@@ -17,12 +17,13 @@ export const ResultsInfo = ({
     hasActiveFilters,
     onClearAll,
 }: ResultsInfoProps) => (
-    <Row gap={8} alignItems="center" flex="1">
+    <Row gap={8} alignItems="center" flex="1" overflow="hidden">
         <Paragraph
             typographyStyle="label"
             variant="tertiary"
             wordBreak="keep-all"
             textWrap="nowrap"
+            ellipsisLineCount={1}
         >
             Showing <strong>{filteredCount}</strong> of <strong>{totalCount}</strong> events
             {platform !== 'all' ? (

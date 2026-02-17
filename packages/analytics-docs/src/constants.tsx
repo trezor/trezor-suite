@@ -1,5 +1,6 @@
 import { Icon, Row } from '@trezor/components';
 
+import { Platform, Sort } from './types';
 import { getPlatformIcon } from './utils/getPlatformIcon';
 
 const PlatformItem = ({ platform }: { platform: string }) => (
@@ -9,7 +10,7 @@ const PlatformItem = ({ platform }: { platform: string }) => (
     </Row>
 );
 
-export const platforms = [
+export const platforms: { value: Platform; label: React.ReactNode }[] = [
     {
         value: 'all',
         label: 'All platforms',
@@ -28,7 +29,7 @@ export const platforms = [
     },
 ];
 
-export const sorting = [
+export const sorting: { value: Sort; label: string }[] = [
     {
         value: 'az',
         label: 'Alphabetical (A-Z)',

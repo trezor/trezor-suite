@@ -1,4 +1,4 @@
-import { Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
+import { Icon, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
 
 import { platforms, sorting } from '../constants';
 import type { Sort } from '../types';
@@ -22,7 +22,15 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 size="small"
                 onChange={e => setQuery(e.target.value)}
                 placeholder="Filter events"
-                showClearButton="always"
+                showClearButton
+                leftContent={
+                    <Icon
+                        name="magnifyingGlass"
+                        size="small"
+                        variant="tertiary"
+                        pointerEvents="none"
+                    />
+                }
                 onClear={() => setQuery('')}
             />
 

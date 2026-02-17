@@ -1,6 +1,13 @@
 import type { AppVersion } from '@suite-common/analytics';
 
-export type Sort = 'az' | 'za' | 'added' | 'updated';
+export const sorts = ['az', 'za', 'added', 'updated'];
+export type Sort = (typeof sorts)[number];
+
+export const platforms = ['desktop', 'mobile', 'shared'];
+export type Platform = (typeof platforms)[number];
+
+export const allPlatforms = [...platforms, 'all'];
+export type AllPlatform = (typeof allPlatforms)[number];
 
 export type NormalizedChangelog = {
     entries: {

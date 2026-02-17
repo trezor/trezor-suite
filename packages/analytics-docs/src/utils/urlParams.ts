@@ -1,25 +1,21 @@
-export const VALID_PLATFORMS = ['all', 'desktop', 'mobile', 'shared'] as const;
-export const VALID_SORTS = ['az', 'za', 'added', 'updated'] as const;
-
-export type UrlPlatform = (typeof VALID_PLATFORMS)[number];
-export type UrlSort = (typeof VALID_SORTS)[number];
+import { AllPlatform, Sort, allPlatforms, sorts } from '../types';
 
 export type UrlParams = {
     query: string;
-    platform: UrlPlatform;
-    sort: UrlSort;
+    platform: AllPlatform;
+    sort: Sort;
 };
 
 export const getParamsFromUrl = (): UrlParams => {
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
 
-    const platformParam = params.get('platform') as UrlPlatform;
-    const sortParam = params.get('sort') as UrlSort;
+    const platformParam = params.get('platform') as AllPlatform;
+    const sortParam = params.get('sort') as Sort;
 
     return {
         query: params.get('q') ?? '',
-        platform: VALID_PLATFORMS.includes(platformParam) ? platformParam : 'all',
-        sort: VALID_SORTS.includes(sortParam) ? sortParam : 'az',
+        platform: allPlatforms.includes(platformParam) ? platformParam : 'all',
+        sort: sorts.includes(sortParam) ? sortParam : 'az',
     };
 };
 
