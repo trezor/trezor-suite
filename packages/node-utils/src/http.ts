@@ -1,12 +1,12 @@
 import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
 import * as net from 'net';
-import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
 import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import { parseUrl } from './urlParse';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
@@ -375,7 +375,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
-        const { protocol, hostname, pathname, query } = url.parse(request.url, true);
+        const { pathname, query } = parseUrl(request.url);
 
         if (query) {
             for (const key in query) {
@@ -399,7 +399,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 }
             }
         }
-        request.url = url.format({ protocol, hostname, pathname, query });
+        const searchParams = new URLSearchParams();
+        for (const key in query) {
+            const values = Array.isArray(query[key]) ? query[key] : [query[key]];
+            values.forEach(v => searchParams.append(key, v));
+        }
+        request.url = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
         if (!pathname) {
             const msg = `url ${request.url} could not be parsed`;
