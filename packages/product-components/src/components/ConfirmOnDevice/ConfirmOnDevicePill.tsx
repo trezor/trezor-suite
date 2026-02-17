@@ -47,6 +47,7 @@ export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDevicePr
                     shadow={theme.boxShadowElevated}
                     data-testid="@prompts/confirm-on-device"
                     onClick={e => e.stopPropagation()}
+                    width="fit-content"
                 >
                     <ConfirmOnDevicePillContent {...props} />
                 </Box>
