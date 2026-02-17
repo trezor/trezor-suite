@@ -57,7 +57,6 @@ import { getOwnershipId } from './getOwnershipId';
 import { getOwnershipProof } from './getOwnershipProof';
 import { getPublicKey } from './getPublicKey';
 import { getSettings } from './getSettings';
-import { init } from './init';
 import { loadDevice } from './loadDevice';
 import { moneroGetAddress } from './moneroGetAddress';
 import { moneroGetWatchKey } from './moneroGetWatchKey';
@@ -99,9 +98,6 @@ import { wipeDevice } from './wipeDevice';
 
 // Initialization, lifecycle, events, and settings
 export const TrezorConnectManagement = Type.Object({
-    // https://connect.trezor.io/9/methods/other/init/
-    init: Type.Unsafe<typeof init>(),
-
     // For internal use, no public documentation.
     dispose: Type.Unsafe<typeof dispose>(),
 

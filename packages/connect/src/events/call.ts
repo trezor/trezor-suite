@@ -44,7 +44,6 @@ type CallApi = {
 type TopLevelMethods =
     | 'cancel'
     | 'dispose'
-    | 'init'
     | 'off'
     | 'on'
     | 'removeAllListeners'

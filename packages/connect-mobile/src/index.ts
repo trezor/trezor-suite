@@ -2,8 +2,7 @@ import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/co
 import { createErrorMessage } from '@trezor/connect/src/events';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsMobile } from '@trezor/connect/src/types';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { ConnectSettings, ConnectSettingsMobile, Manifest } from '@trezor/connect/src/types';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
@@ -39,7 +38,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         return corsValidator(connectSrc);
     }
 
-    public init(settings: InitFullSettings<ConnectSettingsMobile>) {
+    public init(settings: ConnectSettingsMobile & { manifest: Manifest }) {
         if (!settings.deeplinkOpen) {
             throw new Error('TrezorConnect native requires "deeplinkOpen" setting.');
         }

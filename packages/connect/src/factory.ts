@@ -3,6 +3,7 @@ import { Type } from '@trezor/schema-utils';
 import { UI_REQUEST } from './events';
 import type { CallMethod, CallMethodKeys } from './events/call';
 import {
+    type Manifest,
     type TrezorConnect,
     TrezorConnectAccount,
     TrezorConnectBitcoin,
@@ -18,8 +19,11 @@ import {
     TrezorConnectTezos,
     TrezorConnectTron,
 } from './types';
-import type { InitType } from './types/api/init';
 import type { ConnectEmitter } from './types/emitter';
+
+export type InitType<SettingsType extends Record<string, any>> = (
+    settings: { manifest: Manifest } & SettingsType,
+) => Promise<void>;
 
 export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>> {
     init: InitType<SettingsType>;
@@ -64,7 +68,7 @@ export const factory = <
         dispose,
     }: ConnectFactoryDependencies<SettingsType>,
     extraMethods: ExtraMethodsType = {} as ExtraMethodsType,
-): Omit<TrezorConnect, 'init'> & {
+): TrezorConnect & {
     init: InitType<SettingsType>;
     call: CallMethod;
 } & ExtraMethodsType => {
