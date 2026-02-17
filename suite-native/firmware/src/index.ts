@@ -1,3 +1,4 @@
+export * from './firmwareThunks';
 export * from './nativeFirmwareSlice';
 export * from './components/UpdateProgressIndicatorDemo';
 export * from './components/FirmwareVersionCard';

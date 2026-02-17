@@ -2,7 +2,6 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import {
-    deviceActions,
     processEntropyCheckResultThunk,
     selectDevicePath,
     selectIsDeviceInitialized,
@@ -14,33 +13,6 @@ import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/c
 import { exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
-
-export const setTemporaryRememberedDeviceThunk = createThunk(
-    `${NATIVE_DEVICE_MODULE_PREFIX}/setTemporaryRememberedDevice`,
-    (
-        { temporaryRemember }: { temporaryRemember: boolean },
-        { getState, rejectWithValue, dispatch },
-    ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) {
-            return rejectWithValue('Device not found');
-        }
-
-        dispatch(
-            deviceActions.setTemporaryRememberedDevice({
-                device,
-                temporaryRemember,
-            }),
-        );
-
-        // if the device is not connected and it was remembered only temporarily, we need to forget it
-        if (!device.connected && device.temporaryRemember && !temporaryRemember) {
-            dispatch(deviceActions.forgetDevice({ device }));
-        }
-
-        return;
-    },
-);
 
 const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice => {
     switch (walletBackupType) {
