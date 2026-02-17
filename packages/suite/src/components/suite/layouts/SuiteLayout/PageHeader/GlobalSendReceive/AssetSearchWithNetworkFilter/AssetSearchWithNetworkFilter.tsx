@@ -45,6 +45,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
             searchPlaceholder={translationString(placeholder)}
             search={search}
             setSearch={setSearch}
+            data-testid="@asset-picker/search"
             selectConfig={{
                 networks,
                 selectedNetwork: networkFilter,
