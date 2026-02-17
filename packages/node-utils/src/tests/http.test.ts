@@ -784,7 +784,7 @@ describe('HttpServer', () => {
                 method: 'POST',
             });
             expect(res1.status).toEqual(200);
-            expect(res1.text()).resolves.toEqual('enumerate');
+            await expect(res1.text()).resolves.toEqual('enumerate');
             expect(enumerateHandler).toHaveBeenCalled();
             expect(rootHandler).not.toHaveBeenCalled();
 
@@ -800,7 +800,7 @@ describe('HttpServer', () => {
                 method: 'POST',
             });
             expect(res3.status).toEqual(200);
-            expect(res3.text()).resolves.toEqual('root');
+            await expect(res3.text()).resolves.toEqual('root');
             expect(rootHandler).toHaveBeenCalled();
         });
     });

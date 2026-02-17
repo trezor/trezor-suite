@@ -333,31 +333,62 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     /**
-     * pathname could be /a/b/c/d
-     * return route with highest number of matching segments
+     * Find the best matching route using express.js-like matching logic.
+     *
+     * Rules:
+     * 1. Route method must match (exact method or wildcard '*')
+     * 2. Request path segments must equal base segments + parameter count
+     * 3. Base segments must match exactly
+     * 4. Remaining segments fill in the expected parameters
+     * 5. Return the most specific match (most base segments)
+     *
+     * Examples:
+     * - /enumerate matches POST /enumerate (1 base segment, 0 params)
+     * - /enumerate does NOT match POST /enumerate/extra (1 base segment ≠ 2 request segments)
+     * - /acquire/:path/:previous matches POST /acquire/1/2 (1 base + 2 params = 3 segments)
+     * - / matches POST / (0 base segments, 0 params)
+     * - / does NOT match POST /xyz (0 base segments ≠ 1 request segment)
      */
     private findBestMatchingRoute = (pathname: string, method = 'GET') => {
-        const segments = pathname.split('/').map(segment => segment || '/');
+        // Split and filter to get only actual path segments (no empty strings from leading/trailing /)
+        const requestSegments = pathname.split('/').filter(s => s);
         const routes = this.routes.filter(r => r.method === method || r.method === '*');
-        const match = routes.reduce(
-            (acc, route) => {
-                // todo:
-                // Is it necessary to split the path when registering, then join it for storing, and splitting again everytime when finding the best one?
-                // Also, when stored segment-by-segment, it would be possible to represent it as a tree instead of iterating over an array.
-                const routeSegments = route.pathname.split('/').map(segment => segment || '/');
-                const matchedSegments = segments.filter(
-                    (segment, index) => segment === routeSegments[index],
-                );
-                if (matchedSegments.length > acc.matchedSegments.length) {
-                    return { route, matchedSegments };
+
+        let bestMatch: { route: Route; specificity: number } | undefined;
+
+        for (const route of routes) {
+            // Split and filter to get only actual route segments
+            const routeSegments = route.pathname.split('/').filter(s => s);
+            const expectedSegmentCount = routeSegments.length + route.params.length;
+
+            // Request must have exactly the number of segments expected by this route
+            if (requestSegments.length !== expectedSegmentCount) {
+                continue;
+            }
+
+            // Verify that all base route segments match the request segments exactly
+            let segmentsMatch = true;
+            for (let i = 0; i < routeSegments.length; i++) {
+                if (requestSegments[i] !== routeSegments[i]) {
+                    segmentsMatch = false;
+                    break;
                 }
+            }
 
-                return acc;
-            },
-            { route: undefined as Route | undefined, matchedSegments: [] as string[] },
-        );
+            if (!segmentsMatch) {
+                continue;
+            }
 
-        return match.route;
+            // This route matches! Calculate specificity as the number of base segments.
+            // More specific routes (with more fixed segments vs parameters) should win.
+            const specificity = routeSegments.length;
+
+            if (!bestMatch || specificity > bestMatch.specificity) {
+                bestMatch = { route, specificity };
+            }
+        }
+
+        return bestMatch?.route;
     };
     /**
      * Entry point for handling requests
@@ -414,6 +445,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         if (!route) {
             this.emitter.emit('server/error', `Route not found for ${request.method} ${pathname}`);
             this.logger.warn(`Route not found for ${request.method} ${pathname}`);
+            response.statusCode = 404;
+            response.end();
 
             return;
         }
@@ -421,6 +454,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         if (!route.handler.length) {
             this.emitter.emit('server/error', `No handlers registered for route ${pathname}`);
             this.logger.warn(`No handlers registered for route ${pathname}`);
+            response.statusCode = 500;
+            response.end();
 
             return;
         }
