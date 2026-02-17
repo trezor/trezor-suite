@@ -27,7 +27,7 @@ export const allowedDomains = [
     'api.dropboxapi.com',
     'content.dropboxapi.com',
     'notify.dropboxapi.com',
-    'o117836.ingest.sentry.io',
+    'o117836.ingest.sentry.io', // TODO is this needed? Seems that the Sentry SDK bypasses interceptor
     'oauth2.googleapis.com',
     'googleapis.com',
     onionDomain,
