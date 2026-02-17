@@ -25,7 +25,7 @@ import {
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { useBottomSheetModal } from '@suite-native/atoms';
-import { useConfirmOnTrezorController } from '@suite-native/device';
+import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import { useTranslate } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,

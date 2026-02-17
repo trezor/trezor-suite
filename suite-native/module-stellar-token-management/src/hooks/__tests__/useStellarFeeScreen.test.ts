@@ -68,8 +68,8 @@ jest.mock('@react-navigation/native', () => ({
     },
 }));
 
-jest.mock('@suite-native/device', () => ({
-    ...jest.requireActual('@suite-native/device'),
+jest.mock('@suite-native/confirm-on-trezor', () => ({
+    ...jest.requireActual('@suite-native/confirm-on-trezor'),
     useConfirmOnTrezorController: () => ({
         revealConfirmOnTrezorSheet: mockRevealConfirmOnTrezorSheet,
         confirmOnTrezorRef: { current: null },

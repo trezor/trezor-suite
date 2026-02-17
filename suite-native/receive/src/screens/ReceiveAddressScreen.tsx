@@ -22,9 +22,9 @@ import {
 } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
-    selectHasFirmwareAuthenticityCheckHardFailed,
     useConfirmOnTrezorController,
-} from '@suite-native/device';
+} from '@suite-native/confirm-on-trezor';
+import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';

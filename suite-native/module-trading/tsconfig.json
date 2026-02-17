@@ -45,6 +45,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-manager" },

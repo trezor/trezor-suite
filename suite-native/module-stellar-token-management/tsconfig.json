@@ -22,7 +22,7 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
-        { "path": "../device" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },

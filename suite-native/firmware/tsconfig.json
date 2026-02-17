@@ -8,6 +8,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -17,6 +20,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device-mutex" },
         { "path": "../icons" },
         { "path": "../intl" },

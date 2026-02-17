@@ -103,7 +103,7 @@ buck-out/
 !**/suite-native/app/.env.staging
 
 suite-native/atoms/src/Spinner/refresh-spinner-*.json
-suite-native/device/src/assets/confirm-on-trezor-lottie.json
+suite-native/confirm-on-trezor/src/assets/confirm-on-trezor-lottie.json
 suite-native/module-home/src/assets/auto-eject-*-lottie.json
 suite-native/transaction-management/assets/send-arrows-lottie.json
 suite-native/thp/src/assets/create-secure-connection-lottie.json

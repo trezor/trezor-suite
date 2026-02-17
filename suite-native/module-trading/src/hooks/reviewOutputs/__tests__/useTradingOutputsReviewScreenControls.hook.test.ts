@@ -26,8 +26,8 @@ const mockPop = jest.fn();
 const mockUseOutputsReviewBackInterceptor = jest.fn();
 const mockShowAlert = jest.fn();
 
-jest.mock('@suite-native/device', () => ({
-    ...jest.requireActual('@suite-native/device'),
+jest.mock('@suite-native/confirm-on-trezor', () => ({
+    ...jest.requireActual('@suite-native/confirm-on-trezor'),
     useConfirmOnTrezorController: () => mockUseConfirmOnTrezorController,
 }));
 

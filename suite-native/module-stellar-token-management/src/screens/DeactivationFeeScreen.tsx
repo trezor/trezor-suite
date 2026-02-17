@@ -6,7 +6,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { deactivateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorWrapper } from '@suite-native/device';
+import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Form } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

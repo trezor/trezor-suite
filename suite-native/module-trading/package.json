@@ -39,6 +39,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/clipboard": "workspace:*",
+        "@suite-native/confirm-on-trezor": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-authorization": "workspace:*",
         "@suite-native/device-manager": "workspace:*",

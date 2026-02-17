@@ -28,6 +28,7 @@
         { "path": "../atoms" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },

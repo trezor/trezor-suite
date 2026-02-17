@@ -3,8 +3,8 @@ import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { ReviewOutputsContent, ReviewOutputsContentProps } from '../ReviewOutputsContent';
 
-jest.mock('@suite-native/device', () => ({
-    ...jest.requireActual('@suite-native/device'),
+jest.mock('@suite-native/confirm-on-trezor', () => ({
+    ...jest.requireActual('@suite-native/confirm-on-trezor'),
     useConfirmOnTrezorController: () => ({
         confirmOnTrezorRef: { current: null },
         closeSheet: jest.fn(),

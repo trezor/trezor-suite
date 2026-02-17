@@ -31,7 +31,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../device" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },

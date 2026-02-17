@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Box, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
+import {
+    ConfirmOnTrezorWrapper,
+    useConfirmOnTrezorController,
+} from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
     ScreenHeader,

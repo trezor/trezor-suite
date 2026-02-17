@@ -7,7 +7,10 @@ import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
+import {
+    ConfirmOnTrezorWrapper,
+    useConfirmOnTrezorController,
+} from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader } from '@suite-native/navigation';
