@@ -1,5 +1,6 @@
 import { addons } from 'storybook/manager-api';
 
+import './theme-toggle';
 import { darkTheme, lightTheme } from './theme';
 
 const mq = window.matchMedia('(prefers-color-scheme: dark)');
