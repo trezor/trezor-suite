@@ -1,5 +1,8 @@
-import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asDelegatedIdentityKey } from '@suite-common/suite-types';
+import {
+    asDelegatedIdentityKey,
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
+} from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
