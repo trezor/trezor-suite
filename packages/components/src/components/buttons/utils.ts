@@ -18,7 +18,7 @@ export const pickButtonProps = ({
 }: CommonButtonProps) => {
     const isLink = href !== undefined;
     const handlePointerDown = (event: React.PointerEvent<HTMLElement>) => {
-        event.currentTarget.setPointerCapture(event.pointerId);
+        event.currentTarget?.setPointerCapture?.(event.pointerId);
     };
 
     return {
