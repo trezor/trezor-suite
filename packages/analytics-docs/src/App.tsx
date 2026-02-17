@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
@@ -84,7 +84,6 @@ const ContentArea = styled.div`
 `;
 
 export const App = ({ theme }: AppProps) => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const {
         filteredEvents,
         setQuery,
@@ -97,6 +96,8 @@ export const App = ({ theme }: AppProps) => {
         debouncedQuery,
         allEvents,
         isFiltering,
+        isSidebarOpen,
+        setIsSidebarOpen,
     } = useFilteredEvents();
 
     const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
