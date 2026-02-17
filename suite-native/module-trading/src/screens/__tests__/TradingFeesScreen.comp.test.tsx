@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
@@ -119,7 +119,7 @@ describe('TradingFeesScreen', () => {
         const { reportMock } = await renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'fee-selection',
                 action: 'visit',
@@ -136,7 +136,7 @@ describe('TradingFeesScreen', () => {
         const { reportMock } = await renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'fee-selection',
                 action: 'visit',
@@ -159,7 +159,7 @@ describe('TradingFeesScreen', () => {
         const { reportMock } = await renderScreen(sellPreloadedState);
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingSell,
+            type: events.tradingSellEvent.name,
             payload: expect.objectContaining({
                 step: 'fee-selection',
                 action: 'visit',

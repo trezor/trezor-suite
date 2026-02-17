@@ -8,7 +8,7 @@ import {
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
 import { createThunk } from '@suite-common/redux-utils';
-import { EventType, asTypedNativeAnalytics } from '@suite-native/analytics';
+import { events, asTypedNativeAnalytics } from '@suite-native/analytics';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
@@ -20,7 +20,7 @@ const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
         asTypedNativeAnalytics(extra.services.analytics).report({
-            type: EventType.SettingsDataPermission,
+            type: events.settingsDataPermissionEvent.name,
             payload: { analyticsPermission: true },
         });
         allowSentryReport(true);
@@ -32,7 +32,7 @@ const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
         asTypedNativeAnalytics(extra.services.analytics).report(
-            { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
+            { type: events.settingsDataPermissionEvent.name, payload: { analyticsPermission: false } },
             { force: true },
         );
         allowSentryReport(false);

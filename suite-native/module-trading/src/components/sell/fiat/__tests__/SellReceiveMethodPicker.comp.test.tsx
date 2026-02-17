@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -120,7 +120,7 @@ describe('SellReceiveMethodPicker', () => {
                 fireEvent.press(getByText('Credit Card'));
 
                 expect(reportMock).toHaveBeenCalledWith({
-                    type: EventType.TradingParameterChanged,
+                    type: events.tradingParameterChangedEvent.name,
                     payload: {
                         type: 'sell',
                         parameter: 'paymentMethod',

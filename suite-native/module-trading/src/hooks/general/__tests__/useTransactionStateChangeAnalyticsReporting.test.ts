@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TradingTransaction } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
@@ -84,7 +84,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         rerender({ trades: [updatedBuyTrade] });
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'success' },
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -114,11 +114,11 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(2);
         expect(reportMock).toHaveBeenNthCalledWith(1, {
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'success' },
         });
         expect(reportMock).toHaveBeenNthCalledWith(2, {
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'exchange', status: 'success' },
         });
     });
@@ -163,7 +163,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         rerender({ trades: [updatedTrade] });
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'success' },
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -188,7 +188,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         rerender({ trades: [updatedTrade] });
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'success' },
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -217,7 +217,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         const kycTrade = getExchangeTrade({ status: 'KYC' });
         rerender({ trades: [kycTrade] });
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'exchange', status: 'kyc' },
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -225,7 +225,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         const successTrade = getExchangeTrade({ status: 'SUCCESS' });
         rerender({ trades: [successTrade] });
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'exchange', status: 'success' },
         });
         expect(reportMock).toHaveBeenCalledTimes(2);
@@ -241,7 +241,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         const errorTrade = getBuyTrade({ status: 'ERROR' });
         rerender({ trades: [errorTrade] });
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'error' },
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -261,7 +261,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         rerender({ trades: [buyTrade] });
         expect(reportMock).toHaveBeenCalledTimes(2);
         expect(reportMock).toHaveBeenNthCalledWith(2, {
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'waiting' },
         });
     });
@@ -306,7 +306,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         rerender({ trades: [updatedBuyTrade] });
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingStatus,
+            type: events.tradingStatusEvent.name,
             payload: { type: 'buy', status: 'success' },
         });
     });

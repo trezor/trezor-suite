@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus, EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { AppUpdateEventStatus, events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
@@ -35,7 +35,7 @@ export const available =
             updateInfo: info,
         });
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
 
@@ -63,7 +63,7 @@ export const download =
             updateInfo: latest,
         });
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
 
@@ -93,7 +93,7 @@ export const ready =
             updateInfo: latest,
         });
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
         dispatch({
@@ -117,7 +117,7 @@ export const installUpdate =
         });
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
 
@@ -144,7 +144,7 @@ export const error = () => (dispatch: Dispatch, getState: GetState, extra: Extra
             updateInfo: latest,
         });
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
     }

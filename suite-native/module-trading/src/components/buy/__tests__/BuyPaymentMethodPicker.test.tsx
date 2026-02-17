@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 
 import { tradingBuyActions } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -129,7 +129,7 @@ describe('BuyPaymentMethodPicker', () => {
                 fireEvent.press(getByText('Credit Card'));
 
                 expect(reportMock).toHaveBeenCalledWith({
-                    type: EventType.TradingParameterChanged,
+                    type: events.tradingParameterChangedEvent.name,
                     payload: {
                         type: 'buy',
                         parameter: 'paymentMethod',

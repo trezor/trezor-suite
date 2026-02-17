@@ -1,4 +1,4 @@
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -66,7 +66,7 @@ export const showAddress =
             );
 
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.CreateReceiveAddressShowAddress,
+                type: events.createReceiveAddressShowAddressEvent.name,
                 payload: {
                     assetSymbol: account.symbol,
                     type: 'unverified',
@@ -79,7 +79,7 @@ export const showAddress =
         dispatch(modalActions.preserve());
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.CreateReceiveAddressShowAddress,
+            type: events.createReceiveAddressShowAddressEvent.name,
             payload: {
                 assetSymbol: account.symbol,
                 type: 'verified',
@@ -98,7 +98,7 @@ export const showAddress =
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.CreateReceiveAddressConfirmOnTrezor,
+                type: events.createReceiveAddressConfirmOnTrezorEvent.name,
                 payload: { assetSymbol: account.symbol },
             });
         } else {

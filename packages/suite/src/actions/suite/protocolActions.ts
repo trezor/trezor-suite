@@ -1,4 +1,4 @@
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -54,7 +54,7 @@ export const handleProtocolRequest =
 
         if (protocol) {
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.AppUriHandler,
+                type: events.appUriHandlerEvent.name,
                 payload: {
                     scheme: protocol.scheme,
                     isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,

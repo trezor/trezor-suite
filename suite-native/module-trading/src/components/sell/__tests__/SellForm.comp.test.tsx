@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -117,7 +117,7 @@ describe('SellForm', () => {
         await renderSellForm({}, result.current);
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingSell,
+            type: events.tradingSellEvent.name,
             payload: expect.objectContaining({
                 step: 'sell-form',
                 action: 'visit',

@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
@@ -73,7 +73,7 @@ describe('TradingLocationSettingsScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'settings',
                 parameter: 'country',
@@ -88,7 +88,7 @@ describe('TradingLocationSettingsScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingCountrySelection,
+            type: events.tradingCountrySelectionEvent.name,
             payload: {
                 type: 'settings',
                 action: 'cancel',

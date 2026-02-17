@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -226,7 +226,7 @@ describe('TradingExchangePreviewScreen', () => {
 
             expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
+                type: events.tradingExchangeEvent.name,
                 payload: expect.objectContaining({
                     step: 'transaction-preview',
                     action: 'retry',
@@ -250,7 +250,7 @@ describe('TradingExchangePreviewScreen', () => {
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
+                type: events.tradingExchangeEvent.name,
                 payload: expect.objectContaining({
                     step: 'transaction-preview',
                     action: 'cancel',
@@ -274,7 +274,7 @@ describe('TradingExchangePreviewScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'transaction-preview',
                 action: 'visit',
@@ -290,7 +290,7 @@ describe('TradingExchangePreviewScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'transaction-preview',
                 action: 'continue',

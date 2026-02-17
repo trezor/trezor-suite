@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -72,7 +72,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             if (device?.features) {
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.DeviceUpdateFirmware,
+                    type: events.deviceUpdateFirmwareEvent.name,
                     payload: {
                         model: device.features.internal_model,
                         fromFwVersion:
@@ -90,7 +90,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
         switch (action.type) {
             case deviceActions.addAuthorizedDevice.type:
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.SelectWalletType,
+                    type: events.selectWalletTypeEvent.name,
                     payload: {
                         type: action.payload.device.walletNumber ? 'hidden' : 'standard',
                     },
@@ -100,7 +100,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             case SUITE.READY:
                 getSuiteReadyPayload(state).then(payload => {
                     asTypedDesktopAnalytics(analytics).report({
-                        type: EventType.SuiteReady,
+                        type: events.suiteReadyEvent.name,
                         payload,
                     });
                 });
@@ -108,7 +108,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case TRANSPORT.START:
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.TransportType,
+                    type: events.transportTypeEvent.name,
                     payload: {
                         type: action.payload.type,
                         version: action.payload.version,
@@ -124,7 +124,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
                 if (!isDeviceInBootloaderMode(device)) {
                     asTypedDesktopAnalytics(analytics).report({
-                        type: EventType.DeviceConnect,
+                        type: events.deviceConnectEvent.name,
                         payload: {
                             mode,
                             firmware: getFirmwareVersion(device),
@@ -148,7 +148,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     });
                 } else {
                     asTypedDesktopAnalytics(analytics).report({
-                        type: EventType.DeviceConnect,
+                        type: events.deviceConnectEvent.name,
                         payload: {
                             mode: 'bootloader',
                             firmware: getFirmwareVersion(device),
@@ -162,7 +162,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case DEVICE.DISCONNECT:
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.DeviceDisconnect,
+                    type: events.deviceDisconnectEvent.name,
                 });
                 break;
 
@@ -203,7 +203,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.AccountsStatus,
+                    type: events.accountsStatusEvent.name,
                     payload: getAccountsWithSomeTransactionHistory(state.wallet.accounts).reduce(
                         accumulateAccountCountBySymbolAndType,
                         {},
@@ -211,17 +211,17 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 });
 
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.AccountsNonZeroBalance,
+                    type: events.accountsNonZeroBalanceEvent.name,
                     payload: accountsWithNonZeroBalance,
                 });
 
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.AccountsTokensStatus,
+                    type: events.accountsTokensStatusEvent.name,
                     payload: accountsWithTokens,
                 });
 
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.AccountsActiveStaking,
+                    type: events.accountsActiveStakingEvent.name,
                     payload: accountsWithStaking,
                 });
 
@@ -234,7 +234,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     state.suite.lifecycle.status !== 'loading'
                 ) {
                     asTypedDesktopAnalytics(analytics).report({
-                        type: EventType.RouterLocationChange,
+                        type: events.routerLocationChangeEvent.name,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
                             nextRouterUrl: redactRouterUrl(selectRouterUrl(state)),
@@ -247,7 +247,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
                     asTypedDesktopAnalytics(analytics).report({
-                        type: EventType.RouterLocationChange,
+                        type: events.routerLocationChangeEvent.name,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
                             nextRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -272,7 +272,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (coinjoinAccount && anonymityGainToReport !== null) {
                     asTypedDesktopAnalytics(analytics).report(
                         {
-                            type: EventType.CoinjoinAnonymityGain,
+                            type: events.coinjoinAnonymityGainEvent.name,
                             payload: {
                                 networkSymbol: coinjoinAccount.symbol,
                                 value: anonymityGainToReport,
@@ -288,8 +288,8 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             case deviceActions.setRememberDevice.type:
                 asTypedDesktopAnalytics(analytics).report({
                     type: action.payload.remember
-                        ? EventType.SwitchDeviceRemember
-                        : EventType.SwitchDeviceForget,
+                        ? events.switchDeviceRememberEvent.name
+                        : events.switchDeviceForgetEvent.name,
                 });
                 break;
 
@@ -298,14 +298,14 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     dispatch(setFlag('discreetModeCompleted', true));
                 }
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.MenuToggleDiscreet,
+                    type: events.menuToggleDiscreetEvent.name,
                     payload: { value: action.toggled },
                 });
                 break;
 
             case WALLET_SETTINGS.CHANGE_COIN_VISIBILITY:
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.SettingsCoins,
+                    type: events.settingsCoinsEvent.name,
                     payload: {
                         symbol: action.payload.symbol,
                         value: action.payload.shouldBeVisible,
@@ -315,7 +315,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 asTypedDesktopAnalytics(analytics).report({
-                    type: EventType.SettingsGeneralChangeBitcoinUnit,
+                    type: events.settingsGeneralChangeBitcoinUnitEvent.name,
                     payload: {
                         unit: UNIT_ABBREVIATIONS[action.payload],
                     },

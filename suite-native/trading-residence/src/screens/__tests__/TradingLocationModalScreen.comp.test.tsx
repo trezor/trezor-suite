@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     RootStackRoutes,
     TradingStackParamList,
@@ -86,7 +86,7 @@ describe('TradingLocationModalScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'onboarding',
                 parameter: 'country',

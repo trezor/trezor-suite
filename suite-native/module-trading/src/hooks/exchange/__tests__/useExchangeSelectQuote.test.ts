@@ -2,7 +2,7 @@ import React from 'react';
 
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
@@ -214,7 +214,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
+                type: events.tradingExchangeEvent.name,
                 payload: expect.objectContaining({
                     step: 'account-selection',
                     action: 'continue',

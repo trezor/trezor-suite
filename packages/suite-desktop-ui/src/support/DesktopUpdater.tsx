@@ -1,6 +1,6 @@
 import { JSX, useCallback, useEffect } from 'react';
 
-import { AppUpdateEventStatus, EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { AppUpdateEventStatus, events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
@@ -85,7 +85,7 @@ export const DesktopUpdater = () => {
         });
 
         asTypedDesktopAnalytics(analytics).report({
-            type: EventType.AppUpdate,
+            type: events.appUpdateEvent.name,
             payload,
         });
     }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest, analytics]);
