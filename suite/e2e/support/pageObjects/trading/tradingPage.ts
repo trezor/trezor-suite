@@ -4,7 +4,7 @@ import { messages } from '@suite/intl';
 import { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { TradingAssetsModal } from './assetsModal';
+import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
 import { DevicePrompt } from '../devicePrompt';
 import { FeeSection } from './feeSection';
@@ -18,7 +18,7 @@ import { BuyAsset, SellAsset } from '../../types';
 
 export class TradingPage {
     readonly fees: FeeSection;
-    readonly assets: TradingAssetsModal;
+    readonly assetPicker: TradingAssetPicker;
     readonly receiveAccount: TradingReceiveAccount;
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
@@ -51,7 +51,7 @@ export class TradingPage {
         devicePrompt: DevicePrompt,
     ) {
         this.fees = new FeeSection(page);
-        this.assets = new TradingAssetsModal(page);
+        this.assetPicker = new TradingAssetPicker(page);
         this.receiveAccount = new TradingReceiveAccount(page);
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
@@ -285,8 +285,8 @@ export class TradingPage {
         buyAsset: BuyAsset;
         selectReceiveAddress?: () => Promise<void>;
     }) {
-        await this.assets.selectSellAsset(sellAsset);
-        await this.assets.selectBuyAsset(buyAsset);
+        await this.assetPicker.selectSellAsset(sellAsset);
+        await this.assetPicker.selectBuyAsset(buyAsset);
 
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.inputs.swapAmountCurrencyTicker).toHaveText(
@@ -322,19 +322,19 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You sell')).toBeVisible();
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
     }
 }

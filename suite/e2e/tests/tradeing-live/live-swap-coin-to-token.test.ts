@@ -5,7 +5,6 @@ import { expect, test } from '../../support/fixtures';
 
 const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '0.053329';
-const usdcMint = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const accountLabel = 'Solana #1';
 
@@ -37,14 +36,12 @@ test.describe(
                     sellAsset: {
                         searchFilter: 'Solana #1',
                         networkSymbol: 'sol',
-                        assetCryptoId: getCryptoId('sol'),
                     },
                     buyAsset: {
                         searchFilter: 'USDC',
                         networkFilter: 'base',
                         tokenSymbol: 'USDC',
                         networkSymbol: 'base',
-                        assetCryptoId: getCryptoId('base', usdcMint),
                     },
 
                     selectReceiveAddress: async () => {
@@ -127,7 +124,6 @@ test.describe(
                         searchFilter: 'USDC',
                         networkSymbol: 'base',
                         tokenSymbol: 'USDC',
-                        assetCryptoId: getCryptoId('base', usdcMint),
                     },
                     buyAsset: {
                         searchFilter: 'Solana',

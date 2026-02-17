@@ -81,7 +81,7 @@ export const Control = ({
                     gap={4}
                     padding={isClean ? undefined : { horizontal: INPUT_PADDING }}
                     overflow="hidden"
-                    data-testid={dataTest ? `${dataTest}/control` : undefined}
+                    data-testid={dataTest ? `${dataTest}/input` : undefined}
                     cursor="pointer"
                 >
                     {children}

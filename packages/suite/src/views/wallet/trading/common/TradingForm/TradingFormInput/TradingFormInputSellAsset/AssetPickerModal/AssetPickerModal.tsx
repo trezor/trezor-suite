@@ -56,7 +56,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                         <AssetRowAccountWithBalance
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/option/${item.account.symbol}`}
+                            dataTestId={`@asset-picker/sell/option/${item.account.symbol}`}
                         />
                     );
 
@@ -66,7 +66,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             token={item.token}
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/option/${item.account.symbol}/${item.token.symbol}`}
+                            dataTestId={`@asset-picker/sell/option/${item.account.symbol}/${item.token.symbol}`}
                         />
                     );
 
@@ -85,7 +85,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             expanded={item.expanded}
                             onExpandToggle={updateExpandableAccountGroups}
                             height={item.height}
-                            dataTestId={`@asset-picker/option/non-tradable-tokens/${item.account.symbol}}`}
+                            dataTestId={`@asset-picker/sell/option/non-tradable-tokens/${item.account.symbol}`}
                             showTokensPreview
                         />
                     );

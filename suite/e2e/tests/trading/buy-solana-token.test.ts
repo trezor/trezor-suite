@@ -35,7 +35,7 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
     test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, tradingPage }) => {
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {
             const cryptoId = 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId;
-            await tradingPage.assets.selectBuyAsset({
+            await tradingPage.assetPicker.selectBuyAsset({
                 networkFilter: 'sol',
                 searchFilter: 'Jupiter',
                 assetCryptoId: cryptoId,

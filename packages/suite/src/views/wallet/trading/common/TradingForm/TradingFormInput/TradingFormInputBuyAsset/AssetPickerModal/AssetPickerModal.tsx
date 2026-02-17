@@ -59,7 +59,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                                         height: ASSET_ROW_HEIGHT,
                                     })
                                 }
-                                data-testId="@asset-picker/option/top-assets"
+                                data-testid="@asset-picker/buy/option/top-assets"
                             />
                         </Box>
                     );
@@ -69,7 +69,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                         <AssetRowAccountWithBalance
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/option/${item.account.symbol}`}
+                            dataTestId={`@asset-picker/buy/option/${item.account.symbol}`}
                         />
                     );
 
@@ -79,7 +79,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             token={item.token}
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/option/${item.account.symbol}/${item.token.symbol}`}
+                            dataTestId={`@asset-picker/buy/option/${item.account.symbol}/${item.token.symbol}`}
                         />
                     );
 
@@ -88,7 +88,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                         <AssetRowAsset
                             asset={item.asset}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/option/asset/${item.asset.id}`}
+                            dataTestId={`@asset-picker/buy/option/asset/${item.asset.id}`}
                         />
                     );
 

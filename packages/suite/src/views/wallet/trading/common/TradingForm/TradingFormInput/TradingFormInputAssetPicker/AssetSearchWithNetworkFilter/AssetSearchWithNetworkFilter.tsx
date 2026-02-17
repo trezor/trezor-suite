@@ -38,7 +38,6 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                     includeAllOption: true,
                     allLabel: translationString('TR_ALL_NETWORKS'),
                 }}
-                data-testid="@asset-picker/search"
             />
         </Box>
     );

@@ -6,71 +6,73 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { step } from '../../common';
 import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';
 
-export class TradingAssetsModal {
-    readonly openSellAssetPickerModal: Locator;
-    readonly openBuyAssetPickerModal: Locator;
-    readonly assetPickerSearchInput: Locator;
-    readonly assetPickerDisplaySymbol: Locator;
-    readonly assetPickerNetworkFilter: Locator;
-    readonly assetPickerNetworkFilterOption = (tab: AssetPickerNetworkFilter) =>
+export class TradingAssetPicker {
+    readonly openSellModal: Locator;
+    readonly openBuyModal: Locator;
+    readonly searchInput: Locator;
+    readonly displaySymbol: Locator;
+    readonly networkFilterButton: Locator;
+    readonly networkFilterOption = (tab: AssetPickerNetworkFilter) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
-    readonly addAccountButton: Locator;
+    readonly globalAddAccountButton: Locator;
 
     // buy and sell options
-    readonly assetPickerOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+    readonly sellOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
         this.page.getByTestId(
-            `@asset-picker/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
+            `@asset-picker/sell/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
         );
-    readonly buyAssetPickerAssetOption = (assetCryptoId: CryptoId) =>
-        this.page.getByTestId(`@asset-picker/option/asset/${assetCryptoId}`);
+    readonly buyOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+        this.page.getByTestId(
+            `@asset-picker/buy/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
+        );
+    readonly buyAssetOption = (assetCryptoId: CryptoId) =>
+        this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
 
     // send and receive options
-    readonly sendAssetPickerOption = (params: {
+    readonly sendOption = (params: {
         accountSymbol: NetworkSymbol;
         accountType: string;
         index: number;
         tokenSymbol?: string;
     }) =>
         this.page.getByTestId(
-            `@asset-picker/option/${params.accountType}/${params.accountSymbol}/${params.index}${
+            `@asset-picker/send/option/${params.accountType}/${params.accountSymbol}/${params.index}${
                 params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
             }`,
         );
-    readonly receiveAssetPickerOption = (params: {
+    readonly receiveOption = (params: {
         accountSymbol: NetworkSymbol;
         accountType: string;
         index: number;
     }) =>
         this.page.getByTestId(
-            `@asset-picker/option/${params.accountType}/${params.accountSymbol}/${params.index}`,
+            `@global-receive-account/${params.accountType}/${params.accountSymbol}/${params.index}`,
         );
 
     constructor(private readonly page: Page) {
-        this.openSellAssetPickerModal = this.page.getByTestId('@trading/sell/asset-picker/input');
-        this.openBuyAssetPickerModal = this.page.getByTestId('@trading/buy/asset-picker/input');
-        this.assetPickerSearchInput = this.page.getByTestId('@asset-picker/search/input');
-        this.assetPickerDisplaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
-        this.assetPickerNetworkFilter = this.page.getByTestId(
-            '@asset-picker/search/filter/control',
-        );
-        this.addAccountButton = this.page.getByTestId('@asset-picker/add-account');
+        this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker/input');
+        this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker/input');
+        this.searchInput = this.page.getByTestId('@asset-picker/search/input');
+        this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
+        this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');
+        this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
     }
 
     @step()
     async filterByNetwork(networkFilter: AssetPickerNetworkFilter) {
-        await this.assetPickerNetworkFilter.click();
-        await this.assetPickerNetworkFilterOption(networkFilter).click();
+        await this.networkFilterButton.click();
+        await this.networkFilterOption(networkFilter).click();
     }
 
     @step()
     async searchAsset(searchFilter: string) {
-        await this.assetPickerSearchInput.pressSequentially(searchFilter, { delay: 250 });
-        await this.assetPickerSearchInput.blur();
+        await this.searchInput.pressSequentially(searchFilter, { delay: 250 });
+        await this.searchInput.blur();
     }
 
     @step()
     async selectSellAsset({ searchFilter, networkFilter, networkSymbol, tokenSymbol }: SellAsset) {
-        await this.openSellAssetPickerModal.click();
+        await this.openSellModal.click();
 
         if (networkFilter) {
             await this.filterByNetwork(networkFilter);
@@ -80,7 +82,7 @@ export class TradingAssetsModal {
             await this.searchAsset(searchFilter);
         }
 
-        await this.assetPickerOption(networkSymbol, tokenSymbol).click();
+        await this.sellOption(networkSymbol, tokenSymbol).click();
     }
 
     @step()
@@ -91,7 +93,7 @@ export class TradingAssetsModal {
         networkSymbol,
         tokenSymbol,
     }: BuyAsset) {
-        await this.openBuyAssetPickerModal.click();
+        await this.openBuyModal.click();
 
         if (networkFilter) {
             await this.filterByNetwork(networkFilter);
@@ -102,9 +104,9 @@ export class TradingAssetsModal {
         }
 
         if (assetCryptoId) {
-            await this.buyAssetPickerAssetOption(assetCryptoId).click();
+            await this.buyAssetOption(assetCryptoId).click();
         } else if (networkSymbol) {
-            await this.assetPickerOption(networkSymbol, tokenSymbol).click();
+            await this.buyOption(networkSymbol, tokenSymbol).click();
         } else {
             throw new Error('Either assetCryptoId or networkSymbol must be provided');
         }

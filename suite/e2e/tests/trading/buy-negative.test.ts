@@ -15,7 +15,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
             await walletPage.openTradingGlobalButton.click();
 
             await expect(tradingPage.inputs.fiatAmount).toHaveValue(''); // waits for trading form to load
-            await tradingPage.assets.openBuyAssetPickerModal.click({ trial: true }); // checking actionability of the dropdown, which means page is properly loaded
+            await tradingPage.assetPicker.openBuyModal.click({ trial: true }); // checking actionability of the dropdown, which means page is properly loaded
 
             await tradingPage.inputs.selectFiatCurrency('eur');
         });
