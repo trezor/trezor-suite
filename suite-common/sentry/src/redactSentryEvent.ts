@@ -29,9 +29,10 @@ export const redactSentryEvent = (event: ErrorEvent): ErrorEvent | null => {
         return null;
     }
     // allow report redacted error before confirm status is loaded
-    if (typeof allowReport === 'undefined') {
+    if (allowReport !== true) {
         delete event.breadcrumbs;
-        delete event.contexts?.device;
+        delete event.contexts;
+        delete event.request;
     }
 
     return event;
