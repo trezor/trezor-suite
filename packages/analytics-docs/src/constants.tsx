@@ -3,6 +3,8 @@ import { Icon, Row } from '@trezor/components';
 import { Platform, Sort } from './types';
 import { getPlatformIcon } from './utils/getPlatformIcon';
 
+export const HEADER_HEIGHT = 110;
+
 const PlatformItem = ({ platform }: { platform: string }) => (
     <Row alignItems="center" gap={8}>
         <Icon name={getPlatformIcon(platform)} size="medium" />

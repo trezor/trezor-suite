@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -23,6 +23,9 @@ import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
 import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
+import { SIDEBAR_WIDTH, VersionsSidebar } from './components/VersionsSidebar';
+import { HEADER_HEIGHT } from './constants';
+import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
 type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 'dark' };
@@ -48,7 +51,7 @@ export const Content = styled.div`
     padding: 20px 10px;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 130px 20px 20px;
+        margin: ${HEADER_HEIGHT}px 20px 0px;
     }
 `;
 
@@ -58,7 +61,30 @@ export const ContentContainer = styled.div`
     width: 100%;
 `;
 
+const MainWithSidebar = styled.div`
+    display: flex;
+    flex: 1;
+    min-height: 0;
+
+    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
+        margin: ${HEADER_HEIGHT}px 0 0px;
+    }
+`;
+
+const ContentArea = styled.div`
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 20px 10px;
+
+    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
+        margin: 0 20px 20px 0;
+        margin-left: ${SIDEBAR_WIDTH + 20}px;
+    }
+`;
+
 export const App = ({ theme }: AppProps) => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const {
         filteredEvents,
         setQuery,
@@ -75,8 +101,18 @@ export const App = ({ theme }: AppProps) => {
 
     const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
 
+    const versionsWithEvents = useMemo(
+        () => getVersionsWithEvents(filteredEvents),
+        [filteredEvents],
+    );
+
     const eventCards = useMemo(
-        () => filteredEvents.map(event => <EventCard key={event.name} event={event} />),
+        () =>
+            filteredEvents.map(event => (
+                <div key={event.name} id={getEventId(event.name)}>
+                    <EventCard event={event} />
+                </div>
+            )),
         [filteredEvents],
     );
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
@@ -104,6 +140,21 @@ export const App = ({ theme }: AppProps) => {
                                     {isFiltering && <Spinner size={20} />}
                                 </Row>
                                 <Row gap={8} alignItems="center">
+                                    <Tooltip
+                                        content={
+                                            isSidebarOpen
+                                                ? 'Hide versions'
+                                                : 'Show versions by last updated'
+                                        }
+                                    >
+                                        <IconButton
+                                            icon="sidebar"
+                                            onClick={() => setIsSidebarOpen(prev => !prev)}
+                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                            size="small"
+                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                        />
+                                    </Tooltip>
                                     <ThemeSwitch />
                                     <Tooltip content="Add event">
                                         {isMobile ? (
@@ -142,11 +193,22 @@ export const App = ({ theme }: AppProps) => {
                         </Column>
                     </ContentContainer>
                 </TopBar>
-                <Content>
-                    <ContentContainer>
-                        <Column gap={40}>{eventCards}</Column>
-                    </ContentContainer>
-                </Content>
+                {isSidebarOpen ? (
+                    <MainWithSidebar>
+                        <VersionsSidebar versionsWithEvents={versionsWithEvents} />
+                        <ContentArea>
+                            <ContentContainer>
+                                <Column gap={40}>{eventCards}</Column>
+                            </ContentContainer>
+                        </ContentArea>
+                    </MainWithSidebar>
+                ) : (
+                    <Content>
+                        <ContentContainer>
+                            <Column gap={40}>{eventCards}</Column>
+                        </ContentContainer>
+                    </Content>
+                )}
             </Box>
         </>
     );
