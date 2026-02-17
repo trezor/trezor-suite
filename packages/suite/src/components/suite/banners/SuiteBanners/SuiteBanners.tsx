@@ -38,8 +38,6 @@ import { SuiteSyncBanner } from './SuiteSyncBanner';
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
     max-width: ${({ $fill }) => ($fill ? 'none' : MAX_CONTENT_WIDTH)};
-    max-height: 20vh;
-    overflow: auto;
     padding: ${spacingsPx.sm} ${spacingsPx.md};
     display: flex;
     flex-direction: column;
