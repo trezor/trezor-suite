@@ -5,6 +5,7 @@ import {
     FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
+    selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -42,6 +43,10 @@ export const useFeesForm = ({
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
 
+    const isEip1559Fee = useSelector((state: FeesRootState) =>
+        selectIsEip1559Fee(state, account?.symbol),
+    );
+
     const trimmedFeePerUnit = getFeeValue({
         feeRate: defaultFeePerUnit,
         symbol: account?.symbol,
@@ -68,6 +73,7 @@ export const useFeesForm = ({
             symbol: account?.symbol,
             minimalFeeLimit,
             translate,
+            isEip1559Fee,
         },
     });
 };

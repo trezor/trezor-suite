@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    FeesRootState,
+    selectAccountNetworkSymbol,
+    selectAccountNetworkType,
+    selectIsEip1559Fee,
+} from '@suite-common/wallet-core';
 import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -41,6 +47,14 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         selectAccountNetworkType(state, accountKey),
     );
 
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    const isEip1559Fee = useSelector((state: FeesRootState) =>
+        selectIsEip1559Fee(state, symbol ?? undefined),
+    );
+
     const {
         formState: { errors },
         setError,
@@ -66,7 +80,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
 
         invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
 
-        if (!customFeePerUnit || !formState) {
+        if ((!isEip1559Fee && !customFeePerUnit) || !formState) {
             console.warn('Cannot calculate custom fee because of missing values');
             setIsFeeLoading(false);
 
@@ -102,6 +116,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     }, [
         trigger,
         networkType,
+        isEip1559Fee,
         customFeePerUnit,
         formState,
         dispatch,
