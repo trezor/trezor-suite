@@ -1,0 +1,90 @@
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+
+import { Translation } from '@suite/intl';
+import { TRADING_FORM_PAYMENT_METHOD_SELECT } from '@suite-common/trading';
+import { GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
+
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
+import { TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+
+import { PaymentMethodModal } from './PaymentMethodModal';
+
+const TradingFormInputPaymentMethodValueContent = ({
+    isFormLoading,
+    hasPaymentMethods,
+    displayLabel,
+}: {
+    isFormLoading: boolean;
+    hasPaymentMethods: boolean;
+    displayLabel: ReactNode;
+}) => {
+    if (isFormLoading) {
+        return <SkeletonRectangle animate />;
+    }
+
+    return (
+        <Row gap={16}>
+            <Text typographyStyle={hasPaymentMethods ? 'body' : undefined}>{displayLabel}</Text>
+            {hasPaymentMethods && <Icon name="caretRight" size={20} variant="tertiary" />}
+        </Row>
+    );
+};
+
+export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefaultProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const {
+        paymentMethods,
+        defaultPaymentMethod,
+        form: {
+            state: { isFormLoading },
+        },
+        watch,
+    } = useTradingFormContext<TradingTradeBuySellType>();
+
+    const paymentMethod = watch()[TRADING_FORM_PAYMENT_METHOD_SELECT];
+    const hasPaymentMethods = paymentMethods.length > 0;
+
+    const selectedOption = hasPaymentMethods
+        ? paymentMethods.find(item => item.value === (paymentMethod?.value ?? defaultPaymentMethod))
+        : undefined;
+
+    const displayLabel = hasPaymentMethods ? (
+        (selectedOption?.label ?? paymentMethod?.label ?? paymentMethods[0]?.label ?? '')
+    ) : (
+        <Translation id="TR_TRADING_NO_METHODS_AVAILABLE" />
+    );
+
+    return (
+        <>
+            <GhostContainer
+                onClick={() => setIsModalOpen(true)}
+                isDisabled={!hasPaymentMethods || isFormLoading}
+                borderRadius={0}
+            >
+                <Row
+                    alignItems="center"
+                    justifyContent="space-between"
+                    padding={{
+                        vertical: 16,
+                        horizontal: 20,
+                    }}
+                >
+                    <Text typographyStyle="body" align="start">
+                        {label && <Translation id={label} />}
+                    </Text>
+                    <TradingFormInputPaymentMethodValueContent
+                        isFormLoading={isFormLoading}
+                        hasPaymentMethods={hasPaymentMethods}
+                        displayLabel={displayLabel}
+                    />
+                </Row>
+            </GhostContainer>
+            {isModalOpen && hasPaymentMethods && (
+                <PaymentMethodModal onClose={() => setIsModalOpen(false)} heading={label} />
+            )}
+        </>
+    );
+};
