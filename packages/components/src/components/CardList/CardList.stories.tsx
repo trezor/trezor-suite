@@ -1,12 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Text, getFramePropsStory, getTextPropsStory } from '@trezor/components';
-
 import {
     CardList as CardListComponent,
     allowedCardListFrameProps,
     allowedCardListTextProps,
 } from './CardList';
+import { getFramePropsStory } from '../../utils/frameProps';
+import { Text } from '../typography/Text/Text';
+import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta<typeof CardListComponent> = {
     title: 'CardList',
