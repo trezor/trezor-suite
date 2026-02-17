@@ -12,6 +12,7 @@ const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
     const d = {
         ...fixtureDescriptor,
         session: Session('1'),
+        model: expect.toBeOneOf([expect.any(Number), undefined]),
         ...descriptor,
     };
 
