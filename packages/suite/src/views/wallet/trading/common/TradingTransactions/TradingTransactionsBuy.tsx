@@ -7,9 +7,9 @@ import {
 } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
@@ -31,13 +31,12 @@ export const TradingTransactionBuy = ({
     account,
 }: TradingTransactionBuyProps) => {
     const dispatch = useDispatch();
-    const { navigateToBuyDetail } = useTradingNavigation(account);
 
     const { exchange, paymentMethod, paymentMethodName } = trade.data;
 
     const handleViewDetailsButtonClick = () => {
         dispatch(tradingBuyActions.saveTransactionId(trade.key ?? ''));
-        navigateToBuyDetail();
+        dispatch(goto('wallet-trading-buy-detail'));
     };
 
     useTradingWatchTrade({

@@ -34,7 +34,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto(route));
 
         switch (route) {
             case 'wallet-trading-buy':

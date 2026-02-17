@@ -60,8 +60,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
         await test.step('Return to account buy form', async () => {
             await tradingPage.backToAccountButton('Buy').click();
-            // The flow started on BTC so it returns to the BTC account, even tho the trade was for ETH
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
         });
     });
 });

@@ -1,9 +1,9 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext } from 'react';
 
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
-    type TradingUseDetailProps,
+    type TradingUseDetailPropsWithoutAccount,
     useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
 
@@ -18,17 +18,10 @@ import { useTradingFormAccount } from './form/useTradingFormAccount';
  * Adds platform-specific functionality like server environment setup and trade watching
  */
 export const useTradingDetail = <T extends TradingType>(
-    props: TradingUseDetailProps & { tradeType: T },
+    props: TradingUseDetailPropsWithoutAccount & { tradeType: T },
 ): TradingUseDetailOutputProps<T> => {
-    const { tradeType, account: accountProps } = props;
-    const { account: formAccount } = useTradingFormAccount('exchange');
-
-    // For exchange trades, use the account from the trading form context
-    // For buy/sell trades, use the account passed as a prop
-    const account = useMemo(
-        () => (tradeType === 'exchange' ? formAccount : accountProps),
-        [tradeType, formAccount, accountProps],
-    );
+    const { tradeType } = props;
+    const { account } = useTradingFormAccount(tradeType);
 
     const result = useTradingDetailCommon<T>({ tradeType });
 

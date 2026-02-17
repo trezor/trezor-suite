@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -97,14 +98,11 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
         event.stopPropagation();
 
         dispatch(
-            goto('wallet-trading-buy', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
+            tradingActions.setTradingFromPrefilledAccount(
+                getTradingPrefilledFromAccountData(account),
+            ),
         );
+        dispatch(goto('wallet-trading-buy'));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

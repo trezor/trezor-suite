@@ -94,15 +94,7 @@ export const TradingDetailBuy = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(
-            goto('wallet-trading-buy', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+        dispatch(goto('wallet-trading-buy'));
 
         return null;
     }
@@ -112,19 +104,12 @@ export const TradingDetailBuy = () => {
             case 'success':
                 return (
                     <TradingDetailBuyPaymentPaymentSuccessful
-                        account={account}
                         trade={trade.data}
                         provider={provider}
                     />
                 );
             case 'error':
-                return (
-                    <TradingDetailBuyPaymentFailed
-                        account={account}
-                        trade={trade.data}
-                        provider={provider}
-                    />
-                );
+                return <TradingDetailBuyPaymentFailed trade={trade.data} provider={provider} />;
             default:
                 return (
                     <>

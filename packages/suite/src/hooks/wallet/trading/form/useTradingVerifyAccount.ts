@@ -6,6 +6,7 @@ import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
+    selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
     selectTradingBuyReceiveAccountKey,
     selectTradingExchangeAccountKey,
@@ -46,13 +47,15 @@ const useTradingVerifyAccount = ({
     nonSuiteAccount,
 }: TradingVerifyAccountProps): TradingVerifyAccountReturnProps => {
     const activeSection = useSelector(selectTradingActiveSection);
-    const selectedWalletAccount = useSelector(state => state.wallet.selectedAccount);
+    const formAccountKey = useSelector(state =>
+        selectTradingAccountKeyByTradeType(state, activeSection),
+    );
     const selectedAccountKey =
         useSelector(
             activeSection === 'exchange'
                 ? selectTradingExchangeAccountKey
                 : selectTradingBuyReceiveAccountKey,
-        ) || selectedWalletAccount.account?.key;
+        ) || formAccountKey;
     const accounts = useSelector(state => state.wallet.accounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);

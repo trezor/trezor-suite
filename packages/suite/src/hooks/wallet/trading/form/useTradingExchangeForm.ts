@@ -45,6 +45,7 @@ import {
 import { Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -57,7 +58,6 @@ import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTr
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { Dispatch } from 'src/types/suite';
@@ -96,7 +96,7 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
-    const { account } = useTradingFormAccount(type);
+    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
@@ -115,13 +115,6 @@ export const useTradingExchangeForm = ({
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
 
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
-    const {
-        navigateToExchangeForm,
-        navigateToExchangeDetail,
-        navigateToExchangeOffers,
-        navigateToExchangeConfirm,
-    } = useTradingNavigation(account);
-
     // we consider this feature enabled unless disabled by message system
     const isSlip24FeatureEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.trading.slip24, true),
@@ -150,7 +143,10 @@ export const useTradingExchangeForm = ({
         [trades, transactionId],
     );
 
-    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues();
+    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(
+        accountKey,
+        cryptoId,
+    );
 
     const { draft, saveDraft, removeDraft } =
         useFormDraft<TradingExchangeFormProps>('trading-exchange');
@@ -334,7 +330,7 @@ export const useTradingExchangeForm = ({
                 quote,
                 timer,
                 nextStep: () => {
-                    navigateToExchangeConfirm();
+                    dispatch(goto('wallet-trading-exchange-confirm'));
                 },
             }),
         );
@@ -365,7 +361,7 @@ export const useTradingExchangeForm = ({
             };
 
             const nextStep = () => {
-                navigateToExchangeDetail();
+                dispatch(goto('wallet-trading-exchange-detail'));
             };
 
             return {
@@ -383,7 +379,6 @@ export const useTradingExchangeForm = ({
             composed,
             analytics,
             dispatch,
-            navigateToExchangeDetail,
         ],
     );
 
@@ -496,7 +491,7 @@ export const useTradingExchangeForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        navigateToExchangeOffers();
+        dispatch(goto('wallet-trading-exchange-offers'));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -767,11 +762,11 @@ export const useTradingExchangeForm = ({
 
     useEffect(() => {
         if (!quotesRequest && !isFormPage) {
-            navigateToExchangeForm();
+            dispatch(goto('wallet-trading-exchange'));
 
             return;
         }
-    }, [isFormPage, quotesRequest, navigateToExchangeForm]);
+    }, [isFormPage, quotesRequest, dispatch]);
 
     useEffect(() => {
         if (preselectedQuote || approvalInitiated) return;

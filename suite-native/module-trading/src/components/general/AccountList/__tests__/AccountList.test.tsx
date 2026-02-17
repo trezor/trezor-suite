@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { selectTradingBuyReceiveAccountKey } from '@suite-common/trading';
 import {
     TestStore,
     fireEvent,
@@ -196,6 +197,7 @@ describe('AccountList', () => {
                 account: btc1NormalAccount,
                 address: undefined,
             });
+            expect(selectTradingBuyReceiveAccountKey(store.getState())).toBe(btc1NormalAccount.key);
         });
 
         it('should set correct state with tradingType set to "exchange"', async () => {

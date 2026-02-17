@@ -565,8 +565,10 @@ export const selectValidTradingSellQuotes = createMemoizedSelector(
     },
 );
 
-export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+export const selectTradingBuyAccountKey = (state: TradingRootState) =>
     state.wallet.trading.buy.tradingAccountKey;
+export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+    state.wallet.trading.buy.receiveAccountKey;
 export const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAddress;
 
@@ -585,7 +587,7 @@ export const selectTradingAccountKeyByTradeType = createMemoizedSelector(
     [
         selectTradingExchangeAccountKey,
         selectTradingSellAccountKey,
-        selectTradingBuyReceiveAccountKey,
+        selectTradingBuyAccountKey,
         (_: TradingRootState, tradeType: TradingType) => tradeType,
     ],
     (exchangeAccountKey, sellAccountKey, buyAccountKey, tradeType) => {

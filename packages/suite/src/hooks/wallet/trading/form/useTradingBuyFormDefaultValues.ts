@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
-    TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     TradingCountryCode,
@@ -12,26 +11,21 @@ import {
     getDefaultCountry,
     getDefaultCountrySubdivision,
     regional,
-    selectTradingPrefilledFromAccount,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets, networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (
-    accountSymbol: Account['symbol'],
+    cryptoId: CryptoId | undefined,
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
     const { isTorEnabled } = useSelector(selectTorState);
-    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
-    const cryptoId = prefilledFromAccount.cryptoId ?? networks[accountSymbol]?.tradeCryptoId;
     const { createAssetOptionFromCryptoId } = useTradingAssets();
 
     const country = !isTorEnabled
@@ -44,15 +38,9 @@ export const useTradingBuyFormDefaultValues = (
         [buyInfo?.buyInfo?.subdivision],
     );
 
-    // For testnet accounts, use default currency instead of casting to mainnet-only type
-    const isTestnetAccount = !!networks[accountSymbol]?.testnet;
-    const defaultNetworkSymbol: NetworkConfigWithoutTestnets['symbol'] = isTestnetAccount
-        ? TRADING_DEFAULT_CRYPTO_CURRENCY
-        : (accountSymbol as NetworkConfigWithoutTestnets['symbol']);
-
     const defaultCrypto = useMemo(
-        () => createAssetOptionFromCryptoId(cryptoId as CryptoId | undefined, defaultNetworkSymbol),
-        [createAssetOptionFromCryptoId, cryptoId, defaultNetworkSymbol],
+        () => createAssetOptionFromCryptoId(cryptoId),
+        [createAssetOptionFromCryptoId, cryptoId],
     );
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({

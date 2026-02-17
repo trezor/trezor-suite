@@ -2,13 +2,11 @@ import { FormProvider } from 'react-hook-form';
 
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingOffers } from 'src/views/wallet/trading/common/TradingOffers/TradingOffers';
 
-const TradingBuyOffersComponent = ({ selectedAccount }: UseTradingProps) => {
+const TradingBuyOffersComponent = () => {
     const tradingBuyFormContextValues = useTradingBuyForm({
-        selectedAccount,
         pageType: 'offers',
     });
 

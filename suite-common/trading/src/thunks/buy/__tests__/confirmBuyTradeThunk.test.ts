@@ -288,6 +288,7 @@ describe('confirmBuyTradeThunk', () => {
             date: dateString,
             data: MIN_MAX_QUOTES_OK[1],
             key: MIN_MAX_QUOTES_OK[1].paymentId,
+            receiveAccountKey: 'xxx',
             selectedAccountKey: 'yyy',
         });
         expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();

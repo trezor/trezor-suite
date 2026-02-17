@@ -67,28 +67,12 @@ export const TradingTransactionSell = ({
                     },
                 }),
             );
-            dispatch(
-                goto('wallet-trading-sell-confirm', {
-                    params: {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                    },
-                }),
-            );
+            dispatch(goto('wallet-trading-sell-confirm'));
 
             return;
         }
 
-        dispatch(
-            goto('wallet-trading-sell-detail', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+        dispatch(goto('wallet-trading-sell-detail'));
     };
 
     useTradingWatchTrade({ account, trade });

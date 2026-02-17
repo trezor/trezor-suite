@@ -93,6 +93,9 @@ export const AccountList = ({
                 : tradingExchangeActions.setReceiveAddress(receiveAccount.address?.address);
         dispatch(accountAction);
         dispatch(addressAction);
+        if (tradingType === 'buy') {
+            dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+        }
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');

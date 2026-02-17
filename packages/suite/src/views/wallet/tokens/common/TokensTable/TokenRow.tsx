@@ -180,14 +180,7 @@ export const TokenRow = ({
             ),
         );
 
-        goToWithAnalytics(routeName, {
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-            ...{ preserveParams: type !== 'exchange' },
-        });
+        goToWithAnalytics(routeName);
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

@@ -55,6 +55,8 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
 
     const isAccountEligibleForTrade = useCallback(
         (account: Account, cryptoId?: CryptoId) => {
+            if (tradingType === 'buy') return true;
+
             const { contractAddress } = cryptoId ? parseCryptoId(cryptoId) : {};
             const isNativeToken =
                 !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
@@ -84,7 +86,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
                 return id === cryptoId && new BigNumber(token.balance ?? '0').gt(0);
             });
         },
-        [tokenDefinitions],
+        [tokenDefinitions, tradingType],
     );
 
     const pickFallbackAccount = useCallback(
@@ -146,11 +148,11 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount({
                     key: undefined,
-                    cryptoId: undefined,
+                    cryptoId: prefilled.cryptoId,
                 }),
             );
         }
-    }, [accountKey, dispatch, prefilled.key]);
+    }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId]);
 
     return {
         tradingAccountKey: account.key,

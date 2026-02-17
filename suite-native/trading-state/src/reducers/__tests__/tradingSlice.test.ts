@@ -289,16 +289,18 @@ describe('tradingSlice', () => {
             expect(state.exchange.receiveAddress).toBeUndefined();
         });
 
-        it('should clear buy.tradingAccountKey', () => {
+        it('should clear buy.tradingAccountKey and buy.receiveAccountKey', () => {
             const actions = [
                 tradingBuyActions.setTradingAccountKey(
                     'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
+                tradingBuyActions.setReceiveAccountKey('account-key' as AccountKey),
                 tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.buy.tradingAccountKey).toBeUndefined();
+            expect(state.buy.receiveAccountKey).toBeUndefined();
         });
 
         it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {

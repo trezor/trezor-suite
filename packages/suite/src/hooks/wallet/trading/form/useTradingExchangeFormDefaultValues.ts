@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -17,7 +19,7 @@ import {
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { FormState, Output } from '@suite-common/wallet-types';
+import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -27,11 +29,9 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
-import { useTradingFormAccount } from './useTradingFormAccount';
 
-export const useTradingExchangeFormDefaultValues = () => {
+export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryptoId: CryptoId) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount('exchange');
 
     const defaultCurrency = useMemo(
         () =>

@@ -294,7 +294,7 @@ export const useTradingReceiveAddress = ({
         }
 
         if (type === 'buy') {
-            dispatch(tradingBuyActions.setTradingAccountKey(selectedAccount?.key));
+            dispatch(tradingBuyActions.setReceiveAccountKey(selectedAccount?.key));
         }
     }, [selectedAccount, pageType, type, dispatch]);
 

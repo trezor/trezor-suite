@@ -9,7 +9,6 @@ import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
@@ -23,8 +22,8 @@ export const TradingBuyFormContent = () => (
     </TradingFormLayout>
 );
 
-export const TradingBuyFormWrapper = ({ selectedAccount }: UseTradingProps) => {
-    const tradingBuyContextValues = useTradingBuyForm({ selectedAccount });
+const TradingBuyFormWrapper = () => {
+    const tradingBuyContextValues = useTradingBuyForm();
 
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
@@ -35,7 +34,7 @@ export const TradingBuyFormWrapper = ({ selectedAccount }: UseTradingProps) => {
     );
 };
 
-export const TradingBuyFormLoaded = ({ selectedAccount }: UseTradingProps) => {
+export const TradingBuyForm = () => {
     const type: TradingType = 'buy';
     const { isDisabled, content } = useMessageSystemTrading(type);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -46,18 +45,8 @@ export const TradingBuyFormLoaded = ({ selectedAccount }: UseTradingProps) => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingBuyFormWrapper selectedAccount={selectedAccount} />
+                <TradingBuyFormWrapper />
             )}
         </TradingLayout>
     );
-};
-
-export const TradingBuyForm = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    return <TradingBuyFormLoaded selectedAccount={selectedAccount} />;
 };

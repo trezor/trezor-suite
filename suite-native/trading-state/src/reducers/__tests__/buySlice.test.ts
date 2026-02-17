@@ -60,16 +60,18 @@ describe('buySlice', () => {
     });
 
     describe('assetChanged', () => {
-        it('should clear tradingAccountKey and receiveAddress', () => {
+        it('should clear tradingAccountKey, receiveAccountKey and receiveAddress', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
                 tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                receiveAccountKey: 'account-key' as AccountKey,
                 receiveAddress: 'bc1qxyz',
             };
 
             const state = buyReducer(prevState, buyActions.assetChanged());
 
             expect(state.tradingAccountKey).toBeUndefined();
+            expect(state.receiveAccountKey).toBeUndefined();
             expect(state.receiveAddress).toBeUndefined();
         });
 

@@ -87,15 +87,7 @@ export const TradingDetailSell = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(
-            goto('wallet-trading-sell', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+        dispatch(goto('wallet-trading-sell'));
 
         return null;
     }
