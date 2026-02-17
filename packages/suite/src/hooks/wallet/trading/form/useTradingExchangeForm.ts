@@ -24,18 +24,14 @@ import {
     type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
-    getUnusedAddressFromAccount,
     invityAPI,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
     selectTradingExchange,
-    selectTradingExchangeAccountKey,
     selectTradingExchangeInfo,
-    selectTradingExchangeReceiveAccountKey,
     selectTradingIsSlip24Allowed,
     selectTradingTrades,
     selectTradingVerifiedAddress,
-    tradingActions,
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -153,9 +149,6 @@ export const useTradingExchangeForm = ({
             ),
         [trades, transactionId],
     );
-
-    const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
-    const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues();
 
@@ -536,99 +529,15 @@ export const useTradingExchangeForm = ({
         if (!commonFunctions) return undefined;
         const { processResponseData } = commonFunctions;
 
-        const { address: refundAddress } = getUnusedAddressFromAccount(account);
-
-        if (!trade) {
-            trade = selectedQuote;
-        }
-
-        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId || !receiveAddress) {
-            return undefined;
-        }
-
-        trade = { ...trade, receiveAddress };
-
-        if (!trade.fromAddress) {
-            trade = { ...trade, fromAddress: refundAddress };
-        }
-
-        dispatch(tradingExchangeActions.saveTransactionId(undefined));
-
-        const response = await invityAPI.doExchangeTrade({
-            trade,
-            receiveAddress,
-            refundAddress,
-            extraField,
-            returnUrl: undefined,
-        });
-
-        if (!response) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
-                }),
-            );
-
-            return undefined;
-        }
-
-        if (
-            response.error ||
-            !response.status ||
-            !response.orderId ||
-            response.status === 'ERROR'
-        ) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.error || 'Error response from the server',
-                }),
-            );
-
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
-
-            return response;
-        }
-
-        if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
-
-            return response;
-        }
-
-        if (response.status === 'SIGN_DATA') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
-            dispatch(tradingExchangeActions.setFormStep('SIGN_DATA'));
-
-            return response;
-        }
-
-        if (response.status === 'CONFIRM') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
-            dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
-
-            return response;
-        }
-
-        dispatch(
-            tradingActions.saveTrade({
-                tradeType: 'exchange',
-                date: new Date().toISOString(),
-                key: response.orderId,
-                data: response,
-                sendAccountKey,
-                receiveAccountKey,
+        return await dispatch(
+            exchangeThunks.confirmApprovalThunk({
+                receiveAddress,
+                account,
+                extraField,
+                trade,
+                processResponseData,
             }),
-        );
-
-        dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
-
-        if (response.tradeForm?.form) {
-            processResponseData(response);
-        }
-
-        return response;
+        ).unwrap();
     };
 
     const watchApproval = async ({ refreshCount }: { refreshCount: number }) => {

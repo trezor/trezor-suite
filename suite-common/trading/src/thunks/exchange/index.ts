@@ -1,3 +1,4 @@
+import { confirmApprovalThunk } from './confirmApprovalThunk';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { handleExchangeRequestThunk } from './handleExchangeRequestThunk';
 import { loadExchangeInfoThunk } from './loadExchangeInfoThunk';
@@ -11,6 +12,7 @@ export const exchangeThunks = {
     handleRequestThunk: handleExchangeRequestThunk,
     selectQuoteThunk: selectExchangeQuoteThunk,
     confirmTradeThunk: confirmExchangeTradeThunk,
+    confirmApprovalThunk,
     signDataAndConfirmThunk,
     sendDexTransactionThunk,
     sendTransactionThunk,

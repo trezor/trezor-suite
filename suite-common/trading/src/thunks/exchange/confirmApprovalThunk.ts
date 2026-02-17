@@ -9,44 +9,36 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
+    selectTradingExchangeQuotesRequest,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 import { logErrorThunk } from '../common/logErrorThunk';
 
-export type ConfirmExchangeTradeThunkProps = {
-    returnUrl: string;
+export type ConfirmApprovalThunkProps = {
     receiveAddress: string;
     account: Account;
     extraField?: string;
     trade?: ExchangeTrade;
-    approvalFlow?: boolean;
 
-    triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: ExchangeTrade) => void;
-    nextStep: () => void;
 };
 
-export const confirmExchangeTradeThunk = createThunk(
-    `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
+export const confirmApprovalThunk = createThunk(
+    `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmApproval`,
     async (
         {
             trade,
-            returnUrl,
             receiveAddress,
             account,
             extraField,
-            approvalFlow = false,
-            triggerAnalyticsTradeConfirmation,
             processResponseData,
-            nextStep,
-        }: ConfirmExchangeTradeThunkProps,
+        }: ConfirmApprovalThunkProps,
         { dispatch, getState },
     ) => {
-        triggerAnalyticsTradeConfirmation();
-
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+        const quotesRequest = selectTradingExchangeQuotesRequest(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
@@ -55,16 +47,14 @@ export const confirmExchangeTradeThunk = createThunk(
             trade = selectedQuote;
         }
 
-        if (!trade || !refundAddress || !trade.quoteId) {
+        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId || !receiveAddress) {
             return undefined;
         }
 
-        if (trade.isDex) {
-            trade = { ...trade, receiveAddress };
+        trade = { ...trade, receiveAddress };
 
-            if (!trade.fromAddress) {
-                trade = { ...trade, fromAddress: refundAddress };
-            }
+        if (!trade.fromAddress) {
+            trade = { ...trade, fromAddress: refundAddress };
         }
 
         dispatch(tradingExchangeActions.saveTransactionId(undefined));
@@ -74,8 +64,7 @@ export const confirmExchangeTradeThunk = createThunk(
             receiveAddress,
             refundAddress,
             extraField,
-            returnUrl,
-            approvalFlow,
+            returnUrl: undefined,
         });
 
         if (!response) {
@@ -103,7 +92,7 @@ export const confirmExchangeTradeThunk = createThunk(
             );
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
-            return undefined;
+            return response;
         }
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
@@ -126,7 +115,6 @@ export const confirmExchangeTradeThunk = createThunk(
             return response;
         }
 
-        // CONFIRMING, SUCCESS, LOADING
         dispatch(
             tradingActions.saveTrade({
                 tradeType: 'exchange',
@@ -141,16 +129,7 @@ export const confirmExchangeTradeThunk = createThunk(
 
         if (response.tradeForm?.form) {
             processResponseData(response);
-
-            return response;
         }
-        if (response.status === 'LOADING') {
-            dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
-
-            return response;
-        }
-
-        nextStep();
 
         return response;
     },
