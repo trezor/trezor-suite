@@ -523,4 +523,285 @@ describe('HttpServer', () => {
         const newAddress = server.getServerAddress();
         expect(newAddress.port).toEqual(address.port);
     });
+
+    describe('route matching logic (express.js-like)', () => {
+        test('unregistered route does not match any registered route', async () => {
+            const handler1 = jest.fn((_request, response) => {
+                response.end('enumerate');
+            });
+            const handler2 = jest.fn((_request, response) => {
+                response.end('listen');
+            });
+
+            server.post('/enumerate', [handler1]);
+            server.post('/listen', [handler2]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request to unregistered route /abort/1 should NOT match /enumerate or /listen
+            const res = await fetch(`http://${address}:${port}/abort/1`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(404);
+            expect(handler1).not.toHaveBeenCalled();
+            expect(handler2).not.toHaveBeenCalled();
+        });
+
+        test('route with params does not match request with extra segments', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            // Route expects exactly /acquire/:path/:previous (4 segments total)
+            server.post('/acquire/:path/:previous', [handler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request with 5 segments should NOT match
+            const res = await fetch(`http://${address}:${port}/acquire/1/2/extra`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('route with params does not match request with missing segments', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            // Route expects exactly /acquire/:path/:previous (4 segments total)
+            server.post('/acquire/:path/:previous', [handler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request with 3 segments (missing :previous) should NOT match
+            const res = await fetch(`http://${address}:${port}/acquire/1`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('route with params matches request with exact segments', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.params));
+            });
+
+            server.post('/acquire/:path/:previous', [handler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request with exactly 4 segments should match
+            const res = await fetch(`http://${address}:${port}/acquire/1/2`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(handler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    params: { path: '1', previous: '2' },
+                }),
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+            );
+        });
+
+        test('single param route matches correctly', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.params));
+            });
+
+            server.post('/release/:session', [handler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request with exactly 3 segments should match
+            const res = await fetch(`http://${address}:${port}/release/123`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(handler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    params: { session: '123' },
+                }),
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+            );
+        });
+
+        test('exact route takes precedence over parameterized route', async () => {
+            const paramHandler = jest.fn((_request, response) => {
+                response.end('param');
+            });
+            const exactHandler = jest.fn((_request, response) => {
+                response.end('exact');
+            });
+
+            server.post('/user/:id', [paramHandler]);
+            server.post('/user/me', [exactHandler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/user/me`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            await expect(res.text()).resolves.toEqual('exact');
+            expect(exactHandler).toHaveBeenCalled();
+            expect(paramHandler).not.toHaveBeenCalled();
+        });
+
+        test('more specific route takes precedence over less specific route', async () => {
+            const lessSpecificHandler = jest.fn((_request, response) => {
+                response.end('less');
+            });
+            const moreSpecificHandler = jest.fn((_request, response) => {
+                response.end('more');
+            });
+
+            // /a/:b has 1 fixed segment, 1 param
+            server.post('/a/:b', [lessSpecificHandler]);
+            // /a/x/:c has 2 fixed segments, 1 param (more specific)
+            server.post('/a/x/:c', [moreSpecificHandler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/a/x/y`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            await expect(res.text()).resolves.toEqual('more');
+            expect(moreSpecificHandler).toHaveBeenCalled();
+            expect(lessSpecificHandler).not.toHaveBeenCalled();
+        });
+
+        test('method mismatch does not match route', async () => {
+            const getHandler = jest.fn((_request, response) => {
+                response.end('get');
+            });
+            const postHandler = jest.fn((_request, response) => {
+                response.end('post');
+            });
+
+            server.get('/foo', [getHandler]);
+            server.post('/foo', [postHandler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request with PUT method should not match either route
+            const res = await fetch(`http://${address}:${port}/foo`, {
+                method: 'PUT',
+            });
+
+            expect(res.status).toEqual(404);
+            expect(getHandler).not.toHaveBeenCalled();
+            expect(postHandler).not.toHaveBeenCalled();
+        });
+
+        test('deeply nested parameterized route matches correctly', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.params));
+            });
+
+            server.post('/call/:session', [handler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/call/abc123`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(handler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    params: { session: 'abc123' },
+                }),
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+            );
+        });
+
+        test('routes with similar prefixes do not cross-match', async () => {
+            const enumerateHandler = jest.fn((_request, response) => {
+                response.end('enumerate');
+            });
+            const acquireHandler = jest.fn((_request, response) => {
+                response.end('acquire');
+            });
+
+            server.post('/enumerate', [enumerateHandler]);
+            server.post('/acquire/:path/:previous', [acquireHandler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // /enumerate/1 should not match /acquire/:path/:previous
+            const res = await fetch(`http://${address}:${port}/enumerate/1`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(404);
+            expect(enumerateHandler).not.toHaveBeenCalled();
+            expect(acquireHandler).not.toHaveBeenCalled();
+        });
+
+        test('root route does not match non-root paths', async () => {
+            const rootHandler = jest.fn((_request, response) => {
+                response.end('root');
+            });
+            const enumerateHandler = jest.fn((_request, response) => {
+                response.end('enumerate');
+            });
+
+            // Register both root and specific route
+            server.post('/', [rootHandler]);
+            server.post('/enumerate', [enumerateHandler]);
+
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            // Request to /enumerate should match /enumerate route, not /
+            const res1 = await fetch(`http://${address}:${port}/enumerate`, {
+                method: 'POST',
+            });
+            expect(res1.status).toEqual(200);
+            expect(res1.text()).resolves.toEqual('enumerate');
+            expect(enumerateHandler).toHaveBeenCalled();
+            expect(rootHandler).not.toHaveBeenCalled();
+
+            // Request to /xyz should return 404, not match root /
+            const res2 = await fetch(`http://${address}:${port}/xyz`, {
+                method: 'POST',
+            });
+            expect(res2.status).toEqual(404);
+            expect(rootHandler).not.toHaveBeenCalled();
+
+            // Only explicit request to / should match root
+            const res3 = await fetch(`http://${address}:${port}/`, {
+                method: 'POST',
+            });
+            expect(res3.status).toEqual(200);
+            expect(res3.text()).resolves.toEqual('root');
+            expect(rootHandler).toHaveBeenCalled();
+        });
+    });
 });
