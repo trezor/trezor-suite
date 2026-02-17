@@ -165,14 +165,13 @@ export class SessionsBackground
      * acquire intent
      */
     private async acquireIntent(payload: AcquireIntentRequest) {
-        const pathInternal = this.getInternal(payload.path);
+        await this.waitInQueue();
 
+        const pathInternal = this.getInternal(payload.path);
         if (!pathInternal) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
-
         const previous = this.descriptors[pathInternal];
-
         if (!previous) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
@@ -180,8 +179,6 @@ export class SessionsBackground
         if (payload.previous !== previous.session) {
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
-
-        await this.waitInQueue();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous.session !== this.descriptors[pathInternal]?.session) {
