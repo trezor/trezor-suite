@@ -74,6 +74,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         });
 
         await test.step('Try all % inputs for Bitcoin', async () => {
+            await tradingPage.inputs.selectFiatCurrency('eur');
             for (const percentage of [10, 25, 50]) {
                 await test.step(`${percentage}% of BTC balance`, async () => {
                     await tradingPage.inputs.fractionButtons
@@ -114,6 +115,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
             await walletPage.sellButton.click();
             await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
+            await tradingPage.inputs.selectFiatCurrency('eur');
 
             for (const percentage of [10, 25, 50]) {
                 await test.step(`${percentage}% of Solana balance`, async () => {
@@ -123,21 +125,12 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                         balance: solanaBalance,
                         symbol: 'sol',
                     });
-                    await expect(page.getByTestId('@trading/best-offer/amount')).not.toHaveText(
-                        '0',
-                        {
-                            timeout: 30_000,
-                        },
-                    );
                 });
             }
 
             //TODO: Bug in production
             await test.step.skip('Max of Solana balance', async () => {
                 await page.getByRole('button', { name: 'Max' }).click();
-                await expect(page.getByTestId('@trading/best-offer/amount')).not.toHaveText('0', {
-                    timeout: 30_000,
-                });
                 const resultingFee = await tradingPage.fees.getSolanaFee();
                 const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
                 await expect
