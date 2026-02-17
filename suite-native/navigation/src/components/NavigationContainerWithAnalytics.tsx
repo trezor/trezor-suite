@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
-import { EventType, events } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
@@ -83,7 +83,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
             });
 
             addSentryBreadcrumb({
-                category: EventType.ScreenChange,
+                category: events.screenChangeEvent.name,
                 message: 'screen changed',
                 level: 'info',
                 data: {

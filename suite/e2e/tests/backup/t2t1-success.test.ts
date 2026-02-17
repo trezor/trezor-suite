@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -51,7 +51,7 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
         await onboardingPage.backup.willHideSeedCheckbox.click();
         await expect(onboardingPage.backup.closeButton).toBeEnabled();
 
-        const createBackupRequest = analytics.findLatestRequestByType(EventType.CreateBackup);
+        const createBackupRequest = analytics.findLatestRequestByType(events.createBackupEvent.name);
         expect(createBackupRequest).toMatchObject({ status: 'finished', error: '' });
     });
 });

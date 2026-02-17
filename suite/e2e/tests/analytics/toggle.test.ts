@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -34,9 +34,9 @@ test.describe(
                     await analytics.waitForAnalyticsRequests();
                     // assert that only "analytics/dispose" event was fired
                     const request = analytics.findLatestRequestByLegacyType(
-                        EventType.SettingsAnalytics,
+                        events.settingsAnalyticsEvent.name,
                     );
-                    expect(request).toHaveProperty('c_type', EventType.SettingsAnalytics);
+                    expect(request).toHaveProperty('c_type', events.settingsAnalyticsEvent.name);
                     expect(request).toHaveProperty('value', 'false');
                     expect(request).toHaveProperty('c_session_id');
                     expect(request).toHaveProperty('c_instance_id');
@@ -71,9 +71,9 @@ test.describe(
                 await analytics.waitForAnalyticsRequests();
 
                 const enableRequest = analytics.findLatestRequestByLegacyType(
-                    EventType.SettingsAnalytics,
+                    events.settingsAnalyticsEvent.name,
                 );
-                expect(enableRequest).toHaveProperty('c_type', EventType.SettingsAnalytics);
+                expect(enableRequest).toHaveProperty('c_type', events.settingsAnalyticsEvent.name);
                 expect(enableRequest).toHaveProperty('c_session_id');
                 expect(enableRequest).toHaveProperty('c_instance_id');
                 expect(enableRequest).toHaveProperty('c_timestamp');
@@ -91,16 +91,16 @@ test.describe(
 
             await test.step('Change fiat and check analytics event', async () => {
                 const enableRequest = analytics.findLatestRequestByLegacyType(
-                    EventType.SettingsAnalytics,
+                    events.settingsAnalyticsEvent.name,
                 );
                 await settingsPage.changeFiatCurrency('huf');
                 await analytics.waitForAnalyticsRequests();
                 const changeFiatRequest = analytics.findLatestRequestByLegacyType(
-                    EventType.SettingsGeneralChangeFiat,
+                    events.settingsGeneralChangeFiatEvent.name,
                 );
                 expect(changeFiatRequest).toHaveProperty(
                     'c_type',
-                    EventType.SettingsGeneralChangeFiat,
+                    events.settingsGeneralChangeFiatEvent.name,
                 );
                 expect(changeFiatRequest).toHaveProperty('fiat', 'huf');
                 expect(changeFiatRequest).toHaveProperty(
@@ -114,9 +114,9 @@ test.describe(
                 await analytics.waitForAnalyticsRequests();
 
                 const deviceModalRequest = analytics.findLatestRequestByType(
-                    EventType.RouterLocationChange,
+                    events.routerLocationChangeEvent.name,
                 );
-                expect(deviceModalRequest).toHaveProperty('c_type', EventType.RouterLocationChange);
+                expect(deviceModalRequest).toHaveProperty('c_type', events.routerLocationChangeEvent.name);
             });
         });
 
@@ -134,9 +134,9 @@ test.describe(
                 await analytics.waitForAnalyticsRequests(3);
 
                 expect(analytics.requests.length).toBeGreaterThan(1);
-                expect(analytics.findLatestRequestByLegacyType(EventType.SuiteReady)).toBeDefined();
+                expect(analytics.findLatestRequestByLegacyType(events.suiteReadyEvent.name)).toBeDefined();
                 expect(
-                    analytics.findLatestRequestByLegacyType(EventType.SettingsAnalytics),
+                    analytics.findLatestRequestByLegacyType(events.settingsAnalyticsEvent.name),
                 ).toBeDefined();
             });
 
@@ -160,10 +160,10 @@ test.describe(
                 await settingsPage.changeFiatCurrency('huf');
                 await analytics.waitForAnalyticsRequests();
                 expect(
-                    analytics.findLatestRequestByLegacyType(EventType.SettingsAnalytics),
+                    analytics.findLatestRequestByLegacyType(events.settingsAnalyticsEvent.name),
                 ).toBeDefined();
                 expect(
-                    analytics.findLatestRequestByLegacyType(EventType.SettingsGeneralChangeFiat),
+                    analytics.findLatestRequestByLegacyType(events.settingsGeneralChangeFiatEvent.name),
                 ).not.toBeDefined();
             });
         });

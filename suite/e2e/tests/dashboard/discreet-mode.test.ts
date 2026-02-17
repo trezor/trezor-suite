@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -76,8 +76,8 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify analytics event', () => {
                 const menuToggleDiscreetEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<EventType.MenuToggleDiscreet>
-                >(EventType.MenuToggleDiscreet);
+                    ExtractByEventType<(typeof events.menuToggleDiscreetEvent)['name']>
+                >(events.menuToggleDiscreetEvent.name);
                 expect(menuToggleDiscreetEvent.value).toBe('true');
             });
         },
