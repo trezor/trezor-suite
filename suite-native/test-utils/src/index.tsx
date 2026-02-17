@@ -8,5 +8,3 @@ export { extraDependenciesNativeMock } from './extraDependenciesNative.mock';
 
 export * from './renderBasic';
 export * from './renderWithStore';
-
-export { getTranslation } from './getTranslation';

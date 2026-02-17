@@ -1,4 +1,5 @@
-import { getTranslation, renderHook, renderWithBasicProvider } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { renderHook, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useAccountLabelForm } from '../../hooks/useAccountLabelForm';
 import { AccountLabelFieldHint, AccountLabelFieldHintProps } from '../AccountLabelFieldHint';
