@@ -18,7 +18,7 @@ export const useThpAutoconnectActions = () => {
     }, [device, dispatch]);
 
     const ignoreThpAutoconnect = useCallback(() => {
-        dispatch(thpActions.finishThpFlow());
+        dispatch(thpActions.finishAutoconnectFlow());
     }, [dispatch]);
 
     return {

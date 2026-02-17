@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsDeviceThpLocked } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { Box } from '@suite-native/atoms';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
@@ -22,21 +23,23 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ThpConfirmationScreen = () => {
-    useInterceptNativeNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
     const thpStep = useSelector(selectThpStep);
+    const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
+
+    useInterceptNativeNavigation();
 
     useEffect(() => {
         if (thpStep === 'BeforeConnectionInfo') {
             navigation.goBack();
-        } else if (thpStep === null) {
+        } else if (!isDeviceThpLocked) {
             dispatch(nativeFirmwareActions.setIsFirmwareInstallationRunning(false));
             navigateToInitialScreen();
         }
-    }, [thpStep, navigation, dispatch, navigateToInitialScreen]);
+    }, [thpStep, isDeviceThpLocked, navigation, dispatch, navigateToInitialScreen]);
 
     return (
         <Screen isScrollable={false} noBottomPadding={true} hasBottomInset={false}>
