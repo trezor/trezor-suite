@@ -7,6 +7,7 @@ export * from './hooks/useTradingUtils';
 export * from './hooks/useListDataFilter';
 export * from './hooks/useCountryFilteredData';
 export * from './hooks/useProviderMetadataChangeEffect';
+export * from './hooks/useTradingFiatValues';
 export * from './invityAPI';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';
