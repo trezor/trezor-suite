@@ -51,7 +51,7 @@ export const TokenTransferListItemValues = ({
     );
 
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 

@@ -1,18 +1,28 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsRootState,
+    TransactionWithFiatAmount,
     getIsPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountKey,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getConfirmations,
+    getFiatRateKey,
     isCardanoStakingTx,
     isClaimTx,
     isPending,
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
+    roundTimestampToNearestPastHour,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -23,6 +33,7 @@ import {
     BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
+import { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { isAccountStakingActive } from '../stake/stakeUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -135,20 +146,59 @@ export const selectTransactionConfirmations = (
     return getConfirmations(transaction, blockchainHeight);
 };
 
+const getHistoricTxUsdFiatAmount = (
+    state: FiatRatesRootState,
+    transaction: WalletAccountTransaction,
+    contractAddress?: TokenAddress,
+) => {
+    const fiatRateKey = getFiatRateKey(transaction.symbol, 'usd', contractAddress);
+    const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
+
+    const fiatRate = state.wallet.fiat?.['historic']?.[fiatRateKey]?.[roundedTimestamp];
+    const fiatAmount = fiatRate
+        ? toFiatCurrency({ amount: transaction.amount, rate: fiatRate })
+        : undefined;
+
+    return fiatAmount?.toString();
+};
+
+const enhanceTxWithHistoricFiatRates = (
+    state: FiatRatesRootState,
+    transaction: WalletAccountTransaction,
+): TransactionWithFiatAmount => ({
+    ...transaction,
+    amountInFiat: getHistoricTxUsdFiatAmount(state, transaction),
+    tokens: transaction.tokens.map(token => ({
+        ...token,
+        amountInFiat: getHistoricTxUsdFiatAmount(
+            state,
+            transaction,
+            token.contract as TokenAddress,
+        ),
+    })),
+    internalTransfers: transaction.internalTransfers.map(internalTransfer => ({
+        ...internalTransfer,
+        amountInFiat: getHistoricTxUsdFiatAmount(state, transaction),
+    })),
+});
+
 export const selectIsPhishingTransaction = (
-    state: TokenDefinitionsRootState & TransactionsRootState & AccountsRootState,
+    state: TokenDefinitionsRootState &
+        TransactionsRootState &
+        AccountsRootState &
+        FiatRatesRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
-
     if (!transaction) return false;
 
     const tokenDefinitions = selectNetworkTokenDefinitions(state, transaction.symbol);
-
     if (!tokenDefinitions) return false;
 
-    return getIsPhishingTransaction(transaction, tokenDefinitions);
+    const enhancedTransaction = enhanceTxWithHistoricFiatRates(state, transaction);
+
+    return getIsPhishingTransaction(enhancedTransaction, tokenDefinitions);
 };
 
 export const selectAccountStakeTypeTransactions = createMemoizedSelector(
