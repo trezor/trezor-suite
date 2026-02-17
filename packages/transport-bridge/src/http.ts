@@ -413,6 +413,8 @@ export class TrezordNode {
                 validateSessionParams,
                 parseBodyText,
                 (req, res) => {
+                    this.core.clearLock(req.params.session); // in case if session is locked, but there is no pending call/read/post with abortable signal, we still want to clear the lock
+
                     let statusCode = 400;
                     this.abortableSignals.forEach(s => {
                         if (s.session === req.params.session) {

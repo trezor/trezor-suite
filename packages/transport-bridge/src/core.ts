@@ -410,6 +410,18 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         });
     };
 
+    const clearLock = async (session: Session) => {
+        const res = await sessionsClient.getPathBySession({ session });
+        if (!res.success) {
+            logger?.error(`core: clearLock: retrieving path error: ${res.error}`);
+
+            return res;
+        }
+
+        return api.clearLock(res.payload.path);
+        // return await a
+    };
+
     const dispose = () => {
         sessionsBackground.dispose();
         api.dispose();
@@ -425,5 +437,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         receive,
         dispose,
         sessionsClient,
+        clearLock,
     };
 };

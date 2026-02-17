@@ -202,6 +202,14 @@ export abstract class AbstractApi extends TypedEmitter<{
             };
         }
     };
+
+    public clearLock(path: string) {
+        console.log('clear loc called', path);
+        if (this.lock[path]) {
+            console.log('clearing lock for path', path);
+            this.lock[path] = { read: false, write: false };
+        }
+    }
 }
 
 export type AbstractApiAwaitedResult<K extends keyof AbstractApi> = AbstractApi[K] extends (
