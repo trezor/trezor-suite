@@ -5,6 +5,7 @@ import { FeesFormContext, feesFormValidationSchema } from '../feesFormSchema';
 describe('feesFormValidationSchema', () => {
     const createContext = (overrides: Partial<FeesFormContext> = {}): FeesFormContext => ({
         symbol: 'eth' as NetworkSymbol,
+        isEip1559Fee: false,
         networkFeeInfo: {
             minFee: 100,
             maxFee: 1000000,

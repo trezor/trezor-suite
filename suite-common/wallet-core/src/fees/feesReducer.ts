@@ -4,7 +4,7 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel, FeesState, FeesStatus } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
@@ -81,6 +81,18 @@ export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
         });
 
         return feeInfo;
+    },
+);
+
+/**
+ * Returns whether the network supports EIP-1559 based on the fee info.
+ */
+export const selectIsEip1559Fee = createMemoizedSelector(
+    [(_state: FeesRootState, symbol?: NetworkSymbol) => symbol, selectConvertedNetworkFeeInfo],
+    (symbol, feeInfo): boolean => {
+        if (!symbol || !feeInfo?.levels?.[0]) return false;
+
+        return isEip1559(feeInfo.levels[0]);
     },
 );
 

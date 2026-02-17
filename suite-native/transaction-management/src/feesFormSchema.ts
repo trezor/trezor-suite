@@ -13,11 +13,12 @@ export type FeesFormContext = {
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
     translate?: Translate;
+    isEip1559Fee: boolean;
 };
 
 const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high', 'custom'];
 
-const validateFeeDecimalLength = (value: string | undefined, context: FeesFormContext) => {
+const validateFeeDecimalLength = (value: string | undefined, context: Partial<FeesFormContext>) => {
     if (!value) return true;
 
     const { networkFeeInfo, symbol } = context!;
@@ -40,8 +41,8 @@ export const feesFormValidationSchema = yup.object({
     customFeePerUnit: yup
         .string()
         .test('too-many-decimals', 'Too many decimals.', function (value) {
-            if (!value) return true;
-            const { translate, ...context } = this.options.context as FeesFormContext;
+            const { translate, isEip1559Fee, ...context } = this.options.context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
             if (!validateFeeDecimalLength(value, context)) {
                 return this.createError({
                     message: translate!(
@@ -53,8 +54,9 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-low', 'Fee is too low.', function (value) {
-            if (!value) return true;
-            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+                .context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
 
             if (!networkFeeInfo) return false;
             const { minFee } = networkFeeInfo;
@@ -71,8 +73,9 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-high', 'Fee is too high.', function (value) {
-            if (!value) return true;
-            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+                .context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
 
             if (!networkFeeInfo) return false;
 
