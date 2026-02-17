@@ -131,7 +131,6 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     overflow="hidden"
                     // To accomodate the labeling component
                     padding={8}
-                    gap={0}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
                     {isBalanceShown && (

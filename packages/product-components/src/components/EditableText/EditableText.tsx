@@ -122,7 +122,7 @@ const Container = styled.span<ContainerProps>`
     position: relative;
     max-width: 100%;
     gap: ${({ $gap }) => $gap}px;
-    overflow-x: hidden;
+    overflow: hidden;
     height: 28px;
     box-sizing: content-box;
     padding: var(--padding);
