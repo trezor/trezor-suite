@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus, events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';

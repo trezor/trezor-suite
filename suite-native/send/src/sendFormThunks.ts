@@ -24,7 +24,7 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { events, asTypedNativeAnalytics } from '@suite-native/analytics';
+import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {

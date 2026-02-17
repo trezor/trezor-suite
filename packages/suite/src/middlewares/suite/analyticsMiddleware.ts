@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';

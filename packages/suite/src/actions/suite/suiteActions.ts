@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import type { TranslationKey } from '@suite/intl';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';

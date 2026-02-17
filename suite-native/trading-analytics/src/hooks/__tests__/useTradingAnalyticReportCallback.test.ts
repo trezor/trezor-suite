@@ -1,9 +1,9 @@
 import {
-    events,
     TradingExchangeAction,
     TradingExchangeStep,
     TradingSellAction,
     TradingSellStep,
+    events,
 } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';

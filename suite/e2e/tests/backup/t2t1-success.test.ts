@@ -51,7 +51,9 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
         await onboardingPage.backup.willHideSeedCheckbox.click();
         await expect(onboardingPage.backup.closeButton).toBeEnabled();
 
-        const createBackupRequest = analytics.findLatestRequestByType(events.createBackupEvent.name);
+        const createBackupRequest = analytics.findLatestRequestByType(
+            events.createBackupEvent.name,
+        );
         expect(createBackupRequest).toMatchObject({ status: 'finished', error: '' });
     });
 });

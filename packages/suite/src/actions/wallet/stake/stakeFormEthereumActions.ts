@@ -1,6 +1,6 @@
 import { toWei } from 'web3-utils';
 
-import { events, asTypedDesktopAnalytics } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
