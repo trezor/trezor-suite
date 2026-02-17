@@ -1,13 +1,8 @@
 import { WebBrowserResultType } from 'expo-web-browser';
 
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
-import {
-    TestStore,
-    act,
-    getTranslation,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import {
     selectTradeToBeOpened,

@@ -23,7 +23,6 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.1.0",
-        "react-intl": "^8.0.6",
         "react-native": "0.81.5",
         "react-native-keyboard-controller": "1.19.2",
         "react-native-mmkv": "~4.1.2",

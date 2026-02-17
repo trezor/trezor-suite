@@ -3,12 +3,12 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
+import { getTranslation } from '@suite-native/intl';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
-    getTranslation,
     initStore,
     renderWithStoreProviderAsync,
     userEvent,

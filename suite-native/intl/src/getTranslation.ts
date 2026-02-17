@@ -1,10 +1,8 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
-import { TxKeyPath } from '@suite-native/intl';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { messages } from '@suite-native/intl/src/messages';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { flatten } from '@suite-native/intl/src/utils';
+import { messages } from './messages';
+import { TxKeyPath } from './types';
+import { flatten } from './utils';
 
 const intlEn = createIntl({ locale: 'en', messages: flatten(messages) }, createIntlCache());
 
