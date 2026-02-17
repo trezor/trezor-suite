@@ -45,7 +45,7 @@ export const TransactionDetailData = ({
         selectTransactionBlockTimeById(state, accountKey, transaction.txid),
     );
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 

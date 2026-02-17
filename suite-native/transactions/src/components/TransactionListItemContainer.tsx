@@ -7,6 +7,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    FiatRatesRootState,
     TransactionsRootState,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
@@ -133,7 +134,7 @@ export const TransactionListItemContainer = ({
 
     const isTransactionPending = isPending(transaction);
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, txid, accountKey),
     );
 
