@@ -1,6 +1,5 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { StoryColumn } from '@trezor/components';
 // todo: product-components should not depend on protobuf
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -8,116 +7,27 @@ import { ConfirmOnDevicePill as ConfirmOnDeviceComponent } from './ConfirmOnDevi
 
 const meta: Meta<typeof ConfirmOnDeviceComponent> = {
     title: 'ConfirmOnDevice',
-    parameters: {
-        options: {
-            showPanel: false,
-        },
-    },
+    component: ConfirmOnDeviceComponent,
 };
 export default meta;
 
-export const ConfirmOnDevice: StoryFn<typeof meta> = () => (
-    <>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="Confirm on T1B1"
-                deviceModelInternal={DeviceModelInternal.T1B1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="Confirm with cancel"
-                onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T1B1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="Confirm on T2T1"
-                deviceModelInternal={DeviceModelInternal.T2T1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="With 3 steps no active"
-                steps={3}
-                deviceModelInternal={DeviceModelInternal.T3B1}
-                deviceUnitColor={1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="With 2 steps no active"
-                steps={2}
-                deviceModelInternal={DeviceModelInternal.T3B1}
-                deviceUnitColor={2}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="With 5 steps - active 4"
-                steps={5}
-                activeStep={4}
-                deviceModelInternal={DeviceModelInternal.T3B1}
-                deviceUnitColor={3}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="With 3 steps - active 1"
-                steps={3}
-                activeStep={1}
-                deviceModelInternal={DeviceModelInternal.T3B1}
-                deviceUnitColor={4}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="confirmed"
-                title="5 steps 3 active cancel"
-                steps={5}
-                activeStep={3}
-                onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T3B1}
-                deviceUnitColor={5}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="Confirmed"
-                title="Confirm on T2T1"
-                steps={5}
-                activeStep={5}
-                onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T2T1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="Confirmed"
-                title="Confirm on T3T1"
-                steps={5}
-                activeStep={5}
-                onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T3T1}
-            />
-        </StoryColumn>
-        <StoryColumn minWidth={300}>
-            <ConfirmOnDeviceComponent
-                successText="Confirmed"
-                title="Confirm on T3W1"
-                steps={5}
-                activeStep={5}
-                onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T3W1}
-            />
-        </StoryColumn>
-    </>
-);
+export const ConfirmOnDevice: StoryObj<typeof ConfirmOnDeviceComponent> = {
+    args: {
+        title: 'Confirm on T1B1',
+        successText: 'Success',
+        steps: undefined,
+        activeStep: undefined,
+        isConfirmed: false,
+        onCancel: () => {},
+        deviceModelInternal: DeviceModelInternal.T1B1,
+    },
+    argTypes: {
+        title: { control: 'text' },
+        successText: { control: 'text' },
+        steps: { control: 'number' },
+        activeStep: { control: 'number' },
+        isConfirmed: { control: 'boolean' },
+        onCancel: { action: 'onCancel' },
+        deviceModelInternal: { control: 'select', options: Object.values(DeviceModelInternal) },
+    },
+};
