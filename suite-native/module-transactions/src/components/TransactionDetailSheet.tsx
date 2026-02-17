@@ -27,11 +27,11 @@ type TransactionDetailSheetProps = {
 
 type SheetType = 'parameters' | 'values' | 'inputs';
 
-const sheetToAnalyticsEventMap: Record<SheetType, string> = {
+const sheetToAnalyticsEventMap = {
     parameters: events.transactionDetailParametersEvent.name,
     values: events.transactionDetailCompareValuesEvent.name,
     inputs: events.transactionDetailInputOutputEvent.name,
-};
+} as const satisfies Record<SheetType, string>;
 
 const triggerStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
