@@ -1,5 +1,3 @@
-import url from 'url';
-
 import { Log } from '@trezor/utils';
 
 import { getFreePort } from '../getFreePort';
@@ -11,6 +9,7 @@ import {
     parseBodyJSON,
     parseBodyText,
 } from '../http';
+import { parseUrl } from '../urlParse';
 
 type Events = {
     foo: (arg: string) => void;
@@ -360,7 +359,7 @@ describe('HttpServer', () => {
 
     test('query string as array', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -377,7 +376,7 @@ describe('HttpServer', () => {
 
     test('should get query string as url when using encoded parameters', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -397,7 +396,7 @@ describe('HttpServer', () => {
 
     test('should not get query string as url when using invalid encoded parameters', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -414,7 +413,7 @@ describe('HttpServer', () => {
 
     test('query string sanitization', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
