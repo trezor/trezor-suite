@@ -72,7 +72,6 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             await tradingPage.fillSellForm({
                 cryptoAmount,
                 networkSymbolOrTokenId: 'eth',
-                cryptoCurrency: 'ethereum',
             });
             await tradingPage.fees.setEthereumCustomFees({
                 gasLimit,

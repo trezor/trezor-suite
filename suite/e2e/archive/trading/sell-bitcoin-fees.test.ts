@@ -1,6 +1,6 @@
 import { invityEndpoint, sellQuotesBTC, sellTradeBTC, sellWatchBTC } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
-import { FeeTypes } from '../../support/pageObjects/trading/fees';
+import { FeeTypes } from '../../support/pageObjects/trading/feeSection';
 
 interface FeeSwitchTestCase {
     feeType: FeeTypes | 'custom';
@@ -11,7 +11,7 @@ interface FeeSwitchTestCase {
 const cryptoAmount = sellQuotesBTC[0].cryptoStringAmount;
 
 test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await test.step('Mocking responses', async () => {
             await page.route(invityEndpoint.sellQuotes, async route => {
@@ -78,7 +78,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
                 await tradingPage.waitForRedirectCompletion();
 
                 await test.step('Initiate send and verify Fee', async () => {
-                    await tradingPage.initiateSendConfirmation();
+                    await tradingPage.confirmation.initiateSendConfirmation();
                     await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
                     await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
                     const errorMessage = `expected ${feeType} fee on Device Prompt to be:`;

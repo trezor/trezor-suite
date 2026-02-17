@@ -34,7 +34,6 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             });
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
-                cryptoCurrency: 'ethereum',
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
                 },

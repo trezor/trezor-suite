@@ -26,7 +26,6 @@ import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker'
 export type AssetPickerModalProps = {
     closeModal: () => void;
     heading: TranslationKey;
-    dataTestId: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
 };
 
@@ -34,7 +33,6 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     closeModal,
     heading,
     onAssetSelect,
-    dataTestId,
 }: AssetPickerModalProps) {
     const { search, throttledSearch, setSearch } = useSearchFilter();
 
@@ -58,7 +56,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                         <AssetRowAccountWithBalance
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`${dataTestId}/account`}
+                            dataTestId={`@asset-picker/option/${item.account.symbol}`}
                         />
                     );
 
@@ -68,7 +66,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             token={item.token}
                             account={item.account}
                             onClick={() => handleAssetClick(item)}
-                            dataTestId={`${dataTestId}/token`}
+                            dataTestId={`@asset-picker/option/${item.account.symbol}/${item.token.symbol}`}
                         />
                     );
 
@@ -87,13 +85,13 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             expanded={item.expanded}
                             onExpandToggle={updateExpandableAccountGroups}
                             height={item.height}
-                            dataTestId={`${dataTestId}/non-tradable-tokens`}
+                            dataTestId={`@asset-picker/option/non-tradable-tokens/${item.account.symbol}}`}
                             showTokensPreview
                         />
                     );
             }
         },
-        [dataTestId, handleAssetClick, updateExpandableAccountGroups],
+        [handleAssetClick, updateExpandableAccountGroups],
     );
 
     return (
@@ -105,7 +103,6 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 networkFilter={networkFilter}
                 setNetworkFilter={setNetworkFilter}
                 networks={networks}
-                dataTestId={dataTestId}
             />
 
             <Divider margin={{ top: 16 }} />

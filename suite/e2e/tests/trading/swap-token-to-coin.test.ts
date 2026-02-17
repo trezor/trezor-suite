@@ -1,5 +1,3 @@
-import { CryptoId } from 'invity-api';
-
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
@@ -18,7 +16,7 @@ const receiveAmount = localizeNumber(swapQuotesTetherBTC[0].receiveStringAmount!
 const provider = getCompanyNameFromList(swapQuotesTetherBTC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
-const { sendAddress, send: tetherMint } = swapTradeTetherBTC;
+const { sendAddress } = swapTradeTetherBTC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -49,7 +47,6 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 sellAsset: {
                     networkSymbol: 'sol',
                     tokenSymbol: 'USDT',
-                    assetCryptoId: tetherMint as CryptoId,
                 },
                 buyAsset: {
                     searchFilter: 'Bitcoin',

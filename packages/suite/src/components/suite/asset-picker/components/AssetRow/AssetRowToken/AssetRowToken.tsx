@@ -32,13 +32,7 @@ export function AssetRowToken({
             padding={isHiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
             isDisabled={!onClick}
         >
-            <Row
-                data-testid={
-                    dataTestId ? `${dataTestId}/${account.symbol}/${token.symbol}` : undefined
-                }
-                gap={12}
-                overflow="hidden"
-            >
+            <Row data-testid={dataTestId} gap={12} overflow="hidden">
                 <AssetLogo
                     size={40}
                     coingeckoId={getCoingeckoId(account.symbol)!}

@@ -45,7 +45,6 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             const isCryptoInput = true;
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
-                cryptoCurrency: cryptoId,
                 wantCrypto: isCryptoInput,
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);

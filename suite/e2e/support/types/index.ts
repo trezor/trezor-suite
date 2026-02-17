@@ -1,5 +1,8 @@
+import { CryptoId } from 'invity-api';
+import { RequireExactlyOne } from 'type-fest';
+
 import { AnalyticsDesktopEvents } from '@suite/analytics';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
@@ -48,6 +51,7 @@ export type ElectronConf = Pick<
     LaunchSuiteParams,
     'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
 >;
+
 export type TrezorUserEnv = Pick<
     TrezorUserEnvLinkClass,
     | 'logTestDetails'
@@ -59,3 +63,23 @@ export type TrezorUserEnv = Pick<
     | 'mineBlocks'
     | 'sendToAddressAndMineBlock'
 >;
+
+export type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
+
+export type BuyAsset = RequireExactlyOne<
+    {
+        searchFilter?: string;
+        networkFilter?: AssetPickerNetworkFilter;
+        assetCryptoId?: CryptoId;
+        networkSymbol?: NetworkSymbol;
+        tokenSymbol?: string;
+    },
+    'assetCryptoId' | 'networkSymbol'
+>;
+
+export type SellAsset = {
+    searchFilter?: string;
+    networkFilter?: AssetPickerNetworkFilter;
+    networkSymbol: NetworkSymbol;
+    tokenSymbol?: string;
+};

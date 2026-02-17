@@ -19,12 +19,7 @@ export function AssetRowAccountWithBalance({
 }: AssetRowAccountWithBalanceProps) {
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
-            <Row
-                data-testid={dataTestId ? `${dataTestId}/${account.symbol}` : undefined}
-                gap={12}
-                alignItems="center"
-                overflow="hidden"
-            >
+            <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">
                 <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
                     <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">

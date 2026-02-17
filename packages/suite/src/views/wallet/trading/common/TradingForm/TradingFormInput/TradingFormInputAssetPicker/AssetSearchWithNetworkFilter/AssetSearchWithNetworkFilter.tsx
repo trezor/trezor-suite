@@ -13,7 +13,6 @@ export interface AssetSearchWithNetworkFilterProps {
     networkFilter: NetworkSymbol | undefined;
     setNetworkFilter: (networkFilter: NetworkSymbol | undefined) => void;
     networks: NetworkSymbol[];
-    dataTestId?: string;
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
@@ -23,7 +22,6 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     networkFilter,
     setNetworkFilter,
     networks,
-    dataTestId,
 }: AssetSearchWithNetworkFilterProps) {
     const { translationString } = useTranslation();
 
@@ -40,7 +38,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                     includeAllOption: true,
                     allLabel: translationString('TR_ALL_NETWORKS'),
                 }}
-                data-testid={dataTestId ? `${dataTestId}/search` : undefined}
+                data-testid="@asset-picker/search"
             />
         </Box>
     );

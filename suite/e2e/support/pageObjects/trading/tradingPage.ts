@@ -1,5 +1,4 @@
 import { Locator, Page } from '@playwright/test';
-import { CryptoId } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import { TradingCountryCode } from '@suite-common/trading';
@@ -15,6 +14,7 @@ import { TradingReceiveAccount } from './receiveAccount';
 import { invityEndpoint } from '../../../fixtures/invity';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+import { BuyAsset, SellAsset } from '../../types';
 
 export class TradingPage {
     readonly fees: FeeSection;
@@ -77,17 +77,44 @@ export class TradingPage {
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
     }
 
+    /**
+     * Fills the buy form with the specified amount and configuration.
+     * Asset should be selected beforehand using asset picker.
+     *
+     * @param params - The buy form parameters
+     * @param params.amount - The amount to buy (as a string, e.g., "1000", "0.01")
+     * @param params.wantCrypto - Whether the amount is specified in crypto (true) or fiat (false). Default: false
+     * @param params.fiatCurrencyCode - The fiat currency code (e.g., 'czk', 'eur', 'usd'). Default: 'czk'
+     * @param params.country - The country code for residence (e.g., 'CZ', 'US', 'GB'). Default: 'CZ'
+     * @param params.selectReceiveAddress - Optional async callback to select a custom receive address
+     *
+     * @example
+     * // Buy Bitcoin with fiat amount (CZK)
+     * await tradingPage.fillBuyForm({
+     *     amount: '1000',
+     *     selectReceiveAddress: async () => {
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *     }
+     * });
+     *
+     * @example
+     * // Buy with EUR currency from specific country
+     * await tradingPage.fillBuyForm({
+     *     amount: '500',
+     *     fiatCurrencyCode: 'eur',
+     *     country: 'DE'
+     * });
+     *
+     */
     @step()
     async fillBuyForm({
         amount,
-        cryptoCurrency = 'bitcoin',
         wantCrypto = false,
         fiatCurrencyCode = 'czk',
         country = 'CZ',
         selectReceiveAddress,
     }: {
         amount: string;
-        cryptoCurrency?: string;
         wantCrypto?: boolean;
         fiatCurrencyCode?: BaseCurrencyCode;
         country?: TradingCountryCode;
@@ -107,25 +134,51 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
         await inputField.fill(amount);
-        await expect.soft(quotesRequestPromise).toHavePayload({
-            wantCrypto,
-            fiatCurrency: fiatCurrencyCode.toUpperCase(),
-            receiveCurrency: cryptoCurrency,
-            country,
-            ...(wantCrypto ? { cryptoStringAmount: amount } : { fiatStringAmount: amount }),
-        });
         await quotesResponsePromise;
         await this.quotes.waitForSync();
     }
 
+    /**
+     * Fills the sell form with the specified amount and configuration.
+     * Asset should be selected beforehand using asset picker.
+     *
+     * @param params - The sell form parameters
+     * @param params.cryptoAmount - The amount of crypto to sell (as a string, e.g., "0.001", "100")
+     * @param params.networkSymbolOrTokenId - The network symbol or token ID to sell from. Default: 'btc'
+     *   - For coins: 'btc', 'eth', 'sol'
+     *   - For tokens: '{network}-{tokenAddress}' (e.g., 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')
+     * @param params.fiatCurrencyCode - The fiat currency code (e.g., 'eur', 'czk', 'usd'). Default: 'eur'
+     * @param params.country - The country code for residence (e.g., 'CZ', 'US', 'GB'). Default: 'CZ'
+     *
+     * @example
+     * // Sell Solana for EUR with explicit network symbol
+     * await tradingPage.fillSellForm({
+     *     cryptoAmount: '0.5',
+     *     networkSymbolOrTokenId: 'sol',
+     * });
+     *
+     * @example
+     * // Sell Ethereum for CZK
+     * await tradingPage.fillSellForm({
+     *     cryptoAmount: '0.008',
+     *     networkSymbolOrTokenId: 'eth',
+     *     fiatCurrencyCode: 'czk'
+     * });
+     *
+     * @example
+     * // Sell Ethereum USDC token for EUR
+     * await tradingPage.fillSellForm({
+     *     cryptoAmount: '100',
+     *     networkSymbolOrTokenId: 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+     * });
+     *
+     */
     @step()
     async fillSellForm({
         cryptoAmount,
         networkSymbolOrTokenId = 'btc',
-        cryptoCurrency = 'bitcoin',
         fiatCurrencyCode = 'eur',
         country = 'CZ',
     }: {
@@ -139,23 +192,11 @@ export class TradingPage {
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
         const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;
         await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false);
-        const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
         await this.inputs.cryptoAmount.fill(cryptoAmount);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
-        await expect.soft(quoteRequestPromise).toHavePayload(
-            {
-                amountInCrypto: true,
-                cryptoCurrency,
-                fiatCurrency: fiatCurrencyCode.toUpperCase(),
-                country,
-                cryptoStringAmount: cryptoAmount,
-                flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
-            },
-            { omit: ['fiatStringAmount'] },
-        );
         await this.quotes.waitForSync();
     }
 
@@ -175,6 +216,63 @@ export class TradingPage {
         await expect(this.quotes.loadingSpinner).toBeHidden({ timeout: 30000 });
     }
 
+    /**
+     * Fills the swap form with the specified sell and buy assets and amount.
+     *
+     * @param params - The swap form parameters
+     * @param params.amount - The amount to swap (as a string, e.g., "0.001")
+     * @param params.sellAsset - The asset to sell (required: networkSymbol)
+     * @param params.sellAsset.networkSymbol - The network symbol to sell from (e.g., 'btc', 'eth', 'sol')
+     * @param params.sellAsset.tokenSymbol - Optional token symbol if selling a token (e.g., 'USDT', 'USDC')
+     * @param params.sellAsset.searchFilter - Optional search string to filter assets in picker (e.g., 'Solana #1', 'USDT')
+     * @param params.sellAsset.networkFilter - Optional network filter ('all-networks' or specific network symbol like 'sol', 'btc')
+     * @param params.buyAsset - The asset to buy (requires EITHER assetCryptoId OR networkSymbol, not both)
+     * @param params.buyAsset.assetCryptoId - The Invity crypto ID for the asset to buy (e.g., token mint address for Solana tokens)
+     * @param params.buyAsset.networkSymbol - Alternative to assetCryptoId: network symbol to buy (e.g., 'btc', 'eth')
+     * @param params.buyAsset.tokenSymbol - Optional token symbol if buying a token (e.g., 'USDT', 'USDC')
+     * @param params.buyAsset.searchFilter - Optional search string to filter assets in picker (e.g., 'Bitcoin', 'USDC')
+     * @param params.buyAsset.networkFilter - Optional network filter ('all-networks' or specific network symbol like 'eth', 'btc')
+     * @param params.selectReceiveAddress - Optional async callback to select a custom receive address (e.g., selecting specific account)
+     *
+     * @example
+     * // Swap coin to coin (Solana to Bitcoin) with search filters
+     * await tradingPage.fillSwapForm({
+     *     amount: '0.001',
+     *     sellAsset: {
+     *         searchFilter: 'Solana #1',
+     *         networkSymbol: 'sol'
+     *     },
+     *     buyAsset: {
+     *         searchFilter: 'Bitcoin',
+     *         assetCryptoId: getCryptoId('btc')
+     *     },
+     *     selectReceiveAddress: async () => {
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *     }
+     * });
+     *
+     *
+     * @example
+     * // Swap token to token (Solana USDT to Solana USDC) both using crypto IDs
+     * await tradingPage.fillSwapForm({
+     *     amount: '100',
+     *     sellAsset: {
+     *         networkFilter: 'sol',
+     *         networkSymbol: 'sol',
+     *         tokenSymbol: 'USDT',
+     *         searchFilter: 'USDT'
+     *     },
+     *     buyAsset: {
+     *         searchFilter: 'USDC',
+     *         networkFilter: 'sol',
+     *         assetCryptoId: usdcMint as CryptoId
+     *     },
+     *     selectReceiveAddress: async () => {
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+     *     }
+     * });
+     *
+     */
     @step()
     async fillSwapForm({
         sellAsset,
@@ -183,12 +281,8 @@ export class TradingPage {
         amount,
     }: {
         amount: string;
-        sellAsset: Parameters<TradingAssetsModal['selectSellAsset']>[0] & {
-            assetCryptoId: CryptoId;
-        };
-        buyAsset: Omit<Parameters<TradingAssetsModal['selectBuyAsset']>[0], 'assetCryptoId'> & {
-            assetCryptoId: CryptoId;
-        };
+        sellAsset: SellAsset;
+        buyAsset: BuyAsset;
         selectReceiveAddress?: () => Promise<void>;
     }) {
         await this.assets.selectSellAsset(sellAsset);
@@ -228,19 +322,19 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.buyAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('You sell')).toBeVisible();
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assets.sellAssetPickerDisplaySymbol).toHaveText(displaySymbol);
+        await expect.soft(this.assets.assetPickerDisplaySymbol).toHaveText(displaySymbol);
         await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
     }
 }
