@@ -33,7 +33,7 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../config" },
-        { "path": "../device" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
         { "path": "../icons" },
         { "path": "../intl" },

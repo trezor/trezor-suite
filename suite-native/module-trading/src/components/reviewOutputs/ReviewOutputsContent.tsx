@@ -1,7 +1,7 @@
 import { TradingType } from '@suite-common/trading';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorWrapper } from '@suite-native/device';
+import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 import { ReviewOutputItemList } from '@suite-native/transaction-management';

@@ -15,7 +15,7 @@ import { prepareNativeTheme } from '@trezor/theme';
 import { ConfirmOnTrezorContent, type ConfirmOnTrezorWrapperProps } from './ConfirmOnTrezorContent';
 import { ConfirmOnTrezorHeader } from './ConfirmOnTrezorHeader';
 import { ConfirmOnTrezorInstructions } from './ConfirmOnTrezorInstructions';
-import { useConfirmOnTrezorSheet } from './hooks/useConfirmOnTrezorSheet';
+import { useConfirmOnTrezorSheet } from '../hooks/useConfirmOnTrezorSheet';
 
 const instructionsContainerStyle = prepareNativeStyle<{
     paddingTop: number;

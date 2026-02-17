@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorAnimation } from '@suite-native/device';
+import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackRoutes,

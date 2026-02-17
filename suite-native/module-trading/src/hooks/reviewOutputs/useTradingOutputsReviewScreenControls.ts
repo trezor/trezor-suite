@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { sendFormActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { useConfirmOnTrezorController } from '@suite-native/device';
+import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,

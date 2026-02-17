@@ -2,7 +2,7 @@ import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ConfirmOnTrezorAnimation } from '../ConfirmOnTrezorAnimation';
+import { ConfirmOnTrezorAnimation } from './ConfirmOnTrezorAnimation';
 
 const containerStyle = prepareNativeStyle(() => ({
     marginTop: '25%',

@@ -1,0 +1,31 @@
+{
+    "name": "@suite-native/confirm-on-trezor",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "7.1.26",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/config": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/theme": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "expo-haptics": "~15.0.8",
+        "expo-linear-gradient": "~15.0.8",
+        "react": "19.1.0",
+        "react-native": "0.81.5",
+        "react-native-gesture-handler": "2.29.0",
+        "react-native-reanimated": "~4.1.5"
+    }
+}
