@@ -1,17 +1,19 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
+import { Static, Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport';
 import { PartialRecord } from '@trezor/type-utils';
 
 import type { FirmwareChannel } from '../types/firmware';
 
-export interface Manifest {
-    appName: string;
-    appIcon?: string;
-    appUrl: string;
-    email: string;
-}
+export const Manifest = Type.Object({
+    appName: Type.String(),
+    appIcon: Type.Optional(Type.String()),
+    appUrl: Type.String(),
+    email: Type.String(),
+});
+export type Manifest = Static<typeof Manifest>;
 
 // timeouts for firmware hash check in milliseconds per model type
 export type FirmwareHashCheckTimeouts = PartialRecord<DeviceModelInternal, number>;
