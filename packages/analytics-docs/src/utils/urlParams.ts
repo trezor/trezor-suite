@@ -18,7 +18,7 @@ export const getParamsFromUrl = (): UrlParams => {
         query: params.get('q') ?? '',
         platform: allPlatforms.includes(platformParam) ? platformParam : 'all',
         sort: sorts.includes(sortParam) ? sortParam : 'az',
-        sidebarOpen: sidebarParam === '1' || sidebarParam === 'true' || sidebarParam === 'open',
+        sidebarOpen: sidebarParam === 'true',
     };
 };
 
@@ -34,7 +34,7 @@ export const updateUrl = (
     if (query) params.set('q', query);
     if (platform !== 'all') params.set('platform', platform);
     if (sort !== 'az') params.set('sort', sort);
-    if (sidebarOpen === true) params.set('sidebar', '1');
+    if (sidebarOpen === true) params.set('sidebar', 'true');
     const search = params.toString();
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
 
