@@ -8,7 +8,7 @@ import {
 } from '@suite-common/trading';
 import { NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { Box, Column, Row, Text } from '@trezor/components';
+import { Box, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -40,10 +40,11 @@ export const TradingInfoItem = ({
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
-    const showAccountLabel = !!account && type !== 'sell';
+    const showAccountLabel = !!account;
     const isExternalExchange = type === 'exchange' && !account && !!receiveAddress;
 
     const {
+        id,
         isNativeToken,
         networkSymbol,
         name,
@@ -86,62 +87,70 @@ export const TradingInfoItem = ({
                     </Text>
                 )}
             </Row>
-            <Box
-                borderWidth={borders.widths.medium}
-                borderRadius={borders.radii.sm}
-                padding={16}
-                backgroundColor="backgroundSurfaceElevation2"
-            >
-                <Row gap={8} justifyContent="space-between">
-                    <Row gap={8} alignItems="center">
-                        {isNativeToken ? (
-                            <CoinLogo
-                                size={40}
-                                symbol={symbol as NetworkSymbol}
-                                type="tokenWithNetwork"
-                            />
-                        ) : (
-                            <AssetLogo
-                                size={40}
-                                coingeckoId={coingeckoId}
-                                symbol={networkSymbol}
-                                contractAddress={contractAddress}
-                                placeholder={displaySymbol}
-                                showNetworkIcon={showNetwork}
-                            />
-                        )}
-                        <Column alignItems="start">
-                            <Text>{displayName}</Text>
-                            {showNetwork && (
+            {id !== currency ? (
+                <SkeletonRectangle width="100%" height={75} />
+            ) : (
+                <Box
+                    borderWidth={borders.widths.medium}
+                    borderRadius={borders.radii.sm}
+                    padding={16}
+                    backgroundColor="backgroundSurfaceElevation2"
+                >
+                    <Row gap={8} justifyContent="space-between">
+                        <Row gap={8} alignItems="center">
+                            {isNativeToken ? (
+                                <CoinLogo
+                                    size={40}
+                                    symbol={symbol as NetworkSymbol}
+                                    type="tokenWithNetwork"
+                                />
+                            ) : (
+                                <AssetLogo
+                                    size={40}
+                                    coingeckoId={coingeckoId}
+                                    symbol={networkSymbol}
+                                    contractAddress={contractAddress}
+                                    placeholder={displaySymbol}
+                                    showNetworkIcon={showNetwork}
+                                />
+                            )}
+                            <Column alignItems="start">
+                                <Text>{displayName}</Text>
+                                {showNetwork && (
+                                    <Text
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="body-sm"
+                                    >
+                                        {networkName}
+                                    </Text>
+                                )}
+                            </Column>
+                        </Row>
+                        <Column alignItems="flex-end">
+                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
+
+                            {currencyInfo?.symbol && (
                                 <Text
                                     intent="neutral"
                                     priority="secondary"
                                     typographyStyle="body-sm"
                                 >
-                                    {networkName}
+                                    <BaseCurrencyValue
+                                        amount={amount}
+                                        symbol={currencyInfo.symbol}
+                                        rateType="current"
+                                        tokenAddress={
+                                            currencyInfo.contractAddress as TokenAddress | undefined
+                                        }
+                                        showApproximationIndicator
+                                    />
                                 </Text>
                             )}
                         </Column>
                     </Row>
-                    <Column alignItems="flex-end">
-                        <TradingCryptoAmount amount={amount} cryptoId={currency} />
-
-                        {currencyInfo?.symbol && (
-                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                                <BaseCurrencyValue
-                                    amount={amount}
-                                    symbol={currencyInfo.symbol}
-                                    rateType="current"
-                                    tokenAddress={
-                                        currencyInfo.contractAddress as TokenAddress | undefined
-                                    }
-                                    showApproximationIndicator
-                                />
-                            </Text>
-                        )}
-                    </Column>
-                </Row>
-            </Box>
+                </Box>
+            )}
         </Column>
     );
 };

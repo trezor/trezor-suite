@@ -2,6 +2,7 @@ import { JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
@@ -9,7 +10,7 @@ import { breakpoints } from '@trezor/theme';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
-import { useSelector } from '../../../../../hooks/suite';
+import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
 import { useConditionalRender } from '../../../../../support/suite/ConditionalRender';
 import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
@@ -34,6 +35,7 @@ export const HeaderDropdown = ({
     showSignAndVerify,
 }: HeaderDropdownProps) => {
     const analytics = useAnalytics();
+    const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
@@ -63,7 +65,15 @@ export const HeaderDropdown = ({
         {
             id: 'wallet-trading-buy',
             callback: () => {
-                goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
+                if (account) {
+                    dispatch(
+                        tradingActions.setTradingFromPrefilledAccount(
+                            getTradingPrefilledFromAccountData(account),
+                        ),
+                    );
+                }
+
+                goToWithAnalytics('wallet-trading-buy');
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -82,6 +92,14 @@ export const HeaderDropdown = ({
         {
             id: 'wallet-swap',
             callback: () => {
+                if (account) {
+                    dispatch(
+                        tradingActions.setTradingFromPrefilledAccount(
+                            getTradingPrefilledFromAccountData(account),
+                        ),
+                    );
+                }
+
                 goToWithAnalytics('wallet-trading-exchange', {
                     preserveParams: false,
                 });

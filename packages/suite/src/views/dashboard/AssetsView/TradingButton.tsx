@@ -1,11 +1,13 @@
 import { MouseEvent, ReactNode } from 'react';
 
 import { Route } from '@suite-common/suite-types';
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { useAccountSearch, useDispatch } from 'src/hooks/suite';
+import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 
 type TradingButtonProps = {
     children: ReactNode;
@@ -24,19 +26,24 @@ export const TradingButton = ({
 }: TradingButtonProps) => {
     const dispatch = useDispatch();
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
+    const accounts = useSelector(selectVisibleDeviceAccounts);
 
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
         onButtonClick?.();
 
-        dispatch(
-            routerActions.goto(routeName, {
-                params: {
-                    symbol,
-                    accountIndex: 0,
-                    accountType: 'normal',
-                },
-            }),
+        const account = accounts.find(
+            a => a.symbol === symbol && a.accountType === 'normal' && a.index === 0,
         );
+
+        if (account) {
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount(
+                    getTradingPrefilledFromAccountData(account),
+                ),
+            );
+        }
+
+        dispatch(routerActions.goto(routeName));
         toggleCoinFilter(symbol);
         setSearchString(undefined);
 

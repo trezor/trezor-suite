@@ -28,6 +28,7 @@ export interface TradingBuyState {
     selectedQuote: BuyTrade | undefined;
     preselectedQuote: BuyTrade | undefined;
     tradingAccountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     receiveAddress?: string;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
@@ -44,6 +45,7 @@ export const buyInitialState: TradingBuyState = {
     preselectedQuote: undefined,
     quotes: [],
     tradingAccountKey: undefined,
+    receiveAccountKey: undefined,
     receiveAddress: undefined,
     isLoading: false,
     amountLimits: undefined,
@@ -85,6 +87,9 @@ const tradingBuySlice = createSlice({
         },
         setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.tradingAccountKey = action.payload;
+        },
+        setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+            state.receiveAccountKey = action.payload;
         },
         setReceiveAddress(state, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;

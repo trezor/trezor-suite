@@ -132,7 +132,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
 
         await test.step('Return to account buy form', async () => {
             await tradingPage.backToAccountButton('Buy').click();
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
         });
     });
 });

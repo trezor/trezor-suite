@@ -25,12 +25,10 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
-
-export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
 
 export type UseTradingFormCommonProps = {
     /**
@@ -41,8 +39,6 @@ export type UseTradingFormCommonProps = {
      */
     pageType?: TradingPageType;
 };
-
-export type UseTradingFormProps = UseTradingProps & UseTradingFormCommonProps;
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;

@@ -69,7 +69,6 @@ export const TradingSelectedOfferInfo = ({
                     currency={quoteAmounts?.receiveCurrency}
                     amount={quoteAmounts?.receiveAmount}
                     receiveAddress={getReceiveAddress(selectedQuote)}
-                    isReceive
                 />
             )}
 

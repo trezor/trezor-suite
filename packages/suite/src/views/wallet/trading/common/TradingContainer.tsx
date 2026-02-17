@@ -17,7 +17,6 @@ export interface TradingContainerProps {
 }
 
 export const TradingContainer = ({ SectionComponent, provider }: TradingContainerProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     return (
@@ -27,7 +26,7 @@ export const TradingContainer = ({ SectionComponent, provider }: TradingContaine
                     <DiscoveryWarning />
                 </Column>
             )}
-            <SectionComponent selectedAccount={selectedAccount} />
+            <SectionComponent />
             <TradingFooter provider={provider} />
         </TradingLayoutHeader>
     );

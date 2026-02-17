@@ -53,7 +53,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 ),
             );
 
-            dispatch(goto(gotoRouteName, { preserveParams: type !== 'exchange' }));
+            dispatch(goto(gotoRouteName));
 
             switch (type) {
                 case 'buy':

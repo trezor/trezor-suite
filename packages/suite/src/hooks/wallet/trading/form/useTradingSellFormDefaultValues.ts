@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     TradingCountryCode,
@@ -23,14 +25,13 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
-import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellFormDefaultValues = (
     accountKey: AccountKey,
+    cryptoId: CryptoId,
     sellInfoCountry: TradingCountryCode | undefined,
     sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {
-    const { cryptoId } = useTradingFormAccount('sell');
     const { isTorEnabled } = useSelector(selectTorState);
 
     const { account, defaultAsset } = useTradingDefaultSellAsset({

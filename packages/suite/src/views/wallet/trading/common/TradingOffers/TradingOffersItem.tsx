@@ -14,10 +14,10 @@ import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -106,7 +106,6 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
         form: {
             state: { isFormLoading },
         },
-        account,
     } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -116,26 +115,23 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const selectQuote = getSelectQuoteTyped(context);
 
-    const { navigateToExchangeForm, navigateToBuyForm, navigateToSellForm } =
-        useTradingNavigation(account);
-
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const onSelectQuote = () => {
         switch (context.type) {
             case 'exchange':
                 dispatch(tradingExchangeActions.savePreselectedQuote(quote as ExchangeTrade));
-                navigateToExchangeForm();
+                dispatch(goto('wallet-trading-exchange'));
                 break;
 
             case 'buy':
                 dispatch(tradingBuyActions.savePreselectedQuote(quote as BuyTrade));
-                navigateToBuyForm();
+                dispatch(goto('wallet-trading-buy'));
                 break;
 
             case 'sell':
                 dispatch(tradingSellActions.savePreselectedQuote(quote as SellFiatTrade));
-                navigateToSellForm();
+                dispatch(goto('wallet-trading-sell'));
                 break;
         }
     };

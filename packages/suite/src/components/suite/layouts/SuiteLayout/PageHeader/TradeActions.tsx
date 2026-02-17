@@ -46,9 +46,15 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     };
 
     const onBuyAndSellClick = () => {
-        goToWithAnalytics('wallet-trading-buy', {
-            preserveParams: true,
-        });
+        if (account) {
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount(
+                    getTradingPrefilledFromAccountData(account),
+                ),
+            );
+        }
+
+        goToWithAnalytics('wallet-trading-buy');
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

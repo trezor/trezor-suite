@@ -5,34 +5,22 @@ import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/compone
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
 type TradingDetailBuyPaymentFailedProps = {
-    account: Account;
     trade: BuyTrade;
     provider?: BuyProviderInfo;
 };
 
 export const TradingDetailBuyPaymentFailed = ({
-    account,
     trade,
     provider,
 }: TradingDetailBuyPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () =>
-        dispatch(
-            goto('wallet-trading-buy', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const handleClick = () => dispatch(goto('wallet-trading-buy'));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>

@@ -179,10 +179,13 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     // ignore not listed actions
     if (!actions.has(action.type)) return;
     const state = getState();
-    // ignore if not in wallet or in swap trading
+    // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
     if (
         state.router.app !== 'wallet' ||
-        state.router.route.name.startsWith('wallet-trading-exchange')
+        state.router.route.name.startsWith('wallet-trading-buy') ||
+        state.router.route.name.startsWith('wallet-trading-sell') ||
+        state.router.route.name.startsWith('wallet-trading-exchange') ||
+        state.router.route.name === 'wallet-trading-redirect'
     ) {
         return;
     }

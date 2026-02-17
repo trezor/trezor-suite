@@ -81,6 +81,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearSelectedAccounts: state => {
             state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAccountKey = undefined;
             state.buy.receiveAddress = undefined;
             state.exchange.tradingAccountKey = undefined;
             state.exchange.receiveAccountKey = undefined;

@@ -32,16 +32,15 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
+import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
@@ -50,20 +49,19 @@ import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { UseTradingFormProps } from 'src/types/trading/trading';
+import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
 import { useTradingInitializer } from './common/useTradingInitializer';
+import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellForm = ({
-    selectedAccount,
     pageType = 'form',
-}: UseTradingFormProps): TradingSellFormContextProps => {
+}: UseTradingFormCommonProps = {}): TradingSellFormContextProps => {
     const analytics = useAnalytics();
     const type = 'sell';
     const isFormPage = pageType === 'form';
@@ -76,7 +74,6 @@ export const useTradingSellForm = ({
         isFromRedirect,
         quotes,
         transactionId,
-        tradingAccountKey,
         preselectedQuote,
         selectedQuote,
         sellInfo,
@@ -88,14 +85,7 @@ export const useTradingSellForm = ({
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const [accountKey, setAccountKey] = useTradingAccountKey({
-        type,
-        tradingAccountKey,
-        selectedAccount,
-        shouldUseTradingAccountKey: isPreviousRouteFromTradeSection,
-    });
-    const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
-    const account = accountByKey ?? selectedAccount.account;
+    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
         pageType,
@@ -104,9 +94,6 @@ export const useTradingSellForm = ({
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
-
-    const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
-        useTradingNavigation(account);
 
     // we consider this feature enabled unless disabled by message system
     const isSlip24FeatureEnabled = useSelector(state =>
@@ -139,6 +126,7 @@ export const useTradingSellForm = ({
         defaultPaymentMethod,
     } = useTradingSellFormDefaultValues(
         accountKey,
+        cryptoId,
         sellInfo?.country,
         sellInfo?.countrySubdivision,
     );
@@ -253,7 +241,6 @@ export const useTradingSellForm = ({
         setComposedLevels,
         setAccountOnChange: newAccount => {
             dispatch(tradingSellActions.setTradingAccountKey(newAccount.key));
-            setAccountKey(newAccount.key);
         },
         composedLevels,
         composedTransactionInfo,
@@ -316,7 +303,7 @@ export const useTradingSellForm = ({
         await handleChange();
 
         dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
-        navigateToSellOffers();
+        dispatch(goto('wallet-trading-sell-offers'));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -368,7 +355,7 @@ export const useTradingSellForm = ({
         }
 
         const nextStep = () => {
-            navigateToSellConfirm();
+            dispatch(goto('wallet-trading-sell-confirm'));
 
             // empty quoteId means the partner requests login first, requestTrade to get login screen
             if (
@@ -424,15 +411,7 @@ export const useTradingSellForm = ({
 
     const sendTransaction = async () => {
         const nextStep = () => {
-            dispatch(
-                routerActions.goto('wallet-trading-sell-detail', {
-                    params: {
-                        symbol: selectedAccount.account.symbol,
-                        accountIndex: selectedAccount.account.index,
-                        accountType: selectedAccount.account.accountType,
-                    },
-                }),
-            );
+            dispatch(goto('wallet-trading-sell-detail'));
         };
 
         const signAndPushSendFormTransaction = async ({
@@ -571,11 +550,11 @@ export const useTradingSellForm = ({
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
         if (!quotesRequest && !isFormPage && !isOffersPage) {
-            navigateToSellForm();
+            dispatch(goto('wallet-trading-sell'));
 
             return;
         }
-    }, [quotesRequest, isFormPage, isOffersPage, navigateToSellForm]);
+    }, [quotesRequest, isFormPage, isOffersPage, dispatch]);
 
     useEffect(() => {
         if (isFromRedirect) {

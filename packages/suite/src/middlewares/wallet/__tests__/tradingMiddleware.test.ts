@@ -161,19 +161,19 @@ describe('tradingMiddleware', () => {
 
     it.each([
         [
-            'should clean prefilledFromCryptoId when route is change from sell to buy',
+            'should keep prefilledFromAccount when route is changed from sell to buy',
             {
-                cryptoId: undefined,
-                key: undefined,
+                cryptoId: 'bitcoin' as CryptoId,
+                key: 'descriptor',
             },
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
         ],
         [
-            'should clean prefilledFromCryptoId when route is change from buy to sell',
+            'should keep prefilledFromAccount when route is changed from buy to sell',
             {
-                cryptoId: undefined,
-                key: undefined,
+                cryptoId: 'bitcoin' as CryptoId,
+                key: 'descriptor',
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,

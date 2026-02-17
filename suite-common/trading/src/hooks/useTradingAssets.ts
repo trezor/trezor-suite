@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api';
 
 import {
+    Network,
     NetworkConfigWithoutTestnets,
     NetworkSymbol,
     getDisplaySymbol,
@@ -44,6 +45,14 @@ function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, crypto
         getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
     return networkSymbol && supportedAddressValidatorSymbols.has(networkSymbol);
+}
+
+function getNonTestnetNetworkSymbol(
+    network?: Network,
+): NetworkConfigWithoutTestnets['symbol'] | null {
+    return !network || network.testnet
+        ? null
+        : (network.symbol as NetworkConfigWithoutTestnets['symbol']);
 }
 
 function isAssetWithSupportedNetwork(
@@ -245,15 +254,14 @@ export function useTradingAssets() {
         [getCoinsAndPlatforms],
     );
 
-    const createAssetOptionFromCryptoId = useCallback<
-        (
-            cryptoId?: CryptoId,
-            defaultNetworkSymbol?: NetworkConfigWithoutTestnets['symbol'],
-        ) => TradingAssetOption
-    >(
-        (cryptoId, defaultNetworkSymbol = TRADING_DEFAULT_CRYPTO_CURRENCY) => {
+    const createAssetOptionFromCryptoId = useCallback<(cryptoId?: CryptoId) => TradingAssetOption>(
+        cryptoId => {
             const { coins, platforms } = getCoinsAndPlatforms();
-            const defaultAssetOption = createAssetNativeTokenOption(defaultNetworkSymbol);
+
+            const network = cryptoIdToNetwork(cryptoId);
+            const resolvedNetworkSymbol =
+                getNonTestnetNetworkSymbol(network) ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
+            const defaultAssetOption = createAssetNativeTokenOption(resolvedNetworkSymbol);
 
             if (cryptoId && coins[cryptoId]) {
                 return (

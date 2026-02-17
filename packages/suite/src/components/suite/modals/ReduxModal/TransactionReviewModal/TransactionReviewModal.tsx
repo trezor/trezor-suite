@@ -48,7 +48,6 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     );
 
     const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
-    const isSelectedAccountLoaded = selectedAccount.status === 'loaded';
     const isExchange = precomposedForm?.trading?.activeSection === 'exchange';
     const isSell = precomposedForm?.trading?.activeSection === 'sell';
 
@@ -102,19 +101,16 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         );
     }
 
-    if (isSelectedAccountLoaded) {
-        if (isSell) {
-            return (
-                <TransactionReviewModalSell
-                    selectedAccount={selectedAccount}
-                    decision={decision}
-                    txInfoState={txInfoState}
-                    cancelSignTx={handleCancelSignTx}
-                    isRbfConfirmedError={isRbfConfirmedError}
-                    precomposedForm={precomposedForm}
-                />
-            );
-        }
+    if (isSell) {
+        return (
+            <TransactionReviewModalSell
+                decision={decision}
+                txInfoState={txInfoState}
+                cancelSignTx={handleCancelSignTx}
+                isRbfConfirmedError={isRbfConfirmedError}
+                precomposedForm={precomposedForm}
+            />
+        );
     }
 
     return (

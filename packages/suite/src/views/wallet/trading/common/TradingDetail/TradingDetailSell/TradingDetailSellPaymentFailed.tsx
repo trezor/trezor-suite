@@ -23,16 +23,7 @@ export const TradingDetailSellPaymentFailed = ({
 }: TradingDetailSellPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () =>
-        dispatch(
-            goto('wallet-trading-sell', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const handleClick = () => dispatch(goto('wallet-trading-sell'));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>

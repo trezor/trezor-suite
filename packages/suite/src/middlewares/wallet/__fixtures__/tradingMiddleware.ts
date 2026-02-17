@@ -5,10 +5,10 @@ type Route = RouterState['route'];
 const TRADING_BUY_ROUTE = {
     anchor: undefined,
     app: 'wallet',
-    hash: '#/btc/0/normal',
+    hash: '',
     search: '',
     loaded: true,
-    params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
+    params: undefined,
     pathname: '/accounts/coinmarket/buy',
     route: {
         name: 'wallet-trading-buy',
@@ -21,10 +21,10 @@ const TRADING_BUY_ROUTE = {
 const TRADING_SELL_ROUTE = {
     anchor: undefined,
     app: 'wallet',
-    hash: '#/btc/0/normal',
+    hash: '',
     search: '',
     loaded: true,
-    params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
+    params: undefined,
     pathname: '/accounts/coinmarket/sell',
     route: {
         name: 'wallet-trading-sell',
