@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { H4, TextProps } from '@trezor/components';
+import { H4, type TextProps } from '@trezor/components';
 
 type EarnRewardsAmountProps = {
     symbol: NetworkSymbol;

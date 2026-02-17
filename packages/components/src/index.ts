@@ -109,6 +109,13 @@ export {
     withFrameProps,
     getFramePropsStory,
 } from './utils/frameProps';
+export {
+    type TextProps as TextStyleProps,
+    type TextPropsKeys,
+    pickAndPrepareTextProps,
+    withTextProps,
+    getTextPropsStory,
+} from './components/typography/utils';
 export type { FlexDirection } from './components/Flex/FlexProp';
 
 export * from './constants/keyboardEvents';

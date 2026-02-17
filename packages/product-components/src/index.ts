@@ -19,7 +19,7 @@ export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTab
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
-export { CardButton } from './components/CardButton/CardButton';
+export { CardList, type CardListProps } from './components/CardList/CardList';
 export { FeeRate } from './components/FeeRate/FeeRate';
 export {
     DeviceAnimation,

@@ -45,7 +45,7 @@ export const parameters = {
         showInfo: true,
         panelPosition: 'right',
         storySort: {
-            order: ['🎨 Colors', '🫵 Buttons', '✏️ Form', '🅰️ Typography', '*'],
+            order: ['*'],
             method: 'alphabetical',
             locales: 'cs',
         },

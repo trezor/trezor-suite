@@ -1,7 +1,8 @@
 import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { BadgeSize, FlexProps, Row, Text, TextProps } from '@trezor/components';
+import { BadgeSize, FlexProps, Row, Text, type TextProps } from '@trezor/components';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
@@ -17,7 +18,7 @@ interface AccountLabelProps {
     intent?: TextProps['intent'];
     priority?: TextProps['priority'];
     isDisabled?: TextProps['isDisabled'];
-    typographyStyle?: TextProps['typographyStyle'];
+    typographyStyle?: TypographyStyle;
     rowProps?: Omit<FlexProps, 'children'>;
 }
 

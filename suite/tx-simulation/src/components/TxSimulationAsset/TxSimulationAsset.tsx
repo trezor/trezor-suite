@@ -26,7 +26,7 @@ export const TxSimulationAsset = ({
             {assetDiff?.in.map((inAmount, inIndex) => (
                 <TxSimulationAssetRow
                     key={`in-${inIndex}`}
-                    variant="primary"
+                    intent="brand"
                     amountPrefix="+"
                     amount={inAmount}
                     fiatAmount={inAmount.usd_price}
@@ -38,7 +38,7 @@ export const TxSimulationAsset = ({
             {assetDiff?.out.map((outAmount, outIndex) => (
                 <TxSimulationAssetRow
                     key={`out-${outIndex}`}
-                    variant="destructive"
+                    intent="critical"
                     amountPrefix="-"
                     amount={outAmount}
                     fiatAmount={outAmount.usd_price}
@@ -51,7 +51,8 @@ export const TxSimulationAsset = ({
                 Object.values(assetExposure.spenders).map((spender, index) => (
                     <TxSimulationAssetRow
                         key={`spender-${index}`}
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         amount={spender}
                         fiatAmount={spender.exposure.usd_price}
                         fiatCurrency="USD"
