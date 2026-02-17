@@ -83,7 +83,7 @@ const COMPATIBILITY_PORT = 21325;
 const ADDRESS = new URL('http://127.0.0.1');
 
 export class TrezordNode {
-    version = '3.2.0';
+    version = '3.2.1';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
