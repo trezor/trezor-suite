@@ -1,5 +1,5 @@
-import { DelegatedIdentityKey, TrezorDevice } from '@suite-common/suite-types';
 import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import { DelegatedIdentityKey, TrezorDevice } from '@suite-common/suite-types';
 import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
 
