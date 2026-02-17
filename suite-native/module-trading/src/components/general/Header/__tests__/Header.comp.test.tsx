@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -223,7 +223,7 @@ describe('Header', () => {
             fireEvent.press(renderer.getByText('Swap'));
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingNavigate,
+                type: events.tradingNavigateEvent.name,
                 payload: {
                     action: 'navigate',
                     type: 'exchange',
@@ -258,7 +258,7 @@ describe('Header', () => {
             fireEvent.press(renderer.getByText('Buy'));
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingNavigate,
+                type: events.tradingNavigateEvent.name,
                 payload: {
                     action: 'navigate',
                     type: 'buy',

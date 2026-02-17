@@ -6,7 +6,7 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     PreloadedState,
     TestStore,
@@ -420,7 +420,7 @@ describe('useExchangeQuotes', () => {
             await renderUseExchangeQuotesWithFilledForm(store);
 
             expect(mockReport).toHaveBeenCalledWith({
-                type: EventType.TradingQuoteReceived,
+                type: events.tradingQuoteReceivedEvent.name,
                 payload: {
                     type: 'exchange',
                 },

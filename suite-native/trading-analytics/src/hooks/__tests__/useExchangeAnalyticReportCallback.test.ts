@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
@@ -43,7 +43,7 @@ describe('useExchangeAnalyticReportCallback', () => {
         result.current('exchange-form', 'continue');
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'exchange-form',
                 action: 'continue',
@@ -60,7 +60,7 @@ describe('useExchangeAnalyticReportCallback', () => {
         result.current('exchange-form', 'continue');
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: {
                 step: 'exchange-form',
                 action: 'continue',
@@ -79,7 +79,7 @@ describe('useExchangeAnalyticReportCallback', () => {
         result.current('exchange-form', 'continue');
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: expect.objectContaining({
                 step: 'exchange-form',
                 action: 'continue',
@@ -100,7 +100,7 @@ describe('useExchangeAnalyticReportCallback', () => {
         result.current('exchange-form', 'continue');
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingExchange,
+            type: events.tradingExchangeEvent.name,
             payload: {
                 step: 'exchange-form',
                 action: 'continue',

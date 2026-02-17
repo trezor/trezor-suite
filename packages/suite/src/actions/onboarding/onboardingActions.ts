@@ -1,4 +1,4 @@
-import { EventType, OnboardingAnalytics, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, OnboardingAnalytics, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
@@ -132,7 +132,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
         delete payload.startTime;
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.DeviceSetupCompleted,
+            type: events.deviceSetupCompletedEvent.name,
             payload,
         });
     };

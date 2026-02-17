@@ -1,6 +1,6 @@
 import { TradingCountryOption } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
@@ -87,7 +87,7 @@ describe('TradingCountryOfResidencePicker', () => {
         await userEvent.press(getByText(/Algeria/));
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'buy',
                 parameter: 'country',

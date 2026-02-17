@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import type { TranslationKey } from '@suite/intl';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
@@ -228,7 +228,7 @@ export const toggleTor =
 
         if (ipcResponse.success) {
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.SettingsTor,
+                type: events.settingsTorEvent.name,
                 payload: {
                     value: shouldEnable,
                     location: selectRouterUrl(getState()),

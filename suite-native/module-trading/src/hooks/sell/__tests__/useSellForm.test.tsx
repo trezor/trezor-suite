@@ -2,7 +2,7 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -104,7 +104,7 @@ describe('useSellForm', () => {
             });
 
             expect(mockReport).toHaveBeenCalledWith({
-                type: EventType.TradingParameterChanged,
+                type: events.tradingParameterChangedEvent.name,
                 payload: {
                     type: 'sell',
                     parameter: 'cryptoFrom',
@@ -147,7 +147,7 @@ describe('useSellForm', () => {
             });
 
             expect(mockReport).toHaveBeenCalledWith({
-                type: EventType.TradingParameterChanged,
+                type: events.tradingParameterChangedEvent.name,
                 payload: {
                     type: 'sell',
                     parameter: 'fiat',

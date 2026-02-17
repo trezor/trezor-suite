@@ -3,7 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
@@ -29,7 +29,7 @@ export const enableAnalyticsThunk =
     (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         if (sendReport) {
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.SettingsAnalytics,
+                type: events.settingsAnalyticsEvent.name,
                 payload: { value: true },
             });
         }
@@ -43,7 +43,7 @@ export const disableAnalyticsThunk =
     (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         if (sendReport) {
             asTypedDesktopAnalytics(extra.services.analytics).report(
-                { type: EventType.SettingsAnalytics, payload: { value: false } },
+                { type: events.settingsAnalyticsEvent.name, payload: { value: false } },
                 { force: true },
             );
         }

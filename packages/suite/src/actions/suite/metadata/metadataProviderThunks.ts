@@ -1,4 +1,4 @@
-import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
+import { events, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -138,7 +138,7 @@ export const disconnectProvider =
             });
 
             asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: EventType.SettingsGeneralLabelingProvider,
+                type: events.settingsGeneralLabelingProviderEvent.name,
                 payload: {
                     provider: '',
                 },
@@ -279,7 +279,7 @@ export const connectProvider =
         });
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: EventType.SettingsGeneralLabelingProvider,
+            type: events.settingsGeneralLabelingProviderEvent.name,
             payload: {
                 provider: providerDetails.payload.type,
             },

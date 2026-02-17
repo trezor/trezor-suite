@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -149,13 +149,13 @@ describe('BuyProviderPicker', () => {
 
                 expect(reportMock).toHaveBeenCalledTimes(2);
                 expect(reportMock).toHaveBeenCalledWith({
-                    type: EventType.TradingCompareOffers,
+                    type: events.tradingCompareOffersEvent.name,
                     payload: {
                         type: 'buy',
                     },
                 });
                 expect(reportMock).toHaveBeenCalledWith({
-                    type: EventType.TradingParameterChanged,
+                    type: events.tradingParameterChangedEvent.name,
                     payload: {
                         type: 'buy',
                         parameter: 'provider',
@@ -181,7 +181,7 @@ describe('BuyProviderPicker', () => {
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
                 expect(reportMock).toHaveBeenCalledWith({
-                    type: EventType.TradingCompareOffers,
+                    type: events.tradingCompareOffersEvent.name,
                     payload: {
                         type: 'buy',
                     },

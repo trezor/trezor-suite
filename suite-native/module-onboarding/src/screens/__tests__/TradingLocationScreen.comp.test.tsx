@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
@@ -66,7 +66,7 @@ describe('TradingLocationOnboardingScreen', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'onboarding',
                 parameter: 'country',

@@ -1,5 +1,5 @@
 import { AccountKey } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
@@ -242,7 +242,7 @@ describe('useExchangeFlow', () => {
             triggerAnalyticsTradeConfirmation();
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingConfirmTrade,
+                type: events.tradingConfirmTradeEvent.name,
                 payload: {
                     type: 'exchange',
                 },

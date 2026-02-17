@@ -1,5 +1,5 @@
 import {
-    EventType,
+    events,
     TradingExchangeAction,
     TradingExchangeStep,
     TradingSellAction,
@@ -53,7 +53,7 @@ describe('useTradingAnalyticReportCallback', () => {
             );
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingSell,
+                type: events.tradingSellEvent.name,
                 payload: expect.objectContaining({
                     step: 'sell-form',
                     action: 'visit',
@@ -82,7 +82,7 @@ describe('useTradingAnalyticReportCallback', () => {
             );
 
             expect(reportMock).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
+                type: events.tradingExchangeEvent.name,
                 payload: expect.objectContaining({
                     step: 'exchange-form',
                     action: 'continue',

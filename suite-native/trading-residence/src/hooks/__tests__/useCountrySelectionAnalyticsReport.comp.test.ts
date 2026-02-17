@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
@@ -36,7 +36,7 @@ describe('useCountrySelectionAnalyticsReport', () => {
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
-            type: EventType.TradingCountrySelection,
+            type: events.tradingCountrySelectionEvent.name,
             payload: {
                 type: 'settings',
                 action: 'submitCustom',

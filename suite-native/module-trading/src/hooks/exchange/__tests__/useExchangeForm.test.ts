@@ -2,7 +2,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
     PreloadedState,
@@ -296,7 +296,7 @@ describe('useExchangeForm', () => {
             });
 
             expect(mockReport).toHaveBeenCalledWith({
-                type: EventType.TradingParameterChanged,
+                type: events.tradingParameterChangedEvent.name,
                 payload: {
                     type: 'exchange',
                     parameter: 'cryptoFrom',
@@ -358,7 +358,7 @@ describe('useExchangeForm', () => {
             });
 
             expect(mockReport).toHaveBeenCalledWith({
-                type: EventType.TradingParameterChanged,
+                type: events.tradingParameterChangedEvent.name,
                 payload: {
                     type: 'exchange',
                     parameter: 'cryptoTo',
