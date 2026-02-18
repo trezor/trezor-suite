@@ -4,7 +4,6 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
@@ -13,11 +12,6 @@ import { GraphRangeSelector } from 'src/components/suite/graph/GraphRangeSelecto
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
 import { useGraph, useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphRange,
-} from 'src/types/wallet/graph';
 import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 
 import { GraphBar } from './GraphBar';
@@ -26,6 +20,7 @@ import { GraphTooltipAccount } from './GraphTooltipAccount';
 import { GraphTooltipDashboard } from './GraphTooltipDashboard';
 import { GraphXAxisTick } from './GraphXAxisTick';
 import { GraphYAxisTick } from './GraphYAxisTick';
+import type { CryptoGraphProps, FiatGraphProps, TransactionsGraphProps } from './types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -63,36 +58,6 @@ const Description = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     flex: 1;
 `;
-
-interface CommonProps {
-    isLoading?: boolean;
-    selectedRange: GraphRange;
-    xTicks: number[];
-    localCurrency: string;
-    minMaxValues: [number, number];
-    hideToolbar?: boolean;
-    onRefresh?: (abortController?: AbortController) => Promise<any>;
-}
-
-export interface CryptoGraphProps extends CommonProps {
-    variant: 'one-asset';
-    account: Account;
-    data: AggregatedAccountHistory[];
-    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
-}
-
-export interface FiatGraphProps extends CommonProps {
-    variant: 'all-assets';
-    data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    account?: never;
-}
-
-export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
 
 const emptyList: ReturnType<typeof selectAccountTransactionsWithNulls>[] = [];
 const useTransactionGraphUpdater = ({
@@ -375,3 +340,5 @@ export const TransactionsGraph = memo(
 );
 
 TransactionsGraph.displayName = 'TransactionsGraph';
+
+export type { CryptoGraphProps, FiatGraphProps, TransactionsGraphProps };
