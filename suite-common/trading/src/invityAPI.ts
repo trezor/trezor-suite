@@ -27,7 +27,7 @@ import type {
     SellVoucherTradeRequest,
 } from 'invity-api';
 
-import { getPlatform, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
+import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 import {
     InvityServerEnvironment,
@@ -147,7 +147,7 @@ class InvityAPI {
             headers: {
                 [apiHeader]: apiHeaderValue || this.getInvityAPIKey(),
                 'X-Suite-Version': getSuiteVersion(),
-                'X-Suite-Platform': getPlatform(),
+                'X-Suite-Platform': getOsName(),
                 ...(method === 'POST' && {
                     'Cache-Control': 'no-cache',
                     'Content-Type': 'application/json',
