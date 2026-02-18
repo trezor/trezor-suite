@@ -13,8 +13,8 @@ import { InputError } from 'src/components/wallet';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { CustomFeeBasicProps } from './CustomFee';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
+import type { CustomFeeBasicProps } from './types';
 import { useFeesContext } from '../../context/FeesContext';
 
 const MAX_FEE_PER_GAS = 'maxFeePerGas';
