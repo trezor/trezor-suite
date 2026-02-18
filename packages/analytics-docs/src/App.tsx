@@ -47,7 +47,7 @@ export const TopBar = styled.div`
         top: 0;
         left: 0;
         right: 0;
-        z-index: 100;
+        z-index: 50; /* below theme tooltip (60) so tooltips are visible above header */
     }
 `;
 
@@ -251,7 +251,7 @@ export const App = ({ theme }: AppProps) => {
                             </Row>
                             <Row gap={8} alignItems="center">
                                 <ThemeSwitch />
-                                <Tooltip content="Add event">
+                                <Tooltip isActive={isMobile} content="Add event">
                                     {isMobile ? (
                                         <IconButton icon="plus" {...addButtonProps} />
                                     ) : (
