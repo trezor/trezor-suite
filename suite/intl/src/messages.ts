@@ -985,6 +985,18 @@ export const messages = defineMessages({
         defaultMessage: 'Country of residence',
         id: 'TR_TRADING_COUNTRY',
     },
+    TR_SEARCH_COUNTRY_PLACEHOLDER: {
+        defaultMessage: 'Search country',
+        id: 'TR_SEARCH_COUNTRY_PLACEHOLDER',
+    },
+    TR_TRADING_COUNTRY_NOT_FOUND: {
+        defaultMessage: 'Country not found',
+        id: 'TR_TRADING_COUNTRY_NOT_FOUND',
+    },
+    TR_TRADING_FILTERING_ERROR: {
+        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        id: 'TR_TRADING_FILTERING_ERROR',
+    },
     TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',

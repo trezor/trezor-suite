@@ -16,7 +16,7 @@ import {
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 import { TradingOffersExchangeFiltersPanel } from 'src/views/wallet/trading/common/TradingHeader/TradingOffersExchangeFiltersPanel';
