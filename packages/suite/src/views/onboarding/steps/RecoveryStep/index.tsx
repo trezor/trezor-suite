@@ -2,10 +2,12 @@ import { Translation, TranslationKey } from '@suite/intl';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
+import { TrezorLink } from 'src/components/suite';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
@@ -18,6 +20,7 @@ export const RecoveryStep = () => {
     const {
         status,
         error,
+        wordsCount,
         wordRequestInputType,
         setWordsCount,
         setAdvancedRecovery,
@@ -95,7 +98,22 @@ export const RecoveryStep = () => {
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
-                description={<Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />}
+                description={
+                    deviceModelInternal === DeviceModelInternal.T1B1 && wordsCount === 24 ? (
+                        <Translation
+                            id="TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY"
+                            values={{
+                                a: chunks => (
+                                    <TrezorLink href={HELP_CENTER_ADVANCED_RECOVERY_URL}>
+                                        {chunks}
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    ) : (
+                        <Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />
+                    )
+                }
             >
                 <SelectRecoveryType onSelect={handleSelect} />
             </RecoveryStepBox>

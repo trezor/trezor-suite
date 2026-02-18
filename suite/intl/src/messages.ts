@@ -2869,6 +2869,13 @@ export const messages = defineMessages({
             'There are two methods of recovery for T1B1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
+    TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY: {
+        defaultMessage:
+            'Standard recovery is sufficiently secure and more efficient. Choose advanced recovery if you prefer entering your wallet backup on your Trezor’s screen for ultimate security. To learn more, visit <a>our guide</a>.',
+        description:
+            'The updated recovery types description for T1B1 with standard or advanced recovery for 24 words backup. It is a short explanation text.',
+        id: 'TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY',
+    },
     TR_RETRY: {
         defaultMessage: 'Retry',
         description: 'Retry button',
