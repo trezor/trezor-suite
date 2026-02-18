@@ -77,7 +77,7 @@ export const TableCell = ({
     'data-testid': dataTestId,
 }: TableCellProps) => {
     const isHeader = useTableHeader();
-    const { hasBorders, typographyStyle = 'body' } = useTable();
+    const { hasBorders, typographyStyle = 'body-md' } = useTable();
     const { parentElevation } = useElevation();
 
     const defaultPadding = {
@@ -97,7 +97,7 @@ export const TableCell = ({
         >
             <Text
                 as="div"
-                typographyStyle={isHeader ? 'hint' : typographyStyle}
+                typographyStyle={isHeader ? 'body-sm' : typographyStyle}
                 intent="neutral"
                 priority={isHeader ? 'secondary' : 'primary'}
             >

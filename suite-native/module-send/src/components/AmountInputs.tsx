@@ -49,7 +49,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
         <VStack spacing="sp12">
             <HStack flex={1} justifyContent="space-between" alignItems="center">
                 <Animated.View layout={LinearTransition}>
-                    <Text variant="hint">
+                    <Text variant="body-sm">
                         <Translation id="moduleSend.outputs.recipients.amountLabel" />
                     </Text>
                 </Animated.View>

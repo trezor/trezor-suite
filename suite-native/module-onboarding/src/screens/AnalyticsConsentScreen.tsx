@@ -87,7 +87,7 @@ export const AnalyticsConsentScreen = ({
                 <VStack spacing="sp24" paddingTop="sp32">
                     <TitleHeader
                         title={<Translation id="moduleOnboarding.analyticsConsentScreen.title" />}
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                         subtitle={
                             <Translation id="moduleOnboarding.analyticsConsentScreen.subtitle" />
                         }

@@ -41,7 +41,7 @@ export const PinFormProgress = ({ title }: PinFormProgressProps) => {
     const pinLength = watch('pin').length;
 
     if (!pinLength) {
-        return <Text variant="titleSmall">{title}</Text>;
+        return <Text variant="headline-sm">{title}</Text>;
     }
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS) {
@@ -52,7 +52,7 @@ export const PinFormProgress = ({ title }: PinFormProgressProps) => {
                 <Text color={color}>
                     <Translation id="moduleConnectDevice.pinScreen.form.entered" />{' '}
                 </Text>
-                <Text variant="highlight">{pinLength}</Text>
+                <Text variant="body-md-strong">{pinLength}</Text>
                 <Text color={color}>
                     {' '}
                     <Translation id="moduleConnectDevice.pinScreen.form.digits" />

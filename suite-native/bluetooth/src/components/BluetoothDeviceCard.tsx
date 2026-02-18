@@ -63,9 +63,9 @@ export const BluetoothDeviceCard = ({
                 <DeviceColorImage color={deviceColor} />
             </Box>
             <Box alignItems="center">
-                <Text variant="titleSmall">{device.name}</Text>
+                <Text variant="headline-sm">{device.name}</Text>
                 <Text
-                    variant="hint"
+                    variant="body-sm"
                     color="textSubdued"
                     style={applyStyle(resetLetterSpacingOnAndroidStyle)}
                 >

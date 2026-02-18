@@ -42,7 +42,7 @@ export const MayBeStuckedBottomSheet = ({
                 <Animated.View>
                     <VStack spacing="sp24">
                         <VStack alignItems="center" spacing="sp8">
-                            <Text textAlign="center" variant="titleSmall">
+                            <Text textAlign="center" variant="headline-sm">
                                 <Translation id="firmware.stuckedBottomSheet.part1.title" />
                             </Text>
                             <Text textAlign="center" color="textSubdued">
@@ -65,7 +65,7 @@ export const MayBeStuckedBottomSheet = ({
                 <Animated.View entering={FadeIn}>
                     <VStack spacing="sp24">
                         <VStack spacing="sp8">
-                            <Text variant="titleSmall">
+                            <Text variant="headline-sm">
                                 <Translation id="firmware.stuckedBottomSheet.part2.title" />
                             </Text>
                             <Text color="textSubdued">

@@ -40,7 +40,7 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
             <VStack spacing="sp12">
                 <HStack alignItems="center">
                     <ReviewOutputStatusBadge status={outputState} />
-                    <Text variant="callout" testID={REVIEW_OUTPUT_CARD_TEST_ID + '/title'}>
+                    <Text variant="body-sm-strong" testID={REVIEW_OUTPUT_CARD_TEST_ID + '/title'}>
                         {title}
                     </Text>
                 </HStack>

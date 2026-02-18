@@ -24,7 +24,7 @@ export const Loader = ({ size, title, color = 'backgroundPrimaryDefault' }: Load
         <Box>
             <ActivityIndicator size={size} color={colors[color]} />
             {title && (
-                <Text variant="label" color="textSubdued" textAlign="center">
+                <Text variant="body-xs" color="textSubdued" textAlign="center">
                     {title}
                 </Text>
             )}

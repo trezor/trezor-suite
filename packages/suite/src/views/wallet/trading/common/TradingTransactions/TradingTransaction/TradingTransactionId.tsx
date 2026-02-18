@@ -11,7 +11,7 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
         margin={{ top: spacings.xs }}
         intent="neutral"
         priority="secondary"
-        typographyStyle="label"
+        typographyStyle="body-xs"
         as="div"
     >
         <Row flexWrap="wrap" gap={spacings.xxs}>

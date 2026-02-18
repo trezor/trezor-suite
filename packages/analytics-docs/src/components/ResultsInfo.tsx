@@ -19,7 +19,7 @@ export const ResultsInfo = ({
 }: ResultsInfoProps) => (
     <Row gap={8} alignItems="center" flex="1" overflow="hidden">
         <Paragraph
-            typographyStyle="label"
+            typographyStyle="body-xs"
             intent="neutral"
             priority="secondary"
             wordBreak="keep-all"
@@ -41,7 +41,7 @@ export const ResultsInfo = ({
             ) : null}
             .{' '}
             {hasActiveFilters && onClearAll && (
-                <Link onClick={onClearAll} typographyStyle="label">
+                <Link onClick={onClearAll} typographyStyle="body-xs">
                     (clear filters)
                 </Link>
             )}

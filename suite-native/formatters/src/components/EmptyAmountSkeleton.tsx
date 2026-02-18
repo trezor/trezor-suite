@@ -11,7 +11,7 @@ type EmptyAmountSkeletonProps = {
 
 const SKELETON_WIDTH = 0.2 * getWindowWidth();
 
-export const EmptyAmountSkeleton = ({ variant = 'body' }: EmptyAmountSkeletonProps) => {
+export const EmptyAmountSkeleton = ({ variant = 'body-md' }: EmptyAmountSkeletonProps) => {
     const { utils } = useNativeStyles();
 
     // Only font size is too small, only line height is too big.

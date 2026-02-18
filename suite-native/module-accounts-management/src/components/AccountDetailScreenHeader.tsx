@@ -26,7 +26,7 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
     <HStack alignItems="center">
         <CryptoIconWithNetwork symbol={account.symbol} size="small" />
-        <Text variant="highlight" adjustsFontSizeToFit numberOfLines={1}>
+        <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
             <AccountLabel account={account} />
         </Text>
     </HStack>

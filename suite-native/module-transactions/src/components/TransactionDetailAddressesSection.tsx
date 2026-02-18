@@ -61,7 +61,7 @@ export const TransactionDetailAddressesSection = ({
             <SummaryRow leftComponent={<TransactionDetailStepper />}>
                 <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                     <Box>
-                        <Text color="textSubdued" variant="hint">
+                        <Text color="textSubdued" variant="body-sm">
                             <Translation
                                 id={titleTxKey}
                                 values={{ count: formatAddressesCount(targetAddresses.length) }}

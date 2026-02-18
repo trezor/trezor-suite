@@ -187,21 +187,21 @@ export const FeeOption = ({
                     >
                         <VStack alignItems="flex-start" spacing="sp4">
                             <Box alignItems="center" flexDirection="row">
-                                <Text variant="highlight">
+                                <Text variant="body-md-strong">
                                     <Translation id={label} />
                                     {' • '}
                                 </Text>
-                                <Text variant="hint" color="textSubdued">
+                                <Text variant="body-sm" color="textSubdued">
                                     {isLoading ? (
-                                        <EmptyAmountSkeleton variant="hint" />
+                                        <EmptyAmountSkeleton variant="body-sm" />
                                     ) : (
                                         formattedFeePerUnit
                                     )}
                                 </Text>
                             </Box>
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 {isLoading ? (
-                                    <EmptyAmountSkeleton variant="hint" />
+                                    <EmptyAmountSkeleton variant="body-sm" />
                                 ) : (
                                     `~ ${feeTimeEstimate}`
                                 )}
@@ -209,14 +209,14 @@ export const FeeOption = ({
                         </VStack>
                         <VStack flex={1} alignItems="flex-end" spacing="sp4">
                             <CryptoToFiatAmountFormatter
-                                variant="body"
+                                variant="body-md"
                                 color="textDefault"
                                 value={fee}
                                 symbol={symbol}
                                 isLoading={isLoading}
                             />
                             <CryptoAmountFormatter
-                                variant="hint"
+                                variant="body-sm"
                                 color="textSubdued"
                                 value={fee}
                                 symbol={symbol}

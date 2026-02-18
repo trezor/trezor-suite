@@ -98,7 +98,7 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                                     }}
                                     key={event.name}
                                 >
-                                    <Text typographyStyle="label">{event.name}</Text>
+                                    <Text typographyStyle="body-xs">{event.name}</Text>
 
                                     <Tooltip
                                         content={isAdded(event, version) ? 'Added' : 'Updated'}

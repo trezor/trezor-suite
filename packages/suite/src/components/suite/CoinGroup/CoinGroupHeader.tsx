@@ -24,7 +24,7 @@ export const CoinGroupHeader = ({
     <Wrapper>
         <Row gap={spacings.sm}>
             {settingsMode && (
-                <Paragraph typographyStyle="highlight">
+                <Paragraph typographyStyle="body-md-strong">
                     <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />
                 </Paragraph>
             )}

@@ -42,7 +42,7 @@ export const SuiteSyncQuotaManager = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall">Suite Sync Quota Manager</Text>
+                <Text variant="headline-sm">Suite Sync Quota Manager</Text>
                 <Form form={form}>
                     <VStack>
                         <TextInputField label="Quota Manager URL" name="suiteSyncQuotaManagerUrl" />
@@ -52,7 +52,7 @@ export const SuiteSyncQuotaManager = () => {
                     </VStack>
                 </Form>
                 <VStack>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         Registered Devices
                     </Text>
                     {registeredDevices.length === 0 ? (
@@ -60,18 +60,18 @@ export const SuiteSyncQuotaManager = () => {
                     ) : (
                         registeredDevices.map(device => (
                             <VStack key={device.deviceId} spacing="sp2">
-                                <Text variant="label">Device ID</Text>
+                                <Text variant="body-xs">Device ID</Text>
                                 <Text>{device.deviceId}</Text>
-                                <Text variant="label">Total Storage Size</Text>
+                                <Text variant="body-xs">Total Storage Size</Text>
                                 <Text>{device.totalStorageSize}</Text>
-                                <Text variant="label">Unspent Storage Size</Text>
+                                <Text variant="body-xs">Unspent Storage Size</Text>
                                 <Text>{device.unspentStorageSize}</Text>
                             </VStack>
                         ))
                     )}
                 </VStack>
                 <VStack>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         Assigned Owner IDs
                     </Text>
                     {ownersAllowance.length === 0 ? (
@@ -79,9 +79,9 @@ export const SuiteSyncQuotaManager = () => {
                     ) : (
                         ownersAllowance.map(owner => (
                             <VStack key={owner.walletDescriptor} spacing="sp2">
-                                <Text variant="label">Owner ID</Text>
+                                <Text variant="body-xs">Owner ID</Text>
                                 <Text>{owner.walletDescriptor}</Text>
-                                <Text variant="label">Total Space</Text>
+                                <Text variant="body-xs">Total Space</Text>
                                 <Text>{owner.totalSpace}</Text>
                             </VStack>
                         ))

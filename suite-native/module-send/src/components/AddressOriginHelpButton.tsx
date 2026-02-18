@@ -7,7 +7,7 @@ import { AddressReviewSheetSection } from './AddressReviewSheetSection';
 export const AddressOriginHelpButton = () => (
     <AddressReviewHelpSheet
         title={
-            <Text variant="titleSmall">
+            <Text variant="headline-sm">
                 <Translation id="moduleSend.review.address.originBottomSheet.title" />
             </Text>
         }

@@ -24,7 +24,7 @@ export const DeviceCheckBackupFailScreen = ({
             <VStack flex={1} justifyContent="space-between" alignItems="center">
                 <Box flex={1} justifyContent="center" alignItems="center">
                     <PictogramTitleHeader
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                         variant="warning"
                         title={<Translation id="moduleCheckBackup.checkBackupFailScreen.title" />}
                         subtitle={

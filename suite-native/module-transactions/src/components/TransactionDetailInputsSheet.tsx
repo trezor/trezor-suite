@@ -30,7 +30,7 @@ type InputsOutputsHeaderProps = {
 const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderProps) => (
     <Box flexDirection="row" justifyContent="space-between" marginBottom="sp16">
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp8">
-            <Text variant="hint" color="textSubdued">
+            <Text variant="body-sm" color="textSubdued">
                 <Translation
                     id="transactions.TransactionDetailScreen.inputsSheet.inputs"
                     values={{ inputsCount: `· ${inputsCount}` }}
@@ -42,7 +42,7 @@ const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderP
         </Box>
 
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp24">
-            <Text variant="hint" color="textSubdued">
+            <Text variant="body-sm" color="textSubdued">
                 <Translation
                     id="transactions.TransactionDetailScreen.inputsSheet.outputs"
                     values={{ outputsCount: `· ${outputsCount}` }}
@@ -102,7 +102,7 @@ export const TransactionDetailInputsSheet = ({
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
                         </Text>
                     }
@@ -111,7 +111,7 @@ export const TransactionDetailInputsSheet = ({
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />
                         </Text>
                     }

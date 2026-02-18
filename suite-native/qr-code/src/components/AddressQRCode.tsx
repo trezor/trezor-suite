@@ -51,7 +51,7 @@ export const AddressQRCode = ({
             <QRCode data={address} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
                 <Text
-                    variant="titleSmall"
+                    variant="headline-sm"
                     textAlign="center"
                     testID="@receive/confirmed-receive-address"
                 >

@@ -31,7 +31,7 @@ export const GhostContainer: StoryObj<typeof GhostContainerComponent> = {
     },
     render: (props: GhostContainerProps) => (
         <GhostContainerComponent {...props} onClick={action('clicked')}>
-            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 Ghost container content
             </Text>
         </GhostContainerComponent>

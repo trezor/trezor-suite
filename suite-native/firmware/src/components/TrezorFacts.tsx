@@ -44,7 +44,7 @@ export const TrezorFacts = () => {
             style={applyStyle(firmwareTitlesWrapperStyle)}
         >
             <VStack spacing="sp8">
-                <Text variant="callout" textAlign="center">
+                <Text variant="body-sm-strong" textAlign="center">
                     <Translation id="firmware.firmwareUpdateProgress.trezorFacts.title" />
                 </Text>
                 <Animated.View
@@ -52,7 +52,7 @@ export const TrezorFacts = () => {
                     entering={FadeIn.delay(ANIMATION_DURATION).duration(ANIMATION_DURATION)}
                     exiting={FadeOut.duration(ANIMATION_DURATION)}
                 >
-                    <Text variant="titleSmall" textAlign="center">
+                    <Text variant="headline-sm" textAlign="center">
                         <Translation id={SHUFFLED_FACTS_TRANSLATION_KEYS[factIndex]} />
                     </Text>
                 </Animated.View>

@@ -84,7 +84,7 @@ export const AssetItem = ({
                     <Column flex="1">
                         <Row gap={spacings.xs} alignItems="center">
                             <TextWrapper>
-                                <Text typographyStyle="body" textWrap="nowrap">
+                                <Text typographyStyle="body-md" textWrap="nowrap">
                                     {cryptoName}
                                 </Text>
                             </TextWrapper>
@@ -94,7 +94,7 @@ export const AssetItem = ({
                                 </BadgeWrapper>
                             )}
                         </Row>
-                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {displaySymbol}
                         </Text>
                     </Column>

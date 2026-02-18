@@ -27,7 +27,7 @@ export const ConfirmOnTrezorHeader = ({
             closeActionType={closeActionType}
             customContent={
                 <HStack alignItems="center">
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="device.continueOnTrezor.headerTitle" />
                     </Text>
                     <ConfirmOnTrezorIndicator />

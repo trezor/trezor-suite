@@ -153,7 +153,7 @@ export const ProgressLabel = ({
                     as="div"
                     intent={textProps.intent}
                     priority={textProps.priority}
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                 >
                     {children}
                 </Text>

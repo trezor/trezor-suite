@@ -53,7 +53,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     color="textDefault"
-                    variant="body"
+                    variant="body-md"
                 />
             ) : (
                 <CryptoAmountFormatter
@@ -62,7 +62,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     color="textDefault"
-                    variant="body"
+                    variant="body-md"
                 />
             )}
 
@@ -71,11 +71,11 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     <BaseCurrencyAmountFormatter
                         symbol={symbol}
                         value={fiatBalance}
-                        variant="hint"
+                        variant="body-sm"
                         color="textSubdued"
                     />
                 ) : (
-                    <Text variant="label" color="textSubdued">
+                    <Text variant="body-xs" color="textSubdued">
                         <Translation id="moduleTrading.myAssetSheet.noPair.note" />
                     </Text>
                 ))}

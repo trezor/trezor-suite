@@ -34,7 +34,7 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
                 />
 
                 <VStack spacing="sp8">
-                    <Text variant="callout">
+                    <Text variant="body-sm-strong">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.remember" />
                     </Text>
                     <BulletListItem color="textSubdued">

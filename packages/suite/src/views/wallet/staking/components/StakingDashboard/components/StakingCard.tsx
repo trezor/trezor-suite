@@ -70,12 +70,12 @@ const Item = ({
             <>
                 <Paragraph
                     data-testid={dataTestId}
-                    typographyStyle="titleSmall"
+                    typographyStyle="headline-sm"
                     intent={isReward ? 'brand' : 'neutral'}
                 >
                     {title}
                 </Paragraph>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {description}
                 </Paragraph>
             </>

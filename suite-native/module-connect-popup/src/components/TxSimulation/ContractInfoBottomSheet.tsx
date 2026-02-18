@@ -30,7 +30,7 @@ export const ContractInfoBottomSheet = ({
             label: <Translation id="moduleConnectPopup.simulation.address" />,
             value: targetContract && (
                 <Pressable onPress={handleCopy}>
-                    <Text variant="hint">{targetContract}</Text>
+                    <Text variant="body-sm">{targetContract}</Text>
                 </Pressable>
             ),
         },
@@ -52,7 +52,7 @@ export const ContractInfoBottomSheet = ({
                         item.value ? (
                             <VStack key={index} spacing="sp8">
                                 <Text>{item.label}</Text>
-                                <Text variant="hint">{item.value}</Text>
+                                <Text variant="body-sm">{item.value}</Text>
                             </VStack>
                         ) : null,
                     )}

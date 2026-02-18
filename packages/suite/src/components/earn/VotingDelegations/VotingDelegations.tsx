@@ -20,14 +20,14 @@ export const VotingDelegations = () => {
             <CollapsibleBox
                 heading={
                     <Row gap={12} justifyContent="space-between">
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <Translation id="TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS" />
                         </Text>
                     </Row>
                 }
                 toggleIconName="caretDown"
                 toggleLabel={
-                    <Text intent="neutral" typographyStyle="callout">
+                    <Text intent="neutral" typographyStyle="body-sm-strong">
                         <Translation
                             id={
                                 selectedVotingDelegation.type === 'another_drep'

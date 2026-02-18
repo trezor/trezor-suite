@@ -142,7 +142,7 @@ export const AccountImportConfirmFormScreen = ({
                         ListEmptyComponent={null}
                         ListHeaderComponent={
                             <Box marginTop="sp16" marginBottom="sp8">
-                                <Text variant="titleSmall">
+                                <Text variant="headline-sm">
                                     <Translation id="moduleAccountImport.summaryScreen.tokens" />
                                 </Text>
                             </Box>

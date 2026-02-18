@@ -31,7 +31,7 @@ export type ReceiveAccountPickerProps = {
 type RightTextProps = {
     children: ReactNode;
     color: Color;
-    variant?: 'body' | 'hint';
+    variant?: 'body-md' | 'body-sm';
     testID?: string;
 };
 
@@ -47,7 +47,7 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const RightText = ({ color, variant = 'body', testID, children }: RightTextProps) => (
+const RightText = ({ color, variant = 'body-md', testID, children }: RightTextProps) => (
     <Text
         color={color}
         variant={variant}
@@ -96,7 +96,7 @@ const ReceiveAccountPickerRight = ({
                 address={addressText}
                 form="short"
                 color="textSubdued"
-                variant="hint"
+                variant="body-sm"
                 textAlign="right"
             />
         </>

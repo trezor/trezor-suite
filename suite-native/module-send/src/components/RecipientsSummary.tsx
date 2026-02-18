@@ -73,11 +73,11 @@ export const RecipientsSummary = ({
                 <Card key={output.address} style={applyStyle(cardStyle)}>
                     <HStack>
                         <VStack flex={0.4} justifyContent="center" spacing="sp4">
-                            <Text variant="callout">
+                            <Text variant="body-sm-strong">
                                 <Translation id="moduleSend.fees.recipient.singular" />
                             </Text>
                             <Text
-                                variant="hint"
+                                variant="body-sm"
                                 ellipsizeMode="middle"
                                 numberOfLines={1}
                                 style={applyStyle(addressStyle)}
@@ -87,7 +87,7 @@ export const RecipientsSummary = ({
                         </VStack>
                         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
                             <CoinToFiatAmountFormatter
-                                variant="hint"
+                                variant="body-sm"
                                 color="textDefault"
                                 value={output.amount}
                                 isBalance={isBalance}
@@ -95,7 +95,7 @@ export const RecipientsSummary = ({
                                 tokenContract={tokenContract}
                             />
                             <CoinAmountFormatter
-                                variant="hint"
+                                variant="body-sm"
                                 color="textSubdued"
                                 value={output.amount}
                                 isBalance={isBalance}

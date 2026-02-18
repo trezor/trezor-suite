@@ -9,10 +9,10 @@ export type ProviderListSectionHeaderProps = {
 
 export const ProviderListSectionHeader = ({ title, subtitle }: ProviderListSectionHeaderProps) => (
     <VStack marginTop="sp8" paddingVertical="sp12">
-        <Text variant="callout" color="textDefault">
+        <Text variant="body-sm-strong" color="textDefault">
             {title}
         </Text>
-        <Text variant="hint" color="textSubdued">
+        <Text variant="body-sm" color="textSubdued">
             {subtitle}
         </Text>
     </VStack>

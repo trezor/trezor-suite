@@ -83,7 +83,7 @@ export const TokenTransferListItemValues = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}
-                variant="hint"
+                variant="body-sm"
                 color="textSubdued"
             />
         </>

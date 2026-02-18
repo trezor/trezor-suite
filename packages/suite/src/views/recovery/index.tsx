@@ -141,7 +141,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
                         <Paragraph
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
                             margin={{ top: spacings.xs }}
@@ -155,7 +155,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
                         <Paragraph
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
                             margin={{ top: spacings.xs }}

@@ -65,7 +65,7 @@ export const EmptyPortfolioTrackerState = () => {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Text variant="titleMedium">
+                        <Text variant="headline-md">
                             <Translation id="moduleHome.emptyState.portfolioTracker.title" />
                         </Text>
                         <Text color="textSubdued" textAlign="center">

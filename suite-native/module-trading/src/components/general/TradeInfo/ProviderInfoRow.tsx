@@ -22,12 +22,12 @@ export const ProviderInfoRow = ({ exchange }: ProviderInfoRowProps) => {
 
     return (
         <TradeInfoRow>
-            <Text variant="hint">
+            <Text variant="body-sm">
                 <Translation id="moduleTrading.tradingScreen.provider" />
             </Text>
             <HStack alignItems="center">
-                {!!providerInfo.logo && <ProviderLogo logo={providerInfo.logo} size="hint" />}
-                <Text variant="hint" color="textSubdued">
+                {!!providerInfo.logo && <ProviderLogo logo={providerInfo.logo} size="body-sm" />}
+                <Text variant="body-sm" color="textSubdued">
                     {providerInfo.companyName}
                 </Text>
             </HStack>

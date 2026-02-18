@@ -115,7 +115,7 @@ export const BridgeRequested = () => {
             </Column>
             <Card
                 label={
-                    <Text typographyStyle="label">
+                    <Text typographyStyle="body-xs">
                         <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
                     </Text>
                 }

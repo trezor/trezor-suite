@@ -64,7 +64,7 @@ const Color = styled.div<{ $value: string; $isColorCodeVisible: boolean }>`
         return `text-shadow: 0 0 7px ${outlineColor},0 0 7px ${outlineColor},0 0 4px ${outlineColor};`;
     }}
 
-    ${typography.label}
+    ${typography['body-xs']}
 `;
 
 const v2Tokens = new Set<string>([...Object.keys(colorsV2.light), ...Object.keys(colorsV2.dark)]);
@@ -176,7 +176,7 @@ const ColorName = () => {
             {filterColor(Object.keys(colorVariants.standard), search, isV1Visible, isV2Visible).map(
                 name => (
                     <Row key={name} gap={4} alignItems="center" height={COLOR_BOX_SIZE}>
-                        <Paragraph isMonospaced typographyStyle="label">
+                        <Paragraph isMonospaced typographyStyle="body-xs">
                             {name}
                         </Paragraph>
                         {isV2(name) ? <BadgeV2 /> : <BadgeV1 />}

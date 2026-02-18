@@ -257,7 +257,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                 />
             )}
 
-            <Text variant="hint">
+            <Text variant="body-sm">
                 <Translation
                     id="moduleConnectPopup.simulation.simulationPoweredBy"
                     values={{ provider: 'Blockaid' }}

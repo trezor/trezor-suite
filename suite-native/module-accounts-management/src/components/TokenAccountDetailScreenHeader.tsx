@@ -58,7 +58,7 @@ export const TokenAccountDetailScreenHeader = ({
                                 {token?.name}
                             </Text>
                             <Text
-                                variant="label"
+                                variant="body-xs"
                                 color="textSubdued"
                                 numberOfLines={1}
                                 ellipsizeMode="tail"

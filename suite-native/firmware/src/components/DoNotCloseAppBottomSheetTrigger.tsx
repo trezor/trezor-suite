@@ -53,7 +53,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
             )}
             <BottomSheetModal ref={bottomSheetRef} paddingHorizontal="sp24">
                 <VStack spacing="sp24" paddingBottom="sp24">
-                    <Text variant="titleSmall" textAlign="center">
+                    <Text variant="headline-sm" textAlign="center">
                         <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alert.title" />
                     </Text>
 

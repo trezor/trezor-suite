@@ -149,7 +149,7 @@ export const Badge = ({
         borderColor,
     } = badgeVariantToStylePropsMap[variant];
 
-    const textVariant = size === 'medium' ? 'hint' : 'label';
+    const textVariant = size === 'medium' ? 'body-sm' : 'body-xs';
     const textColor = isDisabled ? 'textDisabled' : activeTextColor;
     const iconColor = isDisabled ? 'iconDisabled' : activeIconColor;
     const backgroundColor =

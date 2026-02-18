@@ -78,7 +78,7 @@ export const TransactionDetailData = ({
                                         label={chunks}
                                         textColor="textDefault"
                                         isUnderlined
-                                        textVariant="label"
+                                        textVariant="body-xs"
                                     />
                                 ),
                             }}
@@ -93,7 +93,7 @@ export const TransactionDetailData = ({
                             <CryptoAmountFormatter
                                 value={transaction.fee}
                                 symbol={transaction.symbol}
-                                variant="hint"
+                                variant="body-sm"
                                 color="textDefault"
                                 isBalance={false}
                             />
@@ -104,7 +104,7 @@ export const TransactionDetailData = ({
                                         symbol={transaction.symbol}
                                         historicRate={historicRate}
                                         useHistoricRate
-                                        variant="hint"
+                                        variant="body-sm"
                                         color="textSubdued"
                                     />
                                 </Box>
@@ -117,10 +117,10 @@ export const TransactionDetailData = ({
                                 title={translate('transactions.detail.dateLabel')}
                             >
                                 <Box alignItems="flex-end">
-                                    <Text variant="hint">
+                                    <Text variant="body-sm">
                                         <DateFormatter value={transactionBlockTime} />
                                     </Text>
-                                    <Text variant="hint" color="textSubdued">
+                                    <Text variant="body-sm" color="textSubdued">
                                         <TimeFormatter value={transactionBlockTime} />
                                     </Text>
                                 </Box>

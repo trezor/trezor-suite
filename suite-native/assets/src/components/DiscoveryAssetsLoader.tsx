@@ -21,7 +21,7 @@ export const DiscoveryAssetsLoader = ({ isListEmpty }: { isListEmpty: boolean })
             <ListItemSkeleton />
             <HStack justifyContent="center" marginBottom="sp16">
                 <Icon size="mediumLarge" name="trezorLogo" />
-                <Text variant="callout">{discoveryProgressText}</Text>
+                <Text variant="body-sm-strong">{discoveryProgressText}</Text>
             </HStack>
         </Animated.View>
     );

@@ -17,9 +17,9 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
-            <Text variant="hint">{title}</Text>
+            <Text variant="body-sm">{title}</Text>
             <Text
-                variant="hint"
+                variant="body-sm"
                 color="textSubdued"
                 numberOfLines={1}
                 ellipsizeMode="middle"

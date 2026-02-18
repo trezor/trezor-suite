@@ -44,8 +44,12 @@ export const IOGroup = ({
             {hasInputs && (
                 <Column width="40%" flex="0 0 40%" gap={8}>
                     {hasHeadings && (
-                        <InfoSegments typographyStyle="hint" intent="neutral" priority="secondary">
-                            <Text typographyStyle="callout" intent="neutral">
+                        <InfoSegments
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                        >
+                            <Text typographyStyle="body-sm-strong" intent="neutral">
                                 <Translation id="TR_INPUTS" />
                             </Text>
                             {isUtxoBased && inputs.length}
@@ -73,8 +77,12 @@ export const IOGroup = ({
             {hasOutputs && (
                 <Column width="40%" flex="0 0 40%" gap={8}>
                     {hasHeadings && (
-                        <InfoSegments typographyStyle="hint" intent="neutral" priority="secondary">
-                            <Text typographyStyle="callout" intent="neutral">
+                        <InfoSegments
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                        >
+                            <Text typographyStyle="body-sm-strong" intent="neutral">
                                 <Translation id="TR_OUTPUTS" />
                             </Text>
                             {isUtxoBased && outputs.length}

@@ -15,7 +15,7 @@ const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[symbol];
 
     return (
-        <Paragraph typographyStyle="hint">
+        <Paragraph typographyStyle="body-sm">
             {connected ? (
                 <Column gap={spacings.sm}>
                     <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" />}>

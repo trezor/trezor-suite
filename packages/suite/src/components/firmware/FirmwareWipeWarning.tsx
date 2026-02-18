@@ -3,7 +3,7 @@ import { Banner, Paragraph, Text } from '@trezor/components';
 
 export const FirmwareWipeWarning = () => {
     const warningTranslationValues: ExtendedMessageDescriptor['values'] = {
-        b: chunks => <Text typographyStyle="callout">{chunks}</Text>,
+        b: chunks => <Text typographyStyle="body-sm-strong">{chunks}</Text>,
     };
 
     return (

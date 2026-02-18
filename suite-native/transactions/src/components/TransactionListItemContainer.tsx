@@ -175,7 +175,7 @@ export const TransactionListItemContainer = ({
 
                     <DateTextComponent
                         isForcedDiscreetMode={isPhishingTransaction}
-                        variant="hint"
+                        variant="body-sm"
                         color="textSubdued"
                     >
                         {DateTimeFormatter.format(transactionBlockTime)}

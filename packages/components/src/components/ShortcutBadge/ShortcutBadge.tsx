@@ -22,7 +22,7 @@ export const ShortcutBadge = ({ shortcut }: ShortcutBadgeProps) => {
     const isMac = isMacOs();
 
     return (
-        <Text as="div" typographyStyle="label" case="uppercase">
+        <Text as="div" typographyStyle="body-xs" case="uppercase">
             <Row gap={2}>
                 {shortcut.map((key, index) => {
                     const keyObject: KeyboardKey = keyboardKeys[key];

@@ -45,7 +45,7 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
             testID={testID}
         >
             <FiatCurrencyIcon size="small" />
-            <Text variant="callout" color="textDefault" testID={tickerTestID}>
+            <Text variant="body-sm-strong" color="textDefault" testID={tickerTestID}>
                 {displayCurrency}
             </Text>
             <Icon name="caretDown" color="textDefault" size="medium" />

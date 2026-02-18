@@ -155,7 +155,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <TextColumn
                         title={<Translation id="TR_CUSTOM_HOMESCREEN" />}
                         description={
-                            <Paragraph typographyStyle="body" intent="warning">
+                            <Paragraph typographyStyle="body-md" intent="warning">
                                 <Translation
                                     id={validationError}
                                     values={{

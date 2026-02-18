@@ -47,7 +47,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     subtitle={
                         <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.description" />
                     }
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                 />
                 <InlineAlertBox
                     variant="warning"
@@ -55,7 +55,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                         <Translation
                             id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
                             values={{
-                                bold: chunks => <Text variant="callout">{chunks}</Text>,
+                                bold: chunks => <Text variant="body-sm-strong">{chunks}</Text>,
                             }}
                         />
                     }

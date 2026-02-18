@@ -39,7 +39,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey 
             <Box alignItems="center">
                 <NoTransactionsSvg />
                 <VStack alignItems="center">
-                    <Text textAlign="center" variant="titleSmall">
+                    <Text textAlign="center" variant="headline-sm">
                         <Translation id="transactions.emptyState.title" />
                     </Text>
                     <Text textAlign="center" color="textSubdued">

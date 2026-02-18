@@ -66,7 +66,7 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                         account={account}
                         composedLevels={composedLevels}
                         changeFeeLevel={changeFeeLevel}
-                        headerTypographyStyle="hint"
+                        headerTypographyStyle="body-sm"
                     />
                 </Card>
 

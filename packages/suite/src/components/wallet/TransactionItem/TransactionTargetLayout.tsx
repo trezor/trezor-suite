@@ -25,7 +25,7 @@ export const TransactionTargetLayout = ({
     const { isBelowLaptop } = useLayoutSize();
 
     const commonProps = {
-        typographyStyle: 'body',
+        typographyStyle: 'body-md',
         intent: 'neutral',
         priority: 'secondary',
         as: 'div',

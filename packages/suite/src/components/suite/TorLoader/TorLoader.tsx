@@ -141,7 +141,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                         <Paragraph
                             intent="neutral"
                             priority="secondary"
-                            typographyStyle="body"
+                            typographyStyle="body-md"
                             textWrap="nowrap"
                         >
                             {isTorError ? (

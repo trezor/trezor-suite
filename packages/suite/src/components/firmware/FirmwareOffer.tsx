@@ -48,10 +48,10 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
     const CurrentVersion = () => (
         <>
             <Column alignItems="center" gap={spacings.xxs}>
-                <Text typographyStyle="label" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                 </Text>
-                <Text typographyStyle="hint">
+                <Text typographyStyle="body-sm">
                     {currentFirmwareType ? translationString(currentFirmwareType) : ''}
                     {currentVersion ? ` ${currentVersion}` : ''}
                 </Text>
@@ -82,7 +82,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     <CurrentVersion />
                 ))}
             <Column alignItems="center" gap={spacings.xxs}>
-                <Text typographyStyle="label" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
                 </Text>
                 <Tooltip
@@ -126,7 +126,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     isActive={!!parsedChangelog}
                 >
                     <Text
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         data-testid="@firmware/offer-version/new"
                         intent="brand"
                     >

@@ -42,7 +42,7 @@ export const OfflineBanner = ({ topSafeAreaInset }: OfflineBannerProps) => {
             >
                 <HStack alignItems="center">
                     <Icon name="wifiSlash" size="mediumLarge" />
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="generic.banners.offline.title" />
                     </Text>
                 </HStack>

@@ -42,7 +42,7 @@ export const ExperimentalFeatureRow = ({ featureKey }: { featureKey: Experimenta
                         <Text>
                             <Translation id={titleKey} />
                         </Text>
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             <Translation id={descriptionKey} />
                         </Text>
                     </VStack>

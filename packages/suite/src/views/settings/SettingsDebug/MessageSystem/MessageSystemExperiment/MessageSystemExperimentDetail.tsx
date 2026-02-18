@@ -85,7 +85,7 @@ export const MessageSystemExperimentDetail = ({
         <>
             <InfoItem
                 label={experiment.id}
-                typographyStyle="highlight"
+                typographyStyle="body-md-strong"
                 iconName="lightbulb"
                 intent="neutral"
                 priority="primary"
@@ -101,7 +101,7 @@ export const MessageSystemExperimentDetail = ({
 
             <InfoItem
                 label="Groups"
-                typographyStyle="highlight"
+                typographyStyle="body-md-strong"
                 iconName="usersThree"
                 intent="neutral"
                 priority="primary"

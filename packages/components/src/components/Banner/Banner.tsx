@@ -71,13 +71,13 @@ export const Banner = ({
                 <Row flex="1" flexWrap="wrap" gap={12}>
                     <Column flex="1 1 360px" maxWidth="100%">
                         {title && (
-                            <H4 typographyStyle="body" intent={intent} priority={textPriority}>
+                            <H4 typographyStyle="body-md" intent={intent} priority={textPriority}>
                                 {title}
                             </H4>
                         )}
                         {description && (
                             <Paragraph
-                                typographyStyle="hint"
+                                typographyStyle="body-sm"
                                 intent={intent}
                                 priority={textPriority}
                             >

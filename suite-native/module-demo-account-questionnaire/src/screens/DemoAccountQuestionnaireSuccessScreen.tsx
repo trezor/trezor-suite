@@ -103,7 +103,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
                         subtitle={
                             <Translation id="moduleDemoAccountQuestionnaire.success.subtitle" />
                         }
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                     />
 
                     <TextDivider

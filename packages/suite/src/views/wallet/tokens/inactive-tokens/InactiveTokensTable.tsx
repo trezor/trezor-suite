@@ -184,9 +184,9 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                         shouldTryToFetch={true}
                                     />
                                     <Row gap={spacings.xs}>
-                                        <Text typographyStyle="body">{token.name}</Text>
+                                        <Text typographyStyle="body-md">{token.name}</Text>
                                         <Text
-                                            typographyStyle="body"
+                                            typographyStyle="body-md"
                                             intent="neutral"
                                             priority="secondary"
                                         >
@@ -207,7 +207,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                     <DashedText
                                         intent="neutral"
                                         priority="secondary"
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                     >
                                         {token.homeDomain || '-'}
                                     </DashedText>

@@ -103,7 +103,7 @@ export const StakeChangeDelegateModalLoaded = ({
                                 account={account}
                                 composedLevels={composedLevels}
                                 changeFeeLevel={changeFeeLevel}
-                                headerTypographyStyle="hint"
+                                headerTypographyStyle="body-sm"
                             />
                         </Column>
                     </Card>

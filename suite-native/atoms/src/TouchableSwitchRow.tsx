@@ -20,7 +20,7 @@ export type TouchableSwitchRowProps = {
 };
 
 export const TouchableSwitchRowDescription = ({ children }: { children: ReactNode }) => (
-    <Text variant="hint" color="textSubdued">
+    <Text variant="body-sm" color="textSubdued">
         {children}
     </Text>
 );
@@ -52,8 +52,8 @@ export const TouchableSwitchRow = ({
                     </Box>
                     <HStack justifyContent="space-between" flex={1}>
                         <VStack flex={1} spacing="sp2">
-                            <Text variant="highlight">{text}</Text>
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-md-strong">{text}</Text>
+                            <Text variant="body-sm" color="textSubdued">
                                 {description}
                             </Text>
                         </VStack>

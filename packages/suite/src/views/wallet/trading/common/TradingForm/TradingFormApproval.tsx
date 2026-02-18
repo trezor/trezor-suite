@@ -407,7 +407,7 @@ export const TradingFormApproval = () => {
 
                         <Column>
                             <Paragraph
-                                typographyStyle="body"
+                                typographyStyle="body-md"
                                 intent="neutral"
                                 priority="secondary"
                                 align="start"
@@ -422,7 +422,7 @@ export const TradingFormApproval = () => {
                             </Paragraph>
 
                             <Paragraph
-                                typographyStyle="body"
+                                typographyStyle="body-md"
                                 intent="neutral"
                                 priority="secondary"
                                 align="start"
@@ -452,7 +452,7 @@ export const TradingFormApproval = () => {
                                         isTruncated
                                         value={tx.approvalTxid}
                                         intent="brand"
-                                        typographyStyle="body"
+                                        typographyStyle="body-md"
                                     />
                                 </Link>
                             )}

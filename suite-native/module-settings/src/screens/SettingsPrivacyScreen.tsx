@@ -21,13 +21,13 @@ const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();
 
     return (
-        <Box style={{ height: utils.typography.hint.lineHeight }}>
+        <Box style={{ height: utils.typography['body-sm'].lineHeight }}>
             <DiscreetCanvas
                 text="$100"
                 color="textSubdued"
                 width={30}
-                fontSize={utils.typography.hint.fontSize}
-                height={utils.typography.hint.lineHeight}
+                fontSize={utils.typography['body-sm'].fontSize}
+                height={utils.typography['body-sm'].lineHeight}
             />
         </Box>
     );

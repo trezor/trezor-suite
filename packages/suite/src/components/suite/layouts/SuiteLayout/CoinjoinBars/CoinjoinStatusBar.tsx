@@ -36,7 +36,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
     padding: 0 ${SPACING}px;
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    ${typography.label}
+    ${typography['body-xs']}
     transition: background 0.15s;
     ${({ $isClickable, theme }) =>
         $isClickable &&

@@ -162,7 +162,7 @@ export const CustomFeeEthereum = ({
     };
 
     const gweiInputAddon = (
-        <Text intent="neutral" priority="secondary" typographyStyle="label">
+        <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
             {feeUnits}
         </Text>
     );

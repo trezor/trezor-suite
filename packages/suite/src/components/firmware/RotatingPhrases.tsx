@@ -37,7 +37,7 @@ export const RotatingPhrases = ({ interval = 10000 }: RotatingPhrasesProps) => {
     return (
         <Card fillType="flat" paddingType="large">
             <H4
-                typographyStyle="callout"
+                typographyStyle="body-sm-strong"
                 intent="neutral"
                 priority="secondary"
                 align="center"

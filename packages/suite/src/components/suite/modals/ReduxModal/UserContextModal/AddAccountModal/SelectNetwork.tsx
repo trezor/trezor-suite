@@ -26,7 +26,7 @@ export const SelectNetwork = ({
                 intent="neutral"
                 priority="secondary"
                 margin={{ bottom: 12 }}
-                typographyStyle="hint"
+                typographyStyle="body-sm"
             >
                 {heading}
             </Paragraph>

@@ -119,13 +119,17 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                             <CoinLogo size={36} symbol={account.symbol} type="tokenWithNetwork" />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
-                                typographyStyle="highlight"
+                                typographyStyle="body-md-strong"
                                 intent="neutral"
                                 priority="primary"
                                 gap={0}
                                 width="fit-content"
                             >
-                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                                <Text
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                >
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Text>
                             </InfoItem>

@@ -126,7 +126,7 @@ export const UtxoCard = ({
                             <HStack alignItems="center">
                                 <CryptoAmountFormatter
                                     color="textDefault"
-                                    variant="highlight"
+                                    variant="body-md-strong"
                                     value={utxo.amount}
                                     isBalance={false}
                                     symbol={symbol}
@@ -151,7 +151,7 @@ export const UtxoCard = ({
                                         <AddressFormatter
                                             style={applyStyle(accountAddressFormatterStyle)}
                                             value={utxo.address}
-                                            variant="hint"
+                                            variant="body-sm"
                                             color="textSubdued"
                                         />
                                     }
@@ -173,7 +173,7 @@ export const UtxoCard = ({
                     paddingHorizontal="sp12"
                 >
                     {transactionBlockTime && (
-                        <Text color="textSubdued" variant="hint">
+                        <Text color="textSubdued" variant="body-sm">
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}

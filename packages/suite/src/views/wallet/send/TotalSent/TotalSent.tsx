@@ -63,7 +63,7 @@ export const TotalSent = () => {
                         verticalAlignment="start"
                         intent="neutral"
                         priority="primary"
-                        typographyStyle="body"
+                        typographyStyle="body-md"
                     >
                         <ChildOrSkeleton isLoading={areFeesLoading}>
                             <Column alignItems="flex-end">

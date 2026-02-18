@@ -70,7 +70,7 @@ export const LocktimeDatetime = ({ rightContent }: LocktimeDatetimeProps) => {
                 </Row>
             }
             labelLeft={
-                <Text typographyStyle="hint">
+                <Text typographyStyle="body-sm">
                     <Translation id="LOCKTIME_DESCRIPTION" />
                 </Text>
             }

@@ -64,7 +64,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                     <Column gap={spacings.lg}>
                         <CollapsibleBox
                             heading={
-                                <H3 typographyStyle="highlight">
+                                <H3 typographyStyle="body-md-strong">
                                     <Translation id="TR_EARN_UNSTAKING_PROCESS" />
                                 </H3>
                             }

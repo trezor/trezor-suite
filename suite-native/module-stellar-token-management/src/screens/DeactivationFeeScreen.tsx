@@ -117,7 +117,7 @@ export const DeactivationFeeScreen = () => {
                                 <HStack alignItems="center" spacing="sp12">
                                     <Icon name="info" color="iconSubdued" />
                                     <Box flex={1}>
-                                        <Text variant="body">
+                                        <Text variant="body-md">
                                             <Translation
                                                 id="moduleStellarToken.deactivationFee.warningText"
                                                 values={{

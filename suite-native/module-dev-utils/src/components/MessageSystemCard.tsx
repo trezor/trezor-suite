@@ -27,13 +27,13 @@ export const MessageSystemCard = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall">Message system</Text>
+                <Text variant="headline-sm">Message system</Text>
                 <MessageSystemConfigSourceSelect />
                 <VStack spacing="sp8" paddingBottom="sp16">
-                    <Text variant="label">Codesign Build: {isCodesigned.toString()}</Text>
-                    <Text variant="label">ConfigUrl: {remoteConfigUrl}</Text>
-                    <Text variant="label">Sequence: {config?.sequence}</Text>
-                    <Text variant="label">Timestamp: {config?.timestamp}</Text>
+                    <Text variant="body-xs">Codesign Build: {isCodesigned.toString()}</Text>
+                    <Text variant="body-xs">ConfigUrl: {remoteConfigUrl}</Text>
+                    <Text variant="body-xs">Sequence: {config?.sequence}</Text>
+                    <Text variant="body-xs">Timestamp: {config?.timestamp}</Text>
                     <Button
                         colorScheme="tertiaryElevation0"
                         size="small"
@@ -42,18 +42,20 @@ export const MessageSystemCard = () => {
                         Copy full config
                     </Button>
                 </VStack>
-                <Text variant="highlight">Valid messages:</Text>
+                <Text variant="body-md-strong">Valid messages:</Text>
                 <VStack spacing="sp8">
                     <Divider />
                     {allValidMessages.map(m => (
                         <VStack key={m.id}>
-                            <Text variant="label">{m.id}</Text>
-                            <Text variant="hint">{m.content.en}</Text>
+                            <Text variant="body-xs">{m.id}</Text>
+                            <Text variant="body-sm">{m.content.en}</Text>
                             <Divider />
                         </VStack>
                     ))}
                 </VStack>
-                {A.isEmpty(allValidMessages) && <Text variant="callout">No valid message</Text>}
+                {A.isEmpty(allValidMessages) && (
+                    <Text variant="body-sm-strong">No valid message</Text>
+                )}
             </VStack>
         </Card>
     );

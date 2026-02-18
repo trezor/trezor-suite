@@ -20,7 +20,7 @@ export const PictogramTitleHeader = ({
     icon,
     title,
     subtitle,
-    titleVariant = 'titleSmall',
+    titleVariant = 'headline-sm',
 }: PictogramTitleHeaderProps) => (
     <VStack alignItems="center" spacing="sp24">
         <Pictogram variant={variant} icon={icon} />

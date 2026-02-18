@@ -88,7 +88,7 @@ export const GraphBaseCurrencyBalance = ({
                 {showChange && (
                     <HStack alignItems="center">
                         {/*  Empty space to prevent layout shift */}
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             <DateTimeFormatter value={new Date()} />
                         </Text>
                     </HStack>

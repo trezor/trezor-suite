@@ -74,7 +74,7 @@ export const LocktimeBlockHeight = ({ rightContent }: LocktimeBlockHeightProps) 
                 </Row>
             }
             labelLeft={
-                <Text typographyStyle="hint">
+                <Text typographyStyle="body-sm">
                     <Translation id="LOCKTIME_DESCRIPTION" />
                 </Text>
             }

@@ -12,7 +12,7 @@ export const ReceiveAddressBottomSheetHeader = ({
     description,
 }: ReceiveAddressBottomSheetHeaderProps) => (
     <VStack alignItems="center">
-        <Text textAlign="center" variant="titleSmall">
+        <Text textAlign="center" variant="headline-sm">
             {title}
         </Text>
         <Text textAlign="center" color="textSubdued">

@@ -110,11 +110,11 @@ export const PassphraseFormScreen = () => {
                         <Translation
                             id="modulePassphrase.subtitle"
                             values={{
-                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                                bold: chunks => <Text variant="body-md-strong">{chunks}</Text>,
                             }}
                         />
                     }
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                 />
                 <View
                     style={applyStyle(animationWrapperStyle)}
@@ -136,7 +136,7 @@ export const PassphraseFormScreen = () => {
                                         </View>
                                         <Text
                                             color="textAlertBlue"
-                                            variant="callout"
+                                            variant="body-sm-strong"
                                             style={applyStyle(cardTextStyle)}
                                         >
                                             <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
@@ -152,7 +152,7 @@ export const PassphraseFormScreen = () => {
                                         </View>
                                         <Text
                                             color="textDefault"
-                                            variant="hint"
+                                            variant="body-sm"
                                             style={applyStyle(cardTextStyle)}
                                         >
                                             <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
@@ -168,7 +168,7 @@ export const PassphraseFormScreen = () => {
                                         </View>
                                         <Text
                                             color="textDefault"
-                                            variant="hint"
+                                            variant="body-sm"
                                             style={applyStyle(cardTextStyle)}
                                         >
                                             <Translation id="modulePassphrase.alertCard.paragraphWarning3" />

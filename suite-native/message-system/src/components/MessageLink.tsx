@@ -7,7 +7,11 @@ type MessageLinkProps = {
     language: keyof Localization;
     textVariant?: TypographyStyle;
 };
-export const MessageLink = ({ messageCTA, language, textVariant = 'hint' }: MessageLinkProps) => {
+export const MessageLink = ({
+    messageCTA,
+    language,
+    textVariant = 'body-sm',
+}: MessageLinkProps) => {
     const messageLinkLabel = messageCTA?.label[language];
     const messageLink = messageCTA?.link;
     const isExternalLink = messageCTA?.action === 'external-link';

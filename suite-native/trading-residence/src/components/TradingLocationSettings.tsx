@@ -24,10 +24,10 @@ export const TradingLocationSettings = ({ context, children }: TradingLocationSe
                 </Box>
                 <VStack paddingTop="sp32" spacing="sp24">
                     <VStack spacing="sp8">
-                        <Text variant="titleMedium" color="textDefault">
+                        <Text variant="headline-md" color="textDefault">
                             <Translation id="tradingResidence.locationSettings.title" />
                         </Text>
-                        <Text variant="body" color="textSubdued">
+                        <Text variant="body-md" color="textSubdued">
                             <Translation id="tradingResidence.locationSettings.description" />
                         </Text>
                     </VStack>

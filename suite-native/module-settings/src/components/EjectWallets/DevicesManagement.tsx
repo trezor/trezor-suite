@@ -29,13 +29,13 @@ export const DevicesManagement = () => {
                                 <DeviceModelIcon deviceModel={deviceModel} size="extraLarge" />
                             )}
                             <Box>
-                                <Text variant="highlight" color="textDefault">
+                                <Text variant="body-md-strong" color="textDefault">
                                     {firstDevice.features.label || firstDevice.name}
                                 </Text>
                                 <HStack alignItems="center" spacing="sp8">
                                     <ConnectionDot isConnected={firstDevice.connected} />
                                     <Text
-                                        variant="hint"
+                                        variant="body-sm"
                                         color={
                                             firstDevice.connected
                                                 ? 'textSecondaryHighlight'

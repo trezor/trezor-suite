@@ -37,7 +37,7 @@ export const AssetStakingRow = ({
                             <BaseCurrencyValue amount={stakingTotalBalance} symbol={symbol} />
                         </HiddenPlaceholder>
                         <HiddenPlaceholder>
-                            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <CoinBalance value={stakingTotalBalance} symbol={symbol} />
                             </Text>
                         </HiddenPlaceholder>

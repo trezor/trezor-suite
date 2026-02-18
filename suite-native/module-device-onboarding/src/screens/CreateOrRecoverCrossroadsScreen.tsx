@@ -53,7 +53,7 @@ export const CreateOrRecoverCrossroadsScreen = ({
                         </Box>
                         <VStack spacing="sp16">
                             <CenteredTitleHeader
-                                titleVariant="highlight"
+                                titleVariant="body-md-strong"
                                 titleSpacing="sp4"
                                 title={
                                     <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.create.title" />
@@ -75,7 +75,7 @@ export const CreateOrRecoverCrossroadsScreen = ({
                     <TextDivider />
                     <VStack spacing="sp16" paddingHorizontal="sp16">
                         <CenteredTitleHeader
-                            titleVariant="highlight"
+                            titleVariant="body-md-strong"
                             titleSpacing="sp4"
                             title={
                                 <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.recover.title" />

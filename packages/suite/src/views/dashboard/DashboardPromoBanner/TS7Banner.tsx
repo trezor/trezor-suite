@@ -27,7 +27,7 @@ const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
 
     return (
         <Paragraph
-            typographyStyle={isBelowLaptop ? 'titleSmall' : 'titleMedium'}
+            typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
             flex="1"
             margin={{ right: isVerticalLayout ? 32 : 0 }}
         >
@@ -40,7 +40,7 @@ const Description = () => {
     const { isBelowDesktop } = useLayoutSize();
 
     return (
-        <Text typographyStyle={isBelowDesktop ? 'callout' : 'titleSmall'}>
+        <Text typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}>
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION" />
         </Text>
     );

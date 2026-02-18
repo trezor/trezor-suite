@@ -89,7 +89,7 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
                         borderWidth: 1,
                     }}
                 >
-                    <Text variant="hint">{++rerenderCount.current}</Text>
+                    <Text variant="body-sm">{++rerenderCount.current}</Text>
                 </View>
             )}
         </Animated.View>

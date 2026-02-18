@@ -121,7 +121,7 @@ export const AccountGroup = ({
                             <Text
                                 intent="neutral"
                                 priority="secondary"
-                                typographyStyle="label"
+                                typographyStyle="body-xs"
                                 margin={{ left: keepOpen ? spacings.sm : undefined }}
                                 // Optical fix
                                 position={{ type: 'relative', left: 1 }}

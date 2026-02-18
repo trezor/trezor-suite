@@ -41,7 +41,7 @@ export const BluetoothDeviceList = ({
                 <TitleHeader
                     title={<Translation id={title} />}
                     subtitle={<Translation id={subtitle} />}
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     titleSpacing="sp12"
                 />
                 <VStack spacing="sp16">

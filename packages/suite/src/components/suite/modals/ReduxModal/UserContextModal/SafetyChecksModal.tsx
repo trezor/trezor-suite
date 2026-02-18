@@ -61,10 +61,10 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         verticalAlignment="center"
                     >
                         <Column alignItems="flex-start">
-                            <Text typographyStyle="highlight">
+                            <Text typographyStyle="body-md-strong">
                                 <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL" />
                             </Text>
-                            <Paragraph typographyStyle="hint">
+                            <Paragraph typographyStyle="body-sm">
                                 <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL_DESC" />
                             </Paragraph>
                         </Column>
@@ -77,10 +77,10 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         verticalAlignment="center"
                     >
                         <Column alignItems="flex-start">
-                            <Text typographyStyle="highlight">
+                            <Text typographyStyle="body-md-strong">
                                 <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
                             </Text>
-                            <Paragraph typographyStyle="hint">
+                            <Paragraph typographyStyle="body-sm">
                                 <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
                             </Paragraph>
                         </Column>

@@ -42,7 +42,7 @@ export const DayHeader = ({
     const absoluteTotalFiatAmount = asBaseCurrencyAmount(totalFiatAmountPerDay.abs());
 
     const commonTextProps = {
-        typographyStyle: 'callout',
+        typographyStyle: 'body-sm-strong',
         variant: 'tertiary',
         as: 'div',
     } as const;

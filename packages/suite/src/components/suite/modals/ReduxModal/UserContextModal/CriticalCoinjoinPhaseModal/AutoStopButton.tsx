@@ -21,7 +21,7 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
 
     return (
         <Checkbox isChecked={isActivated} onClick={handleClick} verticalAlignment="center">
-            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id="TR_ENABLE_AUTOSTOP_COINJOIN" />
             </Text>
         </Checkbox>

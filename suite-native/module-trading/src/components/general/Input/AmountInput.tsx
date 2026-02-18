@@ -36,7 +36,7 @@ const boxStyle = prepareNativeStyle(() => ({
 
 const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
     ({ colors, typography }, { hasError, fontSize }) => ({
-        ...typography.body,
+        ...typography['body-md'],
         color: hasError ? colors.textAlertRed : colors.textDefault,
         textAlign: 'right',
         fontSize,

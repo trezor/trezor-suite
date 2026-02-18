@@ -34,7 +34,7 @@ export const DeviceCheckBackupSupportScreen = () => {
                 <Box flex={1} justifyContent="center" alignItems="center">
                     <PictogramTitleHeader
                         icon="chatsTeardrop"
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                         variant="success"
                         title={
                             <Translation id="moduleCheckBackup.checkBackupSupportScreen.title" />

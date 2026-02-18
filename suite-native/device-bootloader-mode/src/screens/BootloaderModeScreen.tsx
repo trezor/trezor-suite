@@ -67,7 +67,7 @@ export const BootloaderModeScreen = () => {
                 <Card>
                     <VStack spacing="sp32" style={applyStyle(contentWrapperStyle)}>
                         <Pictogram variant="critical" />
-                        <Text variant="highlight" textAlign="center">
+                        <Text variant="body-md-strong" textAlign="center">
                             <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.title" />
                         </Text>
                         <Text color="textSubdued" textAlign="center">
@@ -82,7 +82,7 @@ export const BootloaderModeScreen = () => {
                 </Card>
                 <TextDivider />
                 <VStack style={applyStyle(contentWrapperStyle)}>
-                    <Text variant="highlight" textAlign="center">
+                    <Text variant="body-md-strong" textAlign="center">
                         <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.reconnectCard.title" />
                     </Text>
                     <Text color="textSubdued" textAlign="center">

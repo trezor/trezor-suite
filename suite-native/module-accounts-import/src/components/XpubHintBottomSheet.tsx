@@ -43,12 +43,12 @@ export const XpubHintBottomSheet = ({
             <Box paddingTop="sp8" justifyContent="space-between">
                 <Video name={video} aspectRatio={1} />
                 <VStack spacing="sp24" paddingTop="sp24">
-                    <Text color="textSubdued" textAlign="center" variant="hint">
+                    <Text color="textSubdued" textAlign="center" variant="body-sm">
                         <Translation
                             id={textTranslationTag}
                             values={{
                                 emphasized: chunks => (
-                                    <Text color="textDefault" variant="hint">
+                                    <Text color="textDefault" variant="body-sm">
                                         {chunks}
                                     </Text>
                                 ),

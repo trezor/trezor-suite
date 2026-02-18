@@ -28,7 +28,7 @@ export const OnboardingOption = ({
                 <H4>{heading}</H4>
                 {description && (
                     <Paragraph
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority="secondary"
                         textWrap="pretty"

@@ -32,14 +32,14 @@ const TransactionAddressAmount = ({
     decimals,
 }: TransactionAddressAmountProps) => (
     <Box>
-        <AddressFormatter value={address} variant="hint" />
+        <AddressFormatter value={address} variant="body-sm" />
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <CryptoAmountFormatter
                     value={amount}
                     symbol={symbol}
                     isBalance={false}
-                    variant="label"
+                    variant="body-xs"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
@@ -48,7 +48,7 @@ const TransactionAddressAmount = ({
                     value={amount}
                     tokenSymbol={symbol}
                     decimals={decimals}
-                    variant="label"
+                    variant="body-xs"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
@@ -73,7 +73,7 @@ export const TransactionDetailInputsSheetSection = ({
         <Box>
             {G.isString(header) ? (
                 <Box paddingLeft="sp8" marginVertical="sp8">
-                    <Text color="textSubdued" variant="hint">
+                    <Text color="textSubdued" variant="body-sm">
                         {header}
                     </Text>
                 </Box>

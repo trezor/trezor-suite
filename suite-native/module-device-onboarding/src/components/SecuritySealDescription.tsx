@@ -47,7 +47,7 @@ export const SecuritySealDescription = () => {
 
     return (
         <>
-            <Text variant="highlight">
+            <Text variant="body-md-strong">
                 <Translation
                     id="moduleDeviceOnboarding.securityCheckScreen.step2.description"
                     values={{
@@ -56,7 +56,7 @@ export const SecuritySealDescription = () => {
                                 onPress={handleLinkPress}
                                 label={linkChunk}
                                 isUnderlined
-                                textVariant="highlight"
+                                textVariant="body-md-strong"
                                 textColor="backgroundSecondaryDefault"
                             />
                         ),
@@ -72,7 +72,7 @@ export const SecuritySealDescription = () => {
                                 <VStack>
                                     <VStack spacing="sp16">
                                         <Box>
-                                            <Text variant="highlight">
+                                            <Text variant="body-md-strong">
                                                 <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.title" />
                                             </Text>
                                             <Text>

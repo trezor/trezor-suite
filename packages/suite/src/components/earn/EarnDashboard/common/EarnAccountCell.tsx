@@ -13,7 +13,7 @@ const AccountCellContainer = styled.div`
     flex-direction: row;
     align-items: center;
     gap: ${spacingsPx.md};
-    ${typography.hint};
+    ${typography['body-sm']};
     color: ${({ theme }) => theme.textSubdued};
     cursor: inherit;
 `;

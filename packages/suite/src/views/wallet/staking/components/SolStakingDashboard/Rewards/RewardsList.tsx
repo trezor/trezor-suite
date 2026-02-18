@@ -65,7 +65,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                         {rewards.slicedRewards?.map(reward => (
                             <Column gap={10} key={reward.epoch} data-testid={TEST_ID}>
                                 <Text
-                                    typographyStyle="callout"
+                                    typographyStyle="body-sm-strong"
                                     intent="neutral"
                                     priority="secondary"
                                     data-testid={`${TEST_ID}/date`}
@@ -86,7 +86,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                             hasBorder={false}
                                         />
                                         <Column flex="1" gap={4}>
-                                            <Text typographyStyle="body">
+                                            <Text typographyStyle="body-md">
                                                 <Translation id="TR_REWARD" />
                                             </Text>
                                             <Grid

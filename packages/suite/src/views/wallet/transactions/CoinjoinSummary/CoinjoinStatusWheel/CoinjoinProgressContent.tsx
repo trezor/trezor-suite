@@ -45,7 +45,7 @@ const AllPrivateContent = styled.div`
 `;
 
 const ProgressPercentage = styled.p`
-    ${typography.titleMedium}
+    ${typography['headline-md']}
 `;
 
 const TooltipChildren = styled.div`
@@ -57,7 +57,7 @@ const TooltipChildren = styled.div`
 const TimeLeft = styled.p`
     max-width: 80%;
     color: ${({ theme }) => theme.textDefault};
-    ${typography.highlight}
+    ${typography['body-md-strong']}
 `;
 
 interface CoinjoinProgressContentProps {

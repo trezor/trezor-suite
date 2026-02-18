@@ -118,7 +118,7 @@ export const DeviceManagerModal = ({
                                             <Box flexShrink={1}>
                                                 <DeviceItemContent
                                                     deviceState={deviceState ?? undefined}
-                                                    headerTextVariant="titleSmall"
+                                                    headerTextVariant="headline-sm"
                                                     isCompact={false}
                                                 />
                                             </Box>

@@ -146,7 +146,7 @@ export const Card = ({
                             paddingType,
                         })}
                     >
-                        <Text as="div" typographyStyle="callout">
+                        <Text as="div" typographyStyle="body-sm-strong">
                             {header}
                         </Text>
                     </Box>

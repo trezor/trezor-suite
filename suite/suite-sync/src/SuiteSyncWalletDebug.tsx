@@ -71,15 +71,15 @@ export const SuiteSyncWalletDebug = ({
             {isLegacyLabelingEnabled && <Text intent="accentViolet">[Legacy]</Text>}
             {isSuiteSyncEnabled && (
                 <>
-                    <Text typographyStyle="hint" intent="warning">
+                    <Text typographyStyle="body-sm" intent="warning">
                         <Code>{walletDescriptor.slice(-8)}</Code>
                     </Text>
                     @
-                    <Text typographyStyle="hint" intent="accentViolet">
+                    <Text typographyStyle="body-sm" intent="accentViolet">
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip content={<Code>{JSON.stringify(suiteSyncOwner, null, 2)}</Code>}>
-                        <Text typographyStyle="hint" intent="accentViolet">
+                        <Text typographyStyle="body-sm" intent="accentViolet">
                             E:
                             <Code>{suiteSyncOwner?.slice(-8)}</Code>
                         </Text>

@@ -21,10 +21,10 @@ export const FiatCurrencyListItem = ({
                 <FiatCurrencyIcon size="medium" />
             </Box>
             <VStack flex={1} spacing={0}>
-                <Text variant="body" color="textDefault">
+                <Text variant="body-md" color="textDefault">
                     {label}
                 </Text>
-                <Text variant="body" color="textSubdued">
+                <Text variant="body-md" color="textSubdued">
                     {displayValue}
                 </Text>
             </VStack>

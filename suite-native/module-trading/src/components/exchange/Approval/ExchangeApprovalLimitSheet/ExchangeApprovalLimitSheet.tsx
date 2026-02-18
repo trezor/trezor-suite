@@ -65,7 +65,7 @@ export const ExchangeApprovalLimitSheet = memo(
                 <VStack spacing="sp12" paddingBottom="sp12">
                     <ExchangeApprovalLimitCard
                         title={
-                            <Text variant="callout" color="textDefault">
+                            <Text variant="body-sm-strong" color="textDefault">
                                 <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
                             </Text>
                         }
@@ -89,7 +89,7 @@ export const ExchangeApprovalLimitSheet = memo(
                             <TradingCoinAmountFormatter
                                 cryptoId={quote.send}
                                 amount={quote.sendStringAmount}
-                                variant="callout"
+                                variant="body-sm-strong"
                                 color="textDefault"
                             />
                         }

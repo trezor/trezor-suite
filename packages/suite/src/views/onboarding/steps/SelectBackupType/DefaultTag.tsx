@@ -13,7 +13,7 @@ export const DefaultTag = () => {
             margin={{ left: spacings.xs }}
             size={isBelowTablet ? 'small' : undefined}
         >
-            <Text typographyStyle="hint">
+            <Text typographyStyle="body-sm">
                 <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />
             </Text>
         </Badge>

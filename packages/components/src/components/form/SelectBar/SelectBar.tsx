@@ -228,7 +228,7 @@ export const SelectBar = <V extends ValueTypes>({
                                         >
                                             {option.label}
                                             <Box height={0} overflow="hidden" aria-hidden>
-                                                <Text typographyStyle="highlight">
+                                                <Text typographyStyle="body-md-strong">
                                                     {option.label}
                                                 </Text>
                                             </Box>

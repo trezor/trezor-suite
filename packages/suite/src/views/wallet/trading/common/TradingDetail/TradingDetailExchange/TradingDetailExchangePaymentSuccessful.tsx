@@ -31,7 +31,7 @@ export const TradingDetailExchangePaymentSuccessful = ({
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TITLE" />
                 </H3>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TEXT" />
                 </Paragraph>
             </Column>

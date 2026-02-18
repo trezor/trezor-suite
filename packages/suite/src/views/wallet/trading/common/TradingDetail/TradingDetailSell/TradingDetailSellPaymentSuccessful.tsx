@@ -44,7 +44,7 @@ export const TradingDetailSellPaymentSuccessful = ({
             }
         >
             <Column gap={12}>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_SELL_DETAIL_PROCESSING_TEXT" values={{ providerName }} />
                 </Paragraph>
                 {provider && (

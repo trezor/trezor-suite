@@ -7,7 +7,7 @@ type TrezorSuiteHeaderProps = {
     textVariant?: NativeTypographyStyle;
 };
 
-export const TrezorSuiteHeader = ({ textVariant = 'titleSmall' }: TrezorSuiteHeaderProps) => (
+export const TrezorSuiteHeader = ({ textVariant = 'headline-sm' }: TrezorSuiteHeaderProps) => (
     <Text variant={textVariant} color="textSecondaryHighlight" textAlign="center">
         <Translation id="generic.trezorSuite" />
     </Text>

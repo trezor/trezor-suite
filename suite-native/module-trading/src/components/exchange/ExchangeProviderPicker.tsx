@@ -47,7 +47,7 @@ const ExchangeProviderPickerRight = ({
             <ProviderLogo logo={logo} />
             <Text
                 color="textSubdued"
-                variant="body"
+                variant="body-md"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
             >
                 {companyName}

@@ -41,7 +41,7 @@ const ErrorMessage = styled.div`
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
     text-align: center;
 `;
 

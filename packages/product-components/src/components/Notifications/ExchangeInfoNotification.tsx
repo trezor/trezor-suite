@@ -26,7 +26,7 @@ export const ExchangeInfoNotification = ({
 
     return (
         <Column gap={4}>
-            <Text typographyStyle="highlight">{message}</Text>
+            <Text typographyStyle="body-md-strong">{message}</Text>
             <Row gap={8} alignItems="center">
                 <ExchangeAssetWithFallback asset={send} />
                 <ExchangeAmountWithSymbol amount={sendAmount} asset={send} />

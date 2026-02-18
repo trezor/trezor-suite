@@ -15,7 +15,7 @@ export const Td = ({ children }: TdProps) => <Box flex={1}>{children}</Box>;
 
 export const Th = ({ children }: TdProps) => (
     <Box flex={1}>
-        <Text variant="hint" color="textSubdued">
+        <Text variant="body-sm" color="textSubdued">
             {children}
         </Text>
     </Box>

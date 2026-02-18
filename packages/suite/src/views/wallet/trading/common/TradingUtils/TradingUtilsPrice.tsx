@@ -26,13 +26,13 @@ import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAm
 import { TradingUtilsKyc } from './TradingUtilsKyc';
 
 const PriceValue = styled.div`
-    ${typography.titleSmall}
+    ${typography['headline-sm']}
     color: ${({ theme }) => theme.textDefault};
     margin-top: ${spacingsPx.xxs};
     margin-right: ${spacingsPx.sm};
 
     ${SCREEN_QUERY.MOBILE} {
-        ${typography.titleSmall}
+        ${typography['headline-sm']}
     }
 `;
 
@@ -64,7 +64,7 @@ export const TradingUtilsPrice = ({
 
     return (
         <div>
-            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 {showProviderAdjustedAmountTooltip ? (
                     <Tooltip
                         hasIcon
@@ -131,7 +131,7 @@ export const TradingUtilsPrice = ({
                                         <Text
                                             intent="neutral"
                                             priority="secondary"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                             margin={{ left: spacings.xxl }}
                                         >
                                             <BaseCurrencyValue

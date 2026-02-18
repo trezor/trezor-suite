@@ -66,7 +66,7 @@ const Bullet = styled.div<{
               ? theme.textDefaultInverted
               : theme.backgroundNeutralDisabled};
     color: ${({ $state, theme }) => theme[mapStateToTextColor($state)]};
-    ${({ $size }) => ($size === 'small' ? typography.label : typography.hint)}
+    ${({ $size }) => ($size === 'small' ? typography['body-xs'] : typography['body-sm'])}
 
     ${({ $state, $isOrdered, theme }) =>
         $state === 'active' &&
@@ -220,7 +220,7 @@ export const BulletListItem = ({
             {direction === 'vertical' && (
                 <Content $itemGap={itemGap} $titleGap={titleGap}>
                     {children && (
-                        <Text as="div" typographyStyle="hint">
+                        <Text as="div" typographyStyle="body-sm">
                             {children}
                         </Text>
                     )}

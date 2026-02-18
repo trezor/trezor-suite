@@ -37,7 +37,7 @@ export const LoadingSuccessScreen = ({ onFinish, title }: LoadingSuccessScreenPr
                         endFrame={ANIMATION_END_FRAME}
                         size={80}
                     />
-                    <AnimatedText style={textStyle} variant="titleSmall">
+                    <AnimatedText style={textStyle} variant="headline-sm">
                         {title}
                     </AnimatedText>
                 </VStack>

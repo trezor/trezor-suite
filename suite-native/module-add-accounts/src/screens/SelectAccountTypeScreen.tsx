@@ -45,7 +45,11 @@ const bulletsForKeyPath = (keyPath: TxKeyPath) => (
                     chunks.map(
                         row =>
                             row && (
-                                <BulletListItem key={`${row}`} variant="hint" color="textSubdued">
+                                <BulletListItem
+                                    key={`${row}`}
+                                    variant="body-sm"
+                                    color="textSubdued"
+                                >
                                     {row}
                                 </BulletListItem>
                             ),
@@ -151,7 +155,7 @@ export const SelectAccountTypeScreen = ({
                     })}
                 </VStack>
                 <View style={applyStyle(aboutStyle, { bottomInset: insets.bottom })}>
-                    <Text variant="hint" color="textSubdued" textAlign="center">
+                    <Text variant="body-sm" color="textSubdued" textAlign="center">
                         <Translation id="moduleAddAccounts.selectAccountTypeScreen.aboutTypesLabel" />
                     </Text>
                     <Button size="medium" colorScheme="tertiaryElevation0" onPress={handleMoreTap}>

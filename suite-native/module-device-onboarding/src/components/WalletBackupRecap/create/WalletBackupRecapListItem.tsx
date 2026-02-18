@@ -57,7 +57,7 @@ export const WalletBackupRecapListItem = ({
                     />
                 )}
             </VStack>
-            <Text variant="highlight" style={applyStyle(textStyle)}>
+            <Text variant="body-md-strong" style={applyStyle(textStyle)}>
                 <Translation id={labelId} />
             </Text>
         </HStack>

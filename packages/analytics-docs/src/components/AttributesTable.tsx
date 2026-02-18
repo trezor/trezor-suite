@@ -17,7 +17,7 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
-                                <Text typographyStyle="label">
+                                <Text typographyStyle="body-xs">
                                     Attribute{' '}
                                     <Badge intent="info" size="small" margin={{ left: 4 }}>
                                         {keys.length}
@@ -25,13 +25,13 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
                                 </Text>
                             </Table.Cell>
                             <Table.Cell>
-                                <Text typographyStyle="label">Type</Text>
+                                <Text typographyStyle="body-xs">Type</Text>
                             </Table.Cell>
                             <Table.Cell>
-                                <Text typographyStyle="label">Version</Text>
+                                <Text typographyStyle="body-xs">Version</Text>
                             </Table.Cell>
                             <Table.Cell>
-                                <Text typographyStyle="label">Description</Text>
+                                <Text typographyStyle="body-xs">Description</Text>
                             </Table.Cell>
                             <Table.Cell></Table.Cell>
                         </Table.Row>

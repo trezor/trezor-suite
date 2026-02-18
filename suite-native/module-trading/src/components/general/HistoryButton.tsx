@@ -57,7 +57,7 @@ const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProp
         >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
-                    <Text variant="body" color="textSubdued">
+                    <Text variant="body-md" color="textSubdued">
                         <Translation id="moduleTrading.tradeHistory.button.title" />
                     </Text>
                     <Icon name="caretCircleRight" color="iconSubdued" />

@@ -23,7 +23,7 @@ export const StakingUnavailableBottomSheet = ({
         <BottomSheetModal
             ref={ref}
             title={
-                <Text variant="titleSmall" textAlign="center">
+                <Text variant="headline-sm" textAlign="center">
                     <Translation id="earn.stakingBottomSheet.title" />
                 </Text>
             }

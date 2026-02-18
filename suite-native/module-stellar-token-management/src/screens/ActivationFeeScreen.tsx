@@ -115,7 +115,7 @@ export const ActivationFeeScreen = () => {
                             />
 
                             {/* Reserve Info */}
-                            <Text variant="body" color="textSubdued">
+                            <Text variant="body-md" color="textSubdued">
                                 <Translation
                                     id="moduleStellarToken.networkFee.reserveInfo"
                                     values={{
@@ -131,7 +131,7 @@ export const ActivationFeeScreen = () => {
                                                 isUnderlined
                                                 textColor="textSubdued"
                                                 textPressedColor="textSubdued"
-                                                textVariant="body"
+                                                textVariant="body-md"
                                             />
                                         ),
                                     }}

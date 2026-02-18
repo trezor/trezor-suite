@@ -14,7 +14,7 @@ import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { NoRatesTooltip } from './NoRatesTooltip';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     gap: ${spacingsPx.xxs};
     display: flex;
     align-items: center;
@@ -23,7 +23,7 @@ const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
 `;
 
 const Empty = styled.div`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.textSubdued};
 `;
 

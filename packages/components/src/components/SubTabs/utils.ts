@@ -4,9 +4,9 @@ import { SubTabsSize } from './types';
 
 export const mapSizeToTypography = (size: SubTabsSize): TypographyStyle => {
     const typographyStyleMap: Record<SubTabsSize, TypographyStyle> = {
-        large: 'body',
-        medium: 'hint',
-        small: 'label',
+        large: 'body-md',
+        medium: 'body-sm',
+        small: 'body-xs',
     };
 
     return typographyStyleMap[size];

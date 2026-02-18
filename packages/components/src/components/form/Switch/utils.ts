@@ -13,8 +13,8 @@ export const mapSizeToHandleSize = (size: SwitchSize): number => {
 
 export const mapSizeToLabelTypography = (size: SwitchSize): TypographyStyle => {
     const sizesMap: Record<SwitchSize, TypographyStyle> = {
-        small: 'hint',
-        medium: 'body',
+        small: 'body-sm',
+        medium: 'body-md',
     };
 
     return sizesMap[size];

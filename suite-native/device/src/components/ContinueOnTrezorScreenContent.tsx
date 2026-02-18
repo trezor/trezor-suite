@@ -44,7 +44,7 @@ export const ContinueOnTrezorScreenContent = ({
 
     return (
         <VStack flex={1} spacing="sp24">
-            <Text variant="titleMedium" style={applyStyle(titleStyle)}>
+            <Text variant="headline-md" style={applyStyle(titleStyle)}>
                 <Translation id={titleTxKey} />
             </Text>
             {onActionPress && (

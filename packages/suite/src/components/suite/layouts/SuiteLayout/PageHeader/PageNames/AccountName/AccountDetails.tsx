@@ -62,12 +62,12 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
 
     const getTypographyStyle = () => {
         if (isBalanceShown) {
-            return 'highlight';
+            return 'body-md-strong';
         } else if (isContentBelowBreakpoint) {
-            return 'titleSmall';
+            return 'headline-sm';
         }
 
-        return 'titleMedium';
+        return 'headline-md';
     };
 
     const accountNameElement = useMemo(
@@ -137,7 +137,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         <Text
                             intent="neutral"
                             priority="secondary"
-                            typographyStyle="label"
+                            typographyStyle="body-xs"
                             as="div"
                         >
                             <Row gap={4}>

@@ -100,7 +100,7 @@ const WalletBackupInstructionCard = ({
         <AnimatedCard style={[animatedCardStyle, applyStyle(cardStyle)]}>
             <VStack spacing="sp8" alignItems="center">
                 <Icon name={iconName} size={28} />
-                <Text variant="highlight">{title}</Text>
+                <Text variant="body-md-strong">{title}</Text>
             </VStack>
         </AnimatedCard>
     );

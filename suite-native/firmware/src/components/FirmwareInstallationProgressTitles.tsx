@@ -28,12 +28,12 @@ export const FirmwareInstallationProgressTitles = ({
             style={applyStyle(firmwareTitlesWrapperStyle)}
         >
             <Box marginTop="sp12" alignItems="center">
-                <Text variant="titleSmall" textAlign="center">
+                <Text variant="headline-sm" textAlign="center">
                     {title}
                 </Text>
             </Box>
             <Box marginTop="sp8" alignItems="center">
-                <Text variant="body" color="textSubdued" textAlign="center">
+                <Text variant="body-md" color="textSubdued" textAlign="center">
                     {subtitle}
                 </Text>
             </Box>

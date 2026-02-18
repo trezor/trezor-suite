@@ -18,11 +18,11 @@ export const TradingAvailability = () => {
             </Box>
             <Box>
                 {isTradingAvailableForForm ? (
-                    <Text variant="hint" color="textSecondaryHighlight">
+                    <Text variant="body-sm" color="textSecondaryHighlight">
                         <Translation id="tradingResidence.locationSettings.tradingAvailable" />
                     </Text>
                 ) : (
-                    <Text variant="hint" color="textAlertRed">
+                    <Text variant="body-sm" color="textAlertRed">
                         <Translation id="tradingResidence.locationSettings.tradingUnavailable" />
                     </Text>
                 )}

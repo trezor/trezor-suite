@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     color: ${({ theme }) => theme.textDefault};
-    ${typography.hint}
+    ${typography['body-sm']}
     padding: 0 20px;
 `;
 

@@ -38,7 +38,7 @@ export const TransactionNotification = ({
     renderAmount,
 }: TransactionNotificationProps) => (
     <Column gap={4}>
-        <Text typographyStyle="highlight">{message}</Text>
+        <Text typographyStyle="body-md-strong">{message}</Text>
         <Row gap={8} alignItems="center">
             <TransactionIcon
                 icon={icon}

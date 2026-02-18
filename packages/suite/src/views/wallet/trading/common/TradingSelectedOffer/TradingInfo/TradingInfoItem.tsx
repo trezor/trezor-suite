@@ -63,11 +63,11 @@ export const TradingInfoItem = ({
     return (
         <Column width="100%" gap={8}>
             <Row justifyContent="space-between">
-                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id={label} />
                 </Text>
                 {(showAccountLabel || isExternalExchange) && (
-                    <Text intent="neutral" priority="secondary" typographyStyle="hint" as="div">
+                    <Text intent="neutral" priority="secondary" typographyStyle="body-sm" as="div">
                         <Row>
                             {accountLabelPrefix}&nbsp;
                             {isExternalExchange && (
@@ -113,7 +113,11 @@ export const TradingInfoItem = ({
                         <Column alignItems="start">
                             <Text>{displayName}</Text>
                             {showNetwork && (
-                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                                <Text
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                >
                                     {networkName}
                                 </Text>
                             )}
@@ -123,7 +127,7 @@ export const TradingInfoItem = ({
                         <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
                         {currencyInfo?.symbol && (
-                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 <BaseCurrencyValue
                                     amount={amount}
                                     symbol={currencyInfo.symbol}

@@ -19,9 +19,9 @@ export const TroubleshootingTipsItemComponent = ({ item }: TroubleshootingTipsIt
         }
     >
         <Column>
-            <Paragraph typographyStyle="body">{item.heading}</Paragraph>
+            <Paragraph typographyStyle="body-md">{item.heading}</Paragraph>
             {item.description && (
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {item.description}
                 </Paragraph>
             )}

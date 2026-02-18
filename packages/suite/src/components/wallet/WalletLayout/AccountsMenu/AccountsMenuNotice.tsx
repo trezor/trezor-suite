@@ -9,5 +9,5 @@ export const AccountsMenuNotice = styled.div`
     margin-top: ${spacingsPx.xxl};
     margin-bottom: ${spacingsPx.md};
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
 `;

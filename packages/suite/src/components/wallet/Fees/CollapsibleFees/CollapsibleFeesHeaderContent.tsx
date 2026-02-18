@@ -16,7 +16,7 @@ export type CollapsibleFeesHeaderContentProps = {
 
 export const CollapsibleFeesHeaderContent = ({
     label,
-    headerTypographyStyle = 'body',
+    headerTypographyStyle = 'body-md',
     supportsAdjustableFees,
     txMaxFee,
     isOpen,

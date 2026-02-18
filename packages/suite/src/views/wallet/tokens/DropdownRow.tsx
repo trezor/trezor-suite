@@ -31,7 +31,7 @@ type DropdownRowProps = {
 
 export const DropdownRow = ({
     isActive,
-    typographyStyle = 'body',
+    typographyStyle = 'body-md',
     intent = 'neutral',
     priority = 'secondary',
     isDisabled = false,

@@ -48,7 +48,7 @@ const getCheckableTagStyles = (
 export const CheckableTag = styled.button<CheckableTagProps>`
     cursor: pointer;
     border: 0;
-    ${typography.hint};
+    ${typography['body-sm']};
     padding: ${spacingsPx.xxs} ${spacingsPx.sm};
     border-radius: ${borders.radii.full};
 

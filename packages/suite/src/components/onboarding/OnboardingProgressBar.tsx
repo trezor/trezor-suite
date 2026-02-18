@@ -61,7 +61,7 @@ export const OnboardingProgressBar = () => {
                 <BulletList.Item
                     key={id}
                     title={
-                        <Text typographyStyle="label">
+                        <Text typographyStyle="body-xs">
                             <Translation id={labelTranslationId as TranslationKey} />
                         </Text>
                     }

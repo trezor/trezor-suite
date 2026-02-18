@@ -54,7 +54,10 @@ const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) =
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Text variant="body" style={applyStyle(labelTextStyle, { textColor: 'textDefault', flex })}>
+        <Text
+            variant="body-md"
+            style={applyStyle(labelTextStyle, { textColor: 'textDefault', flex })}
+        >
             {label}
         </Text>
     );
@@ -105,7 +108,7 @@ export const AccountListBaseItem = ({
                             <CryptoAmountFormatter
                                 value={cryptoValue}
                                 symbol={account.symbol}
-                                variant="body"
+                                variant="body-md"
                                 style={applyStyle(amountTextStyle, {
                                     textColor: 'textDefault',
                                 })}
@@ -124,7 +127,7 @@ export const AccountListBaseItem = ({
                             <CryptoToFiatAmountFormatter
                                 value={cryptoValue}
                                 symbol={account.symbol}
-                                variant="hint"
+                                variant="body-sm"
                                 style={applyStyle(labelTextStyle, {
                                     textColor: 'textDefault',
                                     flex: 1,

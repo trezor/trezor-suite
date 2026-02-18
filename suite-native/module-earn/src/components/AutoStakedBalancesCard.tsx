@@ -66,19 +66,19 @@ export const AutoStakedBalancesCard = ({
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="check" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="label">
+                            <Text color="textSubdued" variant="body-xs">
                                 <Translation id="earn.stakedAutomatically" />
                             </Text>
                         </Box>
 
-                        <Text color="textDefault" variant="titleSmall">
+                        <Text color="textDefault" variant="headline-sm">
                             <Translation id="earn.fullBalance" />
                         </Text>
                     </Box>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="plusCircle" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="label">
+                            <Text color="textSubdued" variant="body-xs">
                                 <Translation id="earn.rewards" />
                             </Text>
                         </Box>
@@ -87,7 +87,7 @@ export const AutoStakedBalancesCard = ({
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
                             color="textSecondaryHighlight"
-                            variant="titleSmall"
+                            variant="headline-sm"
                         />
                         <Box flexDirection="row">
                             <Text color="textSubdued">≈</Text>
@@ -126,7 +126,7 @@ export const AutoStakedBalancesCard = ({
                     <Box style={applyStyle(infoItemStyle)}>
                         <Icon name="info" color="textSubdued" size="mediumLarge" />
                         <Box flexShrink={1}>
-                            <Text color="textSubdued" variant="hint" numberOfLines={0}>
+                            <Text color="textSubdued" variant="body-sm" numberOfLines={0}>
                                 <Translation id="earn.adaStaysFullyAccessuble" />
                             </Text>
                         </Box>

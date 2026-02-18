@@ -45,7 +45,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
                             subtitle={
                                 <Translation id="moduleDemoAccountQuestionnaire.intro.subtitle" />
                             }
-                            titleVariant="titleMedium"
+                            titleVariant="headline-md"
                         />
                     </VStack>
                     <InlineAlertBox

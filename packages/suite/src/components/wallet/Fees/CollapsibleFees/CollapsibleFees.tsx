@@ -31,7 +31,7 @@ export function CollapsibleFees({
     composedLevels,
     changeFeeLevel,
     rbfForm,
-    headerTypographyStyle = 'body',
+    headerTypographyStyle = 'body-md',
     isOpen,
 }: CollapsibleFeesProps) {
     const selectedFee = useWatch<FormState, 'selectedFee'>({

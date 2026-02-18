@@ -31,7 +31,7 @@ export const ReviewOutputItemContent = ({
 
         case 'destination-tag':
             return (
-                <Text variant="hint">
+                <Text variant="body-sm">
                     {value || (
                         <Translation id="transactionManagement.review.outputs.destinationTagNotSet" />
                     )}
@@ -42,18 +42,18 @@ export const ReviewOutputItemContent = ({
         case 'regular_legacy':
         case 'contract':
         case 'signing-with':
-            return <Text variant="hint">{splitAddressToChunks(value).join(' ')}</Text>;
+            return <Text variant="body-sm">{splitAddressToChunks(value).join(' ')}</Text>;
 
         case 'timebounds':
             return (
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="transactionManagement.review.outputs.timeboundsNotSet" />
                 </Text>
             );
 
         case 'network':
             return (
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="transactionManagement.review.outputs.networkTestnet" />
                 </Text>
             );

@@ -76,7 +76,7 @@ const PassphraseWalletIsEmptyContent = ({
                 }
             >
                 <Column gap={spacings.sm} alignItems="center">
-                    <Paragraph typographyStyle="highlight">
+                    <Paragraph typographyStyle="body-md-strong">
                         <Translation
                             id={
                                 accountFailed
@@ -97,12 +97,16 @@ const PassphraseWalletIsEmptyContent = ({
             </Card>
             <Card paddingType="small">
                 <Column gap={spacings.xxxs} alignItems="flex-start">
-                    <Paragraph typographyStyle="highlight">
+                    <Paragraph typographyStyle="body-md-strong">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION" />
                     </Paragraph>
                     {!areAllNetworksEnabled && (
                         <Row gap={spacings.xs} flexWrap="wrap">
-                            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                            <Paragraph
+                                intent="neutral"
+                                priority="secondary"
+                                typographyStyle="body-sm"
+                            >
                                 <Translation id="TR_CHECKED_BALANCES_ON" />:
                             </Paragraph>
                             <Row gap={spacings.xxs} flexWrap="wrap">

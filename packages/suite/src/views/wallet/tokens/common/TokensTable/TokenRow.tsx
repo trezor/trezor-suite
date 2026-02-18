@@ -144,11 +144,11 @@ export const TokenRow = ({
         address: string;
         type: 'contract' | 'fingerprint' | 'policyId';
     }) => (
-        <InfoItem typographyStyle="label" label={label} gap={0}>
+        <InfoItem typographyStyle="body-xs" label={label} gap={0}>
             <Link href={explorerUrl}>
                 <Address
                     isTruncated
-                    typographyStyle="label"
+                    typographyStyle="body-xs"
                     value={address}
                     isCopyAllowed
                     onCopy={() => {
@@ -227,7 +227,7 @@ export const TokenRow = ({
                                 showLoadingSkeleton
                             />
                         )}
-                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {/* TODO(stellar): I think it would be better to display the asset code as a symbol. */}
                             <FormattedCryptoAmount
                                 value={token.balance}

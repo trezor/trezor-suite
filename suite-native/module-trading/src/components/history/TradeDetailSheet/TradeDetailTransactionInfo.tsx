@@ -87,7 +87,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 content={
                     <HStack alignItems="center" spacing="sp2">
                         {isFromCrypto && <CryptoIdIcon cryptoId={fromCurrency} />}
-                        <Text variant="hint" testID={TRADE_DETAIL_TEST_ID + '/paid'}>
+                        <Text variant="body-sm" testID={TRADE_DETAIL_TEST_ID + '/paid'}>
                             {fromStringValue}
                         </Text>
                     </HStack>
@@ -104,7 +104,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 content={
                     <HStack alignItems="center" spacing="sp2">
                         {isToCrypto && <CryptoIdIcon cryptoId={toCurrency} />}
-                        <Text variant="hint">{toStringValue}</Text>
+                        <Text variant="body-sm">{toStringValue}</Text>
                     </HStack>
                 }
             />

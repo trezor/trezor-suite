@@ -58,7 +58,7 @@ export const SuiteSyncRelaySettings = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall" testID="@suiteSync/header">
+                <Text variant="headline-sm" testID="@suiteSync/header">
                     Suite Sync Relay Settings
                 </Text>
                 <VStack>
@@ -95,7 +95,7 @@ export const SuiteSyncRelaySettings = () => {
                         <Text>
                             Default:{' '}
                             <Text
-                                variant="label"
+                                variant="body-xs"
                                 color="textSubdued"
                                 style={{ fontFamily: 'monospace' }}
                             >

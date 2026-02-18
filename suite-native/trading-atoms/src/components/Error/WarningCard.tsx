@@ -14,10 +14,10 @@ export const WarningCard = ({ title, description, children }: WarningCardProps) 
             <PictogramTitleHeader
                 variant="warning"
                 title={title}
-                titleVariant="highlight"
+                titleVariant="body-md-strong"
                 subtitle={
                     !!description && (
-                        <Text variant="hint" color="textSubdued" textAlign="center">
+                        <Text variant="body-sm" color="textSubdued" textAlign="center">
                             {description}
                         </Text>
                     )

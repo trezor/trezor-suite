@@ -42,7 +42,7 @@ const ItemIconWrapper = styled.div`
 const ItemText = styled.div`
     width: 100%;
     color: ${({ theme }) => theme.textDefault};
-    ${typography.hint}
+    ${typography['body-sm']}
     padding: 26px 0;
     text-align: left;
 `;

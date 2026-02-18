@@ -84,7 +84,7 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
             <TopAnimation>
                 <Column alignItems="center">
                     {showDeviceImage && <DeviceImage selectedDevice={selectedDevice} />}
-                    <Text typographyStyle="titleMedium" textWrap="balance" align="center">
+                    <Text typographyStyle="headline-md" textWrap="balance" align="center">
                         <Translation id={texts.heading} />
                     </Text>
                     {texts.description && (

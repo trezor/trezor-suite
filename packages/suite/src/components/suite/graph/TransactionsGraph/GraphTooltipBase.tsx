@@ -81,13 +81,13 @@ const Col = styled.div`
 `;
 
 const Title = ({ children }: { children: React.ReactNode }) => (
-    <Text typographyStyle="body" margin={{ right: 20 }}>
+    <Text typographyStyle="body-md" margin={{ right: 20 }}>
         {children}
     </Text>
 );
 
 const Value = ({ children }: { children: React.ReactNode }) => (
-    <Text typographyStyle="highlight">{children}</Text>
+    <Text typographyStyle="body-md-strong">{children}</Text>
 );
 
 const ColsWrapper = styled.div`

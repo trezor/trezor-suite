@@ -44,7 +44,7 @@ export type CardListProps = AllowedCardListFrameProps &
         | 'fillType'
     >;
 
-export const CardList = ({ children, typographyStyle = 'body', ...rest }: CardListProps) => (
+export const CardList = ({ children, typographyStyle = 'body-md', ...rest }: CardListProps) => (
     <Card paddingType="none" {...rest}>
         <Text typographyStyle={typographyStyle} as="div" width="100%">
             <Column gap={0} hasDivider>

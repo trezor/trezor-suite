@@ -21,11 +21,11 @@ export function AssetDetails({ name, displaySymbol, ...props }: AssetDetailsProp
 
     return (
         <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-            <Text typographyStyle="body" ellipsisLineCount={1} maxWidth="100%">
+            <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">
                 {name}
             </Text>
             <Row gap={8} alignItems="center">
-                <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {displaySymbol}
                 </Text>
                 {badge !== name && <Badge size="small">{badge}</Badge>}

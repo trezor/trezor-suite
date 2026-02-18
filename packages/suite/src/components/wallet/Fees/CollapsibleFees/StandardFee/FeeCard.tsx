@@ -44,8 +44,8 @@ export const FeeCard = ({
             <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
                 <Column>
                     <Row justifyContent="space-between">
-                        <Text typographyStyle="highlight">{topLeftChild}</Text>
-                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Text typographyStyle="body-md-strong">{topLeftChild}</Text>
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {isLoading ? <SkeletonRectangle animate={true} /> : topRightChild}
                         </Text>
                     </Row>
@@ -53,7 +53,7 @@ export const FeeCard = ({
                         <Text>
                             {isLoading ? <SkeletonRectangle animate={true} /> : bottomLeftChild}
                         </Text>
-                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {isLoading ? <SkeletonRectangle animate={true} /> : bottomRightChild}
                         </Text>
                     </Row>

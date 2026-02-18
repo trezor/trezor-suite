@@ -35,9 +35,9 @@ export const mapPaddingTypeToContentPadding = ({ $paddingType }: PaddingMapArgs)
 
 export const mapSizeToHeadingTypography = ({ $headingSize }: SizeMapArgs): TypographyStyle => {
     const typographyMap: Record<HeadingSize, TypographyStyle> = {
-        small: 'label',
-        medium: 'hint',
-        large: 'body',
+        small: 'body-xs',
+        medium: 'body-sm',
+        large: 'body-md',
     };
 
     return typographyMap[$headingSize];
@@ -45,9 +45,9 @@ export const mapSizeToHeadingTypography = ({ $headingSize }: SizeMapArgs): Typog
 
 export const mapSizeToSubheadingTypography = ({ $headingSize }: SizeMapArgs): TypographyStyle => {
     const typographyMap: Record<HeadingSize, TypographyStyle> = {
-        small: 'label',
-        medium: 'hint',
-        large: 'hint',
+        small: 'body-xs',
+        medium: 'body-sm',
+        large: 'body-sm',
     };
 
     return typographyMap[$headingSize];

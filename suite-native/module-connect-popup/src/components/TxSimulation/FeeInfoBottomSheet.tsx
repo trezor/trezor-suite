@@ -96,7 +96,7 @@ export const FeeInfoBottomSheet = ({
                                 justifyContent="space-between"
                             >
                                 <Text>{item.label}</Text>
-                                <Text variant="hint" textAlign="right">
+                                <Text variant="body-sm" textAlign="right">
                                     {item.value}
                                 </Text>
                             </HStack>

@@ -47,7 +47,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
 
     return (
         <Box style={applyStyle(indicatorContainer)}>
-            <Text variant="label" color="textSubdued">
+            <Text variant="body-xs" color="textSubdued">
                 <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h" />
             </Text>
             <PriceChangeBadge valuePercentageChange={valuePercentageChange} />
@@ -74,7 +74,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     <CryptoIconWithNetwork symbol={symbol} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
-                    <Text variant="label" color="textSubdued">
+                    <Text variant="body-xs" color="textSubdued">
                         <Translation
                             id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice"
                             values={{ coinName }}
@@ -83,7 +83,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     <BaseCurrencyAmountFormatter
                         symbol={symbol}
                         value={currentValue}
-                        variant="titleSmall"
+                        variant="headline-sm"
                         isDiscreetText={false}
                         numberOfLines={1}
                         adjustsFontSizeToFit

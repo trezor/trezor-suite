@@ -37,7 +37,7 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
             <HStack spacing="sp4" marginLeft="sp12" alignItems="center">
                 <Icon name={icon} size="medium" color={iconColor} />
                 <Box flex={1}>
-                    <Text variant="label" color={color}>
+                    <Text variant="body-xs" color={color}>
                         <Translation
                             id={txId}
                             values={{
@@ -45,7 +45,7 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
                                     <Link
                                         href={link}
                                         label={linkChunk}
-                                        textVariant="label"
+                                        textVariant="body-xs"
                                         isUnderlined
                                         textColor={color}
                                     />

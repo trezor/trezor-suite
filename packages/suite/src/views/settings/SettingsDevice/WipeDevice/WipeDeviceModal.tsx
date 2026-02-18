@@ -48,7 +48,7 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
                         variant={variant}
                         size={20}
                     />
-                    <Text typographyStyle="hint" intent={textIntent} priority={textPriority}>
+                    <Text typographyStyle="body-sm" intent={textIntent} priority={textPriority}>
                         {heading}
                     </Text>
                 </Row>
@@ -56,7 +56,7 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
                     <>
                         <Divider margin={0} />
                         <Column gap={16} padding={{ horizontal: 16, vertical: 12 }}>
-                            <Paragraph typographyStyle="highlight">{description}</Paragraph>
+                            <Paragraph typographyStyle="body-md-strong">{description}</Paragraph>
                             <Row gap={12}>{actions}</Row>
                         </Column>
                     </>

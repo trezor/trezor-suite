@@ -39,7 +39,7 @@ export const EarnYieldTable = () => {
                             <Table.Row>
                                 <Table.Cell colSpan={5}>
                                     <Paragraph
-                                        typographyStyle="body"
+                                        typographyStyle="body-md"
                                         intent="neutral"
                                         priority="secondary"
                                     >
@@ -59,7 +59,7 @@ export const EarnYieldTable = () => {
 
                                         <Table.Cell>
                                             <Paragraph
-                                                typographyStyle="body"
+                                                typographyStyle="body-md"
                                                 intent="neutral"
                                                 priority="secondary"
                                             >
@@ -69,7 +69,7 @@ export const EarnYieldTable = () => {
 
                                         <Table.Cell>
                                             <Paragraph
-                                                typographyStyle="body"
+                                                typographyStyle="body-md"
                                                 intent="neutral"
                                                 priority="secondary"
                                             >
@@ -79,7 +79,7 @@ export const EarnYieldTable = () => {
 
                                         <Table.Cell>
                                             <Paragraph
-                                                typographyStyle="body"
+                                                typographyStyle="body-md"
                                                 intent="neutral"
                                                 priority="secondary"
                                             >

@@ -28,7 +28,7 @@ export const ExchangeFromAccountTradePreviewCard = ({
             accountLabel={<AccountLabel account={fromAccount} />}
             cryptoId={quote.send}
             amount={
-                <Text variant="hint" color="textAlertRed">
+                <Text variant="body-sm" color="textAlertRed">
                     -{fromStringValue}
                 </Text>
             }

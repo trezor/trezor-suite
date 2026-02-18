@@ -43,7 +43,7 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <Box marginTop="sp16">
                 <TitleHeader
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     title={
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.title" />
                     }
@@ -60,14 +60,18 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
             </Box>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp16" marginTop="sp32">
-                    <IconListTextItem textVariant="highlight" iconSize="large" icon="browsers">
+                    <IconListTextItem textVariant="body-md-strong" iconSize="large" icon="browsers">
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step1" />
                     </IconListTextItem>
-                    <IconListTextItem textVariant="highlight" iconSize="large" icon="trezorBackup">
+                    <IconListTextItem
+                        textVariant="body-md-strong"
+                        iconSize="large"
+                        icon="trezorBackup"
+                    >
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.step2" />
                     </IconListTextItem>
                     <IconListTextItem
-                        textVariant="highlight"
+                        textVariant="body-md-strong"
                         iconSize="large"
                         variant="primary"
                         icon="checkCircle"

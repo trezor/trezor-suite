@@ -37,7 +37,7 @@ export const SelectRecoveryTypeStep = ({
                                 variant="tertiary"
                             />
                             <Column gap={spacings.xxxs}>
-                                <Paragraph typographyStyle="highlight">
+                                <Paragraph typographyStyle="body-md-strong">
                                     <Translation
                                         id={
                                             type === 'standard'
@@ -47,7 +47,7 @@ export const SelectRecoveryTypeStep = ({
                                     />
                                 </Paragraph>
                                 <Paragraph
-                                    typographyStyle="hint"
+                                    typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
                                 >

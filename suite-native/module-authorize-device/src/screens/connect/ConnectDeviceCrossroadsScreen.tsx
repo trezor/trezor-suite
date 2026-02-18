@@ -37,14 +37,14 @@ const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps
             <VStack marginTop="sp16" spacing="sp24" alignItems="center">
                 <Image source={image} width={228} height={128} contentFit="contain" />
                 <Box alignItems="center">
-                    <Text variant="titleSmall">
+                    <Text variant="headline-sm">
                         <Translation
                             id={title}
                             values={{
                                 bold: chunks => (
                                     <Text
                                         key={1}
-                                        variant="titleSmall"
+                                        variant="headline-sm"
                                         style={{ fontWeight: 'bold' }}
                                     >
                                         {chunks}
@@ -54,7 +54,7 @@ const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps
                         />
                     </Text>
                     <HStack alignItems="center">
-                        <Text variant="titleSmall">
+                        <Text variant="headline-sm">
                             <Translation id={subtitle} />
                         </Text>
                         <RoundedIcon name={icon} iconSize="mediumLarge" containerSize={28} />

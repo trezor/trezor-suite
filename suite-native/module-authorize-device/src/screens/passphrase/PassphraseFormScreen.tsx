@@ -41,7 +41,7 @@ export const PassphraseFormScreen = () => {
     return (
         <Screen header={<AuthorizeDeviceScreenHeader />}>
             <VStack spacing="sp24">
-                <Text variant="titleMedium">
+                <Text variant="headline-md">
                     <Translation id="modulePassphrase.passphraseFeatureUnlock.title" />
                 </Text>
                 <PassphraseForm

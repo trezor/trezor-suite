@@ -45,7 +45,7 @@ const ErrorMessage = styled.span`
     text-align: center;
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textDefault};
 `;
 

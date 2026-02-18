@@ -44,7 +44,7 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
         <VStack marginTop="sp16" spacing="sp32" flex={1}>
             <CenteredTitleHeader
                 title={<Translation id="thp.codeEntry.title" />}
-                titleVariant="titleMedium"
+                titleVariant="headline-md"
                 subtitle={<Translation id="thp.codeEntry.subtitle" />}
             />
             <SecurityCodeInput length={6} onSubmit={onSubmit} />

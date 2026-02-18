@@ -91,7 +91,7 @@ export const TransactionDetailScreen = ({
                                 symbol={transaction.symbol}
                                 contractAddress={tokenTransfer?.contract}
                             />
-                            <Text variant="highlight">
+                            <Text variant="body-md-strong">
                                 <Translation
                                     id="transactions.detail.header"
                                     values={{
@@ -100,7 +100,7 @@ export const TransactionDetailScreen = ({
                                                 key={transaction.txid}
                                                 transaction={transaction}
                                                 isPending={isPending}
-                                                variant="highlight"
+                                                variant="body-md-strong"
                                             />
                                         ),
                                     }}

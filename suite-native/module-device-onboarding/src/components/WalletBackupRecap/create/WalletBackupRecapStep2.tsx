@@ -19,7 +19,7 @@ export const WalletBackupRecapStep2 = ({
     const locale = useSelector(selectLocale);
     const isFocused = useDerivedValue(() => currentStepIndex.value === CURRENT_STEP_INDEX);
 
-    const { onTextLayout, numberOfLines } = useIsMultiline('titleMedium');
+    const { onTextLayout, numberOfLines } = useIsMultiline('headline-md');
 
     // We can be sure that the underline word `Never` is at the beginning of the sentence for english locale only.
     const isUnderlineVisible = numberOfLines === 2 && locale === 'en-US';
@@ -32,12 +32,16 @@ export const WalletBackupRecapStep2 = ({
         >
             <WalletRecapStepContent>
                 <VStack spacing="sp12" alignItems="center">
-                    <Text variant="highlight" color="textSecondaryHighlight" textAlign="center">
+                    <Text
+                        variant="body-md-strong"
+                        color="textSecondaryHighlight"
+                        textAlign="center"
+                    >
                         <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.callout" />
                     </Text>
                     <Box>
                         <Box alignSelf="center">
-                            <Text variant="titleMedium" textAlign="center" onLayout={onTextLayout}>
+                            <Text variant="headline-md" textAlign="center" onLayout={onTextLayout}>
                                 <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.title" />
                             </Text>
                             {isUnderlineVisible && <Underline isFocused={isFocused} />}

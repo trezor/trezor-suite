@@ -86,7 +86,7 @@ export const TransactionDetailHeader = ({
                             <SignValueFormatter
                                 color="textDefault"
                                 value={signValue}
-                                variant="titleMedium"
+                                variant="headline-md"
                             />
                         )}
                         <Text> </Text>
@@ -96,7 +96,7 @@ export const TransactionDetailHeader = ({
                                 value={tokenTransfer.amount}
                                 tokenSymbol={tokenTransfer.symbol}
                                 decimals={tokenTransfer.decimals}
-                                variant="titleMedium"
+                                variant="headline-md"
                                 color="textDefault"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
@@ -107,7 +107,7 @@ export const TransactionDetailHeader = ({
                                 value={transaction.amount}
                                 symbol={transaction.symbol}
                                 isBalance={false}
-                                variant="titleMedium"
+                                variant="headline-md"
                                 color="textDefault"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

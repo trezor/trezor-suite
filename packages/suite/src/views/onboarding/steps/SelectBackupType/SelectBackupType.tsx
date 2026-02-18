@@ -120,10 +120,12 @@ export const SelectBackupType = ({
                         }}
                     >
                         <OptionText data-testid={dataTest}>
-                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
-                            <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>
+                            <Text
+                                typographyStyle={isBelowTablet ? 'body-md-strong' : 'headline-sm'}
+                            >
                                 <Translation id={typesToLabelMap[selected]} />
                             </Text>
                         </OptionText>

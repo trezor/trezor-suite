@@ -76,7 +76,7 @@ export const SendHeader = () => {
                     labelPosition="start"
                     label={
                         <Text
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             intent="neutral"
                             isDisabled={locktimeEnabled}
                             textWrap="nowrap"

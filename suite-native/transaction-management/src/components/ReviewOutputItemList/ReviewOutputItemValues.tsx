@@ -18,13 +18,13 @@ export const ReviewOutputItemValues = ({
 }: ReviewOutputItemValuesProps) => (
     <HStack>
         <Box flex={0.4} justifyContent="center">
-            <Text variant="hint">
+            <Text variant="body-sm">
                 <Translation id={translationKey} />
             </Text>
         </Box>
         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
             <CoinToFiatAmountFormatter
-                variant="hint"
+                variant="body-sm"
                 color="textDefault"
                 value={value}
                 accountKey={accountKey}
@@ -33,7 +33,7 @@ export const ReviewOutputItemValues = ({
                 numberOfLines={1}
             />
             <CoinAmountFormatter
-                variant="hint"
+                variant="body-sm"
                 color="textSubdued"
                 value={value}
                 accountKey={accountKey}

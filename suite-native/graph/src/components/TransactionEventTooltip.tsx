@@ -81,7 +81,7 @@ const TokenAmountTooltipFormatter = ({
         return (
             <TokenAmountFormatter
                 color="textDefault"
-                variant="label"
+                variant="body-xs"
                 value={value}
                 tokenSymbol={token.symbol}
                 // decimals are already formatted in getAccountHistoryMovementItemETH
@@ -102,15 +102,15 @@ const EventTooltipRow = ({
     accountKey,
 }: EventTooltipRowProps) => (
     <>
-        <Text variant="label" color="textSubdued">
+        <Text variant="body-xs" color="textSubdued">
             {title}
         </Text>
         <Box flexDirection="row">
-            <SignValueFormatter value={signValue} variant="label" />
+            <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
                 <CryptoAmountFormatter
                     color="textDefault"
-                    variant="label"
+                    variant="body-xs"
                     value={value}
                     symbol={symbol}
                     isBalance={false}

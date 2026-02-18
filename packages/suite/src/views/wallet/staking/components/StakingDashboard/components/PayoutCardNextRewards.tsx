@@ -41,7 +41,7 @@ export const PayoutCardNextRewards = ({
     return (
         <PayoutCard>
             <>
-                <Paragraph typographyStyle="titleMedium">
+                <Paragraph typographyStyle="headline-md">
                     {payout === undefined ? (
                         <Translation
                             id="TR_STAKE_MAX_REWARD_DAYS"
@@ -51,7 +51,7 @@ export const PayoutCardNextRewards = ({
                         <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
                     )}
                 </Paragraph>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_NEXT_PAYOUT" />
                 </Paragraph>
             </>

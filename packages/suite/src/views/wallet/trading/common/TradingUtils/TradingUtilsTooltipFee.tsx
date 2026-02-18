@@ -12,12 +12,12 @@ const TooltipRow = styled.div`
 `;
 
 const TooltipProperty = styled.div`
-    ${typography.hint};
+    ${typography['body-sm']};
     width: 70%;
 `;
 
 const TooltipValue = styled.div`
-    ${typography.hint};
+    ${typography['body-sm']};
     text-align: right;
 `;
 

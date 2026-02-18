@@ -49,7 +49,7 @@ export const TimeSwitchItem = ({
             testID={`TimeSwitchItem_${value}`}
             style={applyStyle(switchItemStyle, { isSelected })}
         >
-            <Text variant="hint" style={applyStyle(textStyle, { isSelected })}>
+            <Text variant="body-sm" style={applyStyle(textStyle, { isSelected })}>
                 <Translation id={translationId} />
             </Text>
         </PressableOpacity>

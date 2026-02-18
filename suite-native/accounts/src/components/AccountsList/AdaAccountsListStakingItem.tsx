@@ -65,7 +65,7 @@ export const AdaAccountsListStakingItem = ({
             title={<Translation id="accountList.staking" />}
             secondaryTitle={
                 isStakedWithFiveBinaries && (
-                    <Text variant="hint" color="textAlertYellow">
+                    <Text variant="body-sm" color="textAlertYellow">
                         <Translation id="accountList.rewardsReduced" />
                     </Text>
                 )

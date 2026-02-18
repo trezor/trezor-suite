@@ -18,7 +18,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
     <>
         <InfoItem
             label={message.id}
-            typographyStyle="highlight"
+            typographyStyle="body-md-strong"
             iconName="note"
             intent="neutral"
             priority="primary"
@@ -29,7 +29,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
             <InfoItem
                 label="Context"
                 iconName="codeBlockFilled"
-                typographyStyle="highlight"
+                typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"
             >
@@ -40,7 +40,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
             <InfoItem
                 label="Features"
                 iconName="checkFat"
-                typographyStyle="highlight"
+                typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"
             >
@@ -58,7 +58,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
             <InfoItem
                 label="CTA"
                 iconName="cursorClick"
-                typographyStyle="highlight"
+                typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"
             >

@@ -155,13 +155,13 @@ export const ConfirmValueModal = ({
                             intent="warning"
                             description={
                                 <>
-                                    <Paragraph typographyStyle="hint">
+                                    <Paragraph typographyStyle="body-sm">
                                         <Translation
                                             id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
                                             values={{ deviceLabel }}
                                         />
                                     </Paragraph>
-                                    <Paragraph typographyStyle="label">
+                                    <Paragraph typographyStyle="body-xs">
                                         <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
                                     </Paragraph>
                                 </>
@@ -197,7 +197,7 @@ export const ConfirmValueModal = ({
                                             deviceStaticSessionId={account.deviceState}
                                             isDisabled={isMetadataBlockedByDeviceCall}
                                             displayValue={
-                                                <Text typographyStyle="highlight">
+                                                <Text typographyStyle="body-md-strong">
                                                     <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
                                                 </Text>
                                             }

@@ -91,7 +91,7 @@ export const TransactionListItemValues = ({
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 isForcedDiscreetMode={isPhishingTransaction}
-                variant="hint"
+                variant="body-sm"
                 color="textSubdued"
             />
         </>

@@ -23,7 +23,7 @@ export const SelectWordCountStep = ({ setWordCount, wordCount }: SelectWordCount
                         onClick={() => setWordCount(count)}
                         dataTestId={`@recovery/select-count/${count}`}
                     >
-                        <Paragraph align="center" typographyStyle="highlight">
+                        <Paragraph align="center" typographyStyle="body-md-strong">
                             <Translation id="TR_WORDS" values={{ count }} />
                         </Paragraph>
                     </RadioCard>

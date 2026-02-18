@@ -9,7 +9,7 @@ interface BannerPointsProps {
 }
 
 const ListItem = styled.li`
-    ${typography.hint}
+    ${typography['body-sm']}
     list-style-type: disc;
     list-style-position: inside;
 

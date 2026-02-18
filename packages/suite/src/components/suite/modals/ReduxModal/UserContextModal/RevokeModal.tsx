@@ -236,7 +236,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
                                 <Column>
                                     {provider?.companyName && <Text>{provider.companyName}</Text>}
                                     <Text
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                         intent="neutral"
                                         priority="secondary"
                                     >

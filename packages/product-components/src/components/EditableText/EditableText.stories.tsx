@@ -56,13 +56,13 @@ export const EditableText: StoryObj<EditableTextProps> = {
     render: ({ children, ...rest }: EditableTextProps) => (
         <StoryWrapper>
             <Column gap={16}>
-                <Text typographyStyle="titleMedium">
+                <Text typographyStyle="headline-md">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
-                <Text typographyStyle="body">
+                <Text typographyStyle="body-md">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
-                <Text typographyStyle="hint" intent="neutral" priority="secondary" align="end">
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary" align="end">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
             </Column>

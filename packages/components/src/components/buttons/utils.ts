@@ -84,9 +84,9 @@ export const mapSizeToIconSize = (size: ButtonSize) => {
 
 export const mapSizeToTypographyStyle = (size: ButtonSize): TypographyStyle => {
     const typographyStyleMap: Record<ButtonSize, TypographyStyle> = {
-        large: 'highlight',
-        medium: 'callout',
-        small: 'callout',
+        large: 'body-md-strong',
+        medium: 'body-sm-strong',
+        small: 'body-sm-strong',
     };
 
     return typographyStyleMap[size];

@@ -20,7 +20,7 @@ const CopiedText = styled.div`
     justify-content: center;
     align-items: center;
     color: ${({ theme }) => theme.textAlertBlue};
-    ${typography.hint}
+    ${typography['body-sm']}
 `;
 
 const FloatingWrapper = styled.div`
@@ -64,7 +64,7 @@ const IconText = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textSubdued};
     overflow-wrap: anywhere;
     word-break: normal;

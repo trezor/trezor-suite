@@ -8,7 +8,7 @@ type InputStyleProps = {
 };
 
 export const inputStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.body,
+    ...utils.typography['body-md'],
     flex: 1,
     color: utils.colors.textOnTertiary,
     marginLeft: utils.spacings.sp16,

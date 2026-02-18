@@ -17,7 +17,7 @@ const OpenGuideLink = styled.span`
     padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
     color: ${({ theme }) => theme.iconAlertYellow};
-    ${typography.hint};
+    ${typography['body-sm']};
     overflow: visible;
     cursor: pointer;
 

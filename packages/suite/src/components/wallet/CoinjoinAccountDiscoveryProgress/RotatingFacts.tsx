@@ -12,7 +12,7 @@ const Fact = styled(motion.p)`
     height: 42px;
     margin-top: 6px;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
     text-align: center;
 `;
 

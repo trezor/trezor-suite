@@ -24,12 +24,12 @@ export const InfoLineItem = ({
             <Icon name={iconName} size="medium" color={iconColor || 'iconSubdued'} />
         </Box>
         <Box flex={1}>
-            <Text variant="hint" color={textColor || 'textSubdued'}>
+            <Text variant="body-sm" color={textColor || 'textSubdued'}>
                 {text}
             </Text>
         </Box>
         <Box flex={0}>
-            <Text variant="hint" color={textColor || 'textDefault'} textAlign="right">
+            <Text variant="body-sm" color={textColor || 'textDefault'} textAlign="right">
                 {textRight}
             </Text>
         </Box>

@@ -9,8 +9,8 @@ export const mapSizeToTypographyStyle = (
     isSelected?: boolean,
 ): TypographyStyle => {
     const typographyStyleMap: Record<SelectBarSize, TypographyStyle> = {
-        large: isSelected ? 'highlight' : 'body',
-        small: isSelected ? 'callout' : 'hint',
+        large: isSelected ? 'body-md-strong' : 'body-md',
+        small: isSelected ? 'body-sm-strong' : 'body-sm',
     };
 
     return typographyStyleMap[size];

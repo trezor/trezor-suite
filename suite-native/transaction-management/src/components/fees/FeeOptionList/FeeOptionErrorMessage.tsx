@@ -39,7 +39,7 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
         >
             <HStack alignItems="center" spacing="sp8">
                 <Icon name="warningCircle" size="mediumLarge" color="iconAlertRed" />
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="transactionManagement.fees.error" />
                 </Text>
             </HStack>

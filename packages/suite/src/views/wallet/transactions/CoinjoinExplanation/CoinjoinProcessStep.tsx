@@ -33,7 +33,7 @@ const StepTitle = styled(H3)`
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         align-self: center;
-        ${typography.highlight}
+        ${typography['body-md-strong']}
         grid-column: 2;
         grid-row: 1;
     }
@@ -106,11 +106,11 @@ export const CoinjoinProcessStep = ({
         <Image>
             <IconCircle name={iconName} size={80} />
         </Image>
-        <StepNumber typographyStyle="hint">
+        <StepNumber typographyStyle="body-sm">
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>
         <StepTitle>{title}</StepTitle>
-        <StepDescription typographyStyle="body" intent="neutral" priority="secondary">
+        <StepDescription typographyStyle="body-md" intent="neutral" priority="secondary">
             {description}
         </StepDescription>
     </Container>

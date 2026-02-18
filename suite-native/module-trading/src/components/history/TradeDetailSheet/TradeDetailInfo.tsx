@@ -41,10 +41,10 @@ export const TradeDetailInfo = ({ orderId }: TradeDetailInfoProps) => {
                 title={<Translation id="moduleTrading.tradeHistory.detail.issued" />}
                 content={
                     <VStack alignItems="flex-end" spacing="sp2">
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <DateFormatter value={date} />
                         </Text>
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             <TimeFormatter value={date} />
                         </Text>
                     </VStack>

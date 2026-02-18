@@ -34,7 +34,7 @@ export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoPr
         <HStack paddingHorizontal="sp8">
             <NetworkIcon symbol={symbol} size="large" />
             <Text
-                variant="hint"
+                variant="body-sm"
                 color="textDefault"
                 accessibilityLabel={translate('moduleTrading.networkName')}
             >

@@ -87,7 +87,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                             ellipsisLineCount={1}
                                         >
                                             {urls.join(', ')}

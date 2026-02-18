@@ -115,12 +115,12 @@ export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTable
         <>
             <Table.Row key={attributeKey} verticalAlign="top">
                 <Table.Cell width={200}>
-                    <Text typographyStyle="label" isMonospaced>
+                    <Text typographyStyle="body-xs" isMonospaced>
                         {attributeKey}
                     </Text>
                 </Table.Cell>
                 <Table.Cell>
-                    <Text typographyStyle="label" overflow="auto">
+                    <Text typographyStyle="body-xs" overflow="auto">
                         <Syntax>{renderRuntimeType(attribute.runtimeType)}</Syntax>
                     </Text>
                 </Table.Cell>

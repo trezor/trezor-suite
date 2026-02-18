@@ -61,7 +61,7 @@ export const AddressReviewStep = ({
                 <HStack spacing="sp12" flexDirection="row" alignItems="center">
                     <OrderedListIcon {...getIconProps(stepNumber)} />
                     <Box flexShrink={1}>
-                        <Text variant="callout">
+                        <Text variant="body-sm-strong">
                             <Translation id={translationId} />
                         </Text>
                     </Box>

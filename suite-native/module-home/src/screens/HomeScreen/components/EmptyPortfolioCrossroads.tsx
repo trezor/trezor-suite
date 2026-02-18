@@ -130,7 +130,7 @@ export const EmptyPortfolioCrossroads = () => {
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
                     <VStack alignItems="center">
-                        <Text variant="titleSmall" textAlign="center">
+                        <Text variant="headline-sm" textAlign="center">
                             <Translation id={secondaryCardConfig.titleTranslationId} />
                         </Text>
                         <Text color="textSubdued" textAlign="center">

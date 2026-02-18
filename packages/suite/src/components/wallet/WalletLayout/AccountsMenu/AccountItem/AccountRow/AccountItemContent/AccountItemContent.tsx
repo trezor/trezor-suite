@@ -49,7 +49,7 @@ export const AccountItemContent = ({
         >
             <Row gap={16} justifyContent="space-between" width="100%">
                 <Text
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                     ellipsisLineCount={1}
                     data-testid={`${dataTestKey}/label`}
                 >

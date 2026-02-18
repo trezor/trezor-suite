@@ -21,7 +21,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
             paddingType="small"
             header={
                 <Row justifyContent="space-between" alignItems="center">
-                    <Text typographyStyle="body">
+                    <Text typographyStyle="body-md">
                         <Translation id="TR_CHAINED_TXS" />
                     </Text>
                     <TextButton onClick={showChained} size="small" isUnderlined>

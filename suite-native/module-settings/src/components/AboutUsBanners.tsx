@@ -37,7 +37,7 @@ export const AboutUsBanners = () => {
                         <Text
                             textAlign="center"
                             color="textOnPrimary"
-                            variant="titleSmall"
+                            variant="headline-sm"
                             style={applyStyle(trezorDescriptionTextStyle)}
                         >
                             <Translation
@@ -53,7 +53,7 @@ export const AboutUsBanners = () => {
                     style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}
                 >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                        <Text color="textDefaultInverted" variant="titleMedium">
+                        <Text color="textDefaultInverted" variant="headline-md">
                             <Translation id="moduleSettings.aboutUs.followUs" />
                         </Text>
                         <HStack spacing="sp24">

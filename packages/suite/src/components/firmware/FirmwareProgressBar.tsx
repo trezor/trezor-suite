@@ -28,7 +28,7 @@ export const FirmwareProgressBar = () => {
     return (
         <Box width="100%">
             <Column margin={{ vertical: spacings.md, horizontal: spacings.lg }}>
-                <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {operation ? <Translation id={mapOperationToTranslationId[operation]} /> : ' '}
                 </Text>
 
@@ -38,7 +38,7 @@ export const FirmwareProgressBar = () => {
                         backgroundColor={theme.backgroundNeutralSubtleOnElevationNegative}
                     />
                     <Percentage>
-                        <Text typographyStyle="highlight">
+                        <Text typographyStyle="body-md-strong">
                             {progress}
                             {'\u00A0'}%
                         </Text>

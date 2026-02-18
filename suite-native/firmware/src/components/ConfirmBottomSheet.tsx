@@ -11,7 +11,7 @@ export const ConfirmBottomSheet = ({ ref, onConfirm, onCheckBackup }: ConfirmBot
     <BottomSheetModal ref={ref}>
         <VStack spacing="sp24" marginHorizontal="sp8" marginTop="sp4">
             <VStack spacing="sp8">
-                <Text textAlign="center" variant="titleSmall">
+                <Text textAlign="center" variant="headline-sm">
                     <Translation id="firmware.seedBottomSheet.title" />
                 </Text>
                 <Text textAlign="center">

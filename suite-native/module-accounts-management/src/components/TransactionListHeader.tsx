@@ -205,7 +205,7 @@ export const TransactionListHeader = memo(
                 </VStack>
                 {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp32">
-                        <Text variant="titleSmall">
+                        <Text variant="headline-sm">
                             <Translation id="transactions.title" />
                         </Text>
                     </Box>

@@ -39,7 +39,7 @@ export const SelectTrigger = ({ label, value, icon, handlePress, testID }: Selec
         <PressableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
             <Box>
                 {label && (
-                    <Text variant="label" color="textSubdued">
+                    <Text variant="body-xs" color="textSubdued">
                         {label}
                     </Text>
                 )}

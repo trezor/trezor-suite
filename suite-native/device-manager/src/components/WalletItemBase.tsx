@@ -119,7 +119,7 @@ export const WalletItemBase = ({
                     <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
                     <Text
                         testID="@wallet/label"
-                        variant="callout"
+                        variant="body-sm-strong"
                         numberOfLines={1}
                         style={applyStyle(labelStyle)}
                     >
@@ -135,7 +135,7 @@ export const WalletItemBase = ({
                     {baseCurrencyAmount && (
                         <BaseCurrencyAmountFormatter
                             value={baseCurrencyAmount}
-                            variant="hint"
+                            variant="body-sm"
                             color="textSubdued"
                         />
                     )}

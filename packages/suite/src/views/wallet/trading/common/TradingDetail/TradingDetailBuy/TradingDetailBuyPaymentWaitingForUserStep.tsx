@@ -77,7 +77,7 @@ export const TradingDetailBuyPaymentWaitingForUserStep = ({
         <TradingDetailStep state={state} title={<Translation id={getTitleId(trade)} />}>
             <Card>
                 <Column gap={20}>
-                    <Paragraph typographyStyle="hint">
+                    <Paragraph typographyStyle="body-sm">
                         <Translation id={getDescriptionId(trade)} values={{ providerName }} />
                     </Paragraph>
                     <Button

@@ -77,7 +77,7 @@ const AccountVerified = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 

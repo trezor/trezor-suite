@@ -31,7 +31,7 @@ export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
 
     return (
         <VStack spacing="sp16">
-            <Text variant="titleSmall">
+            <Text variant="headline-sm">
                 <Translation id="moduleSend.outputs.recipients.title" />
             </Text>
             {symbol && <CorrectNetworkMessageCard symbol={symbol} />}

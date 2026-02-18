@@ -105,7 +105,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                     </Banner.Button>
                 }
                 description={
-                    <Paragraph typographyStyle="label">
+                    <Paragraph typographyStyle="body-xs">
                         <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />
                     </Paragraph>
                 }

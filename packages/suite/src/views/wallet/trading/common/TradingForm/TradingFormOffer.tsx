@@ -274,7 +274,7 @@ export const TradingFormOffer = () => {
             {!quote && !state.isFormLoading && !state.isFormInvalid && (
                 <Card>
                     <Paragraph
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority="secondary"
                         align="center"

@@ -97,7 +97,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
             }
         >
             <VStack spacing="sp32" paddingTop="sp16">
-                <Text variant="titleMedium">
+                <Text variant="headline-md">
                     <Translation id={screenTitleTranslationId} />
                 </Text>
 

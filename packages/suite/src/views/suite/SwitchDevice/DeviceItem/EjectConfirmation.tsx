@@ -36,7 +36,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 margin={{ top: spacings.xxs }}
             >
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />

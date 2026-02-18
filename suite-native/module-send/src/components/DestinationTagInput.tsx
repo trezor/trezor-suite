@@ -73,17 +73,17 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
         <VStack style={applyStyle(inputWrapperStyle)}>
             <HStack alignContent="space-between" alignItems="center">
                 <HStack style={applyStyle(titleTextStyle)}>
-                    <Text variant="hint">
+                    <Text variant="body-sm">
                         <Translation id="moduleSend.outputs.recipients.destinationTag.label" />
                     </Text>
-                    <Text variant="hint">
+                    <Text variant="body-sm">
                         <Translation
                             id="moduleSend.outputs.recipients.destinationTag.linkText"
                             values={{
                                 link: chunk => (
                                     <Link
                                         label={chunk}
-                                        textVariant="hint"
+                                        textVariant="body-sm"
                                         href={
                                             HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
                                         }
@@ -114,7 +114,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                     />
                     <HStack paddingHorizontal="sp12" spacing="sp4">
                         <Icon name="info" color="iconSubdued" size="medium" />
-                        <Text variant="label" color="textSubdued">
+                        <Text variant="body-xs" color="textSubdued">
                             <Translation id="moduleSend.outputs.recipients.destinationTag.info" />
                         </Text>
                     </HStack>

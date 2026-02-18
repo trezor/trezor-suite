@@ -19,7 +19,7 @@ const meta: Meta<AccordionListProps> = {
                 ...args,
                 items: args.items.map(item => ({
                     ...item,
-                    content: <Text variant="label">{item.content}</Text>,
+                    content: <Text variant="body-xs">{item.content}</Text>,
                 })),
             };
 

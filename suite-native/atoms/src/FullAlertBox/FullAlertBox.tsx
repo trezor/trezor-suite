@@ -56,7 +56,7 @@ export const FullAlertBox = ({
                 <Box flex={1}>
                     <Text>{title}</Text>
                     {description && (
-                        <Text color="textSubdued" variant="hint">
+                        <Text color="textSubdued" variant="body-sm">
                             {description}
                         </Text>
                     )}

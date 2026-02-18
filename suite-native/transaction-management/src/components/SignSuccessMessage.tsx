@@ -31,7 +31,7 @@ export const SignSuccessMessage = () => {
             spacing="sp24"
         >
             <LottieAnimation source={sendArrowsLottie} size="small" />
-            <Text variant="highlight" textAlign="center">
+            <Text variant="body-md-strong" textAlign="center">
                 <Translation id="transactionManagement.review.outputs.signSuccessMessage" />
             </Text>
         </VStack>

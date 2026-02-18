@@ -43,13 +43,13 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
         <VStack spacing="sp8" alignItems="center" paddingHorizontal="sp16">
             <ErrorIcon />
             <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
-                <Text variant="hint" color="textSubdued" textAlign="center">
+                <Text variant="body-sm" color="textSubdued" textAlign="center">
                     <Translation id="graph.errorMessage" />
                     {error}
                 </Text>
                 <Pressable onPress={onTryAgain}>
                     <Text
-                        variant="body"
+                        variant="body-md"
                         color="textSecondaryHighlight"
                         style={applyStyle(tryAgainButtonStyle)}
                         textAlign="center"

@@ -13,8 +13,8 @@ const ProviderStatusDevButtonsContent = () => {
     return (
         <VStack spacing="sp4" flex={1}>
             <HStack>
-                <Text variant="callout">Current status:</Text>
-                <Text variant="callout" color="textSubdued">
+                <Text variant="body-sm-strong">Current status:</Text>
+                <Text variant="body-sm-strong" color="textSubdued">
                     {currentStatus}
                 </Text>
             </HStack>

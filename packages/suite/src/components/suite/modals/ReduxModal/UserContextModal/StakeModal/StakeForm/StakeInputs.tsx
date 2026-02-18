@@ -204,7 +204,11 @@ export const StakeInputs = () => {
                     >
                         {({ value }) =>
                             value ? (
-                                <Text typographyStyle="label" intent="neutral" priority="secondary">
+                                <Text
+                                    typographyStyle="body-xs"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
                                     {value}
                                 </Text>
                             ) : null

@@ -65,7 +65,7 @@ const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentP
 
     return (
         <Column alignItems="center" gap={32} overflow="hidden">
-            <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
+            <H3 typographyStyle="headline-md" align="center" textWrap="balance">
                 <Translation
                     id={
                         isBluetoothMode
@@ -336,7 +336,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     <Row gap={24}>
                         <Divider margin={0} />
                         <Text
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
                             case="uppercase"

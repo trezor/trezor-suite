@@ -27,7 +27,7 @@ export const DeviceAuthenticitySuccessScreen = ({
                         title={
                             <Translation id="moduleDeviceOnboarding.deviceAuthenticitySuccessScreen.title" />
                         }
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                         subtitle={
                             <Translation id="moduleDeviceOnboarding.deviceAuthenticitySuccessScreen.subtitle" />
                         }

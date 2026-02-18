@@ -17,7 +17,7 @@ export function TxSimulationResult({
     return (
         <Card
             header={
-                <H4 margin={{ left: 4 }} typographyStyle="callout">
+                <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                     <Translation id="TR_SIMULATION" />
                 </H4>
             }

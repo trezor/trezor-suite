@@ -10,7 +10,7 @@ const createHeading =
         </Text>
     );
 
-export const H1 = createHeading('h1', 'titleLarge');
-export const H2 = createHeading('h2', 'titleMedium');
-export const H3 = createHeading('h3', 'titleSmall');
-export const H4 = createHeading('h4', 'highlight');
+export const H1 = createHeading('h1', 'headline-lg');
+export const H2 = createHeading('h2', 'headline-md');
+export const H3 = createHeading('h3', 'headline-sm');
+export const H4 = createHeading('h4', 'body-md-strong');

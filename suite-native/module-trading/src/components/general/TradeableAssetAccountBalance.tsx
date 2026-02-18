@@ -82,13 +82,13 @@ export const TradeableAssetAccountBalance = ({
 
     return (
         <HStack testID={testID}>
-            <Text variant="hint" color="textSubdued">
+            <Text variant="body-sm" color="textSubdued">
                 <Translation id="moduleTrading.tradingScreen.balance" />
             </Text>
             {account ? (
                 <AssetBalance account={account} asset={asset} testID={balanceTestID} />
             ) : (
-                <Text variant="hint" color="textSubdued" testID={noBalanceTestID}>
+                <Text variant="body-sm" color="textSubdued" testID={noBalanceTestID}>
                     - {asset.symbol}
                 </Text>
             )}

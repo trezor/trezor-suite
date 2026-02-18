@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     justify-self: flex-end;
     align-items: center;
     justify-content: center;
-    ${typography.hint}
+    ${typography['body-sm']}
     gap: ${spacingsPx.sm};
     flex: none;
 `;
@@ -28,7 +28,7 @@ const RefreshTime = styled.div`
     font-variant-numeric: tabular-nums;
     text-align: right;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.callout}
+    ${typography['body-sm-strong']}
 `;
 
 interface TradingRefreshTimeProps {
@@ -57,7 +57,7 @@ export const TradingRefreshTime = ({
                         <ProgressPie valueInPercents={progress} />
                     </ProgressPieWrap>
                     <TimerText data-testid="@trading/refresh-time-text">
-                        <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {label}
                         </Paragraph>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>

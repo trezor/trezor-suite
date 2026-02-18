@@ -20,7 +20,7 @@ export const WipeDeviceSuccessModal = () => {
             width={600}
             iconName="check"
         >
-            <H3 typographyStyle="titleMedium">
+            <H3 typographyStyle="headline-md">
                 <Translation id="TR_WIPE_DEVICE_SUCCESS_HEADING" />
             </H3>
         </Modal>

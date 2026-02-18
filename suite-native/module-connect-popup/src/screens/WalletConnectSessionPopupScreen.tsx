@@ -106,7 +106,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 />
 
                 <VStack>
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="moduleConnectPopup.walletConnect.app" />
                     </Text>
                     <Card>
@@ -159,7 +159,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 </VStack>
 
                 <VStack>
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="moduleConnectPopup.walletConnect.requestedNetworks" />
                     </Text>
                     <Card>
@@ -195,7 +195,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
                 {!noNetworksActivated && (
                     <VStack>
-                        <Text variant="highlight">
+                        <Text variant="body-md-strong">
                             <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
                         </Text>
                         <Card noPadding>

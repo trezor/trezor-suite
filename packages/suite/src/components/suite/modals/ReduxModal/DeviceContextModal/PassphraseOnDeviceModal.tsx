@@ -60,7 +60,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
 
                 <Paragraph
                     align="center"
-                    typographyStyle="label"
+                    typographyStyle="body-xs"
                     intent="neutral"
                     priority="secondary"
                     margin={{ top: spacings.md }}

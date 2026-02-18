@@ -205,7 +205,7 @@ export const TradingOfferExchangeSlippageModal = ({
             }
         >
             <Column gap={spacings.md}>
-                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />
                 </Text>
 
@@ -242,7 +242,7 @@ export const TradingOfferExchangeSlippageModal = ({
                         label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}
                         direction="row"
                     >
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <FormattedCryptoAmount
                                 value={receiveStringAmount}
                                 symbol={receiveCoinSymbol}
@@ -255,7 +255,7 @@ export const TradingOfferExchangeSlippageModal = ({
                         label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}
                         direction="row"
                     >
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <FormattedCryptoAmount
                                 value={maximumSlippageAmount}
                                 symbol={receiveCoinSymbol}
@@ -268,7 +268,7 @@ export const TradingOfferExchangeSlippageModal = ({
                         label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}
                         direction="row"
                     >
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <FormattedCryptoAmount
                                 value={minimumYouGetAmount}
                                 symbol={receiveCoinSymbol}

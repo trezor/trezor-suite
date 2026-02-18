@@ -44,9 +44,9 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
                 <Image height="36px" image={getBackColorImage(internalModel, color)} />
             </Column>
             <Column justifyContent="start" alignItems="start" flex="1">
-                <Text typographyStyle="body">{device.name}</Text>
+                <Text typographyStyle="body-md">{device.name}</Text>
                 {showBluetoothDebugInfo && <BluetoothDebugInfo device={device} />}
-                <InfoSegments typographyStyle="hint" intent="neutral" priority="secondary">
+                <InfoSegments typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Text>{modelName}</Text>
                     {colorName && <Text>{colorName}</Text>}
                 </InfoSegments>

@@ -35,14 +35,14 @@ export const WaitingCard = ({
         <Spinner loadingState={loadingState} />
         <VStack alignItems="center" spacing="sp4">
             <AnimatedText
-                variant="titleSmall"
+                variant="headline-sm"
                 color="textDefault"
                 textAlign="center"
                 layout={FadingTransition}
             >
                 {title}
             </AnimatedText>
-            <AnimatedText variant="hint" color="textDefault" textAlign="center">
+            <AnimatedText variant="body-sm" color="textDefault" textAlign="center">
                 {subtitle}
             </AnimatedText>
         </VStack>

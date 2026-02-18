@@ -21,8 +21,8 @@ interface TradingReceiveAddressEmptyProps {
 
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
     <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
-        <Text typographyStyle="body">{title}</Text>
-        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+        <Text typographyStyle="body-md">{title}</Text>
+        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
             {text}
         </Text>
     </Column>
@@ -61,7 +61,7 @@ export const TradingSelectedOfferProvider = () => {
             borderRadius={0}
         >
             <Row alignItems="center" justifyContent="space-between" padding={20}>
-                <Text typographyStyle="body">
+                <Text typographyStyle="body-md">
                     <Translation id="TR_TRADING_PROVIDER" />
                 </Text>
                 <Row gap={16}>
@@ -69,7 +69,7 @@ export const TradingSelectedOfferProvider = () => {
                         <SkeletonRectangle animate />
                     ) : (
                         <>
-                            <Text typographyStyle="body" as="div">
+                            <Text typographyStyle="body-md" as="div">
                                 <TradingUtilsProvider
                                     providers={providers}
                                     exchange={quote.exchange}

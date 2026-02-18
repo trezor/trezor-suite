@@ -80,7 +80,7 @@ const NftsRow = ({
                 <Table.Cell colSpan={1}>
                     <DropdownRow
                         isActive={isCollectionOpen}
-                        typographyStyle="body"
+                        typographyStyle="body-md"
                         intent="neutral"
                         nftName={NftName}
                         nftItemsCount={!isEmptyCollection ? nftItemsCount : undefined}
@@ -95,7 +95,7 @@ const NftsRow = ({
                                 <Card paddingType="small">
                                     <Column gap={16}>
                                         <InfoItem
-                                            typographyStyle="label"
+                                            typographyStyle="body-xs"
                                             label={
                                                 <Translation
                                                     id={getTokenAddressTranslationId(
@@ -107,7 +107,7 @@ const NftsRow = ({
                                         >
                                             <Link href={getNftContractExplorerUrl(explorer, nft)}>
                                                 <Address
-                                                    typographyStyle="label"
+                                                    typographyStyle="body-xs"
                                                     isTruncated
                                                     value={nft.contract}
                                                     isCopyAllowed
@@ -207,7 +207,7 @@ const NftsRow = ({
                         isHighlightedOnHover={false}
                     >
                         <Table.Cell colSpan={2}>
-                            <Text typographyStyle="hint">
+                            <Text typographyStyle="body-sm">
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle
@@ -239,7 +239,7 @@ const NftsRow = ({
                         isHighlightedOnHover={false}
                     >
                         <Table.Cell colSpan={2}>
-                            <Text typographyStyle="hint">
+                            <Text typographyStyle="body-sm">
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle

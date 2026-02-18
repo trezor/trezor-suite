@@ -50,7 +50,7 @@ const FeedbackButton = styled.button`
 
 const FeedbackButtonLabel = styled.div`
     padding: 0 9px;
-    ${typography.body}
+    ${typography['body-md']}
     width: 100%;
     white-space: nowrap;
 `;

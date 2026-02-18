@@ -66,7 +66,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
                         <Icon name="caretRight" size="medium" />
                         <Text>{toStringValue}</Text>
                     </HStack>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         <Translation
                             id="moduleTrading.tradeHistory.transactionId"
                             values={{ orderId: transaction.data.orderId }}

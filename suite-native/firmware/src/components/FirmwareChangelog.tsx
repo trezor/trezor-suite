@@ -12,7 +12,7 @@ type FirmwareChangelogProps = {
 };
 
 const changelogSectionTitleTextStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.highlight,
+    ...utils.typography['body-md-strong'],
     paddingTop: utils.spacings.sp24,
 }));
 
@@ -70,7 +70,7 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
 
     return (
         <BottomSheetModal ref={ref}>
-            <Text variant="titleSmall" color="textDefault">
+            <Text variant="headline-sm" color="textDefault">
                 <Translation id="firmware.changelog.title" />
             </Text>
             {formattedChangelog}

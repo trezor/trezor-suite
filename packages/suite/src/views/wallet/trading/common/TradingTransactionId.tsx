@@ -24,7 +24,7 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
             <Text
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="label"
+                typographyStyle="body-xs"
                 as="div"
                 data-testid="@trading/transaction-id"
                 ellipsisLineCount={1}

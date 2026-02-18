@@ -32,7 +32,7 @@ const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemP
         <Flex direction={direction} alignItems="center" gap={spacings.xs} height="100%">
             <Icon size="extraLarge" name={icon} />
             <Paragraph
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 intent="neutral"
                 priority="secondary"
                 align={direction === 'column' ? 'center' : 'start'}

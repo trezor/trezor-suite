@@ -21,7 +21,7 @@ const PreviewContent = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    ${typography.body}
+    ${typography['body-md']}
     color: ${({ theme }) => theme.textSubdued};
 
     & > em {
@@ -94,7 +94,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 !loading && (
                     <Paragraph
                         data-testid="@guide/search/no-results"
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority="secondary"
                         margin={{ top: 12 }}

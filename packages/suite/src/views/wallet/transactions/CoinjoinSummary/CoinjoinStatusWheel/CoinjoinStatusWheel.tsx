@@ -24,7 +24,7 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     height: 100%;
     padding: 10px;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     text-align: center;
 
     > :first-child {

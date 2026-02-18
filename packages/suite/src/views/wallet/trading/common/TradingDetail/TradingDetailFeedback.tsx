@@ -90,7 +90,7 @@ export const TradingDetailFeedback = ({
                 <H3>
                     <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE" />
                 </H3>
-                <Paragraph typographyStyle="hint">
+                <Paragraph typographyStyle="body-sm">
                     <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION" />
                 </Paragraph>
             </Column>
@@ -105,7 +105,7 @@ export const TradingDetailFeedback = ({
 
             <EmojiRatingSelector value={rating} onChange={setRating} />
 
-            <Paragraph typographyStyle="hint">
+            <Paragraph typographyStyle="body-sm">
                 <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION" />
             </Paragraph>
 

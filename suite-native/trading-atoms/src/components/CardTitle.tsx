@@ -8,7 +8,7 @@ export type CardTitleProps = {
 
 export const CardTitle = ({ children }: CardTitleProps) => (
     <Box paddingHorizontal="sp8" flex={1}>
-        <Text variant="body" color="textDefault" numberOfLines={1}>
+        <Text variant="body-md" color="textDefault" numberOfLines={1}>
             {children}
         </Text>
     </Box>

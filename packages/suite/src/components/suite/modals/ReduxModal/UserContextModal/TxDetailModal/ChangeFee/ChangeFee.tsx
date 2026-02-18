@@ -80,7 +80,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                             />
                         </>
                     }
-                    typographyStyle="body"
+                    typographyStyle="body-md"
                 >
                     <Row gap={spacings.md} alignItems="baseline">
                         <FormattedCryptoAmount
@@ -88,7 +88,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                             value={fee}
                             symbol={tx.symbol}
                         />
-                        <Text intent="neutral" priority="secondary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee}

@@ -29,7 +29,7 @@ export const ExchangeToAccountTradePreviewCard = ({
             cryptoId={quote.receive}
             amount={
                 !!toStringValue && (
-                    <Text variant="hint" color="textSecondaryHighlight">
+                    <Text variant="body-sm" color="textSecondaryHighlight">
                         +{toStringValue}
                     </Text>
                 )

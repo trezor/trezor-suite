@@ -33,7 +33,7 @@ const TooltipLabel = ({
     accountType: string;
 }) => {
     const addressLabel = (
-        <H4 intent="neutral" priority="secondary" typographyStyle="hint">
+        <H4 intent="neutral" priority="secondary" typographyStyle="body-sm">
             <Translation id={multipleAddresses ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
         </H4>
     );
@@ -146,7 +146,7 @@ export const FreshAddress = ({
                     }
                     flex="1"
                 >
-                    <Text typographyStyle="titleMedium">
+                    <Text typographyStyle="headline-md">
                         {firstFreshAddress?.address ? (
                             <Address value={firstFreshAddress.address} isTruncated />
                         ) : (

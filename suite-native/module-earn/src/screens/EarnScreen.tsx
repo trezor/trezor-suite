@@ -40,10 +40,10 @@ export const EarnScreen = () => {
             <VStack spacing="sp32" marginTop="sp16">
                 <TitleHeader
                     titleSpacing="sp4"
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     title={<Translation id="earn.earnScreen.title" />}
                     subtitle={<Translation id="earn.earnScreen.subtitle" />}
-                    subtitleVariant="hint"
+                    subtitleVariant="body-sm"
                 />
 
                 <FlashList

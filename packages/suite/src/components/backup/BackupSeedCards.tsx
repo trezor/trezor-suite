@@ -31,7 +31,12 @@ export const BackupSeedCards = () => {
 
     return (
         <Column gap={16}>
-            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary" align="center">
+            <Paragraph
+                typographyStyle="body-sm"
+                intent="neutral"
+                priority="secondary"
+                align="center"
+            >
                 <Translation id="TR_ONBOARDING_CLICK_TO_CONFIRM" />
             </Paragraph>
             <Grid gap={16} columns={isBelowTablet ? 1 : 3}>
@@ -52,7 +57,7 @@ export const BackupSeedCards = () => {
                                     }}
                                 />
                             </Row>
-                            <Paragraph typographyStyle="hint">{item.label}</Paragraph>
+                            <Paragraph typographyStyle="body-sm">{item.label}</Paragraph>
                         </Column>
                     </Card>
                 ))}

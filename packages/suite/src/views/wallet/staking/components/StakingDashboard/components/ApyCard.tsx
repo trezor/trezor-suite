@@ -13,10 +13,10 @@ export const ApyCard = ({ apy }: ApyCardProps) => (
             <Icon name="percent" variant="tertiary" />
 
             <Column margin={{ top: 'auto' }}>
-                <Paragraph typographyStyle="titleMedium">
+                <Paragraph typographyStyle="headline-md">
                     <ApyValue apy={apy} />
                 </Paragraph>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_APY" />
                 </Paragraph>
             </Column>

@@ -128,12 +128,12 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
             {isDebug && cachedGasLimit && (
                 <Row alignItems="baseline" justifyContent="space-between">
                     <Row gap={spacings.xxs}>
-                        <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <Translation id="TR_GAS_LIMIT" />:
                         </Text>
                         <DebugOnlyBadge />
                     </Row>
-                    <Text intent="neutral" typographyStyle="hint">
+                    <Text intent="neutral" typographyStyle="body-sm">
                         {cachedGasLimit}
                     </Text>
                 </Row>

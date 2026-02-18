@@ -56,11 +56,11 @@ const BackendRow = styled.div`
 `;
 
 const Title = styled.div`
-    ${typography.body}
+    ${typography['body-md']}
 `;
 
 const Subtitle = styled.div<{ $error?: boolean }>`
-    ${typography.hint}
+    ${typography['body-sm']}
     color: ${({ $error, theme }) => ($error ? theme.textAlertRed : theme.textSubdued)};
 `;
 

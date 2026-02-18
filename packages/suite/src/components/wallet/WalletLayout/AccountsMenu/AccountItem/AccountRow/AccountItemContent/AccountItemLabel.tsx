@@ -21,7 +21,7 @@ export const AccountItemLabel = ({ account, type }: AccountItemLabelProps) => {
                 <Column alignItems="flex-start">
                     <Translation id="TR_NAV_STAKING" />
                     {isCardanoStakedWithFiveBinaries(account) && (
-                        <Text typographyStyle="hint" intent="warning">
+                        <Text typographyStyle="body-sm" intent="warning">
                             <Translation id="TR_STAKING_REWARDS_REDUCED" />
                         </Text>
                     )}

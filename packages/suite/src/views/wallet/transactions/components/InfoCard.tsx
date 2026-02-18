@@ -26,7 +26,7 @@ export const InfoCard = (props: InfoCardProps) => {
         <Card height="100%" minHeight={100}>
             <Column>
                 <H4
-                    typographyStyle="label"
+                    typographyStyle="body-xs"
                     intent="neutral"
                     priority="secondary"
                     data-testid="@wallet/transactions/summary-card/title"
@@ -61,7 +61,7 @@ export const InfoCard = (props: InfoCardProps) => {
                                     <Text
                                         intent="neutral"
                                         priority="secondary"
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                         as="div"
                                     >
                                         {props.secondaryValue}
@@ -74,7 +74,7 @@ export const InfoCard = (props: InfoCardProps) => {
                             <Text
                                 intent="neutral"
                                 priority="secondary"
-                                typographyStyle="hint"
+                                typographyStyle="body-sm"
                                 as="div"
                                 data-testid="@wallet/transactions/summary-card/secondary-value"
                             >

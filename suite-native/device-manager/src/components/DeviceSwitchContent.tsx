@@ -17,7 +17,7 @@ export const DeviceSwitchContent = () => {
         return (
             <DeviceItemContent
                 deviceState={deviceState ?? undefined}
-                headerTextVariant="highlight"
+                headerTextVariant="body-md-strong"
                 variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
                 isSubHeaderForceHidden={true}
             />
@@ -29,7 +29,7 @@ export const DeviceSwitchContent = () => {
     }
 
     return (
-        <Text variant="highlight">
+        <Text variant="body-md-strong">
             <Translation id="deviceManager.defaultHeader" />
         </Text>
     );

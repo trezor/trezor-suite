@@ -27,10 +27,10 @@ export function AssetRowAccountWithBalance({
             >
                 <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-                    <Text typographyStyle="body" ellipsisLineCount={1} maxWidth="100%">
+                    <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">
                         {getNetworkDisplaySymbolName(account.symbol)}
                     </Text>
-                    <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                    <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                         {getDisplaySymbol(account.symbol)}
                     </Text>
                 </Column>

@@ -43,7 +43,9 @@ export const TradeFiatSideCard = ({ paymentMethod, amount, title }: TradeFiatSid
     <Card noPadding>
         <TradeInfoHeader
             title={title}
-            rightContent={<Text variant="hint">{getPaymentMethodTranslation(paymentMethod)}</Text>}
+            rightContent={
+                <Text variant="body-sm">{getPaymentMethodTranslation(paymentMethod)}</Text>
+            }
         />
         <TradeInfoRow>
             <HStack alignItems="center">

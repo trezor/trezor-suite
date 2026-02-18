@@ -96,7 +96,7 @@ export const UnstakeForm = () => {
                             account={account}
                             composedLevels={composedLevels}
                             changeFeeLevel={changeFeeLevel}
-                            headerTypographyStyle="hint"
+                            headerTypographyStyle="body-sm"
                         />
                     </Card>
 
@@ -118,7 +118,7 @@ export const UnstakeForm = () => {
                                     />
                                 </Tooltip>
                             }
-                            typographyStyle="body"
+                            typographyStyle="body-md"
                             direction="row"
                         >
                             <ApproximateInstantEthAmount

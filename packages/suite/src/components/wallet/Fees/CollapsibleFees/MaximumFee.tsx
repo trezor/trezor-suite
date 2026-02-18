@@ -40,7 +40,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                         data-testid="@trading/quote/maximum-fee-fiat-amount"
                         intent="neutral"
                         priority="secondary"
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                     >
                         <BaseCurrencyValue
                             disableHiddenPlaceholder

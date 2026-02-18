@@ -20,7 +20,7 @@ export const NumberedListItem: NumberedListItemStory = {
     name: 'NumberedListItem',
     args: {
         children: 'value',
-        variant: 'body',
+        variant: 'body-md',
         color: 'textDefault',
         number: 1,
     },

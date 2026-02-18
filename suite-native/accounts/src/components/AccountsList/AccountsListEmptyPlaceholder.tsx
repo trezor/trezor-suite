@@ -59,7 +59,7 @@ export const AccountsListEmptyPlaceholder = ({
                 icon={getIcon()}
                 title={<Translation id="moduleAccounts.emptyState.title" />}
                 subtitle={<Translation id={getSubtitle()} />}
-                titleVariant="titleMedium"
+                titleVariant="headline-md"
             />
         </Box>
     );

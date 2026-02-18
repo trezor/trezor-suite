@@ -19,7 +19,7 @@ export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderConten
             <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <Box alignItems="center">
                     <Text
-                        variant="highlight"
+                        variant="body-md-strong"
                         adjustsFontSizeToFit
                         numberOfLines={1}
                         testID="@screen/sub-header/title"

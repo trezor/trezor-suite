@@ -32,10 +32,10 @@ export const TokenInfoCard = ({
             <Card noPadding style={applyStyle(tokenCardStyle)}>
                 <HStack justifyContent="space-between" alignItems="center" padding="sp16">
                     <VStack spacing="sp8">
-                        <Text variant="highlight">
+                        <Text variant="body-md-strong">
                             <Translation id="moduleStellarToken.networkFee.token" />
                         </Text>
-                        <Text variant="highlight">
+                        <Text variant="body-md-strong">
                             <Translation id="moduleStellarToken.tokenDetail.issuer" />
                         </Text>
                     </VStack>
@@ -47,9 +47,9 @@ export const TokenInfoCard = ({
                                     contractAddress={iconContractAddress}
                                     size="extraSmall"
                                 />
-                                <Text variant="body">{tokenName}</Text>
+                                <Text variant="body-md">{tokenName}</Text>
                             </HStack>
-                            <Text variant="body">{issuerDomain}</Text>
+                            <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>
                         <Icon name="caretDown" color="iconSubdued" />
                     </HStack>

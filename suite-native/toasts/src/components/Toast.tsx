@@ -117,7 +117,7 @@ export const Toast = ({ toast }: ToastProps) => {
                         <Icon name={icon} color={iconColor} size="medium" />
                     </Box>
                 )}
-                <Text color={textColor} variant="hint" testID="@toast">
+                <Text color={textColor} variant="body-sm" testID="@toast">
                     {message}
                 </Text>
             </HStack>

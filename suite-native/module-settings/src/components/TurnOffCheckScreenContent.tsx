@@ -31,20 +31,20 @@ const InformativeList = () => (
     <VStack spacing="sp24">
         <IconListItem icon="warning" variant="yellow" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
-                <Text variant="highlight">
+                <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />
                 </Text>
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1Explanation" />
                 </Text>
             </VStack>
         </IconListItem>
         <IconListItem icon="code" variant="yellow" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
-                <Text variant="highlight">
+                <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />
                 </Text>
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2Explanation" />
                 </Text>
             </VStack>
@@ -87,7 +87,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <VStack spacing="sp32" marginTop="sp8" flex={1}>
                 <TitleHeader
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     title={title}
                     subtitle={
                         <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.content" />
@@ -99,7 +99,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                         alertProps={{
                             variant: 'warning',
                             title: (
-                                <Text variant="callout">
+                                <Text variant="body-sm-strong">
                                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.acknowledgementNote" />
                                 </Text>
                             ),

@@ -30,13 +30,13 @@ export const DataAnalytics = ({
         >
             <Column gap={spacings.md}>
                 <Column gap={spacings.md}>
-                    <Text typographyStyle="callout" data-testid="@analytics/consent/heading">
+                    <Text typographyStyle="body-sm-strong" data-testid="@analytics/consent/heading">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
                             defaultMessage="Anonymous data collection"
                         />
                     </Text>
-                    <Text typographyStyle="label" intent="neutral" priority="secondary">
+                    <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
                             values={{
@@ -52,14 +52,14 @@ export const DataAnalytics = ({
                             <List gap={spacings.md}>
                                 <List.Item bulletComponent={<Icon size="medium" name="eyeSlash" />}>
                                     <Column gap={spacings.xxxs} flex="1">
-                                        <Text typographyStyle="callout">
+                                        <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
                                                 defaultMessage="You data is private"
                                             />
                                         </Text>
                                         <Text
-                                            typographyStyle="label"
+                                            typographyStyle="body-xs"
                                             intent="neutral"
                                             priority="secondary"
                                         >
@@ -72,14 +72,14 @@ export const DataAnalytics = ({
                                 </List.Item>
                                 <List.Item bulletComponent={<Icon size="medium" name="bug" />}>
                                     <Column gap={spacings.xxxs} flex="1">
-                                        <Text typographyStyle="callout">
+                                        <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_WHAT_DATA_WE_COLLECT"
                                                 defaultMessage="What data do we collect"
                                             />
                                         </Text>
                                         <Text
-                                            typographyStyle="label"
+                                            typographyStyle="body-xs"
                                             intent="neutral"
                                             priority="secondary"
                                         >
@@ -94,7 +94,7 @@ export const DataAnalytics = ({
 
                             <Card paddingType="small">
                                 <Row justifyContent="space-between">
-                                    <Text typographyStyle="callout">
+                                    <Text typographyStyle="body-sm-strong">
                                         <FormattedMessage
                                             id="TR_ONBOARDING_ALLOW_ANALYTICS"
                                             defaultMessage="Help us anonymously"

@@ -24,7 +24,7 @@ type CardHeaderProps = RequireAllOrNone<
 
 const CardHeader = ({ title, onButtonPress, buttonTitle, buttonIcon }: CardHeaderProps) => (
     <HStack justifyContent="space-between">
-        <Text color="textSubdued" variant="hint">
+        <Text color="textSubdued" variant="body-sm">
             {title}
         </Text>
         {buttonTitle && (

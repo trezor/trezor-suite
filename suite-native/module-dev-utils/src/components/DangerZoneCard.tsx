@@ -8,7 +8,7 @@ export const DangerZoneCard = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall">Danger Zone</Text>
+                <Text variant="headline-sm">Danger Zone</Text>
                 <VStack>
                     <Button
                         colorScheme="redBold"

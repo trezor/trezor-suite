@@ -56,7 +56,7 @@ export const EnterPassphrase = ({
                                 <>
                                     <Row gap={spacings.sm}>
                                         <Icon variant="info" name="warningCircle" size={16} />
-                                        <Paragraph intent="info" typographyStyle="callout">
+                                        <Paragraph intent="info" typographyStyle="body-sm-strong">
                                             <Translation
                                                 id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
                                                 values={{
@@ -76,7 +76,7 @@ export const EnterPassphrase = ({
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                         >
                                             <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
                                         </Paragraph>
@@ -88,7 +88,7 @@ export const EnterPassphrase = ({
                                     <Paragraph
                                         intent="neutral"
                                         priority="secondary"
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                     >
                                         <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
                                     </Paragraph>
@@ -104,7 +104,7 @@ export const EnterPassphrase = ({
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                             flex="1"
                                         >
                                             <Translation
@@ -128,7 +128,7 @@ export const EnterPassphrase = ({
                                         footer={
                                             <Row gap={spacings.sm} justifyContent="space-between">
                                                 <Paragraph
-                                                    typographyStyle="label"
+                                                    typographyStyle="body-xs"
                                                     intent="neutral"
                                                     priority="secondary"
                                                 >
@@ -143,7 +143,7 @@ export const EnterPassphrase = ({
                                             </Row>
                                         }
                                     >
-                                        <Text isMonospaced typographyStyle="hint">
+                                        <Text isMonospaced typographyStyle="body-sm">
                                             {
                                                 '! " # $ % & \\ \' ( ) * +  - . / : ; < = > ? @ [  ] ^ _ ` { | } ~'
                                             }
@@ -159,7 +159,7 @@ export const EnterPassphrase = ({
                                             <Paragraph
                                                 intent="neutral"
                                                 priority="secondary"
-                                                typographyStyle="hint"
+                                                typographyStyle="body-sm"
                                                 flex="1"
                                             >
                                                 <Translation id="TR_PASSPHRASE_EXAMPLES" />
@@ -171,14 +171,17 @@ export const EnterPassphrase = ({
                                         <Column gap={spacings.sm}>
                                             {[1, 2, 3].map(item => (
                                                 <Card fillType="flat" paddingType="tiny" key={item}>
-                                                    <H4 typographyStyle="callout" intent="brand">
+                                                    <H4
+                                                        typographyStyle="body-sm-strong"
+                                                        intent="brand"
+                                                    >
                                                         <Translation
                                                             id={
                                                                 `TR_PASSPHRASE_EXAMPLES_ITEM${item}_HEADING` as TranslationKey
                                                             }
                                                         />
                                                     </H4>
-                                                    <Text isMonospaced typographyStyle="hint">
+                                                    <Text isMonospaced typographyStyle="body-sm">
                                                         <Translation
                                                             id={
                                                                 `TR_PASSPHRASE_EXAMPLES_ITEM${item}_DESCRIPTION` as TranslationKey

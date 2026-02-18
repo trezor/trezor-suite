@@ -132,7 +132,7 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
                             <Paragraph
                                 intent="neutral"
                                 priority="secondary"
-                                typographyStyle="hint"
+                                typographyStyle="body-sm"
                                 align="center"
                                 textWrap="pretty"
                             >

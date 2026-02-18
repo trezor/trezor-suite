@@ -139,7 +139,7 @@ export const GroupHeading = ({ children, ...props }: GroupHeadingProps<OptionTyp
                 as="div"
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="label"
+                typographyStyle="body-xs"
                 padding={{ horizontal: 8, vertical: 4 }}
             >
                 {children}

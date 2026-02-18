@@ -30,7 +30,7 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         label: 'Label',
         intent: 'neutral',
         priority: 'secondary',
-        typographyStyle: 'hint',
+        typographyStyle: 'body-sm',
     },
     argTypes: {
         direction: {

@@ -39,14 +39,14 @@ export const TransactionReviewVerifyAddress = ({
             >
                 <BulletList.Item
                     title={
-                        <H4 typographyStyle="hint">
+                        <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                         </H4>
                     }
                 />
                 <BulletList.Item
                     title={
-                        <H4 typographyStyle="hint">
+                        <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                         </H4>
                     }
@@ -54,7 +54,7 @@ export const TransactionReviewVerifyAddress = ({
                 <BulletList.Item
                     state="done"
                     title={
-                        <H4 typographyStyle="hint">
+                        <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
                         </H4>
                     }

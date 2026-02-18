@@ -26,7 +26,7 @@ export const ReviewDestinationTagCard = ({ destinationTag }: ReviewDestinationTa
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <Text variant="titleSmall" style={applyStyle(destinationTagStyle)}>
+            <Text variant="headline-sm" style={applyStyle(destinationTagStyle)}>
                 {destinationTag}
             </Text>
         </Card>

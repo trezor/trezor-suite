@@ -25,7 +25,7 @@ export const ShowAddressViewOnlyBottomSheet = ({
         <BottomSheetModal ref={ref}>
             <VStack spacing="sp24">
                 <VStack alignItems="center">
-                    <Text variant="titleSmall">
+                    <Text variant="headline-sm">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.title" />
                     </Text>
                     <Text color="textSubdued">

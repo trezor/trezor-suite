@@ -15,8 +15,8 @@ interface TradingReceiveAddressEmptyProps {
 
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
     <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
-        <Text typographyStyle="body">{title}</Text>
-        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+        <Text typographyStyle="body-md">{title}</Text>
+        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
             {text}
         </Text>
     </Column>
@@ -47,7 +47,7 @@ export const TradingReceiveAddress = () => {
                     horizontal: 20,
                 }}
             >
-                <Text typographyStyle="body" align="start">
+                <Text typographyStyle="body-md" align="start">
                     <Translation
                         id={
                             selectedAccountOption?.account || !receiveAddress
@@ -61,7 +61,7 @@ export const TradingReceiveAddress = () => {
                         {selectedAccountOption?.account && receiveAddress ? (
                             <>
                                 <Text
-                                    typographyStyle="body"
+                                    typographyStyle="body-md"
                                     as="div"
                                     data-testid="@trading/selected-receive-account"
                                     ellipsisLineCount={1}
@@ -75,7 +75,7 @@ export const TradingReceiveAddress = () => {
                                 </Text>
                                 <Address
                                     value={receiveAddress}
-                                    typographyStyle="hint"
+                                    typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
                                     isTruncated
@@ -86,13 +86,13 @@ export const TradingReceiveAddress = () => {
                                 {receiveAddress ? (
                                     <Address
                                         value={receiveAddress}
-                                        typographyStyle="body"
+                                        typographyStyle="body-md"
                                         intent="neutral"
                                         isTruncated
                                     />
                                 ) : (
                                     <Text
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                         intent="neutral"
                                         priority="secondary"
                                     >

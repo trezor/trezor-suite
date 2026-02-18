@@ -43,7 +43,7 @@ const Title = () => {
 
     return (
         <Text
-            typographyStyle={isBelowLaptop ? 'titleSmall' : 'titleMedium'}
+            typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
             color="baseContentPrimaryInverse"
             flex="1"
         >
@@ -63,7 +63,7 @@ const Description = () => {
 
     return (
         <Text
-            typographyStyle={isBelowDesktop ? 'callout' : 'titleSmall'}
+            typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}
             color="baseContentBrandInverse"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION" />

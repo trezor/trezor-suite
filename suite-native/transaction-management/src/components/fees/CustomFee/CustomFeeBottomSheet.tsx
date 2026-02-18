@@ -110,7 +110,7 @@ export const CustomFeeBottomSheet = ({
                     alignItems="center"
                     paddingHorizontal="sp1"
                 >
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="transactionManagement.fees.custom.bottomSheet.total" />
                     </Text>
                     <VStack alignItems="flex-end">
@@ -122,7 +122,7 @@ export const CustomFeeBottomSheet = ({
                         <CryptoAmountFormatter
                             value={feeValue}
                             symbol={symbol}
-                            variant="body"
+                            variant="body-md"
                             isLoading={isFeeLoading}
                             isBalance={false}
                         />

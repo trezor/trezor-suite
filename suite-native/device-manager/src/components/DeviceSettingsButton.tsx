@@ -70,7 +70,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
         >
             <HStack spacing="sp8" style={applyStyle(contentStyle, { showAsFullWidth })}>
                 <Icon name="gear" size="mediumLarge" />
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="deviceManager.deviceButtons.deviceSettings" />
                 </Text>
             </HStack>

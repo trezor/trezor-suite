@@ -32,7 +32,7 @@ export const AllowanceModalProviderInfo = ({
                 )}
                 <Column>
                     {provider.companyName && <Text>{provider.companyName}</Text>}
-                    <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         {spender}
                     </Text>
                 </Column>

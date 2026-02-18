@@ -32,7 +32,7 @@ export const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProp
 
     return (
         <Box paddingLeft="sp8">
-            <Text variant="label" color={getTextColor(accountLabelLength)}>
+            <Text variant="body-xs" color={getTextColor(accountLabelLength)}>
                 <Translation
                     id="accounts.accountLabelFieldHint.letterCount"
                     values={{

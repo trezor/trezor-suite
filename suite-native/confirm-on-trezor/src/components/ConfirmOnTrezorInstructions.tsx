@@ -16,10 +16,10 @@ export const ConfirmOnTrezorInstructions = () => {
             {/* TODO: Replace with the new animation */}
             <ConfirmOnTrezorAnimation />
             <Box>
-                <Text variant="titleSmall" textAlign="center">
+                <Text variant="headline-sm" textAlign="center">
                     <Translation id="device.continueOnTrezor.title" />
                 </Text>
-                <Text variant="hint" textAlign="center">
+                <Text variant="body-sm" textAlign="center">
                     <Translation id="device.continueOnTrezor.subtitle" />
                 </Text>
             </Box>

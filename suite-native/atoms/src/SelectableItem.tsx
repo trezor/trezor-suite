@@ -72,7 +72,7 @@ export const SelectableItem = ({
         <PressableOpacity onPress={onSelected} style={applyStyle(cardStyle, { isSelected })}>
             <VStack spacing={utils.spacings.sp4}>
                 <Box style={applyStyle(titleWrapperStyle)}>
-                    <Text variant="titleSmall" color="textDefault">
+                    <Text variant="headline-sm" color="textDefault">
                         {title}
                     </Text>
                     {isDefault && (
@@ -86,7 +86,11 @@ export const SelectableItem = ({
                         </View>
                     )}
                 </Box>
-                <Text variant="hint" color="textDefault" style={applyStyle(subtitleWrapperStyle)}>
+                <Text
+                    variant="body-sm"
+                    color="textDefault"
+                    style={applyStyle(subtitleWrapperStyle)}
+                >
                     {subtitle}
                 </Text>
                 <Box>{content}</Box>

@@ -27,39 +27,39 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
     return (
         <Card paddingType="small" flex="1">
             <Row gap={spacings.lg} justifyContent="space-between" margin={{ bottom: spacings.md }}>
-                <Paragraph typographyStyle="body">
+                <Paragraph typographyStyle="body-md">
                     <Translation id="AMOUNT" />
                 </Paragraph>
-                <Paragraph typographyStyle="highlight">
+                <Paragraph typographyStyle="body-md-strong">
                     <Translation id="TR_STAKE_FULL_BALANCE" />
                 </Paragraph>
             </Row>
 
             {isUpdateProviderFlow ? (
                 <Row gap={spacings.lg} justifyContent="space-between">
-                    <Paragraph typographyStyle="body">
+                    <Paragraph typographyStyle="body-md">
                         <Translation id="TR_STAKING_NEW_PROVIDER" />
                     </Paragraph>
-                    <Paragraph typographyStyle="highlight">Everstake</Paragraph>
+                    <Paragraph typographyStyle="body-md-strong">Everstake</Paragraph>
                 </Row>
             ) : (
                 <>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph typographyStyle="body">
+                        <Paragraph typographyStyle="body-md">
                             <Translation id="TR_STAKE_REGISTRATION_DEPOSIT" />
                         </Paragraph>
                         <Paragraph
                             data-testid="@modal/staking/registration-deposit-amount-with-symbol"
-                            typographyStyle="highlight"
+                            typographyStyle="body-md-strong"
                         >
                             {CARDANO_STAKING_REGISTRATION_DEPOSIT} {getNetworkDisplaySymbol(symbol)}
                         </Paragraph>
                     </Row>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <Translation id="TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE" />
                         </Paragraph>
-                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             ≈
                             <BaseCurrencyValue
                                 amount={CARDANO_STAKING_REGISTRATION_DEPOSIT}
@@ -72,12 +72,12 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
             {selectedVotingDelegation.type === 'another_drep' && (
                 <>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph typographyStyle="body">
+                        <Paragraph typographyStyle="body-md">
                             <Translation id="TR_STAKING_DREP_ID" />
                         </Paragraph>
                     </Row>
                     <Row gap={spacings.lg} justifyContent="space-between">
-                        <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {selectedVotingDelegation.drepId}
                         </Paragraph>
                     </Row>

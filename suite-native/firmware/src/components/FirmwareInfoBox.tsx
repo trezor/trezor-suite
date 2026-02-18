@@ -40,13 +40,13 @@ export const FirmwareInfoBox = ({
     return (
         <Box style={applyStyle(containerStyle, { backgroundColor })} {...boxProps}>
             <VStack spacing="sp2" alignItems="center">
-                <Text variant="body" color={titleColor}>
+                <Text variant="body-md" color={titleColor}>
                     {title}
                 </Text>
-                <Text variant="highlight">
-                    <Text variant="highlight">{version ?? '?.?.?'}</Text>
+                <Text variant="body-md-strong">
+                    <Text variant="body-md-strong">{version ?? '?.?.?'}</Text>
                     {' • '}
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id={type} />
                     </Text>
                 </Text>

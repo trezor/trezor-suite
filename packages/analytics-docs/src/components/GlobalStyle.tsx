@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: GlobalStyleTheme }>`
     body, html {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        ${typography.body}
+        ${typography['body-md']}
         color: ${({ theme }) => theme.textDefault};
         height: 100%;
 

@@ -179,7 +179,7 @@ export const CollapsibleBox = ({
             <Toggle>
                 <Row gap={spacings.sm}>
                     {toggleLabel && (
-                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {toggleLabel}
                         </Text>
                     )}

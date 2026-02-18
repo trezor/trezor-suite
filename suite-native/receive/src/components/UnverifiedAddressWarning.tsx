@@ -10,7 +10,7 @@ const pictogramContent = {
             <Text textAlign="center">
                 <TrezorSuiteHeader />
                 {'\n'}
-                <Text variant="titleSmall" textAlign="center">
+                <Text variant="headline-sm" textAlign="center">
                     <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.portfolioTracker.title" />
                 </Text>
             </Text>
@@ -21,7 +21,7 @@ const pictogramContent = {
     },
     viewOnly: {
         title: (
-            <Text variant="titleSmall" textAlign="center">
+            <Text variant="headline-sm" textAlign="center">
                 <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.viewOnly.title" />
             </Text>
         ),
