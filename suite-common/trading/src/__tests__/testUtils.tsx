@@ -1,10 +1,15 @@
-import { ReactNode } from 'react';
-import { Provider } from 'react-redux';
-
 import { combineReducers } from '@reduxjs/toolkit';
-import { RenderHookOptions, renderHook } from '@testing-library/react';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import {
+    RenderHookOptions,
+    configureMockStore,
+    renderHookWithStoreProvider,
+} from '@suite-common/test-utils';
+import {
+    FiatRatesState,
+    WalletSettingsState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 
 import { TradingState, initialState, tradingCommonReducer } from '../reducers/tradingCommonReducer';
 import { regional } from '../regional';
@@ -21,8 +26,16 @@ export type TradingTestState = {
     };
 };
 
+export type TradingTestStateWithWalletSettings = {
+    wallet: {
+        trading: TradingState;
+        settings: WalletSettingsState;
+        fiat: FiatRatesState;
+    };
+};
+
 type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
-    preloadedState?: Partial<TradingTestState>;
+    preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
 };
 
 /**
@@ -47,6 +60,21 @@ export const createTradingTestState = (
             ...initialState,
             ...overrides,
         },
+    },
+});
+
+export const createTestStateWithWalletSettings = (
+    overrides: Partial<TradingTestStateWithWalletSettings['wallet']> = {},
+): TradingTestStateWithWalletSettings => ({
+    wallet: {
+        trading: initialState,
+        settings: initialWalletSettingsState,
+        fiat: {
+            current: {},
+            lastWeek: {},
+            historic: {},
+        },
+        ...overrides,
     },
 });
 
@@ -156,17 +184,21 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingCommonReducer,
+                settings: (state = { localCurrency: 'usd' }) => state,
+                fiat: (
+                    state = {
+                        current: {},
+                        lastWeek: {},
+                        historic: {},
+                    },
+                ) => state,
             }),
         }),
         preloadedState: preloadedState || createTradingTestState(),
     });
 
-    const wrapper = ({ children }: { children: ReactNode }) => (
-        <Provider store={store}>{children}</Provider>
-    );
-
     return {
-        ...renderHook(callback, { wrapper, ...options }),
+        ...renderHookWithStoreProvider(callback, { store, ...options }),
         store,
     };
 };
