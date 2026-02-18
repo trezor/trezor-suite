@@ -62,9 +62,10 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
 
 type VersionsSidebarProps = {
     versionsWithEvents: VersionWithEvents[];
+    onEventClick?: (eventName: string) => void;
 };
 
-export const VersionsSidebar = ({ versionsWithEvents }: VersionsSidebarProps) => (
+export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSidebarProps) => (
     <SidebarWrapper>
         <Column gap={0}>
             <H3 margin={{ left: 20, top: 8, bottom: 16 }}>Changelog</H3>
@@ -82,7 +83,10 @@ export const VersionsSidebar = ({ versionsWithEvents }: VersionsSidebarProps) =>
                             .map(event => (
                                 <CardList.Item
                                     paddingType="small"
-                                    onClick={() => scrollToEvent(event.name)}
+                                    onClick={() => {
+                                        scrollToEvent(event.name);
+                                        onEventClick?.(event.name);
+                                    }}
                                     key={event.name}
                                 >
                                     <Text typographyStyle="label">{event.name}</Text>

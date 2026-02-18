@@ -96,6 +96,18 @@ const ContentArea = styled.div`
     }
 `;
 
+const HIGHLIGHT_DURATION_MS = 1000;
+
+const EventCardWrapper = styled.div`
+    border-radius: 18px;
+    border: 2px solid transparent;
+    transition: border-color 0.4s ease-out;
+
+    &.highlighted {
+        border-color: ${({ theme }) => theme.backgroundAlertYellowBold};
+    }
+`;
+
 type AnalyticsContentProps = {
     isAnalyticsDataLoading: boolean;
     isAnalyticsDataGenerated: boolean;
@@ -111,8 +123,8 @@ const AnalyticsContent = ({
     if (!isAnalyticsDataGenerated) {
         return (
             <Paragraph typographyStyle="callout" intent="warning">
-                analytics.json has not been generated. Run{' '}
-                <code>yarn build-data</code> (or <code>yarn dev</code>) to generate it.
+                analytics.json has not been generated. Run <code>yarn build-data</code> (or{' '}
+                <code>yarn dev</code>) to generate it.
             </Paragraph>
         );
     }
@@ -148,12 +160,19 @@ export const App = ({ theme }: AppProps) => {
         [filteredEvents],
     );
 
+    const handleSidebarEventClick = (eventName: string) => {
+        const el = document.getElementById(getEventId(eventName));
+        if (!el) return;
+        el.classList.add('highlighted');
+        setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
+    };
+
     const eventCards = useMemo(
         () =>
             filteredEvents.map(event => (
-                <div key={event.name} id={getEventId(event.name)}>
+                <EventCardWrapper key={event.name} id={getEventId(event.name)}>
                     <EventCard event={event} />
-                </div>
+                </EventCardWrapper>
             )),
         [filteredEvents],
     );
@@ -257,16 +276,19 @@ export const App = ({ theme }: AppProps) => {
                                 />
                             </ContentContainer>
                         </ContentArea>
-                        <VersionsSidebar versionsWithEvents={versionsWithEvents} />
+                        <VersionsSidebar
+                            versionsWithEvents={versionsWithEvents}
+                            onEventClick={handleSidebarEventClick}
+                        />
                     </MainWithSidebar>
                 ) : (
                     <Content>
                         <ContentContainer>
                             <AnalyticsContent
-                                    isAnalyticsDataLoading={isAnalyticsDataLoading}
-                                    isAnalyticsDataGenerated={isAnalyticsDataGenerated}
-                                    eventCards={eventCards}
-                                />
+                                isAnalyticsDataLoading={isAnalyticsDataLoading}
+                                isAnalyticsDataGenerated={isAnalyticsDataGenerated}
+                                eventCards={eventCards}
+                            />
                         </ContentContainer>
                     </Content>
                 )}
