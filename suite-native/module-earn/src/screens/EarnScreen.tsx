@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
@@ -12,6 +12,7 @@ import { useAnalytics } from '@suite-native/services';
 
 import { EarnListItem } from '../components/EarnListItem';
 import { EarnSectionHeader } from '../components/EarnSectionHeader';
+import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStakingListData } from '../hooks/useStakingListData';
 import { EarnItem } from '../types';
 
@@ -26,7 +27,14 @@ const renderItem = ({ item }: { item: EarnListItem }) => {
 };
 
 export const EarnScreen = () => {
-    const { listData } = useStakingListData();
+    const { listData: stakingListData } = useStakingListData();
+    const { listData: stablecoinListData } = useStablecoinYieldListData();
+
+    const earnListData = useMemo(
+        () => [...stakingListData, ...stablecoinListData],
+        [stakingListData, stablecoinListData],
+    );
+
     const analytics = useAnalytics();
 
     useFocusEffect(
@@ -48,7 +56,7 @@ export const EarnScreen = () => {
 
                 <FlashList
                     getItemType={item => (typeof item === 'string' ? 'sectionHeader' : 'item')}
-                    data={listData}
+                    data={earnListData}
                     renderItem={renderItem}
                 />
             </VStack>

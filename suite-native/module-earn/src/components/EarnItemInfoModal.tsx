@@ -56,10 +56,17 @@ const iconByEarnType: Record<EarnType, IconName> = {
     'stablecoin-yield': 'coins',
 };
 
+const earnTypeLabelByType: Record<EarnType, string> = {
+    staking: 'Staking',
+    'stablecoin-yield': 'StableCoin yield',
+};
+
 export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalProps) => {
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
     const formattedUrl = SUITE_URL.replace('https://', 'www.');
+
+    const earnType = earnTypeLabelByType[type];
 
     return (
         <BottomSheetModal ref={ref}>
@@ -76,10 +83,7 @@ export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalPr
                 <TitleHeader
                     titleVariant="headline-sm"
                     title={
-                        <Translation
-                            id="earn.earnScreen.infoModal.title"
-                            values={{ earnType: type }}
-                        />
+                        <Translation id="earn.earnScreen.infoModal.title" values={{ earnType }} />
                     }
                     subtitle={<Translation id="earn.earnScreen.infoModal.subtitle" />}
                     textAlign="center"

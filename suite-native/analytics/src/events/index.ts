@@ -24,6 +24,7 @@ export { deviceSetupSecurityCheckEvent } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
+export { earnStablecoinYieldTilePressedEvent } from './earnStablecoinYieldTilePressedEvent';
 export { ejectDeviceClickEvent } from './ejectDeviceClickEvent';
 export { emptyDashboardActionEvent } from './emptyDashboardActionEvent';
 export { firmwareFirmwareUpdateCancelEvent } from './firmwareFirmwareUpdateCancelEvent';

@@ -5,9 +5,12 @@ import {
     selectHasRunningDiscovery,
     useAccoutsSelector,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    NetworkDisplaySymbolNameFormatter,
+    TokenAmountFormatter,
+} from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     selectAPYByAccountKey,
@@ -32,25 +35,31 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 type EarnItemOverviewSectionProps = {
-    stakedBalance: string | null;
+    balance: string | null;
 } & EarnItem;
 
-export const EarnItemOverviewSection = ({
-    accountKey = '' as AccountKey, // Todo: this is wrong, use null or something
-    symbol,
-    stakedBalance,
-    accountLabel,
-}: EarnItemOverviewSectionProps) => {
+export const EarnItemOverviewSection = (item: EarnItemOverviewSectionProps) => {
     const { applyStyle } = useNativeStyles();
+
+    const { accountKey, accountLabel, balance } = item;
 
     const formattedAccountType = useAccoutsSelector(state =>
         selectFormattedAccountType(state, accountKey),
     );
 
     const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
-    const fallbackApy = useNativeStakingSelector(state => selectAPYBySymbol(state, symbol));
+    const fallbackApy = useNativeStakingSelector(state =>
+        item.type === 'staking' ? selectAPYBySymbol(state, item.symbol) : null,
+    );
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const apyValue = item.type === 'staking' ? (apy ?? fallbackApy) : item.apy;
+
+    const iconProps =
+        item.type === 'staking'
+            ? { symbol: item.symbol }
+            : { symbol: item.networkSymbol, contractAddress: item.contractAddress };
 
     return (
         <HStack
@@ -61,11 +70,15 @@ export const EarnItemOverviewSection = ({
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <CryptoIconWithNetwork symbol={symbol} />
+                    <CryptoIconWithNetwork {...iconProps} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>
-                        <NetworkDisplaySymbolNameFormatter value={symbol} />
+                        {item.type === 'staking' ? (
+                            <NetworkDisplaySymbolNameFormatter value={item.symbol} />
+                        ) : (
+                            item.vaultName
+                        )}
                     </Text>
                     {accountKey && (
                         <HStack>
@@ -85,19 +98,26 @@ export const EarnItemOverviewSection = ({
             ) : (
                 <>
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        {accountKey && (
-                            <CryptoAmountFormatter
-                                value={stakedBalance}
-                                symbol={symbol}
-                                decimals={CRYPTO_BALANCE_DECIMALS}
-                                color="textDefault"
-                            />
-                        )}
-                        {(apy || fallbackApy) && (
+                        {balance !== null &&
+                            (item.type === 'staking' ? (
+                                <CryptoAmountFormatter
+                                    value={balance}
+                                    symbol={item.symbol}
+                                    decimals={CRYPTO_BALANCE_DECIMALS}
+                                    color="textDefault"
+                                />
+                            ) : (
+                                <TokenAmountFormatter
+                                    value={balance}
+                                    tokenSymbol={item.tokenSymbol}
+                                    color="textDefault"
+                                />
+                            ))}
+                        {apyValue !== null && apyValue !== undefined && (
                             <Text
                                 variant={accountKey ? 'body-sm' : 'body-md'}
                                 color={accountKey ? 'textSubdued' : 'textDefault'}
-                            >{`${apy || fallbackApy}% p.a.`}</Text>
+                            >{`${apyValue}% p.a.`}</Text>
                         )}
                     </Box>
                 </>
