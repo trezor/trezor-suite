@@ -11,9 +11,7 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                     {children}
                 </Text>
             ),
-            p: ({ children }) => (
-                <Paragraph typographyStyle="inherit">{children}</Paragraph>
-            ),
+            p: ({ children }) => <Paragraph typographyStyle="inherit">{children}</Paragraph>,
             ul: ({ children }) => <List>{children}</List>,
             li: ({ children }) => <List.Item>{children}</List.Item>,
         }}

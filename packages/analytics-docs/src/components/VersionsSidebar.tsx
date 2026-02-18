@@ -29,7 +29,7 @@ const getEventChangeProps = (event: EventDoc, version: string) =>
 const scrollToEvent = (eventName: string) => {
     const el = document.getElementById(getEventId(eventName));
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
+    const y = el.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT - 20;
     window.scrollTo({ top: y });
 };
 

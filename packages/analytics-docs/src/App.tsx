@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react';
 import { startTransition, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import type { SuiteThemeColors } from '@trezor/components';
 import {
     Box,
     Button,
@@ -9,13 +11,13 @@ import {
     H2,
     H3,
     IconButton,
+    Paragraph,
     Row,
     Spinner,
     Tooltip,
     useMediaQuery,
     variables,
 } from '@trezor/components';
-import type { SuiteThemeColors } from '@trezor/components';
 import { hexToRgba } from '@trezor/utils';
 
 import { EventCard } from './components/EventCard';
@@ -89,10 +91,34 @@ const ContentArea = styled.div`
     }
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 0 20px 20px 20px;
+        margin: 0 20px 20px;
         margin-right: ${SIDEBAR_WIDTH + 20}px;
     }
 `;
+
+type AnalyticsContentProps = {
+    isAnalyticsDataLoading: boolean;
+    isAnalyticsDataGenerated: boolean;
+    eventCards: ReactNode;
+};
+
+const AnalyticsContent = ({
+    isAnalyticsDataLoading,
+    isAnalyticsDataGenerated,
+    eventCards,
+}: AnalyticsContentProps) => {
+    if (isAnalyticsDataLoading) return <Spinner size={20} />;
+    if (!isAnalyticsDataGenerated) {
+        return (
+            <Paragraph typographyStyle="callout" intent="warning">
+                analytics.json has not been generated. Run{' '}
+                <code>yarn build-data</code> (or <code>yarn dev</code>) to generate it.
+            </Paragraph>
+        );
+    }
+
+    return <Column gap={40}>{eventCards}</Column>;
+};
 
 export const App = ({ theme }: AppProps) => {
     const {
@@ -109,6 +135,8 @@ export const App = ({ theme }: AppProps) => {
         isFiltering,
         isSidebarOpen,
         isSidebarLoading,
+        isAnalyticsDataGenerated,
+        isAnalyticsDataLoading,
         setIsSidebarOpen,
         setIsSidebarLoading,
     } = useFilteredEvents();
@@ -146,7 +174,7 @@ export const App = ({ theme }: AppProps) => {
             <Box minHeight="100vh">
                 <TopBar>
                     <ContentContainer>
-                        <Row justifyContent="space-between" gap={20} alignItems="center" flex={1}>
+                        <Row justifyContent="space-between" gap={20} alignItems="center" flex="1">
                             <Row gap={12} alignItems="center">
                                 <Heading>Analytics events docs</Heading>
                                 {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
@@ -222,7 +250,11 @@ export const App = ({ theme }: AppProps) => {
                     <MainWithSidebar>
                         <ContentArea>
                             <ContentContainer>
-                                <Column gap={40}>{eventCards}</Column>
+                                <AnalyticsContent
+                                    isAnalyticsDataLoading={isAnalyticsDataLoading}
+                                    isAnalyticsDataGenerated={isAnalyticsDataGenerated}
+                                    eventCards={eventCards}
+                                />
                             </ContentContainer>
                         </ContentArea>
                         <VersionsSidebar versionsWithEvents={versionsWithEvents} />
@@ -230,7 +262,11 @@ export const App = ({ theme }: AppProps) => {
                 ) : (
                     <Content>
                         <ContentContainer>
-                            <Column gap={40}>{eventCards}</Column>
+                            <AnalyticsContent
+                                    isAnalyticsDataLoading={isAnalyticsDataLoading}
+                                    isAnalyticsDataGenerated={isAnalyticsDataGenerated}
+                                    eventCards={eventCards}
+                                />
                         </ContentContainer>
                     </Content>
                 )}
