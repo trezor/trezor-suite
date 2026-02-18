@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { EventDef } from '@suite-common/analytics';
 
-import { EventDoc, platforms } from '../src/types';
+import type { EventDoc } from '../src/types';
 import {
     AttributeTypesByEventName,
     extractAttributeTypesByEventName,
@@ -24,6 +24,12 @@ const PACKAGES = [
     '@suite-native/analytics',
 ] as const;
 
+const PACKAGE_TO_PLATFORM: Record<(typeof PACKAGES)[number], string> = {
+    '@suite-common/analytics': 'shared',
+    '@suite/analytics': 'desktop',
+    '@suite-native/analytics': 'mobile',
+};
+
 const loadEventsFromPackage = async (
     packageName: string,
 ): Promise<Array<EventDef<unknown, string>>> => {
@@ -37,12 +43,16 @@ const loadEventsFromPackage = async (
 const loadAllEvents = async (): Promise<
     Array<EventDef<unknown, string> & { platform: string }>
 > => {
-    const [shared, desktop, mobile] = await Promise.all(
-        PACKAGES.map(name => loadEventsFromPackage(name)),
-    );
-    const lists = [shared, desktop, mobile];
+    const results = await Promise.all(
+        PACKAGES.map(async packageName => {
+            const events = await loadEventsFromPackage(packageName);
+            const platform = PACKAGE_TO_PLATFORM[packageName];
 
-    return lists.flatMap((list, i) => list.map(event => ({ ...event, platform: platforms[i] })));
+            return events.map(event => ({ ...event, platform }));
+        }),
+    );
+
+    return results.flat();
 };
 
 const getTsConfigPath = (): string => {
