@@ -69,6 +69,10 @@ const MainWithSidebar = styled.div`
     flex: 1;
     min-height: 0;
 
+    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-direction: column;
+    }
+
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         margin: ${HEADER_HEIGHT}px 0 0;
     }
@@ -79,6 +83,10 @@ const ContentArea = styled.div`
     min-width: 0;
     margin: 0;
     padding: 20px 10px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
+        order: 1;
+    }
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         margin: 0 20px 20px 20px;

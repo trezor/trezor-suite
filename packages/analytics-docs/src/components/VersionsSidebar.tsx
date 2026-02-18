@@ -54,6 +54,7 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
+        order: 0;
         border-left: none;
         border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
