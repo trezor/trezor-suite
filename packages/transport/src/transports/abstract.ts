@@ -2,10 +2,10 @@ import { loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, ThpState, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
-import type { BridgeCommonErrors } from './bridge';
 import { OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
+import type { BridgeCommonErrors } from '../types';
 import {
     AbortableParam,
     AnyError,

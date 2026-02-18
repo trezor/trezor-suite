@@ -1,6 +1,7 @@
 import { Branded } from '@trezor/type-utils';
 
 import { DEVICE_TYPE } from '../constants';
+import * as ERRORS from '../errors';
 import type { DescriptorModel } from '../utils/descriptor';
 
 export * from './apiCall';
@@ -51,3 +52,8 @@ export interface Logger {
 
     error(...args: any): void;
 }
+
+export type BridgeCommonErrors =
+    | typeof ERRORS.HTTP_ERROR
+    | typeof ERRORS.WRONG_RESULT_TYPE
+    | typeof ERRORS.UNEXPECTED_ERROR;
