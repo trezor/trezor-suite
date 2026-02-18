@@ -33,6 +33,8 @@ type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 
 type AppProps = { theme: AppTheme };
 
 export const TopBar = styled.div`
+    display: flex;
+    align-items: center;
     padding: 12px 24px;
     background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
@@ -51,13 +53,14 @@ export const Content = styled.div`
     padding: 20px 10px;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 20px 0px;
+        margin: ${HEADER_HEIGHT}px 20px 0;
     }
 `;
 
 export const ContentContainer = styled.div`
-    margin: auto;
-    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
 `;
 
@@ -67,7 +70,7 @@ const MainWithSidebar = styled.div`
     min-height: 0;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 0 0px;
+        margin: ${HEADER_HEIGHT}px 0 0;
     }
 `;
 
@@ -133,67 +136,65 @@ export const App = ({ theme }: AppProps) => {
             <Box minHeight="100vh">
                 <TopBar>
                     <ContentContainer>
-                        <Column gap={12}>
-                            <Row justifyContent="space-between" gap={20}>
-                                <Row gap={40} alignItems="center">
-                                    <Heading>Analytics events docs</Heading>
-
-                                    {isFiltering && <Spinner size={20} />}
-                                </Row>
-                                <Row gap={8} alignItems="center">
-                                    <Tooltip
-                                        content={
-                                            isSidebarOpen
-                                                ? 'Hide versions'
-                                                : 'Show versions by last updated'
-                                        }
-                                    >
-                                        <IconButton
-                                            icon="clockCounterClockwise"
-                                            onClick={() => setIsSidebarOpen(prev => !prev)}
-                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
-                                            size="small"
-                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
-                                        />
-                                    </Tooltip>
-                                    <ThemeSwitch />
-                                    <Tooltip content="Add event">
-                                        {isMobile ? (
-                                            <IconButton icon="plus" {...addButtonProps} />
-                                        ) : (
-                                            <Button iconLeft="plus" {...addButtonProps}>
-                                                Add event
-                                            </Button>
-                                        )}
-                                    </Tooltip>
-                                </Row>
+                        <Row justifyContent="space-between" gap={20} alignItems="center" flex={1}>
+                            <Row gap={12} alignItems="center">
+                                <Tooltip
+                                    content={
+                                        isSidebarOpen
+                                            ? 'Hide versions'
+                                            : 'Show versions by changelog'
+                                    }
+                                >
+                                    <IconButton
+                                        icon="clockCounterClockwise"
+                                        onClick={() => setIsSidebarOpen(prev => !prev)}
+                                        intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                        size="small"
+                                        priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                    />
+                                </Tooltip>
+                                <Heading>Analytics events docs</Heading>
+                                {isFiltering && <Spinner size={20} />}
                             </Row>
-                            <Row
-                                justifyContent="space-between"
-                                gap={16}
-                                alignItems="center"
-                                flexWrap={isMobile ? 'wrap-reverse' : undefined}
-                            >
-                                <ResultsInfo
-                                    filteredCount={filteredEvents.length}
-                                    totalCount={allEvents.length}
-                                    platform={platform}
-                                    query={debouncedQuery}
-                                    hasActiveFilters={hasActiveFilters}
-                                    onClearAll={clearAll}
-                                />
-                                <Filter
-                                    setQuery={setQuery}
-                                    query={query}
-                                    setPlatform={setPlatform}
-                                    platform={platform}
-                                    setSort={setSort}
-                                    sort={sort}
-                                />
+                            <Row gap={8} alignItems="center">
+                                <ThemeSwitch />
+                                <Tooltip content="Add event">
+                                    {isMobile ? (
+                                        <IconButton icon="plus" {...addButtonProps} />
+                                    ) : (
+                                        <Button iconLeft="plus" {...addButtonProps}>
+                                            Add event
+                                        </Button>
+                                    )}
+                                </Tooltip>
                             </Row>
-                        </Column>
+                        </Row>
+                        <Row
+                            justifyContent="space-between"
+                            gap={16}
+                            alignItems="center"
+                            flexWrap={isMobile ? 'wrap-reverse' : undefined}
+                        >
+                            <ResultsInfo
+                                filteredCount={filteredEvents.length}
+                                totalCount={allEvents.length}
+                                platform={platform}
+                                query={debouncedQuery}
+                                hasActiveFilters={hasActiveFilters}
+                                onClearAll={clearAll}
+                            />
+                            <Filter
+                                setQuery={setQuery}
+                                query={query}
+                                setPlatform={setPlatform}
+                                platform={platform}
+                                setSort={setSort}
+                                sort={sort}
+                            />
+                        </Row>
                     </ContentContainer>
                 </TopBar>
+
                 {isSidebarOpen ? (
                     <MainWithSidebar>
                         <VersionsSidebar versionsWithEvents={versionsWithEvents} />

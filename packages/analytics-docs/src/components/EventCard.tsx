@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
     Badge,
     Card,
@@ -43,14 +41,16 @@ const toEventName = (input: string): string =>
         .join('') + 'Event';
 
 const Header = ({ event }: { event: EventDoc }) => {
-    const [isCopied, setIsCopied] = useState<boolean>(false);
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
     if (!event.name) return null;
 
-    const getEventUrl = (eventName: string) =>
+    const getEventDefinitionUrl = (eventName: string) =>
         `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventName(eventName)}.ts`;
+
+    const getEventUsagesUrl = (eventName: string) =>
+        `https://github.com/search?q=repo%3Atrezor%2Ftrezor-suite%20${toEventName(eventName)}.name&type=code`;
 
     return (
         <>
@@ -64,26 +64,22 @@ const Header = ({ event }: { event: EventDoc }) => {
                 <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
                     <H3>{event.name} </H3>
                     <Row gap={4}>
-                        <Tooltip content="Copy event name">
+                        <ChangelogButton />
+                        <Tooltip content="Open definition in Github">
                             <IconButton
-                                onClick={() => {
-                                    setIsCopied(true);
-                                    navigator.clipboard.writeText(event.name);
-                                    setTimeout(() => setIsCopied(false), 1000);
-                                }}
-                                icon={isCopied ? 'check' : 'copy'}
-                                intent={isCopied ? 'brand' : 'neutral'}
+                                href={getEventDefinitionUrl(event.name)}
+                                icon="note"
+                                intent="neutral"
                                 size="small"
                                 priority="secondary"
                             />
                         </Tooltip>
-                        <ChangelogButton />
-                        <Tooltip content="Open in Github">
+                        <Tooltip content="Find usages in Github">
                             <IconButton
-                                href={getEventUrl(event.name)}
-                                icon="arrowLineUpRight"
-                                intent="neutral"
+                                href={getEventUsagesUrl(event.name)}
+                                icon="magnifyingGlass"
                                 size="small"
+                                intent="neutral"
                                 priority="secondary"
                             />
                         </Tooltip>
