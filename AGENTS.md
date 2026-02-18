@@ -9,6 +9,7 @@
 - [Common Tasks](skills/common-tasks.md) – Dependency management, package creation, and troubleshooting
 - [Components](skills/components.md) – React component file structure and patterns
 - [Defensive Programming](skills/defensive-programming.md) – Exhaustive checks and safe defaults
+- [Dependency Injection](skills/dependency-injection.md) – Service and composition root patterns
 - [Development Commands](skills/development-commands.md) – Running apps, linting, testing, and building
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines.md) – Conventional Commits format and best practices
 - [Import/Export](skills/import-export.md) – Named exports and import ordering
