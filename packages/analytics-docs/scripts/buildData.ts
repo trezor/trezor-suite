@@ -113,7 +113,9 @@ const run = async () => {
 
     mergeRuntimeTypes(normalizedEvents, attributeTypesByEventName);
 
-    const outputPath = path.resolve(__dirname, '../src/analytics.json');
+    const publicDir = path.resolve(__dirname, '../public');
+    fs.mkdirSync(publicDir, { recursive: true });
+    const outputPath = path.join(publicDir, 'analytics.json');
     writeOutput({ events: normalizedEvents }, outputPath);
 
     // eslint-disable-next-line no-console

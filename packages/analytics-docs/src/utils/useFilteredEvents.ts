@@ -12,7 +12,7 @@ import {
 } from './filterUtils';
 import { getParamsFromUrl, updateUrl } from './urlParams';
 
-const ANALYTICS_JSON_URL = '/src/analytics.json';
+const ANALYTICS_JSON_URL = `${import.meta.env.BASE_URL}analytics.json`;
 
 export const useFilteredEvents = () => {
     const initial = useMemo(getParamsFromUrl, []);

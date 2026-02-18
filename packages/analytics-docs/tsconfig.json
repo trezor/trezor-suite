@@ -4,7 +4,6 @@
         "src/**/*",
         "scripts/**/*",
         "package.json",
-        "src/analytics.json",
         "styled.d.ts"
     ],
     "compilerOptions": {
