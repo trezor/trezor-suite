@@ -3,7 +3,6 @@ import styled, { useTheme } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import {
-    type Network,
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
@@ -18,7 +17,6 @@ import {
 import { RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
-    AmountUnit,
     BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
@@ -44,6 +42,7 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { AssetTable } from './AssetTable/AssetTable';
+import type { AssetData } from './types';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
@@ -58,16 +57,6 @@ const GridWrapper = styled.div`
     grid-gap: ${spacingsPx.sm};
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
-
-export type AssetData = {
-    network: Network;
-    failed: boolean;
-    assetNativeCryptoBalance: AmountUnit;
-    stakingAccounts: Account[];
-    assetTokens: TokenInfo[];
-    isStakeNetwork?: boolean;
-    accounts: Account[];
-};
 
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
