@@ -2351,7 +2351,7 @@ export const messages = {
             infoModal: {
                 title: 'Manage {earnType} in Trezor Suite for desktop',
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
-                copyLabel: 'Hold to copy',
+                copyLabel: 'tap to copy',
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },

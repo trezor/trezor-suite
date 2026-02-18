@@ -50,7 +50,9 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     EarnNavigate = 'earn/navigate',
     // eslint-disable-next-line local-rules/analytics-event-name
-    EarnStakeTilePressed = 'earn/stake_tile_pressed',
+    EarnStakeTilePressed = 'earn/stake-tile-pressed',
+    // eslint-disable-next-line local-rules/analytics-event-name
+    EarnStablecoinYieldTilePressed = 'earn/stablecoin-yield-tile-pressed',
     // eslint-disable-next-line local-rules/analytics-event-name
     EjectDeviceClick = 'eject_device/click',
     // eslint-disable-next-line local-rules/analytics-event-name

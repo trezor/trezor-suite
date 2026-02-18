@@ -6,10 +6,10 @@ import {
     useSelector,
 } from '@suite-native/staking';
 
-import { EarnItem } from '../types';
+import { StakingEarnItem } from '../types';
 import { EarnItemRewardInfo } from './EarnItemRewardInfo';
 
-type EarnItemRewardSectionProps = {} & EarnItem;
+type EarnItemRewardSectionProps = StakingEarnItem;
 
 export const EarnItemRewardSection = ({ accountKey, symbol }: EarnItemRewardSectionProps) => {
     const rewardsBalance = useSelector(state =>

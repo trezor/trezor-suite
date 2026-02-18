@@ -2,9 +2,9 @@ import { Divider, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { EarnItem } from '../types';
+import { StakingEarnItem } from '../types';
 
-type EarnItemCardanoInfoProps = EarnItem;
+type EarnItemCardanoInfoProps = StakingEarnItem;
 export const EarnItemCardanoInfo = ({ symbol }: EarnItemCardanoInfoProps) => {
     if (symbol !== 'ada') return null;
 

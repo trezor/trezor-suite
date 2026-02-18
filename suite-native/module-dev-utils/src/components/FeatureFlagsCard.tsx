@@ -18,6 +18,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
     [FeatureFlagEnum.IsEarnEnabled]: 'Earn',
+    [FeatureFlagEnum.IsStablecoinYieldEnabled]: 'Stablecoin Yield',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
