@@ -1,13 +1,9 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import {
-    cancelDiscoveryThunk,
-    selectSelectedDevice,
-    useThunkDispatch,
-} from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
@@ -39,7 +35,7 @@ export const PassphraseScreenHeader = () => {
     const route = useRoute();
     const device = useSelector(selectSelectedDevice);
     const analytics = useAnalytics();
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
 
     const { showAlert } = useAlert();
 

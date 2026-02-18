@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -13,7 +13,6 @@ import {
     selectDeepCopyOfFormDraft,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
-    useThunkDispatch,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -75,7 +74,7 @@ export const useStellarFeeScreen = ({
     thunkAction,
     onSuccess,
 }: UseStellarFeeScreenParams) => {
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
     const navigation = useNavigation<StellarFeeNavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();

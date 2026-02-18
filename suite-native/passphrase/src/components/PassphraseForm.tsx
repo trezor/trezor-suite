@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     PassphraseFormValues,
@@ -12,7 +12,6 @@ import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
     submitPassphrase,
-    useThunkDispatch,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
@@ -44,7 +43,7 @@ export const PassphraseForm = ({
     onAfterSubmit,
 }: PassphraseFormProps) => {
     const analytics = useAnalytics();
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
     const formWrapperView = useRef<View>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);

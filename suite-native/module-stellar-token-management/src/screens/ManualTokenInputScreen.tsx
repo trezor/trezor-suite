@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey, useThunkDispatch } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
@@ -37,7 +37,7 @@ export const ManualTokenInputScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
