@@ -20,7 +20,8 @@ export const ResultsInfo = ({
     <Row gap={8} alignItems="center" flex="1" overflow="hidden">
         <Paragraph
             typographyStyle="label"
-            variant="tertiary"
+            intent="neutral"
+            priority="secondary"
             wordBreak="keep-all"
             textWrap="nowrap"
             ellipsisLineCount={1}
