@@ -13,14 +13,14 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
 `;
 
 const Header = styled.div`
     display: flex;
     align-items: center;
     height: 15px;
-    ${typography.highlight}
+    ${typography['body-md-strong']}
 
     > :first-child {
         margin-right: 6px;
@@ -31,7 +31,7 @@ const Header = styled.div`
 const CryptoAmount = styled(FormattedCryptoAmount)<{ $color?: string }>`
     margin: 6px 0 4px;
     color: ${({ theme, $color }) => $color || theme.textDefault};
-    ${typography.titleSmall}
+    ${typography['headline-sm']}
 `;
 
 interface CryptoAmountWithHeaderProps {

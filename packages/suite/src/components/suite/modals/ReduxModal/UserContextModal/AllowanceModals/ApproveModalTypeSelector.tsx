@@ -65,7 +65,7 @@ export const ApproveModalTypeSelector = ({
                     </Row>
                     <Paragraph
                         margin={{ top: 4 }}
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority="secondary"
                     >
@@ -91,7 +91,7 @@ export const ApproveModalTypeSelector = ({
                     </Row>
                     <Paragraph
                         margin={{ top: 4 }}
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority="secondary"
                     >

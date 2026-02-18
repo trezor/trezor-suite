@@ -84,7 +84,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
                                 <Translation id="moduleOnboarding.biometricsScreen.title" />
                             </Text>
                         </HStack>
-                        <Text style={applyStyle(titleStyle)} variant="titleMedium">
+                        <Text style={applyStyle(titleStyle)} variant="headline-md">
                             <Translation id="moduleOnboarding.biometricsScreen.description" />
                         </Text>
                     </VStack>

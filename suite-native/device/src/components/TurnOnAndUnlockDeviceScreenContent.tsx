@@ -28,14 +28,14 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
     return (
         <VStack paddingTop="sp16" spacing="sp32" flex={1} justifyContent="space-between">
             <VStack spacing="sp32" alignItems="center">
-                <Text variant="titleMedium" textAlign="center">
+                <Text variant="headline-md" textAlign="center">
                     <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.title" />
                 </Text>
                 <HStack style={applyStyle(statusStyle, { isStatusVisible })}>
                     {bluetoothAdapterStatus === 'disabled' && (
                         <>
                             <Icon name="bluetoothSlash" color="iconAlertBlue" />
-                            <Text variant="body" color="textAlertBlue">
+                            <Text variant="body-md" color="textAlertBlue">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.adapterDisabled" />
                             </Text>
                         </>
@@ -43,7 +43,7 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                     {bluetoothAdapterStatus === 'enabled' && (
                         <>
                             <Loader color="iconPrimaryDefault" />
-                            <Text variant="body" color="textPrimaryDefault">
+                            <Text variant="body-md" color="textPrimaryDefault">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.scanning" />
                             </Text>
                         </>

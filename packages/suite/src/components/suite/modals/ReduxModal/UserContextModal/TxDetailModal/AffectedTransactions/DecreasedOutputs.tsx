@@ -33,7 +33,7 @@ const AmountItem = ({ labelTranslationKey, shouldSendInSats, amount, symbol }: A
 
     return (
         <Column>
-            <Text intent="neutral" priority="secondary" typographyStyle="label">
+            <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                 <Translation id={labelTranslationKey} />
             </Text>
             <FormattedCryptoAmount value={value} symbol={symbol} />
@@ -107,7 +107,7 @@ export const DecreasedOutputs = () => {
     return (
         <Card fillType="flat" paddingType="none">
             <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
-                <Text typographyStyle="body">
+                <Text typographyStyle="body-md">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
                 </Text>
                 <TextButton href={HELP_CENTER_REPLACE_BY_FEE_BITCOIN} size="small" isUnderlined>
@@ -166,7 +166,7 @@ export const DecreasedOutputs = () => {
                                         <Text
                                             intent="neutral"
                                             priority="secondary"
-                                            typographyStyle="label"
+                                            typographyStyle="body-xs"
                                         >
                                             <Translation id="TR_RECIPIENT_ADDRESS" />
                                         </Text>

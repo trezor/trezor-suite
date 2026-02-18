@@ -51,7 +51,7 @@ export const DeviceDangerBanner = ({ topSafeAreaInset }: DeviceCompromisedBanner
             <VStack spacing="sp2" style={applyStyle(contentStyle, { topSafeAreaInset })}>
                 <HStack alignItems="center">
                     <Icon name="warningCircle" size="mediumLarge" />
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id={titleTranslationId} />
                     </Text>
                 </HStack>

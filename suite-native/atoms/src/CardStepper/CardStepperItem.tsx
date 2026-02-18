@@ -94,7 +94,7 @@ export const CardStepperItem = ({
                 <VStack spacing="sp12">
                     <HStack spacing="sp8" alignItems="center">
                         <Icon name={iconName} size="mediumLarge" color={headerColor} />
-                        <Text variant="callout" color={headerColor}>
+                        <Text variant="body-sm-strong" color={headerColor}>
                             {header}
                         </Text>
                     </HStack>
@@ -107,7 +107,7 @@ export const CardStepperItem = ({
                         entering={ENTERING_ANIMATION}
                         exiting={EXITING_ANIMATION}
                     >
-                        <Text variant="highlight">{description}</Text>
+                        <Text variant="body-md-strong">{description}</Text>
                         <HStack
                             flex={1}
                             spacing="sp12"

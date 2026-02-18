@@ -74,14 +74,14 @@ export const NotificationView = ({
                 ))}
             <Column gap={spacings.xxs} margin={{ right: 'auto' }}>
                 <Paragraph
-                    typographyStyle={seen ? 'hint' : 'callout'}
+                    typographyStyle={seen ? 'body-sm' : 'body-sm-strong'}
                     intent="neutral"
                     priority={isSeen ? 'secondary' : 'primary'}
                 >
                     <Translation id={message} values={messageValues} />
                 </Paragraph>
                 <Paragraph
-                    typographyStyle="label"
+                    typographyStyle="body-xs"
                     intent="neutral"
                     priority={isSeen ? 'secondary' : 'primary'}
                 >

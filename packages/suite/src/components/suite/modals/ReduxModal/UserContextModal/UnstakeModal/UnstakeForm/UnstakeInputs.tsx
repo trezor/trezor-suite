@@ -146,7 +146,11 @@ export const UnstakeInputs = () => {
                     <BaseCurrencyValue amount={amount} symbol={symbol} showApproximationIndicator>
                         {({ value }) =>
                             value ? (
-                                <Text typographyStyle="label" intent="neutral" priority="secondary">
+                                <Text
+                                    typographyStyle="body-xs"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
                                     {value}
                                 </Text>
                             ) : null
@@ -178,7 +182,7 @@ export const UnstakeInputs = () => {
                                     value={autocompoundBalance}
                                     symbol={symbol}
                                 />
-                                <Text typographyStyle="hint">
+                                <Text typographyStyle="body-sm">
                                     <BaseCurrencyValue
                                         amount={depositedBalance}
                                         symbol={symbol}

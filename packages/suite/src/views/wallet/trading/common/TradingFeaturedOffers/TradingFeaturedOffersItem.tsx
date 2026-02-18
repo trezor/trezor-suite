@@ -125,7 +125,7 @@ export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemP
                     <OfferBadgeWrap>
                         {tag && <Badge intent="neutral">{tag}</Badge>}
                         {infoNote && (
-                            <Text typographyStyle="label" intent="neutral" priority="secondary">
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                                 {infoNote}
                             </Text>
                         )}

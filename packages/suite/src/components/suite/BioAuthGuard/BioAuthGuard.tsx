@@ -56,10 +56,10 @@ const BioAuthOverlay = ({ onPrimaryButtonClick }: { onPrimaryButtonClick: () => 
                             >
                                 <Container $elevation={elevation}>
                                     <Icon name="lockFilled" />
-                                    <Paragraph align="center" typographyStyle="titleSmall">
+                                    <Paragraph align="center" typographyStyle="headline-sm">
                                         <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
                                     </Paragraph>
-                                    <Paragraph align="center" typographyStyle="body">
+                                    <Paragraph align="center" typographyStyle="body-md">
                                         {isMacOs() ? (
                                             <Translation id="TR_BIO_AUTH_LOCKED_TEXT_MAC" />
                                         ) : (

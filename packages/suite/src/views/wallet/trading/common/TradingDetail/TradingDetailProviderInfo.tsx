@@ -45,7 +45,7 @@ export const TradingDetailProviderInfo = ({
     };
 
     return (
-        <Text typographyStyle="hint" as="div">
+        <Text typographyStyle="body-sm" as="div">
             <Column gap={8}>
                 {estimatedTime && (
                     <InfoItem label={<Translation id="TR_ESTIMATED_TIME" />} direction="row">

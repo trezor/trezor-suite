@@ -119,7 +119,7 @@ export const TradingOfferExchangeDetails = ({
                             cursor="pointer"
                             onClick={() => setIsSlippageModalOpen(true)}
                         >
-                            <Text intent="brand" typographyStyle="hint">
+                            <Text intent="brand" typographyStyle="body-sm">
                                 {exchangeQuote.swapSlippage}%
                             </Text>
 
@@ -133,7 +133,7 @@ export const TradingOfferExchangeDetails = ({
                         label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}
                         direction="row"
                     >
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <FormattedCryptoAmount
                                 value={minimumYouGetAmount}
                                 symbol={receiveCoinSymbol}
@@ -165,7 +165,7 @@ export const TradingOfferExchangeDetails = ({
                 )}
 
                 <InfoItem label={<Translation id="TR_TRADING_NETWORK_FEE" />} direction="row">
-                    <Text typographyStyle="hint">
+                    <Text typographyStyle="body-sm">
                         <BaseCurrencyValue
                             disableHiddenPlaceholder
                             amount={formattedNetworkFee}
@@ -219,7 +219,7 @@ export const TradingOfferExchangeDetails = ({
                 </InfoItem>
 
                 <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-                    <Text typographyStyle="hint">
+                    <Text typographyStyle="body-sm">
                         {exchangeQuote.isDex ? (
                             <Tooltip
                                 content={<Translation id="TR_EXCHANGE_DECENTRALIZED_EXCHANGE" />}
@@ -246,7 +246,11 @@ export const TradingOfferExchangeDetails = ({
 
             {formStep === 'SIGN_DATA' && (
                 <Card>
-                    <Text typographyStyle="highlight" as="div" margin={{ bottom: spacings.xs }}>
+                    <Text
+                        typographyStyle="body-md-strong"
+                        as="div"
+                        margin={{ bottom: spacings.xs }}
+                    >
                         <Translation
                             id="TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE"
                             values={{ provider: providerName }}

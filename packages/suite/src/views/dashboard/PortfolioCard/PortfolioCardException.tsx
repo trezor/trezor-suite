@@ -43,7 +43,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                     data-testid={`@exception/${dataTestBase}/description`}
                     intent="neutral"
                     priority="secondary"
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                 >
                     {typeof description === 'string' ? (
                         <Translation id={description} />

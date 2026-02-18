@@ -29,7 +29,7 @@ export const ConnectCallSource = () => {
                         : 'trezorConnect'
                 }
             />
-            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
                 <Text intent="neutral">

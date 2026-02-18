@@ -27,7 +27,7 @@ export const ConnectingDeviceScreen = () => {
                 <ActivityIndicator size="large" />
                 <Box flexDirection="row" alignItems="center">
                     <Text
-                        variant="titleMedium"
+                        variant="headline-md"
                         style={applyStyle(resetLetterSpacingOnAndroidStyle)}
                     >
                         <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />
@@ -36,7 +36,7 @@ export const ConnectingDeviceScreen = () => {
                         <Icon name="trezorLogo" size="extraLarge" />
                     </Box>
                 </Box>
-                <Text variant="highlight" color="textSubdued">
+                <Text variant="body-md-strong" color="textSubdued">
                     <Translation id="moduleConnectDevice.connectingDeviceScreen.hodlOn" />
                 </Text>
             </VStack>

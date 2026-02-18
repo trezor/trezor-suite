@@ -18,7 +18,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
-    ${typography.titleSmall}
+    ${typography['headline-sm']}
     height: 100%;
 `;
 

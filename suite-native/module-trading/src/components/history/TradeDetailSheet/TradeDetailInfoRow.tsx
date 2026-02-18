@@ -23,11 +23,11 @@ export const TradeDetailInfoRow = ({ title, content, contentTestID }: TradeDetai
 
     return (
         <HStack style={applyStyle(wrapperStyle)}>
-            <Text variant="hint" color="textSubdued">
+            <Text variant="body-sm" color="textSubdued">
                 {title}
             </Text>
             {typeof content === 'string' ? (
-                <Text variant="hint" testID={contentTestID}>
+                <Text variant="body-sm" testID={contentTestID}>
                     {content}
                 </Text>
             ) : (

@@ -66,7 +66,7 @@ export const SendAddressReviewScreen = ({
         >
             <Box flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <Text variant="titleSmall">
+                    <Text variant="headline-sm">
                         <Translation id="moduleSend.review.address.title" />
                     </Text>
                     <AddressReviewStepList />

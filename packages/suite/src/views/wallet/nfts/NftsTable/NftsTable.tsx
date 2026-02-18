@@ -82,7 +82,7 @@ const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps)
                                         <DropdownRow
                                             isActive={isEmptyCollectionsOpen}
                                             text="EMPTY_NFT_COLLECTIONS"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                             intent="neutral"
                                             priority="secondary"
                                         />

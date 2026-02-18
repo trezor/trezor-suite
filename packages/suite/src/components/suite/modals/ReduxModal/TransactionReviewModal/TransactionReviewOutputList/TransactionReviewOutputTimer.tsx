@@ -69,7 +69,7 @@ export const TransactionReviewOutputTimer = ({
             }
             description={
                 <TimerBox>
-                    <Text typographyStyle="callout" as="div">
+                    <Text typographyStyle="body-sm-strong" as="div">
                         <CountdownTimer
                             deadline={deadline}
                             unitDisplay="long"

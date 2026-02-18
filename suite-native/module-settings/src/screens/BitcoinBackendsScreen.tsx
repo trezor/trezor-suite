@@ -70,7 +70,7 @@ export const BitcoinBackendsScreen = () => {
                     <HStack alignItems="center" justifyContent="space-between">
                         <HStack>
                             <Icon name="database" size="mediumLarge" />
-                            <Text variant="body">
+                            <Text variant="body-md">
                                 <Translation id="moduleSettings.advanced.bitcoinBackends.servers.title" />
                             </Text>
                         </HStack>

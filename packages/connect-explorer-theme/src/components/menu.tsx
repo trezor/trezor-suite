@@ -52,7 +52,7 @@ const MenuCategory = styled.div`
     padding: 1rem 0 0.5rem 0;
     font-weight: 600;
     text-transform: uppercase;
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textDefault};
 `;
 

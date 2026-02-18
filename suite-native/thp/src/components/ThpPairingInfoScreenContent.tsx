@@ -12,7 +12,7 @@ export const ThpPairingInfoScreenContent = ({ onContinue }: ThpPairingInfoScreen
         <VStack marginTop="sp16" spacing="sp64" alignItems="center">
             <CenteredTitleHeader
                 title={<Translation id="thp.pairingInfo.title" />}
-                titleVariant="titleMedium"
+                titleVariant="headline-md"
                 subtitle={<Translation id="thp.pairingInfo.subtitle" />}
             />
             <CreateSecureConnectionAnimation />

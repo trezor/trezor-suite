@@ -24,7 +24,7 @@ export const TradingInfoHeader = ({ receiveCurrency }: TradingInfoHeaderProps) =
     return (
         <Row gap={spacings.xs}>
             {receiveCurrency && <TradingCoinLogo cryptoId={receiveCurrency} size={24} />}
-            <Text typographyStyle="titleSmall">
+            <Text typographyStyle="headline-sm">
                 {coinSymbol && contractAddress ? (
                     <Translation
                         id="TR_TRADING_TOKEN_NETWORK"

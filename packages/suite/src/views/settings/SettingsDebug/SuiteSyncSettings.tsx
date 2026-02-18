@@ -77,7 +77,7 @@ export const SuiteSyncSettings = () => {
                                 </Button>
                             }
                         />
-                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
                         </Text>
                     </Column>

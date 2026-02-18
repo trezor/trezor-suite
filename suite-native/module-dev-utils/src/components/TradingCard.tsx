@@ -6,7 +6,7 @@ import { TradingEnvironmentSelect } from './TradingEnvironmentSelect';
 export const TradingCard = () => (
     <Card>
         <VStack spacing="sp12">
-            <Text variant="titleSmall">Trading</Text>
+            <Text variant="headline-sm">Trading</Text>
             <TradingEnvironmentSelect />
             <TradingDeeplinks />
         </VStack>

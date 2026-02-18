@@ -61,7 +61,7 @@ export const CustomFeeMisc = ({
                 control={control}
                 hasError={!!feePerUnitError}
                 rightContent={
-                    <Text intent="neutral" priority="secondary" typographyStyle="label">
+                    <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                         {feeUnits}
                     </Text>
                 }

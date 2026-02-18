@@ -25,7 +25,7 @@ export const BluetoothPairingPin = ({ pairingPin, device, onCancel }: BluetoothP
     >
         <Card overflow="hidden" paddingType="large">
             <Row gap={8} justifyContent="space-between" padding={{ horizontal: 8, vertical: 4 }}>
-                <Text typographyStyle="titleLarge">
+                <Text typographyStyle="headline-lg">
                     <Pin>{pairingPin}</Pin>
                 </Text>
                 <BluetoothDeviceComponent device={device} />

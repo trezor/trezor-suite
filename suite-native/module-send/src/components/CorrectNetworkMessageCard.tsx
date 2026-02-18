@@ -30,7 +30,7 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
         <Card style={applyStyle(cardStyle)}>
             <HStack spacing="sp12" alignItems="center">
                 <NetworkIcon symbol={symbol} size="extraLarge" />
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation
                         id="moduleSend.outputs.correctNetworkMessage"
                         values={{
@@ -44,7 +44,7 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
                                         href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
                                         label={label}
                                         isUnderlined
-                                        textVariant="hint"
+                                        textVariant="body-sm"
                                         textColor="textDefault"
                                     />
                                 );

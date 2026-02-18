@@ -23,7 +23,7 @@ export const SheetHeaderTitle = ({
 }: SheetHeaderTitleProps) => (
     <HStack alignItems="center" justifyContent="space-between">
         <Text
-            variant="titleSmall"
+            variant="headline-sm"
             ellipsizeMode="tail"
             numberOfLines={1}
             testID={SHEET_HEADER_TITLE_TEST_ID}

@@ -69,7 +69,7 @@ export const AddHiddenWalletButton = () => {
             flex={1}
         >
             <HStack marginLeft="sp4">
-                <Text variant="hint" style={applyStyle(textStyle)}>
+                <Text variant="body-sm" style={applyStyle(textStyle)}>
                     <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
                 </Text>
                 <Icon name="caretRight" size="mediumLarge" />

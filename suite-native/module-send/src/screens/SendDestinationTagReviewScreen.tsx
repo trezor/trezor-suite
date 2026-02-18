@@ -81,7 +81,7 @@ export const SendDestinationTagReviewScreen = ({
             closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
         >
             <VStack flex={1} spacing="sp24" marginTop="sp16">
-                <Text variant="titleSmall">
+                <Text variant="headline-sm">
                     <Translation id="moduleSend.review.destinationTagTitle" />
                 </Text>
                 <ReviewDestinationTagCard destinationTag={destinationTag} />

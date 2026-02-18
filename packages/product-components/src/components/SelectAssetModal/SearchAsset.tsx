@@ -39,7 +39,7 @@ export const SearchAsset = ({
                     }
                 >
                     {option.value && <CoinLogo size={20} symbol={option.value} type="network" />}
-                    <Text typographyStyle="hint" textWrap="nowrap">
+                    <Text typographyStyle="body-sm" textWrap="nowrap">
                         {option.label}
                     </Text>
                 </Row>

@@ -17,7 +17,7 @@ export const EarnSectionHeader = ({ title }: EarnSectionHeaderProps) => {
         <VStack spacing="sp16" marginBottom="sp16">
             <HStack>
                 <Icon name="coins" />
-                <Text variant="highlight">{title}</Text>
+                <Text variant="body-md-strong">{title}</Text>
             </HStack>
             {accountStakedWithFiveBinaries && (
                 <CardanoStakingInfoBanner accountKey={accountStakedWithFiveBinaries?.key} />

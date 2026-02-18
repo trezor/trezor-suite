@@ -131,7 +131,7 @@ export const TradingDetailBuy = () => {
                         <H3>
                             <Translation id="TR_BUY_HEADER_TITLE" />
                         </H3>
-                        <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <Translation
                                 id="TR_TRADING_HEADER_DESCRIPTION"
                                 values={{ type: translationString('TR_BUY').toLowerCase() }}

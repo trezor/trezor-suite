@@ -62,7 +62,7 @@ export const ManualStakedBalancesCard = ({
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="lock" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="label">
+                            <Text color="textSubdued" variant="body-xs">
                                 <Translation id="earn.staked" />
                             </Text>
                         </Box>
@@ -71,7 +71,7 @@ export const ManualStakedBalancesCard = ({
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
                             color="textDefault"
-                            variant="titleSmall"
+                            variant="headline-sm"
                         />
                         <Box flexDirection="row">
                             <Text color="textSubdued">≈</Text>
@@ -86,7 +86,7 @@ export const ManualStakedBalancesCard = ({
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="plusCircle" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="label">
+                            <Text color="textSubdued" variant="body-xs">
                                 {rewardsTitle}
                             </Text>
                         </Box>
@@ -95,7 +95,7 @@ export const ManualStakedBalancesCard = ({
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
                             color="textSecondaryHighlight"
-                            variant="titleSmall"
+                            variant="headline-sm"
                         />
                         <Box flexDirection="row">
                             <Text color="textSubdued">≈</Text>

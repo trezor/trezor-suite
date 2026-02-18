@@ -58,7 +58,7 @@ const titleGridStyle = css`
 
 const Title = styled.h3`
     align-self: end;
-    ${typography.highlight}
+    ${typography['body-md-strong']}
     margin: 16px 0 8px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -84,7 +84,7 @@ const descriptionGridStyle = css`
 
 const Description = styled.p`
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${descriptionGridStyle}

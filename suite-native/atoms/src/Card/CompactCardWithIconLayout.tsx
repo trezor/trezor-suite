@@ -126,7 +126,7 @@ export const CompactCardWithIconLayout = ({
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (
-                                <Text color={subtitleColor} variant="hint">
+                                <Text color={subtitleColor} variant="body-sm">
                                     {subtitle}
                                 </Text>
                             )}

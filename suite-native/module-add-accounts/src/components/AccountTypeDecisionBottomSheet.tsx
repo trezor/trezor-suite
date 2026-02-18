@@ -48,7 +48,7 @@ export const AccountTypeDecisionBottomSheet = ({
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"
                         values={{
                             type: _ => (
-                                <Text key="type-name" color="textDefault" variant="highlight">
+                                <Text key="type-name" color="textDefault" variant="body-md-strong">
                                     {typeName}
                                 </Text>
                             ),

@@ -42,7 +42,7 @@ export const TokenInfoCard = ({
                     value={balance}
                     tokenSymbol={tokenSymbol}
                     decimals={decimals}
-                    variant="label"
+                    variant="body-xs"
                 />
             }
             icon={<CryptoIcon symbol={symbol} contractAddress={contract} />}

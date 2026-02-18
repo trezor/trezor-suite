@@ -30,7 +30,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
                 {cryptoId && <TradingCoinLogo cryptoId={cryptoId} />}
                 <Text
                     data-testid="@trading/best-offer/amount"
-                    typographyStyle="titleMedium"
+                    typographyStyle="headline-md"
                     ellipsisLineCount={2}
                 >
                     <FormattedCryptoAmount
@@ -45,7 +45,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
             </Row>
             {hasAmount && network && (
                 <Text
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
                     margin={{ left: 32 }}

@@ -68,7 +68,7 @@ export const TransactionOverview = ({
     return (
         <Card noPadding={true}>
             <HStack padding="sp16" alignItems="center" flex={1} justifyContent="space-between">
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="transactions.detail.transactionOverviewTitle" />
                 </Text>
             </HStack>

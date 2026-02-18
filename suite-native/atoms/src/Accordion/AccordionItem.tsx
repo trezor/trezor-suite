@@ -78,7 +78,7 @@ export const AccordionItem = ({
                 <HStack justifyContent="space-between" alignItems="center">
                     <HStack spacing="sp24" flex={1} alignItems="center">
                         {iconName && <Icon name={iconName} size="mediumLarge" />}
-                        <Text variant="callout">{title}</Text>
+                        <Text variant="body-sm-strong">{title}</Text>
                     </HStack>
                     <AnimatedBox style={animatedChevronStyle}>
                         <Icon name="caretDown" size="mediumLarge" />

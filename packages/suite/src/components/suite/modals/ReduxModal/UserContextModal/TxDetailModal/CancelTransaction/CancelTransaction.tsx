@@ -43,7 +43,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
             paddingType="small"
             header={
                 <Row justifyContent="space-between">
-                    <Text typographyStyle="highlight">
+                    <Text typographyStyle="body-md-strong">
                         <Translation id="TR_CANCEL_TX_HEADER" />
                     </Text>
                     <TextButton href={HELP_CENTER_CANCEL_TRANSACTION} isUnderlined size="small">
@@ -53,7 +53,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
             }
         >
             <Column gap={spacings.md}>
-                <Text typographyStyle="hint">
+                <Text typographyStyle="body-sm">
                     <Translation id="TR_CANCEL_TX_NOTICE" />
                 </Text>
 
@@ -67,7 +67,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             </Text>
                         </Row>
                     }
-                    typographyStyle="body"
+                    typographyStyle="body-md"
                     intent="neutral"
                     priority="primary"
                 >
@@ -77,7 +77,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             value={fee ?? undefined}
                             symbol={tx.symbol}
                         />
-                        <Text intent="neutral" priority="secondary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee ?? '0'}
@@ -92,7 +92,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                 <InfoItem
                     direction="row"
                     label={<Translation id="TR_CANCEL_TX_RETURN_TO_YOUR_WALLET" />}
-                    typographyStyle="body"
+                    typographyStyle="body-md"
                     intent="neutral"
                     priority="primary"
                 >
@@ -102,7 +102,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             value={formattedOutputAmount}
                             symbol={tx.symbol}
                         />
-                        <Text intent="neutral" priority="secondary" typographyStyle="label">
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedOutputAmount}

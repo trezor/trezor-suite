@@ -244,11 +244,11 @@ const sizeToAdditionalSpacingMap = {
 } as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
-    tiny: 'label',
-    extraSmall: 'hint',
-    small: 'hint',
-    medium: 'body',
-    large: 'body',
+    tiny: 'body-xs',
+    extraSmall: 'body-sm',
+    small: 'body-sm',
+    medium: 'body-md',
+    large: 'body-md',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 export const buttonToIconSizeMap = {

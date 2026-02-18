@@ -70,7 +70,7 @@ export const ConnectErrorMessage = () => {
                         <PictogramTitleHeader
                             variant="critical"
                             title={<Translation id="moduleConnectPopup.errors.requestFailed" />}
-                            titleVariant="titleSmall"
+                            titleVariant="headline-sm"
                             subtitle={getErrorMessage()}
                         />
                     </Box>

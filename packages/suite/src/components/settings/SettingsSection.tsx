@@ -30,7 +30,7 @@ export const SettingsSection = ({ title, icon, children, tooltipText }: Settings
             }
             intent="neutral"
             priority="primary"
-            typographyStyle="titleSmall"
+            typographyStyle="headline-sm"
             verticalAlignment="start"
         >
             <Card>

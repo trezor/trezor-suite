@@ -12,7 +12,7 @@ export const FirmwareLowBatteryModal = ({ onClose }: FirmwareLowBatteryModalProp
     <LowBatteryModal onClose={onClose}>
         <Card paddingType="large">
             <Column gap={6}>
-                <Paragraph typographyStyle="highlight">
+                <Paragraph typographyStyle="body-md-strong">
                     <Translation id="TR_FW_INSTALL_MAY_TAKE_A_WHILE" />
                 </Paragraph>
                 <Paragraph>

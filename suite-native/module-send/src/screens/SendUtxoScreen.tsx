@@ -134,7 +134,7 @@ export const SendUtxoScreen = ({
                     <VStack alignContent="center" spacing="sp8" justifyContent="center" flex={1}>
                         <VStack alignItems="center" spacing="sp12" justifyContent="center">
                             <Text>{translate('moduleSend.coinControl.search.noCoins')}</Text>
-                            <Text variant="hint">
+                            <Text variant="body-sm">
                                 {translate('moduleSend.coinControl.search.message')}
                             </Text>
                         </VStack>

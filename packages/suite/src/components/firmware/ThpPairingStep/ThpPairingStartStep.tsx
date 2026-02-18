@@ -34,13 +34,13 @@ export const ThpPairingStartStep = ({ modalHeading }: ThpPairingStartStepProps) 
         >
             <Card>
                 <Column alignItems="start" gap={spacings.xxs}>
-                    <Text typographyStyle="highlight">
+                    <Text typographyStyle="body-md-strong">
                         <Translation id="TR_THP_CONFIRM_SECURE_CONNECTION" />
                     </Text>
                     <Text
                         intent="neutral"
                         priority="secondary"
-                        typographyStyle="body"
+                        typographyStyle="body-md"
                         align="center"
                     >
                         <Translation id="TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION" />

@@ -30,11 +30,11 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
     if (networkType === 'ethereum') {
         return (
             <HStack spacing="sp2" flex={1} alignItems="center">
-                <Text variant="highlight">
+                <Text variant="body-md-strong">
                     <Translation id="transactionManagement.fees.custom.card.label" />
                 </Text>
                 <Text>•</Text>
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     {formattedFeePerUnit}
                 </Text>
             </HStack>
@@ -42,7 +42,7 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
     }
 
     return (
-        <Text variant="highlight">
+        <Text variant="body-md-strong">
             <Translation id="transactionManagement.fees.custom.card.label" />
             {' • '}
             <Text color="textSubdued">{formattedFeePerUnit}</Text>

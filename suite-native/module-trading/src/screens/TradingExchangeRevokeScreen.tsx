@@ -113,17 +113,17 @@ export const TradingExchangeRevokeScreen = ({
                             !!network?.symbol && (
                                 <HStack alignItems="center">
                                     <NetworkIcon symbol={network.symbol} size="extraLarge" />
-                                    <Text variant="hint">{network.name}</Text>
+                                    <Text variant="body-sm">{network.name}</Text>
                                 </HStack>
                             )
                         }
                     />
                     <TradeInfoRow>
                         <VStack spacing="sp4">
-                            <Text variant="hint">
+                            <Text variant="body-sm">
                                 <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
                             </Text>
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 {account?.accountLabel}
                             </Text>
                         </VStack>
@@ -137,20 +137,20 @@ export const TradingExchangeRevokeScreen = ({
                         }
                     />
                     <TradeInfoRow>
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <Translation id="moduleTrading.tradingScreen.provider" />
                         </Text>
                         <HStack alignItems="center">
                             {!!providerInfo?.logo && (
-                                <ProviderLogo logo={providerInfo.logo} size="hint" />
+                                <ProviderLogo logo={providerInfo.logo} size="body-sm" />
                             )}
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 {providerInfo?.companyName}
                             </Text>
                         </HStack>
                     </TradeInfoRow>
                     <TradeInfoRow>
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <Translation id="moduleTrading.tradingExchangeRevokeScreen.currentLimit" />
                         </Text>
                         <HStack alignItems="center">
@@ -161,18 +161,18 @@ export const TradingExchangeRevokeScreen = ({
                                     size="extraSmall"
                                 />
                             )}
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 <TradingCoinAmountFormatter
                                     amount={quote.preapprovedStringAmount}
                                     cryptoId={quote.send}
-                                    variant="hint"
+                                    variant="body-sm"
                                     color="textSubdued"
                                 />
                             </Text>
                         </HStack>
                     </TradeInfoRow>
                     <TradeInfoRow>
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <Translation id="moduleTrading.tradingExchangeRevokeScreen.newLimit" />
                         </Text>
                         <HStack alignItems="center">
@@ -186,22 +186,22 @@ export const TradingExchangeRevokeScreen = ({
                             <TradingCoinAmountFormatter
                                 amount="0"
                                 cryptoId={quote.send}
-                                variant="hint"
+                                variant="body-sm"
                                 color="textSubdued"
                             />
                         </HStack>
                     </TradeInfoRow>
                     <TradeInfoRow>
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <Translation id="transactions.detail.feeLabel" />
                         </Text>
                         <HStack alignItems="center" spacing="sp8">
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 ≈
                             </Text>
                             <BaseCurrencyAmountFormatter
                                 value={asBaseCurrencyAmount(new BigNumber(fee))}
-                                variant="hint"
+                                variant="body-sm"
                                 color="textSubdued"
                             />
                             <Icon name="caretDown" size="medium" />

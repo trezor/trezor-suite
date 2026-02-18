@@ -20,7 +20,7 @@ const AccordionContentText = ({
     translationKey: TxKeyPath;
     values?: ComponentProps<typeof Translation>['values'];
 }) => (
-    <Text variant="label">
+    <Text variant="body-xs">
         <Translation id={translationKey} values={values} />
     </Text>
 );
@@ -52,46 +52,46 @@ const getAndroidFaqItems = (coinLabel: string) => [
                 <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.android.3.answer.subtitle" />
 
                 <Box marginTop="sp4">
-                    <Text variant="label">
+                    <Text variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.cabled.title" />
                     </Text>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.usbEnabled.3.answer.1" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.usbEnabled.3.answer.2" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
                     </BulletListItem>
                 </Box>
 
                 <Box marginVertical="sp4">
-                    <Text variant="label">
+                    <Text variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.title" />
                     </Text>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.0" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.1" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.2" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.3" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.4" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.5" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.6" />
                     </BulletListItem>
                 </Box>
@@ -102,7 +102,7 @@ const getAndroidFaqItems = (coinLabel: string) => [
                         link: chunk => (
                             <Link
                                 label={chunk}
-                                textVariant="label"
+                                textVariant="body-xs"
                                 href={`${TREZOR_SUPPORT_DEVICE_URL}#open-chat`}
                                 isUnderlined
                             />
@@ -116,19 +116,19 @@ const getAndroidFaqItems = (coinLabel: string) => [
         title: <Translation id="moduleSettings.faq.usbEnabled.4.question" />,
         content: (
             <Box style={{ position: 'relative' }}>
-                <BulletListItem variant="label">
+                <BulletListItem variant="body-xs">
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.0" />
                 </BulletListItem>
-                <BulletListItem variant="label">
+                <BulletListItem variant="body-xs">
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.1" />
                 </BulletListItem>
-                <BulletListItem variant="label">
+                <BulletListItem variant="body-xs">
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.2" />
                 </BulletListItem>
-                <BulletListItem variant="label">
+                <BulletListItem variant="body-xs">
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.3" />
                 </BulletListItem>
-                <BulletListItem variant="label">
+                <BulletListItem variant="body-xs">
                     <Translation id="moduleSettings.faq.bluetoothEnabled.android.4.answer.4" />
                 </BulletListItem>
             </Box>
@@ -186,25 +186,25 @@ const getIosFaqItems = (coinLabel: string) => [
                 <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.3.answer.subtitle" />
 
                 <Box marginVertical="sp4">
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.0" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.1" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.2" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.3" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.4" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.5" />
                     </BulletListItem>
-                    <BulletListItem variant="label">
+                    <BulletListItem variant="body-xs">
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.6" />
                     </BulletListItem>
                 </Box>
@@ -215,7 +215,7 @@ const getIosFaqItems = (coinLabel: string) => [
                         link: chunk => (
                             <Link
                                 label={chunk}
-                                textVariant="label"
+                                textVariant="body-xs"
                                 href={`${TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING}#open-chat`}
                                 isUnderlined
                             />
@@ -268,7 +268,7 @@ export const FaqCard = () => {
                             link: chunk => (
                                 <Link
                                     label={chunk}
-                                    textVariant="label"
+                                    textVariant="body-xs"
                                     href={TREZOR_SUPPORT_TRADING_URL}
                                     isUnderlined
                                 />

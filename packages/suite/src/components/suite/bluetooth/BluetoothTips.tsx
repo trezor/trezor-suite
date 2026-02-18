@@ -18,11 +18,11 @@ export const BluetoothTips = ({ onReScanClick, header, device }: BluetoothTipsPr
         header={
             <Row gap={16} justifyContent="space-between">
                 <Column>
-                    <H3 typographyStyle="highlight">{header}</H3>
+                    <H3 typographyStyle="body-md-strong">{header}</H3>
                     {device !== undefined &&
                         (device.connectionStatus.type === 'connection-error' ||
                             device.connectionStatus.type === 'pairing-error') && (
-                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 {device.connectionStatus.error}
                             </Text>
                         )}

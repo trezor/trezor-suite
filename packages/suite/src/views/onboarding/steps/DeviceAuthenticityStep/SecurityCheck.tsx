@@ -231,7 +231,7 @@ const SecurityCheckContent = ({
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_YOU_HAVE_CONNECTED" />
                 </Paragraph>
-                <Paragraph typographyStyle="titleMedium" intent="brand">
+                <Paragraph typographyStyle="headline-md" intent="brand">
                     {device?.name}
                     {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
                 </Paragraph>

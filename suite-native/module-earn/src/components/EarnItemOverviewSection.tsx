@@ -69,7 +69,7 @@ export const EarnItemOverviewSection = ({
                     </Text>
                     {accountKey && (
                         <HStack>
-                            <Text color="textSubdued" variant="hint">
+                            <Text color="textSubdued" variant="body-sm">
                                 {accountLabel}
                             </Text>
                             {formattedAccountType && (
@@ -95,7 +95,7 @@ export const EarnItemOverviewSection = ({
                         )}
                         {(apy || fallbackApy) && (
                             <Text
-                                variant={accountKey ? 'hint' : 'body'}
+                                variant={accountKey ? 'body-sm' : 'body-md'}
                                 color={accountKey ? 'textSubdued' : 'textDefault'}
                             >{`${apy || fallbackApy}% p.a.`}</Text>
                         )}

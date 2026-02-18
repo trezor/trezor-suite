@@ -70,7 +70,7 @@ export const SuspiciousDeviceScreen = ({
             <VStack justifyContent="space-between" flex={1} paddingTop="sp16">
                 <VStack spacing="sp32">
                     <TitleHeader
-                        titleVariant="titleMedium"
+                        titleVariant="headline-md"
                         title={
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.title" />
                         }
@@ -82,7 +82,7 @@ export const SuspiciousDeviceScreen = ({
                         <IconListTextItem
                             iconSize="large"
                             variant="yellow"
-                            textVariant="highlight"
+                            textVariant="body-md-strong"
                             icon="plugs"
                         >
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet1" />
@@ -90,7 +90,7 @@ export const SuspiciousDeviceScreen = ({
                         <IconListTextItem
                             iconSize="large"
                             variant="yellow"
-                            textVariant="highlight"
+                            textVariant="body-md-strong"
                             icon="handPalm"
                         >
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet2" />
@@ -98,7 +98,7 @@ export const SuspiciousDeviceScreen = ({
                         <IconListTextItem
                             iconSize="large"
                             variant="yellow"
-                            textVariant="highlight"
+                            textVariant="body-md-strong"
                             icon="chatCircle"
                         >
                             <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet3" />

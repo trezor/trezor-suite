@@ -180,7 +180,7 @@ export const ReviewButton = () => {
                     <Column alignItems="center" gap={4}>
                         <Translation id={getPrimaryText()} />
                         {buttonHasTwoLines && (
-                            <Paragraph typographyStyle="label">
+                            <Paragraph typographyStyle="body-xs">
                                 <Translation id={secondaryText} />
                             </Paragraph>
                         )}

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { typography } from '@trezor/theme';
 
 const StyledMarkdown = styled.div`
-    ${typography.hint}
+    ${typography['body-sm']}
 
     color: ${({ theme }) => theme.textSubdued};
 
@@ -20,12 +20,12 @@ const StyledMarkdown = styled.div`
 
     h1 {
         margin: 8px 0 16px;
-        ${typography.titleSmall}
+        ${typography['headline-sm']}
     }
 
     h2 {
         margin: 8px 0 12px;
-        ${typography.highlight}
+        ${typography['body-md-strong']}
     }
 
     h3,
@@ -33,7 +33,7 @@ const StyledMarkdown = styled.div`
     h5,
     h6 {
         margin: 4px 0 12px;
-        ${typography.callout}
+        ${typography['body-sm-strong']}
     }
 
     p,

@@ -83,7 +83,7 @@ export const SearchableAccountsListHeader = ({
                             colorScheme="tertiaryElevation1"
                             size="medium"
                         />
-                        <Text variant="highlight" numberOfLines={1} adjustsFontSizeToFit>
+                        <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
                             {title}
                         </Text>
                         <AddAccountButton flowType={flowType} testID="@myAssets/addAccountButton" />

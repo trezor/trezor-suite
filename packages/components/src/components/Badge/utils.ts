@@ -49,8 +49,8 @@ export const mapSizeToIconSize = (size: BadgeSize): number => {
 
 export const mapSizeToTypographyStyle = (size: BadgeSize): TypographyStyle => {
     const styles: Record<BadgeSize, TypographyStyle> = {
-        small: 'label',
-        medium: 'hint',
+        small: 'body-xs',
+        medium: 'body-sm',
     };
 
     return styles[size];

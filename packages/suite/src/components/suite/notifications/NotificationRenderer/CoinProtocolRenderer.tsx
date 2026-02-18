@@ -109,15 +109,15 @@ export const CoinProtocolRenderer = ({
             body={
                 <>
                     <Row>
-                        <Text typographyStyle="hint">{renderAddress()}</Text>
+                        <Text typographyStyle="body-sm">{renderAddress()}</Text>
                     </Row>
                     {notification.amount && (
                         <>
-                            <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 <Translation id="TOAST_COIN_SCHEME_PROTOCOL_AMOUNT" />
                             </Text>
                             &nbsp;
-                            <Text typographyStyle="hint">
+                            <Text typographyStyle="body-sm">
                                 {notification.amount} {displaySymbol}
                             </Text>
                         </>

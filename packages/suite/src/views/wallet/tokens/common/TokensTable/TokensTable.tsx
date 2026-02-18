@@ -105,7 +105,7 @@ export const TokensTable = ({
                                         <DropdownRow
                                             isActive={isZeroBalanceOpen}
                                             text="ZERO_BALANCE_TOKENS"
-                                            typographyStyle="hint"
+                                            typographyStyle="body-sm"
                                             intent="neutral"
                                             priority="secondary"
                                         />

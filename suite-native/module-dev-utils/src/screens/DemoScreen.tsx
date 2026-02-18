@@ -42,14 +42,14 @@ const inputStackStyle = prepareNativeStyle(utils => ({
 }));
 
 const textVariants: NativeTypographyStyle[] = [
-    'titleLarge',
-    'titleMedium',
-    'titleSmall',
-    'highlight',
-    'body',
-    'callout',
-    'hint',
-    'label',
+    'headline-lg',
+    'headline-md',
+    'headline-sm',
+    'body-md-strong',
+    'body-md',
+    'body-sm-strong',
+    'body-sm',
+    'body-xs',
 ];
 
 const buttonSizes = ['small', 'medium', 'large'] satisfies ButtonSize[];
@@ -104,7 +104,7 @@ export const DemoScreen = () => {
         <Screen header={<ScreenHeader />}>
             <VStack spacing="sp16">
                 <VStack>
-                    <Text variant="titleSmall">Badge:</Text>
+                    <Text variant="headline-sm">Badge:</Text>
                     <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
                         {badgeVariants.map(badgeVariant => (
                             <Badge
@@ -119,7 +119,7 @@ export const DemoScreen = () => {
                     </HStack>
                 </VStack>
                 <VStack>
-                    <Text variant="titleSmall">PriceChangeBadge:</Text>
+                    <Text variant="headline-sm">PriceChangeBadge:</Text>
                     <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
                         <PriceChangeBadge valuePercentageChange={0.123} />
                         <PriceChangeBadge valuePercentageChange={-1.23} />
@@ -129,7 +129,7 @@ export const DemoScreen = () => {
                 </VStack>
                 <Divider />
                 <VStack>
-                    <Text variant="titleSmall">Text:</Text>
+                    <Text variant="headline-sm">Text:</Text>
                     {textVariants.map(variant => (
                         <Text variant={variant} key={variant}>
                             {variant}
@@ -137,7 +137,7 @@ export const DemoScreen = () => {
                     ))}
                 </VStack>
                 <VStack>
-                    <Text variant="titleSmall">Button:</Text>
+                    <Text variant="headline-sm">Button:</Text>
                     {buttonColorSchemes.map(buttonScheme => (
                         <VStack key={buttonScheme}>
                             <Text>{buttonScheme}</Text>
@@ -237,7 +237,7 @@ export const DemoScreen = () => {
                 </VStack>
                 <Divider />
                 <VStack>
-                    <Text variant="titleSmall">IconButton:</Text>
+                    <Text variant="headline-sm">IconButton:</Text>
                     {buttonColorSchemes.map(buttonScheme => (
                         <View key={buttonScheme}>
                             <Text>{buttonScheme}</Text>
@@ -259,7 +259,7 @@ export const DemoScreen = () => {
                     ))}
                 </VStack>
                 <VStack>
-                    <Text variant="titleSmall">TextButton:</Text>
+                    <Text variant="headline-sm">TextButton:</Text>
                     {textButtonVariants.map(variant => (
                         <HStack
                             key={variant}
@@ -318,10 +318,10 @@ export const DemoScreen = () => {
                         </VStack>
                     </Box>
                     <Box marginTop="sp24">
-                        <Text variant="titleLarge">Title Large</Text>
+                        <Text variant="headline-lg">Title Large</Text>
                     </Box>
                     <Box>
-                        <Text variant="titleMedium">Title Medium</Text>
+                        <Text variant="headline-md">Title Medium</Text>
                     </Box>
                     <Switch
                         isChecked={isSwitchActive}
@@ -413,7 +413,7 @@ export const DemoScreen = () => {
                     <UpdateProgressIndicatorDemo />
                     {/* For some reason skeleton lags scrolling on iOS, we should investigate */}
                     {/* <VStack marginTop="sp16">
-                        <Text variant="titleMedium">Skeleton</Text>
+                        <Text variant="headline-md">Skeleton</Text>
                         <Card>
                             <ListItemSkeleton />
                         </Card>

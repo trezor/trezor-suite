@@ -27,7 +27,7 @@ export const EmptyWallet = () => {
             </H3>
             {isPassphraseType && !areAllNetworksEnabled && (
                 <Row gap={spacings.xs} flexWrap="wrap">
-                    <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                    <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="TR_CHECKED_BALANCES_ON" />:
                     </Paragraph>
                     <Row gap={spacings.xxs} flexWrap="wrap">

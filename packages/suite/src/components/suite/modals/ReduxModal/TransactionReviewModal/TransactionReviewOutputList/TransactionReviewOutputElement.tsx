@@ -196,7 +196,7 @@ export const TransactionReviewOutputElement = ({
                     <TransactionReviewOutputStatus state={state} />
                     <H4
                         margin={{ left: spacings.xxs }}
-                        typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}
+                        typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                     >
                         {title}
                     </H4>
@@ -218,7 +218,7 @@ export const TransactionReviewOutputElement = ({
 
                     return (
                         <Column data-testid={`@modal/output-${line.id}`} key={line.id}>
-                            <Text typographyStyle="hint" as="div">
+                            <Text typographyStyle="body-sm" as="div">
                                 {line.label ? (
                                     <InfoItem
                                         label={

@@ -17,7 +17,7 @@ export const TradingFormOfferFiatAmount = ({ amount }: TradingFormOfferFiatAmoun
         <Row gap={spacings.sm}>
             <Text
                 data-testid="@trading/best-offer/amount"
-                typographyStyle="titleMedium"
+                typographyStyle="headline-md"
                 ellipsisLineCount={1}
             >
                 {formattedAmount}

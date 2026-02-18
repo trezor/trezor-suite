@@ -27,7 +27,7 @@ export const TradingDetailExchangePaymentKYC = ({
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />
             </H3>
             <Paragraph
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 intent="neutral"
                 priority="secondary"
                 textWrap="pretty"

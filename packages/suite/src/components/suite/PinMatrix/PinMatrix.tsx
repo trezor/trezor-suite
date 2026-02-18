@@ -122,7 +122,7 @@ export const PinMatrix = ({
                         </Banner.Button>
                     }
                     description={
-                        <Paragraph typographyStyle="hint">
+                        <Paragraph typographyStyle="body-sm">
                             <Translation id="TR_MAXIMUM_PIN_LENGTH" />
                         </Paragraph>
                     }

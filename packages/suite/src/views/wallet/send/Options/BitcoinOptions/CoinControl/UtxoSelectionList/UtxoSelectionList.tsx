@@ -16,7 +16,7 @@ import { UtxoSelection } from './UtxoSelection/UtxoSelection';
 const Header = styled.header`
     align-items: center;
     display: flex;
-    ${typography.hint}
+    ${typography['body-sm']}
     gap: 16px;
     margin: 6px 0 12px;
 `;
@@ -62,10 +62,10 @@ export const UtxoSelectionList = ({
                         $backgroundColor={iconColor}
                     />
                     <div>
-                        <Paragraph typographyStyle="body" margin={{ bottom: 4 }}>
+                        <Paragraph typographyStyle="body-md" margin={{ bottom: 4 }}>
                             {heading}
                         </Paragraph>
-                        <Paragraph typographyStyle="body" intent="neutral" priority="secondary">
+                        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
                             {description}
                         </Paragraph>
                     </div>

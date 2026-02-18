@@ -56,7 +56,7 @@ export const TradingExchangeHeaderSummary = ({
                     </H3>
                 )}
             </Row>
-            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation
                     id="TR_EXCHANGE_FEES_INFO"
                     values={{

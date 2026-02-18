@@ -132,13 +132,17 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
-                                <Text intent="neutral" typographyStyle="body">
+                                <Text intent="neutral" typographyStyle="body-md">
                                     {selectedToken?.name ||
                                         getNetworkDisplaySymbolName(account.symbol)}
                                 </Text>
                             </Row>
                             <Row>
-                                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                                <Text
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                >
                                     <HiddenPlaceholder>
                                         <FormattedCryptoAmount
                                             value={
@@ -162,7 +166,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     <Text
                                         intent="neutral"
                                         priority="secondary"
-                                        typographyStyle="hint"
+                                        typographyStyle="body-sm"
                                     >
                                         <Row gap={spacings.xxs}>
                                             <Translation
@@ -181,7 +185,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 <Address
                                                     isTruncated
                                                     value={networkTokenContractAddress}
-                                                    typographyStyle="hint"
+                                                    typographyStyle="body-sm"
                                                     intent="neutral"
                                                     priority="secondary"
                                                     isCopyAllowed

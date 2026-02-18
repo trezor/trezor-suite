@@ -95,7 +95,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                     <ShadowTop backgroundColor="backgroundSurfaceElevation1" />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                         <LogWrapper data-testid="@log/content">
-                            <Text typographyStyle="label">{applicationLogs}</Text>
+                            <Text typographyStyle="body-xs">{applicationLogs}</Text>
                         </LogWrapper>
                     </ScrollContainer>
                     <ShadowBottom backgroundColor="backgroundSurfaceElevation1" />
@@ -107,7 +107,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                     <H4>
                         <Translation id="LOG_INCLUDE_BALANCE_TITLE" />
                     </H4>
-                    <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                    <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="LOG_INCLUDE_BALANCE_DESCRIPTION" />
                     </Paragraph>
                 </Column>

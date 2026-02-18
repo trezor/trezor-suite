@@ -20,7 +20,7 @@ export const BulletListItem: BulletListItemStory = {
     name: 'BulletListItem',
     args: {
         children: 'textual bullet point',
-        variant: 'body',
+        variant: 'body-md',
         color: 'textDefault',
     },
     argTypes: {

@@ -21,12 +21,12 @@ const Wrapper = styled.div`
 `;
 
 const LabelText = styled.div`
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Value = styled.div`
-    ${typography.body}
+    ${typography['body-md']}
     color: ${({ theme }) => theme.textDefault};
 `;
 

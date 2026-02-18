@@ -21,14 +21,14 @@ export const mapTypographyStyleToIconSize = (
     typographyStyle: TypographyStyle,
 ): IconSize | number => {
     const iconSizeMap: Record<TypographyStyle, IconSize | number> = {
-        titleLarge: 48,
-        titleMedium: 'extraLarge',
-        titleSmall: 'large',
-        highlight: 'mediumLarge',
-        body: 'mediumLarge',
-        callout: 'medium',
-        hint: 'medium',
-        label: 'medium',
+        'headline-lg': 48,
+        'headline-md': 'extraLarge',
+        'headline-sm': 'large',
+        'body-md-strong': 'mediumLarge',
+        'body-md': 'mediumLarge',
+        'body-sm-strong': 'medium',
+        'body-sm': 'medium',
+        'body-xs': 'medium',
         inherit: 'medium',
     };
 
@@ -37,14 +37,14 @@ export const mapTypographyStyleToIconSize = (
 
 export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): SpacingValues => {
     const gapMap: Record<TypographyStyle, SpacingValues> = {
-        titleLarge: spacings.lg,
-        titleMedium: spacings.md,
-        titleSmall: spacings.sm,
-        highlight: spacings.xs,
-        body: spacings.xs,
-        callout: spacings.xs,
-        hint: spacings.xs,
-        label: spacings.xxs,
+        'headline-lg': spacings.lg,
+        'headline-md': spacings.md,
+        'headline-sm': spacings.sm,
+        'body-md-strong': spacings.xs,
+        'body-md': spacings.xs,
+        'body-sm-strong': spacings.xs,
+        'body-sm': spacings.xs,
+        'body-xs': spacings.xxs,
         inherit: spacings.xxs,
     };
 
@@ -53,14 +53,14 @@ export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): S
 
 export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): SpacingValues => {
     const gapMap: Record<TypographyStyle, SpacingValues> = {
-        titleLarge: spacings.lg,
-        titleMedium: spacings.md,
-        titleSmall: spacings.sm,
-        highlight: spacings.xxs,
-        body: spacings.xxs,
-        callout: spacings.xxs,
-        hint: spacings.xxxs,
-        label: spacings.xxxs,
+        'headline-lg': spacings.lg,
+        'headline-md': spacings.md,
+        'headline-sm': spacings.sm,
+        'body-md-strong': spacings.xxs,
+        'body-md': spacings.xxs,
+        'body-sm-strong': spacings.xxs,
+        'body-sm': spacings.xxxs,
+        'body-xs': spacings.xxxs,
         inherit: spacings.xxs,
     };
 

@@ -73,7 +73,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
             }
         >
             <Column gap={spacings.lg}>
-                <Text typographyStyle="body" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                     <Translation id="TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION" />
                 </Text>
 

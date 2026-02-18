@@ -57,7 +57,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
                     localCurrency={localCurrency}
                 />
             </Row>
-            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <AmountUnitSwitchWrapper symbol={symbol}>
                     <CoinBalance value={cryptoValue} symbol={symbol} />
                 </AmountUnitSwitchWrapper>

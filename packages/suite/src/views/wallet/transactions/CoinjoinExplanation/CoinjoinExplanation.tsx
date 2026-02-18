@@ -11,7 +11,7 @@ const Heading = styled.div`
     align-items: center;
     margin-bottom: ${spacingsPx.md};
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint};
+    ${typography['body-sm']};
 `;
 
 const Steps = styled.div`

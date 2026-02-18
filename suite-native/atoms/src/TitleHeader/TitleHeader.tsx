@@ -17,10 +17,10 @@ export type TitleHeaderProps = {
 export const TitleHeader = ({
     title,
     subtitle,
-    titleVariant = 'titleSmall',
+    titleVariant = 'headline-sm',
     textAlign = 'left',
     titleSpacing = 'sp8',
-    subtitleVariant = 'body',
+    subtitleVariant = 'body-md',
     ...textProps
 }: TitleHeaderProps) => (
     <VStack spacing={titleSpacing} alignItems={textAlign === 'center' ? 'center' : 'flex-start'}>

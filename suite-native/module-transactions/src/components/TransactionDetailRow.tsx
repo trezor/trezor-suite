@@ -25,7 +25,7 @@ export const TransactionDetailRow = ({ title, children }: TransactionDetailRowPr
 
     return (
         <Box style={applyStyle(rowStyle)}>
-            <Text variant="hint" color="textSubdued">
+            <Text variant="body-sm" color="textSubdued">
                 {title}
             </Text>
             <Box

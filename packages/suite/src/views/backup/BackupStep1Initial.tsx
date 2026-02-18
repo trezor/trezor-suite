@@ -66,7 +66,7 @@ export const BackupStep1Initial = ({
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 margin={{ bottom: spacings.xl }}
             >
                 <Translation id="TR_BACKUP_SUBHEADING_1" />

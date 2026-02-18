@@ -11,7 +11,7 @@ interface TableContextProps {
 const TableContext = createContext<TableContextProps>({
     isRowHighlightedOnHover: false,
     hasBorders: true,
-    typographyStyle: 'body',
+    typographyStyle: 'body-md',
 });
 
 export const useTable = () => useContext(TableContext);

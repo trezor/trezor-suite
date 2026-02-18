@@ -28,7 +28,7 @@ export function TxSimulationContractInfo({
         <CollapsibleBox
             heading={
                 <Row gap={8} alignItems="center" justifyContent="space-between" flex="1">
-                    <H4 typographyStyle="callout" flex="1">
+                    <H4 typographyStyle="body-sm-strong" flex="1">
                         <Translation id="TR_CONTRACT_INFO" />
                     </H4>
                 </Row>
@@ -60,7 +60,7 @@ export function TxSimulationContractInfo({
                                     value={targetContract}
                                     isTruncated
                                     isCopyAllowed
-                                    typographyStyle="label"
+                                    typographyStyle="body-xs"
                                 />
                             </Link>
                         ),
@@ -82,7 +82,7 @@ export function TxSimulationContractInfo({
                             justifyContent="flex-start"
                         >
                             <Text flex="1">{item.label}</Text>
-                            <Text flex="2" overflowWrap="break-word" typographyStyle="label">
+                            <Text flex="2" overflowWrap="break-word" typographyStyle="body-xs">
                                 {item.value}
                             </Text>
                         </Row>

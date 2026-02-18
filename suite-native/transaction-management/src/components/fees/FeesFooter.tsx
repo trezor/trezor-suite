@@ -63,19 +63,19 @@ type MainnetSummaryProps = {
 
 const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
     <HStack justifyContent="space-between" alignItems="center">
-        <Text variant="callout">
+        <Text variant="body-sm-strong">
             <Translation id="transactionManagement.fees.totalAmount" />
         </Text>
         <VStack spacing="sp4" alignItems="flex-end">
             <CryptoToFiatAmountFormatter
-                variant="callout"
+                variant="body-sm-strong"
                 color="textDefault"
                 value={amount}
                 symbol={symbol}
                 isLoading={isLoading}
             />
             <CryptoAmountFormatter
-                variant="hint"
+                variant="body-sm"
                 color="textSubdued"
                 value={amount}
                 symbol={symbol}
@@ -112,23 +112,23 @@ const TokenSummary = ({
     return (
         <HStack justifyContent="space-between" alignItems="center">
             <VStack spacing="sp4">
-                <Text variant="callout">
+                <Text variant="body-sm-strong">
                     <Translation id="transactionManagement.fees.amount" />
                 </Text>
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     <Translation id="transactions.detail.feeLabel" />
                 </Text>
             </VStack>
             <VStack spacing="sp4" alignItems="flex-end">
                 <TokenAmountFormatter
-                    variant="callout"
+                    variant="body-sm-strong"
                     color="textDefault"
                     decimals={tokenDecimals ?? undefined}
                     value={tokenAmount}
                     tokenSymbol={tokenSymbol}
                 />
                 <CryptoAmountFormatter
-                    variant="hint"
+                    variant="body-sm"
                     color="textSubdued"
                     value={mainnetFee}
                     symbol={symbol}

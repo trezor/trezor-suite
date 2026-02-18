@@ -41,7 +41,7 @@ export const FeesContent = ({
 }: FeesContentProps) => (
     <VStack spacing="sp16">
         <VStack spacing="sp4">
-            <Text variant="titleSmall">
+            <Text variant="headline-sm">
                 <Translation id={getFeeLabelTranslationId(networkType)} />
             </Text>
             <Text>

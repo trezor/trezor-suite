@@ -35,7 +35,7 @@ export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoPr
         <HStack justifyContent="space-between" alignItems="center">
             <HStack alignItems="center">
                 <Icon name={iconByType[type]} size="mediumLarge" color={color} />
-                <Text variant="hint" color={color}>
+                <Text variant="body-sm" color={color}>
                     <Translation id={titleByType[type]} />
                 </Text>
             </HStack>
@@ -56,7 +56,7 @@ export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoPr
                         symbol={symbol}
                         color="textSubdued"
                         isBalance
-                        variant="hint"
+                        variant="body-sm"
                     />
                 </HStack>
             </VStack>

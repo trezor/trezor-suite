@@ -44,7 +44,7 @@ export const BackupFailedModalScreen = () => {
         <Screen header={<ScreenHeader />}>
             <VStack spacing="sp32" flex={1} paddingTop="sp16">
                 <TitleHeader
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     titleSpacing="sp12"
                     title={
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.title" />
@@ -57,7 +57,7 @@ export const BackupFailedModalScreen = () => {
                     <IconListTextItem
                         icon="plugs"
                         variant="red"
-                        textVariant="highlight"
+                        textVariant="body-md-strong"
                         iconSize="large"
                     >
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.steps.wipe" />
@@ -66,7 +66,7 @@ export const BackupFailedModalScreen = () => {
                     <IconListTextItem
                         icon="chatCircle"
                         variant="red"
-                        textVariant="highlight"
+                        textVariant="body-md-strong"
                         iconSize="large"
                     >
                         <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.steps.contact" />

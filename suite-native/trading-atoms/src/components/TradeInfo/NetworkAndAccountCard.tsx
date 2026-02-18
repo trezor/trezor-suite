@@ -31,17 +31,17 @@ export const NetworkAndAccountCard = ({
                     !!symbol && (
                         <HStack alignItems="center">
                             <NetworkIcon symbol={symbol} size="extraLarge" />
-                            <Text variant="hint">{networkName}</Text>
+                            <Text variant="body-sm">{networkName}</Text>
                         </HStack>
                     )
                 }
             />
             <TradeInfoRow>
                 <VStack spacing="sp4">
-                    <Text variant="hint">
+                    <Text variant="body-sm">
                         <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
                     </Text>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         {accountLabel}
                     </Text>
                 </VStack>

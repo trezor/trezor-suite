@@ -29,11 +29,11 @@ const BackendRow = ({
             <Row gap={spacings.sm}>
                 <CoinLogo symbol={symbol} />
                 <Column flex="1" overflow="hidden">
-                    <Text typographyStyle="hint" ellipsisLineCount={1}>
+                    <Text typographyStyle="body-sm" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}
                     </Text>
                     <Text
-                        typographyStyle="label"
+                        typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
                         case="capitalize"

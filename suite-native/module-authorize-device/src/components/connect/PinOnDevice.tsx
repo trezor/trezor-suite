@@ -24,7 +24,7 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
 
     return (
         <Box style={applyStyle(wrapperStyle)}>
-            <Text variant="titleMedium" textAlign="center">
+            <Text variant="headline-md" textAlign="center">
                 <Translation id="moduleConnectDevice.pinScreen.title" />
             </Text>
             <Box alignItems="center" justifyContent="flex-end">

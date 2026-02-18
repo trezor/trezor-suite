@@ -26,10 +26,10 @@ export const TransactionDetailStellarTrustlineSummary = ({
     return (
         <SummaryRow leftComponent={<TransactionDetailStepper />}>
             <Box>
-                <Text color="textSubdued" variant="hint">
+                <Text color="textSubdued" variant="body-sm">
                     {assetCode}
                 </Text>
-                <Text variant="body" color="textDefault">
+                <Text variant="body-md" color="textDefault">
                     <Translation id={translationId} values={{ assetCode }} />
                 </Text>
             </Box>

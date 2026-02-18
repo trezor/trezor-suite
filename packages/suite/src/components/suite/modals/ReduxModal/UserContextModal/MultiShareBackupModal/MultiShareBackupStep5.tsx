@@ -23,7 +23,7 @@ const Callout = ({ items, title }: CalloutProps) => (
             <H4>
                 <Translation id={title} />
             </H4>
-            <List gap={spacings.xs} typographyStyle="hint" intent="neutral" priority="secondary">
+            <List gap={spacings.xs} typographyStyle="body-sm" intent="neutral" priority="secondary">
                 {items.map(({ iconName, label }, index) => (
                     <List.Item key={index} bulletComponent={<Icon name={iconName} />}>
                         <Translation id={label} />

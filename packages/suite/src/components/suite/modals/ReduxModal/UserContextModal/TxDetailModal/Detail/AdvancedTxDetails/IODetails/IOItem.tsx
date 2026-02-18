@@ -41,7 +41,7 @@ export const IOItem = ({
     const isOpReturn = value?.startsWith('OP_RETURN ');
 
     return (
-        <Text as="div" typographyStyle="hint">
+        <Text as="div" typographyStyle="body-sm">
             <Column alignItems="flex-start" overflow="hidden">
                 {!isOpReturn ? (
                     <>

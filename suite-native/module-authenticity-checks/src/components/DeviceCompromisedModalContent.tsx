@@ -42,7 +42,7 @@ export const DeviceCompromisedModalContent = ({
         <Screen header={screenHeaderContent}>
             <VStack spacing="sp32" flex={1}>
                 <TitleHeader
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     titleSpacing="sp12"
                     title={<Translation id="moduleAuthenticityChecks.deviceCompromised.title" />}
                     subtitle={subtitleContent}

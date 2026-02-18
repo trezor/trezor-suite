@@ -4,7 +4,7 @@ import { LayoutChangeEvent, PixelRatio } from 'react-native';
 import { useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
-export const useIsMultiline = (fontType: NativeTypographyStyle = 'titleMedium') => {
+export const useIsMultiline = (fontType: NativeTypographyStyle = 'headline-md') => {
     const [isMultiline, setIsMultiline] = useState<boolean | null>(false);
     const [numberOfLines, setNumberOfLines] = useState<number | null>(null);
     const {

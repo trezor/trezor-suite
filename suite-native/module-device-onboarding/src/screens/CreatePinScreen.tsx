@@ -75,7 +75,7 @@ export const CreatePinScreen = () => {
         >
             <VStack flex={1} marginTop="sp32" spacing="sp24">
                 <TitleHeader
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                     title={<Translation id="moduleDeviceOnboarding.createPinScreen.title" />}
                     subtitle={<Translation id="moduleDeviceOnboarding.createPinScreen.subtitle" />}
                     textAlign="center"

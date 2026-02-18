@@ -61,7 +61,7 @@ export function TopAssets({
                                     placeholder={asset.displaySymbol}
                                 />
                             )}
-                            <Text typographyStyle="hint" intent="neutral">
+                            <Text typographyStyle="body-sm" intent="neutral">
                                 {asset.displaySymbol}
                             </Text>
                         </Column>

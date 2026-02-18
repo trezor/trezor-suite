@@ -49,13 +49,13 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
             <BulletList gap={spacings.xl} titleGap={spacings.xxxs} bulletGap={spacings.lg}>
                 <BulletList.Item
                     title={
-                        <Paragraph typographyStyle="hint" textWrap="pretty">
+                        <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={checkRecoverySeedMap[deviceModelInternal]} />
                         </Paragraph>
                     }
                 >
                     <Paragraph
-                        typographyStyle="label"
+                        typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
                         margin={{ top: spacings.xxs }}
@@ -71,13 +71,13 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                 </BulletList.Item>
                 <BulletList.Item
                     title={
-                        <Paragraph typographyStyle="hint" textWrap="pretty">
+                        <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={enterSeedInstructionsMap[deviceModelInternal]} />
                         </Paragraph>
                     }
                 >
                     <Paragraph
-                        typographyStyle="label"
+                        typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
                         margin={{ top: spacings.xxs }}

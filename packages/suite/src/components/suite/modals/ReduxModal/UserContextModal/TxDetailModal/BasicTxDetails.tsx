@@ -50,12 +50,12 @@ const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
         label={label}
         iconName={iconName}
         labelWidth={120}
-        typographyStyle="label"
+        typographyStyle="body-xs"
         direction="row"
         verticalAlignment="start"
     >
         <Box padding={{ top: spacings.xxxs }}>
-            <Text as="div" typographyStyle="label">
+            <Text as="div" typographyStyle="body-xs">
                 {children}
             </Text>
         </Box>
@@ -102,9 +102,13 @@ export const BasicTxDetails = ({
 
                 <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                     {isConfirmed ? (
-                        <InfoSegments typographyStyle="hint" intent="neutral" priority="secondary">
+                        <InfoSegments
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Text
-                                typographyStyle="callout"
+                                typographyStyle="body-sm-strong"
                                 intent="brand"
                                 data-testid="@modal/tx-details/confirmed"
                             >
@@ -119,7 +123,7 @@ export const BasicTxDetails = ({
                         </InfoSegments>
                     ) : (
                         <Text
-                            typographyStyle="callout"
+                            typographyStyle="body-sm-strong"
                             intent="warning"
                             data-testid="@modal/tx-details/unconfirmed"
                         >

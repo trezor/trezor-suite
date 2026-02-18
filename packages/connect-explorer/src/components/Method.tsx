@@ -299,7 +299,7 @@ export const Method = () => {
             <div>
                 {manualMode ? (
                     <Container>
-                        <Text typographyStyle="highlight">Method with params</Text>
+                        <Text typographyStyle="body-md-strong">Method with params</Text>
                         <CodeEditor {...{ code, codeChange, schema }} />
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => javascriptCode ?? ''} />
@@ -325,7 +325,7 @@ export const Method = () => {
                 <Sticky>
                     {!manualMode && (
                         <Container data-testid="@code">
-                            <Text typographyStyle="highlight">Method with params</Text>
+                            <Text typographyStyle="body-md-strong">Method with params</Text>
                             <CopyWrapper>
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                             </CopyWrapper>
@@ -344,7 +344,7 @@ export const Method = () => {
                         </Container>
                     )}
                     <Container data-testid="@response">
-                        <Text typographyStyle="highlight">Response</Text>
+                        <Text typographyStyle="body-md-strong">Response</Text>
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
                         </CopyWrapper>

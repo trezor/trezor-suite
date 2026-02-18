@@ -23,7 +23,7 @@ export const AccountItemBottomLine = ({
     return (
         <>
             {shouldShowCryptoBalance && (
-                <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <CoinBalance
                         data-testid="@wallet"
                         value={formattedBalance}

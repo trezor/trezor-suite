@@ -32,7 +32,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    ${typography.label}
+    ${typography['body-xs']}
     white-space: nowrap;
 
     /* little hack to remove first and last horizontal line from cartesian grid (lines that wrap the area of the chart) */

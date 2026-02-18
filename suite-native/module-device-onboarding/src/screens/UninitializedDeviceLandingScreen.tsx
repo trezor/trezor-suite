@@ -38,7 +38,7 @@ const UninitializedDeviceLandingScreenContent = ({
         <VStack spacing="sp32">
             {!hasDeviceFirmwareInstalled && (
                 <Box alignItems="center">
-                    <Text variant="titleMedium" textAlign="center" style={{ letterSpacing: -0.5 }}>
+                    <Text variant="headline-md" textAlign="center" style={{ letterSpacing: -0.5 }}>
                         <Translation
                             id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.title"
                             values={{

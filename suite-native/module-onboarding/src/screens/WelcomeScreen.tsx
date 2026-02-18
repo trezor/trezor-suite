@@ -72,10 +72,10 @@ export const WelcomeScreen = ({
                     <VStack alignItems="center" spacing="sp16">
                         <Icon name="trezorLogo" color={colorVariants.dark.textDefault} size={50} />
                         <Box alignItems="center">
-                            <Text variant="titleLarge" style={applyStyle(textColorStyle)}>
+                            <Text variant="headline-lg" style={applyStyle(textColorStyle)}>
                                 <Translation id="generic.trezorSuite" />
                             </Text>
-                            <Text variant="titleSmall" style={applyStyle(textColorStyle)}>
+                            <Text variant="headline-sm" style={applyStyle(textColorStyle)}>
                                 <Translation id="moduleOnboarding.welcomeScreen.subtitle" />
                             </Text>
                         </Box>

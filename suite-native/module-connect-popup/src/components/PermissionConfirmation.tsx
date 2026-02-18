@@ -91,7 +91,7 @@ export const PermissionConfirmation = () => {
                     {popupCall.methodInfo.permissionTypes.map(permission => (
                         <HStack key={permission} alignItems="center" spacing="sp8">
                             <Icon name="checkCircle" color="iconPrimaryDefault" />
-                            <Text color="textSubdued" variant="hint" style={{ flex: 1 }}>
+                            <Text color="textSubdued" variant="body-sm" style={{ flex: 1 }}>
                                 <Translation id={permissionTranslationKeysMap[permission]} />
                             </Text>
                         </HStack>
@@ -106,7 +106,7 @@ export const PermissionConfirmation = () => {
                             isChecked={isRemembered}
                             onChange={() => setIsRemembered(!isRemembered)}
                         />
-                        <Text color="textSubdued" variant="hint">
+                        <Text color="textSubdued" variant="body-sm">
                             <Translation id="moduleConnectPopup.alwaysAllow" />
                         </Text>
                     </HStack>

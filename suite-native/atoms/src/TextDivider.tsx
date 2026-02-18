@@ -40,7 +40,7 @@ export const TextDivider = ({
         <HStack alignItems="center">
             <Box style={applyStyle(separatorStyle, { horizontalMargin, color: lineColor })} />
             <Box style={applyStyle(separatorTitleStyle)}>
-                <Text variant="label" color={textColor}>
+                <Text variant="body-xs" color={textColor}>
                     <Translation id={title} />
                 </Text>
             </Box>

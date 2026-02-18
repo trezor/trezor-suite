@@ -28,7 +28,7 @@ export const SellFromAccountTradePreviewCard = ({
             cryptoId={cryptoId}
             amount={
                 fromStringValue ? (
-                    <Text variant="hint" color="textAlertRed">
+                    <Text variant="body-sm" color="textAlertRed">
                         -{fromStringValue}
                     </Text>
                 ) : null

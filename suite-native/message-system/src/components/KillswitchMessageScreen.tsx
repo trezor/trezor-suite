@@ -95,7 +95,7 @@ export const KillswitchMessageScreen = () => {
                     subtitle={
                         messageContent ?? <Translation id="messageSystem.killswitch.content" />
                     }
-                    titleVariant="titleMedium"
+                    titleVariant="headline-md"
                 />
             </Box>
             <VStack spacing="sp16" style={applyStyle(buttonsWrapperStyle)}>

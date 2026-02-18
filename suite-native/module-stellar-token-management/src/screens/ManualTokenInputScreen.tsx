@@ -132,10 +132,10 @@ export const ManualTokenInputScreen = () => {
         >
             <VStack spacing="sp24">
                 <VStack spacing="sp8">
-                    <Text variant="titleMedium">
+                    <Text variant="headline-md">
                         <Translation id="moduleStellarToken.manualInput.title" />
                     </Text>
-                    <Text variant="body" color="textSubdued">
+                    <Text variant="body-md" color="textSubdued">
                         <Translation id="moduleStellarToken.manualInput.subtitle" />
                     </Text>
                 </VStack>
@@ -143,7 +143,7 @@ export const ManualTokenInputScreen = () => {
                 <Card>
                     <VStack spacing="sp16">
                         <VStack spacing="sp8">
-                            <Text variant="body">
+                            <Text variant="body-md">
                                 <Translation id="moduleStellarToken.manualInput.assetCode" />
                             </Text>
                             <Input
@@ -159,14 +159,14 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/asset-code-input"
                             />
                             {hasAssetCodeError && (
-                                <Text variant="hint" color="textAlertRed">
+                                <Text variant="body-sm" color="textAlertRed">
                                     <Translation id="moduleStellarToken.manualInput.assetCodeError" />
                                 </Text>
                             )}
                         </VStack>
 
                         <VStack spacing="sp8">
-                            <Text variant="body">
+                            <Text variant="body-md">
                                 <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
                             </Text>
                             <Input
@@ -182,7 +182,7 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/issuer-address-input"
                             />
                             {hasIssuerAddressError && (
-                                <Text variant="hint" color="textAlertRed">
+                                <Text variant="body-sm" color="textAlertRed">
                                     <Translation id="moduleStellarToken.manualInput.issuerAddressError" />
                                 </Text>
                             )}

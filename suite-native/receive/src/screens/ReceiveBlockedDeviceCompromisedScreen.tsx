@@ -8,7 +8,7 @@ export const ReceiveBlockedDeviceCompromisedScreen = () => (
             <PictogramTitleHeader
                 variant="critical"
                 title={<Translation id="moduleReceive.deviceCompromisedScreen.title" />}
-                titleVariant="titleSmall"
+                titleVariant="headline-sm"
             />
         </VStack>
     </Screen>

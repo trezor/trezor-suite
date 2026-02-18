@@ -27,12 +27,12 @@ const ANIMATION_SAFETY_MARGIN = 5;
 
 const textContainerStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
-    height: utils.typography.titleSmall.lineHeight + ANIMATION_SAFETY_MARGIN * 2,
+    height: utils.typography['headline-sm'].lineHeight + ANIMATION_SAFETY_MARGIN * 2,
     paddingHorizontal: ANIMATION_SAFETY_MARGIN,
 }));
 
 const textStyle = prepareNativeStyle(utils => ({
-    lineHeight: utils.typography.titleSmall.lineHeight + ANIMATION_SAFETY_MARGIN * 2,
+    lineHeight: utils.typography['headline-sm'].lineHeight + ANIMATION_SAFETY_MARGIN * 2,
     textAlign: 'center',
 }));
 
@@ -76,7 +76,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
             <Box style={applyStyle(textContainerStyle)}>
                 <Animated.View style={animatedTextStyle}>
                     <Text
-                        variant="titleSmall"
+                        variant="headline-sm"
                         style={applyStyle(textStyle)}
                         onLayout={event => {
                             setLineHeight1(event.nativeEvent.layout.y);
@@ -85,7 +85,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                         <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.balances" />
                     </Text>
                     <Text
-                        variant="titleSmall"
+                        variant="headline-sm"
                         style={applyStyle(textStyle)}
                         onLayout={event => {
                             setLineHeight2(event.nativeEvent.layout.y);
@@ -94,7 +94,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                         <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.assets" />
                     </Text>
                     <Text
-                        variant="titleSmall"
+                        variant="headline-sm"
                         style={applyStyle(textStyle)}
                         onLayout={event => {
                             setLineHeight3(event.nativeEvent.layout.y);

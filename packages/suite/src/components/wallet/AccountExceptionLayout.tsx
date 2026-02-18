@@ -39,7 +39,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 margin={{ top: spacings.xs }}
             >
                 {props.description}

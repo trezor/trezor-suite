@@ -50,7 +50,7 @@ const InfoMessage = styled.div`
     align-items: center;
     display: flex;
     color: ${({ theme }) => theme.textAlertRed};
-    ${typography.label}
+    ${typography['body-xs']}
 `;
 
 const GridWrapper = styled.div`

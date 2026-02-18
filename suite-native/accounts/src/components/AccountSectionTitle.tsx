@@ -37,7 +37,7 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
 
     return (
         <HStack alignItems="center" justifyContent="space-between" marginBottom="sp16">
-            <Text variant="highlight">
+            <Text variant="body-md-strong">
                 <AccountLabel account={account} />
             </Text>
 

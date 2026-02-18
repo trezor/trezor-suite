@@ -83,7 +83,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             <Text
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 data-testid={`@modal/assets/${type}/fiat`}
             >
                 &asymp;{' '}
@@ -135,7 +135,7 @@ export const TransactionReviewOutputAssets = ({
                 <TransactionReviewOutputStatus state={state} />
                 <H4
                     margin={{ left: spacings.xxs }}
-                    typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}
+                    typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                 >
                     {title}
                 </H4>

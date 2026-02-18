@@ -47,9 +47,9 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                 <RoundedIcon symbol={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
-                        <Text variant="body">{networkName}</Text>
+                        <Text variant="body-md">{networkName}</Text>
                         <HStack alignItems="center" justifyContent="center">
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 <DisplaySymbolFormatter
                                     value={symbol}
                                     areAmountUnitsEnabled={false}

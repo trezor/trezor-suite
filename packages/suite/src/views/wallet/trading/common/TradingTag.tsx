@@ -11,7 +11,7 @@ const Tag = styled.div`
     border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.textAlertYellow};
     color: ${paletteV2.globalWhiteAlpha1000};
-    ${typography.label}
+    ${typography['body-xs']}
     text-transform: capitalize;
 `;
 

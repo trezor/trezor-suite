@@ -30,10 +30,10 @@ export const TransactionLayout = ({
                 <Column flex="1" gap={6}>
                     <Row justifyContent="space-between" gap={24}>
                         <InfoSegments intent="neutral" priority="secondary">
-                            <Text typographyStyle="highlight" intent="neutral" as="div">
+                            <Text typographyStyle="body-md-strong" intent="neutral" as="div">
                                 {heading}
                             </Text>
-                            <Text typographyStyle="body" isDisabled as="div">
+                            <Text typographyStyle="body-md" isDisabled as="div">
                                 {timestamp}
                             </Text>
                         </InfoSegments>

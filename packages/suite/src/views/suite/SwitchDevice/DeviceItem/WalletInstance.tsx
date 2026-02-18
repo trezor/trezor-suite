@@ -169,7 +169,7 @@ export const WalletInstance = ({
                                 as="div"
                                 intent="neutral"
                                 priority={isSelected ? 'primary' : 'secondary'}
-                                typographyStyle={isSelected ? 'highlight' : 'body'}
+                                typographyStyle={isSelected ? 'body-md-strong' : 'body-md'}
                             >
                                 {instance.state?.staticSessionId ? (
                                     <Column>

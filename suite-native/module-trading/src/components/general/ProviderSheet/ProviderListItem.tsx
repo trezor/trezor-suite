@@ -74,7 +74,7 @@ export const ProviderListItem = <T extends TradingTradeType>({
                     <HStack alignItems="center" justifyContent="space-between" paddingBottom="sp2">
                         <HStack>
                             <ProviderLogo logo={logo} />
-                            <Text variant="body" color="textDefault">
+                            <Text variant="body-md" color="textDefault">
                                 {companyName}
                             </Text>
                         </HStack>

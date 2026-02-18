@@ -90,7 +90,7 @@ export const WalletBackupTutorialStep5 = ({
                     />
                     <Text
                         color="textSubdued"
-                        variant="hint"
+                        variant="body-sm"
                         style={applyStyle(descriptionStyle)}
                         testID={`onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`}
                     >

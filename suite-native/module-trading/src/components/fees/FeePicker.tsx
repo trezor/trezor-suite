@@ -16,17 +16,17 @@ export const FEE_PICKER_TEST_ID = '@trading/fees/fee-picker';
 
 export const FeePicker = ({ fee, symbol, onPress, isLoading = false }: FeePickerProps) => (
     <TradeInfoRow onPress={onPress} testID={FEE_PICKER_TEST_ID}>
-        <Text variant="hint">
+        <Text variant="body-sm">
             <Translation id="moduleTrading.tradingExchangePreviewScreen.feeLabel" />
         </Text>
         <HStack alignItems="center" spacing="sp8">
             {!isLoading && (
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     ≈
                 </Text>
             )}
             <CryptoToFiatAmountFormatter
-                variant="body"
+                variant="body-md"
                 color="textDefault"
                 value={fee}
                 symbol={symbol}

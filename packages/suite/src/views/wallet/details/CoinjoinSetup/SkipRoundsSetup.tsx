@@ -42,10 +42,10 @@ export const SkipRoundsSetup = ({ accountKey, skipRounds }: SkipRoundsSetupProps
                     margin={{ top: spacings.sm }}
                 />
                 <div>
-                    <Text as="div" typographyStyle="body" margin={{ bottom: spacings.xxs }}>
+                    <Text as="div" typographyStyle="body-md" margin={{ bottom: spacings.xxs }}>
                         <Translation id="TR_SKIP_ROUNDS_HEADING" />
                     </Text>
-                    <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+                    <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="TR_SKIP_ROUNDS_DESCRIPTION" />
                     </Paragraph>
                 </div>

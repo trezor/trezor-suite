@@ -74,7 +74,7 @@ export const SuiteSyncKeysAlert = () => {
             <Icon name="info" size="large" />
             <VStack spacing="sp12" style={flex1Style}>
                 <Box>
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="moduleHome.suiteSyncAlert.title" />
                     </Text>
                     <Text>

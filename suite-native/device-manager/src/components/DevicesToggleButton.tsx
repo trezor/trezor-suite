@@ -33,7 +33,7 @@ export const DevicesToggleButton = ({ isOpened, onDeviceButtonTap }: DevicesTogg
             onPress={onDeviceButtonTap}
             testID="@device-manager/devices/toggle"
         >
-            <Text variant="hint">
+            <Text variant="body-sm">
                 <Translation id="deviceManager.deviceButtons.devices" />
             </Text>
         </Button>

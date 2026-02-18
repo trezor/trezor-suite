@@ -120,7 +120,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                     <Icon name={icon} color={iconColor} size="mediumLarge" />
                 </Box>
                 <VStack spacing="sp4" style={applyStyle(messageTextContainerStyle)}>
-                    <Text color="textSubdued" variant="hint">
+                    <Text color="textSubdued" variant="body-sm">
                         {messageContent}
                     </Text>
 
@@ -128,7 +128,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                         <MessageLink
                             messageCTA={message.cta}
                             language={language}
-                            textVariant="body"
+                            textVariant="body-md"
                         />
                     )}
                 </VStack>

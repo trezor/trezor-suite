@@ -66,7 +66,7 @@ export const CoinEnablingInitScreen = () => {
         <Screen
             header={
                 <VStack paddingHorizontal="sp16" paddingVertical="sp16">
-                    <Text variant="titleSmall">
+                    <Text variant="headline-sm">
                         <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
                     </Text>
                     <Text color="textSubdued">

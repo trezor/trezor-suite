@@ -35,10 +35,10 @@ export const PassphraseLoadingScreen = () => {
             <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp32">
                 <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
                 <VStack spacing="sp4">
-                    <Text variant="titleSmall" textAlign="center">
+                    <Text variant="headline-sm" textAlign="center">
                         <Translation id="modulePassphrase.loading.title" />
                     </Text>
-                    <Text variant="body" textAlign="center" color="textSubdued">
+                    <Text variant="body-md" textAlign="center" color="textSubdued">
                         <Translation id="modulePassphrase.loading.subtitle" />
                     </Text>
                 </VStack>

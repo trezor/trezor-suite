@@ -40,14 +40,14 @@ export const BaseCurrencyAmountLargeFormatter = ({
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
             <AmountText
                 value={wholeNumber}
-                variant="titleLarge"
+                variant="headline-lg"
                 isDiscreetText
                 isForcedDiscreetMode={isForcedDiscreetMode}
                 style={applyStyle(wholeNumberStyle)}
             />
             <AmountText
                 value={decimalNumber}
-                variant={isCrypto ? 'titleLarge' : 'titleSmall'}
+                variant={isCrypto ? 'headline-lg' : 'headline-sm'}
                 isDiscreetText
                 isForcedDiscreetMode={isForcedDiscreetMode}
                 style={isCrypto ? applyStyle(wholeNumberStyle) : undefined}
@@ -55,7 +55,7 @@ export const BaseCurrencyAmountLargeFormatter = ({
         </Box>
     );
 
-    const currencyElement = <Text variant="titleSmall">{currencySymbol}</Text>;
+    const currencyElement = <Text variant="headline-sm">{currencySymbol}</Text>;
 
     return (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>

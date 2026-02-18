@@ -46,7 +46,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
                     symbol={symbol}
                     isDiscreetText={false}
                     isBalance={false}
-                    variant="label"
+                    variant="body-xs"
                 />
             }
         >

@@ -85,12 +85,12 @@ export const DebugLegend = ({ layout }: DebugLegend) => {
                                     $fill={mapDebugElevations[key].background}
                                     $stroke={mapDebugElevations[key].border}
                                 />
-                                <Text typographyStyle="label">{key}</Text>
+                                <Text typographyStyle="body-xs">{key}</Text>
                             </Row>
                         ))}
                         <Divider orientation="horizontal" margin={{ vertical: spacings.xs }} />
                         <Row gap={spacings.xs}>
-                            <Text typographyStyle="label">
+                            <Text typographyStyle="body-xs">
                                 <Code>[{layout}]</Code>
                             </Text>
                         </Row>
@@ -98,7 +98,7 @@ export const DebugLegend = ({ layout }: DebugLegend) => {
                 </>
             )}
             <Row gap={spacings.xs}>
-                <Text typographyStyle="label">Debug theme legend</Text>
+                <Text typographyStyle="body-xs">Debug theme legend</Text>
                 <Icon name={isMenuOpen ? 'caretDown' : 'caretUp'} size="medium" />
             </Row>
         </DebugLegendContainer>

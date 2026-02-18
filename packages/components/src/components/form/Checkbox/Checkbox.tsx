@@ -148,7 +148,7 @@ export const Label = styled.div<{ $isRed: boolean }>`
     text-align: left;
     user-select: none;
     color: ${({ theme, $isRed }) => $isRed && theme.textAlertRed};
-    ${typography.body}
+    ${typography['body-md']}
     transition: color 0.1s;
 
     input:disabled ~ & {

@@ -57,7 +57,7 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
                     <IconCircle name="warning" size={110} variant="destructive" />
                 </Box>
 
-                <Text typographyStyle="titleSmall">
+                <Text typographyStyle="headline-sm">
                     <Translation id={titleMap[type]} />
                 </Text>
                 <Translation id={descriptionMap[type]} />

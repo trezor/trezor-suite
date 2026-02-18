@@ -65,9 +65,9 @@ export const NetworkSymbolSwitchItem = ({
                         alignItems="center"
                     >
                         <VStack spacing={0}>
-                            <Text variant="callout">{name}</Text>
+                            <Text variant="body-sm-strong">{name}</Text>
                             {isNetworkWithTokens(symbol) && (
-                                <Text variant="hint" color="textSubdued">
+                                <Text variant="body-sm" color="textSubdued">
                                     <Translation id="generic.tokens" />
                                 </Text>
                             )}

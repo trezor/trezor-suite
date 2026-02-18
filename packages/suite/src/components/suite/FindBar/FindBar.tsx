@@ -95,7 +95,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                             <Box minWidth={60} onClick={focusInput}>
                                 {query && count > 0 && (
                                     <Paragraph
-                                        typographyStyle="label"
+                                        typographyStyle="body-xs"
                                         intent="neutral"
                                         priority="secondary"
                                         minWidth={30}
@@ -106,7 +106,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 )}
                                 {query && count === 0 && (
                                     <Paragraph
-                                        typographyStyle="label"
+                                        typographyStyle="body-xs"
                                         intent="critical"
                                         align="end"
                                     >

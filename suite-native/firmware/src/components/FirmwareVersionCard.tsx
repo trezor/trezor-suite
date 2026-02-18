@@ -85,7 +85,7 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                 <HStack alignItems="center" justifyContent="space-between">
                     <HStack>
                         <Icon name="cpu" size="mediumLarge" />
-                        <Text variant="body">
+                        <Text variant="body-md">
                             <Translation id="firmware.versionCard.title" />
                         </Text>
                     </HStack>

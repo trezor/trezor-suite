@@ -24,7 +24,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
                 <H4>
                     <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                 </H4>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="NOTIFICATIONS_EMPTY_DESC" />
                 </Paragraph>
             </Column>

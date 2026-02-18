@@ -74,7 +74,7 @@ export const SetupSlider = ({
     return (
         <div>
             <Row alignItems="center" justifyContent="space-between" gap={12}>
-                <Paragraph typographyStyle="titleSmall">{heading}</Paragraph>
+                <Paragraph typographyStyle="headline-sm">{heading}</Paragraph>
                 <StyledSliderInput
                     ref={inputRef}
                     value={inputValue}
@@ -87,7 +87,7 @@ export const SetupSlider = ({
                 />
             </Row>
             <Paragraph
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 margin={{ vertical: 8 }}
                 intent="neutral"
                 priority="secondary"

@@ -92,7 +92,7 @@ export const TradeableAssetButton = ({
                 />
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
-                    variant="callout"
+                    variant="body-sm-strong"
                     color="textDefault"
                     testID={symbolTestID}
                 />

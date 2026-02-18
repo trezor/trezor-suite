@@ -47,7 +47,7 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
         <VStack marginTop="sp24" spacing="sp24" alignItems="center">
             <DeviceImage deviceModel={deviceModel} />
             <HStack alignItems="center" spacing="sp12">
-                <Text style={applyStyle(textStyle)} variant="titleMedium" onLayout={onTextLayout}>
+                <Text style={applyStyle(textStyle)} variant="headline-md" onLayout={onTextLayout}>
                     {name}
                 </Text>
                 {isDeviceInitialized && (

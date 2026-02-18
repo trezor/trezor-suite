@@ -62,10 +62,10 @@ export const NoAccountsComponent = ({ isBottomRounded }: NoAccountsComponentProp
 
     return (
         <VStack style={applyStyle(contentStyle, { isBottomRounded })}>
-            <Text variant="body" color="textDefault" textAlign="center">
+            <Text variant="body-md" color="textDefault" textAlign="center">
                 <Translation id={title} />
             </Text>
-            <Text variant="hint" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="textSubdued" textAlign="center">
                 <Translation id={description} />
             </Text>
         </VStack>

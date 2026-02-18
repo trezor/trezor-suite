@@ -52,10 +52,12 @@ export const AddressConfirmation = () => {
                             id="moduleConnectPopup.exportAccounts.message"
                             values={{
                                 passphraseWalletLabel: (
-                                    <Text variant="body">{passphraseWalletLabel}</Text>
+                                    <Text variant="body-md">{passphraseWalletLabel}</Text>
                                 ),
-                                deviceLabel: <Text variant="body">{deviceLabel}</Text>,
-                                thirdParty: <Text variant="body">{popupCall.source.origin}</Text>,
+                                deviceLabel: <Text variant="body-md">{deviceLabel}</Text>,
+                                thirdParty: (
+                                    <Text variant="body-md">{popupCall.source.origin}</Text>
+                                ),
                             }}
                         />
                     }
@@ -70,7 +72,7 @@ export const AddressConfirmation = () => {
                             justifyContent="space-between"
                             padding="sp8"
                         >
-                            <Text variant="hint" style={{ flex: 1 }}>
+                            <Text variant="body-sm" style={{ flex: 1 }}>
                                 {item.address}
                             </Text>
                             <IconButton

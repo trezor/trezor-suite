@@ -132,7 +132,7 @@ export const HoldToConfirmButton = ({
 
     return (
         <AnimatedVStack style={buttonAnimatedStyle} alignItems="center">
-            <Text variant="callout">
+            <Text variant="body-sm-strong">
                 <Translation id={buttonLabelId} />
             </Text>
             <GestureDetector gesture={tapGesture}>

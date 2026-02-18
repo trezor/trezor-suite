@@ -11,14 +11,14 @@ import { LastUpdateTooltip } from './LastUpdateTooltip';
 import { NoRatesTooltip } from './NoRatesTooltip';
 
 const FiatRateWrapper = styled.span`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textDefault};
 `;
 
 const Empty = styled.div`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.textSubdued};
 `;
 

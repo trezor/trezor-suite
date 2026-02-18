@@ -25,15 +25,15 @@ export const SwipeableWalkthroughStepHeader = ({
     return (
         <VStack spacing="sp8">
             <VStack spacing="sp12" alignItems="center">
-                <Text variant="highlight" color="textSecondaryHighlight" textAlign="center">
+                <Text variant="body-md-strong" color="textSecondaryHighlight" textAlign="center">
                     {callout}
                 </Text>
-                <Text variant="titleMedium" textAlign="center" style={applyStyle(titleStyle)}>
+                <Text variant="headline-md" textAlign="center" style={applyStyle(titleStyle)}>
                     {title}
                 </Text>
             </VStack>
             {description && (
-                <Text variant="body" color="textSubdued" textAlign="center">
+                <Text variant="body-md" color="textSubdued" textAlign="center">
                     {description}
                 </Text>
             )}

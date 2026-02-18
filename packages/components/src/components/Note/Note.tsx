@@ -65,7 +65,7 @@ export const Note = ({
         />
         <Paragraph
             data-testid={dataTestId}
-            typographyStyle="hint"
+            typographyStyle="body-sm"
             intent={intent}
             priority={priority}
             isDisabled={isDisabled}

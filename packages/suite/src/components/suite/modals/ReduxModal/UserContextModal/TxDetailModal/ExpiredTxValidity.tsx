@@ -18,7 +18,7 @@ export const ExpiredTxValidity = ({ symbol }: ExpiredTxValidityProps) => {
                     <IconCircle name="warning" size={110} variant="destructive" />
                 </Box>
 
-                <Text typographyStyle="titleSmall">
+                <Text typographyStyle="headline-sm">
                     <Translation id="TR_TX_SEND_FAILED_TITLE" />
                 </Text>
                 <Translation id="TR_TX_SEND_FAILED_DESCRIPTION" values={{ networkName }} />

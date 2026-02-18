@@ -33,7 +33,7 @@ export const FirmwareWarningsList = () => (
                 <Translation
                     id="TR_FIRMWARE_DONT_CLOSE_APP"
                     values={{
-                        highlight: chunks => <Text typographyStyle="highlight">{chunks}</Text>,
+                        highlight: chunks => <Text typographyStyle="body-md-strong">{chunks}</Text>,
                     }}
                 />
             </Paragraph>

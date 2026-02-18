@@ -72,14 +72,14 @@ export const ClaimCard = () => {
 
     const content = (
         <>
-            <Paragraph typographyStyle="titleSmall" intent="brand">
+            <Paragraph typographyStyle="headline-sm" intent="brand">
                 <FormattedCryptoAmount
                     data-testid="@staking/can-claim"
                     value={claimableAmount}
                     symbol={selectedAccount?.symbol}
                 />
             </Paragraph>
-            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <BaseCurrencyValue
                     showApproximationIndicator
                     amount={claimableAmount}
@@ -105,7 +105,7 @@ export const ClaimCard = () => {
                     {content}
                 </InfoItem>
                 <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} iconName="lightning">
-                    <Paragraph typographyStyle="titleSmall">
+                    <Paragraph typographyStyle="headline-sm">
                         <Translation id="TR_STAKE_INSTANT" />
                     </Paragraph>
                 </InfoItem>

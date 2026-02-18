@@ -40,7 +40,7 @@ export const InlineAlertText = ({ variant, children }: InlineAlertTextProps) => 
     return (
         <HStack>
             <Icon name={icon} color={color} size="mediumLarge" />
-            <Text variant="hint" color={color}>
+            <Text variant="body-sm" color={color}>
                 {children}
             </Text>
         </HStack>

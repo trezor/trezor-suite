@@ -23,7 +23,7 @@ const hintStyle = prepareNativeStyle(() => ({
 }));
 
 const hintTextStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) => ({
-    ...utils.typography.label,
+    ...utils.typography['body-xs'],
     color: utils.colors[color],
     flex: 1,
 }));

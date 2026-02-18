@@ -21,7 +21,7 @@ const Description = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     margin-bottom: 12px;
     margin-top: 12px;
-    ${typography.hint}
+    ${typography['body-sm']}
 
     &:first-child {
         margin-top: 0;
@@ -48,7 +48,7 @@ export const TextColumn = ({
     'data-testid': dataTestId,
 }: TextColumnProps) => (
     <Wrapper data-test={dataTestId}>
-        {title && <Paragraph typographyStyle="body">{title}</Paragraph>}
+        {title && <Paragraph typographyStyle="body-md">{title}</Paragraph>}
         {description && <Description>{description}</Description>}
         {buttonLink && (
             <LearnMoreButton data-testid={`${dataTestId}/learn-more-button`} url={buttonLink}>

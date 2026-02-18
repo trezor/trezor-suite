@@ -74,7 +74,7 @@ export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalPr
                     </Box>
                 </Box>
                 <TitleHeader
-                    titleVariant="titleSmall"
+                    titleVariant="headline-sm"
                     title={
                         <Translation
                             id="earn.earnScreen.infoModal.title"
@@ -88,10 +88,10 @@ export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalPr
                     style={applyStyle(clipboardContainerStyle)}
                     onPress={() => copyToClipboard(formattedUrl)}
                 >
-                    <Text textAlign="center" variant="hint" color="textSubdued">
+                    <Text textAlign="center" variant="body-sm" color="textSubdued">
                         <Translation id="earn.earnScreen.infoModal.copyLabel" />
                     </Text>
-                    <Text variant="highlight" color="textPrimaryDefault">
+                    <Text variant="body-md-strong" color="textPrimaryDefault">
                         {formattedUrl}
                     </Text>
                 </PressableOpacity>

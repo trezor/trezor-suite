@@ -175,7 +175,7 @@ export const OptionWithContent = ({
         >
             <OptionText>
                 <Row alignItems="center">
-                    <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>
+                    <Text typographyStyle={isBelowTablet ? 'body-md-strong' : 'headline-sm'}>
                         <Translation id={typesToLabelMap[value]} />
                     </Text>
                     {tags}

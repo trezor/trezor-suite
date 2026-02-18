@@ -192,13 +192,13 @@ export const Coin = ({
             </ImageWrapper>
             {label ? (
                 <NameWrapper>
-                    <Paragraph typographyStyle="hint">{name}</Paragraph>
-                    <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-sm">{name}</Paragraph>
+                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <Translation id={label} />
                     </Paragraph>
                 </NameWrapper>
             ) : (
-                <Paragraph typographyStyle="body" margin={{ top: 2 }}>
+                <Paragraph typographyStyle="body-md" margin={{ top: 2 }}>
                     {name}
                 </Paragraph>
             )}

@@ -16,7 +16,7 @@ import {
 const Cointainer = styled.div`
     height: 40px;
     margin-top: ${spacingsPx.xxs};
-    ${typography.label}
+    ${typography['body-xs']}
 `;
 
 const CountdownWrapper = styled.p`

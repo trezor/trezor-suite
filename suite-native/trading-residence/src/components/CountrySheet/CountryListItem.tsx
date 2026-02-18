@@ -37,12 +37,16 @@ export const CountryListItem = ({
                 <Card noShadow={noShadow}>
                     <HStack alignItems="center" justifyContent="space-between">
                         <Box flex={0}>
-                            <Text variant="body" color="textDefault" style={applyStyle(flagStyle)}>
+                            <Text
+                                variant="body-md"
+                                color="textDefault"
+                                style={applyStyle(flagStyle)}
+                            >
                                 {flag}
                             </Text>
                         </Box>
                         <Box flex={1}>
-                            <Text variant="body" color="textDefault">
+                            <Text variant="body-md" color="textDefault">
                                 {name}
                             </Text>
                         </Box>

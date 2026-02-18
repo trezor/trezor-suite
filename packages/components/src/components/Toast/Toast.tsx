@@ -103,7 +103,7 @@ export const Toast = ({
 
                 <Column gap={spacings.xs} flex="1">
                     {typeof content === 'string' || typeof content === 'number' ? (
-                        <Text typographyStyle="highlight">{content}</Text>
+                        <Text typographyStyle="body-md-strong">{content}</Text>
                     ) : (
                         content
                     )}

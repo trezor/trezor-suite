@@ -16,7 +16,7 @@ type ParagraphProps = {
 
 const Paragraph = ({ header, body }: ParagraphProps) => (
     <VStack spacing="sp4">
-        <Text variant="highlight">{header}</Text>
+        <Text variant="body-md-strong">{header}</Text>
         <Text color="textSubdued">{body}</Text>
     </VStack>
 );
@@ -46,7 +46,7 @@ export const TokenOfNetworkAlertBody = ({
                 contractAddress={tokenContract}
                 size="extraLarge"
             />
-            <Text variant="titleSmall">
+            <Text variant="headline-sm">
                 <Translation
                     id="moduleSend.outputs.tokenOfNetworkSheet.title"
                     values={{ tokenSymbol, networkName }}

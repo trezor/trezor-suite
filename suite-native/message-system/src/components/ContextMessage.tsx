@@ -34,13 +34,13 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
         <InlineAlertBox
             variant={variant}
             title={
-                <Text variant="label">
+                <Text variant="body-xs">
                     {content}
                     {content && shouldDisplayLink && ' '}
                     {shouldDisplayLink && (
                         <Link
                             label={label}
-                            textVariant="label"
+                            textVariant="body-xs"
                             href={link}
                             isUnderlined
                             textColor="textDefault"

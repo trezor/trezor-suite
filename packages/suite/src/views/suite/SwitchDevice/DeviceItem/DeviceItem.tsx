@@ -30,7 +30,12 @@ type DeviceItemProps = {
 
 const ListItem = ({ children, iconName }: { children: ReactNode; iconName: IconName }) => (
     <List.Item bulletComponent={<Icon name={iconName} variant="tertiary" size="mediumLarge" />}>
-        <Paragraph typographyStyle="body" intent="neutral" priority="secondary" textWrap="pretty">
+        <Paragraph
+            typographyStyle="body-md"
+            intent="neutral"
+            priority="secondary"
+            textWrap="pretty"
+        >
             {children}
         </Paragraph>
     </List.Item>
@@ -96,7 +101,10 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                         }}
                                         gap={spacings.md}
                                     >
-                                        <Paragraph typographyStyle="highlight" textWrap="balance">
+                                        <Paragraph
+                                            typographyStyle="body-md-strong"
+                                            textWrap="balance"
+                                        >
                                             <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE" />
                                         </Paragraph>
                                         <List bulletGap={spacings.sm}>

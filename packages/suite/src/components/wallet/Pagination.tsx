@@ -33,7 +33,7 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
     transition:
         background 0.15s ease-out,
         color 0.15s ease-out;
-    ${typography.hint};
+    ${typography['body-sm']};
     cursor: pointer;
 
     ${({ $isActive, theme }) =>
@@ -58,7 +58,7 @@ const Ellipsis = styled(PageItem)`
 const Actions = styled.div<{ $isActive: boolean }>`
     display: flex;
     visibility: ${props => (props.$isActive ? 'auto' : 'hidden')};
-    ${typography.callout};
+    ${typography['body-sm-strong']};
 `;
 
 export interface GetPagesProps {

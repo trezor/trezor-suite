@@ -29,7 +29,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
                 <Translation
                     id="modulePassphrase.subtitle"
                     values={{
-                        bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                        bold: chunks => <Text variant="body-md-strong">{chunks}</Text>,
                     }}
                 />
             }

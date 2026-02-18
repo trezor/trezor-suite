@@ -9,7 +9,7 @@ import { RenderingUtils } from './RenderingUtils';
 export const DebuggingCard = () => (
     <Card>
         <VStack spacing="sp12">
-            <Text variant="titleSmall">Debugging</Text>
+            <Text variant="headline-sm">Debugging</Text>
             {isDevelopOrDebugEnv() && <RenderingUtils />}
             <VStack>
                 <Button

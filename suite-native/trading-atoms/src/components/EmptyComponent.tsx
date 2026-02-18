@@ -20,10 +20,10 @@ export const EmptyComponent = ({ title, description }: TradingEmptyComponentProp
 
     return (
         <VStack style={applyStyle(emptyComponentStyle)}>
-            <Text variant="body" color="textDefault" textAlign="center">
+            <Text variant="body-md" color="textDefault" textAlign="center">
                 {title}
             </Text>
-            <Text variant="hint" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="textSubdued" textAlign="center">
                 {description}
             </Text>
         </VStack>

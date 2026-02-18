@@ -20,7 +20,7 @@ export const BasicName = ({ 'data-testid': dataTest, onClick, children }: BasicN
     return (
         <NoDragContainer data-testid={dataTest}>
             <H2
-                typographyStyle={isContentBelowBreakpoint ? 'titleSmall' : 'titleMedium'}
+                typographyStyle={isContentBelowBreakpoint ? 'headline-sm' : 'headline-md'}
                 textWrap="nowrap"
                 onClick={onClick}
             >

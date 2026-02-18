@@ -38,7 +38,7 @@ export const CardWithIconLayout = ({
                     <Icon name={icon} size="mediumLarge" />
                 </Box>
                 <VStack spacing={0} style={applyStyle(contentStyle)}>
-                    <Text variant="highlight">{title}</Text>
+                    <Text variant="body-md-strong">{title}</Text>
                     {children}
                 </VStack>
             </HStack>

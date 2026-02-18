@@ -189,7 +189,7 @@ export const DropZone = ({
                         variant={filename ? 'default' : 'tertiary'}
                     />
                     <Text
-                        typographyStyle="hint"
+                        typographyStyle="body-sm"
                         intent="neutral"
                         priority={filename ? 'primary' : 'secondary'}
                     >
@@ -197,7 +197,7 @@ export const DropZone = ({
                     </Text>
                 </Row>
                 {error && (
-                    <Paragraph typographyStyle="hint" intent="critical">
+                    <Paragraph typographyStyle="body-sm" intent="critical">
                         <Translation {...error} />
                     </Paragraph>
                 )}

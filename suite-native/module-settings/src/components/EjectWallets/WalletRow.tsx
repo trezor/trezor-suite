@@ -39,7 +39,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>
             <HStack spacing="sp12" alignItems="center">
                 <Icon name={device.useEmptyPassphrase ? 'wallet' : 'password'} size="mediumLarge" />
-                <Text variant="callout">{walletNameLabel}</Text>
+                <Text variant="body-sm-strong">{walletNameLabel}</Text>
             </HStack>
             {showToggleButton ? (
                 <WalletRememberModeIconButton device={device} />

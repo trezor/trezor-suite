@@ -4,14 +4,14 @@ import { NativeFont } from './fontFamilies';
 import { FontWeightValue, fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
-    'titleLarge',
-    'titleMedium',
-    'titleSmall',
-    'highlight',
-    'body',
-    'callout',
-    'hint',
-    'label',
+    'headline-lg',
+    'headline-md',
+    'headline-sm',
+    'body-md-strong',
+    'body-md',
+    'body-sm-strong',
+    'body-sm',
+    'body-xs',
 ] as const;
 
 export const typographyStyles = [...nativeTypographyStyles, 'inherit'] as const;
@@ -41,65 +41,65 @@ export type NativeTypographyStyles = Record<TypographyStyle, NativeTypographySty
 // we need unit-less typography base because RN is unit-less, we can easily add units later
 // for web we need string instead of object because styled-components syntax
 export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyleDefinition> = {
-    titleLarge: {
+    'headline-lg': {
         fontSize: 48,
-        lineHeight: 53,
+        lineHeight: 56,
         fontWeight: fontWeights.medium,
-        letterSpacing: 0.4,
+        letterSpacing: -1.44,
     },
-    titleMedium: {
-        fontSize: 34,
-        lineHeight: 37,
+    'headline-md': {
+        fontSize: 32,
+        lineHeight: 40,
         fontWeight: fontWeights.medium,
-        letterSpacing: -1.4,
+        letterSpacing: -0.8,
     },
-    titleSmall: {
+    'headline-sm': {
         fontSize: 22,
         lineHeight: 32,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.3,
+        letterSpacing: -0.4,
     },
-    highlight: {
+    'body-md-strong': {
         fontSize: 16,
         lineHeight: 24,
         fontWeight: fontWeights.semiBold,
-        letterSpacing: -0.4,
+        letterSpacing: -0.16,
     },
-    body: {
+    'body-md': {
         fontSize: 16,
         lineHeight: 24,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.4,
+        letterSpacing: -0.16,
     },
-    callout: {
+    'body-sm-strong': {
         fontSize: 14,
         lineHeight: 20,
         fontWeight: fontWeights.semiBold,
-        letterSpacing: -0.3,
+        letterSpacing: -0.08,
     },
-    hint: {
+    'body-sm': {
         fontSize: 14,
         lineHeight: 20,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.3,
+        letterSpacing: -0.08,
     },
-    label: {
+    'body-xs': {
         fontSize: 12,
-        lineHeight: 18,
+        lineHeight: 16,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.1,
+        letterSpacing: 0,
     },
 };
 
 const nativeFontFamilyStyle = {
-    titleLarge: 'TTSatoshi-Medium',
-    titleMedium: 'TTSatoshi-Medium',
-    titleSmall: 'TTSatoshi-Medium',
-    highlight: 'TTSatoshi-DemiBold',
-    body: 'TTSatoshi-Medium',
-    callout: 'TTSatoshi-DemiBold',
-    hint: 'TTSatoshi-Medium',
-    label: 'TTSatoshi-Medium',
+    'headline-lg': 'TTSatoshi-Medium',
+    'headline-md': 'TTSatoshi-Medium',
+    'headline-sm': 'TTSatoshi-Medium',
+    'body-md-strong': 'TTSatoshi-DemiBold',
+    'body-md': 'TTSatoshi-Medium',
+    'body-sm-strong': 'TTSatoshi-DemiBold',
+    'body-sm': 'TTSatoshi-Medium',
+    'body-xs': 'TTSatoshi-Medium',
 } as const satisfies Record<NativeTypographyStyle, NativeFont>;
 
 const prepareTypography = (): TypographyStyles =>

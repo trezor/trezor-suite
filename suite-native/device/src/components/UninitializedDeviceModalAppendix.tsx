@@ -3,7 +3,7 @@ import { Translation } from '@suite-native/intl';
 
 export const UninitializedDeviceModalAppendix = () => (
     <VStack>
-        <Text variant="callout">
+        <Text variant="body-sm-strong">
             <Translation id="moduleDevice.noSeedModal.appendix.title" />
         </Text>
         <VStack spacing="sp16" paddingTop="sp24">

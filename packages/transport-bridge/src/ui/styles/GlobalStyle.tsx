@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     body, html {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        ${typography.body}
+        ${typography['body-md']}
         height: 100%;
         overflow-y: hidden;
 

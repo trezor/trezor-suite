@@ -27,7 +27,7 @@ export const CryptoAmountFormatter = React.memo(
         symbol,
         isBalance = true,
         isDiscreetText = true,
-        variant = 'hint',
+        variant = 'body-sm',
         color = 'textSubdued',
         isLoading = false,
         decimals,

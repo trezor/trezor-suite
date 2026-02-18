@@ -139,7 +139,7 @@ export const ReceiveAddressScreen = ({
                                     link: chunk => (
                                         <Link
                                             label={chunk}
-                                            textVariant="label"
+                                            textVariant="body-xs"
                                             href={
                                                 HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
                                             }

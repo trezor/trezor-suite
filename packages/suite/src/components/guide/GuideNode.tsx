@@ -38,7 +38,7 @@ const PageNodeButton = styled(NodeButton)`
 
 const Label = styled.div<{ $isBold: boolean }>`
     width: 100%;
-    ${({ $isBold }) => ($isBold ? typography.hint : typography.callout)};
+    ${({ $isBold }) => ($isBold ? typography['body-sm'] : typography['body-sm-strong'])};
     color: ${({ theme }) => theme.textDefault};
     overflow: hidden;
     display: flex;

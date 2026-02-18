@@ -37,7 +37,7 @@ const AccountDetailSettingsRow = ({
         alignItems="center"
         justifyContent="space-between"
     >
-        <Text variant="hint" color="textSubdued">
+        <Text variant="body-sm" color="textSubdued">
             {title}
         </Text>
         {children}
@@ -46,7 +46,7 @@ const AccountDetailSettingsRow = ({
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
-        <Text variant="hint">{networks[symbol].name}</Text>
+        <Text variant="body-sm">{networks[symbol].name}</Text>
         <CryptoIcon symbol={symbol} size="extraSmall" />
     </HStack>
 );
@@ -93,7 +93,7 @@ export const AccountSettingsScreen = ({
                                     <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
                                 }
                             >
-                                <Text variant="hint">{formattedAccountType}</Text>
+                                <Text variant="body-sm">{formattedAccountType}</Text>
                             </AccountDetailSettingsRow>
                         )}
                     </VStack>

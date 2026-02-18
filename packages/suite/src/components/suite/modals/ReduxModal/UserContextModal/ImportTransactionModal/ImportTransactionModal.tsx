@@ -78,7 +78,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     hasDivider={false}
                 >
                     <Card paddingType="normal">
-                        <Text typographyStyle="label" as="pre" isMonospaced>
+                        <Text typographyStyle="body-xs" as="pre" isMonospaced>
                             {exampleCSV}
                         </Text>
                     </Card>

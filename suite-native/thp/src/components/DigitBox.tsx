@@ -23,7 +23,7 @@ const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
 const digitStyle = prepareNativeStyle(utils => ({
     width: 48,
     height: 56,
-    ...utils.typography.titleMedium,
+    ...utils.typography['headline-md'],
     // TODO: Is there a better way?
     lineHeight: Platform.OS === 'ios' ? 62 : 56, // centers the digit vertically
     letterSpacing: 0, // fixes slight horizontal offset from the center

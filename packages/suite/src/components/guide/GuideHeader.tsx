@@ -43,12 +43,12 @@ const HeaderWrapper = styled.div<{
 `;
 
 const MainLabel = styled.div`
-    ${typography.titleSmall};
+    ${typography['headline-sm']};
     flex: 1;
 `;
 
 const Label = styled.div`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     text-align: center;
     color: ${({ theme }) => theme.textDefault};
     padding: 0 15px;

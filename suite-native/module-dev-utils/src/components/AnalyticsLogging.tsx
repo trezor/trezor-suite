@@ -74,8 +74,8 @@ export const AnalyticsLogging = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall">Analytics URL</Text>
-                <Text variant="label" color="textSubdued">
+                <Text variant="headline-sm">Analytics URL</Text>
+                <Text variant="body-xs" color="textSubdued">
                     Point to your own analytics server for testing.
                 </Text>
                 {customUrl && !isAnalyticsEnabled && renderAnalyticsDisabledBadge()}

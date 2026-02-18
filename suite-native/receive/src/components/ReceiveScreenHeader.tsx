@@ -58,7 +58,7 @@ export const ReceiveScreenHeader = ({
         <ScreenHeader
             customContent={
                 <>
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         {symbol ? (
                             <Translation
                                 id="moduleReceive.screenTitle"
@@ -69,7 +69,7 @@ export const ReceiveScreenHeader = ({
                         )}
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
-                        <Text variant="highlight">
+                        <Text variant="body-md-strong">
                             <AccountLabel
                                 accountDescriptor={accountDescriptor}
                                 networkSymbol={networkSymbol}

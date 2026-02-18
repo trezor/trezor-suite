@@ -19,7 +19,7 @@ export const TokenAmountFormatter = ({
     tokenSymbol,
     isDiscreetText = true,
     decimals = 0,
-    variant = 'hint',
+    variant = 'body-sm',
     color = 'textSubdued',
     isPhishingTransaction = false,
     ...rest

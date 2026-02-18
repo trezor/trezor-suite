@@ -101,7 +101,7 @@ export const FilterAction = () => {
                             >
                                 <Column>
                                     <Text
-                                        typographyStyle="callout"
+                                        typographyStyle="body-sm-strong"
                                         intent={
                                             Boolean(suspiciousTransactionsHidden) ===
                                             Boolean(option.id)
@@ -113,7 +113,7 @@ export const FilterAction = () => {
                                     </Text>
                                     {'description' in option && option.description && (
                                         <Paragraph
-                                            typographyStyle="label"
+                                            typographyStyle="body-xs"
                                             intent="neutral"
                                             priority="secondary"
                                             textWrap="pretty"

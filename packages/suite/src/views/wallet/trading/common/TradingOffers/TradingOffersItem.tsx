@@ -163,7 +163,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                                 {tag && <Badge intent="neutral">{tag}</Badge>}
                                 {infoNote && (
                                     <Text
-                                        typographyStyle="label"
+                                        typographyStyle="body-xs"
                                         intent="neutral"
                                         priority="secondary"
                                     >

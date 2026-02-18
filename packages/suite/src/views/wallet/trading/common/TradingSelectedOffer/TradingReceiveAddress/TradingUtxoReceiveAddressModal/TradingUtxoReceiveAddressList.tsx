@@ -22,7 +22,7 @@ export const TradingUtxoReceiveAddressList = ({
 
     return (
         <Column gap={spacings.sm}>
-            <Text typographyStyle="body" intent="neutral" priority="secondary">
+            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                 {title}
             </Text>
 

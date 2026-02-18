@@ -36,7 +36,7 @@ export const Header = ({ account }: HeaderProps) => {
         return (
             <Content>
                 <H2>{title}</H2>
-                <Paragraph typographyStyle="label">
+                <Paragraph typographyStyle="body-xs">
                     <Translation id="RECEIVE_DESC_ETHEREUM" />
                 </Paragraph>
             </Content>

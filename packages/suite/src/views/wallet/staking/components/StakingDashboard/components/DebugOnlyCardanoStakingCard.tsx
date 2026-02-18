@@ -47,7 +47,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="label">
+                            <Paragraph typographyStyle="body-xs">
                                 {isStakedWithEverstake ? 'Everstake' : ''}
                                 {isStakedWithFiveBinaries ? 'FiveBinaries' : ''}
                                 {!isStakedWithEverstake && !isStakedWithFiveBinaries
@@ -64,7 +64,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="label">
+                            <Paragraph typographyStyle="body-xs">
                                 {account?.misc?.staking.poolId}
                             </Paragraph>
                         </ParagraphWrapper>
@@ -77,7 +77,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="label">
+                            <Paragraph typographyStyle="body-xs">
                                 {account?.misc?.staking.address}
                             </Paragraph>
                         </ParagraphWrapper>
@@ -90,7 +90,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="label">
+                            <Paragraph typographyStyle="body-xs">
                                 {account?.misc?.staking.drep?.drep_id}
                             </Paragraph>
                         </ParagraphWrapper>

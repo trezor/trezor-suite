@@ -11,7 +11,7 @@ type TradeInfoHeaderProps = {
 
 export const TradeInfoHeader = ({ title, rightContent }: TradeInfoHeaderProps) => (
     <TradeInfoRow noBorder>
-        <Text variant="callout">{title}</Text>
+        <Text variant="body-sm-strong">{title}</Text>
         {rightContent}
     </TradeInfoRow>
 );

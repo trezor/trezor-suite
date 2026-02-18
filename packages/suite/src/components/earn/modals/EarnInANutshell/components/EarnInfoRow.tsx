@@ -27,7 +27,7 @@ export const EarnInfoRow = ({
                         <Paragraph
                             intent="neutral"
                             priority="secondary"
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             textWrap="nowrap"
                         >
                             {content.text}
@@ -37,7 +37,7 @@ export const EarnInfoRow = ({
         }
     >
         {subheading && isExpanded && (
-            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 {subheading}
             </Paragraph>
         )}

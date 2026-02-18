@@ -15,7 +15,7 @@ export const SecurityChecklist = ({ items }: SecurityChecklistProps) => (
                     {item.content}
                 </Paragraph>
                 {item.subtitle ? (
-                    <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                         {item.subtitle}
                     </Paragraph>
                 ) : null}

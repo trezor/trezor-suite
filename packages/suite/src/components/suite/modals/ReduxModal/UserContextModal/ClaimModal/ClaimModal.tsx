@@ -198,7 +198,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                         {shouldShowCardanoClaimRewardsCard && (
                                             <Row justifyContent="space-between">
                                                 <Column>
-                                                    <Paragraph typographyStyle="body">
+                                                    <Paragraph typographyStyle="body-md">
                                                         <Translation id="TR_STAKE_REWARDS" />
                                                     </Paragraph>
                                                 </Column>
@@ -207,7 +207,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                                         gap={spacings.lg}
                                                         justifyContent="flex-end"
                                                     >
-                                                        <Paragraph typographyStyle="highlight">
+                                                        <Paragraph typographyStyle="body-md-strong">
                                                             <FormattedCryptoAmount
                                                                 data-testid="@modal/claim/rewards-amount"
                                                                 value={restakedReward}
@@ -222,7 +222,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                                         <Paragraph
                                                             intent="neutral"
                                                             priority="secondary"
-                                                            typographyStyle="hint"
+                                                            typographyStyle="body-sm"
                                                         >
                                                             <BaseCurrencyValue
                                                                 amount={restakedReward}
@@ -254,7 +254,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                 />
 
                                 <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
-                                    <Paragraph typographyStyle="titleSmall">
+                                    <Paragraph typographyStyle="headline-sm">
                                         <FormattedCryptoAmount
                                             data-testid="@staking/claim-modal/amount"
                                             value={claimableAmount}
@@ -262,7 +262,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                         />
                                     </Paragraph>
                                     <Paragraph
-                                        typographyStyle="label"
+                                        typographyStyle="body-xs"
                                         intent="neutral"
                                         priority="secondary"
                                     >
@@ -286,7 +286,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                     account={account}
                                     composedLevels={composedLevels}
                                     changeFeeLevel={changeFeeLevel}
-                                    headerTypographyStyle="hint"
+                                    headerTypographyStyle="body-sm"
                                 />
                             </>
                         )}

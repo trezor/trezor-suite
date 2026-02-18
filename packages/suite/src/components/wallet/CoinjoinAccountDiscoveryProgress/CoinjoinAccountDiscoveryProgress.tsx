@@ -17,7 +17,7 @@ const Subheader = styled.div`
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${typography['body-sm']}
     text-align: center;
     margin-top: 8px;
 
@@ -40,7 +40,7 @@ const FactHeading = styled.div`
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textAlertYellow};
-    ${typography.label}
+    ${typography['body-xs']}
     text-transform: uppercase;
 `;
 

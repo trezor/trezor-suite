@@ -71,11 +71,11 @@ export const EstimatedGains = () => {
     return (
         <Column gap={spacings.lg}>
             <Column>
-                <Paragraph intent="brand" typographyStyle="titleMedium">
+                <Paragraph intent="brand" typographyStyle="headline-md">
                     {apy}%
                 </Paragraph>
                 <Paragraph
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
                     margin={{ bottom: negativeSpacings.xxxxl }}

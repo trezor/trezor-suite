@@ -44,7 +44,7 @@ export const MarqueeTile = ({ variant }: MarqueeTileProps) => {
             flexDirection="row"
         >
             <Icon name={variantToIconName[variant]} size="large" color={text} />
-            <Text textAlign="center" variant="titleSmall" style={applyStyle(textStyle, { text })}>
+            <Text textAlign="center" variant="headline-sm" style={applyStyle(textStyle, { text })}>
                 <Translation id={variantToLabel[variant]} />
             </Text>
         </Box>

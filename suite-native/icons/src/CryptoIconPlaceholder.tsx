@@ -16,7 +16,7 @@ const iconStyle = prepareNativeStyle(utils => ({
 }));
 
 const textStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.body,
+    ...utils.typography['body-md'],
     color: utils.colors.textDefault,
     textAlign: 'center',
 }));

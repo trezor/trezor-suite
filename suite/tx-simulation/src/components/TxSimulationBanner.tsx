@@ -23,7 +23,7 @@ export const TxSimulationBanner = ({
         data-testid="@tx-simulation-modal/error-banner"
         description={
             <Column width="100%" padding={{ vertical: 4 }}>
-                <Text typographyStyle="callout">
+                <Text typographyStyle="body-sm-strong">
                     <Translation id={title} />
                 </Text>
                 <Text>{description}</Text>
@@ -35,7 +35,7 @@ export const TxSimulationBanner = ({
                         onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
                         verticalAlignment="center"
                     >
-                        <Text intent="neutral" typographyStyle="hint">
+                        <Text intent="neutral" typographyStyle="body-sm">
                             <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />
                         </Text>
                     </Checkbox>

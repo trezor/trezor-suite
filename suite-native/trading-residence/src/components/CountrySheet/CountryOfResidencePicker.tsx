@@ -65,7 +65,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 {selectedValue ? (
                     <Text
                         color="textSubdued"
-                        variant="body"
+                        variant="body-md"
                         accessibilityLabel={translate(
                             'tradingResidence.locationSettings.selectedCountryOfResidence',
                         )}
@@ -77,7 +77,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 ) : (
                     <Text
                         color="textDisabled"
-                        variant="body"
+                        variant="body-md"
                         accessibilityLabel={translate(
                             'tradingResidence.locationSettings.noCountryOfResidence',
                         )}

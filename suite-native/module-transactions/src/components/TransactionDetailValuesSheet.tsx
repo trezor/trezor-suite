@@ -58,7 +58,7 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
     );
 
     return (
-        <Text variant="hint" color="textSubdued">
+        <Text variant="body-sm" color="textSubdued">
             <Translation
                 id="transactions.TransactionDetailScreen.valuesSheet.today"
                 values={{
@@ -66,7 +66,7 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
                         <PercentageDifferenceFormatter
                             oldValue={fiatTotalHistoryNumeric}
                             newValue={fiatTotalActualNumeric}
-                            variant="hint"
+                            variant="body-sm"
                         />
                     ),
                 }}
@@ -122,7 +122,7 @@ export const TransactionDetailValuesSheet = ({
                             </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={totalInput}
                                     symbol={transaction.symbol}
                                     historicRate={historicRate}
@@ -133,7 +133,7 @@ export const TransactionDetailValuesSheet = ({
                             </Td>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={totalInput}
                                     symbol={transaction.symbol}
                                     numberOfLines={1}
@@ -147,7 +147,7 @@ export const TransactionDetailValuesSheet = ({
                             </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={transaction.fee}
                                     symbol={transaction.symbol}
                                     historicRate={historicRate}
@@ -158,7 +158,7 @@ export const TransactionDetailValuesSheet = ({
                             </Td>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={transaction.fee}
                                     symbol={transaction.symbol}
                                     numberOfLines={1}
@@ -172,7 +172,7 @@ export const TransactionDetailValuesSheet = ({
                             </Th>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={transaction.amount}
                                     symbol={transaction.symbol}
                                     historicRate={historicRate}
@@ -183,7 +183,7 @@ export const TransactionDetailValuesSheet = ({
                             </Td>
                             <Td>
                                 <CryptoToFiatAmountFormatter
-                                    variant="hint"
+                                    variant="body-sm"
                                     value={transaction.amount}
                                     symbol={transaction.symbol}
                                     numberOfLines={1}

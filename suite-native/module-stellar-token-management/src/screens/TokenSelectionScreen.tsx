@@ -138,10 +138,10 @@ export const TokenSelectionScreen = () => {
         >
             <VStack spacing="sp16" flex={1}>
                 <VStack spacing="sp8">
-                    <Text variant="titleMedium">
+                    <Text variant="headline-md">
                         <Translation id="moduleStellarToken.tokenSelection.title" />
                     </Text>
-                    <Text variant="body" color="textSubdued">
+                    <Text variant="body-md" color="textSubdued">
                         <Translation id="moduleStellarToken.tokenSelection.subtitle" />
                     </Text>
                 </VStack>
@@ -165,7 +165,7 @@ export const TokenSelectionScreen = () => {
                                 showsVerticalScrollIndicator={false}
                                 ListEmptyComponent={
                                     <Box padding="sp16" alignItems="center">
-                                        <Text variant="body" color="textSubdued">
+                                        <Text variant="body-md" color="textSubdued">
                                             <Translation id="moduleStellarToken.tokenSelection.noResults" />
                                         </Text>
                                     </Box>

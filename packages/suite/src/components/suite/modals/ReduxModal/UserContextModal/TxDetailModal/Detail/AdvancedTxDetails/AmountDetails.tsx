@@ -67,7 +67,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     };
 
     return (
-        <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="hint">
+        <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="body-sm">
             {!isTestnet && (
                 <Table.Header>
                     <Table.Row>
@@ -209,7 +209,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                             withLink={true}
                                             withSign={true}
                                             alignMultitoken="flex-start"
-                                            linkTypographyStyle="hint"
+                                            linkTypographyStyle="body-sm"
                                         />
                                     </Text>
                                 </Table.Cell>

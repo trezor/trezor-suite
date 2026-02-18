@@ -45,7 +45,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             <H3>
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE" />
             </H3>
-            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />
             </Paragraph>
             <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">

@@ -30,5 +30,5 @@ export const menuStyle = css`
 
     /* when theme changes from light to dark */
     transition: background 0.3s;
-    ${typography.hint}
+    ${typography['body-sm']}
 `;

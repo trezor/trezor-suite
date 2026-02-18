@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
         background: ${({ theme }) => theme.backgroundSurfaceElevation0};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        ${typography.body}
+        ${typography['body-md']}
         color: ${({ theme }) => theme.textDefault};
         height: 100%;
         overflow-y: hidden;

@@ -68,7 +68,7 @@ export const InfoItem = ({
     label,
     direction = 'column',
     iconName,
-    typographyStyle = 'hint',
+    typographyStyle = 'body-sm',
     intent = 'neutral',
     priority = 'secondary',
     isDisabled = false,

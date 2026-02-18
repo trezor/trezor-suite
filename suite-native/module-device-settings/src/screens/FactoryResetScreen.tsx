@@ -20,10 +20,10 @@ export const FactoryResetScreen = () => {
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <VStack>
-                <Text variant="titleMedium">
+                <Text variant="headline-md">
                     <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.title" />
                 </Text>
-                <Text variant="body" color="textSubdued">
+                <Text variant="body-md" color="textSubdued">
                     <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.description" />
                 </Text>
                 <CardStepper

@@ -5,7 +5,7 @@ import { FirmwareUpdateChannelSelect } from './FirmwareUpdateChannelSelect';
 export const FirmwareSourceCard = () => (
     <Card>
         <VStack spacing="sp12">
-            <Text variant="titleSmall">Firmware Source</Text>
+            <Text variant="headline-sm">Firmware Source</Text>
             <FirmwareUpdateChannelSelect />
         </VStack>
     </Card>

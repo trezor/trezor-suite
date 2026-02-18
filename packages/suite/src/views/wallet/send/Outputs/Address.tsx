@@ -451,11 +451,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 <Row gap={spacings.md}>
                     {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
                     {metadataEnabled && broadcastEnabled && (
-                        <Text typographyStyle="hint" as="div">
+                        <Text typographyStyle="body-sm" as="div">
                             <Labeling
                                 deviceStaticSessionId={device.state.staticSessionId}
                                 displayValue={
-                                    <Text typographyStyle="callout">
+                                    <Text typographyStyle="body-sm-strong">
                                         <Translation id="TR_LABELING_ADD_LABEL" />
                                     </Text>
                                 }

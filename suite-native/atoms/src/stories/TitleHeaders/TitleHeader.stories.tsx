@@ -21,7 +21,7 @@ export const TitleHeader: TitleHeaderStory = {
     args: {
         title: 'Title message',
         subtitle: 'Something longer to say that has secondary informative value.',
-        titleVariant: 'titleSmall',
+        titleVariant: 'headline-sm',
         textAlign: 'left',
         titleSpacing: 'sp8',
     },

@@ -140,8 +140,8 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
         const minHeight = INPUT_TEXT_HEIGHT + paddingTop + paddingBottom;
 
         return {
-            ...utils.typography.body,
-            // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
+            ...utils.typography['body-md'],
+            // letterSpacing from `typography['body-md']` is making strange layout jumps on Android while filling the input.
             // This resets it to the default TextInput value.
             letterSpacing: 0,
             alignItems: 'center',
@@ -168,7 +168,7 @@ const inputHitSlop = {
 
 const labelStyle = prepareNativeStyle(
     (utils, { isLabelMinimized, isLeftIconDisplayed }: InputLabelStyleProps) => ({
-        ...D.deleteKey(utils.typography.body, 'fontSize'),
+        ...D.deleteKey(utils.typography['body-md'], 'fontSize'),
         color: utils.colors.textSubdued,
         position: 'absolute',
         top: INPUT_LABEL_TOP_PADDING,
@@ -176,7 +176,7 @@ const labelStyle = prepareNativeStyle(
         extend: {
             condition: isLabelMinimized,
             style: {
-                ...D.deleteKey(utils.typography.label, 'fontSize'),
+                ...D.deleteKey(utils.typography['body-xs'], 'fontSize'),
                 top: INPUT_LABEL_TOP_PADDING_MINIMIZED,
             },
         },
@@ -238,7 +238,7 @@ const useInputLabelAnimationStyles = ({
         fontSize: interpolate(
             animatedLabelIsFocusedOrNotEmpty.value,
             [0, 1],
-            [utils.typography.label.fontSize, utils.typography.body.fontSize],
+            [utils.typography['body-xs'].fontSize, utils.typography['body-md'].fontSize],
         ),
     }));
 

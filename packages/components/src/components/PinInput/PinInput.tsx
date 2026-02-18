@@ -20,7 +20,7 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
         'zero' 1,
         'ss03' 1;
 
-    ${typography.titleMedium}
+    ${typography['headline-md']}
 
     &:focus,
     &:focus-within {

@@ -28,7 +28,7 @@ export const PaymentMethodListItem = ({
         <Pressable onPress={onPress} style={applyStyle(wrapperStyle)}>
             <Card>
                 <HStack alignItems="center" justifyContent="space-between">
-                    <Text variant="body" color="textDefault">
+                    <Text variant="body-md" color="textDefault">
                         {paymentMethodName}
                     </Text>
                     <Radio value={orderId} onPress={onPress} isChecked={isSelected} />

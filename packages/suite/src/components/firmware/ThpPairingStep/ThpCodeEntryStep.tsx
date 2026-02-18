@@ -19,11 +19,11 @@ export const ThpCodeEntryStep = ({ modalHeading }: ThpCodeEntryStepProps) => (
     >
         <Card>
             <Column alignItems="start" gap={spacings.xxs}>
-                <Text typographyStyle="highlight">
+                <Text typographyStyle="body-md-strong">
                     <Translation id="TR_THP_ENTER_ONE_TIME_CODE" />
                 </Text>
                 <Column alignItems="start" gap={spacings.xl}>
-                    <Text intent="neutral" priority="secondary" typographyStyle="body">
+                    <Text intent="neutral" priority="secondary" typographyStyle="body-md">
                         <Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />
                     </Text>
                     <ThpPairingCodeEntry />

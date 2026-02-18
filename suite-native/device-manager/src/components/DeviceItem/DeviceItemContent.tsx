@@ -55,7 +55,7 @@ export const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { is
 export const DeviceItemContent = React.memo(
     ({
         deviceState,
-        headerTextVariant = 'body',
+        headerTextVariant = 'body-md',
         variant = 'simple',
         isCompact = true,
         isSubHeaderForceHidden = false,

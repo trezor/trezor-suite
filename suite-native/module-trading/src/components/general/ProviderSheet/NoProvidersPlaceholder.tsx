@@ -14,7 +14,7 @@ export const NoProvidersPlaceholder = () => {
                     accessibilityLabel={translate('moduleTrading.providerSheet.noProviders')}
                     size="large"
                 />
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     <Translation id="moduleTrading.providerSheet.noProviders" />
                 </Text>
             </HStack>

@@ -13,7 +13,7 @@ export const ThpPairingSuccessScreenContent = ({
             <PictogramTitleHeader
                 variant="success"
                 title={<Translation id="thp.pairingSuccess.title" />}
-                titleVariant="titleMedium"
+                titleVariant="headline-md"
             />
         </Box>
         <Button onPress={onContinue}>

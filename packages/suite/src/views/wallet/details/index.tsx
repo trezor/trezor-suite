@@ -31,7 +31,7 @@ import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     margin: 14px 0 4px;
     text-transform: uppercase;
 `;
@@ -50,14 +50,14 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
         <ContentFlex gap={40} justifyContent="space-between">
             <InfoItem
                 label={<Translation id={title} />}
-                typographyStyle="body"
+                typographyStyle="body-md"
                 intent="neutral"
                 priority="primary"
                 gap={8}
                 maxWidth={500}
             >
                 <Column gap={12}>
-                    <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                         {description}
                     </Paragraph>
                     {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
@@ -149,7 +149,7 @@ const Details = () => {
                             path={account.path}
                             networkType={account.networkType}
                         />
-                        <Paragraph typographyStyle="label" textWrap="nowrap">
+                        <Paragraph typographyStyle="body-xs" textWrap="nowrap">
                             (<Translation id={accountTypeTech} />)
                         </Paragraph>
                     </DetailsRow>
@@ -158,7 +158,7 @@ const Details = () => {
                         description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
                         learnMoreUrl={HELP_CENTER_BIP32_URL}
                     >
-                        <Paragraph typographyStyle="hint">{account.path}</Paragraph>
+                        <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
                     </DetailsRow>
                     {!isCoinjoinAccount ? (
                         shouldDisplayXpubSection && (

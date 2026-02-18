@@ -15,10 +15,10 @@ export const TestnetsToggle = () => {
     return (
         <Card>
             <VStack>
-                <Text variant="titleSmall">Testnet coins & features</Text>
+                <Text variant="headline-sm">Testnet coins & features</Text>
                 <HStack spacing="sp24">
                     <Box flexShrink={1}>
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             These coins carry no value and cannot be used to pay transactions. They
                             are used only for testing.
                         </Text>

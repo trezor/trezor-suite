@@ -10,13 +10,13 @@ const StyledBalanceContainer = styled.div`
 const Heading = styled.p<{ $color?: string }>`
     margin-bottom: 4px;
     color: ${({ theme, color }) => color || theme.textSubdued};
-    ${typography.label}
+    ${typography['body-xs']}
 `;
 
 const SubHeading = styled.p`
     max-width: 480px;
     margin-top: 6px;
-    ${typography.titleSmall}
+    ${typography['headline-sm']}
 `;
 
 export interface CoinjoinBalanceErrorProps {

@@ -20,7 +20,7 @@ import { GraphRange } from 'src/types/wallet/graph';
 
 const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     display: flex;
-    ${({ $selected }) => ($selected ? typography.callout : typography.hint)}
+    ${({ $selected }) => ($selected ? typography['body-sm-strong'] : typography['body-sm'])}
     text-align: center;
     color: ${({ theme, $selected }) => ($selected ? theme.textDefault : theme.textSubdued)};
     cursor: pointer;

@@ -57,7 +57,7 @@ export const AssetListItem = ({
                 </Box>
                 <VStack style={applyStyle(vStackStyle)}>
                     <HStack alignItems="center" justifyContent="space-between">
-                        <Text variant="body" color="textDefault">
+                        <Text variant="body-md" color="textDefault">
                             {name}
                         </Text>
                     </HStack>

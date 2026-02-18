@@ -42,7 +42,7 @@ export const TradingDetailSurvey = () => {
         <Card>
             <Column gap={spacings.lg}>
                 <Column gap={spacings.xs}>
-                    <Text typographyStyle="titleSmall">{title}</Text>
+                    <Text typographyStyle="headline-sm">{title}</Text>
                     <Paragraph maxWidth={400}>{description}</Paragraph>
                 </Column>
                 <MessageSystemButton cta={survey.cta} iconRight="arrowSquareOut" />

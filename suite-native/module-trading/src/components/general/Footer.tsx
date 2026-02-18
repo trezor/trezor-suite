@@ -21,7 +21,7 @@ interface FooterProviderContentProps {
 const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     if (!provider || !provider.termsUrl) {
         return (
-            <Text variant="hint" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="textSubdued" textAlign="center">
                 <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneral" />
             </Text>
         );
@@ -30,14 +30,14 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     const { companyName, termsUrl } = provider;
 
     return (
-        <Text variant="hint" color="textSubdued" textAlign="center">
+        <Text variant="body-sm" color="textSubdued" textAlign="center">
             <Translation
                 id="moduleTrading.tradingScreen.footer.termsAndConditionsProvider"
                 values={{
                     companyName,
                     link: parts => (
                         <Link
-                            textVariant="hint"
+                            textVariant="body-sm"
                             textColor="textSubdued"
                             textPressedColor="textDisabled"
                             href={termsUrl}
@@ -73,19 +73,19 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
 
                 <HStack alignItems="center" spacing="sp4">
                     <Link
-                        textVariant="hint"
+                        textVariant="body-sm"
                         textColor="textSubdued"
                         textPressedColor="textDisabled"
                         href={TREZOR_SUITE_TOS_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />}
                     />
 
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         |
                     </Text>
 
                     <Link
-                        textVariant="hint"
+                        textVariant="body-sm"
                         textColor="textSubdued"
                         textPressedColor="textDisabled"
                         href={TREZOR_TRADING_LEARN_MORE_URL}

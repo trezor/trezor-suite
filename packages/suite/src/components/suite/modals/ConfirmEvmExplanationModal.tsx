@@ -118,7 +118,7 @@ export const ConfirmEvmExplanationModal = ({
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 margin={{ top: spacings.xl }}
             >
                 <Translation

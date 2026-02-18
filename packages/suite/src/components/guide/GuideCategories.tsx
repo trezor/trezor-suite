@@ -12,7 +12,7 @@ const Section = styled.section`
 `;
 
 const SectionHeading = styled.h3`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.textSubdued};
     padding: 0 0 18px;
 `;

@@ -38,7 +38,7 @@ export const CreateWalletLoadingScreen = ({
             <Box justifyContent="center" alignItems="center" flex={1}>
                 <VStack spacing="sp20">
                     <CreateWalletLoader />
-                    <Text variant="titleMedium" style={applyStyle(titleStyle)} textAlign="center">
+                    <Text variant="headline-md" style={applyStyle(titleStyle)} textAlign="center">
                         <Translation id="moduleDeviceOnboarding.createWalletLoadingScreen.title" />
                     </Text>
                 </VStack>

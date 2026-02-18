@@ -84,7 +84,7 @@ export const TokenSpecificBalanceDetailsRow = ({
                                     transfer={transfer}
                                     isWithLink
                                     alignMultitoken="flex-start"
-                                    linkTypographyStyle="label"
+                                    linkTypographyStyle="body-xs"
                                 />
                             ) : (
                                 convertAmountSubunitsToUnits(transfer.amount, transfer.decimals)

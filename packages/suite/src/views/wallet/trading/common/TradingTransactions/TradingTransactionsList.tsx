@@ -32,7 +32,7 @@ const Header = styled.div`
 
 const TransactionCount = styled.div`
     margin-top: ${spacingsPx.xxxs};
-    ${typography.hint}
+    ${typography['body-sm']}
     color: ${({ theme }) => theme.textSubdued};
 `;
 

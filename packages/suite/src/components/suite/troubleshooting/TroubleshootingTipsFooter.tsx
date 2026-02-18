@@ -17,7 +17,7 @@ export const TroubleshootingTipsFooter = () => {
             alignItems="center"
             width="100%"
         >
-            <Text typographyStyle="hint">
+            <Text typographyStyle="body-sm">
                 <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
             </Text>
 

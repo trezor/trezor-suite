@@ -14,9 +14,9 @@ export const InfoCard = ({ title, description, testID }: InfoCardProps) => (
             <PictogramTitleHeader
                 variant="info"
                 title={title}
-                titleVariant="highlight"
+                titleVariant="body-md-strong"
                 subtitle={
-                    <Text variant="hint" color="textSubdued" textAlign="center">
+                    <Text variant="body-sm" color="textSubdued" textAlign="center">
                         {description}
                     </Text>
                 }

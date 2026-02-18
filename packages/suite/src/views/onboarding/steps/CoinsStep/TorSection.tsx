@@ -23,7 +23,7 @@ export const TorSection = ({ torStatus }: TorSectionProps) => {
 
     return (
         <Row justifyContent="space-between" gap={48}>
-            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_TOR_DESCRIPTION" />
             </Paragraph>
             <Switch

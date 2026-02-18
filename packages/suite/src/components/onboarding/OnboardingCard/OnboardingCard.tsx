@@ -112,7 +112,7 @@ export const OnboardingCard = ({
                                 {heading && <H2 align="center">{heading}</H2>}
                                 {description && (
                                     <Paragraph
-                                        typographyStyle="body"
+                                        typographyStyle="body-md"
                                         intent="neutral"
                                         priority="secondary"
                                         align="center"

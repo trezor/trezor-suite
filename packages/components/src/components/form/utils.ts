@@ -19,8 +19,8 @@ const paddingTopMap: Record<InputSize, SpacingValuesNew> = {
 export const mapSizeToPaddingTop = (size: InputSize): SpacingValuesNew => paddingTopMap[size];
 
 const typographyStyleMap: Record<InputSize, TypographyStyle> = {
-    small: 'hint',
-    large: 'body',
+    small: 'body-sm',
+    large: 'body-md',
 };
 
 export const mapSizeToTypographyStyle = (size: InputSize): TypographyStyle =>

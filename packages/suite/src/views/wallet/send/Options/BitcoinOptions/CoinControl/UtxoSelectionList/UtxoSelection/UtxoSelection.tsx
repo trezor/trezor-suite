@@ -146,7 +146,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                 </Tooltip>
                 <Column flex="1" gap={0}>
                     <Row gap={12} justifyContent="space-between">
-                        <Text typographyStyle="body">
+                        <Text typographyStyle="body-md">
                             <Labeling
                                 deviceStaticSessionId={account.deviceState}
                                 payload={{
@@ -200,7 +200,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     </Row>
                     <Row justifyContent="space-between" gap={12}>
                         <InfoSegments
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
                             gap={6}
@@ -255,7 +255,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         </InfoSegments>
                         {shallDisplayBaseCurrency && (
                             <Text
-                                typographyStyle="hint"
+                                typographyStyle="body-sm"
                                 intent="neutral"
                                 priority="secondary"
                                 as="div"

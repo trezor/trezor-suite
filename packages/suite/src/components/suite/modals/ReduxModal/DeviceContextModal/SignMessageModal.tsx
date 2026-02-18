@@ -128,7 +128,10 @@ export const SignMessageModal = ({
                             header={
                                 <Row gap={spacings.sm}>
                                     <DotIndicator isActive={device.buttonRequests.length === 1} />
-                                    <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                                    <H4
+                                        margin={{ left: spacings.xxs }}
+                                        typographyStyle="body-sm-strong"
+                                    >
                                         <Translation id="TR_ADDRESS" />
                                     </H4>
                                 </Row>
@@ -145,7 +148,10 @@ export const SignMessageModal = ({
                             header={
                                 <Row gap={spacings.sm}>
                                     <DotIndicator isActive={device.buttonRequests.length === 2} />
-                                    <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                                    <H4
+                                        margin={{ left: spacings.xxs }}
+                                        typographyStyle="body-sm-strong"
+                                    >
                                         <Translation id="TR_DOMAIN" />
                                     </H4>
                                 </Row>
@@ -163,7 +169,10 @@ export const SignMessageModal = ({
                                 <DotIndicator
                                     isActive={device.buttonRequests.length === (isEip712 ? 3 : 2)}
                                 />
-                                <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                                <H4
+                                    margin={{ left: spacings.xxs }}
+                                    typographyStyle="body-sm-strong"
+                                >
                                     <Translation id="TR_MESSAGE" />
                                 </H4>
                             </Row>

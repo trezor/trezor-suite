@@ -23,7 +23,7 @@ const DiscoveryButtonContainer = styled(motion.div)`
     justify-content: center;
     margin: 0 ${spacingsPx.sm} ${spacingsPx.xxl} ${spacingsPx.sm};
     border-top: solid 1px ${({ theme }) => theme.borderElevation1};
-    ${typography.hint}
+    ${typography['body-sm']}
     align-items: center;
 `;
 

@@ -21,7 +21,7 @@ export const CardHeader = ({ type, isSelected }: CardHeaderProps) => (
     <HStack>
         <Box flex={1}>
             <TitleHeader title={<Translation id={walletBackupSheetCopyByType[type].title} />} />
-            <Text color={descriptionColor[type]} variant="hint">
+            <Text color={descriptionColor[type]} variant="body-sm">
                 <Translation id={walletBackupSheetCopyByType[type].description} />
             </Text>
         </Box>

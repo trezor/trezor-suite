@@ -39,10 +39,10 @@ const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitial
             <Content>
                 {withTooltip ? (
                     <Tooltip content={children}>
-                        <Text typographyStyle="callout">{firstChar}</Text>
+                        <Text typographyStyle="body-sm-strong">{firstChar}</Text>
                     </Tooltip>
                 ) : (
-                    <Text typographyStyle="callout">{firstChar}</Text>
+                    <Text typographyStyle="body-sm-strong">{firstChar}</Text>
                 )}
             </Content>
         </Circle>

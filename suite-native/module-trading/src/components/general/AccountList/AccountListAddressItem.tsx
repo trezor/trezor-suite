@@ -45,7 +45,7 @@ export const AccountListAddressItem = ({
             label={<AccountAddress address={addressLabel ?? address.address} form="full" />}
             isAddressDetail={true}
             info={
-                <Text variant="hint" style={applyStyle(labelTextStyle)}>
+                <Text variant="body-sm" style={applyStyle(labelTextStyle)}>
                     {address.path}
                 </Text>
             }

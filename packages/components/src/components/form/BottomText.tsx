@@ -57,7 +57,7 @@ export const BottomText = ({
                     intent={textIntent}
                     priority={textPriority}
                     isDisabled={isDisabled}
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                     as="div"
                     flex="auto"
                 >

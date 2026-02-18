@@ -76,7 +76,7 @@ export const DeviceConnectionText = ({
                 ) : (
                     <Icon name={icon} size={12} variant={variant} />
                 )}
-                <Text typographyStyle="label" {...textProps}>
+                <Text typographyStyle="body-xs" {...textProps}>
                     {children}
                 </Text>
             </Row>

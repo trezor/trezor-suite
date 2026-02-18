@@ -64,7 +64,7 @@ export const TabBarItem = ({
                 {title && (
                     <Text
                         maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
-                        variant="label"
+                        variant="body-xs"
                         textAlign="center"
                         color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}
                         testID={`@tabBar/${testID}/title`}

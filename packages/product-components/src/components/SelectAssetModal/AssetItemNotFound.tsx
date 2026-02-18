@@ -20,7 +20,7 @@ export const AssetItemNotFound = ({
         height={listHeight}
         minHeight={listMinHeight}
     >
-        <Text typographyStyle="body">{noItemsAvailablePlaceholder.heading}</Text>
+        <Text typographyStyle="body-md">{noItemsAvailablePlaceholder.heading}</Text>
         {noItemsAvailablePlaceholder.body && (
             <Paragraph
                 align="center"
@@ -31,7 +31,7 @@ export const AssetItemNotFound = ({
                     right: 'auto',
                 }}
             >
-                <Text intent="neutral" priority="secondary" typographyStyle="hint">
+                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     {noItemsAvailablePlaceholder.body}
                 </Text>
             </Paragraph>

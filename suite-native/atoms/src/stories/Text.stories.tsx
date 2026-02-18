@@ -17,7 +17,7 @@ export const Text: TextStory = {
     name: 'Text',
     args: {
         children: 'Text value',
-        variant: 'body',
+        variant: 'body-md',
         color: 'textDefault',
         textAlign: 'left',
     },

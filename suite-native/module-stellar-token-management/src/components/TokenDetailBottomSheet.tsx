@@ -31,8 +31,8 @@ export const TokenDetailBottomSheet = ({
             <HStack alignItems="center" spacing="sp12">
                 <CryptoIcon symbol="xlm" contractAddress={iconContractAddress} size="large" />
                 <VStack>
-                    <Text variant="body">{tokenName}</Text>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-md">{tokenName}</Text>
+                    <Text variant="body-sm" color="textSubdued">
                         {assetCode}
                     </Text>
                 </VStack>
@@ -40,17 +40,17 @@ export const TokenDetailBottomSheet = ({
 
             <VStack spacing="sp12">
                 <VStack spacing="sp4">
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="moduleStellarToken.tokenDetail.issuer" />
                     </Text>
-                    <Text variant="body">{issuerDomain}</Text>
+                    <Text variant="body-md">{issuerDomain}</Text>
                 </VStack>
 
                 <VStack spacing="sp4">
-                    <Text variant="highlight">
+                    <Text variant="body-md-strong">
                         <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
                     </Text>
-                    <Text variant="body">{issuerAddress}</Text>
+                    <Text variant="body-md">{issuerAddress}</Text>
                 </VStack>
             </VStack>
 

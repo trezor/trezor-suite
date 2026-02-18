@@ -51,7 +51,7 @@ export const AssetsListEmpty = ({
                 height="auto"
                 margin={{ vertical: 32 }}
             >
-                <Paragraph typographyStyle="body">
+                <Paragraph typographyStyle="body-md">
                     <Translation
                         id="TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_TITLE"
                         values={{ network }}
@@ -59,7 +59,7 @@ export const AssetsListEmpty = ({
                 </Paragraph>
                 <Paragraph
                     textWrap="balance"
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
                     align="center"
@@ -82,7 +82,7 @@ export const AssetsListEmpty = ({
 
     return (
         <Column alignItems="center" justifyContent="center" gap={4} height={height}>
-            <Paragraph typographyStyle="body">
+            <Paragraph typographyStyle="body-md">
                 <Translation id={heading} />
             </Paragraph>
             {description && (
@@ -92,7 +92,7 @@ export const AssetsListEmpty = ({
                     maxWidth={320}
                     intent="neutral"
                     priority="secondary"
-                    typographyStyle="hint"
+                    typographyStyle="body-sm"
                 >
                     <Translation id={description} />
                 </Paragraph>

@@ -39,12 +39,12 @@ export const ConditionalActionRenderer = ({
             message="TOAST_COIN_SCHEME_PROTOCOL"
             messageValues={{
                 header: (
-                    <Paragraph typographyStyle="highlight" margin={{ top: 2 }}>
+                    <Paragraph typographyStyle="body-md-strong" margin={{ top: 2 }}>
                         {header}
                     </Paragraph>
                 ),
                 body: (
-                    <Paragraph typographyStyle="body" margin={{ top: 2 }}>
+                    <Paragraph typographyStyle="body-md" margin={{ top: 2 }}>
                         {body}
                     </Paragraph>
                 ),

@@ -114,7 +114,7 @@ const Header = ({ event }: { event: EventDoc }) => {
                             <Dropdown items={dropdownItems} iconName="dotsThree" iconSize="small" />
                         </Tooltip>
                         {copied && (
-                            <Text intent="brand" priority="primary" typographyStyle="label">
+                            <Text intent="brand" priority="primary" typographyStyle="body-xs">
                                 Copied to clipboard
                             </Text>
                         )}
@@ -141,16 +141,16 @@ const Header = ({ event }: { event: EventDoc }) => {
 export const EventCard = ({ event }: { event: EventDoc }) => (
     <Card paddingType="small">
         <Header event={event} />
-        <InfoItem label="Trigger" typographyStyle="label">
+        <InfoItem label="Trigger" typographyStyle="body-xs">
             <Markdown>{event.descriptionTrigger}</Markdown>
         </InfoItem>
         {event.description && (
-            <InfoItem label="Description" typographyStyle="label" margin={{ top: 12 }}>
+            <InfoItem label="Description" typographyStyle="body-xs" margin={{ top: 12 }}>
                 <Markdown>{event.description}</Markdown>
             </InfoItem>
         )}
         {event.possibleImprovements && (
-            <InfoItem label="Possible improvements" typographyStyle="label" margin={{ top: 12 }}>
+            <InfoItem label="Possible improvements" typographyStyle="body-xs" margin={{ top: 12 }}>
                 <Markdown>{event.possibleImprovements}</Markdown>
             </InfoItem>
         )}

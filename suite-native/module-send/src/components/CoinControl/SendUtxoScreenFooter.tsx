@@ -50,12 +50,12 @@ export const SendUtxoScreenFooter = ({
             >
                 <VStack spacing="sp4">
                     <HStack justifyContent="space-between">
-                        <Text variant={missingToAmount ? 'hint' : 'body'}>
+                        <Text variant={missingToAmount ? 'body-sm' : 'body-md'}>
                             <Translation id="moduleSend.coinControl.utxos.selected" />
                         </Text>
                         <CryptoAmountFormatter
                             isBalance={false}
-                            variant={missingToAmount ? 'hint' : 'body'}
+                            variant={missingToAmount ? 'body-sm' : 'body-md'}
                             color={missingToAmount ? 'textSubdued' : 'textDefault'}
                             value={selectedTotal}
                             symbol={symbol}
@@ -64,11 +64,11 @@ export const SendUtxoScreenFooter = ({
                     {missingToAmount && (
                         <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <HStack justifyContent="space-between">
-                                <Text variant="body">
+                                <Text variant="body-md">
                                     <Translation id="moduleSend.coinControl.utxos.remaining" />
                                 </Text>
                                 <CryptoAmountFormatter
-                                    variant="body"
+                                    variant="body-md"
                                     value={missingToAmount}
                                     symbol={symbol}
                                     isBalance={false}

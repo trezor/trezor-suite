@@ -39,7 +39,7 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
 export const FeatureFlagsCard = () => (
     <Card>
         <VStack spacing="sp12">
-            <Text variant="titleSmall">Feature Flags [default value]</Text>
+            <Text variant="headline-sm">Feature Flags [default value]</Text>
             <VStack>
                 {Object.values(FeatureFlagEnum).map(featureFlag => (
                     <FeatureFlag key={featureFlag} featureFlag={featureFlag} />

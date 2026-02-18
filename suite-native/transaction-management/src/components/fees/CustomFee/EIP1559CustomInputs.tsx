@@ -46,7 +46,7 @@ export const EIP1559CustomInputs = ({
             />
             <HStack paddingLeft="sp12" alignItems="center" spacing="sp4" paddingBottom="sp8">
                 <Icon name="gasPump" size="medium" color="textSubdued" />
-                <Text variant="label" color="textSubdued">
+                <Text variant="body-xs" color="textSubdued">
                     <Translation
                         id="transactionManagement.fees.custom.bottomSheet.currentBaseFeeEthereum"
                         values={{

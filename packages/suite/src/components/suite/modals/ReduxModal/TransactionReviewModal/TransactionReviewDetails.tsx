@@ -26,20 +26,20 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
         <Card>
             <Column gap={spacings.lg}>
                 <InfoItem label={<Translation id="TR_SIZE" />}>
-                    <Text typographyStyle="hint">
+                    <Text typographyStyle="body-sm">
                         {tx.bytes} <Translation id="TR_BYTES" />
                     </Text>
                 </InfoItem>
                 <InfoItem label={<Translation id="TR_INPUTS" />}>
                     <Card paddingType="small">
-                        <Text typographyStyle="label" as="div">
+                        <Text typographyStyle="body-xs" as="div">
                             <Pre>{prettify(tx.inputs)}</Pre>
                         </Text>
                     </Card>
                 </InfoItem>
                 <InfoItem label={<Translation id="TR_OUTPUTS" />}>
                     <Card paddingType="small">
-                        <Text typographyStyle="label" as="div">
+                        <Text typographyStyle="body-xs" as="div">
                             <Pre>{prettify(tx.outputs)}</Pre>
                         </Text>
                     </Card>
@@ -47,7 +47,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                 {txHash && (
                     <InfoItem label={<Translation id="RAW_TRANSACTION" />}>
                         <Card paddingType="small">
-                            <Text typographyStyle="label" as="div">
+                            <Text typographyStyle="body-xs" as="div">
                                 <Pre>{txHash}</Pre>
                             </Text>
                         </Card>

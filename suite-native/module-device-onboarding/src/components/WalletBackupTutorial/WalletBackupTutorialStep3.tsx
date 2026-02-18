@@ -51,10 +51,10 @@ const SectionHeader = ({
         <HStack alignItems="center" spacing={0}>
             <Box style={applyStyle(imageContainerStyle)}>{image}</Box>
             <VStack spacing={0}>
-                <Text variant="titleSmall">
+                <Text variant="headline-sm">
                     <Translation id={title} />
                 </Text>
-                <Text variant="callout" color={descriptionColor}>
+                <Text variant="body-sm-strong" color={descriptionColor}>
                     <Translation id={description} />
                 </Text>
             </VStack>

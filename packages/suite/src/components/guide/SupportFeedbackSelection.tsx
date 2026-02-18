@@ -23,7 +23,7 @@ const Section = styled.div`
 `;
 
 const SectionHeader = styled.h3`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.textSubdued};
     padding: 0 0 18px;
 `;
@@ -50,7 +50,7 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
 
 const Details = styled.div`
     padding: 10px 0 0;
-    ${typography.label}
+    ${typography['body-xs']}
     color: ${({ theme }) => theme.textSubdued};
     display: flex;
     justify-content: space-around;
@@ -73,7 +73,7 @@ const Label = styled.div`
 `;
 
 const LabelHeadline = styled.strong`
-    ${typography.body}
+    ${typography['body-md']}
     color: ${({ theme }) => theme.textDefault};
     display: flex;
     align-items: center;
@@ -138,7 +138,11 @@ export const SupportFeedbackSelection = () => {
                             <LabelHeadline>
                                 <Translation id="TR_BUG" />
                             </LabelHeadline>
-                            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                            <Paragraph
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            >
                                 <Translation id="TR_GUIDE_BUG_LABEL" />
                             </Paragraph>
                         </Label>
@@ -153,7 +157,11 @@ export const SupportFeedbackSelection = () => {
                             <LabelHeadline>
                                 <Translation id="TR_SUGGESTION" />
                             </LabelHeadline>
-                            <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                            <Paragraph
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            >
                                 <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
                             </Paragraph>
                         </Label>
@@ -173,7 +181,7 @@ export const SupportFeedbackSelection = () => {
                                     <Icon size={20} name="arrowUpRight" />
                                 </LabelHeadline>
                                 <Paragraph
-                                    typographyStyle="hint"
+                                    typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
                                 >

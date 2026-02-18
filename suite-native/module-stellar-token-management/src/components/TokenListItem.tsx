@@ -38,8 +38,8 @@ export const TokenListItem = ({ token, onPress }: TokenListItemProps) => {
                     <CryptoIcon symbol="xlm" contractAddress={token.contract} size="small" />
                 </Box>
                 <Box flex={1}>
-                    <Text variant="body">{token.name || token.symbol}</Text>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-md">{token.name || token.symbol}</Text>
+                    <Text variant="body-sm" color="textSubdued">
                         {token.symbol}
                     </Text>
                 </Box>

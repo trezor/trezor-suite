@@ -5,7 +5,7 @@ import { Tooltip } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 const NoRatesMessage = styled.div`
-    ${typography.label};
+    ${typography['body-xs']};
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textSubdued};

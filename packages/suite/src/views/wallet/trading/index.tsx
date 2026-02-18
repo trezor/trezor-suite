@@ -34,7 +34,7 @@ export const TooltipIcon = styled.div`
 
 export const TooltipText = styled.div<{ $isYellow?: boolean }>`
     position: relative;
-    ${typography.hint}
+    ${typography['body-sm']}
     color: ${({ $isYellow, theme }) => ($isYellow ? theme.textAlertYellow : theme.textDefault)};
     transition: color 0.15s;
 

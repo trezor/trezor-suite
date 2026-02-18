@@ -50,7 +50,7 @@ export const FirmwareLanguageCard = () => {
             <VStack spacing="sp16">
                 <HStack>
                     <Icon name="translate" size="mediumLarge" />
-                    <Text variant="body">
+                    <Text variant="body-md">
                         <Translation id="firmware.languageCard.title" />
                     </Text>
                 </HStack>

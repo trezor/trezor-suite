@@ -38,7 +38,7 @@ export const ExchangeApprovalLimitCard = memo(
                     </HStack>
                     <Radio value="option" isChecked={isChecked} onPress={onChange} />
                 </HStack>
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     {description}
                 </Text>
             </Card>

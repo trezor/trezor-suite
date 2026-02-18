@@ -130,7 +130,11 @@ export const TradingFormOfferOTC = () => {
                         type="disjunction"
                         value={links.map((link, index) => (
                             <Fragment key={index}>
-                                <TrezorLink href={link.url} target="_blank" typographyStyle="hint">
+                                <TrezorLink
+                                    href={link.url}
+                                    target="_blank"
+                                    typographyStyle="body-sm"
+                                >
                                     <Translation
                                         id={
                                             context.type === 'buy'

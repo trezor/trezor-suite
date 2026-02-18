@@ -11,7 +11,7 @@ export const CheckBackupCard = () => {
             title={<Translation id="moduleDeviceSettings.checkBackup.title" />}
         >
             <VStack spacing="sp16">
-                <Text variant="hint" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     <Translation id="moduleDeviceSettings.checkBackup.subtitle" />
                 </Text>
                 <Button

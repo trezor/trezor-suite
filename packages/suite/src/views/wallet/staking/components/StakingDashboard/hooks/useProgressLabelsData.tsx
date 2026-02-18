@@ -50,7 +50,7 @@ const buildEthereumLabels = ({
             <Column>
                 <Translation id="TR_EARN_ADDING_TO_POOL" />
                 {isDaysToAddToPoolShown && (
-                    <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <Translation
                             id="TR_EARN_APPROXIMATE_DAYS"
                             values={{
@@ -105,7 +105,7 @@ const buildSolanaLabels = ({
             <Column>
                 <Translation id="TR_EARN_WARM_UP_PERIOD" />
 
-                <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation
                         id="TR_UP_TO_DAYS"
                         values={{
@@ -128,7 +128,7 @@ const buildSolanaLabels = ({
             <Column>
                 <Translation id="TR_STAKE_STAKED_AND_EARNING" />
 
-                <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation
                         id="TR_UP_TO_DAYS"
                         values={{
@@ -170,7 +170,7 @@ const buildCardanoLabels = ({
             children: (
                 <Column>
                     <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
-                    <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <Translation
                             id="TR_UP_TO_DAYS"
                             values={{
@@ -198,7 +198,7 @@ const buildCardanoLabels = ({
                         <Translation id="TR_STAKE_STAKED_AND_EARNING" />
                     )}
 
-                    <Paragraph typographyStyle="label" intent="neutral" priority="secondary">
+                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         {isUnstake ? (
                             <Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
                         ) : (

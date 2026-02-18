@@ -19,7 +19,7 @@ const meta: Meta<OrderedListIconProps> = {
         Story => (
             <HStack spacing="sp12" alignItems="center">
                 <Story />
-                <Text variant="body">Text value</Text>
+                <Text variant="body-md">Text value</Text>
             </HStack>
         ),
     ],

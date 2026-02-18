@@ -19,16 +19,16 @@ export const CurrentDelegate = ({ account }: CurrentDelegateProps) => {
 
     return (
         <Column gap={8}>
-            <Text intent="neutral" priority="secondary" typographyStyle="hint">
+            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_STAKE_CURRENT_DELEGATE" />
             </Text>
             {currentDelegateDrepId ? (
                 <>
-                    <Paragraph typographyStyle="body">{getStakeProviderLabel()}</Paragraph>
-                    <Paragraph typographyStyle="hint">{currentDelegateDrepId}</Paragraph>
+                    <Paragraph typographyStyle="body-md">{getStakeProviderLabel()}</Paragraph>
+                    <Paragraph typographyStyle="body-sm">{currentDelegateDrepId}</Paragraph>
                 </>
             ) : (
-                <Paragraph typographyStyle="body">
+                <Paragraph typographyStyle="body-md">
                     <Translation id="TR_STAKE_NONE" />
                 </Paragraph>
             )}

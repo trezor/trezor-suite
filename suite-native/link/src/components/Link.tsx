@@ -54,7 +54,7 @@ export const Link = ({
     isUnderlined = false,
     textColor = 'textPrimaryDefault',
     textPressedColor = 'textPrimaryPressed',
-    textVariant = 'body',
+    textVariant = 'body-md',
     onPress,
     ...textProps
 }: LinkProps) => {

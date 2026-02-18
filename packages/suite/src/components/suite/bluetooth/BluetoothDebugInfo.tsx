@@ -54,7 +54,7 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
                 )}
                 <TimeAgo timestamp={device.lastUpdatedTimestamp} />
             </InfoSegments>
-            <Text typographyStyle="hint" intent="accentViolet">
+            <Text typographyStyle="body-sm" intent="accentViolet">
                 <Code>{device.macAddress}</Code>
             </Text>
         </>

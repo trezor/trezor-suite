@@ -61,7 +61,7 @@ export const LimitPicker = () => {
             <TradeInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker">
                 <VStack>
                     <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="hint">
+                        <Text variant="body-sm">
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
                         </Text>
                         <HStack alignItems="center">
@@ -73,14 +73,14 @@ export const LimitPicker = () => {
                                 />
                             )}
                             {approvalType === 'INFINITE' ? (
-                                <Text variant="hint" color="textSubdued">
+                                <Text variant="body-sm" color="textSubdued">
                                     <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
                                 </Text>
                             ) : (
                                 <TradingCoinAmountFormatter
                                     amount={sendStringAmount}
                                     cryptoId={send}
-                                    variant="hint"
+                                    variant="body-sm"
                                     color="textSubdued"
                                 />
                             )}
@@ -88,7 +88,7 @@ export const LimitPicker = () => {
                             <Icon name="caretDown" size="medium" />
                         </HStack>
                     </HStack>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         {limitDescription}
                     </Text>
                 </VStack>

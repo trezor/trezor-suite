@@ -38,10 +38,10 @@ export const DeviceAuthenticityScreen = () => {
         >
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp24">
-                    <IconListTextItem icon="cpu" iconSize="large" textVariant="highlight">
+                    <IconListTextItem icon="cpu" iconSize="large" textVariant="body-md-strong">
                         <Translation id="moduleDeviceSettings.authenticity.info.item1" />
                     </IconListTextItem>
-                    <IconListTextItem icon="check" iconSize="large" textVariant="highlight">
+                    <IconListTextItem icon="check" iconSize="large" textVariant="body-md-strong">
                         <Translation id="moduleDeviceSettings.authenticity.info.item2" />
                     </IconListTextItem>
                 </VStack>

@@ -21,7 +21,7 @@ export const TradingTransactionInfo = ({ trade }: TradingTransactionInfoProps) =
             data-testid="@trading/transactions/info"
             intent="neutral"
             priority="secondary"
-            typographyStyle="label"
+            typographyStyle="body-xs"
             margin={{ top: spacings.xs }}
         >
             {tradeType}

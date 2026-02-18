@@ -112,7 +112,7 @@ export const StakePendingCard = ({
                             symbol={symbol}
                             decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             color="textDefault"
-                            variant="highlight"
+                            variant="body-md-strong"
                         />
                         <Box flexDirection="row">
                             <Text color="textSubdued">≈</Text>

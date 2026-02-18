@@ -40,13 +40,13 @@ export const BigAmountValue = ({
 
     return (
         <Row alignItems="baseline" data-testid={dataTestId}>
-            <Text typographyStyle={size === 'large' ? 'titleLarge' : 'titleMedium'}>
+            <Text typographyStyle={size === 'large' ? 'headline-lg' : 'headline-md'}>
                 <WholeValue>
                     {shouldRedactNumbers ? redactNumericalSubstring(whole) : whole}
                 </WholeValue>
             </Text>
             {!shouldRedactNumbers && (
-                <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <DecimalValue>
                         {separator}
                         {fractional}

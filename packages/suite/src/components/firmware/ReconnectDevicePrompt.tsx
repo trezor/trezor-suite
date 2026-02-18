@@ -229,7 +229,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                             </BulletList>
                         ) : (
                             <Paragraph
-                                typographyStyle="hint"
+                                typographyStyle="body-sm"
                                 intent="neutral"
                                 priority="secondary"
                                 align="center"

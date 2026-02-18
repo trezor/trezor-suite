@@ -24,7 +24,7 @@ const Section = styled.div`
 `;
 
 const SectionHeading = styled.h3`
-    ${typography.callout}
+    ${typography['body-sm-strong']}
     color: ${({ theme }) => theme.textSubdued};
     padding: 8px 0 18px;
 `;

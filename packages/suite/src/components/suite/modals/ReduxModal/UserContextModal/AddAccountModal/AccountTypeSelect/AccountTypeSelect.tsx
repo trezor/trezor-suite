@@ -20,7 +20,7 @@ const TypeInfo = styled.div`
     flex: 1;
     margin-left: 1ch;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.label}
+    ${typography['body-xs']}
 `;
 
 interface AccountTypeSelectProps {
@@ -82,7 +82,7 @@ const AccountTypeSelectComponent = ({
                 onChange={(option: Option) => onSelectAccountType(option.value)}
                 openMenuOnFocus={false}
             />
-            <Paragraph intent="neutral" priority="secondary" typographyStyle="hint">
+            <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <AccountTypeDescription
                     bip43Path={bip43PathToDescribe}
                     accountType={selectedAccountType?.accountType || 'normal'}

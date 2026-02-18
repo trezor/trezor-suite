@@ -195,7 +195,7 @@ const renderInternalItem = <T, U>({
                     {renderSectionHeader ? (
                         renderSectionHeader(title, { sectionData, key })
                     ) : (
-                        <Text variant="hint" color="textSubdued">
+                        <Text variant="body-sm" color="textSubdued">
                             {item.title}
                         </Text>
                     )}

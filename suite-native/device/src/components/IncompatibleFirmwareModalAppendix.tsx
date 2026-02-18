@@ -3,7 +3,7 @@ import { Translation } from '@suite-native/intl';
 
 export const IncompatibleFirmwareModalAppendix = () => (
     <VStack>
-        <Text variant="callout">
+        <Text variant="body-sm-strong">
             <Translation id="moduleDevice.incompatibleFirmwareModalAppendix.title" />
         </Text>
         <Box>

@@ -94,7 +94,7 @@ export const ConnectPermissionsScreen = () => {
                 ))}
                 {apps.length === 0 && (
                     <>
-                        <Text textAlign="center" variant="titleSmall">
+                        <Text textAlign="center" variant="headline-sm">
                             <Translation id="moduleConnectPopup.noConnectedApps" />
                         </Text>
                         <Text textAlign="center" color="textSubdued">

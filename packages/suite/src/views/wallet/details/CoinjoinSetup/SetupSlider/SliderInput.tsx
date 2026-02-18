@@ -25,7 +25,7 @@ const Level = styled(Input)<{ $elevation: Elevation }>`
         padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
         border: 1.5px solid ${mapElevationToBorder};
         color: ${({ theme }) => theme.textPrimaryDefault};
-        ${typography.titleSmall}
+        ${typography['headline-sm']}
         text-align: center;
 
         &:disabled {
@@ -35,7 +35,7 @@ const Level = styled(Input)<{ $elevation: Elevation }>`
 `;
 
 const InnerAddon = styled.div`
-    ${typography.hint}
+    ${typography['body-sm']}
     color: ${({ theme }) => theme.textSubdued};
 `;
 

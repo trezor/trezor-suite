@@ -38,7 +38,7 @@ export const TradingDetailSupportBanner = ({
             intent="neutral"
             icon="question"
             description={
-                <Paragraph typographyStyle="hint">
+                <Paragraph typographyStyle="body-sm">
                     <Translation
                         id="TR_TRADING_PROCESSING_SUPPORT"
                         values={{

@@ -36,14 +36,14 @@ export const TEXT_MAX_FONT_MULTIPLIER = 2;
  * Our UI design is not prepared for unlimited up-scaling.
  */
 const variantToMaxFontSizeMultiplier = {
-    titleLarge: TITLE_MAX_FONT_MULTIPLIER,
-    titleMedium: TITLE_MAX_FONT_MULTIPLIER,
-    titleSmall: TITLE_MAX_FONT_MULTIPLIER,
-    highlight: TITLE_MAX_FONT_MULTIPLIER,
-    body: TEXT_MAX_FONT_MULTIPLIER,
-    callout: TEXT_MAX_FONT_MULTIPLIER,
-    hint: TEXT_MAX_FONT_MULTIPLIER,
-    label: TEXT_MAX_FONT_MULTIPLIER,
+    'headline-lg': TITLE_MAX_FONT_MULTIPLIER,
+    'headline-md': TITLE_MAX_FONT_MULTIPLIER,
+    'headline-sm': TITLE_MAX_FONT_MULTIPLIER,
+    'body-md-strong': TITLE_MAX_FONT_MULTIPLIER,
+    'body-md': TEXT_MAX_FONT_MULTIPLIER,
+    'body-sm-strong': TEXT_MAX_FONT_MULTIPLIER,
+    'body-sm': TEXT_MAX_FONT_MULTIPLIER,
+    'body-xs': TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<NativeTypographyStyle, number>;
 
 const getAccessibilityFontScale = (variant?: NativeTypographyStyle) => {
@@ -70,7 +70,7 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, t
 export const Text = React.forwardRef<RNText, TextProps>(
     (
         {
-            variant = 'body',
+            variant = 'body-md',
             color = 'textDefault',
             textAlign = 'left',
             style = {},

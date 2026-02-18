@@ -12,7 +12,7 @@ export const MyAssetsDisabledListItem = ({ count }: MyAssetsDisabledListItemProp
 
     return (
         <Box padding="sp12" justifyContent="center" alignItems="center">
-            <Text variant="hint" color="textDefault">
+            <Text variant="body-sm" color="textDefault">
                 <Translation
                     id="moduleTrading.myAssetSheet.nonTradeable"
                     values={{ count: intl.formatNumber(count) }}

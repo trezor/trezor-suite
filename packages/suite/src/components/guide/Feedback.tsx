@@ -22,7 +22,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
 const Headline = styled.div`
-    ${typography.label}
+    ${typography['body-xs']}
     text-align: left;
     color: ${({ theme }) => theme.textDefault};
     padding: 0 0 11px;
@@ -39,7 +39,7 @@ const AnonymousDataList = styled.ul`
 
 const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
-    ${typography.hint}
+    ${typography['body-sm']}
     color: ${({ theme }) => theme.textDefault};
 `;
 

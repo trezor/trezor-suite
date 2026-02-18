@@ -87,7 +87,7 @@ const LegacyWarning = () => (
         icon
         description={
             <Column alignItems="start">
-                <Text typographyStyle="highlight" intent="info">
+                <Text typographyStyle="body-md-strong" intent="info">
                     <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />
                 </Text>
                 <Translation
@@ -95,7 +95,7 @@ const LegacyWarning = () => (
                     values={{
                         a: chunks => (
                             <TrezorLink
-                                typographyStyle="callout"
+                                typographyStyle="body-sm-strong"
                                 href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
                             >
                                 {chunks}
@@ -119,7 +119,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
             <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
                 <InnerScrollableWrapper>
                     <OptionGroupHeading>
-                        <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <Translation id="TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS" />
                         </Text>
                     </OptionGroupHeading>
@@ -138,7 +138,11 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                             margin={{ bottom: spacings.xs }}
                             fillType="none"
                             heading={
-                                <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                                <Text
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
                                     <Translation id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT" />
                                 </Text>
                             }
@@ -166,7 +170,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                 ) : (
                     <LegacyOptionsMargin>
                         <OptionGroupHeading>
-                            <Text typographyStyle="hint" intent="neutral" priority="secondary">
+                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <Translation id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT" />
                             </Text>
                         </OptionGroupHeading>

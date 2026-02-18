@@ -69,7 +69,7 @@ export const InlineAlertBox = ({
             ) : (
                 <Icon name={iconName || variantToIconName[variant]} size="mediumLarge" />
             )}
-            <Text variant="hint" style={applyStyle(textStyle)}>
+            <Text variant="body-sm" style={applyStyle(textStyle)}>
                 {title}
             </Text>
             {buttonLabel && (

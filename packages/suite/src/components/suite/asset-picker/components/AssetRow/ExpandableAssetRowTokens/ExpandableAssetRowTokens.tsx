@@ -66,7 +66,7 @@ export function ExpandableAssetRowTokens({
                             horizontal: 16,
                         }}
                     >
-                        <Text typographyStyle="hint">
+                        <Text typographyStyle="body-sm">
                             <Translation id={label} />
                         </Text>
 

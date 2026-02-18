@@ -95,13 +95,13 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
             >
                 <Column gap={32}>
                     <Column gap={24} padding={{ horizontal: 8 }}>
-                        <H3 typographyStyle="titleMedium" align="center" textWrap="pretty">
+                        <H3 typographyStyle="headline-md" align="center" textWrap="pretty">
                             <Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />
                         </H3>
                         <Paragraph
                             intent="neutral"
                             priority="secondary"
-                            typographyStyle="hint"
+                            typographyStyle="body-sm"
                             align="center"
                             textWrap="balance"
                         >

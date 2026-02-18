@@ -81,7 +81,7 @@ export const IconListItem = ({
 
 export const IconListTextItem = ({
     children,
-    textVariant = 'hint',
+    textVariant = 'body-sm',
     textColor,
     ...rest
 }: IconListTextItemProps) => (

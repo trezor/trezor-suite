@@ -44,7 +44,8 @@ const Container = styled(NavigationItemBase)<{
     $isRounded?: boolean;
     $typographyStyle?: TypographyStyle;
 }>`
-    gap: ${({ $typographyStyle }) => ($typographyStyle === 'hint' ? spacingsPx.xs : spacingsPx.md)};
+    gap: ${({ $typographyStyle }) =>
+        $typographyStyle === 'body-sm' ? spacingsPx.xs : spacingsPx.md};
     ${({ theme, $isActive }) =>
         $isActive
             ? css<{ $elevation: Elevation }>`
@@ -113,7 +114,7 @@ export const NavItem = (props: NavigationItemProps) => {
         iconSize = 'large',
         itemsCount,
         isRounded = false,
-        typographyStyle = 'body',
+        typographyStyle = 'body-md',
         onClick,
     } = props;
 

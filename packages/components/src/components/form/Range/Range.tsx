@@ -175,7 +175,7 @@ const Label = styled.div<{ disabled?: boolean; $width?: number }>`
     min-width: ${({ $width }) => `${$width}px`};
     text-align: center;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.label}
+    ${typography['body-xs']}
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 
     &:first-child {
@@ -267,7 +267,7 @@ const SegmentLabel = styled.div`
     padding-top: ${spacingsPx.xxxs};
     text-align: left;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.label}
+    ${typography['body-xs']}
 
     span {
         cursor: pointer;

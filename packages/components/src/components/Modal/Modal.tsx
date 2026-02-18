@@ -123,7 +123,7 @@ const InnerModalBase = ({
                                             <Text
                                                 intent="neutral"
                                                 priority="secondary"
-                                                typographyStyle="hint"
+                                                typographyStyle="body-sm"
                                                 ellipsisLineCount={2}
                                                 as="div"
                                                 data-testid="@modal/header-paragraph"

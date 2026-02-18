@@ -124,7 +124,7 @@ export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
                     {form.formState.isSubmitted && (
                         <VStack style={applyStyle(loaderWrapperStyle)} spacing="sp16">
                             <Loader size="large" />
-                            <Text variant="titleSmall">
+                            <Text variant="headline-sm">
                                 <Translation id={translations.loaderText} />
                             </Text>
                         </VStack>

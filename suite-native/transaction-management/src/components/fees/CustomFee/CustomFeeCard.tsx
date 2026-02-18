@@ -50,13 +50,13 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                 <CryptoToFiatAmountFormatter
                                     value={customFeeTransaction.fee}
                                     symbol={symbol}
-                                    variant="body"
+                                    variant="body-md"
                                 />
                                 <CryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
                                     symbol={symbol}
                                     isBalance={false}
-                                    variant="hint"
+                                    variant="body-sm"
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />

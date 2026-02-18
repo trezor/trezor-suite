@@ -33,7 +33,7 @@ export const StakingDetailScreenHeader = () => {
                     <HStack style={applyStyle(headerStyle)}>
                         <Icon name="piggyBankFilled" color="iconSubdued" />
                         <Text
-                            variant="highlight"
+                            variant="body-md-strong"
                             ellipsizeMode="tail"
                             numberOfLines={1}
                             style={applyStyle(headerTextStyle)}
@@ -41,7 +41,7 @@ export const StakingDetailScreenHeader = () => {
                             <Translation id="earn.stakingDetailScreen.title" />
                         </Text>
                     </HStack>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         <AccountLabel
                             accountDescriptor={accountDescriptor}
                             networkSymbol={networkSymbol}

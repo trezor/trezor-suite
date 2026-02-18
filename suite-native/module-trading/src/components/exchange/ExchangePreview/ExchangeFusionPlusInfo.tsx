@@ -13,13 +13,13 @@ export const ExchangeFusionPlusInfo = memo(() => (
         />
         <TradeInfoRow>
             <VStack>
-                <BulletListItem variant="hint">
+                <BulletListItem variant="body-sm">
                     <Translation id="moduleTrading.tradingExchangePreviewScreen.fusionPlusInfo.bullet1" />
                 </BulletListItem>
-                <BulletListItem variant="hint">
+                <BulletListItem variant="body-sm">
                     <Translation id="moduleTrading.tradingExchangePreviewScreen.fusionPlusInfo.bullet2" />
                 </BulletListItem>
-                <BulletListItem variant="hint">
+                <BulletListItem variant="body-sm">
                     <Translation id="moduleTrading.tradingExchangePreviewScreen.fusionPlusInfo.bullet3" />
                 </BulletListItem>
             </VStack>

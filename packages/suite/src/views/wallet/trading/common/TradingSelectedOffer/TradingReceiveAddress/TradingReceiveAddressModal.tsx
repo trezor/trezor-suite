@@ -119,7 +119,7 @@ export const TradingReceiveAddressModal = () => {
             }
         >
             <Column gap={spacings.sm}>
-                <Text typographyStyle="body">
+                <Text typographyStyle="body-md">
                     <Translation
                         id="TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT"
                         values={{ networkName }}

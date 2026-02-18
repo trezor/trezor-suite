@@ -99,7 +99,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                 <H3>
                     <Translation id="METADATA_MODAL_HEADING" />
                 </H3>
-                <Paragraph typographyStyle="hint" intent="neutral" priority="secondary">
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="METADATA_MODAL_DESCRIPTION" />
                 </Paragraph>
                 {error && <Banner intent="critical" icon description={error} />}

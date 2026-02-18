@@ -101,7 +101,7 @@ export const ExperimentalFeaturesSettingsCard = () => {
                         </Box>
                         <VStack flex={1}>
                             <HStack justifyContent="space-between" alignItems="center">
-                                <Text variant="highlight">
+                                <Text variant="body-md-strong">
                                     <Translation id="moduleSettings.advanced.experimentalFeatures.title" />
                                 </Text>
                                 <Switch
@@ -110,7 +110,7 @@ export const ExperimentalFeaturesSettingsCard = () => {
                                     testID="@settings/experimental-features/toggle-switch"
                                 />
                             </HStack>
-                            <Text variant="hint" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 <Translation id="moduleSettings.advanced.experimentalFeatures.subtitle" />
                             </Text>
                             <AnimatedBox style={animatedAlertStyle}>

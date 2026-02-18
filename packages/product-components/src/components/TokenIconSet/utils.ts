@@ -4,10 +4,10 @@ import { AssetLogoSize } from '../AssetLogo/AssetLogo';
 
 export const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
     const typographyStyleMap: Record<AssetLogoSize, TypographyStyle> = {
-        20: 'label',
-        24: 'hint',
-        32: 'body',
-        40: 'titleSmall',
+        20: 'body-xs',
+        24: 'body-sm',
+        32: 'body-md',
+        40: 'headline-sm',
     };
 
     return typographyStyleMap[size];

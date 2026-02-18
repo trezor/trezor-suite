@@ -12,7 +12,7 @@ export const Changelog = ({ children }: ChangelogProps) => {
 
     return (
         <>
-            <Paragraph typographyStyle="callout">Changelog</Paragraph>
+            <Paragraph typographyStyle="body-sm-strong">Changelog</Paragraph>
             <List
                 bulletComponent={<Icon name="dotOutline" />}
                 bulletGap={4}

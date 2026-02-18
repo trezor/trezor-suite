@@ -65,7 +65,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <Box paddingTop="sp24" paddingHorizontal="sp8" paddingBottom="sp32">
-                <Text variant="titleMedium">
+                <Text variant="headline-md">
                     <Translation
                         id={titleKey}
                         values={{

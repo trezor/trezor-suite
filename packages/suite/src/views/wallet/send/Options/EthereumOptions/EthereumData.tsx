@@ -86,7 +86,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
         <Card>
             <Column gap={12}>
                 <Row justifyContent="space-between">
-                    <H4 typographyStyle="body">
+                    <H4 typographyStyle="body-md">
                         <Translation id="DATA_ETH" />
                     </H4>
                     <IconButton

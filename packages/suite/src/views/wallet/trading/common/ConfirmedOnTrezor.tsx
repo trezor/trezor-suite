@@ -10,7 +10,7 @@ import { borders, typography } from '@trezor/theme';
 const Confirmed = styled.div`
     display: flex;
     height: 60px;
-    ${typography.highlight}
+    ${typography['body-md-strong']}
     background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     align-items: center;
     justify-content: center;

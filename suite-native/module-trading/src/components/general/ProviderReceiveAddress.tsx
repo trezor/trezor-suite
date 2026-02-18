@@ -54,13 +54,13 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         <Animated.View entering={FadeIn}>
             <TradeInfoRow>
                 <VStack spacing="sp4">
-                    <Text variant="hint">
+                    <Text variant="body-sm">
                         <Translation
                             id="moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel"
                             values={{ providerName }}
                         />
                     </Text>
-                    <Text variant="hint" color="textSubdued">
+                    <Text variant="body-sm" color="textSubdued">
                         {addressText}
                     </Text>
                 </VStack>

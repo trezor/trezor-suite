@@ -25,16 +25,16 @@ export const mapPropsToTypographyStyle = (
         Record<BulletListItemState, TypographyStyle>
     > = {
         vertical: {
-            active: 'highlight',
-            default: 'body',
-            done: 'body',
-            pending: 'body',
+            active: 'body-md-strong',
+            default: 'body-md',
+            done: 'body-md',
+            pending: 'body-md',
         },
         horizontal: {
-            active: 'highlight',
-            default: 'hint',
-            done: 'hint',
-            pending: 'hint',
+            active: 'body-md-strong',
+            default: 'body-sm',
+            done: 'body-sm',
+            pending: 'body-sm',
         },
     };
 

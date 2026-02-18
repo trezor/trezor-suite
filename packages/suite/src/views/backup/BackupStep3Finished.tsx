@@ -37,7 +37,7 @@ export const BackupStep3Finished = ({
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="hint"
+                typographyStyle="body-sm"
                 data-testid="@backup/success-message"
                 margin={{ bottom: spacings.xl }}
             >

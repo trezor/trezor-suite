@@ -85,7 +85,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     return (
         <VStack spacing="sp12">
             <HStack flex={1} justifyContent="space-between" alignItems="center">
-                <Text variant="hint">
+                <Text variant="body-sm">
                     <Translation id="moduleSend.outputs.recipients.addressLabel" />
                 </Text>
                 <SendFormLabelEditable

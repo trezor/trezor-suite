@@ -40,7 +40,10 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
     return (
         <Table.Row>
             <Table.Cell>
-                <Text typographyStyle="body" data-testid={`@wallet/receive/used-address/${index}`}>
+                <Text
+                    typographyStyle="body-md"
+                    data-testid={`@wallet/receive/used-address/${index}`}
+                >
                     <Labeling
                         payload={{
                             ...metadataPayload,
@@ -71,7 +74,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                 </ReceiveDisabledWrapper>
             </Table.Cell>
             <Table.Cell align="end">
-                <Text typographyStyle="hint">
+                <Text typographyStyle="body-sm">
                     {fresh ? (
                         <Text intent="neutral" priority="secondary">
                             <Translation id="RECEIVE_TABLE_NOT_USED" />

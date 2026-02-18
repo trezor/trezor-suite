@@ -21,7 +21,7 @@ export function AssetPickerAccountLabel({ accountKey }: AssetPickerAccountLabelP
             showAccountTypeBadge={true}
             intent="neutral"
             priority="secondary"
-            typographyStyle="label"
+            typographyStyle="body-xs"
         />
     );
 }

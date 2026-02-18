@@ -56,7 +56,7 @@ export const Table = ({
     colWidths,
     isRowHighlightedOnHover = false,
     hasBorders = true,
-    typographyStyle = 'body',
+    typographyStyle = 'body-md',
 }: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
     const { parentElevation } = useElevation();

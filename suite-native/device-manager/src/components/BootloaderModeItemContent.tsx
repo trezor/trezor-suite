@@ -27,7 +27,7 @@ export const BootloaderModeItemContent = () => {
             <DeviceItemIcon deviceId={null} />
             <Box style={applyStyle(itemStyle, { isCompact: true })}>
                 <Text
-                    variant="highlight"
+                    variant="body-md-strong"
                     ellipsizeMode="tail"
                     numberOfLines={1}
                     style={applyStyle(headerStyle)}
