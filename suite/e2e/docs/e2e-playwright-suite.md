@@ -26,12 +26,13 @@ _(in case of Linux with X11 support, skip to step 6.)_
     - ``export HOSTNAME=`hostname` ``
     - `export DISPLAY=:0`
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
-1. In workspace `packages/suite` create a `.env` file according to the `.example.env`
+1. In another terminal window, run `yarn workspace @trezor/suite-e2e docker:suite-sync` to have local Relay server instance
+1. In workspace `@trezor/suite-e2e` create a `.env` file according to the `.example.env`
 
 ### Web
 
-1. In another window, run web `Suite` with `yarn suite:dev`.
-1. In a third window, run `yarn workspace @trezor/suite-e2e test:e2e:web`.
+1. In another terminal window, run web `Suite` with `yarn suite:dev`.
+1. In another terminal window, run `yarn workspace @trezor/suite-e2e test:e2e:web`.
 
 ### Desktop
 
@@ -91,6 +92,7 @@ Each test must be assigned a tag according to what device model it is supported 
 - @T3B1
 - @T3T1
 - @T3W1
+- @noDevice
 
 At the moment, there are these additional tags:
 
@@ -98,6 +100,8 @@ At the moment, there are these additional tags:
 - @desktopOnly
 - @webOnly
 - @nightlyOnly
+- @specificFirmware
+- @firmware-ready
 
 #### @smoke
 
@@ -113,6 +117,14 @@ Currently, we are also applying @webOnly as a positive filter on Web PR runs. Th
 
 Some tests should run on nighty runs only for specific reasons. This tags is used for reversed filtering in PR and release workflows definitions. This means tests with this tags will run only on nightly and canary runs.
 
+#### @specificFirmware
+
+Some tests must run on specific Firmware version. That version is setup and defined in test. This tag lets our runner know, that this test should not be included in Canary nightly run.
+
+#### @firmware-ready
+
+This tag server for easier test quarantine. This tag si dedicated to few tests that are guarding against firmware update issues. As such those tests start failing on every firmware release until we adopt new firmware to out Trezor User Env
+
 ## Results
 
 Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
@@ -122,6 +134,17 @@ CI runs have artifact with logs from `trezor-user-env`. They exist per group. Lo
 - electrum-regtest.txt
 - trezor-user-env-debugging.log
 - tenv-emulator-bridge-debugging.log
+- trezor-user-env-version.txt
+- quota-db.txt
+- suite-sync.txt
+
+### Local Relay Server
+
+The local relay server is used by the Suite Sync automation and its test suite to provide an isolated, controllable endpoint and deterministic test data. Each test start by restarting the server and wiping its data store, so do not expect data to persist between test runs. After a test run finishes, the data remains on the server for troubleshooting until the next setup wipe. The server runs from a Docker image pulled from a tagged image in our GitHub repository. Those images are build as part of Suite Sync server pipelines
+
+- Relay: http://localhost:4000
+- Quota manager: http://localhost:4001
+- Health check: http://localhost:4002
 
 ### Currents.dev
 
