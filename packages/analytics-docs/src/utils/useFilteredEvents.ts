@@ -20,6 +20,7 @@ export const useFilteredEvents = () => {
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<string>(initial.platform);
     const [isSidebarOpen, setIsSidebarOpen] = useState(initial.sidebarOpen);
+    const [isSidebarLoading, setIsSidebarLoading] = useState(false);
     const [isPlatformSortFiltering, setIsPlatformSortFiltering] = useState(false);
     const isInitialMount = useRef(true);
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
@@ -33,6 +34,12 @@ export const useFilteredEvents = () => {
     useEffect(() => {
         updateUrl(debouncedQuery, platform, sort, isSidebarOpen);
     }, [debouncedQuery, platform, sort, isSidebarOpen]);
+
+    useEffect(() => {
+        const id = setTimeout(() => setIsSidebarLoading(false), 200);
+
+        return () => clearTimeout(id);
+    }, [isSidebarOpen]);
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -99,6 +106,8 @@ export const useFilteredEvents = () => {
         normalizedQuery,
         isFiltering,
         isSidebarOpen,
+        isSidebarLoading,
         setIsSidebarOpen,
+        setIsSidebarLoading,
     };
 };
