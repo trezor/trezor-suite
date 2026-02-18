@@ -11,12 +11,11 @@ import {
     AuthorizeDeviceStackRoutes,
     Screen,
     useInterceptNativeNavigation,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useThpAutoconnectAlert } from '@suite-native/thp';
 
 import { ThpScreenHeader } from '../../components/thp/ThpScreenHeader';
-import { selectIsThpScreenDismissable } from '../../selectors';
+import { useThpScreenDismissal } from '../../hooks/useThpScreenDismissal';
 
 export const ThpConfirmationScreen = ({
     navigation,
@@ -24,13 +23,12 @@ export const ThpConfirmationScreen = ({
     navigation: NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 }) => {
     const { showEnableThpAutoconnectAlert } = useThpAutoconnectAlert();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const thpStep = useSelector(selectThpStep);
     const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);
-    const isThpScreenDismissable = useSelector(selectIsThpScreenDismissable);
 
     useInterceptNativeNavigation();
+    useThpScreenDismissal();
 
     useFocusEffect(
         useCallback(() => {
@@ -38,17 +36,8 @@ export const ThpConfirmationScreen = ({
                 navigation.replace(AuthorizeDeviceStackRoutes.ThpCodeEntry);
             } else if (thpAutoconnectStep === 'AutoconnectInfo') {
                 showEnableThpAutoconnectAlert();
-            } else if (isThpScreenDismissable) {
-                navigateToInitialScreen();
             }
-        }, [
-            thpStep,
-            thpAutoconnectStep,
-            isThpScreenDismissable,
-            showEnableThpAutoconnectAlert,
-            navigateToInitialScreen,
-            navigation,
-        ]),
+        }, [thpStep, thpAutoconnectStep, showEnableThpAutoconnectAlert, navigation]),
     );
 
     return (
