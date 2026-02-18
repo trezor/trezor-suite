@@ -2,8 +2,8 @@
 
 /docker @vdovhanych @mroz22
 
-/scripts/list-outdated-dependencies/connect-dependencies.txt @mroz22
-/scripts/list-outdated-dependencies/foundation-dependencies.txt @komret
+/scripts/list-outdated-dependencies/connect-dependencies.txt @martykan
+/scripts/list-outdated-dependencies/foundation-dependencies.txt @matejkriz
 /scripts/list-outdated-dependencies/growth-dependencies.txt @jvaclavik
 /scripts/list-outdated-dependencies/trade-dependencies.txt @vytick
 /scripts/list-outdated-dependencies/qa-dependencies.txt @HajekOndrej
@@ -47,14 +47,6 @@
 /suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
 
 /suite-common/token-definitions @tomasklim
-
-/packages/suite-build @komret
-
-/packages/suite-data @komret
-
-/packages/suite-desktop @komret
-
-/packages/suite-desktop-ui @komret
 
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
 
