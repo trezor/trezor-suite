@@ -12,6 +12,14 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 
+export type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
+    middleware?: any[];
+    extra?: ExtraDependenciesPartial;
+    reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
+    preloadedState?: any;
+    serializableCheck?: { ignoredActions?: string[] };
+};
+
 export const initPreloadedState = ({
     rootReducer,
     partialState,
@@ -29,13 +37,7 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
     reducer = (state: any) => state,
     preloadedState,
     serializableCheck = {},
-}: {
-    middleware?: any[];
-    extra?: ExtraDependenciesPartial;
-    reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
-    preloadedState?: any;
-    serializableCheck?: { ignoredActions?: string[] };
-} = {}) {
+}: MockStoreConfig<S, A> = {}) {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
