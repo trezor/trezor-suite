@@ -79,8 +79,9 @@ export const AccountsMenuHeader = () => {
                                             {coinFilter.length > 0 && <Indicator />}
                                             <Icon
                                                 size={16}
-                                                variant={
-                                                    isCoinsFilterVisible ? 'primary' : 'tertiary'
+                                                intent={isCoinsFilterVisible ? 'brand' : 'neutral'}
+                                                priority={
+                                                    isCoinsFilterVisible ? 'primary' : 'secondary'
                                                 }
                                                 name="funnelSimple"
                                                 onClick={toggleCoinsFilter}

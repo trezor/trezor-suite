@@ -1,6 +1,4 @@
-import { DefaultTheme } from 'styled-components';
-
-import { CSSColor, Color } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { BannerIntent } from './types';
 import { IconName } from '../Icon/Icon';
@@ -17,7 +15,7 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     return colorMap[intent];
 };
 
-export const mapIntentToIconColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
+export const mapIntentToIconColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
         brand: 'iconPrimaryDefault',
         info: 'iconAlertBlue',
@@ -26,7 +24,7 @@ export const mapIntentToIconColor = (intent: BannerIntent, theme: DefaultTheme):
         neutral: 'iconSubdued',
     };
 
-    return theme[colorMap[intent]];
+    return colorMap[intent];
 };
 
 export const mapIntentToIcon = (intent: BannerIntent): IconName => {

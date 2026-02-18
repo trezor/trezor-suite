@@ -1,5 +1,4 @@
 import { ExchangeKYCType } from 'invity-api';
-import { useTheme } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Banner, Icon, Tooltip } from '@trezor/components';
@@ -42,7 +41,6 @@ export const TradingUtilsKyc = ({
     providers,
     isForComparator,
 }: TradingUtilsProviderProps) => {
-    const theme = useTheme();
     const provider = providers && exchange ? providers[exchange] : null;
     const kycPolicyType = provider?.kycPolicyType;
     const kycPolicyTranslation = getKycPolicy(kycPolicyType);
@@ -58,7 +56,7 @@ export const TradingUtilsKyc = ({
             <Tooltip content={kycPolicyTranslation} placement="bottom">
                 <TooltipWrap>
                     <TooltipIcon>
-                        <Icon name="info" size="small" color={theme.textAlertYellow} />
+                        <Icon name="info" size={12} color="textAlertYellow" />
                     </TooltipIcon>
                     <TooltipText $isYellow>
                         <Translation id={kycTitle} />

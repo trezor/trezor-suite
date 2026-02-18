@@ -93,7 +93,9 @@ export const TransactionListActions = ({
                 onChange={event => setSearch(event.target.value)}
                 onClear={() => setSearch('')}
                 size="small"
-                leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
+                leftContent={
+                    <Icon name="magnifyingGlass" intent="neutral" priority="secondary" size={16} />
+                }
             />
             {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
                 <FilterAction />

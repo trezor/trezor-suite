@@ -1,113 +1,49 @@
 import React, { ReactNode } from 'react';
 
-import styled, { DefaultTheme } from 'styled-components';
+import { SpacingValuesNew, borders } from '@trezor/theme';
 
-import { CSSColor, SpacingValues, borders } from '@trezor/theme';
-
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { ButtonIntent } from '../buttons/types';
+import { ComponentWithSubIconIntent } from './types';
+import { mapIntentToBackgroundColor, mapIntentToIconColor } from './utils';
+import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import { Box } from '../Box/Box';
+import { Icon, IconName } from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
 
-export const mapPropsToBackgroundColor = ({
-    $intent,
-    theme,
-}: {
-    $intent: ButtonIntent;
-    theme: DefaultTheme;
-}): CSSColor => {
-    const colorMap: Record<ButtonIntent, CSSColor> = {
-        brand: theme.baseFillElementBrandBold,
-        neutral: theme.baseFillElementContrast,
-        info: theme.baseFillElementInfoBold,
-        warning: theme.baseFillElementWarningBold,
-        critical: theme.baseFillElementNegativeBold,
-    };
-
-    return colorMap[$intent];
-};
-
-export const mapPropsToIconColor = ({
-    $intent,
-    theme,
-}: {
-    $intent: ButtonIntent;
-    theme: DefaultTheme;
-}): CSSColor => {
-    const colorMap: Record<ButtonIntent, CSSColor> = {
-        brand: theme.baseContentOnActionBrandPrimary,
-        neutral: theme.baseContentReversePrimary,
-        info: theme.baseContentOnActionInfoPrimary,
-        warning: theme.baseContentOnActionWarningPrimary,
-        critical: theme.baseContentOnActionNegativePrimary,
-    };
-
-    return colorMap[$intent];
-};
-
-const Container = styled.div<TransientProps<AllowedFrameProps>>`
-    position: relative;
-
-    ${withFrameProps}
-`;
-
-type SubIconWrapperProps = {
-    $iconOffset: SpacingValues;
-    $iconPadding: SpacingValues;
-    $intent: ButtonIntent;
-};
-
-const SubIconWrapper = styled.div<SubIconWrapperProps>`
-    padding: ${({ $iconPadding }) => `${$iconPadding}px`};
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: ${mapPropsToBackgroundColor};
-    color: ${mapPropsToIconColor};
-
-    position: absolute;
-    right: -${({ $iconOffset }) => $iconOffset}px;
-    top: -${({ $iconOffset }) => $iconOffset}px;
-    border-radius: ${borders.radii.full};
-`;
-
 export type ComponentWithSubIconProps = AllowedFrameProps & {
-    icon?: React.ReactNode;
+    iconName?: IconName;
+    iconSize?: number;
     children: ReactNode;
-    iconPadding?: SpacingValues;
-    iconOffset?: SpacingValues;
-    intent?: ButtonIntent;
+    iconPadding?: SpacingValuesNew;
+    iconOffset?: SpacingValuesNew;
+    intent?: ComponentWithSubIconIntent;
 };
 
 export const ComponentWithSubIcon = ({
     intent = 'brand',
+    iconSize = 8,
+    iconName,
     children,
     iconPadding = 2,
     iconOffset = 4,
-    icon,
     ...rest
 }: ComponentWithSubIconProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedComponentWithSubIconFrameProps);
-
-    if (icon === undefined) {
-        return <Container {...frameProps}>{children}</Container>;
-    }
+    const frameProps = pickAndPrepareFrameProps(rest, allowedComponentWithSubIconFrameProps, false);
 
     return (
-        <Container {...frameProps}>
+        <Box width="fit-content" position={{ type: 'relative' }} {...frameProps}>
             {children}
-            <SubIconWrapper $iconOffset={iconOffset} $iconPadding={iconPadding} $intent={intent}>
-                {icon}
-            </SubIconWrapper>
-        </Container>
+            {iconName && (
+                <Box
+                    position={{ type: 'absolute', top: iconOffset * -1, right: iconOffset * -1 }}
+                    backgroundColor={mapIntentToBackgroundColor(intent)}
+                    borderRadius={borders.radii.full}
+                    padding={iconPadding}
+                >
+                    <Icon name={iconName} size={iconSize} color={mapIntentToIconColor(intent)} />
+                </Box>
+            )}
+        </Box>
     );
 };

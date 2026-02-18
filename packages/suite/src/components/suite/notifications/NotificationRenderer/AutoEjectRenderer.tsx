@@ -21,7 +21,7 @@ export const AutoEjectRenderer = ({ render: View, notification }: NotificationRe
                 onClick: handleActionClick,
                 label: 'TR_SETTINGS',
                 position: 'right',
-                variant: 'tertiary',
+                intent: 'neutral',
             }}
             onCancel={onCancel}
             notification={notification}

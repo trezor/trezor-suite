@@ -248,7 +248,13 @@ export const IndicatorsContainer = ({
 
 export const DropdownIndicator = (props: DropdownIndicatorProps) => (
     <DropdownWrapper $isOpen={props.selectProps.menuIsOpen}>
-        <Icon name="caretDown" size={20} variant={props.isDisabled ? 'disabled' : 'tertiary'} />
+        <Icon
+            name="caretDown"
+            size={20}
+            {...(props.isDisabled
+                ? { isDisabled: true }
+                : { intent: 'neutral', priority: 'secondary' })}
+        />
     </DropdownWrapper>
 );
 

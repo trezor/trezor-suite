@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -61,7 +61,6 @@ const FeedbackIconWrapper = styled.div`
 `;
 
 export const Guide = () => {
-    const theme = useTheme();
     const [searchActive, setSearchActive] = useState(false);
     const indexNode = useSelector(state => state.guide.indexNode);
     const dispatch = useDispatch();
@@ -90,16 +89,12 @@ export const Guide = () => {
                             data-testid="@guide/button-feedback"
                             onClick={handleFeedbackButtonClick}
                         >
-                            <Icon name="users" size={24} color={theme.iconOnTertiary} />
+                            <Icon name="users" size={24} color="iconOnTertiary" />
                             <FeedbackButtonLabel>
                                 <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                             </FeedbackButtonLabel>
                             <FeedbackIconWrapper>
-                                <Icon
-                                    name="caretCircleRight"
-                                    size={24}
-                                    color={theme.iconPrimaryDefault}
-                                />
+                                <Icon name="caretCircleRight" size={24} intent="brand" />
                             </FeedbackIconWrapper>
                         </FeedbackButton>
                     </FeedbackLinkWrapper>

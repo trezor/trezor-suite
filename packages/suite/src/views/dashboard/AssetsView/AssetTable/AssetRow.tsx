@@ -1,7 +1,5 @@
 import { memo } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
@@ -64,7 +62,6 @@ export const AssetRow = memo(
         const { symbol } = network;
         const dispatch = useDispatch();
         const analytics = useAnalytics();
-        const theme = useTheme();
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
         const handleRowClick = () => {
@@ -176,7 +173,7 @@ export const AssetRow = memo(
                         ) : (
                             <Text intent="critical" typographyStyle="body-sm" textWrap="nowrap">
                                 <Row gap={spacings.xxs}>
-                                    <Icon name="warning" color={theme.iconAlertRed} size={14} />
+                                    <Icon name="warning" intent="critical" size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                                 </Row>
                             </Text>

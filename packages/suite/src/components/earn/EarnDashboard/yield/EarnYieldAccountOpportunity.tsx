@@ -141,7 +141,12 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             </Column>
 
                             {hasApy && (
-                                <Icon name="arrowRight" variant="tertiary" size="mediumLarge" />
+                                <Icon
+                                    name="arrowRight"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size={20}
+                                />
                             )}
                         </Row>
                     </Table.Cell>

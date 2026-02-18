@@ -112,7 +112,12 @@ export const UpdateNotificationBanner = ({
 
     return (
         <ElevationContext baseElevation={0}>
-            <motion.div variants={variants} initial="initial" exit="exit" animate={['drop', 'shake']}>
+            <motion.div
+                variants={variants}
+                initial="initial"
+                exit="exit"
+                animate={['drop', 'shake']}
+            >
                 <Card
                     onClick={handleOnClick}
                     data-testid="@notification/update-notification-banner"

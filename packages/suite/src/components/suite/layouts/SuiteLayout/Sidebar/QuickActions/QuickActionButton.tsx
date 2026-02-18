@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {
-    ButtonIntent,
     ComponentWithSubIcon,
+    ComponentWithSubIconIntent,
     Icon,
     IconName,
     ManagedTooltipProps,
@@ -12,7 +12,7 @@ import {
 
 type ActionButtonProps = {
     onClick?: () => void;
-    subIconIntent?: ButtonIntent;
+    subIconIntent?: ComponentWithSubIconIntent;
     subIconName?: IconName;
     tooltip?: Partial<ManagedTooltipProps>;
     'data-testid'?: string;
@@ -35,7 +35,11 @@ export const QuickActionButton = ({
     subIconIntent,
     subIconName,
 }: ActionButtonProps) => {
-    const icon = iconName ? <Icon name={iconName} size={16} variant="tertiary" /> : iconComponent;
+    const icon = iconName ? (
+        <Icon name={iconName} size={16} intent="neutral" priority="secondary" />
+    ) : (
+        iconComponent
+    );
 
     return (
         <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
@@ -43,7 +47,8 @@ export const QuickActionButton = ({
                 {subIconName ? (
                     <ComponentWithSubIcon
                         intent={subIconIntent}
-                        icon={<Icon name={subIconName} size={8} />}
+                        iconName={subIconName}
+                        iconSize={8}
                         iconOffset={8}
                     >
                         {icon}

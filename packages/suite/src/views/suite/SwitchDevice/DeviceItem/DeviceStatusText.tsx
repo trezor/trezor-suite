@@ -23,7 +23,7 @@ export const DeviceStatusText = ({
     if (deviceNeedsRefresh) {
         return (
             <DeviceConnectionText
-                variant="warning"
+                intent="warning"
                 icon="repeat"
                 data-testid="@deviceStatus-connected"
                 data-testid-alt="@deviceStatus"

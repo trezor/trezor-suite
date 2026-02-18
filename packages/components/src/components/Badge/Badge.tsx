@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { borders } from '@trezor/theme';
 
 import { BadgeIntent, BadgeSize } from './types';
@@ -39,12 +37,11 @@ export const Badge = ({
     'data-testid': dataTest,
     ...rest
 }: BadgeProps) => {
-    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedBadgeFrameProps, false);
     const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
 
     const iconProps = {
-        color: mapIntentToIconColor(intent, theme),
+        color: mapIntentToIconColor(intent),
         size: mapSizeToIconSize(size),
     };
 

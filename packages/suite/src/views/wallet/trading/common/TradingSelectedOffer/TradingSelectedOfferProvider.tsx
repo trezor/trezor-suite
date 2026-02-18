@@ -75,7 +75,12 @@ export const TradingSelectedOfferProvider = () => {
                                     exchange={quote.exchange}
                                 />
                             </Text>
-                            <Icon name="caretRight" size={20} variant="tertiary" />
+                            <Icon
+                                name="caretRight"
+                                size={20}
+                                intent="neutral"
+                                priority="secondary"
+                            />
                         </>
                     )}
                 </Row>

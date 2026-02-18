@@ -1,7 +1,7 @@
 import { MouseEvent } from 'react';
 
 import { transparentize } from 'polished';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Icon } from '@trezor/components';
@@ -36,7 +36,6 @@ export const OpenGuideFromTooltip = ({
     'data-testid': dataTest,
 }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
-    const theme = useTheme();
 
     return (
         <OpenGuideLink
@@ -46,7 +45,7 @@ export const OpenGuideFromTooltip = ({
                 openNodeById(id);
             }}
         >
-            <Icon size={12} color={theme.iconAlertYellow} name="lightbulb" />
+            <Icon size={12} intent="warning" name="lightbulb" />
             <Translation id="TR_LEARN" />
         </OpenGuideLink>
     );

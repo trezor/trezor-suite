@@ -56,7 +56,9 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             <Card paddingType="large">
                 <List gap={24}>
                     <List.Item
-                        bulletComponent={<Icon name="recycle" variant="tertiary" size={20} />}
+                        bulletComponent={
+                            <Icon name="recycle" intent="neutral" priority="secondary" size={20} />
+                        }
                     >
                         <Paragraph intent="neutral" priority="secondary">
                             <Translation id="TR_FORGET_DEVICE_MODAL_BULLET_FORGET" />
@@ -65,7 +67,12 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                     {isBluetoothDevice && (
                         <List.Item
                             bulletComponent={
-                                <Icon name="bluetoothSlash" variant="tertiary" size={20} />
+                                <Icon
+                                    name="bluetoothSlash"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size={20}
+                                />
                             }
                         >
                             <Paragraph intent="neutral" priority="secondary">
@@ -78,7 +85,9 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                         </List.Item>
                     )}
                     <List.Item
-                        bulletComponent={<Icon name="scroll" variant="tertiary" size={20} />}
+                        bulletComponent={
+                            <Icon name="scroll" intent="neutral" priority="secondary" size={20} />
+                        }
                     >
                         <Paragraph intent="neutral" priority="secondary">
                             <Translation id="TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE" />

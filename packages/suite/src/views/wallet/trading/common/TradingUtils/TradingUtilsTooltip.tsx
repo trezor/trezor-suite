@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { Translation, useTranslation } from '@suite/intl';
 import { Icon, Tooltip } from '@trezor/components';
 
@@ -9,7 +7,6 @@ import { TradingUtilsTooltipFee } from 'src/views/wallet/trading/common/TradingU
 
 // IN TESTING MODE
 export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quote'>) => {
-    const theme = useTheme();
     const { translationString } = useTranslation();
     const isFeesIncluded = false;
     const notIncludedContent = translationString('TR_TRADING_FEES_ON_WEBSITE');
@@ -19,7 +16,7 @@ export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quo
             <Tooltip content={<TradingUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
                     <TooltipIcon>
-                        <Icon name="info" size="small" color={theme.textDefault} />
+                        <Icon name="info" size={12} color="textDefault" />
                     </TooltipIcon>
                     <TooltipText>
                         <Translation id="TR_TRADING_FEES_INCLUDED" />
@@ -33,7 +30,7 @@ export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quo
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
                 <TooltipIcon>
-                    <Icon name="info" size="small" color={theme.textAlertYellow} />
+                    <Icon name="info" size={12} color="textAlertYellow" />
                 </TooltipIcon>
                 <TooltipText $isYellow>
                     <Translation id="TR_TRADING_FEES_NOT_INCLUDED" />

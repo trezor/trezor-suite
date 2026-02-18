@@ -23,8 +23,8 @@ const isAdded = (event: EventDoc, version: string) => event.changelog?.addedInVe
 
 const getEventChangeProps = (event: EventDoc, version: string) =>
     isAdded(event, version)
-        ? { name: 'plus' as const, variant: 'primary' as const }
-        : { name: 'arrowsClockwiseFilled' as const, variant: 'warning' as const };
+        ? { name: 'plus' as const, intent: 'brand' as const }
+        : { name: 'arrowsClockwiseFilled' as const, intent: 'warning' as const };
 
 const scrollToEvent = (eventName: string) => {
     const el = document.getElementById(getEventId(eventName));
@@ -105,7 +105,7 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                                     >
                                         <Icon
                                             {...(getEventChangeProps(event, version) as IconProps)}
-                                            size="small"
+                                            size={12}
                                         />
                                     </Tooltip>
                                 </CardList.Item>

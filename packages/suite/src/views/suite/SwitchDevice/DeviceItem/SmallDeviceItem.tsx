@@ -38,7 +38,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
             <DeviceDetail label={forceAlternativeDeviceLabel || deviceLabel || 'Trezor'}>
                 <DeviceConnectionText
                     icon={isConnected ? 'link' : 'linkBreak'}
-                    variant={isConnected ? 'primary' : 'destructive'}
+                    intent={isConnected ? 'brand' : 'critical'}
                 >
                     <Translation id={isConnected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
                 </DeviceConnectionText>

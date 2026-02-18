@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
@@ -50,8 +50,6 @@ export const TrendTicker = ({
     );
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
-    const theme = useTheme();
-
     const isSuccessfullyFetched =
         lastWeekRate?.lastTickerTimestamp && currentRate?.lastTickerTimestamp;
 
@@ -70,7 +68,7 @@ export const TrendTicker = ({
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
                         <Icon
                             name={isRateGoingUp ? 'trendUp' : 'trendDown'}
-                            color={isRateGoingUp ? theme.iconPrimaryDefault : theme.iconAlertRed}
+                            color={isRateGoingUp ? 'iconPrimaryDefault' : 'iconAlertRed'}
                             size={16}
                         />
                         {localizePercentage({ valueInFraction: percentageChange, locale })}

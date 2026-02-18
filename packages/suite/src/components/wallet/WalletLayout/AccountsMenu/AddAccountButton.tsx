@@ -46,7 +46,9 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
                 onClick={device ? handleOnClick : undefined}
                 name="plus"
                 size={16}
-                variant={addAccountDisabled ? 'disabled' : 'tertiary'}
+                {...(addAccountDisabled
+                    ? { isDisabled: true }
+                    : { intent: 'neutral', priority: 'secondary' })}
                 data-testid={dataTestId}
             />
         </Tooltip>

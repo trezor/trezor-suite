@@ -1,6 +1,6 @@
 import { FormattedNumber } from 'react-intl';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -81,14 +81,13 @@ export const CoinjoinProgressContent = ({
     const { sessionDeadline } = useSelector(selectCurrentSessionDeadlineInfo);
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
-    const theme = useTheme();
     const { coinjoinSessionBlocker, isCoinjoinSessionBlocked } =
         useCoinjoinSessionBlockers(accountKey);
 
     const getProgressContent = () => {
         const iconConfig = {
             size: 25,
-            color: theme.iconDefault,
+            color: 'iconDefault' as const,
         };
 
         const isLoadingIndicatorShown =
@@ -198,7 +197,7 @@ export const CoinjoinProgressContent = ({
                     name="play"
                     margin={{ bottom: spacings.xxs }}
                     {...iconConfig}
-                    color={theme.iconPrimaryDefault}
+                    color="iconPrimaryDefault"
                 />
                 <Translation id="TR_START" />
             </>

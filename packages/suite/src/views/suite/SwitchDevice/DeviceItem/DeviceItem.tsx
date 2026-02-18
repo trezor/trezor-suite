@@ -29,7 +29,9 @@ type DeviceItemProps = {
 };
 
 const ListItem = ({ children, iconName }: { children: ReactNode; iconName: IconName }) => (
-    <List.Item bulletComponent={<Icon name={iconName} variant="tertiary" size="mediumLarge" />}>
+    <List.Item
+        bulletComponent={<Icon name={iconName} intent="neutral" priority="secondary" size={20} />}
+    >
         <Paragraph
             typographyStyle="body-md"
             intent="neutral"

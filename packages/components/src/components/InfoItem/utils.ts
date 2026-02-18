@@ -2,8 +2,7 @@ import { SpacingValues, TypographyStyle, spacings } from '@trezor/theme';
 
 import { InfoItemVerticalAlignment } from './types';
 import { FlexAlignItems } from '../Flex/FlexProp';
-import { IconSize, IconVariant } from '../Icon/Icon';
-import { TextIntent, TextPriority } from '../typography/Text/Text';
+import { IconSize } from '../Icon/Icon';
 
 export const mapVerticalAlignmentToAlignItems = (
     verticalAlignment: InfoItemVerticalAlignment,
@@ -17,19 +16,17 @@ export const mapVerticalAlignmentToAlignItems = (
     return alignItemsMap[verticalAlignment];
 };
 
-export const mapTypographyStyleToIconSize = (
-    typographyStyle: TypographyStyle,
-): IconSize | number => {
-    const iconSizeMap: Record<TypographyStyle, IconSize | number> = {
+export const mapTypographyStyleToIconSize = (typographyStyle: TypographyStyle): IconSize => {
+    const iconSizeMap: Record<TypographyStyle, IconSize> = {
         'headline-lg': 48,
-        'headline-md': 'extraLarge',
-        'headline-sm': 'large',
-        'body-md-strong': 'mediumLarge',
-        'body-md': 'mediumLarge',
-        'body-sm-strong': 'medium',
-        'body-sm': 'medium',
-        'body-xs': 'medium',
-        inherit: 'medium',
+        'headline-md': 32,
+        'headline-sm': 24,
+        'body-md-strong': 20,
+        'body-md': 20,
+        'body-sm-strong': 16,
+        'body-sm': 16,
+        'body-xs': 16,
+        inherit: 16,
     };
 
     return iconSizeMap[typographyStyle];
@@ -65,35 +62,4 @@ export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): 
     };
 
     return gapMap[typographyStyle];
-};
-
-type MapIntentToIconVariantArgs = {
-    intent: TextIntent;
-    priority: TextPriority;
-    isDisabled: boolean;
-};
-
-export const mapIntentToIconVariant = ({
-    intent,
-    priority,
-    isDisabled,
-}: MapIntentToIconVariantArgs): IconVariant => {
-    if (isDisabled) return 'disabled';
-
-    switch (intent) {
-        case 'warning':
-            return 'warning';
-        case 'info':
-            return 'info';
-        case 'critical':
-            return 'destructive';
-        case 'accentViolet':
-            return 'purple';
-        case 'brand':
-            return 'primary';
-        case 'accentOrange':
-            return 'warning';
-        case 'neutral':
-            return priority === 'secondary' ? 'tertiary' : 'default';
-    }
 };

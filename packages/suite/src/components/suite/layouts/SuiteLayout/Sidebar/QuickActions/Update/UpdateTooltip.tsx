@@ -1,33 +1,19 @@
-import styled, { useTheme } from 'styled-components';
-
 import { Translation, TranslationKey } from '@suite/intl';
-import { Column, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
+import { Column, Icon } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+
+import { useDevice, useSelector } from 'src/hooks/suite';
 
 import {
     UpdateStatus,
     UpdateStatusDevice,
     UpdateStatusSuite,
     mapUpdateStatusToIcon,
-    mapUpdateStatusToVariant,
+    mapUpdateStatusToIntent,
 } from './updateQuickActionTypes';
-import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { TooltipRow } from '../TooltipRow';
-
-const SuiteIconRectangle = styled.div<{ $size: IconSize }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 0.5px;
-    width: ${({ $size }) => getIconSize($size)}px;
-    height: ${({ $size }) => getIconSize($size)}px;
-
-    border-radius: 6px;
-    background-color: ${({ theme }) => theme.iconDefault};
-`;
 
 const mapUpdateStatusToTranslation: Record<UpdateStatus, TranslationKey> = {
     disconnected: 'TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED',
@@ -57,13 +43,10 @@ const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
         <TooltipRow
             onClick={onClick}
             leftItem={
-                <Icon
-                    name={mapTrezorModelToIcon[device.features.internal_model]}
-                    size={iconSizes.medium}
-                />
+                <Icon name={mapTrezorModelToIcon[device.features.internal_model]} size={16} />
             }
-            circleIconName={mapUpdateStatusToIcon[updateStatus]}
-            variant={mapUpdateStatusToVariant[updateStatus]}
+            iconName={mapUpdateStatusToIcon[updateStatus]}
+            intent={mapUpdateStatusToIntent[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE" />}
         >
             <Translation
@@ -83,8 +66,6 @@ type SuiteRowProps = {
 };
 
 const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
-    const theme = useTheme();
-
     const suiteNewVersion = useSelector(state => state.desktopUpdate.latest?.version);
 
     const suiteCurrentVersion = process.env.VERSION || '';
@@ -92,17 +73,9 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
     return (
         <TooltipRow
             onClick={onClick}
-            leftItem={
-                <SuiteIconRectangle $size="medium">
-                    <Icon
-                        name="trezorLogo"
-                        size={iconSizes.small}
-                        color={theme.iconDefaultInverted}
-                    />
-                </SuiteIconRectangle>
-            }
-            circleIconName={mapUpdateStatusToIcon[updateStatus]}
-            variant={mapUpdateStatusToVariant[updateStatus]}
+            leftItem={<Icon name="trezorLogo" size={16} />}
+            iconName={mapUpdateStatusToIcon[updateStatus]}
+            intent={mapUpdateStatusToIntent[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE" />}
         >
             <Translation
@@ -131,7 +104,7 @@ export const UpdateTooltip = ({
     const isDesktopSuite = isDesktop();
 
     return (
-        <Column gap={spacings.md} padding={spacings.xxs} alignItems="start">
+        <Column gap={16} padding={4} alignItems="start">
             {displayDeviceUpdateStatus && (
                 <DeviceRow updateStatus={updateStatusDevice} onClick={onClickDevice} />
             )}

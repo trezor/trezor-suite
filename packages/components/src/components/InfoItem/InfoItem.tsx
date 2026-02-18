@@ -6,7 +6,6 @@ import { SpacingValues, spacings } from '@trezor/theme';
 
 import { InfoItemVerticalAlignment } from './types';
 import {
-    mapIntentToIconVariant,
     mapTypographyStyleToIconGap,
     mapTypographyStyleToIconSize,
     mapTypographyStyleToLabelGap,
@@ -80,7 +79,6 @@ export const InfoItem = ({
 }: InfoItemProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedInfoItemFrameProps);
     const isRow = direction === 'row';
-    const iconVariant = mapIntentToIconVariant({ intent, priority, isDisabled });
 
     return (
         <Container data-testid={dataTestId} {...frameProps}>
@@ -99,7 +97,9 @@ export const InfoItem = ({
                         <Icon
                             name={iconName}
                             size={mapTypographyStyleToIconSize(typographyStyle)}
-                            variant={iconVariant}
+                            intent={intent}
+                            priority={priority}
+                            isDisabled={isDisabled}
                         />
                     )}
                     <Text

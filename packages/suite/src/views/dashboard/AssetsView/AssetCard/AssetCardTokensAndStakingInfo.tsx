@@ -28,7 +28,7 @@ export const AssetCardTokensAndStakingInfo = ({
         {shouldRenderStaking && (
             <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
                 <Row gap={8}>
-                    <Icon name="piggyBankFilled" size={20} variant="tertiary" />
+                    <Icon name="piggyBankFilled" size={20} intent="neutral" priority="secondary" />
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <Translation id="TR_NAV_STAKING" />
                     </Text>

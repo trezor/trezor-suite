@@ -90,7 +90,7 @@ export const BasicTxDetails = ({
                     <NestedIconWrapper $elevation={elevation}>
                         <Icon
                             size={14}
-                            variant={tx.type === 'failed' ? 'destructive' : 'default'}
+                            intent={tx.type === 'failed' ? 'critical' : 'neutral'}
                             name={getTxIcon(tx, false)}
                         />
                     </NestedIconWrapper>

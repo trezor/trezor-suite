@@ -26,8 +26,9 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 leftContent={
                     <Icon
                         name="magnifyingGlass"
-                        size="small"
-                        variant="tertiary"
+                        size={12}
+                        intent="neutral"
+                        priority="secondary"
                         pointerEvents="none"
                     />
                 }

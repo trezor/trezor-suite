@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import {
     FrameProps,
@@ -17,7 +17,6 @@ import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../
 import {
     commonButtonStyles,
     mapPropsToCSS,
-    mapPropsToColor,
     mapPropsToColorToken,
     mapSizeToBorderRadius,
     mapSizeToIconSize,
@@ -74,15 +73,13 @@ export const Button = ({
     size = 'medium',
     ...props
 }: ButtonProps) => {
-    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
     const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
-    const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
-    const textColor = mapPropsToColorToken(intent, priority, buttonProps.disabled, isInverse);
+    const colorToken = mapPropsToColorToken(intent, priority, buttonProps.disabled, isInverse);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
-        color,
+        color: colorToken,
     };
 
     return (
@@ -114,7 +111,7 @@ export const Button = ({
                     <Text
                         as="div"
                         typographyStyle={mapSizeToTypographyStyle(size)}
-                        color={textColor}
+                        color={colorToken}
                         ellipsisLineCount={1}
                     >
                         {children}
@@ -124,7 +121,7 @@ export const Button = ({
                     <Icon name={iconRight ?? 'arrowLineUpRight'} {...iconProps} />
                 )}
                 {shortcut?.length && (
-                    <Text as="div" color={textColor}>
+                    <Text as="div" color={colorToken}>
                         <ShortcutBadge shortcut={shortcut} />
                     </Text>
                 )}

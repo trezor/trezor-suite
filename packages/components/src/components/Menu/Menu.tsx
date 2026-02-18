@@ -76,7 +76,7 @@ const MenuItem = ({
                 <Icon
                     name={icon}
                     size={spacings.md}
-                    variant={isDisabled ? 'disabled' : 'default'}
+                    {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
             )}
             <Text intent="neutral" isDisabled={isDisabled} textWrap="nowrap">
@@ -87,7 +87,7 @@ const MenuItem = ({
                     margin={{ left: 'auto' }}
                     name={iconRight}
                     size={spacings.md}
-                    variant={isDisabled ? 'disabled' : 'default'}
+                    {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
             )}
         </Row>

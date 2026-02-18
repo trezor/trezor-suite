@@ -12,7 +12,7 @@ import {
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
     mapUpdateStatusToIcon,
-    mapUpdateStatusToSubIconIntent,
+    mapUpdateStatusToIntent,
 } from './updateQuickActionTypes';
 import { useUpdateStatus } from './useUpdateStatus';
 
@@ -25,6 +25,7 @@ export const UpdateStatusActionBarIcon = ({
 }: UpdateStatusActionBarIconProps) => {
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
+    const displayDeviceUpdateStatusBar = !discoveryInProgress;
 
     const { device } = useDevice();
     const dispatch = useDispatch();
@@ -34,7 +35,9 @@ export const UpdateStatusActionBarIcon = ({
     const isDesktopSuite = isDesktop();
 
     const suiteOnClick = mapSuiteUpdateToClick[updateStatusSuite];
-    const deviceOnClick = mapDeviceUpdateToClick[updateStatusDevice];
+    const deviceOnClick = displayDeviceUpdateStatusBar
+        ? mapDeviceUpdateToClick[updateStatusDevice]
+        : null;
 
     const suiteOnClickHandler = suiteOnClick ? () => suiteOnClick({ dispatch }) : undefined;
     const deviceOnClickHandler = deviceOnClick ? () => deviceOnClick({ dispatch }) : undefined;
@@ -47,10 +50,9 @@ export const UpdateStatusActionBarIcon = ({
         }
     };
 
-    const displayDeviceUpdateStatusBar = !discoveryInProgress;
     const anyUpdateInfoAvailable = isDesktopSuite || displayDeviceUpdateStatusBar;
 
-    if (!anyUpdateInfoAvailable || !device?.features) {
+    if (!anyUpdateInfoAvailable) {
         return null;
     }
 
@@ -70,11 +72,11 @@ export const UpdateStatusActionBarIcon = ({
                 ),
             }}
             iconName={
-                updateStatusSuite !== 'up-to-date'
+                updateStatusSuite !== 'up-to-date' || !device?.features
                     ? 'trezorLogo'
                     : mapTrezorModelToIcon[device.features.internal_model]
             }
-            subIconIntent={mapUpdateStatusToSubIconIntent[updateStatus]}
+            subIconIntent={mapUpdateStatusToIntent[updateStatus]}
             subIconName={updateSubIcon}
         />
     );

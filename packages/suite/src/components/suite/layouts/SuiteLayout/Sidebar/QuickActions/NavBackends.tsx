@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { BlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -26,7 +25,7 @@ const BackendRow = ({
             cursor="pointer"
             width={260}
         >
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 <CoinLogo symbol={symbol} />
                 <Column flex="1" overflow="hidden">
                     <Text typographyStyle="body-sm" ellipsisLineCount={1}>
@@ -55,8 +54,8 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
 
     return (
-        <Column gap={spacings.sm} padding={spacings.xxs}>
-            <Column gap={spacings.sm}>
+        <Column gap={16} padding={4}>
+            <Column gap={12}>
                 {customBackends.map(backend => (
                     <BackendRow key={backend.symbol} backend={backend} blockchain={blockchain} />
                 ))}

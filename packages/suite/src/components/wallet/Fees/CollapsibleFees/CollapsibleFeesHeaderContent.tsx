@@ -31,7 +31,7 @@ export const CollapsibleFeesHeaderContent = ({
             <Row gap={16}>
                 <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
                 {supportsAdjustableFees && (
-                    <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
+                    <Collapsible.ToggleIcon iconName="caretDown" size={20} />
                 )}
             </Row>
         </Row>

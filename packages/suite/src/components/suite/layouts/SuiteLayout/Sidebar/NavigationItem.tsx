@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
@@ -111,7 +111,7 @@ export const NavItem = (props: NavigationItemProps) => {
         className,
         values,
         preserveParams,
-        iconSize = 'large',
+        iconSize = 24,
         itemsCount,
         isRounded = false,
         typographyStyle = 'body-md',
@@ -132,7 +132,6 @@ export const NavItem = (props: NavigationItemProps) => {
         }
     };
 
-    const theme = useTheme();
     const isActiveRoute = routes?.some(route => route === activeRoute);
 
     return (
@@ -153,7 +152,13 @@ export const NavItem = (props: NavigationItemProps) => {
                 placement="right"
                 hasArrow
             >
-                <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
+                <Icon
+                    name={icon}
+                    size={iconSize}
+                    intent="neutral"
+                    priority="secondary"
+                    pointerEvents="none"
+                />
             </Tooltip>
             {expanded && (
                 <>

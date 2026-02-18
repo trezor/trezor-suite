@@ -71,7 +71,7 @@ export const IOGroup = ({
             )}
             {hasInputs && hasOutputs && (
                 <Row alignSelf="center">
-                    <Icon name="arrowRight" size="medium" variant="tertiary" />
+                    <Icon name="arrowRight" size={16} intent="neutral" priority="secondary" />
                 </Row>
             )}
             {hasOutputs && (

@@ -1,11 +1,8 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-import { useTheme } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type TradingTransaction, exchangeUtils, sellUtils } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';
-
-type TradingTransactionStatusIntent = 'warning' | 'critical' | 'brand';
 
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
@@ -123,31 +120,14 @@ interface TradingTransactionStatusProps {
     trade: TradingTransaction;
 }
 
-const mapIntentToIconColor = (intent: TradingTransactionStatusIntent) => {
-    switch (intent) {
-        case 'warning':
-            return 'iconAlertYellow';
-        case 'critical':
-            return 'iconAlertRed';
-        case 'brand':
-            return 'iconPrimaryDefault';
-    }
-};
-
 export const TradingTransactionStatus = ({ trade }: TradingTransactionStatusProps) => {
-    const theme = useTheme();
     const data = getData(trade);
 
     if (!data) return null;
 
     return (
         <Row>
-            <Icon
-                color={theme[mapIntentToIconColor(data.intent)]}
-                size={10}
-                name={data.icon}
-                margin={{ right: 4 }}
-            />
+            <Icon intent={data.intent} size={10} name={data.icon} margin={{ right: 4 }} />
             <Text intent={data.intent} data-testid="@trading/transactions/status">
                 <Translation id={data.statusMessageId} />
             </Text>

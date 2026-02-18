@@ -15,7 +15,7 @@ type RowIcon = {
 const RowIcon = ({ txType, isAccountOwned }: RowIcon) => {
     const iconType = txType === 'recv' ? 'arrowDown' : 'arrowUp';
 
-    return <Icon size={16} variant="disabled" name={isAccountOwned ? iconType : 'clock'} />;
+    return <Icon size={16} isDisabled={true} name={isAccountOwned ? iconType : 'clock'} />;
 };
 
 type AffectedTransactionItemProps = {

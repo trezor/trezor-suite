@@ -1,6 +1,6 @@
 import { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import { BorderRadii, CSSColor, Color, TypographyStyle } from '@trezor/theme';
+import { BorderRadii, Color, TypographyStyle } from '@trezor/theme';
 
 import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps, InverseKey } from './types';
 
@@ -138,22 +138,6 @@ const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, C
             accentOrange: 'baseContentAccentOrangeContrastInverse',
         },
     },
-};
-
-export const mapPropsToColor = (
-    intent: ButtonIntent,
-    priority: ButtonPriority,
-    isDisabled: boolean,
-    isInverse: boolean,
-    theme: DefaultTheme,
-): CSSColor => {
-    const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
-
-    if (isDisabled) {
-        return theme[colorMapDisabled[inverseKey]];
-    }
-
-    return theme[colorMap[inverseKey][priority][intent]];
 };
 
 export const mapPropsToColorToken = (

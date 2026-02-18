@@ -44,7 +44,7 @@ export const DropdownRow = ({
         <Row gap={spacings.xs}>
             {shouldDisplayIcon && (
                 <IconWrapper $isActive={isActive}>
-                    <Icon size={18} variant="tertiary" name="caretDown" />
+                    <Icon size={18} intent="neutral" priority="secondary" name="caretDown" />
                 </IconWrapper>
             )}
             {nftName ? (

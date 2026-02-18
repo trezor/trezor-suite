@@ -178,7 +178,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
                     gap: '0.5rem',
                 }}
             >
-                {icon && <Icon name={icon as IconName} size={16} color="currentColor" />}
+                {icon && <Icon name={icon as IconName} size={16} />}
                 {title}
             </div>
         ),

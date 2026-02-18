@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { Translation, TranslationKey } from '@suite/intl';
 import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
 import { TypographyStyle } from '@trezor/theme';
@@ -16,7 +14,6 @@ export interface CollapsibleFeesHeaderProps {
 
 export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFeesHeaderProps) {
     const { networkType } = useFeesContext();
-    const theme = useTheme();
 
     const feeTooltipTextId = useMemo(() => {
         switch (networkType) {
@@ -48,7 +45,7 @@ export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFee
                 addon={
                     networkType === 'ethereum' && (
                         <Link href={HELP_CENTER_TRANSACTION_FEES_URL} target="_blank">
-                            <Icon size={12} color={theme.iconAlertYellow} name="lightbulb" />
+                            <Icon size={12} intent="warning" name="lightbulb" />
                             <Translation id="TR_LEARN" />
                         </Link>
                     )

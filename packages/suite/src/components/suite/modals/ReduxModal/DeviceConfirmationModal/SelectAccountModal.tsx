@@ -150,7 +150,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                                 )}
                                             </Table.Cell>
                                             <Table.Cell align="end">
-                                                <Icon size="large" name="caretRight" />
+                                                <Icon size={24} name="caretRight" />
                                             </Table.Cell>
                                         </Table.Row>
                                     );

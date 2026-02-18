@@ -63,7 +63,9 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     toggleLabel?: ReactNode;
     toggleIconName?: IconName;
     toggleIconSize?: IconSize;
-    toggleIconVariant?: IconProps['variant'];
+    toggleIconIntent?: IconProps['intent'];
+    toggleIconPriority?: IconProps['priority'];
+    toggleIconIsDisabled?: IconProps['isDisabled'];
     children?: ReactNode;
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
@@ -136,8 +138,10 @@ export const CollapsibleBox = ({
     heading,
     subHeading,
     headingSize = 'large',
-    toggleIconSize = headingSize,
-    toggleIconVariant,
+    toggleIconSize,
+    toggleIconIntent,
+    toggleIconPriority,
+    toggleIconIsDisabled,
     fillType = 'default',
     hasDivider = true,
     children,
@@ -187,7 +191,9 @@ export const CollapsibleBox = ({
                         iconName={toggleIconName}
                         size={toggleIconSize ?? mapSizeToIconSize({ $headingSize: headingSize })}
                         data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
-                        variant={toggleIconVariant}
+                        intent={toggleIconIntent}
+                        priority={toggleIconPriority}
+                        isDisabled={toggleIconIsDisabled}
                     />
                 </Row>
             </Toggle>

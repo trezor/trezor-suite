@@ -11,13 +11,11 @@ import { useLayoutSize } from 'src/hooks/suite';
 import type { ToastNotificationVariant } from 'src/types/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 
-export type NotificationActionVariant = 'primary' | 'info' | 'warning' | 'destructive' | 'tertiary';
-
 export interface NotificationAction {
     onClick: () => void;
     label: ExtendedMessageDescriptor['id'];
     position?: 'bottom' | 'right';
-    variant?: NotificationActionVariant;
+    intent?: ButtonProps['intent'];
     priority?: ButtonPriority;
 }
 
@@ -30,24 +28,6 @@ export interface NotificationViewProps {
     action?: NotificationAction | NotificationAction[];
 }
 
-export const mapActionVariantToIntent = (
-    variant: NotificationActionVariant = 'tertiary',
-): ButtonProps['intent'] => {
-    switch (variant) {
-        case 'primary':
-            return 'brand';
-        case 'info':
-            return 'info';
-        case 'warning':
-            return 'warning';
-        case 'destructive':
-            return 'critical';
-        case 'tertiary':
-        default:
-            return 'neutral';
-    }
-};
-
 export const NotificationView = ({
     message,
     messageValues,
@@ -59,7 +39,9 @@ export const NotificationView = ({
     const { isBelowTablet } = useLayoutSize();
     const defaultIcon = icon ?? getNotificationIcon(variant);
     const isSeen = seen;
-    const colorVariant = isSeen ? 'tertiary' : 'default';
+    const colorProps = isSeen
+        ? { intent: 'neutral' as const, priority: 'secondary' as const }
+        : { intent: 'neutral' as const };
 
     // NotificationView only supports a single action so even if an array is passed, only the first action is used
     const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
@@ -68,7 +50,7 @@ export const NotificationView = ({
         <Row gap={spacings.sm}>
             {defaultIcon &&
                 (typeof defaultIcon === 'string' ? (
-                    <Icon size={20} name={defaultIcon} variant={colorVariant} />
+                    <Icon size={20} name={defaultIcon} {...colorProps} />
                 ) : (
                     defaultIcon
                 ))}
@@ -93,7 +75,7 @@ export const NotificationView = ({
                     <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
                     <Button
-                        intent={mapActionVariantToIntent(action.variant)}
+                        intent={action.intent ?? 'neutral'}
                         priority={action.priority}
                         size="small"
                         onClick={action.onClick}

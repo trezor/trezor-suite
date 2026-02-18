@@ -28,7 +28,7 @@ export const TradingSelectedOfferStepper = ({ steps }: TradingSelectedOfferStepp
                     </Text>
                 </Row>
                 {index < steps.length - 1 && (
-                    <Icon name="caretRight" variant="tertiary" size={20} />
+                    <Icon name="caretRight" intent="neutral" priority="secondary" size={20} />
                 )}
             </Fragment>
         ))}

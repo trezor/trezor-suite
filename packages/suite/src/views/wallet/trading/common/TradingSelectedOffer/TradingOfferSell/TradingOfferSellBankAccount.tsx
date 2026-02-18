@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { BankAccount } from 'invity-api';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type TradingSellType, sellUtils } from '@suite-common/trading';
@@ -116,7 +116,6 @@ const IconWrapper = styled.div`
 `;
 
 export const TradingOfferSellBankAccount = () => {
-    const theme = useTheme();
     const {
         form: {
             state: { isFormLoading },
@@ -178,11 +177,7 @@ export const TradingOfferSellBankAccount = () => {
                                     {option.verified ? (
                                         <AccountVerified>
                                             <IconWrapper>
-                                                <Icon
-                                                    color={theme.iconPrimaryDefault}
-                                                    size={15}
-                                                    name="check"
-                                                />
+                                                <Icon intent="brand" size={15} name="check" />
                                             </IconWrapper>
                                             <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
                                         </AccountVerified>

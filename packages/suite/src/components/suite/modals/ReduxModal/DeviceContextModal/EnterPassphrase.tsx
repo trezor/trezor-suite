@@ -55,7 +55,7 @@ export const EnterPassphrase = ({
                             {isExistingWallet ? (
                                 <>
                                     <Row gap={spacings.sm}>
-                                        <Icon variant="info" name="warningCircle" size={16} />
+                                        <Icon intent="info" name="warningCircle" size={16} />
                                         <Paragraph intent="info" typographyStyle="body-sm-strong">
                                             <Translation
                                                 id="TR_PASSPHRASE_DESCRIPTION_ITEM1"

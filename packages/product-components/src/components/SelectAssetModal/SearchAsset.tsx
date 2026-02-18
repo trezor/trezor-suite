@@ -56,7 +56,9 @@ export const SearchAsset = ({
             value={search}
             onChange={event => setSearch(event.target.value)}
             onClear={() => setSearch('')}
-            leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
+            leftContent={
+                <Icon name="magnifyingGlass" intent="neutral" priority="secondary" size={16} />
+            }
             rightContent={networkSelect}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={autoFocus}

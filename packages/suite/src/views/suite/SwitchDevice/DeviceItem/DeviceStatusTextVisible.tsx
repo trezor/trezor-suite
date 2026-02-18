@@ -45,7 +45,8 @@ export const DeviceStatusTextVisible = ({
 
     return (
         <DeviceConnectionText
-            variant={connected ? 'primary' : 'tertiary'}
+            intent={connected ? 'brand' : 'neutral'}
+            priority={connected ? 'primary' : 'secondary'}
             icon={connected ? 'link' : 'linkBreak'}
             data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
             data-testid-alt="@deviceStatus"

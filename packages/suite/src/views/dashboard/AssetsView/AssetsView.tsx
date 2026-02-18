@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
@@ -94,7 +94,6 @@ export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const theme = useTheme();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
@@ -251,7 +250,7 @@ export const AssetsView = () => {
                             <InfoMessage>
                                 <Icon
                                     name="warning"
-                                    color={theme.iconAlertRed}
+                                    intent="critical"
                                     size={14}
                                     margin={{ right: spacings.xxs }}
                                 />
@@ -274,7 +273,7 @@ export const AssetsView = () => {
                         <InfoMessage>
                             <Icon
                                 name="warning"
-                                color={theme.iconAlertRed}
+                                intent="critical"
                                 size={14}
                                 margin={{ right: spacings.xxs }}
                             />

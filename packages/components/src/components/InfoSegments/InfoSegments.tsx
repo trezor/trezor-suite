@@ -4,7 +4,7 @@ import { SpacingValuesNew } from '@trezor/theme';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconVariant } from '../Icon/Icon';
+import { Icon, IconProps } from '../Icon/Icon';
 import { Text, TextIntent, TextProps } from '../typography/Text/Text';
 import { TextProps as TextPropsCommon, TextPropsKeys } from '../typography/utils';
 
@@ -36,23 +36,11 @@ export const InfoSegments = ({
 }: InfoSegmentsProps) => {
     const validChildren = Children.toArray(children).filter(child => Boolean(child));
     const id = useId();
-    let iconVariant: IconVariant = 'default';
-
-    if (isDisabled) {
-        iconVariant = 'disabled';
-    } else if (intent === 'warning') {
-        iconVariant = 'warning';
-    } else if (intent === 'info') {
-        iconVariant = 'info';
-    } else if (intent === 'critical') {
-        iconVariant = 'destructive';
-    } else if (intent === 'accentViolet') {
-        iconVariant = 'purple';
-    } else if (intent === 'brand') {
-        iconVariant = 'primary';
-    } else if (priority === 'secondary') {
-        iconVariant = 'tertiary';
-    }
+    const iconProps: Pick<IconProps, 'intent' | 'priority' | 'isDisabled'> = {
+        intent: intent ?? 'neutral',
+        priority,
+        isDisabled,
+    };
 
     return (
         <Text
@@ -69,7 +57,7 @@ export const InfoSegments = ({
                     <Fragment key={`${id}-${index}`}>
                         {child}
                         {index < validChildren.length - 1 && (
-                            <Icon name="dotOutlineFilled" size={16} variant={iconVariant} />
+                            <Icon name="dotOutlineFilled" size={16} {...iconProps} />
                         )}
                     </Fragment>
                 ))}
