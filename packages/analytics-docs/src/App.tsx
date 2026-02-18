@@ -5,15 +5,16 @@ import styled from 'styled-components';
 
 import type { SuiteThemeColors } from '@trezor/components';
 import {
+    Banner,
     Box,
     Button,
     Column,
     H2,
     H3,
     IconButton,
-    Paragraph,
     Row,
     Spinner,
+    Text,
     Tooltip,
     useMediaQuery,
     variables,
@@ -134,10 +135,27 @@ const AnalyticsContent = ({
     if (isAnalyticsDataLoading) return <Spinner size={20} />;
     if (!isAnalyticsDataGenerated) {
         return (
-            <Paragraph typographyStyle="callout" intent="warning">
-                analytics.json has not been generated. Run <code>yarn build-data</code> (or{' '}
-                <code>yarn dev</code>) to generate it.
-            </Paragraph>
+            <Banner
+                intent="warning"
+                icon
+                description={
+                    <>
+                        File{' '}
+                        <Text isMonospaced typographyStyle="inherit">
+                            analytics.json
+                        </Text>{' '}
+                        has not been generated. Run{' '}
+                        <Text isMonospaced typographyStyle="inherit">
+                            yarn build-data
+                        </Text>{' '}
+                        (or{' '}
+                        <Text isMonospaced typographyStyle="inherit">
+                            yarn dev
+                        </Text>
+                        ) to generate it.
+                    </>
+                }
+            />
         );
     }
 

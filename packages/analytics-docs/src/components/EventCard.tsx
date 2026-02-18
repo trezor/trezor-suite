@@ -78,13 +78,13 @@ const Header = ({ event }: { event: EventDoc }) => {
     const dropdownItems = [
         {
             key: 'open-definition',
-            label: 'Open definition in Github',
+            label: 'Open definition on Github',
             icon: 'note' as const,
             onClick: () => window.open(getEventDefinitionUrl(event.name), '_blank'),
         },
         {
             key: 'find-usages',
-            label: 'Find usages in Github',
+            label: 'Find usages on Github',
             icon: 'magnifyingGlass' as const,
             onClick: () => window.open(getEventUsagesUrl(event.name), '_blank'),
         },
