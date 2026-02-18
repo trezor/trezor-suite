@@ -1,25 +1,19 @@
-import { TranslationKey } from '@suite/intl';
 import { yup } from '@suite-common/validators';
-import { typedObjectValues } from '@trezor/utils';
 
 export type SuiteSyncServerTypeOption<T> = {
     label: T;
     value: SuiteSyncServerTypeSelectValue;
 };
 
-export type SuiteSyncServerTypeOptionTranslated = SuiteSyncServerTypeOption<TranslationKey>;
-
 export type SuiteSyncServerTypeSelectValue = 'default' | 'custom';
 
 export const SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP: Record<
     SuiteSyncServerTypeSelectValue,
-    SuiteSyncServerTypeOptionTranslated
+    { value: SuiteSyncServerTypeSelectValue }
 > = {
-    default: { label: 'TR_SUITE_SYNC_SERVER_TREZOR_DEFAULT', value: 'default' },
-    custom: { label: 'TR_SUITE_SYNC_SERVER_CUSTOM', value: 'custom' },
+    default: { value: 'default' },
+    custom: { value: 'custom' },
 };
-
-export const SUITE_SYNC_SERVER_TYPE_OPTIONS = typedObjectValues(SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP);
 
 export type ChangeServerModalFields = {
     server: SuiteSyncServerTypeSelectValue;
@@ -31,6 +25,7 @@ type CreateChangeSuiteSyncServerSchemaProps = {
     invalidUrlTranslation: string;
 };
 
+// NOTE: translations should not be passed as params, but rather we should return generic ERR from validation
 export const createChangeSuiteSyncServerSchema = ({
     requiredTranslation,
     invalidUrlTranslation,
@@ -38,7 +33,7 @@ export const createChangeSuiteSyncServerSchema = ({
     yup.object({
         server: yup
             .mixed<SuiteSyncServerTypeSelectValue>()
-            .oneOf(SUITE_SYNC_SERVER_TYPE_OPTIONS.map(option => option.value))
+            .oneOf(['default', 'custom'] satisfies SuiteSyncServerTypeSelectValue[])
             .required(),
         customRelayUrl: yup
             .string()
