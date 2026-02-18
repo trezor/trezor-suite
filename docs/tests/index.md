@@ -8,5 +8,6 @@ This chapter contains information about tests.
 - [GitHub Test Reporter](../symlink/tests/e2e-github-reporter.md)
 - [regtest](./regtest.md)
 - [@suite-native/test-utils](./suite-native-test-utils.md)
+- [@suite-common/test-utils](./suite-common-test-utils.md)
 
 See also general [code-style-guide/tests](../symlink/code-style-guide/tests.md) for more information about writing tests in Trezor Suite.
