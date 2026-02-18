@@ -1,10 +1,9 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     selectDeviceInternalModel,
     selectSelectedDevice,
     submitPassphrase,
-    useThunkDispatch,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
@@ -13,7 +12,7 @@ import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 
 export const EnterPassphraseOnTrezorButton = () => {
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const analytics = useAnalytics();
     const deviceModel = useSelector(selectDeviceInternalModel);

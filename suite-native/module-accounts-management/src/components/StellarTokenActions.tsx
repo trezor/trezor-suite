@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey, useThunkDispatch } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { isZero } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
@@ -30,7 +30,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
     const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
 
     const [isComposingFees, setIsComposingFees] = useState(false);
 

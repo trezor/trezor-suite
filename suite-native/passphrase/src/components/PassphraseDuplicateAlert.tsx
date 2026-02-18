@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { switchToDuplicatedWallet, useThunkDispatch } from '@suite-common/wallet-core';
+import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
@@ -24,7 +25,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
     const analytics = useAnalytics();
     const { translate } = useTranslate();
 

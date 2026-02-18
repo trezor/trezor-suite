@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey, useThunkDispatch } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Loader, SearchInput, Text, VStack } from '@suite-native/atoms';
@@ -50,7 +50,7 @@ export const TokenSelectionScreen = () => {
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
-    const dispatch = useThunkDispatch();
+    const dispatch = useDispatch();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
