@@ -2270,7 +2270,7 @@
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "A Trezor prioriza sua segurança",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "A Trezor prioriza sua segurança",
   "TR_TRADING_SWAP_UNAVAILABLE": "Troca indisponível",
-  "TR_TRADING_TERMS": "Este serviço é oferecido por um provedor terceirizado, não pela Trezor. Aplicam-se os termos do provedor.",
+  "TR_TRADING_TERMS": "Este serviço é fornecido por <comp>{provider}</comp> e regido por seus Termos e Condições. A Trezor não está envolvida.",
   "TR_TRADING_TOKEN_NETWORK": "{tokenName} em {networkName} rede",
   "TR_TRADING_TRADE_FEE": "Taxa de comércio",
   "TR_TRADING_TRANS_ID": "ID da Operação:",

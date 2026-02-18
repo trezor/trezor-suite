@@ -1916,7 +1916,7 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_DEVICE_BUSY',
     },
     TR_NEEDS_ATTENTION_DEVICE_LOCKED: {
-        defaultMessage: 'Unlock your Trezor to continue.',
+        defaultMessage: 'Your Trezor is locked. Unlock it to continue.',
         id: 'TR_NEEDS_ATTENTION_DEVICE_LOCKED',
     },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER: {
@@ -7521,7 +7521,7 @@ export const messages = defineMessages({
     },
     TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED: {
         id: 'TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED',
-        defaultMessage: 'Once your Trezor is paired, this window will close automatically.',
+        defaultMessage: 'This window will close automatically once your Trezor is paired.',
     },
     TR_STILL_NOT_WORKING: {
         id: 'TR_STILL_NOT_WORKING',

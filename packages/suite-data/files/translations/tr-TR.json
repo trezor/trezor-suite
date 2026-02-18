@@ -1940,6 +1940,7 @@
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Trezor'unuzla önce güvenlik",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Trezor'unuzla önce güvenlik",
   "TR_TRADING_SWAP_UNAVAILABLE": "Takas kullanılamıyor",
+  "TR_TRADING_TERMS": "Bu hizmet <comp>{provider}</comp> tarafından sağlanmaktadır ve onların Şartlar ve Koşullarına tabidir. Trezor dahil değildir.",
   "TR_TRADING_TOKEN_NETWORK": "{networkName} ağında {tokenName} token'ı",
   "TR_TRADING_TRADE_FEE": "Alım satım ücreti",
   "TR_TRADING_TRANS_ID": "İşlem Kimliği:",
