@@ -38,7 +38,7 @@ export const updateUrl = (
     const search = params.toString();
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
 
-    const {hash} = window.location;
+    const { hash } = window.location;
 
     window.history.replaceState(null, '', `${url}${hash}`);
 };

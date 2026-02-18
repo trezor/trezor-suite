@@ -191,6 +191,8 @@ export const App = ({ theme }: AppProps) => {
         if (!el) return false;
         el.scrollIntoView({ block: 'start', behavior: 'instant' });
         window.scrollBy(0, -(HEADER_HEIGHT + 20));
+        el.classList.add('highlighted');
+        setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
 
         return true;
     }, []);
