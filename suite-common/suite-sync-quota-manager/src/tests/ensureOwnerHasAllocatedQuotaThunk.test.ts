@@ -1,7 +1,7 @@
 import { mocked } from 'jest-mock';
 
+import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
@@ -32,9 +32,6 @@ const createGetState = (statePatch?: Partial<SuiteSyncQuotaManagerState>) => () 
     },
 });
 
-const delegatedKey = asDelegatedIdentityKey(
-    '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
-);
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
 
@@ -56,7 +53,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
 
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
-            delegatedKey,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
             walletDescriptor,
             isWriteMode: false,
         })(dispatch, getState);
@@ -88,7 +85,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
 
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
-            delegatedKey,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
             walletDescriptor,
             isWriteMode: false,
         })(dispatch, getState);
@@ -117,7 +114,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
 
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
-            delegatedKey,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
             walletDescriptor,
             isWriteMode: true,
         })(dispatch, getState);

@@ -11420,6 +11420,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key": "workspace:*"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"

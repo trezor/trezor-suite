@@ -6,6 +6,9 @@
     },
     "references": [
         { "path": "../delegated-identity-key" },
+        {
+            "path": "../delegated-identity-key-types"
+        },
         { "path": "../device" },
         { "path": "../redux-utils" },
         { "path": "../suite-sync-storage" },

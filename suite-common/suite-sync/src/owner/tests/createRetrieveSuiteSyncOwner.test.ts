@@ -1,3 +1,4 @@
+import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import {
     SuiteSyncOwner,
     asSuiteSyncOwnerId,
@@ -42,11 +43,7 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
             trezorConnect,
         });
 
-        const delegatedKey = asDelegatedIdentityKey(
-            '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
-        );
-
-        const result = await ensureSuiteSyncOwner({ device, delegatedKey });
+        const result = await ensureSuiteSyncOwner({ device, delegatedKey: DELEGATED_IDENTITY_KEY });
 
         expect(result.success).toBe(true);
         expect(result.success && result.payload).toBe(owner1);

@@ -1,5 +1,5 @@
+import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -17,10 +17,6 @@ const device: RetrieveSuiteSyncOwnerParams['device'] = {
     },
     useEmptyPassphrase: false,
 };
-
-const delegatedKey = asDelegatedIdentityKey(
-    '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
-);
 
 const owner = {
     ownerId: asSuiteSyncOwnerId('owner1'),
@@ -42,7 +38,10 @@ describe(createEnsureSuiteSyncOwner.name, () => {
             loadSuiteSyncOwnerFromState: jest.fn().mockResolvedValue(owner),
         });
 
-        const result = await createEnsureSuiteSyncOwner(deps)({ device, delegatedKey });
+        const result = await createEnsureSuiteSyncOwner(deps)({
+            device,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
 
         expect(result.success).toBe(true);
         expect(result.success && result.payload).toBe(owner);
@@ -56,11 +55,17 @@ describe(createEnsureSuiteSyncOwner.name, () => {
     it('retrieves and saves owner when not in state', async () => {
         const deps = createDeps();
 
-        const result = await createEnsureSuiteSyncOwner(deps)({ device, delegatedKey });
+        const result = await createEnsureSuiteSyncOwner(deps)({
+            device,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
 
         expect(result.success).toBe(true);
         expect(result.success && result.payload).toBe(owner);
-        expect(deps.retrieveSuiteSyncOwner).toHaveBeenCalledWith({ device, delegatedKey });
+        expect(deps.retrieveSuiteSyncOwner).toHaveBeenCalledWith({
+            device,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
         expect(deps.saveSuiteSyncOwner).toHaveBeenCalledWith({
             deviceStaticId: device.state.staticSessionId,
             suiteSyncOwner: owner,
@@ -76,7 +81,10 @@ describe(createEnsureSuiteSyncOwner.name, () => {
             retrieveSuiteSyncOwner: jest.fn().mockResolvedValue(deviceError),
         });
 
-        const result = await createEnsureSuiteSyncOwner(deps)({ device, delegatedKey });
+        const result = await createEnsureSuiteSyncOwner(deps)({
+            device,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
 
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('DeviceError');
