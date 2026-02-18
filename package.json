@@ -57,6 +57,7 @@
         "nx:test-unit:native": "yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*'",
         "nx:lint:styles": "yarn nx affected --target=lint:styles",
         "nx:format": "yarn nx format:check",
+        "nx:show-affected": "yarn nx show projects --affected",
         "_______ Commands _______": "Useful commands and scripts.",
         "patch": "yarn patch-package",
         "convert-figma-palette": "yarn tsx ./scripts/convertFigmaPalette.ts",
