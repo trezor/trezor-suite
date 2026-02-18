@@ -91,3 +91,16 @@ export type {
     ProofOfDelegatedIdentityFailedErrType,
     NoQuotaLeftToAllocateErrType,
 } from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';
+
+export type {
+    SuiteSyncServerTypeOptionTranslated,
+    SuiteSyncServerTypeSelectValue,
+    SuiteSyncServerTypeOption,
+    ChangeServerModalFields,
+} from './relay/schema';
+
+export {
+    SUITE_SYNC_SERVER_TYPE_OPTIONS,
+    SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
+    createChangeSuiteSyncServerSchema,
+} from './relay/schema';
