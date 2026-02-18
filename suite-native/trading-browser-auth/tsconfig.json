@@ -13,6 +13,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../sentry" },
