@@ -39,14 +39,14 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     width: ${SIDEBAR_WIDTH}px;
     flex-shrink: 0;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border-right: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-left: 1px solid ${({ theme }) => theme.borderOnElevation1};
     padding: 16px 0;
     overflow-y: auto;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         position: fixed;
         top: ${HEADER_HEIGHT}px;
-        left: 0;
+        right: 0;
         bottom: 0;
         height: calc(100vh - ${HEADER_HEIGHT}px);
         z-index: 10;
@@ -54,7 +54,7 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
-        border-right: none;
+        border-left: none;
         border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
 `;

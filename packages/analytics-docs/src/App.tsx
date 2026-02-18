@@ -81,8 +81,8 @@ const ContentArea = styled.div`
     padding: 20px 10px;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 0 20px 20px 0;
-        margin-left: ${SIDEBAR_WIDTH + 20}px;
+        margin: 0 20px 20px 20px;
+        margin-right: ${SIDEBAR_WIDTH + 20}px;
     }
 `;
 
@@ -138,6 +138,20 @@ export const App = ({ theme }: AppProps) => {
                     <ContentContainer>
                         <Row justifyContent="space-between" gap={20} alignItems="center" flex={1}>
                             <Row gap={12} alignItems="center">
+                                <Heading>Analytics events docs</Heading>
+                                {isFiltering && <Spinner size={20} />}
+                            </Row>
+                            <Row gap={8} alignItems="center">
+                                <ThemeSwitch />
+                                <Tooltip content="Add event">
+                                    {isMobile ? (
+                                        <IconButton icon="plus" {...addButtonProps} />
+                                    ) : (
+                                        <Button iconLeft="plus" {...addButtonProps}>
+                                            Add event
+                                        </Button>
+                                    )}
+                                </Tooltip>
                                 <Tooltip
                                     content={
                                         isSidebarOpen
@@ -152,20 +166,6 @@ export const App = ({ theme }: AppProps) => {
                                         size="small"
                                         priority={isSidebarOpen ? 'primary' : 'secondary'}
                                     />
-                                </Tooltip>
-                                <Heading>Analytics events docs</Heading>
-                                {isFiltering && <Spinner size={20} />}
-                            </Row>
-                            <Row gap={8} alignItems="center">
-                                <ThemeSwitch />
-                                <Tooltip content="Add event">
-                                    {isMobile ? (
-                                        <IconButton icon="plus" {...addButtonProps} />
-                                    ) : (
-                                        <Button iconLeft="plus" {...addButtonProps}>
-                                            Add event
-                                        </Button>
-                                    )}
                                 </Tooltip>
                             </Row>
                         </Row>
@@ -197,12 +197,12 @@ export const App = ({ theme }: AppProps) => {
 
                 {isSidebarOpen ? (
                     <MainWithSidebar>
-                        <VersionsSidebar versionsWithEvents={versionsWithEvents} />
                         <ContentArea>
                             <ContentContainer>
                                 <Column gap={40}>{eventCards}</Column>
                             </ContentContainer>
                         </ContentArea>
+                        <VersionsSidebar versionsWithEvents={versionsWithEvents} />
                     </MainWithSidebar>
                 ) : (
                     <Content>
