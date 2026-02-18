@@ -11,6 +11,8 @@ on:
 jobs:
   build-web:
     runs-on: ubuntu-latest
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
     permissions:
       id-token: write # required for aws-actions/configure-aws-credentials
       contents: read
@@ -37,6 +39,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Install dependencies
         shell: bash

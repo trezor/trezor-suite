@@ -5,6 +5,8 @@ on:
 jobs:
   build-desktop:
     runs-on: ubuntu-latest
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,6 +18,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Install dependencies, build libs
         shell: bash

@@ -37,6 +37,7 @@ runs:
       uses: actions/checkout@v4
       with:
         submodules: true
+        cache: yarn
 
     # Pull only files needed for connect to save LFS bandwidth
     - name: "Pull LFS files for connect"
