@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { startTransition, useMemo } from 'react';
 
 import styled from 'styled-components';
 
@@ -100,7 +100,9 @@ export const App = ({ theme }: AppProps) => {
         allEvents,
         isFiltering,
         isSidebarOpen,
+        isSidebarLoading,
         setIsSidebarOpen,
+        setIsSidebarLoading,
     } = useFilteredEvents();
 
     const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
@@ -139,7 +141,7 @@ export const App = ({ theme }: AppProps) => {
                         <Row justifyContent="space-between" gap={20} alignItems="center" flex={1}>
                             <Row gap={12} alignItems="center">
                                 <Heading>Analytics events docs</Heading>
-                                {isFiltering && <Spinner size={20} />}
+                                {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
                             </Row>
                             <Row gap={8} alignItems="center">
                                 <ThemeSwitch />
@@ -161,7 +163,20 @@ export const App = ({ theme }: AppProps) => {
                                 >
                                     <IconButton
                                         icon="clockCounterClockwise"
-                                        onClick={() => setIsSidebarOpen(prev => !prev)}
+                                        onClick={() => {
+                                            setIsSidebarLoading(true);
+                                            if (isSidebarOpen) {
+                                                startTransition(() => setIsSidebarOpen(false));
+                                            } else {
+                                                requestAnimationFrame(() => {
+                                                    requestAnimationFrame(() => {
+                                                        startTransition(() =>
+                                                            setIsSidebarOpen(true),
+                                                        );
+                                                    });
+                                                });
+                                            }
+                                        }}
                                         intent={isSidebarOpen ? 'brand' : 'neutral'}
                                         size="small"
                                         priority={isSidebarOpen ? 'primary' : 'secondary'}
