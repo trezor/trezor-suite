@@ -248,6 +248,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                       host: 'trezor.io',
                                       pathPattern: '/setup/.*',
                                   },
+                                  {
+                                      scheme: 'https',
+                                      host: 'trezor.io',
+                                      pathPattern: '/suite/deeplink/.*',
+                                  },
                               ]
                             : [
                                   {
