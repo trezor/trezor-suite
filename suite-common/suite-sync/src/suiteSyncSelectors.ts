@@ -21,13 +21,16 @@ export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): bo
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) => {
+export const selectSuiteSyncCustomRelayUrl = (
+    state: WithSuiteSyncAndDeviceState,
+): string | null => {
     const { suiteSyncRelayUrl: storedUrl } = state.suiteSync.settings;
 
-    return isNotNull(storedUrl) && storedUrl.trim() !== ''
-        ? storedUrl
-        : DEFAULT_SUITE_SYNC_RELAY_URL;
+    return isNotNull(storedUrl) && storedUrl.trim() !== '' ? storedUrl : null;
 };
+
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
+    selectSuiteSyncCustomRelayUrl(state) ?? DEFAULT_SUITE_SYNC_RELAY_URL;
 
 export const selectSuiteSyncOwnerForDeviceStaticId = (
     state: WithSuiteSyncAndDeviceState,

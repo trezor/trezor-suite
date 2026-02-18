@@ -17,6 +17,7 @@ export const SettingsAnchor = {
     Fiat: '@general-settings/fiat',
     BitcoinAmountUnit: '@general-settings/btc-amount-unit',
     Labeling: '@general-settings/labeling',
+    LabelingServers: '@general-settings/labeling-servers',
     LabelingDisconnect: '@general-settings/labeling-disconnect',
     LabelingConnect: '@general-settings/labeling-connect',
     Tor: '@general-settings/tor',
