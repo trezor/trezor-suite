@@ -1,15 +1,28 @@
 import styled from 'styled-components';
 
-import type { IconProps, SuiteThemeColors } from '@trezor/components';
-import { Badge, Box, CardList, Column, H3, Icon, Text, variables } from '@trezor/components';
+import {
+    Badge,
+    Box,
+    CardList,
+    Column,
+    H3,
+    Icon,
+    IconProps,
+    SuiteThemeColors,
+    Text,
+    Tooltip,
+    variables,
+} from '@trezor/components';
 
 import { HEADER_HEIGHT } from '../constants';
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
 import { getEventId } from '../utils/filterUtils';
 
+const isAdded = (event: EventDoc, version: string) => event.changelog?.addedInVersion === version;
+
 const getEventChangeProps = (event: EventDoc, version: string) =>
-    event.changelog?.addedInVersion === version
+    isAdded(event, version)
         ? { name: 'plus' as const, variant: 'primary' as const }
         : { name: 'arrowsClockwiseFilled' as const, variant: 'warning' as const };
 
@@ -17,7 +30,7 @@ const scrollToEvent = (eventName: string) => {
     const el = document.getElementById(getEventId(eventName));
     if (!el) return;
     const y = el.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    window.scrollTo({ top: y });
 };
 
 export const SIDEBAR_WIDTH = 280;
@@ -73,10 +86,14 @@ export const VersionsSidebar = ({ versionsWithEvents }: VersionsSidebarProps) =>
                                 >
                                     <Text typographyStyle="label">{event.name}</Text>
 
-                                    <Icon
-                                        {...(getEventChangeProps(event, version) as IconProps)}
-                                        size="small"
-                                    />
+                                    <Tooltip
+                                        content={isAdded(event, version) ? 'Added' : 'Updated'}
+                                    >
+                                        <Icon
+                                            {...(getEventChangeProps(event, version) as IconProps)}
+                                            size="small"
+                                        />
+                                    </Tooltip>
                                 </CardList.Item>
                             ))}
                     </CardList>

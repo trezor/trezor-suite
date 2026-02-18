@@ -149,7 +149,7 @@ export const App = ({ theme }: AppProps) => {
                                         }
                                     >
                                         <IconButton
-                                            icon="sidebar"
+                                            icon="clockCounterClockwise"
                                             onClick={() => setIsSidebarOpen(prev => !prev)}
                                             intent={isSidebarOpen ? 'brand' : 'neutral'}
                                             size="small"

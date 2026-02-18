@@ -13,7 +13,7 @@ export const useChangelogButton = () => {
                     onClick={() => {
                         setIsChangelogOpened(!isChangelogOpened);
                     }}
-                    icon="note"
+                    icon="clockCounterClockwise"
                     intent={isChangelogOpened ? 'brand' : 'neutral'}
                     size="small"
                     priority="secondary"
