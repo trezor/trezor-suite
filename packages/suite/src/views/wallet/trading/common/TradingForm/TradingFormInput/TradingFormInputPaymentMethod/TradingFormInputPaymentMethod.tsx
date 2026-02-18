@@ -64,14 +64,7 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
                 isDisabled={!hasPaymentMethods || isFormLoading}
                 borderRadius={0}
             >
-                <Row
-                    alignItems="center"
-                    justifyContent="space-between"
-                    padding={{
-                        vertical: 16,
-                        horizontal: 20,
-                    }}
-                >
+                <Row alignItems="center" justifyContent="space-between" padding={20}>
                     <Text typographyStyle="body" align="start">
                         {label && <Translation id={label} />}
                     </Text>
