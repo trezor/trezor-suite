@@ -22,7 +22,6 @@ export const uiIntents = [
     'info',
     'warning',
     'critical',
-    'default',
     // TODO: Replace with intent-like label
     'accentViolet',
     // TODO: Replace with intent-like label

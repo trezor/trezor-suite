@@ -37,7 +37,7 @@ export const TradingOffersExchangeQuotesByTypeSection = ({
                     <H3>
                         <Translation id={heading} />
                     </H3>
-                    <Icon name="info" variant="tertiary" size={20} />
+                    <Icon name="info" intent="neutral" priority="secondary" size={20} />
                 </Tooltip>
             </Row>
             <OffersContainer>

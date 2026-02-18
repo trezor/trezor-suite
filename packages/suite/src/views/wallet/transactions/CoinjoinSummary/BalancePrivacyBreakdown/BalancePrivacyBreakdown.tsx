@@ -85,7 +85,7 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<Icon name="check" size="medium" color={theme.iconPrimaryDefault} />}
+                headerIcon={<Icon name="check" size={16} intent="brand" />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
                 color={!isZero(anonymized || '0') ? theme.textPrimaryDefault : theme.textSubdued}

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
@@ -69,7 +69,6 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const theme = useTheme();
 
     const navigateToNode = () => {
         dispatch(openNode(node));
@@ -95,7 +94,8 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
                 <Icon
                     name="article"
                     size={20}
-                    color={theme.iconSubdued}
+                    intent="neutral"
+                    priority="secondary"
                     margin={{ right: spacings.md }}
                 />
                 {label}

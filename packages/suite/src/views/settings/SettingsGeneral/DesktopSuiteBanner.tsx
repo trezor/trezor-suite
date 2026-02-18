@@ -117,9 +117,9 @@ export const DesktopSuiteBanner = () => {
                             </Button>
 
                             <OSIcons>
-                                <Icon name="appleLogo" variant="primary" />
-                                <Icon name="linuxLogo" variant="primary" />
-                                <Icon name="windowsLogo" variant="primary" size={20} />
+                                <Icon name="appleLogo" intent="brand" />
+                                <Icon name="linuxLogo" intent="brand" />
+                                <Icon name="windowsLogo" intent="brand" size={20} />
                             </OSIcons>
                         </Content>
                     </Row>

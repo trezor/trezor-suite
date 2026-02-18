@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import {
     FrameProps,
@@ -14,7 +14,7 @@ import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../
 import {
     commonButtonStyles,
     mapPropsToCSS,
-    mapPropsToColor,
+    mapPropsToColorToken,
     mapSizeToBorderRadius,
     mapSizeToIconSize,
     pickButtonProps,
@@ -59,14 +59,13 @@ export const IconButton = ({
     size = 'medium',
     ...props
 }: IconButtonProps) => {
-    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
     const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
-    const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
+    const colorToken = mapPropsToColorToken(intent, priority, buttonProps.disabled, isInverse);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
-        color,
+        color: colorToken,
     };
 
     return (

@@ -139,7 +139,7 @@ export const Input = ({
                                 <Icon
                                     name="x"
                                     size={16}
-                                    variant="default"
+                                    intent="neutral"
                                     onClick={onClear}
                                     cursor="pointer"
                                 />

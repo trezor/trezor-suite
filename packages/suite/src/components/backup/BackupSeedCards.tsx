@@ -49,7 +49,7 @@ export const BackupSeedCards = () => {
                     >
                         <Column gap={16}>
                             <Row gap={16} alignItems="flex-start" justifyContent="space-between">
-                                <Icon name={item.icon} variant="tertiary" />
+                                <Icon name={item.icon} intent="neutral" priority="secondary" />
                                 <Checkbox
                                     isChecked={isChecked(item.key)}
                                     onClick={event => {

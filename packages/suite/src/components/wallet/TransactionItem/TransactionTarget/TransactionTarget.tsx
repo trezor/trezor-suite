@@ -216,7 +216,12 @@ export const TransactionTarget = ({
                     }}
                     leftAddon={
                         outputLabel ? (
-                            <Icon name="tagFilled" size={14} variant="tertiary" />
+                            <Icon
+                                name="tagFilled"
+                                size={14}
+                                intent="neutral"
+                                priority="secondary"
+                            />
                         ) : undefined
                     }
                 >

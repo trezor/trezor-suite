@@ -11,7 +11,7 @@ export const PairingState = ({ isLoading, text }: PairingStateProps) => (
         {isLoading ? (
             <Spinner size={20} isDisabled={true} />
         ) : (
-            <Icon size={18} name="check" variant="primary" />
+            <Icon size={18} name="check" intent="brand" />
         )}
         <Text
             intent={isLoading ? 'neutral' : 'brand'}

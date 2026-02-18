@@ -1,6 +1,6 @@
 import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Color, borders, spacingsPx, typography } from '@trezor/theme';
 
@@ -199,8 +199,6 @@ export const Checkbox = ({
     children,
     ...rest
 }: CheckboxProps) => {
-    const theme = useTheme();
-
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
         if (
             !isDisabled &&
@@ -234,12 +232,7 @@ export const Checkbox = ({
             />
 
             <CheckContainer tabIndex={0} $variant={variant}>
-                <CheckIcon
-                    $isVisible={!!isChecked}
-                    size={16}
-                    color={theme.iconOnPrimary}
-                    name="check"
-                />
+                <CheckIcon $isVisible={!!isChecked} size={16} color="iconOnPrimary" name="check" />
             </CheckContainer>
 
             {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}

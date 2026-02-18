@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -55,7 +55,6 @@ const StyledLottieAnimation = styled(LottieAnimation)`
 `;
 
 export const CoinjoinAccountDiscoveryProgress = () => {
-    const theme = useTheme();
     const locale = useSelector(selectLanguage);
     const { messageId, outOf, progress, stage } = useCoinjoinAccountLoadingProgress();
     const messageValues = useMemo(
@@ -88,7 +87,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                     <Icon
                         name="starFour"
                         size={13}
-                        color={theme.iconAlertYellow}
+                        intent="warning"
                         margin={{ right: 4, bottom: 2 }}
                     />
                     <Translation id="TR_LOADING_FACT_TITLE" />

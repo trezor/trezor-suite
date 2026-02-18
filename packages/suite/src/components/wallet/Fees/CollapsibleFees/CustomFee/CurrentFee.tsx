@@ -44,10 +44,7 @@ export const CurrentFee = () => {
                     <Text>
                         <FeeRate feeRate={currentFeeRate} networkType={networkType} />
                     </Text>
-                    <Icon
-                        name={networkType === 'ethereum' ? 'gasPump' : 'receipt'}
-                        size="mediumLarge"
-                    />
+                    <Icon name={networkType === 'ethereum' ? 'gasPump' : 'receipt'} size={20} />
                 </Row>
             </Text>
         </Row>

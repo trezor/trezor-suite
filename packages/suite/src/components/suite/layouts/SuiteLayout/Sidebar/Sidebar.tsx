@@ -76,7 +76,7 @@ const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
 
     return isCollapsed ? (
         <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
-            <Icon name="trezorLogo" size="large" pointerEvents="none" />
+            <Icon name="trezorLogo" size={24} pointerEvents="none" />
         </Box>
     ) : (
         <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
@@ -151,7 +151,8 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     const isUpdateAvailable =
         (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
         (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
-    const showUpdateBannerNotification = !isSidebarCollapsed && isBannerVisible;
+    const showUpdateBannerNotification =
+        !isSidebarCollapsed && isBannerVisible && isUpdateAvailable;
 
     const showAccountsAndIsDeviceReady =
         !shouldDisplayDeviceCompromised &&

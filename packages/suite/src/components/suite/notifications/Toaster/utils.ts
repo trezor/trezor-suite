@@ -5,6 +5,14 @@ import { ToastNotificationVariant } from 'src/types/suite';
 
 import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
+export const notificationVariantToIntentMap: Record<ToastNotificationVariant, ToastIntent> = {
+    success: 'brand',
+    info: 'info',
+    warning: 'warning',
+    error: 'critical',
+    transparent: 'neutral',
+};
+
 export const mapNotificationActionsToToastActions = (
     value: NotificationViewProps['action'],
     translate: TranslationFunction,
@@ -17,16 +25,4 @@ export const mapNotificationActionsToToastActions = (
         ...action,
         label: translate(action.label),
     }));
-};
-
-export const mapNotificationVariantToIntent = (variant: ToastNotificationVariant): ToastIntent => {
-    const variantMap: Record<ToastNotificationVariant, ToastIntent> = {
-        success: 'brand',
-        info: 'info',
-        warning: 'warning',
-        error: 'critical',
-        transparent: 'neutral',
-    };
-
-    return variantMap[variant] || 'neutral';
 };

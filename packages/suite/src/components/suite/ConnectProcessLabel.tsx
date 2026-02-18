@@ -34,7 +34,7 @@ export const ConnectProcessLabel = ({
                 {process.icon ? (
                     <AppIcon src={process.icon} alt="Process icon" />
                 ) : (
-                    <Icon name="appWindow" variant="tertiary" />
+                    <Icon name="appWindow" intent="neutral" priority="secondary" />
                 )}
                 <Text data-testid={dataTest}>{process.name}</Text>
             </Row>

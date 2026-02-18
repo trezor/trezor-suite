@@ -14,7 +14,7 @@ interface EarnInANutshellHighlightsProps {
 export const EarnInANutshellHighlights = ({ items }: EarnInANutshellHighlightsProps) => (
     <List gap={20} bulletGap={16} typographyStyle="body-sm" margin={{ top: 8 }}>
         {items.map(({ icon, content }, index) => (
-            <List.Item key={index} bulletComponent={<Icon name={icon} variant="primary" />}>
+            <List.Item key={index} bulletComponent={<Icon name={icon} intent="brand" />}>
                 <Paragraph intent="neutral" priority="secondary">
                     {content}
                 </Paragraph>

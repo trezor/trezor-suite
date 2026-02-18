@@ -16,8 +16,8 @@ const meta: Meta<typeof ListComponent> = {
 export default meta;
 
 const iconProps = {
-    size: 'extraLarge',
-    variant: 'primary',
+    size: 32,
+    intent: 'brand',
 } as Partial<IconProps>;
 
 export const List: StoryObj<typeof ListComponent> = {

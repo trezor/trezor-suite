@@ -134,7 +134,7 @@ export const ConnectPermissionsModal = () => {
                             {permissionTypes.map(permission => (
                                 <List.Item
                                     key={permission}
-                                    bulletComponent={<Icon name="checkCircle" variant="primary" />}
+                                    bulletComponent={<Icon name="checkCircle" intent="brand" />}
                                 >
                                     {getPermissionText(permission)}
                                 </List.Item>

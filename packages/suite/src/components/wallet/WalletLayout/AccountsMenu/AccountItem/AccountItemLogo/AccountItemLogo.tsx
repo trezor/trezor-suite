@@ -20,7 +20,7 @@ export const AccountItemLogo = ({ type, account }: AccountItemLogoProps) => {
             );
 
         case 'staking':
-            return <Icon name="piggyBankFilled" variant="tertiary" />;
+            return <Icon name="piggyBankFilled" intent="neutral" priority="secondary" />;
 
         case 'tokens':
             return <TokenIconSetWrapper accounts={[account]} symbol={account.symbol} />;

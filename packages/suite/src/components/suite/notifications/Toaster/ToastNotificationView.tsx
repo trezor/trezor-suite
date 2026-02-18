@@ -7,7 +7,7 @@ import { IconName, Toast } from '@trezor/components';
 import { useDispatch } from 'src/hooks/suite';
 import { ToastNotificationVariant } from 'src/types/suite';
 
-import { mapNotificationActionsToToastActions, mapNotificationVariantToIntent } from './utils';
+import { mapNotificationActionsToToastActions, notificationVariantToIntentMap } from './utils';
 import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 export type ToastNotificationViewProps = {
@@ -42,7 +42,7 @@ export const ToastNotificationView = ({
     return (
         <Toast
             icon={toastIcon}
-            intent={mapNotificationVariantToIntent(variant)}
+            intent={notificationVariantToIntentMap[variant] ?? 'neutral'}
             content={<Translation id={message} values={messageValues} />}
             dataTestId={notification.type}
             actions={mapNotificationActionsToToastActions(action, translationString)}

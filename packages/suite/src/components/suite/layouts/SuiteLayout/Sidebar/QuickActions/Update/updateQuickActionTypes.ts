@@ -1,5 +1,4 @@
-import { ButtonIntent, IconName } from '@trezor/components';
-import { UIVariant } from '@trezor/components/src/config/types';
+import { IconName, UIIntent } from '@trezor/components';
 
 import {
     installUpdate,
@@ -8,9 +7,6 @@ import {
 } from '../../../../../../../actions/suite/desktopUpdateActions';
 import { goto } from '../../../../../../../actions/suite/routerActions';
 import { Dispatch } from '../../../../../../../types/suite';
-
-export const updateVariants = ['tertiary', 'primary', 'info'] as const;
-export type UpdateVariant = Extract<UIVariant, (typeof updateVariants)[number]>;
 
 export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'disconnected';
 
@@ -32,22 +28,13 @@ export const mapUpdateStatusToIcon: Record<UpdateStatus, IconName> = {
     'just-updated': 'check',
 };
 
-export const mapUpdateStatusToVariant: Record<UpdateStatus, UpdateVariant> = {
-    disconnected: 'tertiary',
-    'update-downloaded-manual': 'info',
-    'update-downloaded-auto-restart-to-update': 'info',
-    'up-to-date': 'primary',
-    'update-available': 'info',
-    'just-updated': 'info',
-};
-
-export const mapUpdateStatusToSubIconIntent: Record<UpdateStatus, ButtonIntent> = {
+export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     disconnected: 'neutral',
     'update-downloaded-manual': 'info',
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
     'update-available': 'info',
-    'just-updated': 'info',
+    'just-updated': 'accentViolet',
 };
 
 type OnClickCallbackCallback = ((params: { dispatch: Dispatch }) => void) | null;

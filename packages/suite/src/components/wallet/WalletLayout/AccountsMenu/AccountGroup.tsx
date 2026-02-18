@@ -113,7 +113,8 @@ export const AccountGroup = ({
                                     <Icon
                                         data-testid="@account-menu/arrow"
                                         size={16}
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         name="caretDown"
                                     />
                                 </IconWrapper>

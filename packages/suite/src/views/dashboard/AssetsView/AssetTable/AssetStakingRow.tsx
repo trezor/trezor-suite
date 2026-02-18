@@ -24,7 +24,7 @@ export const AssetStakingRow = ({
         <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
                 <Section $dashedLinePosition={shouldRenderTokenRow ? 'topToBottom' : 'topToMiddle'}>
-                    <Icon name="piggyBankFilled" variant="tertiary" />
+                    <Icon name="piggyBankFilled" intent="neutral" priority="secondary" />
                 </Section>
             </Table.Cell>
             <Table.Cell padding={{ left: spacings.zero }}>

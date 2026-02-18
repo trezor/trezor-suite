@@ -16,20 +16,31 @@ type ToggleProps = {
     size?: IconProps['size'];
     iconName?: IconName;
     'data-testid'?: string;
-    variant?: IconProps['variant'];
+    intent?: IconProps['intent'];
+    priority?: IconProps['priority'];
+    isDisabled?: IconProps['isDisabled'];
 };
 
 export const CollapsibleToggleIcon = ({
     size,
     iconName = 'caretDown',
     'data-testid': dataTestId,
-    variant = 'tertiary',
+    intent = 'neutral',
+    priority = 'secondary',
+    isDisabled = false,
 }: ToggleProps) => {
     const { isOpen } = useCollapsible();
 
     return (
         <IconWrapper $isCollapsed={!isOpen}>
-            <Icon name={iconName} size={size} data-testid={dataTestId} variant={variant} />
+            <Icon
+                name={iconName}
+                size={size}
+                data-testid={dataTestId}
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
+            />
         </IconWrapper>
     );
 };

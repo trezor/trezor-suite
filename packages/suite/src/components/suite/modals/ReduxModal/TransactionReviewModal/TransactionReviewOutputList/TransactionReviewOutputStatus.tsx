@@ -10,7 +10,7 @@ type TransactionReviewOutputStatusProps = {
 export const TransactionReviewOutputStatus = ({ state }: TransactionReviewOutputStatusProps) => {
     switch (state) {
         case 'confirmed':
-            return <Icon size={spacings.md} variant="primary" name="check" />;
+            return <Icon size={spacings.md} intent="brand" name="check" />;
         case 'unconfirmed':
             return <DotIndicator />;
         default:

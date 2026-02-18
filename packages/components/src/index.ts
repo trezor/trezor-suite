@@ -18,7 +18,14 @@ export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
-export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
+export {
+    ComponentWithSubIcon,
+    type ComponentWithSubIconProps,
+} from './components/ComponentWithSubIcon/ComponentWithSubIcon';
+export {
+    componentWithSubIconIntents,
+    type ComponentWithSubIconIntent,
+} from './components/ComponentWithSubIcon/types';
 export * from './components/buttons/TextButton/TextButton';
 export { Box, type BoxProps } from './components/Box/Box';
 export {
@@ -143,3 +150,5 @@ export type { SuiteThemeColors } from './config/colors';
 
 export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
+
+export { type UIIntent } from './config/types';

@@ -13,7 +13,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
+import { Icon, IconName, IconProps, IconSize } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
@@ -64,18 +64,31 @@ export const IconCircle = ({
     variant = 'primary',
     ...rest
 }: IconCircleProps) => {
-    const iconSize = getIconSize(size);
     const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps);
+    let iconProps: Pick<IconProps, 'intent' | 'priority' | 'isDisabled'>;
+    if (variant === 'primary') {
+        iconProps = { intent: 'brand' };
+    } else if (variant === 'info') {
+        iconProps = { intent: 'info' };
+    } else if (variant === 'tertiary') {
+        iconProps = { intent: 'neutral', priority: 'secondary' };
+    } else if (variant === 'warning') {
+        iconProps = { intent: 'warning' };
+    } else if (variant === 'destructive') {
+        iconProps = { intent: 'critical' };
+    } else {
+        iconProps = { intent: 'neutral' };
+    }
 
     return (
         <IconCircleWrapper
-            $size={iconSize}
+            $size={size}
             $paddingType={paddingType}
             $hasBorder={hasBorder}
             $variant={variant}
             {...frameProps}
         >
-            <Icon name={name} variant={variant} />
+            <Icon name={name} {...iconProps} />
         </IconCircleWrapper>
     );
 };

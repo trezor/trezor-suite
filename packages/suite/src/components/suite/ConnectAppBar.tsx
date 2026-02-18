@@ -75,7 +75,8 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                             <Row gap={spacings.xs} alignItems="center">
                                 <Icon
                                     name={isWalletConnect ? 'walletConnect' : 'plugs'}
-                                    variant="tertiary"
+                                    intent="neutral"
+                                    priority="secondary"
                                 />
                                 <Text intent="neutral" priority="secondary">
                                     <Translation

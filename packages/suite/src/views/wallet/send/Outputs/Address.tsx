@@ -418,15 +418,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const getBottomTextIconComponent = () => {
         if (addressError) {
-            return <Icon name="warningCircle" size="medium" variant="destructive" />;
+            return <Icon name="warningCircle" size={16} intent="critical" />;
         }
 
         if (hasAddressChecksummed) {
-            return <Icon name="check" size="medium" variant="disabled" />;
+            return <Icon name="check" size={16} isDisabled={true} />;
         }
 
         if (autocorrectMessage) {
-            return <Icon name="warningCircle" size="medium" variant="warning" />;
+            return <Icon name="warningCircle" size={16} intent="warning" />;
         }
 
         if (isAddressWithLabel) {

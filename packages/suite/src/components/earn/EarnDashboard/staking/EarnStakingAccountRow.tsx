@@ -177,7 +177,9 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                         )}
                     </Column>
 
-                    {apy && <Icon name="arrowRight" variant="tertiary" size="mediumLarge" />}
+                    {apy && (
+                        <Icon name="arrowRight" intent="neutral" priority="secondary" size={20} />
+                    )}
                 </Row>
             </Table.Cell>
         );
@@ -334,7 +336,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                 <>
                     <Table.Cell colSpan={2}>
                         <Row gap={4}>
-                            <Icon name="warning" size={24} variant="warning" />
+                            <Icon name="warning" size={24} intent="warning" />
                             <Paragraph typographyStyle="body-md" intent="warning">
                                 <Translation
                                     id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"

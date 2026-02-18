@@ -28,7 +28,9 @@ export const LabelingSwitchToLegacyModal = ({
             <List
                 bulletGap={0}
                 gap={0}
-                bulletComponent={<Icon name="dot" variant="tertiary" size={32} />}
+                bulletComponent={
+                    <Icon name="dot" intent="neutral" priority="secondary" size={32} />
+                }
             >
                 <List.Item>
                     <Paragraph intent="neutral" priority="secondary">

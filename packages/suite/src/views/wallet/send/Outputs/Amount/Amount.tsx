@@ -236,7 +236,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                                 isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'
                                             }
                                             size={20}
-                                            variant="tertiary"
+                                            intent="neutral"
+                                            priority="secondary"
                                             margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
                                         />
                                     )}

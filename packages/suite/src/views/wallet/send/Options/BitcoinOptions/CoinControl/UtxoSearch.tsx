@@ -36,7 +36,9 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
         <Input
             data-testid="@wallet/send/search-icon"
             innerRef={inputRef}
-            leftContent={<Icon name="magnifyingGlass" size={16} variant="tertiary" />}
+            leftContent={
+                <Icon name="magnifyingGlass" size={16} intent="neutral" priority="secondary" />
+            }
             placeholder={translationString('TR_SEARCH_UTXOS')}
             onChange={onSearch}
             onKeyDown={onKeyDown}

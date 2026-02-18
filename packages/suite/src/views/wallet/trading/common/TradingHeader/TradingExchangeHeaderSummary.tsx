@@ -49,7 +49,7 @@ export const TradingExchangeHeaderSummary = ({
                         />
                     </H3>
                 )}
-                <Icon variant="tertiary" name="arrowRight" />
+                <Icon intent="neutral" priority="secondary" name="arrowRight" />
                 {receiveCurrency && (
                     <H3>
                         <TradingCryptoAmount cryptoId={receiveCurrency} displayLogo />

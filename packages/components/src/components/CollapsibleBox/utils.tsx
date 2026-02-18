@@ -55,9 +55,9 @@ export const mapSizeToSubheadingTypography = ({ $headingSize }: SizeMapArgs): Ty
 
 export const mapSizeToIconSize = ({ $headingSize }: SizeMapArgs): IconSize => {
     const sizeMap: Record<HeadingSize, IconSize> = {
-        small: 'small',
-        medium: 'medium',
-        large: 'medium',
+        small: 12,
+        medium: 16,
+        large: 16,
     };
 
     return sizeMap[$headingSize];

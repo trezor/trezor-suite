@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CryptoId } from 'invity-api';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { TradingTradeType, useTradingUtils } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -42,19 +42,15 @@ interface TradingFeaturedOffersAmountsProps {
 const TradingFeaturedOffersAmount = ({
     fromAmount,
     toAmount,
-}: TradingFeaturedOffersAmountProps) => {
-    const theme = useTheme();
-
-    return (
-        <AmountsWrapper>
-            {fromAmount}
-            <Arrow>
-                <Icon color={theme.iconSubdued} size={20} name="arrowRight" />
-            </Arrow>
-            {toAmount}
-        </AmountsWrapper>
-    );
-};
+}: TradingFeaturedOffersAmountProps) => (
+    <AmountsWrapper>
+        {fromAmount}
+        <Arrow>
+            <Icon intent="neutral" priority="secondary" size={20} name="arrowRight" />
+        </Arrow>
+        {toAmount}
+    </AmountsWrapper>
+);
 
 export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmountsProps) => {
     const context = useTradingFormContext();

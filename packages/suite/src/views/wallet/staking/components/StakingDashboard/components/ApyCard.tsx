@@ -10,7 +10,7 @@ interface ApyCardProps {
 export const ApyCard = ({ apy }: ApyCardProps) => (
     <Card paddingType="small" flex="1">
         <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
-            <Icon name="percent" variant="tertiary" />
+            <Icon name="percent" intent="neutral" priority="secondary" />
 
             <Column margin={{ top: 'auto' }}>
                 <Paragraph typographyStyle="headline-md">

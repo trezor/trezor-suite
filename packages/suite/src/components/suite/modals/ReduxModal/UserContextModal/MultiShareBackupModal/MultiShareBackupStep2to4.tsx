@@ -30,7 +30,7 @@ type InstructionItemProps = {
 const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemProps) => (
     <Card paddingType="normal">
         <Flex direction={direction} alignItems="center" gap={spacings.xs} height="100%">
-            <Icon size="extraLarge" name={icon} />
+            <Icon size={32} name={icon} />
             <Paragraph
                 typographyStyle="body-sm"
                 intent="neutral"

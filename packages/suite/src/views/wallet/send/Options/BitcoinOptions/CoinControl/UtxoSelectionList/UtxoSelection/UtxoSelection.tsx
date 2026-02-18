@@ -170,12 +170,22 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                     <Translation id="TR_IN_PENDING_TRANSACTION" />
                                                 }
                                             >
-                                                <Icon name="clock" variant="tertiary" size={16} />
+                                                <Icon
+                                                    name="clock"
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                    size={16}
+                                                />
                                             </Tooltip>
                                         )}
                                         {coinjoinUnavailableMessage && (
                                             <Tooltip content={coinjoinUnavailableMessage}>
-                                                <Icon name="xCircle" variant="tertiary" size={16} />
+                                                <Icon
+                                                    name="xCircle"
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                    size={16}
+                                                />
                                             </Tooltip>
                                         )}
                                         {isChangeAddress && (
@@ -184,7 +194,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                     <Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />
                                                 }
                                             >
-                                                <Icon name="change" variant="tertiary" size={16} />
+                                                <Icon
+                                                    name="change"
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                    size={16}
+                                                />
                                             </Tooltip>
                                         )}
                                     </>
@@ -243,7 +258,8 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 leftAddon={
                                     <Icon
                                         name={outputLabel ? 'tagFilled' : 'tag'}
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         size={12}
                                     />
                                 }

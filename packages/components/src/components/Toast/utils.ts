@@ -1,6 +1,4 @@
-import { DefaultTheme } from 'styled-components';
-
-import { CSSColor } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { ToastAction, ToastIconVariant, ToastIntent } from './types';
 
@@ -16,13 +14,13 @@ export const mapToastIntentToIcon = (intent: ToastIntent) => {
     return iconMap[intent];
 };
 
-export const mapToastVariantToColor = (variant: ToastIntent, theme: DefaultTheme) => {
-    const colorMap: Record<ToastIntent, CSSColor> = {
-        brand: theme.textPrimaryDefault,
-        info: theme.textAlertBlue,
-        warning: theme.textAlertYellow,
-        critical: theme.textAlertRed,
-        neutral: theme.textSubdued,
+export const mapToastVariantToColor = (variant: ToastIntent): Color => {
+    const colorMap: Record<ToastIntent, Color> = {
+        brand: 'textPrimaryDefault',
+        info: 'textAlertBlue',
+        warning: 'textAlertYellow',
+        critical: 'textAlertRed',
+        neutral: 'textSubdued',
     };
 
     return colorMap[variant];

@@ -185,8 +185,10 @@ export const DropZone = ({
                 <Row gap={spacings.xs}>
                     <Icon
                         name={iconName}
-                        size="mediumLarge"
-                        variant={filename ? 'default' : 'tertiary'}
+                        size={20}
+                        {...(filename
+                            ? { intent: 'neutral' as const }
+                            : { intent: 'neutral' as const, priority: 'secondary' as const })}
                     />
                     <Text
                         typographyStyle="body-sm"

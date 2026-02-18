@@ -7,12 +7,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
-import {
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    paletteV2,
-} from '@trezor/theme';
+import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;
@@ -187,7 +182,7 @@ export const Coin = ({
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} type="token" />
                 <Check $visible={toggled}>
-                    <Icon size={8} color={paletteV2.globalWhiteAlpha1000} name="check" />
+                    <Icon size={8} color="baseContentReversePrimary" name="check" />
                 </Check>
             </ImageWrapper>
             {label ? (

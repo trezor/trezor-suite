@@ -208,7 +208,8 @@ export const ConfirmValueModal = ({
                                                 <Icon
                                                     name={addressLabel ? 'tagFilled' : 'tag'}
                                                     size={16}
-                                                    variant="tertiary"
+                                                    intent="neutral"
+                                                    priority="secondary"
                                                 />
                                             }
                                             payload={{

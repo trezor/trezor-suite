@@ -63,7 +63,8 @@ export const DeviceStatusTextThp = ({ device, forceConnectionInfo }: DeviceStatu
     if (showThpStatus) {
         return (
             <DeviceConnectionText
-                variant={connected ? 'primary' : 'tertiary'}
+                intent={connected ? 'brand' : 'neutral'}
+                priority={connected ? 'primary' : 'secondary'}
                 icon="check"
                 isLoading={isLoading}
                 data-testid="@deviceStatus-connecting"

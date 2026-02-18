@@ -18,10 +18,10 @@ export const MessageSystemManagerInfo = ({
         <InfoItem label="Active" iconName="info" direction="row">
             <Icon
                 name="circleFilled"
-                variant={
+                intent={
                     allValidMessages.some(validMessage => validMessage.id === message.id)
-                        ? 'primary'
-                        : 'destructive'
+                        ? 'brand'
+                        : 'critical'
                 }
             />
         </InfoItem>

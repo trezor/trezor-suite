@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Elevation, borders, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
@@ -86,7 +86,6 @@ export const RadioCard = ({
     ...rest
 }: RadioCardProps) => {
     const { elevation } = useElevation();
-    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
@@ -101,11 +100,7 @@ export const RadioCard = ({
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-6px', right: '-6px' }}>
                     <IconBackground>
-                        <Icon
-                            name="checkCircleFilled"
-                            size="mediumLarge"
-                            color={theme.baseContentBrand}
-                        />
+                        <Icon name="checkCircleFilled" size={20} color="baseContentBrand" />
                     </IconBackground>
                 </Box>
             )}

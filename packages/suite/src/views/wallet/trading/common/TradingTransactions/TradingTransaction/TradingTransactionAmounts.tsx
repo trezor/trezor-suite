@@ -1,5 +1,5 @@
 import { TradingTransaction, useTradingUtils } from '@suite-common/trading';
-import { Icon, Row, iconSizes } from '@trezor/components';
+import { Icon, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -7,7 +7,7 @@ import { TradingTestWrapper } from 'src/views/wallet/trading';
 
 const Arrow = () => (
     <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-        <Icon variant="tertiary" size={iconSizes.small} name="caretRight" />
+        <Icon intent="neutral" priority="secondary" size={12} name="caretRight" />
     </Row>
 );
 

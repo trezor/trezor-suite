@@ -154,7 +154,14 @@ export const TokensNavigation = ({
                     onChange={event => setSearchQuery(event.target.value)}
                     onClear={() => setSearchQuery('')}
                     size="small"
-                    leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
+                    leftContent={
+                        <Icon
+                            name="magnifyingGlass"
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                 />
                 {showAddToken && (
                     <IconButton

@@ -35,7 +35,8 @@ type StepCardProps = {
 };
 
 const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
-    const variant = state === 'confirmed' ? 'primary' : 'tertiary';
+    const iconIntent = state === 'confirmed' ? 'brand' : 'neutral';
+    const iconPriority = state === 'confirmed' ? 'primary' : 'secondary';
     const textIntent = state === 'confirmed' ? 'brand' : 'neutral';
     const textPriority = state === 'confirmed' ? 'primary' : 'secondary';
 
@@ -45,7 +46,8 @@ const StepCard = ({ heading, description, actions, icon, state }: StepCardProps)
                 <Row gap={8} padding={{ horizontal: 16, vertical: 12 }}>
                     <Icon
                         name={state === 'confirmed' ? 'check' : icon}
-                        variant={variant}
+                        intent={iconIntent}
+                        priority={iconPriority}
                         size={20}
                     />
                     <Text typographyStyle="body-sm" intent={textIntent} priority={textPriority}>

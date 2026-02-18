@@ -34,7 +34,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
         <Card paddingType="small" flex="1">
             <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
                 <Row columnGap={spacings.xxs}>
-                    <Icon name="info" variant="tertiary" />
+                    <Icon name="info" intent="neutral" priority="secondary" />
 
                     <DebugOnlyBadge />
                 </Row>

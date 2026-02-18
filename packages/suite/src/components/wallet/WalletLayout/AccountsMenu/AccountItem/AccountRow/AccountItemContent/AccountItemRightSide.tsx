@@ -34,14 +34,14 @@ export const AccountItemRightSide = ({
         return (
             <Icon
                 name={isEverstake ? 'check' : 'warning'}
-                variant={isEverstake ? 'primary' : 'warning'}
+                intent={isEverstake ? 'brand' : 'warning'}
                 size={ICON_SIZE}
             />
         );
     }
 
     if (isFailed) {
-        return <Icon name="warning" size={ICON_SIZE} variant="warning" />;
+        return <Icon name="warning" size={ICON_SIZE} intent="warning" />;
     }
 
     return (

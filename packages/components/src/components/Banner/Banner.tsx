@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
@@ -43,7 +41,6 @@ export const Banner = ({
     width = '100%',
     ...rest
 }: BannerProps) => {
-    const theme = useTheme();
     const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
 
     const withIcon = icon !== undefined;
@@ -64,7 +61,7 @@ export const Banner = ({
                     <Icon
                         size={20}
                         name={icon === true ? mapIntentToIcon(intent) : icon}
-                        color={mapIntentToIconColor(intent, theme)}
+                        color={mapIntentToIconColor(intent)}
                     />
                 )}
 

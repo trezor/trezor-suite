@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { Column, Icon, IconName, Paragraph } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { CSSColor, typography } from '@trezor/theme';
+import { Color, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -22,9 +22,9 @@ const Header = styled.header`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)<{ $backgroundColor?: string }>`
-    background: ${({ $backgroundColor }) =>
-        $backgroundColor && transparentize(0.9, $backgroundColor)};
+const StyledIcon = styled(Icon)<{ $backgroundColor?: Color }>`
+    background: ${({ $backgroundColor, theme }) =>
+        $backgroundColor && transparentize(0.9, theme[$backgroundColor])};
     border-radius: 50%;
     margin-left: -8px;
     padding: 20px;
@@ -34,7 +34,7 @@ interface UtxoSelectionListProps {
     description: ReactNode;
     heading: ReactNode;
     icon: IconName;
-    iconColor?: CSSColor;
+    iconColor?: Color;
     utxos: AccountUtxo[];
     withHeader: boolean;
 }

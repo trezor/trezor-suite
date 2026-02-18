@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -75,8 +75,6 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     } = useSendFormContext();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-
-    const theme = useTheme();
 
     const getTotal = (amounts: number[]) =>
         amounts.reduce((previous, current) => previous + current, 0);
@@ -225,7 +223,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
                         icon="shieldCheck"
-                        iconColor={theme.iconPrimaryDefault}
+                        iconColor="iconPrimaryDefault"
                         utxos={spendableUtxosOnPage}
                     />
                 )}
@@ -240,7 +238,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             />
                         }
                         icon="shieldWarning"
-                        iconColor={theme.iconAlertYellow}
+                        iconColor="iconAlertYellow"
                         utxos={lowAnonymityUtxosOnPage}
                     />
                 )}
@@ -255,7 +253,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
                         icon="info"
-                        iconColor={theme.iconSubdued}
+                        iconColor="iconSubdued"
                         utxos={dustUtxosOnPage}
                     />
                 )}

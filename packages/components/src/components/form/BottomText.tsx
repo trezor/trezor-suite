@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import { spacings } from '@trezor/theme';
 
 import { Row } from '../Flex/Flex';
-import { Icon, IconName, IconVariant } from '../Icon/Icon';
+import { Icon, IconName, IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 const slideDown = keyframes`
@@ -40,18 +40,18 @@ export const BottomText = ({
     children,
     'data-testid': dataTestId,
 }: BottomTextProps) => {
-    // eslint-disable-next-line no-nested-ternary
-    const variant = isDisabled ? 'disabled' : hasError ? 'destructive' : 'tertiary';
     const textIntent = hasError ? 'critical' : 'neutral';
     const textPriority = hasError ? 'primary' : 'secondary';
+    const iconProps: Pick<IconProps, 'intent' | 'priority' | 'isDisabled'> = {
+        intent: textIntent,
+        priority: textPriority,
+        isDisabled,
+    };
 
     return (
         <Container>
             <Row gap={spacings.xxs}>
-                {iconComponent ??
-                    (iconName && (
-                        <Icon name={iconName} size="medium" variant={variant as IconVariant} />
-                    ))}
+                {iconComponent ?? (iconName && <Icon name={iconName} size={16} {...iconProps} />)}
                 <Text
                     data-testid={dataTestId}
                     intent={textIntent}

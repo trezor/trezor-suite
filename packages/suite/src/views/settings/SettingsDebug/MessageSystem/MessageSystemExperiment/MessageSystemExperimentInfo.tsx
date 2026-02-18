@@ -60,7 +60,7 @@ export const MessageSystemExperimentInfo = ({
     return (
         <Column gap={spacings.xs}>
             <InfoItem label="Active" iconName="info" direction="row">
-                <Icon name="circleFilled" variant={isActive ? 'primary' : 'destructive'} />
+                <Icon name="circleFilled" intent={isActive ? 'brand' : 'critical'} />
             </InfoItem>
 
             <InfoItem label="Assigned group" iconName="users" direction="row">

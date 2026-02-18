@@ -101,7 +101,12 @@ export const PassphraseInputCard = ({
                             <Text intent="neutral" priority="secondary">
                                 <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
                             </Text>
-                            <Icon margin={{ left: 'auto' }} name="caretRight" variant="tertiary" />
+                            <Icon
+                                margin={{ left: 'auto' }}
+                                name="caretRight"
+                                intent="neutral"
+                                priority="secondary"
+                            />
                         </Row>
                     ) : null
                 }
@@ -121,7 +126,8 @@ export const PassphraseInputCard = ({
                             rightContent={
                                 <Icon
                                     size={18}
-                                    variant="tertiary"
+                                    intent="neutral"
+                                    priority="secondary"
                                     name={showPassword ? 'eyeClosed' : 'eye'}
                                     onClick={() => setShowPassword(!showPassword)}
                                     data-testid="@passphrase/show-toggle"

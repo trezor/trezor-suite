@@ -99,7 +99,7 @@ export const DebugLegend = ({ layout }: DebugLegend) => {
             )}
             <Row gap={spacings.xs}>
                 <Text typographyStyle="body-xs">Debug theme legend</Text>
-                <Icon name={isMenuOpen ? 'caretDown' : 'caretUp'} size="medium" />
+                <Icon name={isMenuOpen ? 'caretDown' : 'caretUp'} size={16} />
             </Row>
         </DebugLegendContainer>
     );

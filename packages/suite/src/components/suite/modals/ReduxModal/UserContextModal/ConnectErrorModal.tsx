@@ -102,10 +102,10 @@ export const ConnectErrorModal = () => {
     if (isDeviceReconnectError && (!prerequisite || prerequisite === 'device-disconnected'))
         return <ConnectSelectDeviceModal />;
 
-    const getVariant = () => {
+    const getIconIntent = () => {
         if (isCancelled) return 'warning';
 
-        return 'destructive';
+        return 'critical';
     };
     const getTitle = () => {
         if (isCancelled) return <Translation id="TR_CANCELLED" />;
@@ -165,7 +165,7 @@ export const ConnectErrorModal = () => {
             >
                 <Column gap={spacings.xs}>
                     <Row alignItems="center" gap={spacings.sm}>
-                        <Icon name="warning" size={32} variant={getVariant()} />
+                        <Icon name="warning" size={32} intent={getIconIntent()} />
                         <H3 intent={isCancelled ? 'warning' : 'critical'}>{getTitle()}</H3>
                     </Row>
                     <ConnectCallSource />

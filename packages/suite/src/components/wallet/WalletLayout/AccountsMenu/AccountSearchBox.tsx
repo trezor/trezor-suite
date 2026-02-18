@@ -27,7 +27,7 @@ export const AccountSearchBox = () => {
                     name="magnifyingGlass"
                     margin={{ left: 12, right: 20 }}
                     size={16}
-                    variant="default"
+                    intent="neutral"
                     onClick={() => {
                         inputRef?.current?.select();
                     }}

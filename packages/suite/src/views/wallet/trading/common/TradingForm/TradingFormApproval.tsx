@@ -402,7 +402,7 @@ export const TradingFormApproval = () => {
                 <Column width="100%" alignItems="flex-start">
                     <Row alignItems="flex-start" gap={12}>
                         <IconWrapper>
-                            <Icon name="spinnerGap" size="mediumLarge" />
+                            <Icon name="spinnerGap" size={20} />
                         </IconWrapper>
 
                         <Column>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
@@ -48,7 +48,7 @@ const Container = styled.div<{ $variant: ToastIntent }>`
         inset: 0;
         pointer-events: none;
         border-left: ${spacingsPx.xxs} solid
-            ${({ theme, $variant }) => mapToastVariantToColor($variant, theme)};
+            ${({ theme, $variant }) => theme[mapToastVariantToColor($variant)]};
         border-radius: inherit;
     }
 `;
@@ -72,8 +72,6 @@ export const Toast = ({
     dataTestId,
     onDismiss,
 }: ToastProps) => {
-    const theme = useTheme();
-
     const dataTestBase = `@toast/${dataTestId ?? intent}`;
     const showIcon = intent !== 'neutral' || icon != null;
 
@@ -97,7 +95,7 @@ export const Toast = ({
                 {showIcon && (
                     <Icon
                         name={icon ?? mapToastIntentToIcon(intent)}
-                        color={mapToastVariantToColor(intent, theme)}
+                        color={mapToastVariantToColor(intent)}
                     />
                 )}
 

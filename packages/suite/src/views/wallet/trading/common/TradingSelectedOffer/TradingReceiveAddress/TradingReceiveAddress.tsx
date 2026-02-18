@@ -103,7 +103,7 @@ export const TradingReceiveAddress = () => {
                         )}
                     </Column>
 
-                    <Icon name="caretRight" size={20} variant="tertiary" />
+                    <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
                 </Row>
             </Row>
         </GhostContainer>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
-import { Code, Icon, InfoSegments, Text, iconSizes } from '@trezor/components';
+import { Code, Icon, InfoSegments, Text } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
@@ -39,16 +39,10 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
     return (
         <>
             <InfoSegments>
-                {isKnownDevice && (
-                    <Icon
-                        name="floppyDiskBackFilled"
-                        size={iconSizes.medium}
-                        variant="destructive"
-                    />
-                )}
+                {isKnownDevice && <Icon name="floppyDiskBackFilled" size={16} intent="critical" />}
                 {isNearbyDevice && (
                     <>
-                        <Icon name="cellSignalFull" size={iconSizes.medium} variant="primary" />
+                        <Icon name="cellSignalFull" size={16} intent="brand" />
                         {isNearbyDevice.rssi} dBm
                     </>
                 )}
