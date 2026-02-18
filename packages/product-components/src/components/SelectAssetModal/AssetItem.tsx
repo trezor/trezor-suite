@@ -6,7 +6,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { AssetOptionBaseProps } from './SelectAssetModal';
+import type { AssetOptionBaseProps } from './types';
 import { isCoinSymbol } from '../../constants/coins';
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';

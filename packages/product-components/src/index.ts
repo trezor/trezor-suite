@@ -1,10 +1,9 @@
-export {
-    ITEM_HEIGHT,
-    SelectAssetModal,
-    type AssetProps,
-    type AssetOptionBaseProps,
-    type AssetTokenBalance,
-} from './components/SelectAssetModal/SelectAssetModal';
+export { ITEM_HEIGHT, SelectAssetModal } from './components/SelectAssetModal/SelectAssetModal';
+export type {
+    AssetProps,
+    AssetOptionBaseProps,
+    AssetTokenBalance,
+} from './components/SelectAssetModal/types';
 export { SearchAsset } from './components/SelectAssetModal/SearchAsset';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
 export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
