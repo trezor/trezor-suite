@@ -64,7 +64,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: node_modules
-          key: node_modules/${{ github.ref }}/${{github.run_id}}
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Install Yarn dependencies
         run: |
