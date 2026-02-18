@@ -21,6 +21,9 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/support" },

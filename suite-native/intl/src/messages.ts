@@ -1098,6 +1098,28 @@ export const messages = {
                         'Name your wallets, personalize accounts, and label transactions to stay organized on all your approved devices.',
                     toggleDescription:
                         'Keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
+                    relayUrl: {
+                        card: {
+                            title: 'Relay server',
+                            subtitle: 'Default or custom relay server',
+                        },
+                        screen: {
+                            title: 'Relay server',
+                            subtitle:
+                                'Choose between the default Trezor relay server or set up a custom one.',
+                        },
+                        serverType: {
+                            label: 'Server type',
+                            default: 'Trezor (default)',
+                            custom: 'Custom',
+                        },
+                        customUrlInput: {
+                            label: 'Custom relay URL',
+                            required: 'This field is required.',
+                            invalidUrl: 'Please enter a valid URL.',
+                        },
+                        saved: 'Relay server settings saved.',
+                    },
                 },
                 advanced: {
                     title: 'Advanced',
