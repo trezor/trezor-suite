@@ -1946,6 +1946,7 @@
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Első a biztonság a Trezorral",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Első a biztonság a Trezorral",
   "TR_TRADING_SWAP_UNAVAILABLE": "Csere nem elérhető",
+  "TR_TRADING_TERMS": "Ezt a szolgáltatást a(z) <comp>{provider}</comp> nyújtja, és az ő Felhasználási Feltételeik irányadóak. A Trezor nem vesz részt benne.",
   "TR_TRADING_TOKEN_NETWORK": "{tokenName} a(z) {networkName} hálózaton",
   "TR_TRADING_TRADE_FEE": "Kereskedési díj",
   "TR_TRADING_TRANS_ID": "Tranz. azonosító:",
