@@ -18,6 +18,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   NODE_ENV: "test"
   DETOX_BINARY_PATH: ../../node_modules/.bin/detox
@@ -44,13 +47,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node_modules/${{ github.ref }}/${{github.run_id}}
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
+
+      - name: Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.0.1"
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
@@ -61,10 +70,19 @@ jobs:
         working-directory: ./suite-common/message-system
         run: yarn sign-config
 
-      - name: Use latest stable Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
         with:
-          xcode-version: "26.0.1"
+          path: suite-native/app/ios/Pods
+          key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
+          restore-keys: pods-
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: suite-native/app/ios/build
+          key: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-${{ github.sha }}
+          restore-keys: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
@@ -79,6 +97,10 @@ jobs:
 
   run_ios_e2e_tests:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [0, 1]
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
@@ -96,7 +118,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node_modules/${{ github.ref }}/${{github.run_id}}
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Install Yarn dependencies
         run: |
@@ -131,6 +154,16 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: 1
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
+      - name: Cache Detox framework
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Detox
+          key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
+
+      - name: Build Detox framework cache
+        run: npx detox clean-framework-cache && npx detox build-framework-cache
+        working-directory: ./suite-native/app
+
       - name: Download app build artifact
         uses: actions/download-artifact@v4
         with:
@@ -152,15 +185,13 @@ jobs:
           CURRENTS_PROJECT_ID: LjEjiV
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-        run: |
-          npx detox clean-framework-cache && npx detox build-framework-cache
-          yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --headless
+        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ios-tests
+          name: ios-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
           retention-days: 14
 
