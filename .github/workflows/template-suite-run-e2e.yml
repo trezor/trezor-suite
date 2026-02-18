@@ -88,7 +88,7 @@ jobs:
         with:
           app-id: ${{ secrets.trezor-bot-app-id }}
           private-key: ${{ secrets.trezor-bot-private-key }}
-          
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -107,6 +107,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
 
       - name: Cache Playwright Browsers
         id: playwright-cache
@@ -132,10 +139,16 @@ jobs:
           yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
 
       - name: Install Playwright Browsers
-        if: inputs.target == 'web'
+        if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           npx playwright install --with-deps
+
+      - name: Install Playwright system dependencies
+        if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: |
+          npx playwright install-deps
 
       - name: Build Message System Config
         shell: bash
@@ -191,7 +204,7 @@ jobs:
 
           # Start services
           docker compose up -d ${{ inputs.containers }}
-          
+
           echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
           yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
             --config=${{ inputs.pw-config }} \
