@@ -34,10 +34,7 @@ export const useFilteredEvents = () => {
             .catch(() => setAnalyticsData({}));
     }, []);
 
-    const allEvents = useMemo(
-        () => getEventsFromJson(analyticsData ?? {}),
-        [analyticsData],
-    );
+    const allEvents = useMemo(() => getEventsFromJson(analyticsData ?? {}), [analyticsData]);
     const isAnalyticsDataGenerated =
         analyticsData !== null &&
         typeof analyticsData === 'object' &&
