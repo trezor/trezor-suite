@@ -270,7 +270,6 @@ export const App = ({ theme }: AppProps) => {
                                 {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
                             </Row>
                             <Row gap={8} alignItems="center">
-                                <ThemeSwitch />
                                 <Tooltip isActive={isMobile} content="Add event">
                                     {isMobile ? (
                                         <IconButton icon="plus" {...addButtonProps} />
@@ -280,6 +279,7 @@ export const App = ({ theme }: AppProps) => {
                                         </Button>
                                     )}
                                 </Tooltip>
+                                <ThemeSwitch />
                                 <Tooltip
                                     content={
                                         isSidebarOpen

@@ -40,7 +40,6 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     flex-shrink: 0;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-left: 1px solid ${({ theme }) => theme.borderOnElevation1};
-    padding: 16px 0;
     overflow-y: auto;
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
@@ -60,6 +59,14 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     }
 `;
 
+const StickyVersionHeader = styled.div<{ theme: SuiteThemeColors }>`
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    padding: 12px 0 8px;
+`;
+
 type VersionsSidebarProps = {
     versionsWithEvents: VersionWithEvents[];
     onEventClick?: (eventName: string) => void;
@@ -68,12 +75,14 @@ type VersionsSidebarProps = {
 export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSidebarProps) => (
     <SidebarWrapper>
         <Column gap={0}>
-            <H3 margin={{ left: 20, top: 8, bottom: 16 }}>Changelog</H3>
+            <H3 margin={{ left: 20, top: 20, bottom: 16 }}>Changelog</H3>
             {versionsWithEvents.map(({ version, events }) => (
                 <Box key={version} padding={{ top: 0, bottom: 16, horizontal: 16 }}>
-                    <Badge intent="brand" size="small">
-                        {version}
-                    </Badge>
+                    <StickyVersionHeader>
+                        <Badge intent="brand" size="small">
+                            {version}
+                        </Badge>
+                    </StickyVersionHeader>
 
                     <CardList margin={{ top: 8 }}>
                         {events
