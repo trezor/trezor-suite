@@ -9,6 +9,10 @@ export type CreateEnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
     LoadSuiteSyncOwnerFromStateDep &
     SaveSuiteSyncOwnerDep;
 
+/**
+ * Todo: Unify with current `createRefreshSuiteSync`, those services have same responsibility
+ *       to get the SuiteSyncOwner and the current split is arbitrary and not by domain
+ */
 export const createEnsureSuiteSyncOwner =
     (deps: CreateEnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwner =>
     async ({ device, delegatedKey }) => {
@@ -19,6 +23,8 @@ export const createEnsureSuiteSyncOwner =
         if (currentSuiteSyncOwner !== null) {
             return ok(currentSuiteSyncOwner);
         }
+
+        // Todo: const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
         const result = await deps.retrieveSuiteSyncOwner({
             device,

@@ -16,6 +16,12 @@ export type EnsureWalletSuiteSyncOnDeps = {
     RefreshSuiteSyncKeysDep &
     SubscriptionStorageDep;
 
+/**
+ * Top-level service that starts the whole SuiteSync initialization setup for
+ * given Wallet.
+ *
+ * Sole responsibility: Pre-run static checks (Firmware Version, etc...)
+ */
 export const createEnsureWalletSuiteSyncOn =
     (deps: EnsureWalletSuiteSyncOnDeps): EnsureWalletSuiteSyncOn =>
     async ({ deviceStaticSessionId, isWriteMode }) => {
@@ -32,8 +38,5 @@ export const createEnsureWalletSuiteSyncOn =
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        return await deps.ensureSuiteSyncData({
-            deviceStaticSessionId,
-            isWriteMode,
-        });
+        return await deps.ensureSuiteSyncData({ deviceStaticSessionId, isWriteMode });
     };

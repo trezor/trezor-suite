@@ -13,8 +13,10 @@ export type CreateEnsureWalletSuiteSyncOnWithFwCheckDeps = {
 } & EnsureWalletSuiteSyncOnDep;
 
 /**
- * Decorator for `ensureWalletSuiteSyncOn` that handles dispatching of all
- * suite sync errors to the Redux store.
+ * Decorator for connection of the ensureWalletSuiteSyncOn` error handling
+ * into Redux. If any error happens, in this decorator we semi-globally
+ * convert this error into Redux state, so we can declaratively have the information
+ * that for this Wallet (Device), the SuiteSync turn-on failed.
  */
 export const createEnsureWalletSuiteSyncOnWithErrorHandler =
     (deps: CreateEnsureWalletSuiteSyncOnWithFwCheckDeps): EnsureWalletSuiteSyncOn =>

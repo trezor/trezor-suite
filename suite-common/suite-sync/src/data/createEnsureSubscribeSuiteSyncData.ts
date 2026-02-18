@@ -15,6 +15,11 @@ export type CreateSubscribeSuiteSyncDataDeps = EnsureStorageDep &
     SubscriptionStorageDep &
     SuiteSyncListenerDep;
 
+/**
+ * Sole responsibility: Subscribes the SuiteSync Storage to the Redux
+ *
+ * Todo: rename to `createEnsureSubscribedStorage`
+ */
 export const createEnsureSubscribeSuiteSyncData =
     (deps: CreateSubscribeSuiteSyncDataDeps): SubscribeSuiteSyncData =>
     async ({ deviceStaticSessionId, isWriteMode }): ReturnType<SubscribeSuiteSyncData> => {

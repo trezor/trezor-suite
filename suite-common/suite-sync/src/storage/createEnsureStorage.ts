@@ -44,6 +44,11 @@ export type EnsureStorageDep = {
     ensureStorage: CreateEnsureStorage;
 };
 
+/**
+ * Responsibility: Ensures the SuiteSync Storage (which is the abstraction around Evolu).
+ *  - If Storage Exists, it will return it from
+ *  - Orchestration of all the requirements for Storage to be created (Keys, Quota, ...)
+ */
 export const createEnsureStorage =
     (deps: EnsureStorageDeps): CreateEnsureStorage =>
     async ({ deviceStaticSessionId, isWriteMode }): ReturnType<CreateEnsureStorage> => {
@@ -69,10 +74,11 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const newStorage = deps.createSuiteStorage({
-            suiteSyncOwner: owner,
-        });
+        const newStorage = deps.createSuiteStorage({ suiteSyncOwner: owner });
 
+        // IMPORTANT: Quota Manager is NOT responsibility of the `createSuiteStorage` and it is
+        //            correct to be here! SuiteSyncStorge abstraction is here to abstract
+        //            the Evolu. CreateStorage function shall only handle the library (Evolu) stuff.
         const quotaResult = await deps.ensureQuota({
             deviceStaticSessionId,
             delegatedKey,

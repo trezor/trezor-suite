@@ -5,8 +5,9 @@ import {
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
+import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
-import { DelegatedIdentityKey, SuiteSyncOwner } from '@suite-common/suite-types';
+import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
@@ -37,6 +38,11 @@ export type EnsureQuotaDep = {
     ensureQuota: EnsureQuota;
 };
 
+/**
+ * Responsibility:
+ *   - If the Transport (Relay) requires Quota to be ensured (allocated)
+ *     this is the place where all the logic shall happen
+ */
 export const createEnsureQuota =
     (deps: EnsureQuotaDeps): EnsureQuota =>
     async ({ deviceStaticSessionId, delegatedKey, owner, isWriteMode }) => {

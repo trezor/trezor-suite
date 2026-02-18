@@ -26,6 +26,14 @@ export type RefreshSuiteSyncKeysDeps = {
     EnsureDelegatedIdentityKeyDep &
     GetDeviceForStaticSessionIdDep;
 
+/**
+ * Responsibility: Resolves the keys for the SuiteSync (Owner)
+ *   - Loads Owner from storage (if exists)
+ *   - Gets keys from the Trezor Device (if connected)
+ *
+ * Todo: Rename to `createEnsureSuiteSyncOwner` & unify with existing `createEnsureSuiteSyncOwner`,
+ *       the delegated key shall be probably a implementation detail and not the parameter
+ */
 export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
     async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
@@ -42,7 +50,7 @@ export const createRefreshSuiteSync =
             return err(SuiteSyncUnavailableOnDeviceError());
         }
 
-        const getDelegatedIdentityKeys = async () => {
+        const ensureKeys = async () => {
             const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
             if (!delegatedKeyResult.success) {
@@ -68,7 +76,7 @@ export const createRefreshSuiteSync =
             return ok({ owner: ownerResult.payload, delegatedKey: delegatedKeyResult.payload });
         };
 
-        const result = await getDelegatedIdentityKeys();
+        const result = await ensureKeys();
 
         if (!result.success) {
             const errType = result.error.type;
