@@ -20,6 +20,7 @@ import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
+import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
@@ -103,6 +104,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
 
 export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
+        selectLanguage: selectSupportedLanguageLocale,
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({
@@ -133,7 +135,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectRouterApp: notImplementedSelector('selectRouterApp', ''),
         selectRoute: notImplementedSelector('selectRoute', {} as Route),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
-        selectLanguage: notImplementedSelector('selectLanguage', 'en'),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,
