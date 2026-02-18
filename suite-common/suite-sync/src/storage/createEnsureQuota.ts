@@ -5,8 +5,9 @@ import {
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
+import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
-import { DelegatedIdentityKey, SuiteSyncOwner } from '@suite-common/suite-types';
+import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';

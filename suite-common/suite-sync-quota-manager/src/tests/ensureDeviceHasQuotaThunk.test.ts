@@ -1,6 +1,7 @@
 import { mocked } from 'jest-mock';
 
-import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
+import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -32,10 +33,6 @@ const createGetState = (statePatch?: Partial<SuiteSyncQuotaManagerState>) => () 
         ...statePatch,
     },
 });
-
-const delegatedKey = asDelegatedIdentityKey(
-    '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
-);
 
 const device = mockSuiteDevice(
     { id: 'device-id' },
@@ -75,7 +72,10 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
 
         checkStorageByPublicKeyMock.mockResolvedValue(ok({ totalSpace: 5000, unspentSpace: 1200 }));
 
-        await ensureDeviceHasQuotaThunk({ delegatedKey, device })(dispatch, getState);
+        await ensureDeviceHasQuotaThunk({ delegatedKey: DELEGATED_IDENTITY_KEY, device })(
+            dispatch,
+            getState,
+        );
 
         expect(checkStorageByPublicKeyMock).toHaveBeenCalledWith({
             baseUrl: 'https://quota-manager.test',
@@ -104,7 +104,10 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
             err({ type: 'HttpError', code: 500, message: 'Internal error' }),
         );
 
-        await ensureDeviceHasQuotaThunk({ delegatedKey, device })(dispatch, getState);
+        await ensureDeviceHasQuotaThunk({ delegatedKey: DELEGATED_IDENTITY_KEY, device })(
+            dispatch,
+            getState,
+        );
         expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
                 type: '@suite/quota-manager/fetchError',
@@ -143,7 +146,10 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
             },
         });
 
-        await ensureDeviceHasQuotaThunk({ delegatedKey, device })(dispatch, getState);
+        await ensureDeviceHasQuotaThunk({ delegatedKey: DELEGATED_IDENTITY_KEY, device })(
+            dispatch,
+            getState,
+        );
 
         expect(prepareChallengeSessionMock).toHaveBeenCalledWith({
             baseUrl: 'https://quota-manager.test',
