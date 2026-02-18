@@ -34,7 +34,6 @@ import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
-import { Labeling } from './Labeling';
 import { Language } from './Language';
 import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
@@ -45,6 +44,7 @@ import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
+import { Labeling } from '../labeling/Labeling';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(

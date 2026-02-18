@@ -25,6 +25,7 @@ import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 
+import { LabelingServers } from './LabelingServers';
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 import { suiteSyncErrorHandler } from '../../../components/suite/labeling/suiteSyncErrorHandler';
 
@@ -169,6 +170,7 @@ export const Labeling = () => {
                     />
                 </ActionColumn>
             </SettingsSectionItem>
+            {isSuiteSyncEnabled && <LabelingServers suiteSync={suiteSync} />}
         </>
     );
 };

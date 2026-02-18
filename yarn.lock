@@ -4882,6 +4882,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^3.3.4":
+  version: 3.10.0
+  resolution: "@hookform/resolvers@npm:3.10.0"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: 10/92d3601b2cedb4f52e9e086cc4bd6a20b493f59ecfb1af8b8e465057f0445aa83cf5a6d482a831cdf5d1321a73269173633222eefde0adb515d3820c1525b0cb
+  languageName: node
+  linkType: hard
+
 "@hookform/resolvers@npm:^5.2.2":
   version: 5.2.2
   resolution: "@hookform/resolvers@npm:5.2.2"
@@ -14566,6 +14575,7 @@ __metadata:
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
     "@evolu/web": "npm:^2.3.0"
+    "@hookform/resolvers": "npm:^3.3.4"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -14576,11 +14586,13 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.4"
+    react-hook-form: "npm:^7.50.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -38711,7 +38723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.71.2":
+"react-hook-form@npm:^7.50.1, react-hook-form@npm:^7.71.2":
   version: 7.71.2
   resolution: "react-hook-form@npm:7.71.2"
   peerDependencies:

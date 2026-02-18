@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@evolu/web": "^2.3.0",
+        "@hookform/resolvers": "^3.3.4",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -22,11 +23,13 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.4",
+        "react-hook-form": "^7.50.1",
         "react-redux": "9.2.0"
     }
 }

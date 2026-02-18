@@ -1,5 +1,6 @@
 export {
     selectIsSuiteSyncEnabled,
+    selectSuiteSyncCustomRelayUrl,
     selectSuiteSyncRelayUrl,
     selectSuiteSyncInteraction,
     selectSuiteSyncOwnerForDeviceStaticId,

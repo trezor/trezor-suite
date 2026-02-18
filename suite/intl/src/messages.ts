@@ -6508,6 +6508,30 @@ export const messages = defineMessages({
         id: 'TR_LABELING_ERROR',
         defaultMessage: 'There was an error saving your label. Try again.',
     },
+    TR_SUITE_SYNC_SERVER_TREZOR_DEFAULT: {
+        id: 'TR_SUITE_SYNC_SERVER_TREZOR_DEFAULT',
+        defaultMessage: 'Trezor servers (default)',
+    },
+    TR_SUITE_SYNC_SERVER_CUSTOM: {
+        id: 'TR_SUITE_SYNC_SERVER_CUSTOM',
+        defaultMessage: 'Own server',
+    },
+    TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER: {
+        id: 'TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER',
+        defaultMessage: 'e.g. https://your-server.domain.com',
+    },
+    TR_SUITE_SYNC_SERVER: {
+        id: 'TR_SUITE_SYNC_SERVER',
+        defaultMessage: 'Sync server',
+    },
+    TR_SUITE_SYNC_SERVER_MODAL: {
+        id: 'TR_SUITE_SYNC_SERVER_MODAL',
+        defaultMessage: 'Suite Sync server',
+    },
+    TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION: {
+        id: 'TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION',
+        defaultMessage: 'Connect to your own server to increase your privacy and control.',
+    },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
         defaultMessage:
