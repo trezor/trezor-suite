@@ -17,7 +17,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
@@ -103,13 +103,10 @@ export const TradingBuyFormInputs = () => {
             </TradingFormCard>
 
             <TradingFormCard>
-                {!!quotes.length && (
+                {!!quotes?.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
-
-                <TradingFormSection>
-                    <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-                </TradingFormSection>
+                <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 <TradingSelectedOfferProvider />
                 <TradingFormSection>
                     <TradingFormFeesDisclamer />
