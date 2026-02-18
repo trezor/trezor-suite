@@ -1,7 +1,7 @@
 import { List } from '@trezor/components';
 
-import { TroubleshootingTipsItem } from './TroubleshootingTips';
 import { TroubleshootingTipsItemComponent } from './TroubleshootingTipsItemComponent';
+import type { TroubleshootingTipsItem } from './types';
 
 type TroubleshootingTipsListCardProps = {
     items: TroubleshootingTipsItem[];

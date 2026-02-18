@@ -1,29 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Banner, BannerIntent, Box, Button, Column, IconName, Modal } from '@trezor/components';
+import { Banner, Box, Button, Column, Modal } from '@trezor/components';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
-
-export type TroubleshootingTipsItem = {
-    key: string;
-    heading?: ReactNode;
-    description?: ReactNode;
-    hide?: boolean;
-    icon?: IconName;
-};
-
-type TroubleshootingTipsBaseProps = {
-    label?: ReactNode;
-    ctaLabel?: ReactNode;
-    cta?: ReactNode;
-    initiallyIsOpen?: boolean;
-    'data-testid'?: string;
-    toggleText?: ReactNode;
-    intent?: BannerIntent;
-    items: TroubleshootingTipsItem[];
-};
+import type { TroubleshootingTipsBaseProps, TroubleshootingTipsItem } from './types';
 
 export const TroubleshootingTips = ({
     label,
@@ -92,3 +74,5 @@ export const TroubleshootingTips = ({
         <Box margin={{ top: 80 }}>{visibleTips.length > 0 && <TroubleshootingButton />}</Box>
     );
 };
+
+export type { TroubleshootingTipsItem, TroubleshootingTipsBaseProps };
