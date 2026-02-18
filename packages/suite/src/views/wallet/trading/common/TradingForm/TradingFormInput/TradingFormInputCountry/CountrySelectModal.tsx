@@ -1,0 +1,77 @@
+import { UseFormSetValue } from 'react-hook-form';
+
+import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import {
+    TRADING_FORM_COUNTRY_SELECT,
+    TradingCountryOption,
+    useCountryFilteredData,
+} from '@suite-common/trading';
+import { Column, Flag, Input, Modal, Row, Text } from '@trezor/components';
+import { CardList } from '@trezor/product-components';
+
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
+import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+
+interface Props {
+    onClose: () => void;
+    heading?: TranslationKey;
+}
+
+export const CountrySelectModal = ({ heading, onClose }: Props) => {
+    const { translationString } = useTranslation();
+    const { setValue, setAmountLimits } = useTradingFormContext<TradingTradeBuySellType>();
+    const { filteredData, setFilterValue, filterValue } = useCountryFilteredData();
+
+    const selectCountry = (country: TradingCountryOption) => {
+        const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
+        setValueTyped(TRADING_FORM_COUNTRY_SELECT, country);
+        setAmountLimits(undefined);
+        onClose();
+    };
+
+    const getCountryFlag = (country: TradingCountryOption) =>
+        country.value === 'unknown' || country.value === 'XX' || country.value === 'T1'
+            ? 'UNKNOWN'
+            : country.value;
+
+    return (
+        <Modal
+            width={400}
+            onCancel={onClose}
+            heading={heading ? <Translation id={heading} /> : undefined}
+        >
+            <Column gap={16}>
+                <Input
+                    onChange={ev => setFilterValue(ev.target.value)}
+                    placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
+                    onClear={() => setFilterValue('')}
+                    showClearButton
+                    value={filterValue}
+                />
+                {!!filteredData.length && (
+                    <CardList>
+                        {filteredData.map(country => (
+                            <CardList.Item
+                                key={country.value}
+                                onClick={() => selectCountry(country)}
+                            >
+                                <Row gap={16}>
+                                    <Flag country={getCountryFlag(country)} size={24} />
+                                    {country.name}
+                                </Row>
+                            </CardList.Item>
+                        ))}
+                    </CardList>
+                )}
+                {!filteredData.length && (
+                    <Column justifyContent="center">
+                        <Text align="center">
+                            <Translation id="TR_TRADING_COUNTRY_NOT_FOUND" />
+                        </Text>
+                    </Column>
+                )}
+            </Column>
+        </Modal>
+    );
+};
