@@ -1,4 +1,4 @@
-import { Badge, Box, CollapsibleBox, Table, Text } from '@trezor/components';
+import { Badge, Box, Card, Table, Text } from '@trezor/components';
 
 import type { AttributeDoc } from '../types';
 import { AttributesTableRow } from './AttributesTableRow';
@@ -12,23 +12,17 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
 
     return (
         <Box margin={{ bottom: 8, top: 16 }}>
-            <CollapsibleBox
-                heading={
-                    <>
-                        <Text typographyStyle="hint">Attributes </Text>
-                        <Badge intent="info" size="small" margin={{ left: 4 }}>
-                            {keys.length}
-                        </Badge>
-                    </>
-                }
-                paddingType="small"
-                defaultIsOpen={true}
-            >
+            <Card paddingType="none">
                 <Table>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
-                                <Text typographyStyle="label">Attribute</Text>
+                                <Text typographyStyle="label">
+                                    Attribute{' '}
+                                    <Badge intent="info" size="small" margin={{ left: 4 }}>
+                                        {keys.length}
+                                    </Badge>
+                                </Text>
                             </Table.Cell>
                             <Table.Cell>
                                 <Text typographyStyle="label">Type</Text>
@@ -52,7 +46,7 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
                         ))}
                     </Table.Body>
                 </Table>
-            </CollapsibleBox>
+            </Card>
         </Box>
     );
 };
