@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { startTransition, useMemo } from 'react';
+import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 
 import styled from 'styled-components';
 
@@ -108,16 +108,28 @@ const EventCardWrapper = styled.div`
     }
 `;
 
+const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
+    useLayoutEffect(() => {
+        onReady();
+    }, [onReady]);
+
+    return null;
+};
+
 type AnalyticsContentProps = {
     isAnalyticsDataLoading: boolean;
     isAnalyticsDataGenerated: boolean;
     eventCards: ReactNode;
+    hasEventCards: boolean;
+    onContentReady?: () => void;
 };
 
 const AnalyticsContent = ({
     isAnalyticsDataLoading,
     isAnalyticsDataGenerated,
     eventCards,
+    hasEventCards,
+    onContentReady,
 }: AnalyticsContentProps) => {
     if (isAnalyticsDataLoading) return <Spinner size={20} />;
     if (!isAnalyticsDataGenerated) {
@@ -129,7 +141,12 @@ const AnalyticsContent = ({
         );
     }
 
-    return <Column gap={40}>{eventCards}</Column>;
+    return (
+        <Column gap={40}>
+            {eventCards}
+            {onContentReady && hasEventCards && <ScrollWhenReady onReady={onContentReady} />}
+        </Column>
+    );
 };
 
 export const App = ({ theme }: AppProps) => {
@@ -166,6 +183,40 @@ export const App = ({ theme }: AppProps) => {
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
     };
+
+    const scrollToHashElement = useCallback((): boolean => {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return true;
+        const el = document.getElementById(hash);
+        if (!el) return false;
+        el.scrollIntoView({ block: 'start', behavior: 'instant' });
+        window.scrollBy(0, -(HEADER_HEIGHT + 20));
+
+        return true;
+    }, []);
+
+    const handleContentReady = useCallback(() => {
+        if (!window.location.hash) return;
+        let attempts = 0;
+        const maxAttempts = 20;
+        const tryScroll = () => {
+            if (scrollToHashElement()) return;
+            attempts += 1;
+            if (attempts < maxAttempts) {
+                setTimeout(tryScroll, 80);
+            }
+        };
+        requestAnimationFrame(() => {
+            requestAnimationFrame(tryScroll);
+        });
+    }, [scrollToHashElement]);
+
+    useEffect(() => {
+        const onHashChange = () => scrollToHashElement();
+        window.addEventListener('hashchange', onHashChange);
+
+        return () => window.removeEventListener('hashchange', onHashChange);
+    }, [scrollToHashElement]);
 
     const eventCards = useMemo(
         () =>
@@ -273,6 +324,8 @@ export const App = ({ theme }: AppProps) => {
                                     isAnalyticsDataLoading={isAnalyticsDataLoading}
                                     isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                     eventCards={eventCards}
+                                    hasEventCards={filteredEvents.length > 0}
+                                    onContentReady={handleContentReady}
                                 />
                             </ContentContainer>
                         </ContentArea>
@@ -288,6 +341,8 @@ export const App = ({ theme }: AppProps) => {
                                 isAnalyticsDataLoading={isAnalyticsDataLoading}
                                 isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                 eventCards={eventCards}
+                                hasEventCards={filteredEvents.length > 0}
+                                onContentReady={handleContentReady}
                             />
                         </ContentContainer>
                     </Content>
