@@ -1,6 +1,4 @@
-import { UpdateAddressLabel } from '@suite-common/suite-sync-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
+import { EnsureWalletSuiteSyncOnDep, UpdateAddressLabel } from '@suite-common/suite-sync-types';
 
 export type UpdateAddressLabelDeps = EnsureWalletSuiteSyncOnDep;
 

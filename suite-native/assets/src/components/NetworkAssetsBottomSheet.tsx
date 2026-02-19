@@ -2,9 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { OnSelectAccount } from '@suite-native/accounts';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { AccountSelectBottomSheet } from '@suite-native/accounts/src/components/AccountSelectBottomSheet';
+import { AccountSelectBottomSheet, OnSelectAccount } from '@suite-native/accounts';
 
 import { AssetsRootState, selectBottomSheetDeviceNetworkItems } from '../assetsSelectors';
 

@@ -2,9 +2,8 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import {
     TokenDefinitionsRootState,
     getIsPhishingTransaction,
+    selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getConfirmations,
