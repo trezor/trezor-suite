@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build"
     },
     "devDependencies": {
