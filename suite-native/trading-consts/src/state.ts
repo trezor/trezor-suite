@@ -1,5 +1,4 @@
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { initialState as commonInitialState } from '@suite-common/trading/';
+import { initialState as commonInitialState } from '@suite-common/trading';
 import type { TradingResidenceState, TradingState } from '@suite-native/trading-types';
 
 export const residenceInitialState: TradingResidenceState = {

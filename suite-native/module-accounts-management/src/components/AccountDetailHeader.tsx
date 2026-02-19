@@ -19,9 +19,10 @@ import {
     TokenSymbol,
 } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import { GraphBaseCurrencyBalance } from '@suite-native/graph';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
+import {
+    GraphBaseCurrencyBalance,
+    selectIsHistoryEnabledAccountByAccountKey,
+} from '@suite-native/graph';
 import {
     TokensRootState,
     selectAccountTokenBalance,
