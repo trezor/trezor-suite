@@ -23,6 +23,7 @@ import {
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
 import { FormContext } from '@suite-native/forms';
 import { Translation, TxKeyPath } from '@suite-native/intl';

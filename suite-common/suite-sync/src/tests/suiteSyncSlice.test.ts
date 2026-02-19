@@ -1,6 +1,7 @@
 import { deviceActions } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { StaticSessionId } from '@trezor/connect';
 

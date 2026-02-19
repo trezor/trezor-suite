@@ -2,6 +2,7 @@ import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { AccountItem } from '@suite-common/graph';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {

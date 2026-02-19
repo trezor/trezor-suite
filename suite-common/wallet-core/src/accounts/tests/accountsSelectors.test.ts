@@ -1,5 +1,6 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
 import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';

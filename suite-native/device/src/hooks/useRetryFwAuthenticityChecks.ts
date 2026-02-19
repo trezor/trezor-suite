@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { requestDeviceAccess } from '@suite-native/device-mutex';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { deviceAccessMutex } from '@suite-native/device-mutex/src/DeviceAccessMutex';
 import TrezorConnect, { FIRMWARE } from '@trezor/connect';
 import { TimerId } from '@trezor/type-utils';

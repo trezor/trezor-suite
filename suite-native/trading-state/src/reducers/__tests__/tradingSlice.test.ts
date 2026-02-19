@@ -8,6 +8,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { tradingInitialState } from '@suite-native/trading-consts/';
 import {
     adaAsset,

@@ -22,6 +22,7 @@ import {
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
     NativeStakingRootState,

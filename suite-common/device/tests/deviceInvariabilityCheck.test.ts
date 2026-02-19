@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { defaultDevicePersistentData, mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

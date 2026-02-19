@@ -8,6 +8,7 @@ import { Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
 import { IconName, IconSize } from '@suite-native/icons';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking/src/cardanoStakingSelectors';
 import { Color } from '@trezor/theme';
 

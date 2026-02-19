@@ -11,6 +11,7 @@ import {
 } from '@suite-native/accounts';
 import { VStack } from '@suite-native/atoms';
 import { Graph, TimeSwitch, useGraphAtoms, useGraphForSingleAccount } from '@suite-native/graph';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 
 import { AccountDetailHeader } from './AccountDetailHeader';

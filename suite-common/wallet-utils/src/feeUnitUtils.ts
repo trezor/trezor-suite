@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import type { NetworkType } from '@suite-common/wallet-config/src/types';
 
 const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {

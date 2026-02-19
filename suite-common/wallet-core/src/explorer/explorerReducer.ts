@@ -1,5 +1,6 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Explorer, NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { getParsedExplorerUrls } from '@suite-common/wallet-config/src/getExplorerUrls';
 
 import { explorerActions } from './explorerActions';

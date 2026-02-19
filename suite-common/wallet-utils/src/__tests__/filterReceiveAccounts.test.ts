@@ -1,6 +1,8 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';
