@@ -147,28 +147,43 @@ describe('bridge', () => {
             // cancel RebootToBootloader procedure
             await bridge.send({ session, name: 'Cancel', data: {} });
 
-            // receive response
-            const receiveResponse1 = await bridge.receive({ session });
-
-            // we did 2x send, but no read. it means that now the next receive read the response from the first send
-            expect(receiveResponse1).toMatchObject({
-                success: true,
-                payload: {
-                    type: 'ButtonRequest',
-                },
-            });
-
-            // and the next receive read the response from the second send
-            const receiveResponse2 = await bridge.receive({ session });
-            expect(receiveResponse2).toMatchObject({
-                success: true,
-                payload: {
-                    message: {
-                        code: 'Failure_ActionCancelled',
+            // documenting model One odd behavior
+            // old bridge does not return rich descriptor so I am using env.USE_HW here
+            if (!env.USE_HW || descriptors[0].type === 1) {
+                // receive response
+                const receiveResponse1 = await bridge.receive({ session });
+                // we did 2x send, but no read. it means that now the next receive read the response from the first send
+                expect(receiveResponse1).toMatchObject({
+                    success: true,
+                    payload: {
+                        type: 'ButtonRequest',
                     },
-                    type: 'Failure',
-                },
-            });
+                });
+
+                // and the next receive read the response from the second send
+                const receiveResponse2 = await bridge.receive({ session });
+                expect(receiveResponse2).toMatchObject({
+                    success: true,
+                    payload: {
+                        message: {
+                            code: 'Failure_ActionCancelled',
+                        },
+                        type: 'Failure',
+                    },
+                });
+            } else {
+                // receive response
+                const receiveResponse1 = await bridge.receive({ session });
+                expect(receiveResponse1).toMatchObject({
+                    success: true,
+                    payload: {
+                        message: {
+                            code: 'Failure_ActionCancelled',
+                        },
+                        type: 'Failure',
+                    },
+                });
+            }
         });
     }
 
