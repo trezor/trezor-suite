@@ -158,6 +158,8 @@ export interface IDevice {
     setAuthenticityChecks(firmwareHash: FirmwareHashCheckResult | null): void;
     getCurrentSession(): TypedCallProvider;
     getCommands(): ReturnType<typeof DeviceCommands>;
+    startPiggybackAck(): void;
+    stopPiggybackAck(): Promise<void>;
 
     // ─── Status predicates ──────────────────────────────────────────────────────
     isUnacquired(): boolean;

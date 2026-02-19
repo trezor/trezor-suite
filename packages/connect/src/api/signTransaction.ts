@@ -346,11 +346,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
+
+        device.startPiggybackAck();
         const response = await signTxMethod({
             ...params,
             refTxs,
             typedCall: device.getCommands().typedCall,
         });
+        await device.stopPiggybackAck();
 
         // return only signatures, using option `serialize: false`
         if (!response.serializedTx) {
