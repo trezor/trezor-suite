@@ -12,7 +12,7 @@ import {
     thpActions,
 } from '../src';
 import { createCredential, createDeviceThp } from '../src/support/mocks';
-import { selectThpCredentials, selectThpLastCode, selectThpLastResult } from '../src/thpSelectors';
+import { selectThpCredentials, selectThpLastCode } from '../src/thpSelectors';
 
 const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
 
@@ -20,7 +20,6 @@ const initialState: ThpState = {
     step: null,
     autoconnectStep: null,
     lastThpCode: undefined,
-    lastResult: undefined,
     credentials: [],
 };
 
@@ -52,7 +51,6 @@ describe('thpReducer', () => {
 
         const state = store.getState();
         expect(selectThpStep(state)).toEqual(null);
-        expect(selectThpLastResult(state)).toEqual('finished');
     });
 
     test('cancelThpFlow', () => {
@@ -66,7 +64,6 @@ describe('thpReducer', () => {
 
         const state = store.getState();
         expect(selectThpStep(state)).toEqual(null);
-        expect(selectThpLastResult(state)).toEqual('canceled');
     });
 
     describe('THP pairing status event handling', () => {
@@ -105,7 +102,6 @@ describe('thpReducer', () => {
             expect(selectThpStep(state)).toBeNull();
             expect(selectThpAutoconnectStep(state)).toEqual(expectedAutoconnectStep);
             expect(selectThpLastCode(state)).toBeUndefined();
-            expect(selectThpLastResult(state)).toEqual('finished');
             expect(selectThpCredentials(state).map(c => c.connectionCounter)).toEqual([
                 0,
                 expectedCounter,
@@ -130,7 +126,6 @@ describe('thpReducer', () => {
             const state = store.getState();
             expect(selectThpStep(state)).toBeNull();
             expect(selectThpLastCode(state)).toBeUndefined();
-            expect(selectThpLastResult(state)).toEqual('canceled');
         });
 
         test('failed', () => {
@@ -152,7 +147,6 @@ describe('thpReducer', () => {
             const state = store.getState();
             expect(selectThpStep(state)).toBeNull();
             expect(selectThpLastCode(state)).toBeUndefined();
-            expect(selectThpLastResult(state)).toEqual('failed');
         });
 
         test('invalid-tag', () => {
@@ -174,7 +168,6 @@ describe('thpReducer', () => {
             const state = store.getState();
             expect(selectThpStep(state)).toEqual('CodeInvalid');
             expect(selectThpLastCode(state)).toEqual('1234');
-            expect(selectThpLastResult(state)).toBeUndefined();
         });
     });
 

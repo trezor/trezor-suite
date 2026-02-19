@@ -14,6 +14,4 @@ export const selectThpAutoconnectStep = (state: ThpRootState) => state.thp.autoc
 
 export const selectThpLastCode = (state: ThpRootState) => state.thp.lastThpCode;
 
-export const selectThpLastResult = (state: ThpRootState) => state.thp.lastResult;
-
 export const selectThpCredentials = (state: ThpRootState) => state.thp.credentials;
