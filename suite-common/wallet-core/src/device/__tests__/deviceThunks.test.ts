@@ -1,8 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import { BluetoothDeviceCommon, prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';

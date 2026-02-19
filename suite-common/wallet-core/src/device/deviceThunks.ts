@@ -13,8 +13,7 @@ import {
     shouldDeviceBeRemembered,
     sortDevices,
 } from '@suite-common/device';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware/src/firmwareReducer';
+import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {

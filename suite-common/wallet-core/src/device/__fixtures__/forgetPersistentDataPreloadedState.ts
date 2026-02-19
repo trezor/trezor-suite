@@ -1,8 +1,9 @@
-import { BluetoothState, prepareInitialState } from '@suite-common/bluetooth';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/src/support/mocks';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import {
+    BluetoothDeviceCommon,
+    BluetoothState,
+    prepareInitialState,
+} from '@suite-common/bluetooth';
+import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/mocks';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { ThpState, initialThpState } from '@suite-common/thp';

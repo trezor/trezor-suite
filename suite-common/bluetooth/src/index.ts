@@ -5,6 +5,7 @@ export type {
     BluetoothAutoConnectPolicy,
     DeviceBluetoothConnectionStatusType,
     ForgetBluetoothDeviceThunkParams,
+    BluetoothDeviceCommon,
 } from './types';
 export type { BluetoothState } from './bluetoothReducer';
 export type { WithBluetoothState } from './bluetoothSelectors';
