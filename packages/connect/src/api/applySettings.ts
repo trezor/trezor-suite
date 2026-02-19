@@ -41,17 +41,22 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     }
 
     async run() {
-        const cmd = this.getDevice().getCommands();
+        const device = this.getDevice();
+        const cmd = device.getCommands();
 
         // https://github.com/trezor/trezor-firmware/pull/5015
         // homescreen bytes are streamed in smaller data chunks
         const homescreenBytes = this.params.homescreen
             ? Buffer.from(this.params.homescreen, 'hex')
             : undefined;
-        if (this.getDevice().atLeast('2.9.0') && homescreenBytes) {
+        if (device.atLeast('2.9.0') && homescreenBytes) {
             // cannot use both. Failure: Mutually exclusive settings
             this.params.homescreen = undefined;
             this.params.homescreen_length = homescreenBytes.length;
+        }
+
+        if (homescreenBytes !== undefined) {
+            device.startPiggybackAck();
         }
 
         let response = await cmd.typedCall(
@@ -69,6 +74,8 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
                 data_chunk,
             });
         }
+
+        await device.stopPiggybackAck();
 
         return response.message;
     }

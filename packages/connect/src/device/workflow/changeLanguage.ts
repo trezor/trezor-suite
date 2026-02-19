@@ -16,6 +16,7 @@ const uploadTranslationData = async (device: IDevice, payload: ArrayBuffer | nul
 
     const length = payload.byteLength;
 
+    device.startPiggybackAck();
     let response = await device
         .getCurrentSession()
         .typedCall('ChangeLanguage', ['DataChunkRequest', 'Success'], { data_length: length });
@@ -31,6 +32,7 @@ const uploadTranslationData = async (device: IDevice, payload: ArrayBuffer | nul
                 data_chunk: Buffer.from(chunk).toString('hex'),
             });
     }
+    await device.stopPiggybackAck();
 
     return response.message;
 };

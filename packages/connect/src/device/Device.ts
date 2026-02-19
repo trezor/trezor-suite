@@ -390,6 +390,20 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this.lifecycle.emit(DEVICE.CHANGED);
     }
 
+    startPiggybackAck() {
+        _log.debug('start PiggybackAck');
+        this.thp?.enablePiggybackAck(true);
+    }
+
+    async stopPiggybackAck() {
+        if (this.currentSession && this.thp?.isPiggybackAckEnabled) {
+            _log.debug('stop PiggybackAck');
+            // send ThpAck for previously seen message
+            await this.currentSession.send('ThpAck', {});
+            this.thp?.enablePiggybackAck(false);
+        }
+    }
+
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
@@ -411,6 +425,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             .catch(async err => {
                 this.keepTransportSession = false;
                 await this.acquirePromise;
+                await this.stopPiggybackAck();
                 await this.release();
 
                 throw err;
@@ -569,6 +584,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             options.keepSession === false
         ) {
             this.keepTransportSession = false;
+            await this.stopPiggybackAck();
             await this.release();
         }
     }
