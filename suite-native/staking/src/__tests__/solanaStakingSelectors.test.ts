@@ -122,7 +122,7 @@ const getTestState = ({
     wallet: {
         accounts,
         stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
-        transactions: { transactions: {}, fetchStatusDetail: {} },
+        transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,

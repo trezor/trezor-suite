@@ -146,6 +146,17 @@ export const selectTransactionConfirmations = (
     return getConfirmations(transaction, blockchainHeight);
 };
 
+export const selectTransactionIsMarkedAsNotScam = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
+    if (!transaction) return false;
+
+    return state.wallet.transactions.phishing[accountKey]?.includes(txid);
+};
+
 const getHistoricTxUsdFiatAmount = (
     state: FiatRatesRootState,
     transaction: WalletAccountTransaction,
@@ -195,6 +206,9 @@ export const selectIsPhishingTransaction = (
 
     const tokenDefinitions = selectNetworkTokenDefinitions(state, transaction.symbol);
     if (!tokenDefinitions) return false;
+
+    const isMarkedAsNotScam = selectTransactionIsMarkedAsNotScam(state, txid, accountKey);
+    if (isMarkedAsNotScam) return false;
 
     const enhancedTransaction = enhanceTxWithHistoricFiatRates(state, transaction);
 

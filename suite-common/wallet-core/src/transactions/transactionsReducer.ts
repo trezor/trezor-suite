@@ -28,6 +28,7 @@ export type AccountTransactionsFetchAllStatus = {
 
 export interface TransactionsState {
     transactions: { [key: AccountKey]: WalletAccountTransaction[] };
+    phishing: { [key: AccountKey]: string[] };
     fetchStatusDetail: {
         [key: AccountKey]: AccountTransactionsFetchStatusDetail &
             Partial<AccountTransactionsFetchAllStatus>;
@@ -36,6 +37,7 @@ export interface TransactionsState {
 
 export const transactionsInitialState: TransactionsState = {
     transactions: {},
+    phishing: {},
     fetchStatusDetail: {},
 };
 
@@ -65,6 +67,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
                 const { account } = payload;
                 delete state.transactions[account.key];
+                delete state.phishing[account.key];
             })
             .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
                 const { key, txid, tx } = payload;
@@ -74,10 +77,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
+
                 const transactions = state.transactions[account.key];
                 if (transactions) {
                     state.transactions[account.key] = transactions.filter(
                         tx => !txs.some(t => t.txid === tx?.txid),
+                    );
+                }
+
+                const phishing = state.phishing[account.key];
+                if (phishing) {
+                    state.phishing[account.key] = phishing.filter(
+                        tx => !txs.some(t => t.txid === tx),
                     );
                 }
             })
@@ -127,9 +138,22 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     }
                 });
             })
+            .addCase(transactionsActions.markTransactionAsNotScam, (state, { payload }) => {
+                const { key, txid, isMarkedAsNotScam } = payload;
+                const transactionIdList = state.phishing[key] || [];
+
+                if (isMarkedAsNotScam && !transactionIdList.includes(txid)) {
+                    state.phishing[key] = [...transactionIdList, txid];
+                } else if (!isMarkedAsNotScam && transactionIdList.includes(txid)) {
+                    state.phishing[key] = transactionIdList.filter(
+                        transactionId => transactionId !== txid,
+                    );
+                }
+            })
             .addCase(accountsActions.removeAccount, (state, { payload }) => {
                 payload.forEach(a => {
                     delete state.transactions[a.key];
+                    delete state.phishing[a.key];
                     delete state.fetchStatusDetail[a.key];
                 });
             })

@@ -21,6 +21,11 @@ const removeTransaction = createAction(
     (payload: { account: Account; txs: { txid: string }[] }) => ({ payload }),
 );
 
+const markTransactionAsNotScam = createAction(
+    `${TRANSACTIONS_MODULE_PREFIX}/markTransactionAsNotScam`,
+    (payload: { key: AccountKey; txid: string; isMarkedAsNotScam: boolean }) => ({ payload }),
+);
+
 type AddTransactionActionProps = {
     transactions: (AccountTransaction & Partial<WalletAccountTransaction>)[];
     account: Account;
@@ -59,4 +64,5 @@ export const transactionsActions = {
     replaceTransaction,
     removeTransaction,
     resetTransaction,
+    markTransactionAsNotScam,
 } as const;

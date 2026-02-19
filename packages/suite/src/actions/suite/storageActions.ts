@@ -225,6 +225,12 @@ export const removeAccountHistoricRates = (accountKey: string) => {
     return db.removeItemByPK('historicRates', accountKey);
 };
 
+export const removeAccountPhishing = (accountKey: AccountKey) => {
+    if (!db.isAccessible()) return;
+
+    return db.removeItemByPK('phishing', accountKey);
+};
+
 export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
     Promise.all([
         ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
@@ -234,6 +240,7 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
         removeCoinjoinAccount(account.key, getState()),
         removeAccount(account),
         removeAccountHistoricRates(account.key),
+        removeAccountPhishing(account.key),
     ]);
 
 export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: GetState) => {
@@ -296,13 +303,20 @@ export const saveAccountHistoricRates =
 export const saveAccountTransactions =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return Promise.resolve();
-        const allTxs = getState().wallet.transactions.transactions;
-        const accTxs = allTxs[account.key] || [];
+        const { transactions, phishing } = getState().wallet.transactions;
+        const accTxs = transactions[account.key] || [];
 
         // wrap txs and add its order inside the array
         const orderedTxs = accTxs.map((tx, order) => ({ tx, order })).filter(({ tx }) => !!tx);
+        const transactionsPromise = db.addItems('txs', orderedTxs, true);
 
-        return db.addItems('txs', orderedTxs, true);
+        const phishingList = phishing[account.key] ?? [];
+        const phishingPromise =
+            phishingList.length > 0
+                ? db.addItem('phishing', phishingList, account.key, true)
+                : db.removeItemByPK('phishing', account.key);
+
+        return Promise.all([transactionsPromise, phishingPromise]);
     };
 
 export const rememberDevice =

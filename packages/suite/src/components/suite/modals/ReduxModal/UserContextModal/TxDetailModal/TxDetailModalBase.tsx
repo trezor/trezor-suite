@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDeviceRemembered } from '@suite-common/device';
 import { Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
@@ -8,14 +9,16 @@ import {
     selectExplorer,
     selectIsPhishingTransaction,
     selectTransactionConfirmations,
+    selectTransactionIsMarkedAsNotScam,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
-import { Banner, Column, Modal } from '@trezor/components';
+import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
@@ -48,10 +51,36 @@ export const TxDetailModalBase = ({
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
+    const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 
     const isPhishingTransaction = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
+    const isTxMarkedAsNotScam = useSelector(state =>
+        selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
+    );
+
+    const dispatch = useDispatch();
+
+    const onMarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: tx.txid,
+                isMarkedAsNotScam: true,
+            }),
+        );
+    };
+
+    const onUnmarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: tx.txid,
+                isMarkedAsNotScam: false,
+            }),
+        );
+    };
 
     return (
         <Modal
@@ -75,6 +104,7 @@ export const TxDetailModalBase = ({
                 {isPhishingTransaction && (
                     <Banner
                         icon
+                        intent="warning"
                         description={
                             <Translation
                                 id="TR_ZERO_PHISHING_BANNER"
@@ -86,6 +116,46 @@ export const TxDetailModalBase = ({
                                     ),
                                 }}
                             />
+                        }
+                        rightContent={
+                            <Tooltip
+                                content={<Translation id="TR_UNHIDE_TRANSACTION_TOOLTIP" />}
+                                isActive={!isDeviceRemembered}
+                            >
+                                <Button
+                                    intent="warning"
+                                    priority="primary"
+                                    size="small"
+                                    onClick={onMarkTxAsNotScamClick}
+                                    isDisabled={!isDeviceRemembered}
+                                >
+                                    <Translation id="TR_UNHIDE_TRANSACTION" />
+                                </Button>
+                            </Tooltip>
+                        }
+                    />
+                )}
+
+                {!isPhishingTransaction && isTxMarkedAsNotScam && (
+                    <Banner
+                        icon
+                        intent="info"
+                        description={<Translation id="TR_MARKED_AS_RECOGNIZED_BANNER" />}
+                        rightContent={
+                            <Tooltip
+                                content={<Translation id="TR_HIDE_TRANSACTION_TOOLTIP" />}
+                                isActive={!isDeviceRemembered}
+                            >
+                                <Button
+                                    intent="info"
+                                    priority="primary"
+                                    size="small"
+                                    onClick={onUnmarkTxAsNotScamClick}
+                                    isDisabled={!isDeviceRemembered}
+                                >
+                                    <Translation id="TR_HIDE_TRANSACTION" />
+                                </Button>
+                            </Tooltip>
                         }
                     />
                 )}

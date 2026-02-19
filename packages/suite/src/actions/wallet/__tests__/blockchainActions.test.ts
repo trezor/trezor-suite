@@ -46,6 +46,7 @@ const getInitialState = (
         transactions: transactionsReducer(
             {
                 transactions: transactions || {},
+                phishing: {},
                 fetchStatusDetail: {},
             },
             action,

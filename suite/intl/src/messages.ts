@@ -8715,6 +8715,28 @@ export const messages = defineMessages({
         defaultMessage:
             'Proceed with caution. This may be a fraudulent transaction. <a>Learn more</a>',
     },
+    TR_HIDE_TRANSACTION: {
+        id: 'TR_HIDE_TRANSACTION',
+        defaultMessage: 'Hide transaction',
+    },
+    TR_UNHIDE_TRANSACTION: {
+        id: 'TR_UNHIDE_TRANSACTION',
+        defaultMessage: 'Unhide transaction',
+    },
+    TR_MARKED_AS_RECOGNIZED_BANNER: {
+        id: 'TR_MARKED_AS_RECOGNIZED_BANNER',
+        defaultMessage: "You've marked this transaction as recognized.",
+    },
+    TR_HIDE_TRANSACTION_TOOLTIP: {
+        id: 'TR_HIDE_TRANSACTION_TOOLTIP',
+        defaultMessage:
+            'To enable marking this transaction as fraudulent, set this wallet as remembered.',
+    },
+    TR_UNHIDE_TRANSACTION_TOOLTIP: {
+        id: 'TR_UNHIDE_TRANSACTION_TOOLTIP',
+        defaultMessage:
+            'To enable marking this transaction as recognized, set this wallet as remembered.',
+    },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',
         defaultMessage: 'Savings',

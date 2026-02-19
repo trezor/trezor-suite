@@ -203,6 +203,7 @@ describe('selectFreshAccountAddress', () => {
             pendingAccountAddresses: {},
             transactions: {
                 transactions: {},
+                phishing: {},
                 fetchStatusDetail: {},
             },
         },
@@ -252,6 +253,7 @@ describe('selectFreshAccountAddress', () => {
                 pendingAccountAddresses: {},
                 transactions: {
                     transactions: {},
+                    phishing: {},
                     fetchStatusDetail: {},
                 },
             },

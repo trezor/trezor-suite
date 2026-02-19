@@ -117,6 +117,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                 storageActions.removeAccountTransactions(account);
                 storageActions.removeAccountHistoricRates(account.key);
+                storageActions.removeAccountPhishing(account.key);
             }
 
             if (
@@ -130,6 +131,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 // update only transactions for remembered device
                 if (getIsDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
+                    api.dispatch(storageActions.saveAccountTransactions(account));
+                }
+            }
+
+            if (transactionsActions.markTransactionAsNotScam.match(action)) {
+                const account = selectAccountByKey(api.getState(), action.payload.key);
+                const device = account
+                    ? findAccountDevice(account, selectDevices(api.getState()))
+                    : undefined;
+                if (account && isDeviceRemembered(device)) {
                     api.dispatch(storageActions.saveAccountTransactions(account));
                 }
             }

@@ -57,6 +57,7 @@ describe('Transaction Actions', () => {
                 [account1.key]: [getWalletTransaction()],
                 [account2.key]: [getWalletTransaction()],
             },
+            phishing: {},
             fetchStatusDetail: {},
         });
 
