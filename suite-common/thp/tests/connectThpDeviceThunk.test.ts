@@ -3,8 +3,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
+import { createCredential, createDeviceThp } from '../mocks';
 import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
-import { createCredential, createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
