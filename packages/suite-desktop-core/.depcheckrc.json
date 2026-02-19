@@ -1,4 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["node-loader"]
+    "ignores": ["node-loader", "rimraf"]
 }
