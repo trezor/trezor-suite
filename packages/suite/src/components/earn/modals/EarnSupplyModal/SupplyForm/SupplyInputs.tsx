@@ -10,10 +10,10 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 import { useSelector } from 'src/hooks/suite';
-import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { validateStakingMax } from 'src/utils/suite/staking';
 import {
     validateCryptoLimits,
@@ -23,7 +23,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 
-export const StakeInputs = () => {
+export const SupplyInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
@@ -45,7 +45,7 @@ export const StakeInputs = () => {
         setRatioAmount,
         setMax,
         setCurrency,
-    } = useStakeFormContext();
+    } = useSupplyFormContext();
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 

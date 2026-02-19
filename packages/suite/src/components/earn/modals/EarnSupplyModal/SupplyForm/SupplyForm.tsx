@@ -1,23 +1,26 @@
 import { FormProvider } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { Card, Column } from '@trezor/components';
+import { Account } from '@suite-common/wallet-types';
+import { Banner, Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
+import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 
 import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
-import { ConfirmStakeModal } from './ConfirmStakeModal';
-import { StakeAvailableBalance } from './StakeAvailableBalance';
-import { StakeInputs } from './StakeInputs';
+import { ConfirmSupplyModal } from './ConfirmSupplyModal';
+import { EarnAvailableBalance } from './EarnAvailableBalance';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
+import { SupplyInputs } from './SupplyInputs';
 
-interface StakeFormProps {
+type SupplyFormProps = {
     flow: EarnFlow;
-}
+    account?: Account;
+};
 
-export const StakeForm = ({ flow }: StakeFormProps) => {
+const StakingSupplyForm = ({ flow }: Pick<SupplyFormProps, 'flow'>) => {
     const {
         account,
         isConfirmModalOpen,
@@ -29,7 +32,7 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
         composedLevels,
         isStakingDisabled,
         methods,
-    } = useStakeFormContext();
+    } = useSupplyFormContext();
 
     const { formattedBalance, symbol, networkType } = account;
 
@@ -38,7 +41,7 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
     return (
         <FormProvider {...methods}>
             {isConfirmModalOpen && (
-                <ConfirmStakeModal
+                <ConfirmSupplyModal
                     isLoading={isLoading}
                     onConfirm={signTx}
                     onCancel={closeConfirmModal}
@@ -51,12 +54,9 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                     <StakeRegistrationDepositCard account={account} />
                 ) : (
                     <>
-                        <StakeAvailableBalance
-                            formattedBalance={formattedBalance}
-                            symbol={symbol}
-                        />
+                        <EarnAvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
 
-                        <StakeInputs />
+                        <SupplyInputs />
                     </>
                 )}
 
@@ -79,4 +79,23 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
             </Column>
         </FormProvider>
     );
+};
+
+const YieldSupplyForm = ({ account }: { account: Account }) => (
+    <Column gap={spacings.xl} margin={{ bottom: spacings.lg }}>
+        <EarnAvailableBalance formattedBalance={account.formattedBalance} symbol={account.symbol} />
+        <Banner intent="info" description={<Translation id="TR_EARN_NOT_AVAILABLE" />} />
+    </Column>
+);
+
+export const SupplyForm = ({ flow, account }: SupplyFormProps) => {
+    if (flow === EarnFlow.Yield) {
+        if (!account) {
+            return null;
+        }
+
+        return <YieldSupplyForm account={account} />;
+    }
+
+    return <StakingSupplyForm flow={flow} />;
 };
