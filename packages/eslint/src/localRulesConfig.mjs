@@ -16,4 +16,17 @@ export const localRulesConfig = [
             ],
         },
     },
+    {
+        files: [
+            'suite/**/*.{js,mjs,cjs,ts,jsx,tsx}',
+            'suite-native/**/*.{js,mjs,cjs,ts,jsx,tsx}',
+            'suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}',
+        ],
+        rules: {
+            'local-rules/no-package-deep-imports': [
+                'error',
+                { packageScopes: ['@suite-native', '@suite', '@suite-common'] },
+            ],
+        },
+    },
 ];

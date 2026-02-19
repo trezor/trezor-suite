@@ -53,6 +53,60 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
     }
 };
 
+const getRestrictedScopePackageImportFromSourcePath = (
+    sourcePath: string,
+    packageScopes: string[],
+) => {
+    const sourcePathParts = sourcePath.split('/');
+
+    if (sourcePathParts.length < 3) {
+        return null;
+    }
+
+    const matchingPackageScope = packageScopes.find(packageScope =>
+        sourcePath.startsWith(`${packageScope}/`),
+    );
+
+    if (matchingPackageScope === undefined) {
+        return null;
+    }
+
+    return `${matchingPackageScope}/${sourcePathParts[1]}`;
+};
+
+const checkNodeForRestrictedScopePackageSourceImport = (
+    node,
+    context,
+    sourcePath: string,
+    packageScopes: string[],
+) => {
+    const packageImportPath = getRestrictedScopePackageImportFromSourcePath(
+        sourcePath,
+        packageScopes,
+    );
+
+    if (packageImportPath === null) {
+        return;
+    }
+
+    context.report({
+        node,
+        messageId: 'doNotImportPackageDeepPath',
+        data: {
+            packageImportPath,
+            sourcePath,
+        },
+    });
+};
+
+const getNodeSourcePath = node => {
+    if (typeof node.source.value === 'string') {
+        return node.source.value;
+    }
+
+    return null;
+};
+
 export default {
     'no-override-ds-component': {
         meta: {
@@ -115,6 +169,94 @@ export default {
                 // This for case when the standard styled(Component)`...` is used
                 TaggedTemplateExpression(node) {
                     checkNodeForAvoidStyledComponent(node, context, 'tag', importedComponents);
+                },
+            };
+        },
+    },
+    'no-package-deep-imports': {
+        meta: {
+            type: 'problem',
+            docs: {
+                description:
+                    'Disallows deep imports from selected package scopes and enforces package entry points.',
+                category: 'Best Practices',
+                recommended: false,
+            },
+            messages: {
+                doNotImportPackageDeepPath:
+                    "Importing from '{{sourcePath}}' is not allowed. Use '{{packageImportPath}}' instead.",
+            },
+            schema: [
+                {
+                    type: 'object',
+                    properties: {
+                        packageScopes: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            minItems: 1,
+                        },
+                    },
+                    additionalProperties: false,
+                },
+            ],
+        },
+        create(context) {
+            const packageScopes = context.options[0]?.packageScopes ?? [
+                '@suite-native',
+                '@suite',
+                '@suite-common',
+            ];
+
+            return {
+                ImportDeclaration(node) {
+                    const sourcePath = getNodeSourcePath(node);
+
+                    if (sourcePath === null) {
+                        return;
+                    }
+
+                    checkNodeForRestrictedScopePackageSourceImport(
+                        node,
+                        context,
+                        sourcePath,
+                        packageScopes,
+                    );
+                },
+                ExportAllDeclaration(node) {
+                    if (node.source === null) {
+                        return;
+                    }
+
+                    const sourcePath = getNodeSourcePath(node);
+
+                    if (sourcePath === null) {
+                        return;
+                    }
+
+                    checkNodeForRestrictedScopePackageSourceImport(
+                        node,
+                        context,
+                        sourcePath,
+                        packageScopes,
+                    );
+                },
+                ExportNamedDeclaration(node) {
+                    if (node.source === null) {
+                        return;
+                    }
+
+                    const sourcePath = getNodeSourcePath(node);
+
+                    if (sourcePath === null) {
+                        return;
+                    }
+
+                    checkNodeForRestrictedScopePackageSourceImport(
+                        node,
+                        context,
+                        sourcePath,
+                        packageScopes,
+                    );
                 },
             };
         },
