@@ -3,7 +3,7 @@ import { FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { selectIsDeviceBackupRequired } from '@suite-common/device';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -68,6 +68,14 @@ export const ReceiveAddressScreen = ({
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
         useAccountReceiveAddress(accountKey);
 
+    usePreventRemove(true, ({ data }) => {
+        TrezorConnect.cancel();
+        navigation.dispatch(data.action);
+        if (isReceiveApproved) {
+            askForRating();
+        }
+    });
+
     const handleShowReceiveAddress = useCallback(() => {
         handleShowAddress();
 
@@ -124,7 +132,6 @@ export const ReceiveAddressScreen = ({
                     accountKey={accountKey}
                     tokenContract={tokenContract}
                     closeActionType={isReceiveApproved ? 'close' : closeActionType}
-                    onLeave={isReceiveApproved ? askForRating : undefined}
                 />
             }
         >

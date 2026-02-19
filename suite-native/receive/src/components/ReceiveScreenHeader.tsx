@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation, usePreventRemove } from '@react-navigation/native';
-
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
@@ -15,22 +13,18 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
-import TrezorConnect from '@trezor/connect';
 
 type ReceiveScreenHeaderProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     closeActionType: CloseActionType;
-    onLeave?: () => void;
 };
 
 export const ReceiveScreenHeader = ({
     accountKey,
     tokenContract,
     closeActionType,
-    onLeave,
 }: ReceiveScreenHeaderProps) => {
-    const navigation = useNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const symbol = useSelector((state: AccountsRootState) =>
@@ -39,14 +33,6 @@ export const ReceiveScreenHeader = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
-
-    usePreventRemove(true, ({ data }) => {
-        TrezorConnect.cancel();
-
-        navigation.dispatch(data.action);
-
-        onLeave?.();
-    });
 
     if (accountKey === undefined) {
         return null;
