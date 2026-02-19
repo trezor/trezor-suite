@@ -1,7 +1,4 @@
-import {
-    selectTradingExchangePreselectedQuote,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import {
     TestStore,
     initStore,
@@ -39,7 +36,7 @@ describe('LimitPicker', () => {
         expect(
             within(picker).getByText(/^Approve unlimited USDC to skip future approval requests/),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
         );
     });
@@ -56,7 +53,7 @@ describe('LimitPicker', () => {
         expect(
             within(picker).getByText(/^Approve only the amount needed for this swap/),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });

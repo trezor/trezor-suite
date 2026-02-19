@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     TradingRootState,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangePreselectedQuote,
+    selectTradingExchangeActiveQuote,
     selectTradingProviderByNameAndTradeType,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -18,10 +18,13 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeApprovalDetailsCard } from '../components/exchange/Approval/ExchangeApprovalDetailsCard';
 import { ExchangeApprovalForCard } from '../components/exchange/Approval/ExchangeApprovalForCard';
+import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
+import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
 type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<
     TradingStackParamList,
@@ -35,7 +38,10 @@ export const TradingExchangeApprovalScreen = ({
     const { shouldIncreaseLimit, isRevoked } = params;
     const dispatch = useDispatch();
 
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
+    const quote = useSelector(selectTradingExchangeActiveQuote);
+
+    const { isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
@@ -45,10 +51,28 @@ export const TradingExchangeApprovalScreen = ({
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
+    const { fee, isLoading: isComposingFees, error: feeError } = useEvmApprovalFees();
+
+    const isLoading = isConfirming || isComposingFees;
+    const error = confirmError || feeError;
+    const isApprovalReady = !isLoading && !error && fee !== undefined;
+
     useEffect(
-        () => () => {
-            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        () => {
+            if (!quote) {
+                console.error('No quote to confirm approval');
+
+                return;
+            }
+
+            confirmApproval(quote);
+
+            return () => {
+                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            };
         },
+        // We only want to confirm once on mount, not on every quote change.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [dispatch],
     );
 
@@ -96,9 +120,13 @@ export const TradingExchangeApprovalScreen = ({
                 )}
 
                 <ExchangeApprovalForCard />
-                <ExchangeApprovalDetailsCard />
+                <ExchangeApprovalDetailsCard
+                    fee={fee}
+                    isLoading={isLoading}
+                    networkSymbol={sendAccount?.symbol}
+                />
             </VStack>
-            <ApprovalButton />
+            <ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />
         </Screen>
     );
 };

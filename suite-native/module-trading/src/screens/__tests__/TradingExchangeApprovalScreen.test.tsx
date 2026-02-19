@@ -1,9 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 
-import {
-    selectTradingExchangePreselectedQuote,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import {
@@ -18,11 +15,23 @@ import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen'
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
+const mockConfirmApproval = jest.fn().mockResolvedValue({});
 
-jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
-    useExchangeFlow: () => ({
-        confirmTrade: jest.fn().mockResolvedValue(true),
-        fetchFeesAndCompose: jest.fn(),
+jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
+    useApprovalFlow: () => ({
+        quote: undefined,
+        isConfirming: false,
+        error: null,
+        confirmApproval: mockConfirmApproval,
+    }),
+}));
+
+jest.mock('../../hooks/exchange/Approval/useEvmApprovalFees', () => ({
+    useEvmApprovalFees: () => ({
+        fee: '100000',
+        isLoading: false,
+        error: null,
+        composeFees: jest.fn(),
     }),
 }));
 
@@ -120,21 +129,23 @@ describe('TradingExchangeApprovalScreen', () => {
         expect(buttons).toBeTruthy();
     });
 
-    it('should render nothing when no preselected quote is provided', async () => {
+    it('should render nothing when no quote is provided', async () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
         const { toJSON } = await renderScreen();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should clear preselected quote on unmount', async () => {
+    it('should clear selected quote on unmount', async () => {
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         const { unmount: localUnmount } = await renderScreen();
 
         localUnmount();
         unmount = undefined;
 
-        const preselectedQuote = selectTradingExchangePreselectedQuote(store.getState());
-        expect(preselectedQuote).toBeUndefined();
+        const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
+        expect(selectedQuote).toBeUndefined();
     });
 });

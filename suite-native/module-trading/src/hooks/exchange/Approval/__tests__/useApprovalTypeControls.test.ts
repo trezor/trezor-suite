@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    selectTradingExchangePreselectedQuote,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite-common/trading';
 import {
     TestStore,
     act,
@@ -20,7 +17,7 @@ describe('useApprovalTypeControls', () => {
     const renderUseApprovalTypeControls = () =>
         renderHookWithStoreProviderAsync(
             () => {
-                const quote = useSelector(selectTradingExchangePreselectedQuote)!;
+                const quote = useSelector(selectTradingExchangeActiveQuote);
 
                 return useApprovalTypeControls(quote);
             },
@@ -47,7 +44,7 @@ describe('useApprovalTypeControls', () => {
             hideSheet: expect.any(Function),
             handleApprovalTypeChange: expect.any(Function),
         });
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
         );
     });
@@ -64,12 +61,12 @@ describe('useApprovalTypeControls', () => {
                 approvalType: 'MINIMAL',
             }),
         );
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });
 
-    it('should do nothing when no preselected quote is provided', async () => {
+    it('should do nothing when no quote is provided', async () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         const { result } = await renderUseApprovalTypeControls();
 
@@ -80,7 +77,7 @@ describe('useApprovalTypeControls', () => {
             hideSheet: expect.any(Function),
             handleApprovalTypeChange: expect.any(Function),
         });
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toBeUndefined();
+        expect(selectTradingExchangeActiveQuote(store.getState())).toBeUndefined();
 
         act(() => {
             result.current.handleApprovalTypeChange('MINIMAL');
@@ -91,6 +88,6 @@ describe('useApprovalTypeControls', () => {
                 approvalType: 'INFINITE',
             }),
         );
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toBeUndefined();
+        expect(selectTradingExchangeActiveQuote(store.getState())).toBeUndefined();
     });
 });

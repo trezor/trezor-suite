@@ -5,7 +5,7 @@ import { DexApprovalType } from 'invity-api';
 
 import {
     selectTradingComposedTransactionInfo,
-    selectTradingExchangePreselectedQuote,
+    selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import {
     AccountsRootState,
@@ -28,8 +28,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     const [isComposing, setIsComposing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // quote will be selected after the approval is done
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
+    const quote = useSelector(selectTradingExchangeActiveQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, sendAccount?.key),
@@ -42,10 +41,10 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     const approvalType =
         approvalTypeOverride ?? ((quote?.approvalType ?? 'INFINITE') as DexApprovalType);
     const fee = composedTransactionInfo?.composed?.fee;
-    const isLoading = isComposing || fee === undefined;
+    const isLoading = isComposing || (fee === undefined && !error);
 
     const composeFees = useCallback(async () => {
-        if (!quote || !account || !feeInfo) {
+        if (!quote?.dexTx?.data || !account || !feeInfo) {
             return;
         }
 
@@ -60,8 +59,8 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
                     approvalTypeOverride,
                 }),
             ).unwrap();
-        } catch (error) {
-            console.error('Failed to compose allowance fees:', error);
+        } catch (composeError) {
+            console.error('Failed to compose allowance fees:', composeError);
             setError(translate('moduleTrading.composeAllowanceError'));
         } finally {
             setIsComposing(false);

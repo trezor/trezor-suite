@@ -6,7 +6,7 @@ import {
     type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangePreselectedQuote,
+    selectTradingExchangeActiveQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
@@ -19,7 +19,7 @@ import { useApprovalTypeControls } from '../../../hooks/exchange/Approval/useApp
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const LimitPicker = () => {
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
+    const quote = useSelector(selectTradingExchangeActiveQuote);
 
     const { approvalType, isSheetVisible, showSheet, hideSheet, handleApprovalTypeChange } =
         useApprovalTypeControls(quote);
