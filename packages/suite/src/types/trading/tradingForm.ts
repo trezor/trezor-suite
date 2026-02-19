@@ -27,6 +27,7 @@ import type {
     TradingBuyType,
     TradingComposedTransactionInfo,
     TradingCountryOption,
+    TradingCountrySubdivisionOption,
     TradingExchangeFormProps,
     TradingExchangeInfoSelector,
     TradingExchangeType,
@@ -68,6 +69,7 @@ export interface TradingBuyFormDefaultValuesProps {
     defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
     suggestedFiatCurrency: FiatCurrencyCode;
+    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
 
 export type TradingBuySellFormProps = TradingBuyFormProps | TradingSellFormProps;
@@ -82,6 +84,7 @@ export interface TradingSellFormDefaultValuesProps {
     defaultCountry: TradingCountryOption;
     defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
+    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
 
 export interface TradingExchangeFormDefaultValuesProps {
@@ -108,6 +111,7 @@ interface TradingCommonFormProps {
 
 interface TradingCommonFormBuySellProps {
     defaultCountry: TradingCountryOption;
+    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
     defaultCurrency: TradingFiatCurrencyOption;
     defaultPaymentMethod: TradingPaymentMethodListProps;
     paymentMethods: TradingPaymentMethodListProps[];
@@ -154,6 +158,7 @@ export interface TradingBuyFormContextProps
     removeDraft: (key: string) => void;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     methods: UseFormReturn<TradingBuyFormProps>;
+    clearQuotesAndParams: () => void;
 }
 
 export interface TradingSellFormContextProps
@@ -192,6 +197,7 @@ export interface TradingSellFormContextProps
     methods: UseFormReturn<TradingSellFormProps>;
     showReserveBanner: boolean;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
+    clearQuotesAndParams: () => void;
 }
 
 export type TradingExchangeConfirmTradeProps = {

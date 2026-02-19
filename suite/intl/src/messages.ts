@@ -976,6 +976,30 @@ export const messages = defineMessages({
         defaultMessage: 'Country not found',
         id: 'TR_TRADING_COUNTRY_NOT_FOUND',
     },
+    TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION: {
+        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        id: 'TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION',
+    },
+    TR_TRADING_COUNTRY_SUBDIVISION: {
+        defaultMessage: 'State of residence',
+        id: 'TR_TRADING_COUNTRY_SUBDIVISION',
+    },
+    TR_SEARCH_COUNTRY_SUBDIVISION_PLACEHOLDER: {
+        defaultMessage: 'Search state',
+        id: 'TR_SEARCH_COUNTRY_SUBDIVISION_PLACEHOLDER',
+    },
+    TR_TRADING_COUNTRY_SUBDIVISION_NOT_FOUND: {
+        defaultMessage: 'State not found',
+        id: 'TR_TRADING_COUNTRY_SUBDIVISION_NOT_FOUND',
+    },
+    TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED: {
+        defaultMessage: 'Not selected',
+        id: 'TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED',
+    },
+    TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS: {
+        defaultMessage: 'To see available offers, choose your state of residence.',
+        id: 'TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS',
+    },
     TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',

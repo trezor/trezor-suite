@@ -83,6 +83,13 @@ const tradingSellSlice = createSlice({
         setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;
         },
+        clearQuotesAndParams(state) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.preselectedQuote = undefined;
+            state.amountLimits = undefined;
+        },
     },
 });
 

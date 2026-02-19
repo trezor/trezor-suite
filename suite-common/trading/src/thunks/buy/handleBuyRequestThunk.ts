@@ -1,5 +1,6 @@
 import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
+import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -68,7 +69,15 @@ const getQuoteRequestData = ({
         return undefined;
     }
 
-    return request;
+    // do not fetch quotes until subdivision is set when country has subdivisions
+    if (isCountrySubdivisionEmpty(request.country, formValues.countrySubdivisionSelect?.value)) {
+        return undefined;
+    }
+
+    return {
+        ...request,
+        subdivision: formValues.countrySubdivisionSelect?.value,
+    };
 };
 
 export const handleBuyRequestThunk = createThunk<

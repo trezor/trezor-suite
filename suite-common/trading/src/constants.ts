@@ -39,6 +39,7 @@ export const TRADING_FORM_FIAT_CURRENCY_SELECT = 'currencySelect';
 export const TRADING_FORM_CRYPTO_INPUT = 'cryptoInput';
 export const TRADING_FORM_CRYPTO_CURRENCY_SELECT = 'cryptoSelect';
 export const TRADING_FORM_COUNTRY_SELECT = 'countrySelect';
+export const TRADING_FORM_COUNTRY_SUBDIVISION_SELECT = 'countrySubdivisionSelect';
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';

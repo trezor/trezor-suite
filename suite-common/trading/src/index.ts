@@ -6,6 +6,7 @@ export * from './hooks/useTradingAssets';
 export * from './hooks/useTradingUtils';
 export * from './hooks/useListDataFilter';
 export * from './hooks/useCountryFilteredData';
+export * from './hooks/useCountrySubdivisionFilteredData';
 export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './invityAPI';

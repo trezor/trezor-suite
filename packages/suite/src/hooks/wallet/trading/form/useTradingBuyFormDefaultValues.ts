@@ -7,6 +7,7 @@ import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     TradingCountryCode,
+    type TradingCountrySubdivisionOption,
     type TradingPaymentMethodListProps,
     enabledTradingCurrencies,
     getDefaultCountry,
@@ -37,6 +38,12 @@ export const useTradingBuyFormDefaultValues = (
         ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
         : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
+
+    /**
+     * TODO: https://github.com/trezor/trezor-trade-api/issues/502
+     * Implement default subdivision when it's implemented in the backend
+     * */
+    const defaultSubdivision: TradingCountrySubdivisionOption | undefined = undefined;
 
     // For testnet accounts, use default currency instead of casting to mainnet-only type
     const isTestnetAccount = !!networks[accountSymbol]?.testnet;
@@ -75,17 +82,19 @@ export const useTradingBuyFormDefaultValues = (
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
+            countrySubdivisionSelect: defaultSubdivision,
             paymentMethod: defaultPaymentMethod,
             provider: undefined,
             amountInCrypto: false,
             receiveAddress: undefined,
         }),
-        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod, defaultSubdivision],
     );
 
     return {
         defaultValues,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         suggestedFiatCurrency,

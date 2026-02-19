@@ -5,6 +5,7 @@ import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
+import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -19,6 +20,7 @@ import {
     selectTradingBuy,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
+    tradingActions,
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -57,7 +59,8 @@ export const useTradingBuyForm = ({
 }: UseTradingFormProps): TradingBuyFormContextProps => {
     const analytics = useAnalytics();
     const type = 'buy';
-    const isNotFormPage = pageType !== 'form';
+    const isFormPage = pageType === 'form';
+    const isOffersPage = pageType === 'offers';
     const dispatch = useDispatch();
     const {
         buyInfo,
@@ -98,8 +101,13 @@ export const useTradingBuyForm = ({
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
-    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingBuyFormDefaultValues(account.symbol, buyInfo);
+    const {
+        defaultValues,
+        defaultCountry,
+        defaultSubdivision,
+        defaultCurrency,
+        defaultPaymentMethod,
+    } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
         'trading-buy',
@@ -116,7 +124,7 @@ export const useTradingBuyForm = ({
           }
         : null;
 
-    const isDraft = !!draftUpdated || isNotFormPage;
+    const isDraft = !!draftUpdated || !isFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),
@@ -125,7 +133,7 @@ export const useTradingBuyForm = ({
     const values = useWatch({ control }) as TradingBuyFormProps;
     const { paymentMethod, provider } = values;
     const previousValues = useRef<TradingBuyFormProps | null>(
-        !isFromRedirect && isNotFormPage ? draftUpdated : null,
+        !isFromRedirect && !isFormPage ? draftUpdated : null,
     );
 
     const isAmountEmpty = !values.fiatInput && !values.cryptoInput;
@@ -386,12 +394,26 @@ export const useTradingBuyForm = ({
             !values.countrySelect ||
             !values.receiveAddress ||
             !values.currencySelect
-        )
+        ) {
             return;
+        }
+
+        if (
+            isCountrySubdivisionEmpty(
+                values.countrySelect?.value,
+                values.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
 
         if (
             isChanged(previousValues.current?.cryptoSelect, values.cryptoSelect) ||
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
+            isChanged(
+                previousValues.current?.countrySubdivisionSelect,
+                values.countrySubdivisionSelect,
+            ) ||
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
             isChanged(previousValues.current?.receiveAddress, values?.receiveAddress) ||
             isChanged(previousValues.current?.cryptoSelect.id, values?.cryptoSelect.id)
@@ -402,14 +424,18 @@ export const useTradingBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, isNotFormPage, pageType, handleChange, handleSubmit]);
+    }, [previousValues, values, isFormPage, pageType, handleChange, handleSubmit]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
         if (!isDraft && buyInfo) {
-            reset(defaultValues);
+            const currentReceiveAddress = values.receiveAddress;
+            reset({
+                ...defaultValues,
+                receiveAddress: currentReceiveAddress,
+            });
         }
-    }, [reset, buyInfo, defaultValues, isDraft]);
+    }, [reset, buyInfo, defaultValues, isDraft, values.receiveAddress]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -424,12 +450,13 @@ export const useTradingBuyForm = ({
     }, [defaultValues, values, removeDraft]);
 
     useEffect(() => {
-        if (!quotesRequest && isNotFormPage) {
+        // We need to clear quotes on offers page without redirecting to form page
+        if (!quotesRequest && !isFormPage && !isOffersPage) {
             navigateToBuyForm();
 
             return;
         }
-    }, [quotesRequest, isNotFormPage, navigateToBuyForm]);
+    }, [quotesRequest, isFormPage, isOffersPage, navigateToBuyForm]);
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
@@ -470,6 +497,7 @@ export const useTradingBuyForm = ({
         methods,
         account,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         paymentMethods,
@@ -493,6 +521,10 @@ export const useTradingBuyForm = ({
         removeDraft,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
+        },
+        clearQuotesAndParams: () => {
+            dispatch(tradingBuyActions.clearQuotesAndParams());
+            dispatch(tradingActions.savePaymentMethods([]));
         },
     };
 };

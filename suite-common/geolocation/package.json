@@ -7,7 +7,9 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",

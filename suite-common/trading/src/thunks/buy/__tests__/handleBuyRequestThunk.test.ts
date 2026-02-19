@@ -17,6 +17,8 @@ import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const createMockQuotes = () =>
+    [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
 
 describe('handleBuyRequestThunk', () => {
     afterEach(() => {
@@ -119,7 +121,7 @@ describe('handleBuyRequestThunk', () => {
 
     it('should successfully request quotes and save them', async () => {
         const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
-        const mockQuotes = [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES];
+        const mockQuotes = createMockQuotes();
 
         invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
@@ -141,7 +143,10 @@ describe('handleBuyRequestThunk', () => {
         expect(state.info.paymentMethods.length).toEqual(1);
         expect(state.isLoading).toBe(false);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
-        expect(quotesResponse).toEqual([mockQuotes[1], mockQuotes[6]]);
+        expect(quotesResponse).toEqual([
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
+        ]);
     });
 
     it.each([
@@ -156,6 +161,20 @@ describe('handleBuyRequestThunk', () => {
             'incorrect cryptoSelect',
             {
                 cryptoSelect: undefined as unknown as TradingAssetOption,
+            },
+        ],
+        [
+            'country with subdivisions but no subdivision selected',
+            {
+                countrySelect: {
+                    value: 'US' as const,
+                    codeAlpha3: 'USA',
+                    flag: '🇺🇸',
+                    name: 'United States of America',
+                    label: '🇺🇸 United States',
+                    shortLabel: '🇺🇸 USA',
+                },
+                countrySubdivisionSelect: undefined,
             },
         ],
     ])('should not save quotes when %s', async (_, incorrectFormValues) => {
@@ -179,6 +198,57 @@ describe('handleBuyRequestThunk', () => {
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.isLoading).toBe(false);
         await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
+    });
+
+    it('should request quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
+        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const mockQuotes = createMockQuotes();
+
+        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        const quotesResponse = await store
+            .dispatch(
+                buyThunks.handleRequestThunk({
+                    ...input,
+                    formValues: {
+                        ...input.formValues,
+                        countrySelect: {
+                            value: 'US' as const,
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States of America',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                        },
+                        countrySubdivisionSelect: {
+                            value: 'CA',
+                            label: 'California',
+                            name: 'California',
+                        },
+                    },
+                }),
+            )
+            .unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.buy.amountLimits).toBeUndefined();
+        expect(state.buy.quotes?.length).toEqual(2);
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'US',
+            subdivision: 'CA',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            wantCrypto: false,
+        });
+        expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(quotesResponse).toEqual([
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
+        ]);
     });
 
     it('should save empty quotes when empty array is returned from in the response', async () => {
