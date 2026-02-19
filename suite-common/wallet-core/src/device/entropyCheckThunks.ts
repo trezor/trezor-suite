@@ -46,7 +46,13 @@ export const processEntropyCheckResultThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
     ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
         if (result.success) {
-            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }));
+            dispatch(
+                deviceActions.setEntropyCheckResult({
+                    deviceId: device.id,
+                    success: true,
+                    xpubHashes: result.payload.xpubHashes,
+                }),
+            );
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
             if (result.error.code === 'Failure_EntropyCheck') {

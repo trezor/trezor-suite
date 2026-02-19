@@ -5,6 +5,7 @@ import {
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
+    type EntropyCheckResult,
     Features,
     KnownDevice,
     PROTO,
@@ -98,7 +99,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
         lastConnectedVia: 'bluetooth' | 'usb' | null;
-        lastEntropyCheckResult?: { success: boolean };
+        lastEntropyCheckResult?: EntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };
