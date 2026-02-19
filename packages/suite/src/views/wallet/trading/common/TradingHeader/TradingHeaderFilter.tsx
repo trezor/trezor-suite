@@ -1,17 +1,23 @@
+import { Control, useWatch } from 'react-hook-form';
+
 import styled from 'styled-components';
 
+import { isCountrySubdivisionRequired } from '@suite-common/geolocation';
 import {
+    TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingTradeBuySellType,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,
@@ -21,14 +27,22 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 import { TradingOffersExchangeFiltersPanel } from 'src/views/wallet/trading/common/TradingHeader/TradingOffersExchangeFiltersPanel';
 
+import { TradingFormInputCountrySubdivision } from '../TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
+
 const InputWrapper = styled.div`
-    width: 254px;
+    width: 200px;
     max-width: 100%;
     padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
 export const TradingHeaderFilter = () => {
-    const context = useTradingFormContext();
+    const context = useTradingFormContext<TradingTradeBuySellType>();
+
+    const selectedCountry = useWatch({
+        control: context.control as Control<TradingBuySellFormProps>,
+        name: TRADING_FORM_COUNTRY_SELECT,
+    });
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
 
     if (isTradingExchangeContext(context)) {
         return (
@@ -65,6 +79,15 @@ export const TradingHeaderFilter = () => {
             <InputWrapper>
                 <TradingFormInputCountry renderInput label="TR_TRADING_COUNTRY" />
             </InputWrapper>
+            {countryRequiresSubdivision && (
+                <InputWrapper>
+                    <TradingFormInputCountrySubdivision
+                        renderInput
+                        label="TR_TRADING_COUNTRY_SUBDIVISION"
+                        country={selectedCountry}
+                    />
+                </InputWrapper>
+            )}
         </Row>
     );
 };
