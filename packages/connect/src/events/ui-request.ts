@@ -21,7 +21,6 @@ export const UI_REQUEST = {
     TRANSPORT: 'ui-no_transport',
     BOOTLOADER: 'ui-device_bootloader_mode',
     NOT_IN_BOOTLOADER: 'ui-device_not_in_bootloader_mode',
-    REQUIRE_MODE: 'ui-device_require_mode',
     INITIALIZE: 'ui-device_not_initialized',
     SEEDLESS: 'ui-device_seedless',
     FIRMWARE_OLD: 'ui-device_firmware_old',
