@@ -5,8 +5,7 @@ import {
     selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectFirmwareChannel } from '@suite-common/firmware/src/firmwareReducer';
+import { selectFirmwareChannel } from '@suite-common/firmware';
 import {
     Feature,
     parseTimeoutThresholdsPerModel,
