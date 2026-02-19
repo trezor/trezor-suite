@@ -11,6 +11,7 @@ import {
 } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
+import { getCountrySubdivisionByCode } from '@suite-common/geolocation';
 import {
     type Network,
     type NetworkSymbol,
@@ -34,6 +35,7 @@ import {
 import { regional } from './regional';
 import {
     TradingCountryCode,
+    TradingCountrySubdivisionOption,
     TradingExchangeType,
     TradingParsedCryptoIdProps,
     TradingPaymentMethodListProps,
@@ -239,6 +241,18 @@ export const tradingGetSuccessQuotes = <T extends TradingType>(quotes: TradingTr
 
 export const getDefaultCountry = (country: TradingCountryCode = regional.UNKNOWN_COUNTRY) =>
     regional.getCountryOptionWithWorldwideFallback(country);
+
+export const getDefaultCountrySubdivision = (
+    subdivision: string | undefined,
+): TradingCountrySubdivisionOption | undefined => {
+    if (!subdivision) return undefined;
+
+    const found = getCountrySubdivisionByCode(subdivision);
+
+    if (!found) return undefined;
+
+    return { value: found.code, label: found.name, name: found.name };
+};
 
 export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeBuySellMapProps[T][],

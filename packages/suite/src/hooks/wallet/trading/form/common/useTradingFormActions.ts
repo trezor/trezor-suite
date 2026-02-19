@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
+import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -298,10 +299,26 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     useEffect(() => {
         if (type !== 'sell' || pageType === 'confirm' || pageType === 'retry') return;
 
+        const sellValues = values as TradingSellFormProps;
+
+        // do not dispatch form requests until subdivision is set when country has subdivisions
+        if (
+            isCountrySubdivisionEmpty(
+                sellValues.countrySelect?.value,
+                sellValues.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
+
         if (
             isChanged(
                 (previousValues.current as TradingSellFormProps | null)?.countrySelect,
-                (values as TradingSellFormProps).countrySelect,
+                sellValues.countrySelect,
+            ) ||
+            isChanged(
+                (previousValues.current as TradingSellFormProps | null)?.countrySubdivisionSelect,
+                sellValues.countrySubdivisionSelect,
             ) ||
             isChanged(
                 previousValues.current?.outputs?.[0]?.currency?.value,

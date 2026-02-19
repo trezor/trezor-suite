@@ -3,6 +3,7 @@ import { UseFormSetValue } from 'react-hook-form';
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_COUNTRY_SELECT,
+    TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     TradingCountryOption,
     useCountryFilteredData,
 } from '@suite-common/trading';
@@ -20,13 +21,14 @@ interface CountrySelectModalProps {
 
 export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps) => {
     const { translationString } = useTranslation();
-    const { setValue, setAmountLimits } = useTradingFormContext<TradingTradeBuySellType>();
+    const { setValue, clearQuotesAndParams } = useTradingFormContext<TradingTradeBuySellType>();
     const { filteredData, setFilterValue, filterValue } = useCountryFilteredData();
 
     const selectCountry = (country: TradingCountryOption) => {
         const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
-        setValueTyped(TRADING_FORM_COUNTRY_SELECT, country);
-        setAmountLimits(undefined);
+        setValueTyped(TRADING_FORM_COUNTRY_SELECT, country, { shouldDirty: true });
+        setValueTyped(TRADING_FORM_COUNTRY_SUBDIVISION_SELECT, undefined, { shouldDirty: true });
+        clearQuotesAndParams();
         onClose();
     };
 

@@ -148,12 +148,19 @@ export type TradingCountryOption = {
     name: string;
 };
 
+export type TradingCountrySubdivisionOption = {
+    value: string;
+    label: string;
+    name: string;
+};
+
 export type TradingBuyFormProps = {
     [constants.TRADING_FORM_FIAT_INPUT]?: string;
     [constants.TRADING_FORM_CRYPTO_INPUT]?: string;
     [constants.TRADING_FORM_FIAT_CURRENCY_SELECT]: TradingFiatCurrencyOption;
     [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingAssetOption;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
+    [constants.TRADING_FORM_COUNTRY_SUBDIVISION_SELECT]?: TradingCountrySubdivisionOption;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
@@ -262,6 +269,7 @@ export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
+    [constants.TRADING_FORM_COUNTRY_SUBDIVISION_SELECT]?: TradingCountrySubdivisionOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
@@ -270,6 +278,7 @@ export type MinimalSellFormProps = {
     outputs: { amount?: string; fiat?: string; currency: Pick<BaseCurrencyOption, 'value'> }[];
     sendCryptoSelect: Pick<TradingAssetSellOption, 'id'> | undefined;
     countrySelect: TradingCountryOption;
+    countrySubdivisionSelect?: TradingCountrySubdivisionOption;
     amountInCrypto: boolean;
     setMaxOutputId?: number;
 };

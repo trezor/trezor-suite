@@ -10,6 +10,7 @@ import {
     type TradingPaymentMethodListProps,
     enabledTradingCurrencies,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     regional,
     selectTradingPrefilledFromAccount,
     useTradingAssets,
@@ -37,6 +38,11 @@ export const useTradingBuyFormDefaultValues = (
         ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
         : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
+
+    const defaultSubdivision = useMemo(
+        () => getDefaultCountrySubdivision(buyInfo?.buyInfo?.subdivision),
+        [buyInfo?.buyInfo?.subdivision],
+    );
 
     // For testnet accounts, use default currency instead of casting to mainnet-only type
     const isTestnetAccount = !!networks[accountSymbol]?.testnet;
@@ -75,17 +81,19 @@ export const useTradingBuyFormDefaultValues = (
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
+            countrySubdivisionSelect: defaultSubdivision,
             paymentMethod: defaultPaymentMethod,
             provider: undefined,
             amountInCrypto: false,
             receiveAddress: undefined,
         }),
-        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod, defaultSubdivision],
     );
 
     return {
         defaultValues,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         suggestedFiatCurrency,

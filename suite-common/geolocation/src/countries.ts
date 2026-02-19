@@ -5,6 +5,11 @@ type Country = {
     name: string;
 };
 
+export type CountrySubdivision = {
+    code: string;
+    name: string;
+};
+
 export const countries = {
     AD: { code: 'AD', codeAlpha3: 'AND', flag: '🇦🇩', name: 'Andorra' },
     AE: { code: 'AE', codeAlpha3: 'ARE', flag: '🇦🇪', name: 'United Arab Emirates' },
@@ -272,6 +277,72 @@ export const countries = {
     ZM: { code: 'ZM', codeAlpha3: 'ZMB', flag: '🇿🇲', name: 'Zambia' },
     ZW: { code: 'ZW', codeAlpha3: 'ZWE', flag: '🇿🇼', name: 'Zimbabwe' },
 } as const satisfies Record<`${Uppercase<string>}`, Country>;
+
+export const usSubdivisions = [
+    { code: 'AK', name: 'Alaska' },
+    { code: 'AL', name: 'Alabama' },
+    { code: 'AR', name: 'Arkansas' },
+    { code: 'AS', name: 'American Samoa' },
+    { code: 'AZ', name: 'Arizona' },
+    { code: 'CA', name: 'California' },
+    { code: 'CO', name: 'Colorado' },
+    { code: 'CT', name: 'Connecticut' },
+    { code: 'DC', name: 'District of Columbia' },
+    { code: 'DE', name: 'Delaware' },
+    { code: 'FL', name: 'Florida' },
+    { code: 'GA', name: 'Georgia' },
+    { code: 'GU', name: 'Guam' },
+    { code: 'HI', name: 'Hawaii' },
+    { code: 'IA', name: 'Iowa' },
+    { code: 'ID', name: 'Idaho' },
+    { code: 'IL', name: 'Illinois' },
+    { code: 'IN', name: 'Indiana' },
+    { code: 'KS', name: 'Kansas' },
+    { code: 'KY', name: 'Kentucky' },
+    { code: 'LA', name: 'Louisiana' },
+    { code: 'MA', name: 'Massachusetts' },
+    { code: 'MD', name: 'Maryland' },
+    { code: 'ME', name: 'Maine' },
+    { code: 'MI', name: 'Michigan' },
+    { code: 'MN', name: 'Minnesota' },
+    { code: 'MO', name: 'Missouri' },
+    { code: 'MP', name: 'Northern Mariana Islands' },
+    { code: 'MS', name: 'Mississippi' },
+    { code: 'MT', name: 'Montana' },
+    { code: 'NC', name: 'North Carolina' },
+    { code: 'ND', name: 'North Dakota' },
+    { code: 'NE', name: 'Nebraska' },
+    { code: 'NH', name: 'New Hampshire' },
+    { code: 'NJ', name: 'New Jersey' },
+    { code: 'NM', name: 'New Mexico' },
+    { code: 'NV', name: 'Nevada' },
+    { code: 'NY', name: 'New York' },
+    { code: 'OH', name: 'Ohio' },
+    { code: 'OK', name: 'Oklahoma' },
+    { code: 'OR', name: 'Oregon' },
+    { code: 'PA', name: 'Pennsylvania' },
+    { code: 'PR', name: 'Puerto Rico' },
+    { code: 'RI', name: 'Rhode Island' },
+    { code: 'SC', name: 'South Carolina' },
+    { code: 'SD', name: 'South Dakota' },
+    { code: 'TN', name: 'Tennessee' },
+    { code: 'TX', name: 'Texas' },
+    { code: 'UM', name: 'United States Minor Outlying Islands' },
+    { code: 'UT', name: 'Utah' },
+    { code: 'VA', name: 'Virginia' },
+    { code: 'VI', name: 'U.S. Virgin Islands' },
+    { code: 'VT', name: 'Vermont' },
+    { code: 'WA', name: 'Washington' },
+    { code: 'WI', name: 'Wisconsin' },
+    { code: 'WV', name: 'West Virginia' },
+    { code: 'WY', name: 'Wyoming' },
+] as const satisfies ReadonlyArray<CountrySubdivision>;
+
+export const subdivisionsByCountry = {
+    US: usSubdivisions,
+} as const satisfies Partial<Record<keyof typeof countries, ReadonlyArray<CountrySubdivision>>>;
+
+export type CountryCodeWithSubdivisions = keyof typeof subdivisionsByCountry;
 
 // European Economic Area (EEA) - https://en.wikipedia.org/wiki/European_Economic_Area
 export const EEACountryCodes = [

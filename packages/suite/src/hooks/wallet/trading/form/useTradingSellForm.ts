@@ -27,6 +27,7 @@ import {
     selectTradingTrades,
     sellThunks,
     sellUtils,
+    tradingActions,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -65,7 +66,8 @@ export const useTradingSellForm = ({
 }: UseTradingFormProps): TradingSellFormContextProps => {
     const analytics = useAnalytics();
     const type = 'sell';
-    const isNotFormPage = pageType !== 'form';
+    const isFormPage = pageType === 'form';
+    const isOffersPage = pageType === 'offers';
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const {
@@ -129,8 +131,17 @@ export const useTradingSellForm = ({
             trade.tradeType === 'sell' && trade.key === transactionId,
     );
 
-    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingSellFormDefaultValues(accountKey, sellInfo?.country);
+    const {
+        defaultValues,
+        defaultCountry,
+        defaultSubdivision,
+        defaultCurrency,
+        defaultPaymentMethod,
+    } = useTradingSellFormDefaultValues(
+        accountKey,
+        sellInfo?.country,
+        sellInfo?.countrySubdivision,
+    );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {
@@ -151,6 +162,7 @@ export const useTradingSellForm = ({
             ...defaultValues,
             paymentMethod: draft.paymentMethod,
             countrySelect: draft.countrySelect,
+            countrySubdivisionSelect: draft.countrySubdivisionSelect,
             amountInCrypto: draft.amountInCrypto,
         };
     };
@@ -530,7 +542,7 @@ export const useTradingSellForm = ({
         if (!isDraft && sellInfo && isInitialDataLoading) {
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft, isNotFormPage, isInitialDataLoading]);
+    }, [reset, sellInfo, defaultValues, isDraft, isFormPage, isInitialDataLoading]);
 
     useDebounce(
         () => {
@@ -557,12 +569,13 @@ export const useTradingSellForm = ({
     );
 
     useEffect(() => {
-        if (!quotesRequest && isNotFormPage) {
+        // We need to clear quotes on offers page without redirecting to form page
+        if (!quotesRequest && !isFormPage && !isOffersPage) {
             navigateToSellForm();
 
             return;
         }
-    }, [quotesRequest, isNotFormPage, navigateToSellForm]);
+    }, [quotesRequest, isFormPage, isOffersPage, navigateToSellForm]);
 
     useEffect(() => {
         if (isFromRedirect) {
@@ -598,6 +611,7 @@ export const useTradingSellForm = ({
         methods,
         account,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         paymentMethods,
@@ -628,5 +642,9 @@ export const useTradingSellForm = ({
         sendTransaction,
         showReserveBanner,
         setShowReserveBanner,
+        clearQuotesAndParams: () => {
+            dispatch(tradingActions.savePaymentMethods([]));
+            dispatch(tradingSellActions.clearQuotesAndParams());
+        },
     };
 };

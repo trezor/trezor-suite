@@ -11,6 +11,7 @@ export interface SellInfo {
     supportedFiatCurrencies: string[];
     supportedCryptoCurrencies: CryptoId[];
     country: TradingCountryCode;
+    countrySubdivision?: string;
 }
 
 export type TradingSellState = {
@@ -82,6 +83,13 @@ const tradingSellSlice = createSlice({
         },
         setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;
+        },
+        clearQuotesAndParams(state) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.preselectedQuote = undefined;
+            state.amountLimits = undefined;
         },
     },
 });

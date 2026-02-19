@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
@@ -95,7 +96,6 @@ export const TradingFormOffer = () => {
         type,
         quotes,
         isAmountEmpty,
-
         getValues,
         form: { state },
     } = context;
@@ -141,6 +141,16 @@ export const TradingFormOffer = () => {
     const isQuoteOutdated =
         isTradingExchangeContext(context) &&
         (quote as ExchangeTrade)?.send !== context.getValues('sendCryptoSelect')?.id;
+
+    const isSubdivisionMissing = useMemo(() => {
+        if (isTradingSellContext(context) || isTradingBuyContext(context)) {
+            const { countrySelect, countrySubdivisionSelect } = context.getValues();
+
+            return isCountrySubdivisionEmpty(countrySelect?.value, countrySubdivisionSelect?.value);
+        }
+
+        return false;
+    }, [context]);
 
     useEffect(() => {
         // confirm the quote once it loads
@@ -271,7 +281,7 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
 
-            {!quote && !state.isFormLoading && !state.isFormInvalid && (
+            {!isSubdivisionMissing && !quote && !state.isFormLoading && !state.isFormInvalid && (
                 <Card>
                     <Paragraph
                         typographyStyle="body-sm"
@@ -288,6 +298,21 @@ export const TradingFormOffer = () => {
                                     : 'TR_TRADING_NO_OFFER_BUY_OR_SELL'
                             }
                         />
+                    </Paragraph>
+                </Card>
+            )}
+
+            {isSubdivisionMissing && (
+                <Card>
+                    <Paragraph
+                        typographyStyle="body-sm"
+                        intent="neutral"
+                        priority="secondary"
+                        align="center"
+                        margin={{ vertical: 8 }}
+                        data-testid="trading-offer-subdivision-required"
+                    >
+                        <Translation id="TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS" />
                     </Paragraph>
                 </Card>
             )}

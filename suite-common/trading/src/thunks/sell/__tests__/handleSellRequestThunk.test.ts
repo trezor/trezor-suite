@@ -86,12 +86,12 @@ describe('handleSellRequestThunk', () => {
                 },
             ],
             countrySelect: {
-                codeAlpha3: 'USA',
-                flag: '🇺🇸',
-                name: 'United States of America',
-                value: 'US',
-                label: '🇺🇸 United States',
-                shortLabel: '🇺🇸 USA',
+                value: 'CZ' as const,
+                codeAlpha3: 'CZE',
+                flag: '🇨🇿',
+                name: 'Czechia',
+                label: '🇨🇿 Czechia',
+                shortLabel: '🇨🇿 CZE',
             },
             sendCryptoSelect: {
                 id: 'bitcoin' as CryptoId,
@@ -156,7 +156,7 @@ describe('handleSellRequestThunk', () => {
             amountInCrypto: true,
             cryptoCurrency: 'bitcoin',
             fiatCurrency: 'USD',
-            country: 'US',
+            country: 'CZ',
             cryptoStringAmount: '0.0015',
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
@@ -201,7 +201,7 @@ describe('handleSellRequestThunk', () => {
             amountInCrypto: true,
             cryptoCurrency: 'bitcoin',
             fiatCurrency: 'USD',
-            country: 'US',
+            country: 'CZ',
             cryptoStringAmount: '0.0015',
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
@@ -249,7 +249,7 @@ describe('handleSellRequestThunk', () => {
             amountInCrypto: true,
             cryptoCurrency: 'ethereum',
             fiatCurrency: 'USD',
-            country: 'US',
+            country: 'CZ',
             cryptoStringAmount: '0.0015',
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
@@ -257,6 +257,92 @@ describe('handleSellRequestThunk', () => {
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
+    });
+
+    it('should request sell quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
+        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
+            ...quote,
+            orderId: undefined,
+        }));
+
+        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+
+        const quotesResponse = await store
+            .dispatch(
+                sellThunks.handleRequestThunk({
+                    ...input,
+                    formValues: {
+                        ...input.formValues,
+                        countrySelect: {
+                            value: 'US' as const,
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States of America',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                        },
+                        countrySubdivisionSelect: {
+                            value: 'CA',
+                            label: 'California',
+                            name: 'California',
+                        },
+                    },
+                }),
+            )
+            .unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.sell.quotes.length).toEqual(1);
+        expect(quotesResponse?.length).toEqual(1);
+        expect(state.sell.quotesRequest).toEqual({
+            amountInCrypto: true,
+            cryptoCurrency: 'bitcoin',
+            fiatCurrency: 'USD',
+            country: 'US',
+            subdivision: 'CA',
+            cryptoStringAmount: '0.0015',
+            fiatStringAmount: '50',
+            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+        });
+        expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(state.isLoading).toBe(false);
+    });
+
+    it('should not save quotes when country has subdivisions but no subdivision is selected', async () => {
+        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const incorrectData = {
+            ...input,
+            formValues: {
+                ...input.formValues,
+                countrySelect: {
+                    value: 'US' as const,
+                    codeAlpha3: 'USA',
+                    flag: '🇺🇸',
+                    name: 'United States of America',
+                    label: '🇺🇸 United States',
+                    shortLabel: '🇺🇸 USA',
+                },
+                countrySubdivisionSelect: undefined,
+            },
+        };
+
+        jest.spyOn(invityAPI, 'getSellQuotes');
+
+        const promise = store.dispatch(sellThunks.handleRequestThunk(incorrectData));
+        await promise;
+
+        const state = store.getState().wallet.trading;
+
+        expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.sell.quotesRequest).toBeUndefined();
+        expect(state.sell.quotes.length).toEqual(0);
+        expect(state.isLoading).toBe(false);
+        await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
     it('should not save quotes when request is aborted', async () => {

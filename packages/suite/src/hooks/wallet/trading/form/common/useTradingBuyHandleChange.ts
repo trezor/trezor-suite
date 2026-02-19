@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
+import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TradingBuyFormProps,
@@ -42,6 +43,15 @@ export const useTradingBuyHandleChange = ({
     const previousPromise = useRef<PromiseType>(null);
     const analytics = useAnalytics();
     const handleChange = useCallback(async () => {
+        if (
+            isCountrySubdivisionEmpty(
+                formValues.countrySelect?.value,
+                formValues.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
+
         if (previousPromise.current) {
             previousPromise.current.abort('Request was replaced by another one.');
         }
