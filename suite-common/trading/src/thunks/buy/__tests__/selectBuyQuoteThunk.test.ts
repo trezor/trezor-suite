@@ -66,6 +66,7 @@ describe('selectBuyQuoteThunk', () => {
                     paymentMethods: [quote.paymentMethod as BuyCryptoPaymentMethod],
                     tradedFiatCurrencies: [fiat],
                     supportedCountries: [country],
+                    supportedSubdivisions: {},
                 },
             },
             supportedFiatCurrencies: [fiat],

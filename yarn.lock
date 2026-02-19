@@ -11641,7 +11641,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
     uuid: "npm:^13.0.0"
@@ -11744,7 +11744,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
@@ -13656,7 +13656,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     expo-linear-gradient: "npm:~15.0.8"
     react: "npm:19.1.0"
     react-intl: "npm:^8.0.6"
@@ -13733,7 +13733,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     expo-system-ui: "npm:~6.0.9"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
@@ -14211,7 +14211,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -14237,7 +14237,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:2.29.0"
@@ -14270,7 +14270,7 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     expo-linking: "npm:~8.0.11"
     expo-web-browser: "npm:~15.0.10"
     react: "npm:19.1.0"
@@ -14318,7 +14318,7 @@ __metadata:
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
   languageName: unknown
   linkType: soft
 
@@ -14381,7 +14381,7 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     react-native: "npm:0.81.5"
   languageName: unknown
   linkType: soft
@@ -14398,7 +14398,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
   languageName: unknown
   linkType: soft
 
@@ -15943,7 +15943,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-    "@types/invity-api": "npm:^1.1.12"
+    "@types/invity-api": "npm:^1.1.13"
     "@types/pako": "npm:^2.0.3"
     "@types/pdfmake": "npm:^0.2.11"
     "@types/react": "npm:19.1.6"
@@ -17006,10 +17006,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.1.12":
-  version: 1.1.12
-  resolution: "@types/invity-api@npm:1.1.12"
-  checksum: 10/8c89c855cd0f3ba9da923ae894b52fd737eef15fc7c8f244d732613ce98f7b8172cda62c8c767b5c020b20f0b52e69c08b6393f89c9502cdef92f88e45b8038b
+"@types/invity-api@npm:^1.1.13":
+  version: 1.1.13
+  resolution: "@types/invity-api@npm:1.1.13"
+  checksum: 10/7f0b558bf92a51f3ca398386d9a46556352790354bafdfa01ad0c6d696c75977cd57ffa9734c7156045eab81984b9328dc993efb28bd95daecdf9b56824bac71
   languageName: node
   linkType: hard
 

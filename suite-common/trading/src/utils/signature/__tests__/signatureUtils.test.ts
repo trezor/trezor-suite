@@ -254,6 +254,7 @@ describe('signatureUtils', () => {
             statusUrl: 'https://test.com/status',
             supportUrl: 'https://test.com/support',
             type: 'Fiat',
+            supportedSubdivisions: {},
         };
 
         const defaultSellProps = {

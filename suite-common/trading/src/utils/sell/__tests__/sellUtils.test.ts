@@ -109,6 +109,7 @@ describe('sellUtils', () => {
                     type: 'Fiat',
                     supportedCountries: ['CZ'],
                     flow: 'BANK_ACCOUNT',
+                    supportedSubdivisions: {},
                 },
             },
             supportedFiatCurrencies: new Set(),

@@ -86,6 +86,7 @@ describe('loadBuyInfoThunk', () => {
             isActive: true,
             paymentMethods: [] as BuyCryptoPaymentMethod[],
             supportedCountries: [],
+            supportedSubdivisions: {},
         };
 
         const buyInfoAPI = {

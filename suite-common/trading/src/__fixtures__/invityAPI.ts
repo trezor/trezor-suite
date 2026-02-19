@@ -84,6 +84,7 @@ const buyList: BuyProviderInfo[] = [
         paymentMethods: [],
         statusUrl: 'https://test.io/buy/txs/{{orderId}}',
         supportUrl: 'https://support.test.io',
+        supportedSubdivisions: {},
     },
 ];
 
@@ -139,6 +140,7 @@ const sellList: SellProviderInfo[] = [
         paymentMethods: [],
         statusUrl: 'https://test.io/sell/txs/{{orderId}}',
         supportUrl: 'https://support.test.io',
+        supportedSubdivisions: {},
     },
 ];
 

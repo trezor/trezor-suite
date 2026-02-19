@@ -25,6 +25,7 @@ describe('loadSellInfoThunk', () => {
         tradedFiatCurrencies: ['CZK', 'USD'],
         type: 'Fiat',
         supportedCountries: ['CZ'],
+        supportedSubdivisions: {},
     };
 
     const store = configureMockStore({
