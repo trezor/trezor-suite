@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { FirmwareType } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import type { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';

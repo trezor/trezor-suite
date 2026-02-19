@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { PROTO } from '@trezor/connect/src/exports';
 
 export const UNIT_ABBREVIATIONS = {

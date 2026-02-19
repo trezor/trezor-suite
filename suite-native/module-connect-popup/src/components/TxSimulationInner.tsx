@@ -20,6 +20,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { ConnectAppIcon } from './ConnectAppIcon';

@@ -11,6 +11,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';

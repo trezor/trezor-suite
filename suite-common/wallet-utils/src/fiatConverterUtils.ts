@@ -1,4 +1,5 @@
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AmountUnit, asAmountUnit } from './AmountTypes';

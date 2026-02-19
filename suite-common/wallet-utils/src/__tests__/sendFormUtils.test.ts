@@ -6,6 +6,7 @@ import {
     networkSpecificDefaultStellar,
 } from '@suite-common/wallet-types/mocks';
 import { FeeLevel } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';

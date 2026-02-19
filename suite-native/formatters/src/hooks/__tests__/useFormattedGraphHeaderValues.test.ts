@@ -5,6 +5,7 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { AmountUnit } from '@trezor/protobuf/src/messages';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';

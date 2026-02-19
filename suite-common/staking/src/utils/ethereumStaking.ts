@@ -33,8 +33,10 @@ import TrezorConnect, {
     InternalTransfer,
     Success,
 } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { PartialRecord } from '@trezor/type-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {

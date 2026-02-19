@@ -5,6 +5,7 @@ import {
     SupportedSolanaNetworkSymbols,
     supportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 

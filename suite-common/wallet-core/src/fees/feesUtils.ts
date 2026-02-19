@@ -2,6 +2,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { Network, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { TokenAddress } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { STELLAR_DECIMALS } from '@trezor/blockchain-link-utils/src/stellar';
 
 import { StellarTokenInfo, lazyTokenMetadata } from './useInactiveStellarTokens';

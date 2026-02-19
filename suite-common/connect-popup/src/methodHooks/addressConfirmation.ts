@@ -1,4 +1,5 @@
 import { Address, CallMethodKeys, SolanaPublicKey } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';

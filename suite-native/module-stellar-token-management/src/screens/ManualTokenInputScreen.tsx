@@ -17,6 +17,7 @@ import {
     StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';

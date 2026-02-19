@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 // Slack discussion https://satoshilabs.slack.com/archives/C0543DJBK0C/p1719409880504649?thread_ts=1719403259.875369&cid=C0543DJBK0C
