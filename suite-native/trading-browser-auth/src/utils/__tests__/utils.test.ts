@@ -67,19 +67,19 @@ describe('utils', () => {
         });
 
         it('should use production URL base', () => {
-            expect(TRADING_URL_BASE).toBe('https://trezor.io/suite/deeplink/trade');
-            expect(TRADING_URL_DEFAULT_BACK).toBe('https://trezor.io/suite/deeplink/trade/back');
+            expect(TRADING_URL_BASE).toBe('https://trezor.io/suite/deeplinks/trade');
+            expect(TRADING_URL_DEFAULT_BACK).toBe('https://trezor.io/suite/deeplinks/trade/back');
         });
 
         it('should return true when URL contains production base', () => {
             const url =
-                'https://trezor.io/suite/deeplink/trade?action=trade&tradeType=buy&orderId=123';
+                'https://trezor.io/suite/deeplinks/trade?action=trade&tradeType=buy&orderId=123';
             expect(doesUrlContainCloseCallbackUrl(url, TRADING_URL_BASE)).toBe(true);
         });
 
         it('should return true when URL contains production default back', () => {
             const url =
-                'https://trezor.io/suite/deeplink/trade/back?action=trade&tradeType=buy&orderId=123';
+                'https://trezor.io/suite/deeplinks/trade/back?action=trade&tradeType=buy&orderId=123';
             expect(doesUrlContainCloseCallbackUrl(url)).toBe(true);
         });
 
