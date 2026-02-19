@@ -10,8 +10,7 @@ import {
 import { Circle, Group } from '@shopify/react-native-skia';
 
 import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { EventComponentProps } from '@suite-native/react-native-graph/src/LineGraphProps';
+import { EventComponentProps } from '@suite-native/react-native-graph';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles';
 import { Color, ThemeColorVariant } from '@trezor/theme';

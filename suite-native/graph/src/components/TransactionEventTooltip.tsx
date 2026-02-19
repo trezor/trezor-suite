@@ -14,8 +14,7 @@ import {
     SignValueFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { EventTooltipComponentProps } from '@suite-native/react-native-graph/src/LineGraphProps';
+import { EventTooltipComponentProps } from '@suite-native/react-native-graph';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { isNotNullOrUndefined } from '@trezor/utils';

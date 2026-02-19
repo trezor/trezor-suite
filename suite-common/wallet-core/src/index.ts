@@ -44,6 +44,7 @@ export * from './send/sendFormReducer';
 export * from './send/sendFormSelectors';
 export * from './send/sendFormThunks';
 export * from './send/sendFormTypes';
+export * from './send/sendFormEthereumThunks';
 export * from './settings/useDisplayBaseCurrency';
 export * from './settings/walletSettingsActions';
 export * from './settings/walletSettingsConstants';

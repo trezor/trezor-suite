@@ -1,5 +1,4 @@
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { TradingType } from '@suite-common/trading/';
+import { TradingType } from '@suite-common/trading';
 import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 

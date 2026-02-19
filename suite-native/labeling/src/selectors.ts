@@ -2,11 +2,10 @@ import { selectSelectedDevice } from '@suite-common/device';
 import {
     SuiteSyncDataRootState,
     WithSuiteSyncAndDeviceState,
+    getIsSuiteSyncLabelingActionEnabled,
     selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { getIsSuiteSyncLabelingActionEnabled } from '@suite-common/suite-sync/src/suiteSyncUtils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
