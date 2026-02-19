@@ -72,6 +72,7 @@ jobs:
           uploadArtifacts: "true"
           buildArtifacts: "true"
           nodeEnv: "development"
+          connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'

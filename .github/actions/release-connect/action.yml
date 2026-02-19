@@ -29,6 +29,10 @@ inputs:
     description: "Node environment"
     type: string
     required: true
+  connectPopupUrl:
+    description: "Full URL to connect popup (for webextension examples)"
+    type: string
+    required: false
 
 runs:
   using: "composite"
@@ -37,7 +41,6 @@ runs:
       uses: actions/checkout@v4
       with:
         submodules: true
-        cache: yarn
 
     # Pull only files needed for connect to save LFS bandwidth
     - name: "Pull LFS files for connect"
@@ -54,6 +57,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version-file: ".nvmrc"
+        cache: yarn
 
     - name: Install dependencies
       shell: bash
@@ -91,12 +95,9 @@ runs:
       if: inputs.buildArtifacts == 'true'
       shell: bash
       env:
-        FULL_URL: https://${{ inputs.serverHostname }}/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup
+        FULL_URL: ${{ inputs.connectPopupUrl || format('https://{0}/{1}', inputs.serverHostname, inputs.serverPath) }}
       run: |
-        cd packages/connect-examples/webextension
-        yarn
-        yarn build
-        cd ../../../
+        yarn workspace @trezor/webextension-mv3-sw-ts build
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
         ./packages/connect-examples/webextension/scripts/check-webextension-bundle-size.sh
