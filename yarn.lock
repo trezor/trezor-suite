@@ -11531,6 +11531,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/support@workspace:*, @suite-common/support@workspace:suite-common/support":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/support@workspace:suite-common/support"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/test-utils@workspace:*, @suite-common/test-utils@workspace:suite-common/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
@@ -13507,6 +13519,7 @@ __metadata:
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/support": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13970,6 +13983,7 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/support": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"

@@ -23,10 +23,11 @@ import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
-import * as URLS from '@trezor/urls';
 import {
+    ALL_URLS,
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
     HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
+    HELP_CENTER_SOLANA_HELP_URL,
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -178,7 +179,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         switch (addressError?.type) {
             case 'deprecated':
                 return {
-                    learnMoreUrl: addressDeprecatedUrl ? URLS[addressDeprecatedUrl] : undefined,
+                    learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
             case 'evmChecks':
                 if (!checkAddressCheckSum(address)) {
@@ -223,7 +224,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             },
                             text: translationString('TR_I_UNDERSTAND_THE_RISK'),
                         },
-                        learnMoreUrl: URLS.HELP_CENTER_SOLANA_HELP_URL,
+                        learnMoreUrl: HELP_CENTER_SOLANA_HELP_URL,
                     };
                 }
 

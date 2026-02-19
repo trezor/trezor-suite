@@ -1,5 +1,5 @@
-import { withPlatformUtm } from './platform-utm';
 import { Url } from './types';
+import { withPlatformUtm } from './utms';
 
 // =====================
 // 🧩 TREZOR SUITE - CORE
