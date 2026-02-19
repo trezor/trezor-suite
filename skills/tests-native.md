@@ -37,5 +37,4 @@ Before submitting code, ensure:
 - [ ] Fixtures are properly typed
 - [ ] Tests focus on behavior, not implementation
 - [ ] All interactions use `userEvent`
-- [ ] Tests follow naming conventions (.comp.test.tsx, .hook.test.ts)
 - [ ] All tests pass locally
