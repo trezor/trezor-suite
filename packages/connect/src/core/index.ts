@@ -776,7 +776,6 @@ export class Core extends EventEmitter {
             case UI.RECEIVE_ACCOUNT:
             case UI.RECEIVE_FEE:
             case UI.RECEIVE_WORD:
-            case UI.LOGIN_CHALLENGE_RESPONSE:
                 this.uiPromises.resolve(message);
                 break;
             case UI.RECEIVE_FIRMWARE: {
