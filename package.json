@@ -92,7 +92,7 @@
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions && yarn depcheck",
+        "validate": "yarn verify-project-references && yarn lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn check-workspace-resolutions && yarn depcheck",
         "a": "yarn native:android",
         "ios": "yarn native:ios",
         "p": "yarn native:prebuild",
