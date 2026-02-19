@@ -20,7 +20,7 @@ export type DesktopSuiteSyncState = SuiteSyncState & {
     showEnableSuiteSyncModal: StaticSessionId | null;
 };
 
-export const initialSuiteSyncState: DesktopSuiteSyncState = {
+export const initialSuiteSyncDesktopState: DesktopSuiteSyncState = {
     ...commonInitialState,
     showEnableSuiteSyncModal: null,
 };
@@ -31,7 +31,7 @@ export type DesktopSuiteSyncRootState = {
 
 export const suiteSyncSlice = createSliceWithExtraDeps({
     name: 'suiteSync',
-    initialState: initialSuiteSyncState,
+    initialState: initialSuiteSyncDesktopState,
     reducers: {
         updateShowEnableSuiteSyncModal: (state, action) => {
             state.showEnableSuiteSyncModal = action.payload.deviceStaticSessionId;

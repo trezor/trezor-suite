@@ -40,6 +40,7 @@
         },
         { "path": "../analytics" },
         { "path": "../intl" },
+        { "path": "../metadata" },
         {
             "path": "../../packages/blockchain-link-types"
         },

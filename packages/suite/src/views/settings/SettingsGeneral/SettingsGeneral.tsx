@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { selectIsMetadataEnabled, selectSelectedProviderForLabels } from '@suite/metadata';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -12,10 +13,6 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import {
-    selectIsMetadataEnabled,
-    selectSelectedProviderForLabels,
-} from 'src/reducers/suite/metadataReducer';
 import {
     selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,

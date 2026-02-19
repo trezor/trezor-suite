@@ -3,9 +3,9 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
+import { selectLabelingDataForWallet } from '@suite/metadata';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { TrezorDevice } from 'src/types/suite';
 
 interface WalletLabellingProps {

@@ -1,5 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
+import { METADATA } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -13,7 +14,6 @@ import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
 import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
-import * as METADATA from 'src/actions/suite/metadata/metadataConstants';
 import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';

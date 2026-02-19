@@ -1,12 +1,11 @@
 import { Translation } from '@suite/intl';
+import { disconnectProvider, selectSelectedProviderForLabels } from '@suite/metadata';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { disconnectProvider } from 'src/actions/suite/metadata/metadataProviderThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 export const DisconnectLabelingProvider = () => {
     const metadata = useSelector(state => state.metadata);

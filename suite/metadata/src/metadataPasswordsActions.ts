@@ -1,0 +1,282 @@
+import { Dispatch } from '@reduxjs/toolkit';
+import crypto from 'crypto';
+
+import { selectSelectedDevice } from '@suite-common/device';
+import {
+    LabelableEntityKeys,
+    PasswordEntry,
+    ProviderErrorAction,
+} from '@suite-common/metadata-types';
+import TrezorConnect from '@trezor/connect';
+import { cloneObject } from '@trezor/utils';
+
+import * as METADATA from './metadataConstants';
+import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
+import * as METADATA_PROVIDER from './metadataProviderConstants';
+import * as metadataProviderActions from './metadataProviderThunks';
+import { MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
+import * as metadataThunks from './metadataThunks';
+import * as metadataUtils from './metadataUtils';
+import { FetchIntervalTrackingId } from './metadataUtils';
+
+export const fetchPasswords =
+    (keys: LabelableEntityKeys) =>
+    async (dispatch: Dispatch, _getState: () => MetadataRootState) => {
+        const provider = dispatch(
+            metadataProviderActions.getProviderInstance({
+                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                dataType: 'passwords',
+            }),
+        );
+        if (!provider) {
+            return;
+        }
+
+        // this triggers renewal of access token if needed. Otherwise multiple requests
+        // to renew access token are issued by every provider.getFileContent
+        const providerDetails = await provider.getProviderDetails();
+        if (!providerDetails.success) {
+            return dispatch(
+                metadataProviderActions.handleProviderError({
+                    error: providerDetails,
+                    action: ProviderErrorAction.LOAD,
+                    clientId: provider.clientId,
+                }),
+            );
+        }
+
+        return new Promise<void>((resolve, reject) =>
+            provider.getFileContent(keys.fileName).then(result => {
+                if (!result.success) {
+                    return reject(result);
+                }
+
+                if (result.payload) {
+                    try {
+                        const decrypted = metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            keys.aesKey,
+                        );
+
+                        dispatch({
+                            type: METADATA.SET_DATA,
+                            payload: {
+                                provider: providerDetails.payload,
+                                data: {
+                                    [keys.fileName]: decrypted,
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        const error = provider.error('OTHER_ERROR', err.message);
+
+                        return reject(error);
+                    }
+                }
+
+                resolve();
+            }),
+        );
+    };
+
+export const init = () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    let device = selectSelectedDevice(getState());
+
+    if (!device?.state?.staticSessionId) {
+        console.error('no device state!');
+
+        return Promise.resolve();
+    }
+
+    dispatch({
+        type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
+        payload: {
+            deviceState: device.state.staticSessionId,
+            metadata: {
+                ...device.passwords,
+                [1]: {
+                    fileName: '',
+                    aesKey: '',
+                    key: '',
+                },
+            },
+        },
+    });
+
+    try {
+        const res = await TrezorConnect.cipherKeyValue({
+            device: { path: device?.path, useEmptyPassphrase: true },
+            path: METADATA_PASSWORDS.PATH,
+            key: METADATA_PASSWORDS.DEFAULT_KEYPHRASE,
+            value: METADATA_PASSWORDS.DEFAULT_NONCE,
+            encrypt: true,
+            askOnEncrypt: true,
+            askOnDecrypt: true,
+        });
+        if (!res.success) {
+            throw new Error(res.payload.error);
+        }
+        const encryptionKey = res.payload.value.substring(
+            res.payload.value.length / 2,
+            res.payload.value.length,
+        );
+
+        const fileKey = res.payload.value.substring(0, res.payload.value.length / 2);
+        const fname = `${crypto
+            .createHmac('sha256', fileKey)
+            .update(METADATA_PASSWORDS.FILENAME_MESS)
+            .digest('hex')}.pswd`;
+
+        dispatch({
+            type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
+            payload: {
+                deviceState: device.state.staticSessionId,
+                metadata: {
+                    ...device.passwords,
+                    [1]: {
+                        fileName: fname,
+                        aesKey: encryptionKey,
+                        // todo: this is most likely not needed. only for sub-account keys derivations which
+                        // is not present in passwords
+                        key: '',
+                    },
+                },
+            },
+        });
+        const selectedProvider = selectSelectedProviderForPasswords(getState());
+        if (!selectedProvider) {
+            await dispatch(
+                metadataProviderActions.connectProvider({
+                    type: 'dropbox',
+                    dataType: 'passwords',
+                    clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                }),
+            );
+        }
+
+        await dispatch(
+            fetchPasswords({
+                fileName: fname,
+                aesKey: encryptionKey,
+            }),
+        );
+    } catch (err) {
+        console.error('cipherKeyValue error', err);
+    }
+
+    device = selectSelectedDevice(getState());
+    const selectedProvider = selectSelectedProviderForPasswords(getState());
+    if (!selectedProvider || !device?.state?.staticSessionId) {
+        // ts, should not happen
+        return;
+    }
+    const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+        'passwords',
+        selectedProvider.clientId,
+        device.state.staticSessionId,
+    );
+
+    if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+        metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
+            device = selectSelectedDevice(getState());
+            const { fileName, aesKey } = device?.passwords?.[1] || {};
+
+            if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
+                return;
+            }
+            dispatch(
+                fetchPasswords({
+                    fileName,
+                    aesKey,
+                }),
+            );
+        }, METADATA_PASSWORDS.FETCH_INTERVAL);
+    }
+};
+
+export const addPasswordMetadata =
+    (nextId: number, payload: PasswordEntry, fileName: string, aesKey: string) =>
+    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+        if (!payload.note) {
+            return Promise.resolve({ success: false, error: 'required field (note) missing' });
+        }
+        const provider = selectSelectedProviderForPasswords(getState());
+        const providerInstance = dispatch(
+            metadataProviderActions.getProviderInstance({
+                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                dataType: 'passwords',
+            }),
+        );
+
+        if (!providerInstance || !provider)
+            return Promise.resolve({
+                success: false,
+                error: 'provider missing',
+            });
+
+        const metadata =
+            cloneObject(provider.data[fileName]) ||
+            METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
+
+        if ('config' in metadata) {
+            metadata.entries[nextId] = payload;
+
+            dispatch(
+                metadataThunks.setMetadata({
+                    provider,
+                    fileName,
+                    data: metadata,
+                }),
+            );
+
+            metadataThunks.encryptAndSaveMetadata({
+                providerInstance,
+                fileName,
+                data: metadata,
+                aesKey,
+            });
+        } else {
+            return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
+        }
+    };
+
+export const removePasswordMetadata =
+    (index: number, fileName: string, aesKey: string) =>
+    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+        const provider = selectSelectedProviderForPasswords(getState());
+        const providerInstance = dispatch(
+            metadataProviderActions.getProviderInstance({
+                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                dataType: 'passwords',
+            }),
+        );
+
+        if (!providerInstance || !provider)
+            return Promise.resolve({
+                success: false,
+                error: 'provider missing',
+            });
+
+        const metadata = cloneObject(provider.data[fileName]);
+
+        if (metadata && 'config' in metadata) {
+            delete metadata.entries[index];
+
+            dispatch(
+                metadataThunks.setMetadata({
+                    provider,
+                    fileName,
+                    data: metadata,
+                }),
+            );
+
+            metadataThunks.encryptAndSaveMetadata({
+                providerInstance,
+                fileName,
+                data: metadata,
+                aesKey,
+            });
+        } else {
+            return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
+        }
+    };

@@ -1,6 +1,7 @@
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
+import type { MetadataAction } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceActions } from '@suite-common/device';
@@ -27,7 +28,6 @@ import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-import type { MetadataAction } from 'src/actions/suite/metadata/metadataActions';
 import type { ModalAction } from 'src/actions/suite/modalActions';
 import type { ProtocolAction } from 'src/actions/suite/protocolActions';
 import type { RouterAction } from 'src/actions/suite/routerActions';

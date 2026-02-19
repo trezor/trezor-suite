@@ -14559,6 +14559,43 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/metadata@workspace:*, @suite/metadata@workspace:suite/metadata":
+  version: 0.0.0-use.local
+  resolution: "@suite/metadata@workspace:suite/metadata"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    bs58check: "npm:^4.0.0"
+    dropbox: "npm:^10.34.0"
+    immer: "npm:11.0.0"
+    react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
+    redux: "npm:^5.0.1"
+    redux-thunk: "npm:^3.1.0"
+    styled-components: "npm:^6.1.19"
+  languageName: unknown
+  linkType: soft
+
 "@suite/platform-encryption-electron@workspace:*, @suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
   version: 0.0.0-use.local
   resolution: "@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron"
@@ -15830,6 +15867,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/intl": "workspace:^"
+    "@suite/metadata": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -15935,7 +15973,6 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
-    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
@@ -15959,6 +15996,7 @@ __metadata:
     "@suite/analytics": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/metadata": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/suite-sync": "workspace:*"
@@ -16003,9 +16041,7 @@ __metadata:
     "@types/redux-logger": "npm:^3.0.13"
     "@types/redux-mock-store": "npm:^1.5.0"
     "@types/semver": "npm:^7.7.0"
-    bs58check: "npm:^4.0.0"
     date-fns: "npm:^4.1.0"
-    dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^12.23.3"
     history: "npm:^5.3.0"

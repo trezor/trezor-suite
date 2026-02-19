@@ -1,3 +1,4 @@
+import { MetadataProviderModal } from '@suite/metadata';
 import { AccountKey } from '@suite-common/wallet-types';
 import { UI } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -39,7 +40,6 @@ import { DisableTorModal } from './DisableTorModal';
 import { DisableTorStopCoinjoinModal } from './DisableTorStopCoinjoinModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
-import { MetadataProviderModal } from './MetadataProviderModal/MetadataProviderModal';
 import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
 import { PinMismatchModal } from './PinMismatchModal';
 import { QrScannerModal } from './QrScannerModal';

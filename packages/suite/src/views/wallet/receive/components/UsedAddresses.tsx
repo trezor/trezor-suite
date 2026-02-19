@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -13,9 +15,7 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AppState } from 'src/types/suite';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 const DEFAULT_LIMIT = 10;
 

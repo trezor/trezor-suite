@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
+import { encrypt } from '@suite/metadata';
 import { DropboxMock, GoogleMock } from '@trezor/e2e-utils';
-import { encrypt } from '@trezor/suite/src//utils/suite/metadata';
 
 import { step } from '../common';
 

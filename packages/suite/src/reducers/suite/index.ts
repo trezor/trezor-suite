@@ -1,3 +1,4 @@
+import { metadataReducer } from '@suite/metadata';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
@@ -10,7 +11,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
-import metadata from './metadataReducer';
 import modal from './modalReducer';
 import protocol from './protocolReducer';
 import router from './routerReducer';
@@ -33,7 +33,7 @@ export default {
     notifications: notificationsReducer,
     window,
     analytics,
-    metadata,
+    metadata: metadataReducer,
     desktopUpdate,
     messageSystem,
     guide,

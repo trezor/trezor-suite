@@ -1,5 +1,6 @@
 import { createMemoryHistory } from 'history';
 
+import { metadataReducer } from '@suite/metadata';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -35,7 +36,6 @@ import { initialBreakpointFlags } from '@trezor/theme';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { init } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
-import metadataReducer from 'src/reducers/suite/metadataReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';

@@ -1,3 +1,4 @@
+import { selectLabelingDataForAccount } from '@suite/metadata';
 import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -5,7 +6,6 @@ import { BadgeSize, FlexProps, Row, Text, type TextProps } from '@trezor/compone
 import { type TypographyStyle } from '@trezor/theme';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 import { AccountTypeBadge } from './AccountTypeBadge';
 

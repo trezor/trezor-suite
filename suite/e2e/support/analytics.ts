@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
+import { urlSearchParams } from '@suite/metadata';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';

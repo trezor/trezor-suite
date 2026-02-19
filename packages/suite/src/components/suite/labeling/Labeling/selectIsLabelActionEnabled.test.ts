@@ -1,21 +1,21 @@
 import { mocked } from 'jest-mock';
 
-import { deviceReducerInitialState } from '@suite-common/device';
-import {
-    SuiteSyncState,
-    type WithSuiteSyncAndDeviceState,
-    initialSuiteSyncState,
-} from '@suite-common/suite-sync';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
-
-import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 import {
     MetadataRootState,
     initialMetadataState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
-} from '../../../../reducers/suite/metadataReducer';
+} from '@suite/metadata';
+import { deviceReducerInitialState } from '@suite-common/device';
+import { SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
+
+import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
+import {
+    DesktopSuiteSyncRootState,
+    initialSuiteSyncDesktopState,
+} from '../../../../actions/suiteSync/suiteSyncSlice';
 import { SuiteRootState, suiteInitialState } from '../../../../reducers/suite/suiteReducer';
 
 /**
@@ -23,7 +23,7 @@ import { SuiteRootState, suiteInitialState } from '../../../../reducers/suite/su
  * selectors. It's not nice, but as we plan to sunset legacy labeling
  * I don't want to spend time with testng the implementation details of it.
  */
-jest.mock('../../../../reducers/suite/metadataReducer', () => ({
+jest.mock('@suite/metadata', () => ({
     selectIsLabelingAvailableForEntity: jest.fn(),
     selectIsLabelingInitPossible: jest.fn(),
 }));
@@ -46,7 +46,7 @@ const createMockState = (
             ],
         },
         suiteSync: {
-            ...initialSuiteSyncState,
+            ...initialSuiteSyncDesktopState,
             ...suiteSyncOverrides,
         },
         suite: {
@@ -64,7 +64,10 @@ const createMockState = (
         },
         // This HARD CAST is here because MetadataRootState is HUGE,
         // and I do not want to refactor Legacy Labeling
-    }) as WithSuiteSyncAndDeviceState & MetadataRootState & SuiteRootState;
+    }) as WithSuiteSyncAndDeviceState &
+        MetadataRootState &
+        SuiteRootState &
+        DesktopSuiteSyncRootState;
 
 describe(selectIsLabelActionEnabled.name, () => {
     beforeEach(() => {

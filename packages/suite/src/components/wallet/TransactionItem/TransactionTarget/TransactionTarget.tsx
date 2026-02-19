@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
+import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
     Target,
@@ -28,10 +29,6 @@ import {
     Sign,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectLabelingDataForAccount,
-    selectLabelingValueBeingEdited,
-} from 'src/reducers/suite/metadataReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';

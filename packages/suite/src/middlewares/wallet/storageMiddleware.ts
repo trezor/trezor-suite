@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
+import { METADATA, metadataActions } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
@@ -44,8 +45,6 @@ import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-uti
 import { walletConnectActions } from '@suite-common/walletconnect';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import * as metadataActions from 'src/actions/suite/metadata/metadataActions';
-import * as METADATA from 'src/actions/suite/metadata/metadataConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';

@@ -1,22 +1,37 @@
 import {
-    WithSuiteSyncAndDeviceState,
-    getIsSuiteSyncLabelingActionEnabled,
-} from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
-
-import { selectDesktopSuiteSyncInteraction } from '../../../../actions/suiteSync/suiteSyncSlice';
-import {
     MetadataRootState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
-} from '../../../../reducers/suite/metadataReducer';
+} from '@suite/metadata';
+import {
+    WithSuiteSyncAndDeviceState,
+    getIsSuiteSyncLabelingActionEnabled,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
+import { StaticSessionId } from '@trezor/connect';
+
+import {
+    DesktopSuiteSyncRootState,
+    selectDesktopSuiteSyncInteraction,
+} from '../../../../actions/suiteSync/suiteSyncSlice';
 import { SuiteRootState } from '../../../../reducers/suite/suiteReducer';
 
 export const selectIsLabelActionEnabled = (
-    state: WithSuiteSyncAndDeviceState & MetadataRootState & SuiteRootState,
+    state: WithSuiteSyncAndDeviceState &
+        MetadataRootState &
+        SuiteRootState &
+        DesktopSuiteSyncRootState,
     deviceStaticSessionId: StaticSessionId,
     legacyEntityKey: string,
 ): boolean => {
+    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+
+    // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
+    // clicking on the stuff.
+    if (isSuiteSyncEnabled) {
+        return false;
+    }
+
     const isLegacyLabelingInitPossible = selectIsLabelingInitPossible(state);
     const isLegacyLabelingEnabled = selectIsLabelingAvailableForEntity(
         state,
