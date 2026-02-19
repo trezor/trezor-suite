@@ -18,7 +18,6 @@ export const UI_RESPONSE = {
     RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
     CHANGE_SETTINGS: 'ui-change_settings',
-    LOGIN_CHALLENGE_RESPONSE: 'ui-login_challenge_response',
 } as const;
 
 export interface UiResponseConfirmation {
@@ -81,14 +80,6 @@ export interface UiResponseFee {
           };
 }
 
-export interface UiResponseLoginChallenge {
-    type: typeof UI_RESPONSE.LOGIN_CHALLENGE_RESPONSE;
-    payload: {
-        challengeHidden: string;
-        challengeVisual: string;
-    };
-}
-
 export type UiResponseEvent =
     | UiResponseConfirmation
     | UiResponsePin
@@ -97,7 +88,6 @@ export type UiResponseEvent =
     | UiResponseThpPairingTag
     | UiResponseAccount
     | UiResponseFee
-    | UiResponseLoginChallenge
     | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
