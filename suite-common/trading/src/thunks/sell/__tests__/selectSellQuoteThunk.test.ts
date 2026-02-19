@@ -46,6 +46,7 @@ describe('selectSellQuoteThunk', () => {
                     type: 'Fiat',
                     supportedCountries: ['CZ'],
                     flow: 'BANK_ACCOUNT',
+                    supportedSubdivisions: {},
                 },
             },
             country: 'CZ',

@@ -334,6 +334,7 @@ describe('handleSellTradeThunk', () => {
                         tradedCoins: ['bitcoin'] as CryptoId[],
                         supportedCountries: ['CZ'],
                         flow: 'BANK_ACCOUNT',
+                        supportedSubdivisions: {},
                     },
                 },
                 supportedCryptoCurrencies: ['bitcoin'] as CryptoId[],
