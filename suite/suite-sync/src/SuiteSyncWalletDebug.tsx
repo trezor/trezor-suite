@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import { useDispatch, useSelector } from 'react-redux';
+
 import { deviceActions } from '@suite-common/device';
 import {
+    WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncEnabled,
@@ -12,18 +15,23 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+type SuiteSyncWalletDebugProps = {
+    device: AcquiredDevice;
+    /** @deprecated this prop is a hack so we do not depend on Legacy Metadata Labeling */
+    isLegacyLabelingEnabled: boolean;
+};
 
-export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => {
+export const SuiteSyncWalletDebug = ({
+    device,
+    isLegacyLabelingEnabled,
+}: SuiteSyncWalletDebugProps) => {
     const dispatch = useDispatch();
 
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
-    const legacyMetadataState = useSelector(state => state.metadata);
-
     const deviceStaticSessionId = device.state?.staticSessionId;
-    const suiteSyncOwner = useSelector(state =>
+    const suiteSyncOwner = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId),
     );
 
@@ -60,7 +68,7 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
     return isSuiteSyncEnabled ? (
         <Row gap={spacings.xxs}>
             🐞
-            {legacyMetadataState.enabled && <Text intent="accentViolet">[Legacy]</Text>}
+            {isLegacyLabelingEnabled && <Text intent="accentViolet">[Legacy]</Text>}
             {isSuiteSyncEnabled && (
                 <>
                     <Text typographyStyle="hint" intent="warning">
