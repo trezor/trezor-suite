@@ -79,8 +79,8 @@ export const useBrowserAuth = ({ tradingType, orderId }: BrowserAuthProps): Brow
         }
 
         handleBrowserSuccess();
-        dismissBrowser().catch(_ => {
-            // Ignore the error, browser might have been already closed.
+        dismissBrowser()?.catch(_ => {
+            // Ignore the error, the browser might have been already closed.
             // (And in fact it most probably already is.)
         });
     }, [
