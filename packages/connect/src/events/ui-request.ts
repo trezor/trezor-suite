@@ -49,7 +49,6 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
-    CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
     SELECT_ACCOUNT: 'ui-select_account',
     SELECT_FEE: 'ui-select_fee',
