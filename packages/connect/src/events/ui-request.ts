@@ -49,7 +49,6 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
-    LOADING: 'ui-loading',
     SELECT_ACCOUNT: 'ui-select_account',
     SELECT_FEE: 'ui-select_fee',
     UPDATE_CUSTOM_FEE: 'ui-update_custom_fee',
@@ -63,10 +62,6 @@ export const UI_REQUEST = {
 } as const;
 
 export type UiRequestWithoutPayload =
-    | {
-          type: typeof UI_REQUEST.LOADING;
-          payload?: typeof undefined;
-      }
     | {
           type: typeof UI_REQUEST.TRANSPORT;
           payload?: typeof undefined;
