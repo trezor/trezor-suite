@@ -6,15 +6,14 @@ import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-com
 import { Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { Address, CoinBalance } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingUtxoReceiveAddressOptionRow } from './TradingUtxoReceiveAddressOptionRow';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 interface TradingUtxoReceiveAddressOptionProps {
@@ -51,12 +50,12 @@ export const TradingUtxoReceiveAddressOption = ({
     };
 
     return (
-        <TradingUtxoReceiveAddressOptionRow
+        <TradingReceiveOptionRow
             data-testid="@trading/bitcoin-receive-address-modal/option"
             onClick={onOptionClick}
         >
-            <Row width="100%" gap={spacings.sm} justifyContent="space-between">
-                <Row gap={spacings.sm}>
+            <Row width="100%" gap={12} justifyContent="space-between">
+                <Row gap={12}>
                     <CoinLogo size={24} symbol={account.symbol} />
                     <Column alignItems="flex-start">
                         <Address isTruncated value={address.address} />
@@ -75,6 +74,6 @@ export const TradingUtxoReceiveAddressOption = ({
                     </Column>
                 )}
             </Row>
-        </TradingUtxoReceiveAddressOptionRow>
+        </TradingReceiveOptionRow>
     );
 };

@@ -13,12 +13,6 @@ export interface TradingVerifyFormProps {
     extraField?: string;
 }
 
-export type TradingAccountType = 'SUITE' | 'ADD_SUITE' | 'NON_SUITE';
-export interface TradingVerifyFormAccountOptionProps {
-    type: TradingAccountType;
-    account?: Account;
-}
-
 export interface TradingVerifyAccountProps {
     cryptoId: CryptoId | undefined;
     nonSuiteAccount: boolean;
@@ -33,13 +27,17 @@ export interface TradingVerifyAccountReturnProps {
     form: UseFormReturn<TradingVerifyFormProps>;
     accountAddress: AccountAddress | Pick<AccountAddress, 'path' | 'address'> | undefined;
     receiveNetwork: CryptoId | undefined;
-    selectAccountOptions: TradingVerifyFormAccountOptionProps[];
-    selectedAccountOption?: TradingVerifyFormAccountOptionProps;
+    suiteReceiveAccounts: Account[] | undefined;
+    selectedAccount: Account | null | undefined;
+    canAddSuiteAccount: boolean;
+    canUseNonSuiteAccount: boolean;
     isMenuOpen: boolean | undefined;
     getTranslationIds: (
-        type: TradingVerifyFormAccountOptionProps['type'] | undefined,
+        selectedAccount: Account | null | undefined,
     ) => TradingGetTranslationIdsProps;
-    onChangeAccount: (account: TradingVerifyFormAccountOptionProps) => void;
+    onChangeAccount: (account: Account) => void;
+    selectNonSuiteAddress: (address?: string) => void;
+    openAddSuiteAccount: () => void;
 }
 
 export type TradingVerifyOptionsProps = {
@@ -48,10 +46,12 @@ export type TradingVerifyOptionsProps = {
     isDisabled?: boolean;
 } & Pick<
     TradingVerifyAccountReturnProps,
-    'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount' | 'isMenuOpen'
+    | 'suiteReceiveAccounts'
+    | 'selectedAccount'
+    | 'canAddSuiteAccount'
+    | 'canUseNonSuiteAccount'
+    | 'onChangeAccount'
+    | 'selectNonSuiteAddress'
+    | 'openAddSuiteAccount'
+    | 'isMenuOpen'
 >;
-
-export interface TradingVerifyOptionsItemProps {
-    option: TradingVerifyFormAccountOptionProps;
-    receiveNetwork: CryptoId;
-}

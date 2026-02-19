@@ -1,15 +1,18 @@
 import { Translation } from '@suite/intl';
 import { parseCryptoId, useTradingUtils } from '@suite-common/trading';
-import { Column, Icon } from '@trezor/components';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { IconCircle, Row } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
+import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
-import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 
 export const TradingReceiveAccountNonSuiteOption = () => {
     const { cryptoId } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
@@ -23,17 +26,24 @@ export const TradingReceiveAccountNonSuiteOption = () => {
     };
 
     return (
-        <TradingReceiveAccountOptionRow
+        <TradingReceiveOptionRow
             data-testid="@trading/receive-account-modal/option/non-suite"
+            isDisabled={isDiscoveryRunning}
             onClick={onOptionClick}
         >
-            <Icon name="arrowSquareOut" size={24} variant="tertiary" />
-            <Column alignItems="flex-start">
+            <Row gap={12}>
+                <IconCircle
+                    name="arrowSquareOut"
+                    size={24}
+                    paddingType="small"
+                    hasBorder={false}
+                    variant="tertiary"
+                />
                 <Translation
                     id="TR_EXCHANGE_USE_NON_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}
                 />
-            </Column>
-        </TradingReceiveAccountOptionRow>
+            </Row>
+        </TradingReceiveOptionRow>
     );
 };

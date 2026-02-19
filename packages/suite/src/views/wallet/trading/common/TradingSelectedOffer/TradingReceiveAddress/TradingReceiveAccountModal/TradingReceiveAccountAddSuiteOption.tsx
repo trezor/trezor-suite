@@ -1,14 +1,15 @@
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
-import { Column, Icon } from '@trezor/components';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { IconCircle, Row } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
-import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 
 export const TradingReceiveAccountAddSuiteOption = () => {
     const { cryptoId } = useTradingReceiveAddressValues();
@@ -16,6 +17,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
 
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
     const symbol = cryptoIdToSymbol(cryptoId);
@@ -46,17 +48,24 @@ export const TradingReceiveAccountAddSuiteOption = () => {
     };
 
     return (
-        <TradingReceiveAccountOptionRow
+        <TradingReceiveOptionRow
             data-testid="@trading/receive-account-modal/option/add-suite"
+            isDisabled={isDiscoveryRunning}
             onClick={onOptionClick}
         >
-            <Icon name="plus" size={24} variant="tertiary" />
-            <Column alignItems="flex-start">
+            <Row gap={12}>
+                <IconCircle
+                    name="plus"
+                    size={24}
+                    variant="tertiary"
+                    paddingType="small"
+                    hasBorder={false}
+                />
                 <Translation
                     id="TR_EXCHANGE_CREATE_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}
                 />
-            </Column>
-        </TradingReceiveAccountOptionRow>
+            </Row>
+        </TradingReceiveOptionRow>
     );
 };

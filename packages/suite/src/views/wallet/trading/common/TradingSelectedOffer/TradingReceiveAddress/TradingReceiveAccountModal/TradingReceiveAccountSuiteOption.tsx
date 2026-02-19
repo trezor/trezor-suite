@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
@@ -9,25 +9,23 @@ import { CoinLogo } from '@trezor/product-components';
 import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
+import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 type TradingReceiveAccountSuiteOptionProps = {
     account: Account;
-    option: TradingVerifyFormAccountOptionProps;
 };
 
 export const TradingReceiveAccountSuiteOption = ({
     account,
-    option,
 }: TradingReceiveAccountSuiteOptionProps) => {
     const { tradingReceiveAddress, extraFieldDescription } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
     const baseCurrency = useSelector(selectBaseCurrency);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const { fiatAmount } = useFiatFromCryptoValue({
@@ -43,7 +41,7 @@ export const TradingReceiveAccountSuiteOption = ({
     if (!address) return null;
 
     const onOptionClick = () => {
-        tradingReceiveAddress.onChangeAccount(option);
+        tradingReceiveAddress.onChangeAccount(account);
         modalControls.close();
 
         if (isUtxoBasedNetwork) {
@@ -56,9 +54,9 @@ export const TradingReceiveAccountSuiteOption = ({
     };
 
     return (
-        <TradingReceiveAccountOptionRow
+        <TradingReceiveOptionRow
             data-testid="@trading/receive-account-modal/option/suite"
-            justifyContent="space-between"
+            isDisabled={isDiscoveryRunning}
             onClick={onOptionClick}
         >
             <Row gap={12}>
@@ -102,6 +100,6 @@ export const TradingReceiveAccountSuiteOption = ({
                     <Icon name="caretRight" size={20} variant="tertiary" />
                 )}
             </Row>
-        </TradingReceiveAccountOptionRow>
+        </TradingReceiveOptionRow>
     );
 };

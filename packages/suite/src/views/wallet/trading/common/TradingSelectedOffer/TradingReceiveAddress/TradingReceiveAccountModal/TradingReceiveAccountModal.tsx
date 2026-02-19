@@ -1,16 +1,15 @@
-import { Fragment } from 'react';
-
 import { Translation } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Card, Column, Divider, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { CardList, Column, Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountOption } from './TradingReceiveAccountOption';
+import { TradingReceiveAccountAddSuiteOption } from './TradingReceiveAccountAddSuiteOption';
+import { TradingReceiveAccountNonSuiteOption } from './TradingReceiveAccountNonSuiteOption';
+import { TradingReceiveAccountSuiteOption } from './TradingReceiveAccountSuiteOption';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 export const TradingReceiveAccountModal = () => {
@@ -18,10 +17,10 @@ export const TradingReceiveAccountModal = () => {
     const modalControls = useReceiveAddressModalControls();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { selectAccountOptions } = tradingReceiveAddress;
+    const { suiteReceiveAccounts, canAddSuiteAccount, canUseNonSuiteAccount } =
+        tradingReceiveAddress;
 
-    const hasSuiteAccounts = !!selectAccountOptions.find(option => option.type === 'SUITE');
-
+    const hasSuiteAccounts = !!(suiteReceiveAccounts && suiteReceiveAccounts.length > 0);
     const onCancel = () => {
         modalControls.close();
     };
@@ -31,8 +30,9 @@ export const TradingReceiveAccountModal = () => {
             data-testid="@trading/receive-account-modal"
             heading={<Translation id="TR_BUY_RECEIVING_ACCOUNT" />}
             onCancel={onCancel}
+            width={600}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                 {!hasSuiteAccounts && !isDiscoveryRunning && (
@@ -42,15 +42,14 @@ export const TradingReceiveAccountModal = () => {
                     />
                 )}
 
-                {selectAccountOptions.length > 0 && (
-                    <Card paddingType="none">
-                        {selectAccountOptions.map((option, index) => (
-                            <Fragment key={index}>
-                                <TradingReceiveAccountOption option={option} />
-                                {index < selectAccountOptions.length - 1 && <Divider margin={0} />}
-                            </Fragment>
+                {(hasSuiteAccounts || canAddSuiteAccount || canUseNonSuiteAccount) && (
+                    <CardList>
+                        {suiteReceiveAccounts?.map(account => (
+                            <TradingReceiveAccountSuiteOption key={account.key} account={account} />
                         ))}
-                    </Card>
+                        {canAddSuiteAccount && <TradingReceiveAccountAddSuiteOption />}
+                        {canUseNonSuiteAccount && <TradingReceiveAccountNonSuiteOption />}
+                    </CardList>
                 )}
             </Column>
         </Modal>
