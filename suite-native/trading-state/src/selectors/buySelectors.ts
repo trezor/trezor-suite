@@ -14,6 +14,7 @@ import {
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
     getCurrencyLabel,
@@ -21,11 +22,13 @@ import {
 } from '@suite-native/trading-atoms';
 import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
 
+import { getAssetByEnabledNetworksFilter } from '../utils';
 import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
     TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
+    createTradingWithFeatureFlagsMemoizedSelector,
 } from '../reducers';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
@@ -49,19 +52,28 @@ export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccount
 export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
     returnStableArrayIfEmpty(selectTradingBuy(state).buyInfo?.supportedFiatCurrencies);
 
-export const selectBuyTradeableAssets = createMemoizedSelector(
+export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectTradingBuySupportedCryptoIds as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingBuySupportedCryptoIds>,
         ({ wallet }) => wallet.trading.info.coins,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (cryptoIds, coins) => {
+    (cryptoIds, coins, areDebugOnlyNetworksEnabled, areExperimentalOnlyNetworksEnabled) => {
         if (!coins || !cryptoIds) {
             return [];
         }
 
-        return cryptoIds.map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
+        return cryptoIds
+            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
+            .filter(
+                getAssetByEnabledNetworksFilter(
+                    areDebugOnlyNetworksEnabled,
+                    areExperimentalOnlyNetworksEnabled,
+                ),
+            );
     },
 );
 

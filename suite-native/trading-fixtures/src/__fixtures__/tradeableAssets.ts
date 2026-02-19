@@ -100,3 +100,36 @@ export const bnbAsset: TradeableAsset = {
     coingeckoId: 'binancecoin',
     networkId: 'binancecoin',
 };
+
+export const tronTetherAsset: TradeableAsset = {
+    coingeckoId: 'tether',
+    contractAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' as TokenAddress,
+    cryptoId: 'tron--TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' as CryptoId,
+    name: 'Tether',
+    networkId: 'tron',
+    symbol: 'USDT',
+};
+
+export const tronAsset: TradeableAsset = {
+    coingeckoId: 'tron',
+    cryptoId: 'tron' as CryptoId,
+    name: 'TRON',
+    networkId: 'tron',
+    symbol: 'TRX',
+};
+
+export const rippleAsset: TradeableAsset = {
+    coingeckoId: 'ripple',
+    cryptoId: 'ripple' as CryptoId,
+    name: 'XRP',
+    networkId: 'ripple',
+    symbol: 'XRP',
+};
+
+export const unknownAsset: TradeableAsset = {
+    coingeckoId: 'fake-coingecko-id',
+    cryptoId: 'fake-crypto-id' as CryptoId,
+    name: 'Fake Asset',
+    networkId: 'fake-network-id',
+    symbol: 'FAKE',
+};

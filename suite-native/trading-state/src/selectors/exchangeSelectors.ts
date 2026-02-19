@@ -1,11 +1,9 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
-import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -18,12 +16,14 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 
-import { TradingRootState, createMemoizedSelectorWithAccounts } from '../reducers';
+import {
+    TradingRootState,
+    createMemoizedSelectorWithAccounts,
+    createTradingWithFeatureFlagsMemoizedSelector,
+} from '../reducers';
+import { getAssetByEnabledNetworksFilter } from '../utils';
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
-
-const createTradingWithFeatureFlagsMemoizedSelector =
-    createWeakMapSelector.withTypes<TradingWithFeatureFlagsRootState>();
 
 export const selectTradingExchange = (state: TradingRootState) => state.wallet.trading.exchange;
 
@@ -75,28 +75,14 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
         }
 
         return cryptoIds
+            .filter(cryptoId => cryptoId !== forbiddenCryptoId)
             .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
-            .filter(({ cryptoId, networkId }) => {
-                if (cryptoId === forbiddenCryptoId) {
-                    return false;
-                }
-
-                const network = getNetworkByCoingeckoId(networkId);
-
-                if (!network) {
-                    return false;
-                }
-
-                if (network.isDebugOnlyNetwork) {
-                    return areDebugOnlyNetworksEnabled;
-                }
-
-                if (network.isExperimentalOnlyNetwork) {
-                    return areExperimentalOnlyNetworksEnabled;
-                }
-
-                return true;
-            });
+            .filter(
+                getAssetByEnabledNetworksFilter(
+                    areDebugOnlyNetworksEnabled,
+                    areExperimentalOnlyNetworksEnabled,
+                ),
+            );
     },
 );
 
