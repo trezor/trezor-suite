@@ -81,7 +81,13 @@ export const AssetsListEmpty = ({
     }
 
     return (
-        <Column alignItems="center" justifyContent="center" gap={4} height={height}>
+        <Column
+            alignItems="center"
+            justifyContent="center"
+            gap={4}
+            margin={{ vertical: 32 }}
+            height={height}
+        >
             <Paragraph typographyStyle="body-md">
                 <Translation id={heading} />
             </Paragraph>
