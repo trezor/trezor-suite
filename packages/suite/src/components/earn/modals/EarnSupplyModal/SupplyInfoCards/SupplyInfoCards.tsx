@@ -10,12 +10,12 @@ import { useSelector } from 'src/hooks/suite';
 
 import { EstimatedGains } from './EstimatedGains';
 
-interface StakeInfoCardsProps {
+type SupplyInfoCardsProps = {
     account: Account;
     flow: EarnFlow;
-}
+};
 
-export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
+export const SupplyInfoCards = ({ account, flow }: SupplyInfoCardsProps) => {
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const cards = [

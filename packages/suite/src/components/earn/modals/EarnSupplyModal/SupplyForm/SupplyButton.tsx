@@ -6,17 +6,17 @@ import { Modal, Tooltip } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
-interface StakeButtonProps {
+type SupplyButtonProps = {
     flow: EarnFlow;
-}
+};
 
-export const StakeButton = ({ flow }: StakeButtonProps) => {
+export const SupplyButton = ({ flow }: SupplyButtonProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(
@@ -30,7 +30,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
-    } = useStakeFormContext();
+    } = useSupplyFormContext();
     const analytics = useAnalytics();
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
@@ -51,7 +51,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
     const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
 
-    const onStakeClick = () => {
+    const onSupplyClick = () => {
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -86,7 +86,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
             <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isLoading}
-                onClick={onStakeClick}
+                onClick={onSupplyClick}
                 iconLeft={isStakingDisabled ? 'info' : undefined}
                 data-testid="@modal/staking/continue-button"
             >

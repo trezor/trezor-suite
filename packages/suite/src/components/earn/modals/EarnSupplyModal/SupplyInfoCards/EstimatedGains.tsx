@@ -14,12 +14,12 @@ import {
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 import { useSelector } from 'src/hooks/suite';
-import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
-import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
-    const { account, getValues, formState } = useStakeFormContext();
+    const { account, getValues, formState } = useSupplyFormContext();
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =

@@ -1,29 +1,51 @@
+import { useEffect } from 'react';
+
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { EarnAccountRef, EarnFlow } from '@suite-common/suite-types/src/staking';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { EarnWithdrawingInfo } from 'src/components/earn';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
+import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWithdrawalForm';
+import { useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { UnstakeButton } from './UnstakeForm/UnstakeButton';
-import { UnstakeForm } from './UnstakeForm/UnstakeForm';
+import { useEarnModalAccount } from '../common/useEarnModalAccount';
+import { WithdrawalButton } from './WithdrawalForm/WithdrawalButton';
+import { WithdrawalForm } from './WithdrawalForm/WithdrawalForm';
 
-interface UnstakeModalModalProps {
+type EarnWithdrawalModalProps = {
+    onCancel?: () => void;
+    account?: EarnAccountRef;
+};
+
+type EarnWithdrawalModalLoadedProps = {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
-}
+};
 
-export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalModalProps) => {
+const createLoadedSelectedAccount = (account: Account): SelectedAccountLoaded => ({
+    status: 'loaded',
+    account,
+    network: getNetwork(account.symbol),
+    params: {
+        symbol: account.symbol,
+        accountIndex: account.index,
+        accountType: account.accountType,
+    },
+});
+
+export const EarnWithdrawalModalLoaded = ({
+    onCancel,
+    selectedAccount,
+}: EarnWithdrawalModalLoadedProps) => {
     const analytics = useAnalytics();
     const { account } = selectedAccount;
 
-    const unstakeContextValues = useUnstakeForm({ selectedAccount });
+    const withdrawalContextValues = useWithdrawalForm({ selectedAccount });
     const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
@@ -40,7 +62,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     };
 
     return (
-        <UnstakeFormContext.Provider value={unstakeContextValues}>
+        <WithdrawalFormContext.Provider value={withdrawalContextValues}>
             <Modal
                 width={960}
                 heading={
@@ -57,10 +79,10 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                     )
                 }
                 onCancel={onCancelClick}
-                bottomContent={<UnstakeButton />}
+                bottomContent={<WithdrawalButton />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
-                    <UnstakeForm />
+                    <WithdrawalForm />
                     <Column gap={spacings.lg}>
                         <CollapsibleBox
                             heading={
@@ -76,23 +98,29 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                     </Column>
                 </Grid>
             </Modal>
-        </UnstakeFormContext.Provider>
+        </WithdrawalFormContext.Provider>
     );
 };
 
-export const UnstakeModal = ({ onCancel }: Omit<UnstakeModalModalProps, 'selectedAccount'>) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+export const EarnWithdrawalModal = ({ onCancel, account }: EarnWithdrawalModalProps) => {
+    const selectedAccount = useEarnModalAccount({
+        account,
+        shouldSyncSelectedAccount: true,
+    });
 
-    if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
-        onCancel?.();
+    useEffect(() => {
+        if (!selectedAccount) {
+            onCancel?.();
+        }
+    }, [selectedAccount, onCancel]);
 
+    if (!selectedAccount) {
         return null;
     }
 
+    const loadedSelectedAccount = createLoadedSelectedAccount(selectedAccount);
+
     return (
-        <UnstakeModalLoaded
-            onCancel={onCancel}
-            selectedAccount={selectedAccount as SelectedAccountLoaded}
-        />
+        <EarnWithdrawalModalLoaded onCancel={onCancel} selectedAccount={loadedSelectedAccount} />
     );
 };

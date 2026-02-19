@@ -7,12 +7,13 @@ import { Column, FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { WithdrawalFormState } from 'src/components/earn/forms/SupplyFormContext';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useSelector } from 'src/hooks/suite';
-import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
+import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import {
     validateCryptoLimits,
     validateDecimals,
@@ -20,9 +21,7 @@ import {
     validateMin,
 } from 'src/utils/suite/validation';
 
-import { UnstakeFormState } from '../../../../../../wallet/stakeForm/StakeContext';
-
-export const UnstakeInputs = () => {
+export const WithdrawalInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -41,7 +40,7 @@ export const UnstakeInputs = () => {
         currentRate,
         setRatioAmount,
         setCurrency,
-    } = useUnstakeFormContext();
+    } = useWithdrawalFormContext();
 
     const {
         autocompoundBalance = '0',
@@ -91,7 +90,7 @@ export const UnstakeInputs = () => {
 
     return (
         <Column gap={spacings.sm} alignItems="center">
-            <InputWithOptions<UnstakeFormState>
+            <InputWithOptions<WithdrawalFormState>
                 data-testid="@staking/form"
                 onCurrencyChange={setCurrency}
                 cryptoInputProps={{

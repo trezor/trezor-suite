@@ -7,12 +7,12 @@ import { InfoItem, Row, Text } from '@trezor/components';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-interface StakeAvailableBalanceProps {
+type EarnAvailableBalanceProps = {
     formattedBalance: string;
     symbol: NetworkSymbol;
-}
+};
 
-export const StakeAvailableBalance = ({ formattedBalance, symbol }: StakeAvailableBalanceProps) => (
+export const EarnAvailableBalance = ({ formattedBalance, symbol }: EarnAvailableBalanceProps) => (
     <InfoItem label={<Translation id="TR_STAKE_AVAILABLE" />}>
         <Row justifyContent="space-between">
             <FormattedCryptoAmount

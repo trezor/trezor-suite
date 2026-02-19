@@ -5,13 +5,13 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
+import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
-export const UnstakeButton = () => {
+export const WithdrawalButton = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(
@@ -28,7 +28,7 @@ export const UnstakeButton = () => {
         watch,
         signTx,
         currency,
-    } = useUnstakeFormContext();
+    } = useWithdrawalFormContext();
     const analytics = useAnalytics();
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -43,7 +43,7 @@ export const UnstakeButton = () => {
         selectAreFeesLoading(state, selectedAccount.network.symbol),
     );
 
-    const onUnstakeClick = () => {
+    const onWithdrawalClick = () => {
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -73,7 +73,7 @@ export const UnstakeButton = () => {
             <Modal.Button
                 isDisabled={isDisabled || isUnstakingDisabled}
                 isLoading={isLoading}
-                onClick={onUnstakeClick}
+                onClick={onWithdrawalClick}
                 iconLeft={isUnstakingDisabled ? 'info' : undefined}
                 data-testid="@modal/staking/unstake-button"
             >

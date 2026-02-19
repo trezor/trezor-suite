@@ -3,9 +3,10 @@ import { FormProvider } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { EarnAccountRef } from '@suite-common/suite-types/src/staking';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -14,22 +15,39 @@ import { BigNumber } from '@trezor/utils';
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
+import { useClaimForm } from 'src/hooks/earn/useClaimForm';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
-import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
-import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
+import { useEarnModalAccount } from '../common/useEarnModalAccount';
 
-interface ClaimModalModalProps {
+type EarnClaimModalProps = {
+    onCancel?: () => void;
+    account?: EarnAccountRef;
+};
+
+type EarnClaimModalLoadedProps = {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
-}
+};
 
-const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
+const createLoadedSelectedAccount = (account: Account): SelectedAccountLoaded => ({
+    status: 'loaded',
+    account,
+    network: getNetwork(account.symbol),
+    params: {
+        symbol: account.symbol,
+        accountIndex: account.index,
+        accountType: account.accountType,
+    },
+});
+
+const EarnClaimModalLoaded = ({ onCancel, selectedAccount }: EarnClaimModalLoadedProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const analytics = useAnalytics();
@@ -301,19 +319,23 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     );
 };
 
-export const ClaimModal = ({ onCancel }: Omit<ClaimModalModalProps, 'selectedAccount'>) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
+    const selectedAccount = useEarnModalAccount({
+        account,
+        shouldSyncSelectedAccount: true,
+    });
 
-    if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
-        onCancel?.();
+    useEffect(() => {
+        if (!selectedAccount) {
+            onCancel?.();
+        }
+    }, [selectedAccount, onCancel]);
 
+    if (!selectedAccount) {
         return null;
     }
 
-    return (
-        <ClaimModalLoaded
-            onCancel={onCancel}
-            selectedAccount={selectedAccount as SelectedAccountLoaded}
-        />
-    );
+    const loadedSelectedAccount = createLoadedSelectedAccount(selectedAccount);
+
+    return <EarnClaimModalLoaded onCancel={onCancel} selectedAccount={loadedSelectedAccount} />;
 };

@@ -5,6 +5,9 @@ import { exhaustive } from '@trezor/type-utils';
 import { MODAL } from 'src/actions/suite/constants';
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { EarnInANutshellModal, EarnProviderConsentModal } from 'src/components/earn';
+import { EarnClaimModal } from 'src/components/earn/modals/EarnClaimModal/EarnClaimModal';
+import { EarnSupplyModal } from 'src/components/earn/modals/EarnSupplyModal/EarnSupplyModal';
+import { EarnWithdrawalModal } from 'src/components/earn/modals/EarnWithdrawalModal/EarnWithdrawalModal';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
@@ -22,7 +25,6 @@ import { ApplicationLogModal } from './ApplicationLogModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
-import { ClaimModal } from './ClaimModal/ClaimModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
 import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
 import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
@@ -44,12 +46,10 @@ import { QrScannerModal } from './QrScannerModal';
 import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
-import { StakeModal } from './StakeModal/StakeModal';
 import { TorLoadingModal } from './TorLoadingModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
-import { UnstakeModal } from './UnstakeModal/UnstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
@@ -148,6 +148,9 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
                     onCancel={onCancel}
                     flow={payload.flow}
                     provider={payload.provider}
+                    account={payload.account}
+                    yieldId={payload.yieldId}
+                    tokenContractAddress={payload.tokenContractAddress}
                 />
             );
         case 'earn-provider-consent':
@@ -156,14 +159,27 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
                     onCancel={onCancel}
                     flow={payload.flow}
                     provider={payload.provider}
+                    account={payload.account}
+                    yieldId={payload.yieldId}
+                    tokenContractAddress={payload.tokenContractAddress}
                 />
             );
+        case 'supply':
         case 'stake':
-            return <StakeModal onCancel={onCancel} flow={payload.flow} />;
+            return (
+                <EarnSupplyModal
+                    onCancel={onCancel}
+                    flow={payload.flow}
+                    account={payload.account}
+                    yieldId={payload.yieldId}
+                    tokenContractAddress={payload.tokenContractAddress}
+                />
+            );
+        case 'withdraw':
         case 'unstake':
-            return <UnstakeModal onCancel={onCancel} />;
+            return <EarnWithdrawalModal onCancel={onCancel} account={payload.account} />;
         case 'claim':
-            return <ClaimModal onCancel={onCancel} />;
+            return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
         case 'change-delegate':
             return <StakeChangeDelegateModal onCancel={onCancel} />;
         case 'copy-address':

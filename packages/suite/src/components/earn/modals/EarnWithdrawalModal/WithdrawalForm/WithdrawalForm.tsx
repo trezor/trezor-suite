@@ -7,18 +7,18 @@ import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
+import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useSelector } from 'src/hooks/suite';
-import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
-import { UnstakeInputs } from './UnstakeInputs';
-import { SolanaStakingLimitBanner } from '../../SolanaStakingLimitBanner';
-import { StakeAvailableBalance } from '../../StakeModal/StakeForm/StakeAvailableBalance';
+import { WithdrawalInputs } from './WithdrawalInputs';
+import { EarnAvailableBalance } from '../../EarnSupplyModal/SupplyForm/EarnAvailableBalance';
 
-export const UnstakeForm = () => {
+export const WithdrawalForm = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
 
     const {
@@ -31,7 +31,7 @@ export const UnstakeForm = () => {
         feeInfo,
         composedLevels,
         methods,
-    } = useUnstakeFormContext();
+    } = useWithdrawalFormContext();
 
     const { symbol, networkType } = account;
 
@@ -45,7 +45,7 @@ export const UnstakeForm = () => {
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
-    const shouldShowInstantUnstakeEthAmount =
+    const shouldShowInstantWithdrawalEthAmount =
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 
     return (
@@ -76,13 +76,13 @@ export const UnstakeForm = () => {
                     </Column>
                     {!isCardanoNetwork && (
                         <>
-                            <StakeAvailableBalance
+                            <EarnAvailableBalance
                                 formattedBalance={autocompoundBalance}
                                 symbol={symbol}
                             />
 
                             <Column gap={spacings.lg}>
-                                <UnstakeInputs />
+                                <WithdrawalInputs />
                                 {showError && (
                                     <Banner intent="critical" description={inputError?.message} />
                                 )}
@@ -100,7 +100,7 @@ export const UnstakeForm = () => {
                         />
                     </Card>
 
-                    {shouldShowInstantUnstakeEthAmount && (
+                    {shouldShowInstantWithdrawalEthAmount && (
                         <InfoItem
                             label={
                                 <Tooltip
