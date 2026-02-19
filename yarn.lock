@@ -14375,6 +14375,7 @@ __metadata:
   resolution: "@suite-native/transaction-management@workspace:suite-native/transaction-management"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"

@@ -19,12 +19,13 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
+    selectIsNetworkReserveEnabled,
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits, getNetworkReserve } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,
@@ -84,6 +85,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, account?.symbol),
     );
+    const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
+        selectIsNetworkReserveEnabled(state),
+    );
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
@@ -107,6 +111,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const network = account ? getNetwork(account.symbol) : null;
 
+    const networkReserve = account
+        ? getNetworkReserve({
+              symbol: account.symbol,
+              contractAddress: tokenContract,
+              isEnabled: isNetworkReserveEnabled,
+          })
+        : undefined;
+
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,
         // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
@@ -122,6 +134,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             decimals: tokenInfo?.decimals ?? network?.decimals,
             isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
             accountNativeAvailableBalance: account?.availableBalance,
+            networkReserve,
         },
         defaultValues: getDefaultValues({
             tokenContract,
@@ -185,6 +198,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                         }),
                     }),
                 );
+
+                trigger();
             }
         }
     }, [
@@ -198,6 +213,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         setError,
         excludedUtxos,
         selectedUtxos,
+        trigger,
     ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
@@ -243,12 +259,18 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     // Triggered for every change of watchedFormValues.
     useEffect(() => {
         debounce(updateFormState);
-    }, [updateFormState, watchedFormValues, debounce, selectedUtxos]);
+    }, [updateFormState, watchedFormValues, debounce, selectedUtxos, isNetworkReserveEnabled]);
 
     useEffect(() => {
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
         if (!tokenContract) calculateNormalFeeMaxAmount();
-    }, [watchedAddress, calculateNormalFeeMaxAmount, networkFeeInfo, tokenContract]);
+    }, [
+        watchedAddress,
+        calculateNormalFeeMaxAmount,
+        networkFeeInfo,
+        tokenContract,
+        isNetworkReserveEnabled,
+    ]);
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {

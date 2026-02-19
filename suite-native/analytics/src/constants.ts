@@ -104,6 +104,7 @@ export enum EventType {
     SettingsAutoEjectToggle = 'settings/auto_eject_toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
+    SettingsNetworkReserveToggle = 'settings/network-reserve-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeCoinBackend = 'settings/change_coin_backend',
     // eslint-disable-next-line local-rules/analytics-event-name

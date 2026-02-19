@@ -5,6 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
+    isAmountWithinNetworkReserve,
     isDecimalsValid,
     isInteger,
     networkAmountToSmallestUnit,
@@ -256,13 +257,7 @@ export const validateNetworkReserve =
         { reserve, balance, fee = '0' }: ValidateNetworkReserveOptions,
     ) =>
     (value: string) => {
-        if (!reserve || !balance) return undefined;
-
-        const accountBalance = new BigNumber(balance);
-        const networkReserve = new BigNumber(reserve);
-        const networkFee = new BigNumber(fee);
-
-        if (new BigNumber(value).gt(accountBalance.minus(networkReserve).minus(networkFee))) {
+        if (!isAmountWithinNetworkReserve({ reserve, balance, fee, amount: value })) {
             return translationString('AMOUNT_EXCEEDS_NETWORK_RESERVE');
         }
     };

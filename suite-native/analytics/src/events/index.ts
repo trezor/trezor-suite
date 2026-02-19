@@ -52,6 +52,7 @@ export { sendFlowExitedEvent } from './sendFlowExitedEvent';
 export { sendTransactionDispatchedEvent } from './sendTransactionDispatchedEvent';
 export { settingsAutoEjectToggleEvent } from './settingsAutoEjectToggleEvent';
 export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
+export { settingsNetworkReserveToggleEvent } from './settingsNetworkReserveToggleEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
 export { settingsChangeCoinEnabledEvent } from './settingsChangeCoinEnabledEvent';
 export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
