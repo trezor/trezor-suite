@@ -40,6 +40,11 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             devicesStatesNotRemembered,
         );
 
+        const phishing = filterKeysByPartialMatch(
+            inboundState.transactions.phishing ?? {},
+            devicesStatesNotRemembered,
+        );
+
         const transactionFetchStatusDetail = filterKeysByPartialMatch(
             inboundState.transactions.fetchStatusDetail ?? {},
             devicesStatesNotRemembered,
@@ -49,6 +54,7 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             accounts,
             transactions: {
                 transactions,
+                phishing,
                 fetchStatusDetail: transactionFetchStatusDetail,
             },
         };

@@ -223,7 +223,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
-            const { txs } = payload;
+            const { txs, phishing } = payload;
+
             txs.forEach(item => {
                 const k = createAccountKey({
                     accountDescriptor: item.tx.descriptor,
@@ -234,6 +235,10 @@ export const extraDependencies: ExtraDependenciesStatic = {
                     state.transactions[k] = [];
                 }
                 state.transactions[k][item.order] = item.tx;
+            });
+
+            phishing.forEach(({ key, value }) => {
+                state.phishing[key] = value;
             });
         },
         storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {

@@ -48,6 +48,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: 'bioAuth';
         value: Pick<BioAuthState, 'bioAuthEnabled'>;
     };
+    phishing: {
+        key: AccountKey;
+        value: string[];
+    };
     txs: {
         key: string;
         value: DBWalletAccountTransaction;
