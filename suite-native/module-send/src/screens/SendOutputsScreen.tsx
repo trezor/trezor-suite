@@ -63,7 +63,7 @@ export const SendOutputsScreen = ({
 
                 <Box marginTop="sp32">
                     <Form form={form}>
-                        <SendOutputFields accountKey={accountKey} />
+                        <SendOutputFields accountKey={accountKey} tokenContract={tokenContract} />
                         {network?.networkType === 'bitcoin' && (
                             <Box flexDirection="row" justifyContent="center" marginTop="sp24">
                                 <SwitchCoinControlButton amount={amount} accountKey={accountKey} />

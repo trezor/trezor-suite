@@ -119,7 +119,7 @@ export const sendCryptoAmountValidationSchema = yup
         });
     })
     .test('send-crypto-balance', (value, testContext) => {
-        const { balance, translate, convertNumberToBaseUnit, sendSymbol } =
+        const { balance, translate, convertNumberToBaseUnit, sendSymbol, networkReserve } =
             getAmountLimitContext(testContext);
 
         if (sendSymbol === undefined) {
@@ -128,11 +128,16 @@ export const sendCryptoAmountValidationSchema = yup
 
         const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
 
-        if (
-            convertedValue === undefined ||
-            balance === undefined ||
-            convertedValue <= parseFloat(balance)
-        ) {
+        if (convertedValue === undefined || balance === undefined) {
+            return true;
+        }
+
+        // Calculate available balance considering network reserve
+        const availableBalance = networkReserve
+            ? new BigNumber(balance).minus(networkReserve).toString()
+            : balance;
+
+        if (convertedValue <= parseFloat(availableBalance)) {
             return true;
         }
 

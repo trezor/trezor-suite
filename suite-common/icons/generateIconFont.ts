@@ -87,6 +87,7 @@ const usedIcons = [
     'gear',
     'gearFilled',
     'githubLogo',
+    'graph',
     'handPalm',
     'handWaving',
     'heart',

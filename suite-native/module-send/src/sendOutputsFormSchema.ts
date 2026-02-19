@@ -6,6 +6,7 @@ import {
     formatNetworkAmount,
     isAddressDeprecated,
     isAddressValid,
+    isAmountWithinNetworkReserve,
     isBech32AddressUppercase,
     isDecimalsValid,
     isTaprootAddress,
@@ -24,6 +25,7 @@ export type SendFormFormContext = {
     accountDescriptor?: string;
     isTaprootAvailable?: boolean;
     accountNativeAvailableBalance?: string;
+    networkReserve?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -181,6 +183,43 @@ const outputSchema = yup.object({
             `Insufficient balance to cover the transaction fees.`,
             function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
                 return hasEnoughBalanceForFees(context);
+            },
+        )
+        .test(
+            'network-reserve',
+            'Not enough funds left after we reserve for network fees.',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                if (!value || !context) return true;
+
+                const {
+                    symbol,
+                    availableBalance,
+                    networkReserve,
+                    isTokenFlow,
+                    feeLevelsMaxAmount,
+                } = context;
+
+                if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
+
+                const formattedBalance = formatNetworkAmount(availableBalance, symbol);
+                if (new BigNumber(value).gt(formattedBalance)) return true;
+
+                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
+                const feeLevelMaxAmount = isSendMaxEnabled
+                    ? feeLevelsMaxAmount?.economy
+                    : feeLevelsMaxAmount?.normal;
+
+                if (!feeLevelMaxAmount) return true;
+
+                const feeWithReserve = new BigNumber(formattedBalance)
+                    .minus(feeLevelMaxAmount)
+                    .toString();
+
+                return isAmountWithinNetworkReserve({
+                    reserve: feeWithReserve,
+                    balance: formattedBalance,
+                    amount: value,
+                });
             },
         )
         .test(

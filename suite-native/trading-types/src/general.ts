@@ -90,6 +90,7 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     convertNumberToBaseUnit: ConvertNumberToBaseUnit;
     sendSymbol: string | undefined;
     balance: string | undefined;
+    networkReserve?: string;
 };
 
 export type ProviderConfirmationStatus =

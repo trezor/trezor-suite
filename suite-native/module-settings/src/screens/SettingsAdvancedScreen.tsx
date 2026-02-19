@@ -10,6 +10,7 @@ import { BitcoinBackendsCard } from '../components/BitcoinBackendsCard';
 import { TurnOffDeviceAuthenticityCheckCard } from '../components/TurnOffDeviceAuthenticityCheckCard';
 import { TurnOffFirmwareAuthenticityCheckCard } from '../components/TurnOffFirmwareAuthenticityCheckCard';
 import { TurnOffMevProtectionCard } from '../components/TurnOffMevProtectionCard';
+import { TurnOffNetworkReserveCheckCard } from '../components/TurnOffNetworkReserveCheckCard';
 import { selectIsBitcoinBackendsConfigVisible } from '../selectors';
 
 export const SettingsAdvancedScreen = () => {
@@ -28,6 +29,7 @@ export const SettingsAdvancedScreen = () => {
                 {isMevProtectionSettingsVisible && <TurnOffMevProtectionCard />}
                 <TurnOffFirmwareAuthenticityCheckCard />
                 <TurnOffDeviceAuthenticityCheckCard />
+                <TurnOffNetworkReserveCheckCard />
             </VStack>
         </Screen>
     );

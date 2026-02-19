@@ -2,10 +2,11 @@ import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Card, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { NetworkReserveBanner } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { RecipientInputs } from './RecipientInputs';
@@ -14,6 +15,7 @@ import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 
 type SendOutputFieldsProps = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -21,7 +23,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
 }));
 
-export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
+export const SendOutputFields = ({ accountKey, tokenContract }: SendOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
     const { control } = useFormContext<SendOutputsFormValues>();
     const symbol = useSelector((state: AccountsRootState) =>
@@ -36,13 +38,18 @@ export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
             </Text>
             {symbol && <CorrectNetworkMessageCard symbol={symbol} />}
             <Card style={applyStyle(cardStyle)}>
-                {outputsFieldArray.fields.map((output, index) => (
-                    <RecipientInputs key={output.id} index={index} accountKey={accountKey} />
-                ))}
-                {/*
-              TODO: add output (outputs.append({...})) button
-              issue: https://github.com/trezor/trezor-suite/issues/12944
-              */}
+                <VStack spacing="sp12">
+                    {outputsFieldArray.fields.map((output, index) => (
+                        <RecipientInputs key={output.id} index={index} accountKey={accountKey} />
+                    ))}
+                    {/*
+                    TODO: add output (outputs.append({...})) button
+                    issue: https://github.com/trezor/trezor-suite/issues/12944
+                    */}
+                    {symbol && (
+                        <NetworkReserveBanner symbol={symbol} contractAddress={tokenContract} />
+                    )}
+                </VStack>
             </Card>
         </VStack>
     );
