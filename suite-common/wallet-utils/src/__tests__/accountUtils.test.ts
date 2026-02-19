@@ -1,8 +1,6 @@
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { NetworkFeature } from '@suite-common/wallet-config';
 import { Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from '../__fixtures__/accountUtils';

@@ -74,18 +74,58 @@ const getRestrictedScopePackageImportFromSourcePath = (
     return `${matchingPackageScope}/${sourcePathParts[1]}`;
 };
 
-const checkNodeForRestrictedScopePackageSourceImport = (
-    node,
-    context,
-    sourcePath: string,
-    packageScopes: string[],
-) => {
+const getSuggestedImportPath = (sourcePath: string, packageScopes: string[]) => {
     const packageImportPath = getRestrictedScopePackageImportFromSourcePath(
         sourcePath,
         packageScopes,
     );
 
     if (packageImportPath === null) {
+        return null;
+    }
+
+    const sourcePathParts = sourcePath.split('/');
+
+    if (sourcePathParts[2] === 'mocks' && sourcePathParts.length > 3) {
+        return `${packageImportPath}/mocks`;
+    }
+
+    return packageImportPath;
+};
+
+const shouldAllowMocksImportPath = (sourcePath: string, packageScopes: string[]) => {
+    const sourcePathParts = sourcePath.split('/');
+
+    if (sourcePathParts.length !== 3) {
+        return false;
+    }
+
+    const packageScope = sourcePathParts[0];
+
+    if (!packageScopes.includes(packageScope)) {
+        return false;
+    }
+
+    if (sourcePathParts[2] !== 'mocks') {
+        return false;
+    }
+
+    return true;
+};
+
+const checkNodeForRestrictedScopePackageSourceImport = (
+    node,
+    context,
+    sourcePath: string,
+    packageScopes: string[],
+) => {
+    const packageImportPath = getSuggestedImportPath(sourcePath, packageScopes);
+
+    if (packageImportPath === null) {
+        return;
+    }
+
+    if (shouldAllowMocksImportPath(sourcePath, packageScopes)) {
         return;
     }
 

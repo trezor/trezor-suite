@@ -1,5 +1,4 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 const sharedAddress = { transfers: 0, balance: '0', received: '0', sent: '0' };

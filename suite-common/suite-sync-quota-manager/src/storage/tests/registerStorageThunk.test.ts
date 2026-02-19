@@ -1,7 +1,6 @@
 import { mocked } from 'jest-mock';
 
 import { selectSelectedDevice } from '@suite-common/device';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { ok } from '@trezor/type-utils';
 
