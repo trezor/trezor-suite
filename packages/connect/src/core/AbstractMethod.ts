@@ -97,68 +97,68 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 }
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
-    responseID: number;
+    public responseID: number;
 
     // @ts-expect-error: strictPropertyInitialization
-    device: Device;
+    public device: Device;
     // @ts-expect-error: strictPropertyInitialization
-    params: Params;
+    protected params: Params;
 
-    deviceState?: DeviceState;
+    public deviceState?: DeviceState;
 
-    keepSession: boolean;
+    public keepSession: boolean;
 
-    skipFinalReload: boolean;
+    public skipFinalReload: boolean;
 
-    overridePreviousCall: boolean;
+    public overridePreviousCall: boolean;
 
-    overridden: boolean;
+    public overridden: boolean;
 
-    name: Name; // method name
+    public name: Name; // method name
 
-    payload: Payload<Name>; // method payload
+    public payload: Payload<Name>; // method payload
 
-    get info() {
+    protected get info() {
         return '';
     } // method info, displayed in popup info-panel
 
-    get confirmation(): UiRequestConfirmation['payload'] | undefined {
+    protected get confirmation(): UiRequestConfirmation['payload'] | undefined {
         return undefined;
     }
 
-    useUi: boolean; // should use popup?
+    public useUi: boolean; // should use popup?
 
-    useDevice: boolean; // use device
+    public useDevice: boolean; // use device
 
-    useDeviceState: boolean; // should validate device state?
+    public useDeviceState: boolean; // should validate device state?
 
-    preauthorized?: boolean; // another variant of device state validation
+    public preauthorized?: boolean; // another variant of device state validation
 
-    useEmptyPassphrase: boolean;
+    public useEmptyPassphrase: boolean;
 
-    firmwareRange: FirmwareRange;
+    protected firmwareRange: FirmwareRange;
 
-    requiredPermissions: MethodPermission[];
+    protected requiredPermissions: MethodPermission[];
 
-    allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
+    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
-    requiredDeviceCapabilities: Capability[] = [];
+    protected requiredDeviceCapabilities: Capability[] = [];
 
-    network: NETWORK.NetworkType;
+    protected network: NETWORK.NetworkType;
 
-    useCardanoDerivation: boolean;
+    public useCardanoDerivation: boolean;
 
-    confirmMissingBackup: boolean;
+    public confirmMissingBackup: boolean;
 
-    getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
+    public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
     // callbacks
     // @ts-expect-error: strictPropertyInitialization
-    postMessage: (message: CoreEventMessage) => void;
+    public postMessage: (message: CoreEventMessage) => void;
     // @ts-expect-error: strictPropertyInitialization
-    createUiPromise: UiPromiseCreator;
+    public createUiPromise: UiPromiseCreator;
 
-    initAsync?(): Promise<void>;
+    public initAsync?(): Promise<void>;
 
     constructor(message: { id?: number; payload: Payload<Name> }) {
         const { payload } = message;
@@ -208,11 +208,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return !useEventListener;
     }
 
-    setDevice(device: Device) {
+    public setDevice(device: Device) {
         this.device = device;
     }
 
-    checkFirmwareRange() {
+    public checkFirmwareRange() {
         const { device } = this;
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
@@ -251,9 +251,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    abstract init(): void;
+    public abstract init(): void;
 
-    getMethodInfo(): MethodInfo {
+    public getMethodInfo(): MethodInfo {
         return {
             useUi: this.useUi,
             useDevice: this.useDevice,
@@ -266,12 +266,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         };
     }
 
-    payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
         // Suite uses precomposed result for transaction review modals
         return Promise.resolve(undefined);
     }
 
-    checkDeviceCapability() {
+    public checkDeviceCapability() {
         const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
             capability => this.device.features.capabilities.includes(capability),
         );
@@ -289,7 +289,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    abstract run(): Promise<MethodReturnType<Name>>;
+    public abstract run(): Promise<MethodReturnType<Name>>;
 
-    dispose() {}
+    public dispose() {}
 }
