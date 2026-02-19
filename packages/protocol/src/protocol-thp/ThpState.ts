@@ -21,6 +21,7 @@ export type ThpChannelState = {
     recvNonce: number; // device nonce
     expectedResponses: number[]; // expected responses from the device
     recentMessage: string;
+    piggybackAckEnabled?: boolean;
 };
 
 export type ThpPhase = 'handshake' | 'pairing' | 'paired';
@@ -45,6 +46,8 @@ export class ThpState {
     private _nfcSecret?: Buffer;
     private _sessionId: Buffer = Buffer.alloc(1);
     private _sessionIdCounter: number = 0;
+    private _piggybackAckAvailable: boolean = false;
+    private _piggybackAckEnabled: boolean = false;
     private _recentMessage: Buffer = Buffer.alloc(0);
 
     get recentMessage() {
@@ -77,6 +80,8 @@ export class ThpState {
 
     setThpProperties(props: ThpDeviceProperties) {
         this._properties = props;
+        // available since THP 2.1 https://github.com/trezor/trezor-firmware/pull/6202
+        this._piggybackAckAvailable = props.protocol_version_minor > 0;
     }
 
     get phase() {
@@ -199,9 +204,11 @@ export class ThpState {
 
     sync(type: 'send' | 'recv', messageType: string) {
         // check if syncBit should be updated
-        const updateSyncBit = !['ThpCreateChannelRequest', 'ThpCreateChannelResponse'].includes(
-            messageType,
-        );
+        const updateSyncBit = ![
+            'ThpAck',
+            'ThpCreateChannelRequest',
+            'ThpCreateChannelResponse',
+        ].includes(messageType);
         if (updateSyncBit) {
             this.updateAckBit(type);
             this.updateSyncBit(type);
@@ -283,6 +290,7 @@ export class ThpState {
             expectedResponses: this._expectedResponses.slice(0),
             credentials: this._pairingCredentials.slice(0),
             recentMessage: this._recentMessage.toString('hex'),
+            piggybackAckEnabled: this._piggybackAckEnabled,
         };
     }
 
@@ -324,6 +332,8 @@ export class ThpState {
         this._sendNonce = json.sendNonce;
         this._recvNonce = json.recvNonce;
         this._recentMessage = Buffer.from(json.recentMessage, 'hex');
+        this._piggybackAckEnabled =
+            typeof json.piggybackAckEnabled === 'boolean' ? json.piggybackAckEnabled : false;
     }
 
     get expectedResponses() {
@@ -332,6 +342,18 @@ export class ThpState {
 
     setExpectedResponses(expected: number[]) {
         this._expectedResponses = expected;
+    }
+
+    get isPiggybackAckAvailable() {
+        return this._piggybackAckAvailable;
+    }
+
+    enablePiggybackAck(enabled: boolean) {
+        this._piggybackAckEnabled = this._piggybackAckAvailable && enabled;
+    }
+
+    get isPiggybackAckEnabled() {
+        return this._piggybackAckEnabled;
     }
 
     resetState() {
@@ -353,6 +375,7 @@ export class ThpState {
         this._nfcSecret = undefined;
         this._sessionId = Buffer.alloc(1);
         this._sessionIdCounter = 0;
+        this._piggybackAckEnabled = false;
     }
 
     toString() {
