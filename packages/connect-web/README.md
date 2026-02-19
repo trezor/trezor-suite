@@ -25,24 +25,12 @@ or
 yarn add @trezor/connect-web
 ```
 
-Include library as inline script:
-
-```javascript
-<script src="https://connect.trezor.io/9/trezor-connect.js"></script>
-```
-
 ## Initialization
 
 ES6
 
 ```javascript
 import TrezorConnect from '@trezor/connect-web';
-```
-
-Inline
-
-```javascript
-var TrezorConnect = window.TrezorConnect;
 ```
 
 For more instructions [refer to this document](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)

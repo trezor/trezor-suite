@@ -38,8 +38,8 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
 
-- A) The latest release will always be available on https://connect.trezor.io/9/trezor-connect.js.
-- B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1../trezor-connect.js. Please note that these endpoints will not receive any further updates including security updates.
+- A) The latest release will always be available on https://connect.trezor.io/9/....
+- B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1.1/... Please note that these endpoints will not receive any further updates including security updates.
 
 Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
 

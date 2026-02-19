@@ -31,14 +31,6 @@ The content script will be injected automatically by the library using the scrip
 
 #### Service Worker Import:
 
-In your `serviceWorker.js`, use importScripts to import the library. Ensure you replace `<path>` with the actual path to the library file:
-
-```javascript
-importScripts('<path>/trezor-connect-webextension.js');
-```
-
-Or if you're using ES modules:
-
 ```javascript
 import TrezorConnect from '@trezor/connect-webextension';
 ```
@@ -83,7 +75,6 @@ To ensure your extension is displayed with its name rather than its ID, you need
 
 - `yarn`
 - `yarn build:libs`
-- `yarn workspace @trezor/connect-webextension build`
 
-After completing these steps, you can import from @trezor/connect-webextension or directly use the built file `build/trezor-connect-webextension.js`.
+After completing these steps, you can import from @trezor/connect-webextension.
 The popup will run on your localhost, and you can specify it in the `TrezorConnect.init({ connectSrc: ... })`.

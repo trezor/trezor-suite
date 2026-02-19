@@ -61,19 +61,6 @@ runs:
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
-    # todo: might not be needed
-    - name: Build connect-web
-      shell: bash
-      env:
-        NODE_ENV: ${{ inputs.nodeEnv }}
-      run: |
-        yarn workspace @trezor/connect-web build
-
-    - name: Build connect-webextension
-      shell: bash
-      run: |
-        yarn workspace @trezor/connect-webextension build
-
     - name: Build connect-explorer-theme
       shell: bash
       run: |
@@ -97,7 +84,6 @@ runs:
       run: |
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory
-        cp -R ./packages/connect-web/build/* tmp_build_directory/
         cp -R ./packages/connect-explorer/build/* tmp_build_directory/
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
 
