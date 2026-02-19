@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
@@ -7,7 +8,10 @@ import { GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+import {
+    TradingBuySellFormProps,
+    TradingFormInputDefaultProps,
+} from 'src/types/trading/tradingForm';
 
 import { CountrySelectModal } from './CountrySelectModal';
 
@@ -21,9 +25,12 @@ export const TradingFormInputCountry = ({
 }: TradingFormInputCountryProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { watch, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
+    const { control, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
 
-    const countryValue = watch()[TRADING_FORM_COUNTRY_SELECT];
+    const countryValue = useWatch({
+        control: control as Control<TradingBuySellFormProps>,
+        name: TRADING_FORM_COUNTRY_SELECT,
+    });
 
     return (
         <>
