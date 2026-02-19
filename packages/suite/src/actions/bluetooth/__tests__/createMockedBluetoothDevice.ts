@@ -1,4 +1,4 @@
-import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/src/support/mocks';
+import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/mocks';
 
 import { type DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
 

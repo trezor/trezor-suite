@@ -1,8 +1,8 @@
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { createBluetoothDeviceCommon } from '../mocks';
 import { filterOutOldDuplicates } from '../src/filterOutOldDuplicates';
-import { createBluetoothDeviceCommon } from '../src/support/mocks';
 import { BluetoothDeviceCommon } from '../src/types';
 import type { BluetoothManufacturerData } from '../src/types';
 
