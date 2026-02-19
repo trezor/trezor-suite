@@ -8,7 +8,8 @@ const AGENTS_FILE = 'AGENTS.md';
 const IGNORED_SKILL_LINKS = new Set([
     'skills/skills-and-code-style-contribution.md', // not a skill
     'skills/dependency-injection.md', // only for some `packages`
-    'skills/tests-native.md', // only for `native`
+    'skills/tests-native.md', // only for `suite-native`
+    'skills/tests-common.md', // only for `suite-common`
 ]);
 
 const stripComments = (content: string) => {
