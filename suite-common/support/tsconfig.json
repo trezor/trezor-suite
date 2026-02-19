@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../device" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/urls" }
+    ]
+}

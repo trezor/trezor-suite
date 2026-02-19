@@ -1,10 +1,10 @@
 import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import * as URLS from '@trezor/urls';
+import { ALL_URLS } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 interface ReadMoreLinkProps {
-    url: keyof Omit<typeof URLS, 'TOR_URLS' | 'SUITE_TRADING_REDIRECT_DEEPLINKS'>;
+    url: keyof Omit<typeof ALL_URLS, 'TOR_URLS' | 'SUITE_TRADING_REDIRECT_DEEPLINKS'>;
     linkLabel?: ExtendedMessageDescriptor['id'];
     message?: ExtendedMessageDescriptor['id'];
 }
@@ -17,14 +17,14 @@ export const ReadMoreLink = ({ url, message, linkLabel }: ReadMoreLinkProps) =>
             id={message}
             values={{
                 TR_LEARN_MORE: (
-                    <TrezorLink href={URLS[url]}>
+                    <TrezorLink href={ALL_URLS[url]}>
                         <Translation id={linkLabel || 'TR_LEARN_MORE'} />
                     </TrezorLink>
                 ),
             }}
         />
     ) : (
-        <TrezorLink href={URLS[url]}>
+        <TrezorLink href={ALL_URLS[url]}>
             <Translation id={linkLabel || 'TR_LEARN_MORE'} />
         </TrezorLink>
     );

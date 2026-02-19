@@ -1,5 +1,5 @@
 import { TOR_URLS } from '@trezor/urls';
-import { withPlatformUtm } from '@trezor/urls/src/platform-utm';
+import { withPlatformUtm } from '@trezor/urls/src/utms';
 
 import { getIsTorDomain, getTorUrlIfAvailable, isOnionUrl } from 'src/utils/suite/tor';
 

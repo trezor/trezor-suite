@@ -3,6 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     BackupType,
+    FirmwareRevision,
     LANGUAGES,
     Locale,
     TrezorDevice,
@@ -24,6 +25,9 @@ import {
 import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
+    FirmwareVersionString,
+    getFirmwareRevision,
+    getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
@@ -432,6 +436,10 @@ export const selectIsFirmwareUpgradable = createMemoizedSelector(
     deviceReleaseInfo => deviceReleaseInfo?.isNewer ?? false,
 );
 
+export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>
+    getFirmwareVersion(device),
+);
+
 export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     [selectSelectedDevice],
     device => getFirmwareVersionArray(device),
@@ -618,6 +626,10 @@ export const selectIsSameOrNewDevice = createMemoizedSelector(
     (selectedDevice, device) => selectedDevice === undefined || device?.id === selectedDevice.id,
 );
 
+export const selectDeviceFirmwareRevision = createMemoizedSelector([selectSelectedDevice], device =>
+    getFirmwareRevision(device),
+);
+
 /**
  * Get firmware revision check error, or null if check was successful / skipped.
  */
@@ -665,4 +677,52 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
+);
+
+type DeviceUtmParams = {
+    utm_model?: DeviceModelInternal;
+    utm_fw?: FirmwareVersionString;
+    utm_rev?: FirmwareRevision;
+    utm_passphrase?: 'true' | 'false';
+};
+
+export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
+    [
+        selectDeviceInternalModel,
+        selectDeviceFirmwareVersion,
+        selectDeviceFirmwareRevision,
+        selectIsDeviceUsingPassphrase,
+        selectIsPortfolioTrackerDevice,
+    ],
+    (
+        deviceModel,
+        firmwareVersion,
+        firmwareRevision,
+        isDeviceUsingPassphrase,
+        isPortfolioTrackerDevice,
+    ) => {
+        const result: DeviceUtmParams = {};
+
+        if (isPortfolioTrackerDevice) {
+            return result;
+        }
+
+        if (deviceModel) {
+            result.utm_model = deviceModel;
+        }
+
+        if (firmwareVersion) {
+            result.utm_fw = firmwareVersion;
+        }
+
+        if (firmwareRevision) {
+            result.utm_rev = firmwareRevision;
+        }
+
+        if (isDeviceUsingPassphrase) {
+            result.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
+        }
+
+        return result;
+    },
 );
