@@ -48,7 +48,6 @@ export const UI_REQUEST = {
     INVALID_PIN_ATTEMPTS_DEPLETED: 'ui-invalid_pin_attempts_depleted',
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
-    INVALID_PASSPHRASE: 'ui-invalid_passphrase',
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
@@ -125,13 +124,6 @@ export type UiRequestDeviceAction =
       }
     | {
           type: typeof UI_REQUEST.REQUEST_PASSPHRASE;
-          payload: {
-              device: Device;
-              type?: typeof undefined;
-          };
-      }
-    | {
-          type: typeof UI_REQUEST.INVALID_PASSPHRASE;
           payload: {
               device: Device;
               type?: typeof undefined;
