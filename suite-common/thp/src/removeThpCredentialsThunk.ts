@@ -26,7 +26,5 @@ export const removeThpCredentialsThunk = createThunk<void, RemoveThpCredentialsT
         });
 
         dispatch(thpActions.removeCredentials({ credentials }));
-
-        dispatch(thpActions.finishThpFlow());
     },
 );

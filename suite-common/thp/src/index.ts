@@ -12,6 +12,5 @@ export {
 export { thpActions } from './thpActions';
 export * from './thpUtils';
 export { THP_BUTTON_REQUESTS_NAMES } from './thpConstants';
-export { connectThpDeviceThunk } from './connectThpDeviceThunk';
 export { startThpAutoconnectThunk } from './startThpAutoconnectThunk';
 export { removeThpCredentialsThunk } from './removeThpCredentialsThunk';

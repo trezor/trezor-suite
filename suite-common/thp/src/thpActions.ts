@@ -1,33 +1,14 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { ThpSuiteCredentials } from '@suite-common/suite-types';
 import { ThpCredentials } from '@trezor/protocol';
 
 export const THP_PREFIX = '@suite/thp';
 
-const invalidCode = createAction(`${THP_PREFIX}/invalid-pin-action`);
-
 const finishThpFlow = createAction(`${THP_PREFIX}/finish-thp-flow`);
-
-const cancelThpFlow = createAction(`${THP_PREFIX}/cancel-thp-flow`);
 
 const finishAutoconnectFlow = createAction(`${THP_PREFIX}/finish-autoconnect-flow`);
 
 export const showAutoconnectInfo = createAction(`${THP_PREFIX}/showAutoconnectInfo`);
-
-export const setLastThpCode = createAction(
-    `${THP_PREFIX}/set-last-thp-code`,
-    (payload: { code: string }) => ({
-        payload,
-    }),
-);
-
-export const incrementCredentialConnectionCounter = createAction(
-    `${THP_PREFIX}/increment-credential-connection-counter`,
-    (payload: { credential: ThpSuiteCredentials }) => ({
-        payload,
-    }),
-);
 
 export const addCredential = createAction(
     `${THP_PREFIX}/add-credential`,
@@ -46,14 +27,10 @@ export const removeCredentials = createAction(
 export const removeAllCredentials = createAction(`${THP_PREFIX}/removeAllCredentials`);
 
 export const thpActions = {
-    invalidCode,
     finishThpFlow,
     finishAutoconnectFlow,
     addCredential,
-    cancelThpFlow,
     removeCredentials,
     removeAllCredentials,
-    setLastThpCode,
     showAutoconnectInfo,
-    incrementCredentialConnectionCounter,
 };
