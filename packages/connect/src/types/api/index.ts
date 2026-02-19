@@ -1,3 +1,5 @@
+import { Static, Type } from '@trezor/schema-utils';
+
 import { applyFlags } from './applyFlags';
 import { applySettings } from './applySettings';
 import { authenticateDevice } from './authenticateDevice';
@@ -95,288 +97,378 @@ import { updateConnectSettings } from './updateConnectSettings';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
 
-export interface TrezorConnect {
-    // https://connect.trezor.io/9/methods/device/applyFlags/
-    applyFlags: typeof applyFlags;
-
-    // https://connect.trezor.io/9/methods/device/applySettings/
-    applySettings: typeof applySettings;
-
-    // https://connect.trezor.io/9/methods/device/authenticateDevice/
-    authenticateDevice: typeof authenticateDevice;
-
-    // https://connect.trezor.io/9/methods/bitcoin/authorizeCoinjoin/
-    authorizeCoinjoin: typeof authorizeCoinjoin;
-
-    // https://connect.trezor.io/9/methods/bitcoin/cancelCoinjoinAuthorization/
-    cancelCoinjoinAuthorization: typeof cancelCoinjoinAuthorization;
-
-    // https://connect.trezor.io/9/methods/device/showDeviceTutorial/
-    showDeviceTutorial: typeof showDeviceTutorial;
-
-    // https://connect.trezor.io/9/methods/device/backupDevice/
-    backupDevice: typeof backupDevice;
-
-    // https://connect.trezor.io/9/methods/device/bleUnpair/
-    bleUnpair: typeof bleUnpair;
-
-    // todo: link docs
-    blockchainDisconnect: typeof blockchainDisconnect;
-
-    // todo: link docs
-    blockchainEstimateFee: typeof blockchainEstimateFee;
-
-    // todo: link docs
-    blockchainGetAccountBalanceHistory: typeof blockchainGetAccountBalanceHistory;
-
-    // todo: link docs
-    blockchainGetCurrentFiatRates: typeof blockchainGetCurrentFiatRates;
-
-    // todo: link docs
-    blockchainGetInfo: typeof blockchainGetInfo;
-
-    // todo: link docs
-    blockchainEvmRpcCall: typeof blockchainEvmRpcCall;
-
-    // todo: link docs
-    blockchainGetFiatRatesForTimestamps: typeof blockchainGetFiatRatesForTimestamps;
-
-    // todo: link docs
-    blockchainGetTransactions: typeof blockchainGetTransactions;
-
-    // todo: link docs
-    blockchainSetCustomBackend: typeof blockchainSetCustomBackend;
-
-    // todo: link docs
-    blockchainSubscribe: typeof blockchainSubscribe;
-
-    // todo: link docs
-    blockchainSubscribeFiatRates: typeof blockchainSubscribeFiatRates;
-
-    // todo: link docs
-    blockchainUnsubscribe: typeof blockchainUnsubscribe;
-
-    // todo: link docs
-    blockchainUnsubscribeFiatRates: typeof blockchainUnsubscribeFiatRates;
-
-    // todo: link docs
-    blockchainValidateEvmRpcUrl: typeof blockchainValidateEvmRpcUrl;
-
-    // todo: link docs
-    cancel: typeof cancel;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetAddress/
-    cardanoGetAddress: typeof cardanoGetAddress;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetNativeScriptHash/
-    cardanoGetNativeScriptHash: typeof cardanoGetNativeScriptHash;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetPublicKey/
-    cardanoGetPublicKey: typeof cardanoGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoSignTransaction/
-    cardanoSignTransaction: typeof cardanoSignTransaction;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoSignMessage/
-    cardanoSignMessage: typeof cardanoSignMessage;
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoComposeTransaction/
-    cardanoComposeTransaction: typeof cardanoComposeTransaction;
-
-    // https://connect.trezor.io/9/methods/device/changeLanguage/
-    changeLanguage: typeof changeLanguage;
-
-    // https://connect.trezor.io/9/methods/device/changePin/
-    changePin: typeof changePin;
-
-    // https://connect.trezor.io/9/methods/device/changeWipeCode/
-    changeWipeCode: typeof changeWipeCode;
-
-    // https://connect.trezor.io/9/methods/other/cipherKeyValue/
-    cipherKeyValue: typeof cipherKeyValue;
-
-    // todo: link docs
-    evoluGetNode: typeof evoluGetNode;
-
-    // todo: link docs
-    evoluSignRegistrationRequest: typeof evoluSignRegistrationRequest;
-
-    // todo: link docs
-    evoluGetDelegatedIdentityKey: typeof evoluGetDelegatedIdentityKey;
-
-    // https://connect.trezor.io/9/methods/bitcoin/composeTransaction/
-    composeTransaction: typeof composeTransaction;
-
-    // todo: link docs
-    dispose: typeof dispose;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumGetAddress/
-    ethereumGetAddress: typeof ethereumGetAddress;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumGetPublicKey/
-    ethereumGetPublicKey: typeof ethereumGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignMessage/
-    ethereumSignMessage: typeof ethereumSignMessage;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTransaction/
-    ethereumSignTransaction: typeof ethereumSignTransaction;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTypedData/
-    ethereumSignTypedData: typeof ethereumSignTypedData;
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
-    ethereumVerifyMessage: typeof ethereumVerifyMessage;
-
-    // https://connect.trezor.io/9/methods/device/firmwareUpdate/
-    firmwareUpdate: typeof firmwareUpdate;
-
-    // https://connect.trezor.io/9/methods/other/getAccountDescriptor/
-    getAccountDescriptor: typeof getAccountDescriptor;
-
-    // https://connect.trezor.io/9/methods/bitcoin/getAccountInfo/
-    getAccountInfo: typeof getAccountInfo;
-
-    discoverAccounts: typeof discoverAccounts;
-
-    // https://connect.trezor.io/9/methods/bitcoin/getAddress/
-    getAddress: typeof getAddress;
-
-    // https://connect.trezor.io/9/methods/other/getCoinInfo/
-    getCoinInfo: typeof getCoinInfo;
-
-    // https://connect.trezor.io/9/methods/device/getDeviceState/
-    getDeviceState: typeof getDeviceState;
-
-    // https://connect.trezor.io/9/methods/device/getFeatures/
-    getFeatures: typeof getFeatures;
-
-    // https://connect.trezor.io/9/methods/device/getFirmwareHash/
-    getFirmwareHash: typeof getFirmwareHash;
-
-    // https://connect.trezor.io/9/methods/other/getOwnershipId/
-    getOwnershipId: typeof getOwnershipId;
-
-    // https://connect.trezor.io/9/methods/other/getOwnershipProof/
-    getOwnershipProof: typeof getOwnershipProof;
-
-    // https://connect.trezor.io/9/methods/bitcoin/getPublicKey/
-    getPublicKey: typeof getPublicKey;
-
-    // todo: link docs
-    getNonce: typeof getNonce;
-
-    // todo: link docs
-    getSettings: typeof getSettings;
-
-    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
-    thpGetCredentials: typeof thpGetCredentials;
-
-    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
-    thpRemoveCredentials: typeof thpRemoveCredentials;
-
+// Initialization, lifecycle, events, and settings
+export const TrezorConnectManagement = Type.Object({
     // https://connect.trezor.io/9/methods/other/init/
-    init: typeof init;
-
-    // https://connect.trezor.io/9/methods/monero/moneroGetAddress/
-    moneroGetAddress: typeof moneroGetAddress;
-    // https://connect.trezor.io/9/methods/monero/moneroGetWatchKey/
-    moneroGetWatchKey: typeof moneroGetWatchKey;
-    // https://connect.trezor.io/9/methods/monero/moneroKeyImageSync/
-    moneroKeyImageSync: typeof moneroKeyImageSync;
-    // https://connect.trezor.io/9/methods/monero/moneroSignTransaction/
-    moneroSignTransaction: typeof moneroSignTransaction;
-
-    // todo: link docs
-    off: typeof off;
-
-    // todo: link docs
-    on: typeof on;
-
-    // https://connect.trezor.io/9/methods/bitcoin/pushTransaction/
-    pushTransaction: typeof pushTransaction;
-
-    // todo: link docs
-    recoveryDevice: typeof recoveryDevice;
-
-    // todo link docs
-    removeAllListeners: typeof removeAllListeners;
-
-    // https://connect.trezor.io/9/methods/other/requestLogin/
-    requestLogin: typeof requestLogin;
-
-    // https://connect.trezor.io/9/methods/device/resetDevice/
-    resetDevice: typeof resetDevice;
-
-    // https://connect.trezor.io/9/methods/device/loadDevice/
-    loadDevice: typeof loadDevice;
-
-    // https://connect.trezor.io/9/methods/ripple/rippleGetAddress/
-    rippleGetAddress: typeof rippleGetAddress;
-
-    // https://connect.trezor.io/9/methods/ripple/rippleSignTransaction/
-    rippleSignTransaction: typeof rippleSignTransaction;
-
-    // todo: link docs
-    setBrightness: typeof setBrightness;
-
-    // https://connect.trezor.io/9/methods/device/setBusy/
-    setBusy: typeof setBusy;
-
-    // https://connect.trezor.io/9/methods/bitcoin/signMessage/
-    signMessage: typeof signMessage;
-
-    // https://connect.trezor.io/9/methods/bitcoin/signTransaction/
-    signTransaction: typeof signTransaction;
-
-    // https://connect.trezor.io/9/methods/solana/solanaComposeTransaction/
-    solanaComposeTransaction: typeof solanaComposeTransaction;
-
-    // https://connect.trezor.io/9/methods/solana/solanaGetPublicKey/
-    solanaGetPublicKey: typeof solanaGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/solana/solanaGetAddress/
-    solanaGetAddress: typeof solanaGetAddress;
-
-    // https://connect.trezor.io/9/methods/solana/solanaSignTransaction/
-    solanaSignTransaction: typeof solanaSignTransaction;
-
-    // https://connect.trezor.io/9/methods/stellar/stellarGetAddress/
-    stellarGetAddress: typeof stellarGetAddress;
-
-    // https://connect.trezor.io/9/methods/stellar/stellarSignTransaction/
-    stellarSignTransaction: typeof stellarSignTransaction;
-
-    // https://connect.trezor.io/9/methods/device/telemetryGet/
-    telemetryGet: typeof telemetryGet;
-
-    // https://connect.trezor.io/9/methods/tezos/tezosGetAddress/
-    tezosGetAddress: typeof tezosGetAddress;
-
-    // https://connect.trezor.io/9/methods/tezos/tezosGetPublicKey/
-    tezosGetPublicKey: typeof tezosGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/tezos/tezosSignTransaction/
-    tezosSignTransaction: typeof tezosSignTransaction;
-
-    // https://connect.trezor.io/9/methods/tron/tronGetAddress/
-    tronGetAddress: typeof tronGetAddress;
-
-    // https://connect.trezor.io/9/methods/tron/tronSignTransaction/
-    tronSignTransaction: typeof tronSignTransaction;
+    init: Type.Unsafe<typeof init>(),
 
     // For internal use, no public documentation.
-    updateConnectSettings: typeof updateConnectSettings;
+    dispose: Type.Unsafe<typeof dispose>(),
+
+    // For internal use, no public documentation.
+    cancel: Type.Unsafe<typeof cancel>(),
+
+    // For internal use, no public documentation.
+    on: Type.Unsafe<typeof on>(),
+
+    // For internal use, no public documentation.
+    off: Type.Unsafe<typeof off>(),
+
+    // For internal use, no public documentation.
+    removeAllListeners: Type.Unsafe<typeof removeAllListeners>(),
+
+    // For internal use, no public documentation.
+    uiResponse: Type.Unsafe<typeof uiResponse>(),
+
+    // For internal use, no public documentation.
+    updateConnectSettings: Type.Unsafe<typeof updateConnectSettings>(),
+});
+export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;
+
+// Device configuration, firmware, security, and hardware control
+export const TrezorConnectDevice = Type.Object({
+    // https://connect.trezor.io/9/methods/device/getFeatures/
+    getFeatures: Type.Unsafe<typeof getFeatures>(),
+
+    // https://connect.trezor.io/9/methods/device/getDeviceState/
+    getDeviceState: Type.Unsafe<typeof getDeviceState>(),
+
+    // https://connect.trezor.io/9/methods/device/getFirmwareHash/
+    getFirmwareHash: Type.Unsafe<typeof getFirmwareHash>(),
+
+    // https://connect.trezor.io/9/methods/device/firmwareUpdate/
+    firmwareUpdate: Type.Unsafe<typeof firmwareUpdate>(),
+
+    // https://connect.trezor.io/9/methods/device/resetDevice/
+    resetDevice: Type.Unsafe<typeof resetDevice>(),
+
+    // https://connect.trezor.io/9/methods/device/loadDevice/
+    loadDevice: Type.Unsafe<typeof loadDevice>(),
 
     // todo: link docs
-    uiResponse: typeof uiResponse;
-
-    // https://connect.trezor.io/9/methods/other/unlockPath/
-    unlockPath: typeof unlockPath;
-
-    // https://connect.trezor.io/9/methods/bitcoin/verifyMessage/
-    verifyMessage: typeof verifyMessage;
+    recoveryDevice: Type.Unsafe<typeof recoveryDevice>(),
 
     // https://connect.trezor.io/9/methods/device/wipeDevice/
-    wipeDevice: typeof wipeDevice;
-}
+    wipeDevice: Type.Unsafe<typeof wipeDevice>(),
+
+    // https://connect.trezor.io/9/methods/device/backupDevice/
+    backupDevice: Type.Unsafe<typeof backupDevice>(),
+
+    // https://connect.trezor.io/9/methods/device/changePin/
+    changePin: Type.Unsafe<typeof changePin>(),
+
+    // https://connect.trezor.io/9/methods/device/changeWipeCode/
+    changeWipeCode: Type.Unsafe<typeof changeWipeCode>(),
+
+    // https://connect.trezor.io/9/methods/device/changeLanguage/
+    changeLanguage: Type.Unsafe<typeof changeLanguage>(),
+
+    // https://connect.trezor.io/9/methods/device/applySettings/
+    applySettings: Type.Unsafe<typeof applySettings>(),
+
+    // https://connect.trezor.io/9/methods/device/applyFlags/
+    applyFlags: Type.Unsafe<typeof applyFlags>(),
+
+    // https://connect.trezor.io/9/methods/device/authenticateDevice/
+    authenticateDevice: Type.Unsafe<typeof authenticateDevice>(),
+
+    // https://connect.trezor.io/9/methods/device/setBusy/
+    setBusy: Type.Unsafe<typeof setBusy>(),
+
+    setBrightness: Type.Unsafe<typeof setBrightness>(),
+
+    // https://connect.trezor.io/9/methods/device/showDeviceTutorial/
+    showDeviceTutorial: Type.Unsafe<typeof showDeviceTutorial>(),
+
+    // https://connect.trezor.io/9/methods/device/bleUnpair/
+    bleUnpair: Type.Unsafe<typeof bleUnpair>(),
+
+    // https://connect.trezor.io/9/methods/other/requestLogin/
+    requestLogin: Type.Unsafe<typeof requestLogin>(),
+
+    // https://connect.trezor.io/9/methods/other/cipherKeyValue/
+    cipherKeyValue: Type.Unsafe<typeof cipherKeyValue>(),
+
+    // todo: link docs
+    unlockPath: Type.Unsafe<typeof unlockPath>(),
+
+    // https://connect.trezor.io/9/methods/other/getOwnershipId/
+    getOwnershipId: Type.Unsafe<typeof getOwnershipId>(),
+
+    // https://connect.trezor.io/9/methods/other/getOwnershipProof/
+    getOwnershipProof: Type.Unsafe<typeof getOwnershipProof>(),
+
+    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
+    thpGetCredentials: Type.Unsafe<typeof thpGetCredentials>(),
+
+    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
+    thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
+
+    telemetryGet: Type.Unsafe<typeof telemetryGet>(),
+});
+export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
+
+// Blockchain backend operations (no device needed)
+export const TrezorConnectBlockchain = Type.Object({
+    // For internal use, no public documentation.[]
+    blockchainSubscribe: Type.Unsafe<typeof blockchainSubscribe>(),
+
+    // For internal use, no public documentation.
+    blockchainUnsubscribe: Type.Unsafe<typeof blockchainUnsubscribe>(),
+
+    // For internal use, no public documentation.
+    blockchainDisconnect: Type.Unsafe<typeof blockchainDisconnect>(),
+
+    // For internal use, no public documentation.
+    blockchainSetCustomBackend: Type.Unsafe<typeof blockchainSetCustomBackend>(),
+
+    // For internal use, no public documentation.
+    blockchainGetInfo: Type.Unsafe<typeof blockchainGetInfo>(),
+
+    // For internal use, no public documentation.
+    blockchainValidateEvmRpcUrl: Type.Unsafe<typeof blockchainValidateEvmRpcUrl>(),
+
+    // For internal use, no public documentation.
+    blockchainEstimateFee: Type.Unsafe<typeof blockchainEstimateFee>(),
+
+    // For internal use, no public documentation.
+    blockchainGetAccountBalanceHistory: Type.Unsafe<typeof blockchainGetAccountBalanceHistory>(),
+
+    // For internal use, no public documentation.
+    blockchainGetTransactions: Type.Unsafe<typeof blockchainGetTransactions>(),
+
+    // For internal use, no public documentation.
+    blockchainEvmRpcCall: Type.Unsafe<typeof blockchainEvmRpcCall>(),
+
+    // For internal use, no public documentation.
+    blockchainGetCurrentFiatRates: Type.Unsafe<typeof blockchainGetCurrentFiatRates>(),
+
+    // For internal use, no public documentation.
+    blockchainGetFiatRatesForTimestamps: Type.Unsafe<typeof blockchainGetFiatRatesForTimestamps>(),
+
+    // For internal use, no public documentation.
+    blockchainSubscribeFiatRates: Type.Unsafe<typeof blockchainSubscribeFiatRates>(),
+
+    // For internal use, no public documentation.
+    blockchainUnsubscribeFiatRates: Type.Unsafe<typeof blockchainUnsubscribeFiatRates>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/pushTransaction/
+    pushTransaction: Type.Unsafe<typeof pushTransaction>(),
+
+    // For internal use, no public documentation.
+    getNonce: Type.Unsafe<typeof getNonce>(),
+});
+export type TrezorConnectBlockchain = Static<typeof TrezorConnectBlockchain>;
+
+// Generic account and address operations (multi-coin)
+export const TrezorConnectAccount = Type.Object({
+    // https://connect.trezor.io/9/methods/bitcoin/getAddress/
+    getAddress: Type.Unsafe<typeof getAddress>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/getPublicKey/
+    getPublicKey: Type.Unsafe<typeof getPublicKey>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/getAccountInfo/
+    getAccountInfo: Type.Unsafe<typeof getAccountInfo>(),
+
+    // https://connect.trezor.io/9/methods/other/getAccountDescriptor/
+    getAccountDescriptor: Type.Unsafe<typeof getAccountDescriptor>(),
+
+    // todo: link docs
+    discoverAccounts: Type.Unsafe<typeof discoverAccounts>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/signMessage/
+    signMessage: Type.Unsafe<typeof signMessage>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/verifyMessage/
+    verifyMessage: Type.Unsafe<typeof verifyMessage>(),
+
+    // todo: link docs
+    getSettings: Type.Unsafe<typeof getSettings>(),
+
+    // https://connect.trezor.io/9/methods/other/getCoinInfo/
+    getCoinInfo: Type.Unsafe<typeof getCoinInfo>(),
+});
+export type TrezorConnectAccount = Static<typeof TrezorConnectAccount>;
+
+// Bitcoin-specific operations
+export const TrezorConnectBitcoin = Type.Object({
+    // https://connect.trezor.io/9/methods/bitcoin/signTransaction/
+    signTransaction: Type.Unsafe<typeof signTransaction>(),
+    composeTransaction: Type.Unsafe<typeof composeTransaction>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/authorizeCoinjoin/
+    authorizeCoinjoin: Type.Unsafe<typeof authorizeCoinjoin>(),
+
+    // https://connect.trezor.io/9/methods/bitcoin/cancelCoinjoinAuthorization/
+    cancelCoinjoinAuthorization: Type.Unsafe<typeof cancelCoinjoinAuthorization>(),
+});
+export type TrezorConnectBitcoin = Static<typeof TrezorConnectBitcoin>;
+
+// Ethereum-specific operations
+export const TrezorConnectEthereum = Type.Object({
+    // https://connect.trezor.io/9/methods/ethereum/ethereumGetAddress/
+    ethereumGetAddress: Type.Unsafe<typeof ethereumGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/ethereum/ethereumGetPublicKey/
+    ethereumGetPublicKey: Type.Unsafe<typeof ethereumGetPublicKey>(),
+
+    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTransaction/
+    ethereumSignTransaction: Type.Unsafe<typeof ethereumSignTransaction>(),
+
+    // https://connect.trezor.io/9/methods/ethereum/ethereumSignMessage/
+    ethereumSignMessage: Type.Unsafe<typeof ethereumSignMessage>(),
+
+    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTypedData/
+    ethereumSignTypedData: Type.Unsafe<typeof ethereumSignTypedData>(),
+
+    // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
+    ethereumVerifyMessage: Type.Unsafe<typeof ethereumVerifyMessage>(),
+});
+export type TrezorConnectEthereum = Static<typeof TrezorConnectEthereum>;
+
+// Cardano-specific operations
+export const TrezorConnectCardano = Type.Object({
+    // https://connect.trezor.io/9/methods/cardano/cardanoGetAddress/
+    cardanoGetAddress: Type.Unsafe<typeof cardanoGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/cardano/cardanoGetPublicKey/
+    cardanoGetPublicKey: Type.Unsafe<typeof cardanoGetPublicKey>(),
+
+    // https://connect.trezor.io/9/methods/cardano/cardanoGetNativeScriptHash
+    cardanoGetNativeScriptHash: Type.Unsafe<typeof cardanoGetNativeScriptHash>(),
+
+    // https://connect.trezor.io/9/methods/cardano/cardanoSignTransaction/
+    cardanoSignTransaction: Type.Unsafe<typeof cardanoSignTransaction>(),
+
+    // https://connect.trezor.io/9/methods/cardano/cardanoSignMessage/
+    cardanoSignMessage: Type.Unsafe<typeof cardanoSignMessage>(),
+
+    // https://connect.trezor.io/9/methods/cardano/cardanoComposeTransaction/
+    cardanoComposeTransaction: Type.Unsafe<typeof cardanoComposeTransaction>(),
+});
+export type TrezorConnectCardano = Static<typeof TrezorConnectCardano>;
+
+// Monero-specific operations
+export const TrezorConnectMonero = Type.Object({
+    // https://connect.trezor.io/9/methods/monero/moneroGetAddress/
+    moneroGetAddress: Type.Unsafe<typeof moneroGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/monero/moneroGetWatchKey/
+    moneroGetWatchKey: Type.Unsafe<typeof moneroGetWatchKey>(),
+
+    // https://connect.trezor.io/9/methods/monero/moneroKeyImageSync/
+    moneroKeyImageSync: Type.Unsafe<typeof moneroKeyImageSync>(),
+
+    // https://connect.trezor.io/9/methods/monero/moneroSignTransaction/
+    moneroSignTransaction: Type.Unsafe<typeof moneroSignTransaction>(),
+});
+export type TrezorConnectMonero = Static<typeof TrezorConnectMonero>;
+
+// Ripple-specific operations
+export const TrezorConnectRipple = Type.Object({
+    // https://connect.trezor.io/9/methods/ripple/rippleGetAddress/
+    rippleGetAddress: Type.Unsafe<typeof rippleGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/ripple/rippleSignTransaction/
+    rippleSignTransaction: Type.Unsafe<typeof rippleSignTransaction>(),
+});
+export type TrezorConnectRipple = Static<typeof TrezorConnectRipple>;
+
+// Solana-specific operations
+export const TrezorConnectSolana = Type.Object({
+    // https://connect.trezor.io/9/methods/solana/solanaGetAddress/
+    solanaGetAddress: Type.Unsafe<typeof solanaGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/solana/solanaGetPublicKey/
+    solanaGetPublicKey: Type.Unsafe<typeof solanaGetPublicKey>(),
+
+    // https://connect.trezor.io/9/methods/solana/solanaSignTransaction/
+    solanaSignTransaction: Type.Unsafe<typeof solanaSignTransaction>(),
+
+    // https://connect.trezor.io/9/methods/solana/solanaComposeTransaction/
+    solanaComposeTransaction: Type.Unsafe<typeof solanaComposeTransaction>(),
+});
+export type TrezorConnectSolana = Static<typeof TrezorConnectSolana>;
+
+// Stellar-specific operations
+export const TrezorConnectStellar = Type.Object({
+    // https://connect.trezor.io/9/methods/stellar/stellarGetAddress/
+    stellarGetAddress: Type.Unsafe<typeof stellarGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/stellar/stellarSignTransaction/
+    stellarSignTransaction: Type.Unsafe<typeof stellarSignTransaction>(),
+});
+export type TrezorConnectStellar = Static<typeof TrezorConnectStellar>;
+
+// Tezos-specific operations
+export const TrezorConnectTezos = Type.Object({
+    // https://connect.trezor.io/9/methods/tezos/tezosGetAddress/
+    tezosGetAddress: Type.Unsafe<typeof tezosGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/tezos/tezosGetPublicKey/
+    tezosGetPublicKey: Type.Unsafe<typeof tezosGetPublicKey>(),
+
+    // https://connect.trezor.io/9/methods/tezos/tezosSignTransaction/
+    tezosSignTransaction: Type.Unsafe<typeof tezosSignTransaction>(),
+});
+export type TrezorConnectTezos = Static<typeof TrezorConnectTezos>;
+
+// Tron-specific operations
+export const TrezorConnectTron = Type.Object({
+    // https://connect.trezor.io/9/methods/tron/tronGetAddress/
+    tronGetAddress: Type.Unsafe<typeof tronGetAddress>(),
+
+    // https://connect.trezor.io/9/methods/tron/tronSignTransaction/
+    tronSignTransaction: Type.Unsafe<typeof tronSignTransaction>(),
+});
+export type TrezorConnectTron = Static<typeof TrezorConnectTron>;
+
+// Evolu identity protocol operations
+export const TrezorConnectEvolu = Type.Object({
+    // For internal use, no public documentation.
+    evoluGetNode: Type.Unsafe<typeof evoluGetNode>(),
+
+    // For internal use, no public documentation.
+    evoluSignRegistrationRequest: Type.Unsafe<typeof evoluSignRegistrationRequest>(),
+
+    // For internal use, no public documentation.
+    evoluGetDelegatedIdentityKey: Type.Unsafe<typeof evoluGetDelegatedIdentityKey>(),
+});
+export type TrezorConnectEvolu = Static<typeof TrezorConnectEvolu>;
+
+// Runtime schema for key access
+export const TrezorConnectSchema = Type.Composite([
+    TrezorConnectManagement,
+    TrezorConnectDevice,
+    TrezorConnectBlockchain,
+    TrezorConnectAccount,
+    TrezorConnectBitcoin,
+    TrezorConnectEthereum,
+    TrezorConnectCardano,
+    TrezorConnectMonero,
+    TrezorConnectRipple,
+    TrezorConnectSolana,
+    TrezorConnectStellar,
+    TrezorConnectTezos,
+    TrezorConnectTron,
+    TrezorConnectEvolu,
+]);
+
+// Type-level interface for precise function types.
+export interface TrezorConnect
+    extends
+        TrezorConnectManagement,
+        TrezorConnectDevice,
+        TrezorConnectBlockchain,
+        TrezorConnectAccount,
+        TrezorConnectBitcoin,
+        TrezorConnectEthereum,
+        TrezorConnectCardano,
+        TrezorConnectMonero,
+        TrezorConnectRipple,
+        TrezorConnectSolana,
+        TrezorConnectStellar,
+        TrezorConnectTezos,
+        TrezorConnectTron,
+        TrezorConnectEvolu {}
