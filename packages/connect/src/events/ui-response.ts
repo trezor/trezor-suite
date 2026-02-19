@@ -17,7 +17,6 @@ export const UI_RESPONSE = {
     RECEIVE_ACCOUNT: 'ui-receive_account',
     RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
-    CHANGE_SETTINGS: 'ui-change_settings',
 } as const;
 
 export interface UiResponseConfirmation {
