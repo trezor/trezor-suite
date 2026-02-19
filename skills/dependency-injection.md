@@ -2,6 +2,10 @@
 
 Some parts of the codebase use the Dependency Injection (DI) pattern. Instead of importing dependencies directly, pass them to the service as parameters. This allows better testability and separation of concerns.
 
+## Skill boundaries
+
+Use this skill mainly for packages that directly mention this skill.
+
 ## Service definition standard
 
 The unified pattern for defining services is as follows.
