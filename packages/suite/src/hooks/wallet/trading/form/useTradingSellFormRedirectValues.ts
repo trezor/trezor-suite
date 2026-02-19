@@ -8,6 +8,7 @@ import {
     TradingCountryCode,
     type TradingSellFormProps,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     selectTradingComposedTransactionInfo,
     useTradingAssets,
 } from '@suite-common/trading';
@@ -78,6 +79,7 @@ export const useTradingSellFormRedirectValues = (
               amountInCrypto: quotesRequest.amountInCrypto,
               sendCryptoSelect: sendCrypto?.asset,
               countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
+              countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
               paymentMethod: quotesRequest.paymentMethod && {
                   value: quotesRequest.paymentMethod,
                   label: quotesRequest.paymentMethod,

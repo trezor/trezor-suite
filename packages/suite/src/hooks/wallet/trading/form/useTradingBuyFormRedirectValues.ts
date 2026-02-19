@@ -4,6 +4,7 @@ import {
     TradingBuyFormProps,
     TradingCountryCode,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     useTradingAssets,
 } from '@suite-common/trading';
 
@@ -22,6 +23,7 @@ export const useTradingBuyFormRedirectValues = (
         cryptoSelect: createAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
         currencySelect: buildTradingFiatOption(quotesRequest.fiatCurrency as FiatCurrencyCode),
         countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
+        countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
 
         // fill the input that corresponds to the entered amount type
         ...(quotesRequest.wantCrypto

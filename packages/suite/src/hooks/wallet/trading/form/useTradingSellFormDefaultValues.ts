@@ -6,6 +6,7 @@ import {
     type TradingPaymentMethodListProps,
     enabledTradingCurrencies,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     regional,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -27,6 +28,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 export const useTradingSellFormDefaultValues = (
     accountKey: AccountKey,
     sellInfoCountry: TradingCountryCode | undefined,
+    sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {
     const { cryptoId } = useTradingFormAccount('sell');
     const { isTorEnabled } = useSelector(selectTorState);
@@ -36,7 +38,13 @@ export const useTradingSellFormDefaultValues = (
         cryptoId,
     });
     const country = !isTorEnabled ? sellInfoCountry : regional.UNKNOWN_COUNTRY;
+    const countrySubdivision = !isTorEnabled ? sellInfoCountrySubdivision : undefined;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
+
+    const defaultSubdivision = useMemo(
+        () => getDefaultCountrySubdivision(countrySubdivision),
+        [countrySubdivision],
+    );
 
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
@@ -80,11 +88,18 @@ export const useTradingSellFormDefaultValues = (
             ...defaultFormState,
             sendCryptoSelect: defaultAsset,
             countrySelect: defaultCountry,
+            countrySubdivisionSelect: defaultSubdivision,
             paymentMethod: defaultPaymentMethod,
             amountInCrypto: true,
         }),
-        [defaultFormState, defaultAsset, defaultCountry, defaultPaymentMethod],
+        [defaultFormState, defaultAsset, defaultCountry, defaultPaymentMethod, defaultSubdivision],
     );
 
-    return { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod };
+    return {
+        defaultValues,
+        defaultCountry,
+        defaultSubdivision,
+        defaultCurrency,
+        defaultPaymentMethod,
+    };
 };

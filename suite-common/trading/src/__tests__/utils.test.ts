@@ -17,6 +17,7 @@ import {
     filterQuotesAccordingTags,
     getBestRatedQuote,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     getTagAndInfoNote,
     getTradingFormState,
     getTradingPaymentMethods,
@@ -118,12 +119,16 @@ describe('addIdsToQuotes', () => {
 
         expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
         expect(addIdsToQuotes(undefined, 'buy')).toStrictEqual([]);
-        expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
-            quotes.filter(q => q.orderId && q.paymentId).length,
-        );
-        expect(addIdsToQuotes(quotesExchange, 'exchange').length).toStrictEqual(
-            quotesExchange.filter(q => q.orderId).length,
-        );
+
+        const buyResult = addIdsToQuotes(quotes, 'buy');
+        expect(buyResult.length).toStrictEqual(quotes.length);
+        expect(
+            buyResult.filter(q => q.orderId && 'paymentId' in q && q.paymentId).length,
+        ).toStrictEqual(quotes.length);
+
+        const exchangeResult = addIdsToQuotes(quotesExchange, 'exchange');
+        expect(exchangeResult.length).toStrictEqual(quotesExchange.length);
+        expect(exchangeResult.filter(q => q.orderId).length).toStrictEqual(quotesExchange.length);
     });
 });
 
@@ -293,6 +298,24 @@ describe('getDefaultCountry', () => {
             name: 'Worldwide',
             shortLabel: '🌍 Worldwide',
             value: 'unknown',
+        });
+    });
+});
+
+describe('getDefaultCountrySubdivision', () => {
+    it('should return undefined when subdivision is undefined', () => {
+        expect(getDefaultCountrySubdivision(undefined)).toBeUndefined();
+    });
+
+    it('should return undefined when subdivision code is not in the list', () => {
+        expect(getDefaultCountrySubdivision('XX')).toBeUndefined();
+    });
+
+    it('should return correct option for a known subdivision code', () => {
+        expect(getDefaultCountrySubdivision('CA')).toEqual({
+            value: 'CA',
+            label: 'California',
+            name: 'California',
         });
     });
 });

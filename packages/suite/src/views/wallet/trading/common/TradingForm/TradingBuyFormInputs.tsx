@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
+import { isCountrySubdivisionRequired } from '@suite-common/geolocation';
 import {
+    TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
@@ -29,9 +31,11 @@ import {
     TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
+    const { defaultCountry } = context;
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
@@ -39,6 +43,7 @@ export const TradingBuyFormInputs = () => {
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
+        [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
         amountInCrypto,
         currencySelect,
     } = getValues();
@@ -59,6 +64,9 @@ export const TradingBuyFormInputs = () => {
     );
 
     const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
+
+    const selectedCountry = countrySelect ?? defaultCountry;
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
 
     return (
         <Column gap={20}>
@@ -105,6 +113,13 @@ export const TradingBuyFormInputs = () => {
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+
+                {selectedCountry && countryRequiresSubdivision && (
+                    <TradingFormInputCountrySubdivision
+                        label="TR_TRADING_COUNTRY_SUBDIVISION"
+                        country={selectedCountry}
+                    />
+                )}
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>

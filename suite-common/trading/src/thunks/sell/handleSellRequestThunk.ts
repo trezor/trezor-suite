@@ -1,5 +1,6 @@
 import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { hasCountrySubdivisions, isCountryCode } from '@suite-common/geolocation';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -62,10 +63,21 @@ const getQuoteRequestData = ({
         cryptoCurrency: sendCryptoSelect.id,
         fiatCurrency: currencySelect.value.toUpperCase(),
         country: countrySelect.value,
+        subdivision: formValues.countrySubdivisionSelect?.value,
         cryptoStringAmount,
         fiatStringAmount,
         flows: TRADING_DEFAULT_SELL_FLOWS,
     };
+
+    // do not fetch quotes until subdivision is set when country has subdivisions
+    if (
+        request.country &&
+        isCountryCode(request.country) &&
+        hasCountrySubdivisions(request.country) &&
+        !formValues.countrySubdivisionSelect?.value
+    ) {
+        return null;
+    }
 
     return request;
 };
