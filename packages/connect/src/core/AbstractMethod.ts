@@ -1,8 +1,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Capability } from '@trezor/protobuf/src/messages';
-import { typedObjectKeys, versionUtils } from '@trezor/utils';
+import { versionUtils } from '@trezor/utils';
 
-import { NETWORK } from '../constants';
 import type { Device } from '../device/Device';
 import {
     CallMethodPayload,
@@ -144,8 +143,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     protected requiredDeviceCapabilities: Capability[] = [];
 
-    protected network: NETWORK.NetworkType;
-
     public useCardanoDerivation: boolean;
 
     public confirmMissingBackup: boolean;
@@ -176,13 +173,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
                 : false;
         this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
 
-        // Determine the type based on the method name
-        this.network = 'bitcoin';
-        typedObjectKeys(NETWORK.TYPES).forEach(key => {
-            if (this.name.startsWith(key)) {
-                this.network = key;
-            }
-        });
         // default values for all methods
         this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
         this.requiredPermissions = [];
