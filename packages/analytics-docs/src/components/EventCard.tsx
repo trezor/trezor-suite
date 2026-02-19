@@ -46,7 +46,12 @@ const toEventName = (input: string): string =>
 
 const COPY_FEEDBACK_MS = 2000;
 
-const Header = ({ event }: { event: EventDoc }) => {
+type HeaderProps = {
+    event: EventDoc;
+    onEdit?: (event: EventDoc) => void;
+};
+
+const Header = ({ event, onEdit }: HeaderProps) => {
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
     const [copied, setCopied] = useState(false);
@@ -76,6 +81,16 @@ const Header = ({ event }: { event: EventDoc }) => {
     };
 
     const dropdownItems = [
+        ...(onEdit
+            ? [
+                  {
+                      key: 'edit',
+                      label: 'Edit',
+                      icon: 'pencil' as const,
+                      onClick: () => onEdit(event),
+                  },
+              ]
+            : []),
         {
             key: 'open-definition',
             label: 'Open definition on Github',
@@ -138,9 +153,14 @@ const Header = ({ event }: { event: EventDoc }) => {
     );
 };
 
-export const EventCard = ({ event }: { event: EventDoc }) => (
+type EventCardProps = {
+    event: EventDoc;
+    onEdit?: (event: EventDoc) => void;
+};
+
+export const EventCard = ({ event, onEdit }: EventCardProps) => (
     <Card paddingType="small">
-        <Header event={event} />
+        <Header event={event} onEdit={onEdit} />
         <InfoItem label="Trigger" typographyStyle="body-xs">
             <Markdown>{event.descriptionTrigger}</Markdown>
         </InfoItem>

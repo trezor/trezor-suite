@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ import {
     H2,
     H3,
     IconButton,
+    Modal,
     Row,
     Spinner,
     Text,
@@ -22,6 +23,7 @@ import {
 } from '@trezor/components';
 import { hexToRgba } from '@trezor/utils';
 
+import { AddEventModal } from './components/AddEventModal';
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
@@ -29,6 +31,7 @@ import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
 import { SIDEBAR_WIDTH, VersionsSidebar } from './components/VersionsSidebar';
 import { HEADER_HEIGHT } from './constants';
+import type { EventDoc } from './types';
 import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
@@ -190,6 +193,8 @@ const AnalyticsContent = ({
 };
 
 export const App = ({ theme }: AppProps) => {
+    const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
+    const [eventToEdit, setEventToEdit] = useState<EventDoc | null>(null);
     const {
         filteredEvents,
         setQuery,
@@ -261,14 +266,19 @@ export const App = ({ theme }: AppProps) => {
         return () => window.removeEventListener('hashchange', onHashChange);
     }, [scrollToHashElement]);
 
+    const handleEditEvent = useCallback((event: EventDoc) => {
+        setEventToEdit(event);
+        setIsAddEventModalOpen(true);
+    }, []);
+
     const eventCards = useMemo(
         () =>
             filteredEvents.map(event => (
                 <EventCardWrapper key={event.name} id={getEventId(event.name)}>
-                    <EventCard event={event} />
+                    <EventCard event={event} onEdit={handleEditEvent} />
                 </EventCardWrapper>
             )),
-        [filteredEvents],
+        [filteredEvents, handleEditEvent],
     );
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
@@ -277,122 +287,135 @@ export const App = ({ theme }: AppProps) => {
     const addButtonProps = {
         intent: 'neutral' as const,
         priority: 'secondary' as const,
-        href: 'https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md',
         size: 'small' as const,
+        onClick: () => setIsAddEventModalOpen(true),
     };
 
     return (
         <>
             <GlobalStyle theme={theme} />
-            <Box minHeight="100vh">
-                <TopBar>
-                    <ContentContainer>
-                        <Row justifyContent="space-between" gap={20} alignItems="center" flex="1">
-                            <Row gap={12} alignItems="center">
-                                <Heading>Analytics events docs</Heading>
-                                {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
-                            </Row>
-                            <Row gap={8} alignItems="center">
-                                <Tooltip isActive={isMobile} content="Add event">
-                                    {isMobile ? (
-                                        <IconButton icon="plus" {...addButtonProps} />
-                                    ) : (
-                                        <Button iconLeft="plus" {...addButtonProps}>
-                                            Add event
-                                        </Button>
-                                    )}
-                                </Tooltip>
-                                <ThemeSwitch />
-                                <Tooltip
-                                    content={
-                                        isSidebarOpen
-                                            ? 'Hide versions'
-                                            : 'Show versions by changelog'
-                                    }
-                                >
-                                    <IconButton
-                                        icon="clockCounterClockwise"
-                                        onClick={() => {
-                                            setIsSidebarLoading(true);
-                                            if (isSidebarOpen) {
-                                                startTransition(() => setIsSidebarOpen(false));
-                                            } else {
-                                                requestAnimationFrame(() => {
+            <Modal.Provider>
+                <AddEventModal
+                    isOpen={isAddEventModalOpen}
+                    onClose={() => {
+                        setIsAddEventModalOpen(false);
+                        setEventToEdit(null);
+                    }}
+                    initialEvent={eventToEdit}
+                />
+                <Box minHeight="100vh">
+                    <TopBar>
+                        <ContentContainer>
+                            <Row
+                                justifyContent="space-between"
+                                gap={20}
+                                alignItems="center"
+                                flex="1"
+                            >
+                                <Row gap={12} alignItems="center">
+                                    <Heading>Analytics events docs</Heading>
+                                    {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
+                                </Row>
+                                <Row gap={8} alignItems="center">
+                                    <Tooltip isActive={isMobile} content="Add event">
+                                        {isMobile ? (
+                                            <IconButton icon="plus" {...addButtonProps} />
+                                        ) : (
+                                            <Button iconLeft="plus" {...addButtonProps}>
+                                                Add event
+                                            </Button>
+                                        )}
+                                    </Tooltip>
+                                    <ThemeSwitch />
+                                    <Tooltip
+                                        content={
+                                            isSidebarOpen
+                                                ? 'Hide versions'
+                                                : 'Show versions by changelog'
+                                        }
+                                    >
+                                        <IconButton
+                                            icon="clockCounterClockwise"
+                                            onClick={() => {
+                                                setIsSidebarLoading(true);
+                                                if (isSidebarOpen) {
+                                                    startTransition(() => setIsSidebarOpen(false));
+                                                } else {
                                                     requestAnimationFrame(() => {
-                                                        startTransition(() =>
-                                                            setIsSidebarOpen(true),
-                                                        );
+                                                        requestAnimationFrame(() => {
+                                                            startTransition(() =>
+                                                                setIsSidebarOpen(true),
+                                                            );
+                                                        });
                                                     });
-                                                });
-                                            }
-                                        }}
-                                        intent={isSidebarOpen ? 'brand' : 'neutral'}
-                                        size="small"
-                                        priority={isSidebarOpen ? 'primary' : 'secondary'}
-                                    />
-                                </Tooltip>
+                                                }
+                                            }}
+                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                            size="small"
+                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                        />
+                                    </Tooltip>
+                                </Row>
                             </Row>
-                        </Row>
-                        <Row
-                            justifyContent="space-between"
-                            gap={16}
-                            alignItems="center"
-                            flexWrap={isMobile ? 'wrap-reverse' : undefined}
-                        >
-                            <ResultsInfo
-                                filteredCount={filteredEvents.length}
-                                totalCount={allEvents.length}
-                                platform={platform}
-                                query={debouncedQuery}
-                                hasActiveFilters={hasActiveFilters}
-                                onClearAll={clearAll}
-                            />
-                            <Filter
-                                setQuery={setQuery}
-                                query={query}
-                                setPlatform={setPlatform}
-                                platform={platform}
-                                setSort={setSort}
-                                sort={sort}
-                            />
-                        </Row>
-                    </ContentContainer>
-                </TopBar>
+                            <Row
+                                justifyContent="space-between"
+                                gap={16}
+                                alignItems="center"
+                                flexWrap={isMobile ? 'wrap-reverse' : undefined}
+                            >
+                                <ResultsInfo
+                                    filteredCount={filteredEvents.length}
+                                    totalCount={allEvents.length}
+                                    platform={platform}
+                                    query={debouncedQuery}
+                                    hasActiveFilters={hasActiveFilters}
+                                    onClearAll={clearAll}
+                                />
+                                <Filter
+                                    setQuery={setQuery}
+                                    query={query}
+                                    setPlatform={setPlatform}
+                                    platform={platform}
+                                    setSort={setSort}
+                                    sort={sort}
+                                />
+                            </Row>
+                        </ContentContainer>
+                    </TopBar>
 
-                {isSidebarOpen ? (
-                    <MainWithSidebar>
-                        <ContentArea>
+                    {isSidebarOpen ? (
+                        <MainWithSidebar>
+                            <ContentArea>
+                                <ContentContainer>
+                                    <AnalyticsContent
+                                        isAnalyticsDataLoading={isAnalyticsDataLoading}
+                                        isAnalyticsDataGenerated={isAnalyticsDataGenerated}
+                                        eventCards={eventCards}
+                                        hasEventCards={filteredEvents.length > 0}
+                                        generatedAt={generatedAt}onContentReady={handleContentReady}
+                                    />
+                                </ContentContainer>
+                            </ContentArea>
+                            <VersionsSidebar
+                                versionsWithEvents={versionsWithEvents}
+                                onEventClick={handleSidebarEventClick}
+                            />
+                        </MainWithSidebar>
+                    ) : (
+                        <Content>
                             <ContentContainer>
                                 <AnalyticsContent
                                     isAnalyticsDataLoading={isAnalyticsDataLoading}
                                     isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                     eventCards={eventCards}
-                                    hasEventCards={filteredEvents.length > 0}
-                                    generatedAt={generatedAt}
+                                    hasEventCards={filteredEvents.length > 0}generatedAt={generatedAt}
                                     onContentReady={handleContentReady}
                                 />
                             </ContentContainer>
-                        </ContentArea>
-                        <VersionsSidebar
-                            versionsWithEvents={versionsWithEvents}
-                            onEventClick={handleSidebarEventClick}
-                        />
-                    </MainWithSidebar>
-                ) : (
-                    <Content>
-                        <ContentContainer>
-                            <AnalyticsContent
-                                isAnalyticsDataLoading={isAnalyticsDataLoading}
-                                isAnalyticsDataGenerated={isAnalyticsDataGenerated}
-                                eventCards={eventCards}
-                                hasEventCards={filteredEvents.length > 0}
-                                generatedAt={generatedAt}
-                                onContentReady={handleContentReady}
-                            />
-                        </ContentContainer>
-                    </Content>
-                )}
-            </Box>
+                        </Content>
+                    )}
+                </Box>
+            </Modal.Provider>
         </>
     );
 };
