@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchUtxoTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -30,7 +31,6 @@ import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 
 import { UtxoSearch } from './UtxoSearch';

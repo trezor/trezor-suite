@@ -5,7 +5,7 @@ import { PageName } from '@suite-common/suite-types';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
-import PasswordManager from 'src/views/password-manager';
+import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
@@ -66,7 +66,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-trading-redirect': TradingRedirect,
     'wallet-trading-transactions': TradingTransactions,
 
-    'password-manager-index': PasswordManager,
+    'password-manager-index': PasswordManagerView,
 
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,

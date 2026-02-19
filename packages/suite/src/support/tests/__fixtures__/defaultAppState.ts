@@ -5,7 +5,7 @@ import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
-import { initialSuiteSyncState } from 'src/actions/suiteSync/suiteSyncSlice';
+import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { BackupState } from 'src/reducers/backup/backupReducer';
 import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { AppState } from 'src/reducers/store';
@@ -30,7 +30,7 @@ export const initialAppState: AppState = {
     suiteSyncData: {
         wallets: {},
     },
-    suiteSync: initialSuiteSyncState,
+    suiteSync: initialSuiteSyncDesktopState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     window: {
         isVisible: true,

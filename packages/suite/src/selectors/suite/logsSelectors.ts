@@ -1,4 +1,9 @@
 import {
+    MetadataRootState,
+    selectLabelingDataForWallet,
+    selectSelectedLabelsProviderType,
+} from '@suite/metadata';
+import {
     LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
     selectRedactedApplicationInfo,
@@ -20,11 +25,6 @@ import {
     DesktopUpdateRootState,
     selectDesktopUpdateAllowPrerelease,
 } from '../../reducers/suite/desktopUpdateReducer';
-import {
-    MetadataRootState,
-    selectLabelingDataForWallet,
-    selectSelectedLabelsProviderType,
-} from '../../reducers/suite/metadataReducer';
 import { SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &

@@ -1,0 +1,58 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "baseUrl": ".",
+        "paths": {
+            "src/*": [
+                "../../packages/suite/src/*"
+            ]
+        }
+    },
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/metadata-types"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-rbf-labels-migrations-types"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../analytics" },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/eslint" },
+        {
+            "path": "../../packages/suite-desktop-api"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

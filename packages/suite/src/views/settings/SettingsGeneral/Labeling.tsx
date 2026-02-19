@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { metadataLabelingActions } from '@suite/metadata';
 import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

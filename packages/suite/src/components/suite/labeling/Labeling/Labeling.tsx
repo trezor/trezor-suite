@@ -2,23 +2,23 @@ import { ReactNode, useCallback } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import {
+    metadataLabelingActions,
+    selectIsLabelingAvailableForEntity,
+    selectMetadata,
+} from '@suite/metadata';
+import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
 
-import { addMetadata, init } from 'src/actions/suite/metadata/metadataLabelingActions';
 import {
     selectDesktopSuiteSyncInteraction,
     updateShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectIsLabelingAvailableForEntity,
-    selectMetadata,
-} from 'src/reducers/suite/metadataReducer';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
@@ -97,7 +97,7 @@ export const Labeling = ({
                 return;
             } else {
                 return await dispatch(
-                    init(
+                    metadataLabelingActions.init(
                         // Provide force=true argument (user wants to enable metadata).
                         true,
                         // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
@@ -140,7 +140,9 @@ export const Labeling = ({
 
                 return true;
             } else {
-                return await dispatch(addMetadata({ ...payload, value: value || undefined }));
+                return await dispatch(
+                    metadataLabelingActions.addMetadata({ ...payload, value: value || undefined }),
+                );
             }
         },
         [isSuiteSyncEnabled, dispatch, payload, deviceStaticSessionId],

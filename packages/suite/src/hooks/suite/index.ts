@@ -15,7 +15,6 @@ export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
 export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
-export { usePasswords } from './usePasswords';
 export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';
 export { useDefaultAccountLabel } from './useDefaultAccountLabel';

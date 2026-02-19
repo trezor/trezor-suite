@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
+import { metadataLabelingActions } from '@suite/metadata';
 import { Tooltip } from '@trezor/components';
 
-import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

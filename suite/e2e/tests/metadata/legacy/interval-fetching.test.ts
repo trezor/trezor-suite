@@ -1,4 +1,4 @@
-import * as METADATA_LABELING from '@trezor/suite/src//actions/suite/metadata/metadataLabelingConstants';
+import { metadataLabelingConstants as METADATA_LABELING } from '@suite/metadata';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';

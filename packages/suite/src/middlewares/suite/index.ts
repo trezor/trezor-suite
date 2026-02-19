@@ -1,5 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
+import { metadataMiddleware } from '@suite/metadata';
 import { logsMiddleware } from '@suite-common/logger';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { preparePushNotificationMiddleware } from '@suite-common/wallet-core';
@@ -9,7 +10,6 @@ import buttonRequest from './buttonRequestMiddleware';
 import events from './eventsMiddleware';
 import log from './logsMiddleware';
 import messageSystem from './messageSystemMiddleware';
-import metadata from './metadataMiddleware';
 import protocol from './protocolMiddleware';
 import redirect from './redirectMiddleware';
 import router from './routerMiddleware';
@@ -27,7 +27,7 @@ export const getSuiteMiddleware = (
     buttonRequest,
     events,
     preparePushNotificationMiddleware(getExtra),
-    metadata,
+    metadataMiddleware,
     messageSystem,
     protocol,
     router,

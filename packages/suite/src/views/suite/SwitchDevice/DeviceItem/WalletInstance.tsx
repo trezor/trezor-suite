@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import {
+    metadataLabelingConstants as METADATA_LABELING,
+    selectLabelingDataForWallet,
+    selectMetadata,
+} from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
@@ -26,7 +31,6 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import * as METADATA_LABELING from 'src/actions/suite/metadata/metadataLabelingConstants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
 import { Labeling } from 'src/components/suite/labeling/Labeling/Labeling';
@@ -35,7 +39,6 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { selectLabelingDataForWallet, selectMetadata } from 'src/reducers/suite/metadataReducer';
 import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';

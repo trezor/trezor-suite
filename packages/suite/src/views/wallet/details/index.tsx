@@ -15,7 +15,6 @@ import {
     Url,
 } from '@trezor/urls';
 
-import { exportMetadataToBip329File } from 'src/actions/suite/metadata/metadataThunks';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
@@ -27,6 +26,7 @@ import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { exportMetadataToBip329File } from '../../../actions/labels/exportMetadataToBip329File';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 const Heading = styled.h3`

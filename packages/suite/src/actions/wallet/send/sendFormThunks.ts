@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
 import { selectSelectedDevice } from '@suite-common/device';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -28,14 +29,7 @@ import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils
 import { PROTO, StaticSessionId, Unsuccessful } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
-import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
-import {
-    StateBeforePush,
-    asStateBeforePush,
-    moveLabelsForRbfThunk,
-} from 'src/actions/suite/metadata/moveLabelsForRbfThunk';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import {
     selectIsSelectedAccountLoaded,
     selectSelectedAccountKey,
@@ -43,6 +37,11 @@ import {
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
+import {
+    StateBeforePush,
+    asStateBeforePush,
+    moveLabelsForRbfThunk,
+} from '../../labels/moveLabelsForRbfThunk';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '../processLegacyMetadataIntoSuiteSyncThunk';
 
 export const saveSendFormDraftThunk = createThunk(

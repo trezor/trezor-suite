@@ -1,6 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import {
     selectSuiteSyncAddressLabels,
     selectSuiteSyncOutputLabels,
@@ -27,7 +28,6 @@ import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 type ResolveUtxoSpendableProps = {

@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -37,7 +38,6 @@ import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
