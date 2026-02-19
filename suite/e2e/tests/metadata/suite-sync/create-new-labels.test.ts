@@ -55,75 +55,89 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         await metadataPage.enableSuiteSync();
     });
 
-    test('Create new labels', async ({ evoluClient, dashboardPage, walletPage, metadataPage, page }) => {
+    test('Create new labels', async ({
+        evoluClient,
+        dashboardPage,
+        walletPage,
+        metadataPage,
+        page,
+    }) => {
         await test.step('Change account label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
             await metadataPage.account.changeLabel({
                 accountId: AccountLabelId.BitcoinDefault1,
                 label: expectedAccount.label,
             });
+        });
+
+        await test.step('Verify account label is set in all places', async () => {
             await expect
                 .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
                 .toHaveText(expectedAccount.label, { timeout: 30_000 });
+
+            await page.getByTestId('@wallet/menu/wallet-receive').click();
+            await page.getByTestId('@wallet/receive/reveal-address-button').click();
             await page.pause();
-                await page.getByTestId('@wallet/menu/wallet-receive').click();
-                await page.getByTestId('@wallet/receive/reveal-address-button').click();
-                await page.pause();
-                await expect(page.getByTestId('@modal/header-paragraph')).toHaveText('Evolu write BTC account');
-                await page.getByTestId('@modal/close-button').click();
-                await page.getByTestId('@account-subpage/back').click();
-                await page.getByTestId('@wallet/menu/wallet-send').click();
-                await page.getByRole('button', { name: 'To myself Debug only' }).click();
-                await expect(page.getByTestId('outputs.0.address/bottom-text')).toHaveText('Evolu write BTC account');
+            await expect(page.getByTestId('@modal/header-paragraph')).toHaveText(
+                expectedAccount.label,
+            );
+            await page.getByTestId('@modal/close-button').click();
+            await page.getByTestId('@account-subpage/back').click();
+            await page.getByTestId('@wallet/menu/wallet-send').click();
+            await page.getByTestId('@wallet/send/debug-sent-to-myself-button').click();
+            await expect(page.getByTestId('outputs.0.address/bottom-text')).toHaveText(
+                expectedAccount.label,
+            );
+        });
+        // we need to check toasts
+        await test.step('Change wallet label', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.changeLabel({
+                index: defaultWalletIndex,
+                label: expectedWallet.label,
+            });
+            await expect
+                .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
+                .toHaveText(expectedWallet.label);
+            await dashboardPage.deviceSwitchingCloseButton.click();
+            // TODO: we want to add this to different test
+            // await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(expectedWallet.label);
             await page.pause();
-    });
-
-    await test.step('Change wallet label', async () => {
-        await dashboardPage.openDeviceSwitcher();
-        await metadataPage.wallet.changeLabel({
-            index: defaultWalletIndex,
-            label: expectedWallet.label,
         });
-        await expect
-            .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
-            .toHaveText(expectedWallet.label);
-        await dashboardPage.deviceSwitchingCloseButton.click();
-        await page.pause();
-    });
 
-    await test.step('Change address label', async () => {
-        await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-        await walletPage.receiveButton.click();
-        await metadataPage.address.changeLabel({
-            address: expectedAddress.address,
-            label: expectedAddress.label,
+        await test.step('Change address label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await walletPage.receiveButton.click();
+            await metadataPage.address.changeLabel({
+                address: expectedAddress.address,
+                label: expectedAddress.label,
+            });
+            await expect
+                .soft(metadataPage.address.label(expectedAddress.address))
+                .toHaveText(expectedAddress.label);
         });
-        await expect
-            .soft(metadataPage.address.label(expectedAddress.address))
-            .toHaveText(expectedAddress.label);
-    });
 
-    await test.step('Change output label', async () => {
-        await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-        await metadataPage.output.changeLabel({
-            outputId: expectedOutput.txId,
-            txNumber: Number(expectedOutput.outputIndex),
-            label: expectedOutput.label,
+        await test.step('Change output label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await metadataPage.output.changeLabel({
+                outputId: expectedOutput.txId,
+                txNumber: Number(expectedOutput.outputIndex),
+                label: expectedOutput.label,
+            });
+            await expect(
+                metadataPage.output.outputLabel(
+                    expectedOutput.txId,
+                    Number(expectedOutput.outputIndex),
+                ),
+            ).toHaveText(expectedOutput.label);
         });
-        await expect(
-            metadataPage.output.outputLabel(
-                expectedOutput.txId,
-                Number(expectedOutput.outputIndex),
-            ),
-        ).toHaveText(expectedOutput.label);
-    });
 
-    await test.step('Verify data are sync to Relay', async () => {
-        await evoluClient.init({ ownerSecret });
-        await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
-        await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
-        await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });
-        await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
+        await test.step('Verify data are sync to Relay', async () => {
+            await evoluClient.init({ ownerSecret });
+            await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
+            await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
+            await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });
+            await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
+        });
     });
-});
 });

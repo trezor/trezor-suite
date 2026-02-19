@@ -23,7 +23,13 @@ export const DevSelfAddress = ({ account, outputId }: DevSelfAddressProps) => {
     };
 
     return (
-        <Button size="small" priority="secondary" intent="neutral" onClick={fillSelfAddress}>
+        <Button
+            data-testid="@wallet/send/debug-sent-to-myself-button"
+            size="small"
+            priority="secondary"
+            intent="neutral"
+            onClick={fillSelfAddress}
+        >
             <DebugOnlyBadge>To myself</DebugOnlyBadge>
         </Button>
     );
