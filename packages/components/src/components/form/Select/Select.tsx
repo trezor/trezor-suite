@@ -49,6 +49,8 @@ export type SelectProps = AllowedFrameProps &
         onChange?: (value: OptionType, ref?: SelectInstance<OptionType, boolean> | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
+        /** When using menuPortalTarget (e.g. in modals), set this so the menu appears above the modal */
+        menuPortalZIndex?: number;
     };
 
 export const Select = ({
@@ -62,6 +64,7 @@ export const Select = ({
     placeholder,
     isLoading = false,
     openMenuOnFocus = true,
+    menuPortalZIndex,
     components,
     'data-testid': dataTest,
     ...rest
@@ -81,6 +84,11 @@ export const Select = ({
             return props;
         },
         {} as Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'>,
+    );
+
+    const menuStyles = useMemo(
+        () => createSharedMenuStyles<OptionType>(menuPortalZIndex),
+        [menuPortalZIndex],
     );
 
     const closeMenuOnScroll = (e: Event) => {
@@ -153,7 +161,7 @@ export const Select = ({
                 menuPlacement="auto"
                 placeholder={placeholder ?? ''}
                 unstyled
-                styles={createSharedMenuStyles<OptionType>()}
+                styles={menuStyles}
                 components={memoizedComponents}
                 instanceId={autoInstanceId}
                 {...reactSelectProps}

@@ -4,9 +4,11 @@ import { CSSObject } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-export const createSharedMenuStyles = <OptionType>(): StylesConfig<OptionType, boolean> => ({
+export const createSharedMenuStyles = <OptionType>(
+    menuPortalZIndex?: number,
+): StylesConfig<OptionType, boolean> => ({
     menuPortal: base => ({
         ...(base as Record<string, CSSObject>),
-        zIndex: zIndices.selectMenu,
+        zIndex: menuPortalZIndex ?? zIndices.selectMenu,
     }),
 });
