@@ -51,7 +51,6 @@ export const UI_REQUEST = {
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
-    SET_OPERATION: 'ui-set_operation',
     SELECT_ACCOUNT: 'ui-select_account',
     SELECT_FEE: 'ui-select_fee',
     UPDATE_CUSTOM_FEE: 'ui-update_custom_fee',
@@ -162,12 +161,6 @@ export interface UiRequestButton {
 export interface UiRequestAddressValidation {
     type: typeof UI_REQUEST.ADDRESS_VALIDATION;
     payload: UiRequestButtonData | undefined;
-}
-
-// todo: not used at the moment
-export interface UiRequestSetOperation {
-    type: typeof UI_REQUEST.SET_OPERATION;
-    payload: string;
 }
 
 export interface UiRequestConfirmation {
@@ -318,7 +311,6 @@ export type UiEvent =
     | FirmwareReconnect
     | FirmwareDisconnect
     | UiRequestAddressValidation
-    | UiRequestSetOperation
     | UiRequestFirmwareDownloaded;
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
