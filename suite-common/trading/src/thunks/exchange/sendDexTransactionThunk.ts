@@ -62,6 +62,8 @@ export const sendDexTransactionThunk = createThunk<
             !selectedQuote.receiveAddress ||
             (selectedQuote.status !== 'APPROVAL_REQ' && selectedQuote.status !== 'CONFIRM')
         ) {
+            console.error('Failed to send dex transaction - invalid quote');
+
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
@@ -115,6 +117,8 @@ export const sendDexTransactionThunk = createThunk<
 
         if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
             const { payload } = recomposeAndSignTx;
+
+            console.error('Failed to send dex transaction - sign tx error');
 
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',

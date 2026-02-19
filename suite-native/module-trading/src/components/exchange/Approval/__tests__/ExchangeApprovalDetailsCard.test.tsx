@@ -1,3 +1,4 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -6,8 +7,19 @@ import { ExchangeApprovalDetailsCard } from '../ExchangeApprovalDetailsCard';
 describe('ExchangeApprovalDetailsCard', () => {
     let preloadedState: PreloadedState;
 
-    const renderExchangeApprovalDetailsCard = () =>
-        renderWithStoreProviderAsync(<ExchangeApprovalDetailsCard />, { preloadedState });
+    const renderExchangeApprovalDetailsCard = (
+        fee: string | undefined = '100000',
+        isLoading = false,
+        networkSymbol: NetworkSymbol | undefined,
+    ) =>
+        renderWithStoreProviderAsync(
+            <ExchangeApprovalDetailsCard
+                fee={fee}
+                isLoading={isLoading}
+                networkSymbol={networkSymbol}
+            />,
+            { preloadedState },
+        );
 
     beforeEach(() => {
         preloadedState = {
@@ -20,7 +32,7 @@ describe('ExchangeApprovalDetailsCard', () => {
     it('should render card', async () => {
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
 
-        const { getByText } = await renderExchangeApprovalDetailsCard();
+        const { getByText } = await renderExchangeApprovalDetailsCard('100000', false, 'eth');
 
         expect(getByText('Approval details')).toBeTruthy();
         expect(getByText('Provider')).toBeTruthy();
@@ -28,8 +40,16 @@ describe('ExchangeApprovalDetailsCard', () => {
         expect(getByText('Fee')).toBeTruthy();
     });
 
-    it('should render nothing without preselectedQuote', async () => {
-        const { toJSON } = await renderExchangeApprovalDetailsCard();
+    it('should render nothing without quote', async () => {
+        const { toJSON } = await renderExchangeApprovalDetailsCard('100000', false, 'eth');
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render nothing without networkSymbol', async () => {
+        preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
+
+        const { toJSON } = await renderExchangeApprovalDetailsCard('100000', false, undefined);
 
         expect(toJSON()).toBeNull();
     });

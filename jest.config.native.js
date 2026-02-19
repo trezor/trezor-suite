@@ -18,6 +18,7 @@ module.exports = {
     watchPathIgnorePatterns,
     moduleNameMapper: {
         ...moduleNameMapper,
+        '^@evolu/common$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native/expo-sqlite$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',

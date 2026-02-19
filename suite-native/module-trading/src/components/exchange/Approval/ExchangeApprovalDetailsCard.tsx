@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { cryptoIdToSymbol, selectTradingExchangePreselectedQuote } from '@suite-common/trading';
+import { selectTradingExchangeActiveQuote } from '@suite-common/trading';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
@@ -9,18 +10,24 @@ import { LimitPicker } from './LimitPicker';
 import { FeePicker } from '../../fees/FeePicker';
 import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 
-export const ExchangeApprovalDetailsCard = () => {
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
+type ExchangeApprovalDetailsCardProps = {
+    fee: string | undefined;
+    isLoading: boolean;
+    networkSymbol: NetworkSymbol | undefined;
+};
 
-    if (!quote) {
+const noop = () => {};
+
+export const ExchangeApprovalDetailsCard = ({
+    fee,
+    isLoading,
+    networkSymbol,
+}: ExchangeApprovalDetailsCardProps) => {
+    const quote = useSelector(selectTradingExchangeActiveQuote);
+
+    if (!quote || !networkSymbol) {
         return null;
     }
-
-    // TODO 22293 - set real values
-    const fee = '4.76';
-    const areFeesLoading = false;
-    const goToFeeSelection = () => {};
-    const networkSymbol = cryptoIdToSymbol(quote.send!)!;
 
     return (
         <Card noPadding>
@@ -32,10 +39,10 @@ export const ExchangeApprovalDetailsCard = () => {
             <ProviderInfoRow exchange={quote.exchange} />
             <LimitPicker />
             <FeePicker
-                fee={fee}
+                fee={fee ?? '0'}
                 symbol={networkSymbol}
-                onPress={goToFeeSelection}
-                isLoading={areFeesLoading}
+                onPress={noop}
+                isLoading={isLoading}
             />
         </Card>
     );

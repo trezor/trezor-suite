@@ -2,50 +2,56 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectTradingExchangePreselectedQuote } from '@suite-common/trading';
-import { AsyncButton, Box } from '@suite-native/atoms';
+import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     StackNavigationProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { useExchangeFlow } from '../../../hooks/exchange/useExchangeFlow';
+export type ApprovalButtonProps = {
+    isReady: boolean;
+    isDisabled?: boolean;
+};
 
-export const ApprovalButton = () => {
+export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
             StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
         >();
 
-    const { confirmTrade } = useExchangeFlow();
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const fromAccount = useSelector(selectExchangeSelectedSendAccount);
 
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
-
-    const handleContinue = async () => {
-        const success = await confirmTrade({
-            receiveAddress: quote?.receiveAddress ?? '',
-            trade: quote,
-            approvalFlow: true,
-            nextStep: () => {},
-        });
-
-        if (success) {
-            // TODO
-            navigation.navigate(TradingStackRoutes.TradingExchangePreview, { isApproved: true });
-        }
-    };
-
-    if (!quote) {
+    if (!quote || !isReady) {
         return null;
     }
 
+    const handleContinue = () => {
+        const tokenContract = quote.send
+            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            : undefined;
+        if (!fromAccount || !tokenContract) {
+            console.warn('account or tokenContract is not defined');
+
+            return;
+        }
+        navigation.navigate(TradingStackRoutes.TradingExchangeOutputsReview, {
+            accountKey: fromAccount.key,
+            tokenContract,
+            orderId: quote.orderId ?? '',
+        });
+    };
+
     return (
         <Box paddingTop="sp20">
-            <AsyncButton onPress={handleContinue}>
+            <Button onPress={handleContinue} isDisabled={isDisabled}>
                 <Translation id="generic.buttons.continue" />
-            </AsyncButton>
+            </Button>
         </Box>
     );
 };

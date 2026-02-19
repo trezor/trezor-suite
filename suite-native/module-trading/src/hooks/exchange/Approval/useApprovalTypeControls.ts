@@ -11,9 +11,9 @@ export const useApprovalTypeControls = (quote: ExchangeTrade | undefined) => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
 
     useEffect(() => {
-        if (!!quote && !quote?.approvalType) {
+        if (quote && !quote.approvalType) {
             dispatch(
-                tradingExchangeActions.savePreselectedQuote({
+                tradingExchangeActions.saveSelectedQuote({
                     ...quote,
                     approvalType: 'INFINITE',
                 }),
@@ -25,7 +25,7 @@ export const useApprovalTypeControls = (quote: ExchangeTrade | undefined) => {
         (newApprovalType: DexApprovalType) => {
             if (quote) {
                 dispatch(
-                    tradingExchangeActions.savePreselectedQuote({
+                    tradingExchangeActions.saveSelectedQuote({
                         ...quote,
                         approvalType: newApprovalType,
                     }),

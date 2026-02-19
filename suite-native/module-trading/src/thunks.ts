@@ -151,6 +151,7 @@ export const composeTradingTransactionThunk = createThunk(
                 tradeType === 'exchange'
                     ? selectTradingExchangeSelectedQuote(getState())
                     : selectTradingSellSelectedQuote(getState());
+
             const providers =
                 tradeType === 'exchange'
                     ? (selectTradingExchangeProviders(getState()) ?? {})
@@ -367,6 +368,10 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
                                 feeLimit: composed.feeLimit ?? '',
+                                maxFeePerGas: composed.maxFeePerGas ?? '',
+                                maxPriorityFeePerGas: composed.maxPriorityFeePerGas ?? '',
+                                estimatedFeeLimit: composed.estimatedFeeLimit,
+                                transactionData: data,
                             },
                         }),
                     );

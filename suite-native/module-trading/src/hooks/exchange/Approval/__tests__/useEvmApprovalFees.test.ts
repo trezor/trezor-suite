@@ -1,22 +1,21 @@
+import { tradingActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
     initStore,
     renderHookWithStoreProviderAsync,
+    waitFor,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useEvmApprovalFees } from '../useEvmApprovalFees';
 
-const mockUnwrap = jest.fn(() => Promise.resolve({}));
+const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
 
 jest.mock('../../../../thunks', () => ({
-    composeEvmApprovalFeeLevelsThunk: (payload: unknown) => ({
-        type: 'composeEvmApprovalFeeLevelsThunkMock',
-        payload,
-        unwrap: mockUnwrap,
-    }),
+    composeEvmApprovalFeeLevelsThunk: (...args: any[]) =>
+        mockComposeEvmApprovalFeeLevelsThunk(...args),
 }));
 
 describe('useEvmApprovalFees', () => {
@@ -36,13 +35,16 @@ describe('useEvmApprovalFees', () => {
     };
 
     beforeEach(() => {
-        mockUnwrap.mockReset().mockResolvedValue({});
+        mockComposeEvmApprovalFeeLevelsThunk.mockReset().mockImplementation(() => ({
+            type: 'composeEvmApprovalFeeLevelsThunk',
+            unwrap: jest.fn().mockResolvedValue({}),
+        }));
 
         preloadedState = {
             wallet: getWalletState({ tradeType: 'exchange' }),
         };
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'eth-account-1' as AccountKey;
-        preloadedState.wallet!.trading!.exchange!.preselectedQuote = dexQuoteWithApprovalData;
+        preloadedState.wallet!.trading!.exchange!.selectedQuote = dexQuoteWithApprovalData;
 
         store = initStore(preloadedState).store;
     });
@@ -64,10 +66,15 @@ describe('useEvmApprovalFees', () => {
     });
 
     it('should return fee and isLoading false when composed transaction info is available', async () => {
-        preloadedState!.wallet!.trading!.composedTransactionInfo = {
-            composed: { fee: '50000' },
-        };
+        preloadedState!.wallet!.trading!.exchange!.selectedQuote = undefined;
         store = initStore(preloadedState).store;
+
+        store.dispatch(
+            tradingActions.saveComposedTransactionInfo({
+                selectedFee: 'normal',
+                composed: { fee: '50000', feePerByte: '0' },
+            }),
+        );
 
         const { result } = await renderUseEvmApprovalFees();
 
@@ -77,12 +84,34 @@ describe('useEvmApprovalFees', () => {
     });
 
     it('should return translated error when composing fails', async () => {
-        mockUnwrap.mockRejectedValue(new Error('compose failed'));
+        mockComposeEvmApprovalFeeLevelsThunk.mockImplementation(() => ({
+            type: 'composeEvmApprovalFeeLevelsThunk',
+            unwrap: jest.fn().mockRejectedValue(new Error('compose failed')),
+        }));
+
+        preloadedState!.wallet!.fees = {
+            eth: {
+                status: 'loaded',
+                data: {
+                    blockHeight: 1000,
+                    blockTime: 15,
+                    minFee: 1,
+                    maxFee: 100,
+                    levels: [{ label: 'normal', feePerUnit: '20', blocks: 1 }],
+                },
+            },
+        };
+        store = initStore(preloadedState).store;
 
         const { result } = await renderUseEvmApprovalFees();
 
-        expect(result.current.error).toBe('Failed to estimate approval fees. Please try again.');
-        expect(result.current.isLoading).toBe(true);
+        await waitFor(() => {
+            expect(result.current.error).toBe(
+                'Failed to estimate approval fees. Please try again.',
+            );
+        });
+
+        expect(result.current.isLoading).toBe(false);
     });
 
     it('should accept approvalTypeOverride parameter', async () => {
