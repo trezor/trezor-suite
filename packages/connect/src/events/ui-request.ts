@@ -56,7 +56,6 @@ export const UI_REQUEST = {
     REQUEST_BUTTON: 'ui-button',
     REQUEST_WORD: 'ui-request_word',
 
-    LOGIN_CHALLENGE_REQUEST: 'ui-login_challenge_request',
     BUNDLE_PROGRESS: 'ui-bundle_progress',
     ADDRESS_VALIDATION: 'ui-address_validation',
 } as const;
@@ -72,10 +71,6 @@ export type UiRequestWithoutPayload =
       }
     | {
           type: typeof UI_REQUEST.CLOSE_UI_WINDOW;
-          payload?: typeof undefined;
-      }
-    | {
-          type: typeof UI_REQUEST.LOGIN_CHALLENGE_REQUEST;
           payload?: typeof undefined;
       };
 
