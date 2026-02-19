@@ -29,7 +29,7 @@ import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
 import { Text } from '../typography/Text/Text';
 
-export const allowedModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
+export const allowedModalFrameProps = ['height', 'maxHeight'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedModalFrameProps)[number]>;
 
 const MODAL_ELEVATION = 0;
@@ -78,6 +78,7 @@ const InnerModalBase = ({
     onCancel,
     isBackdropCancelable,
     height,
+    maxHeight = '85vh',
     'data-testid': dataTest = '@modal',
     padding,
     shadowBottom = true,
@@ -95,7 +96,7 @@ const InnerModalBase = ({
     });
 
     return (
-        <Box maxWidth="95%" maxHeight="85vh" width={width} height={height}>
+        <Box maxWidth="95%" maxHeight={maxHeight} width={width} height={height}>
             <Container $elevation={elevation} data-testid={dataTest}>
                 <Column height="100%">
                     {hasHeader && (

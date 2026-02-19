@@ -4,7 +4,6 @@ import { TranslationKey, useTranslation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
@@ -42,19 +41,17 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     useListScrollReset(listRef, search);
 
     return (
-        <Box padding={{ horizontal: 16 }}>
-            <SearchAsset
-                searchPlaceholder={translationString(placeholder)}
-                search={search}
-                setSearch={setSearch}
-                selectConfig={{
-                    networks,
-                    selectedNetwork: networkFilter,
-                    onChange: setNetworkFilter,
-                    includeAllOption: !protocolSymbol,
-                    allLabel: translationString('TR_ALL_NETWORKS'),
-                }}
-            />
-        </Box>
+        <SearchAsset
+            searchPlaceholder={translationString(placeholder)}
+            search={search}
+            setSearch={setSearch}
+            selectConfig={{
+                networks,
+                selectedNetwork: networkFilter,
+                onChange: setNetworkFilter,
+                includeAllOption: !protocolSymbol,
+                allLabel: translationString('TR_ALL_NETWORKS'),
+            }}
+        />
     );
 });

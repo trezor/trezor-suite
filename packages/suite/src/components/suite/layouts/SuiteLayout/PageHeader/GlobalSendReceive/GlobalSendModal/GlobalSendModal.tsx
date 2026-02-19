@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { Divider } from '@trezor/components';
+import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
@@ -117,11 +117,13 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     return (
         <AssetsModal heading={{ id: 'SEND_TRANSACTION' }} onClose={() => onCancel(filledSearch)}>
-            <AssetSearchWithNetworkFilter
-                placeholder="TR_SEND_SEARCH"
-                listRef={listRef}
-                modal="send"
-            />
+            <Box padding={{ horizontal: 16 }}>
+                <AssetSearchWithNetworkFilter
+                    placeholder="TR_SEND_SEARCH"
+                    listRef={listRef}
+                    modal="send"
+                />
+            </Box>
 
             <Divider margin={{ top: 16 }} />
 

@@ -1,17 +1,11 @@
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { Divider, Link, Modal } from '@trezor/components';
+import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import {
-    AssetRowReceiveToAccount,
-    AssetsList,
-    AssetsListEmpty,
-    AssetsModal,
-} from 'src/components/suite/asset-picker/components';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -19,16 +13,15 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 import { useAnalytics } from 'src/support/useAnalytics';
 import { Account, AccountItemType } from 'src/types/wallet';
 
+import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
 import { useAccountsOptions } from './hooks/useAccountsOptions';
-import { FilteredAccountOption, useFilterAccounts } from './hooks/useFilterAccounts';
+import { useFilterAccounts } from './hooks/useFilterAccounts';
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 
 type GlobalReceiveModalProps = {
     onCancel: (filledSearch: boolean) => void;
     onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
 };
-
-const LIST_HEIGHT = 385;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const analytics = useAnalytics();
@@ -43,84 +36,100 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const filteredAccounts = useFilterAccounts(accountsOptions);
     const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
 
-    const renderItem = useCallback(
-        (item: FilteredAccountOption) => (
-            <AssetRowReceiveToAccount
-                dataTestId={`@global-receive-account/${item.account.accountType}/${item.account.symbol}/${item.account.index}`}
-                account={item.account}
-                onClick={account => onSubmit(account, 'coin', filledSearch)}
-            />
-        ),
-        [onSubmit, filledSearch],
-    );
-
     return (
         <>
-            <AssetsModal
-                heading={{ id: 'TR_RECEIVE' }}
-                description={{
-                    id: 'TR_RECEIVE_DESCRIPTION',
-                    values: {
-                        a: (...chunks) => (
-                            <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>
-                        ),
-                    },
-                }}
-                onClose={() => onCancel(filledSearch)}
-                bottomContent={
-                    <Modal.Button
-                        data-testid="@global-send-receive/add-account"
-                        intent="neutral"
-                        priority="secondary"
-                        isDisabled={isAddAccountDisabled}
-                        onClick={() => {
-                            if (!device) {
-                                return;
-                            }
-
-                            dispatch(
-                                openModal({
-                                    type: 'add-account',
-                                    device,
-                                }),
-                            );
-
-                            analytics.report({
-                                type: events.dashboardReceiveModalOptionsEvent.name,
-                                payload: {
-                                    option: 'addAccount',
-                                    filledSearch,
-                                },
-                            });
+            <Modal
+                heading={<Translation id="TR_RECEIVE" />}
+                description={
+                    <Translation
+                        id="TR_RECEIVE_DESCRIPTION"
+                        values={{
+                            a: (...chunks) => (
+                                <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>
+                            ),
                         }}
-                    >
-                        <Translation id="TR_ADD_ACCOUNT" />
-                    </Modal.Button>
-                }
-            >
-                <AssetSearchWithNetworkFilter
-                    placeholder="TR_RECEIVE_SEARCH"
-                    listRef={listRef}
-                    modal="receive"
-                />
-
-                <Divider margin={{ top: 16 }} />
-
-                <AssetsListEmpty
-                    isEmpty={filteredAccounts.length === 0}
-                    heading={
-                        filledSearch ? 'TR_ACCOUNT_SEARCH_NO_RESULTS' : 'TR_ACCOUNT_NO_ACCOUNTS'
-                    }
-                    height={LIST_HEIGHT}
-                >
-                    <AssetsList
-                        items={filteredAccounts}
-                        renderItem={renderItem}
-                        height={LIST_HEIGHT}
-                        ref={listRef}
                     />
-                </AssetsListEmpty>
-            </AssetsModal>
+                }
+                onCancel={() => onCancel(filledSearch)}
+                width={480}
+                maxHeight={640}
+            >
+                <Column gap={24}>
+                    <AssetSearchWithNetworkFilter
+                        placeholder="TR_RECEIVE_SEARCH"
+                        listRef={listRef}
+                        modal="receive"
+                    />
+
+                    <div ref={listRef}>
+                        {filteredAccounts.length === 0 && (
+                            <Paragraph
+                                typographyStyle="body-md"
+                                align="center"
+                                margin={{ vertical: 32 }}
+                            >
+                                <Translation
+                                    id={
+                                        filledSearch
+                                            ? 'TR_ACCOUNT_SEARCH_NO_RESULTS'
+                                            : 'TR_ACCOUNT_NO_ACCOUNTS'
+                                    }
+                                />
+                            </Paragraph>
+                        )}
+
+                        {(filteredAccounts.length > 0 || !isAddAccountDisabled) && (
+                            <CardList>
+                                {filteredAccounts.map(({ account }) => (
+                                    <GlobalReceiveAccountListItem
+                                        key={account.key}
+                                        account={account}
+                                        dataTestId={`@global-receive-account/${account.accountType}/${account.symbol}/${account.index}`}
+                                        onClick={selectedAccount =>
+                                            onSubmit(selectedAccount, 'coin', filledSearch)
+                                        }
+                                    />
+                                ))}
+                                {!isAddAccountDisabled && (
+                                    <CardList.Item
+                                        data-testid="@global-send-receive/add-account"
+                                        onClick={() => {
+                                            if (!device) {
+                                                return;
+                                            }
+
+                                            dispatch(
+                                                openModal({
+                                                    type: 'add-account',
+                                                    device,
+                                                }),
+                                            );
+
+                                            analytics.report({
+                                                type: events.dashboardReceiveModalOptionsEvent.name,
+                                                payload: {
+                                                    option: 'addAccount',
+                                                    filledSearch,
+                                                },
+                                            });
+                                        }}
+                                    >
+                                        <Row gap={12}>
+                                            <IconCircle
+                                                name="plus"
+                                                size={40}
+                                                variant="tertiary"
+                                                hasBorder={false}
+                                            />
+                                            <Translation id="TR_ADD_ACCOUNT" />
+                                        </Row>
+                                    </CardList.Item>
+                                )}
+                            </CardList>
+                        )}
+                    </div>
+                </Column>
+            </Modal>
             {acccountModal.open && device && (
                 <AddAccountModal
                     noRedirect
