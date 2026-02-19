@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
     type TradingRootState,
     selectExchangeBuyTradeableAssets,
@@ -11,7 +12,7 @@ import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFil
 export const useExchangeBuyTradeableAssetsFilteredData = () => {
     const { watch } = useExchangeFormContext();
     const sendAsset = watch('sendAsset');
-    const assets = useSelector((state: TradingRootState) =>
+    const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectExchangeBuyTradeableAssets(state, sendAsset?.cryptoId),
     );
 
