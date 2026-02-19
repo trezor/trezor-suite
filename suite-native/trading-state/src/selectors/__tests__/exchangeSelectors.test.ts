@@ -220,10 +220,6 @@ describe('exchangeSelectors', () => {
                 ]);
             });
         });
-
-        describe.skip('experimental-only networks', () => {
-            // There are currently no experimental only networks. Skipping
-        });
     });
 
     describe('selectExchangeQuotes', () => {
