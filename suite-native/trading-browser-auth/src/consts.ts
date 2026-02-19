@@ -1,6 +1,6 @@
 import { isProduction } from '@suite-native/config';
 
-const TRADING_URL_BASE_PRODUCTION = 'https://trezor.io/suite/deeplink/trade';
+const TRADING_URL_BASE_PRODUCTION = 'https://trezor.io/suite/deeplinks/trade';
 const TRADING_URL_BASE_DEV = 'trezorsuite://trading';
 
 // we don't want to expose custom scheme in production,

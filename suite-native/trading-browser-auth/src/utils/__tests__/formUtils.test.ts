@@ -252,7 +252,7 @@ ${' '.repeat(16)}
 
         it('should use production back URL in applyHtmlTemplate', () => {
             const html = applyHtmlTemplate('CONTENT_TO_EMBED');
-            expect(html).toContain('href="https://trezor.io/suite/deeplink/trade/back"');
+            expect(html).toContain('href="https://trezor.io/suite/deeplinks/trade/back"');
         });
 
         it('should return correct url format with production base', () => {
@@ -263,7 +263,7 @@ ${' '.repeat(16)}
                     orderId: '1234',
                 }),
             ).toBe(
-                'https://trezor.io/suite/deeplink/trade?action=quote&tradeType=buy&orderId=1234',
+                'https://trezor.io/suite/deeplinks/trade?action=quote&tradeType=buy&orderId=1234',
             );
         });
     });
