@@ -11535,11 +11535,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/support@workspace:suite-common/support"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
-    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -13983,7 +13984,6 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/support": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"

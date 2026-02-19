@@ -22,6 +22,7 @@ export type Alert = {
     pictogramVariant?: PictogramVariant;
     primaryButtonTitle: ReactNode;
     primaryButtonViewLeft?: ButtonAccessory;
+    primaryButtonViewRight?: ButtonAccessory;
     primaryButtonVariant?: ButtonColorScheme;
     onPressPrimaryButton?: () => void;
     secondaryButtonTitle?: ReactNode;

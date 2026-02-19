@@ -83,6 +83,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         onPressPrimaryButton,
         primaryButtonTitle,
         primaryButtonViewLeft,
+        primaryButtonViewRight,
         onPressSecondaryButton,
         secondaryButtonTitle,
         primaryButtonVariant = 'primary',
@@ -92,13 +93,13 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     } = alert;
 
     const handlePressPrimaryButton = async () => {
-        await closeSheetAnimated();
         onPressPrimaryButton?.();
+        await closeSheetAnimated();
     };
 
     const handlePressSecondaryButton = async () => {
-        await closeSheetAnimated();
         onPressSecondaryButton?.();
+        await closeSheetAnimated();
     };
 
     return (
@@ -119,21 +120,25 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     <Pictogram variant={pictogramVariant} icon={icon} />
                                 </Box>
                             )}
-                            {(title || description) && (
-                                <TitleHeader
-                                    title={title}
-                                    subtitle={description}
-                                    textAlign={textAlign}
-                                    titleSpacing={titleSpacing}
-                                />
-                            )}
-                            {appendix}
+                            <VStack spacing="sp20">
+                                {(title || description) && (
+                                    <TitleHeader
+                                        title={title}
+                                        subtitle={description}
+                                        textAlign={textAlign}
+                                        titleSpacing={titleSpacing}
+                                    />
+                                )}
+                                {appendix}
+                            </VStack>
                             <VStack spacing="sp12">
+                                {/* @ts-expect-error: MergeExclusive disallows both viewLeft and viewRight, but only one is defined at runtime */}
                                 <Button
                                     size="medium"
                                     colorScheme={primaryButtonVariant}
                                     onPress={handlePressPrimaryButton}
                                     viewLeft={primaryButtonViewLeft}
+                                    viewRight={primaryButtonViewRight}
                                     testID="@alert-sheet/primary-button"
                                 >
                                     {primaryButtonTitle}

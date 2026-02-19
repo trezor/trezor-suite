@@ -1109,6 +1109,13 @@ export const messages = {
                 label: 'Need more help?',
                 support: 'Trezor Support',
                 appLog: 'Application log',
+                contactSupportAlert: {
+                    title: 'Help us help you, privately',
+                    toggleLabel: 'Temporarily share system info',
+                    description:
+                        'Send a one-time snapshot of your system info (firmware, Suite version, and device type) so our team can skip these questions and jump straight to a solution.',
+                    primaryButton: 'Contact support',
+                },
             },
             bluetoothEnabled: {
                 android: {
