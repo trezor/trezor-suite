@@ -27,6 +27,5 @@ You can build the web extension running the command bellow:
 ```bash
 yarn && \
 yarn build:libs && \
-yarn workspace @trezor/connect-webextension build && \
 yarn workspace @trezor/connect-explorer build:webextension
 ```

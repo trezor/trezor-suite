@@ -7,7 +7,6 @@ A collection of example implementations of @trezor/connect in various environmen
 | [Node.js](./node)                                     | [@trezor/connect](../connect/README.md)                           | No    |
 | [Electron main process](./electron-main-process/)     | [@trezor/connect](../connect/README.md)                           | No    |
 | [Mobile expo]('/mobile-expo)                          | [@trezor/connect-mobile](../connect-mobile/README.md)             | Yes   |
-| [Browser inline script](./browser-inline-script/)     | [@trezor/connect-web](../connect-web/README.md)                   | Yes   |
 | [Browser with webpack](../connect-explorer/README.md) | [@trezor/connect-web](../connect-web/README.md)                   | Yes   |
 | [Webextension](./webextension)                        | [@trezor/connect-webextension](../connect-webextension/README.md) | Yes   |
 

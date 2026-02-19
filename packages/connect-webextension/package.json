@@ -20,23 +20,29 @@
         "serviceworker",
         "webextension"
     ],
-    "main": "build/trezor-connect-webextension.js",
-    "types": "src/index.ts",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            }
+        }
+    },
     "files": [
-        "build/trezor-connect-webextension.js",
-        "build/trezor-connect-webextension.min.js",
-        "build/content-script.js",
         "lib/",
-        "!lib/proxy",
-        "libESM/"
+        "libESM/",
+        "CHANGELOG.md",
+        "!lib/proxy"
     ],
+    "types": "src/index.ts",
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm && yarn build",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
-        "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
-        "build": "yarn g:rimraf build && yarn build:content-script && yarn build:inline && node ./webpack/inline-content-script.js",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
@@ -51,13 +57,7 @@
         "@types/chrome": "^0.0.299",
         "@types/w3c-web-usb": "^1.0.10",
         "babel-loader": "^10.0.0",
-        "copy-webpack-plugin": "^13.0.1",
         "rimraf": "^6.0.1",
-        "terser-webpack-plugin": "^5.3.16",
-        "webpack": "5.104.1",
-        "webpack-cli": "^6.0.1",
-        "webpack-merge": "^6.0.1",
-        "webpack-plugin-serve": "^1.6.0",
         "worker-loader": "^3.0.8"
     },
     "peerDependencies": {

@@ -300,22 +300,10 @@ export const ExampleHeading = styled.h3`
                 yarn add @trezor/connect-web
                 ```
 
-                or include the library as inline script:
-
-                ```html
-                <script src="https://connect.trezor.io/9/trezor-connect.js"></script>
-                ```
-
                 {<h3>Import from the package</h3>}
 
                 ```javascript
                 import TrezorConnect from '@trezor/connect-web';
-                ```
-
-                or use inline:
-
-                ```javascript
-                var TrezorConnect = window.TrezorConnect;
                 ```
 
                 {<h3>Initialization of the project</h3>}
@@ -444,14 +432,6 @@ export const ExampleHeading = styled.h3`
                 For manual content script injection, you can [find more information in the README](/readme/connect-webextension).
 
                 {<h3>Import in the service worker</h3>}
-
-                In your `serviceWorker.js`, use importScripts to import the library. Ensure you replace `<path>` with the actual path to the library file:
-
-                ```javascript
-                importScripts('<path>/trezor-connect-webextension.js');
-                ```
-
-                Or if you're using ES modules:
 
                 ```javascript
                 import TrezorConnect from '@trezor/connect-webextension';
