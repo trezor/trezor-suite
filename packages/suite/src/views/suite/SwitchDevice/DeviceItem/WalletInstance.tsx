@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
@@ -34,11 +35,10 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { selectLabelingDataForWallet, selectMetadata } from 'src/reducers/suite/metadataReducer';
 import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
-import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;
@@ -81,6 +81,7 @@ export const WalletInstance = ({
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();
+    const legacyMetadataState = useSelector(selectMetadata);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const { defaultAccountLabelString } = useWalletLabeling();
@@ -198,7 +199,10 @@ export const WalletInstance = ({
                                         >
                                             {valueLabel}
                                         </Labeling>
-                                        <SuiteSyncWalletDebug device={instance} />
+                                        <SuiteSyncWalletDebug
+                                            device={instance}
+                                            isLegacyLabelingEnabled={legacyMetadataState.enabled}
+                                        />
                                     </Column>
                                 ) : (
                                     <Row gap={4}>

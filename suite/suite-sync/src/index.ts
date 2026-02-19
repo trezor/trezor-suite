@@ -3,3 +3,4 @@ export {
     type DisableLegacyMetadataIfNeeded,
     type DisableLegacyMetadataIfNeededDep,
 } from './turnOnDesktopSuiteSync';
+export { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
