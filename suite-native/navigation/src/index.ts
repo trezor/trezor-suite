@@ -11,6 +11,7 @@ export * from './components/TabBar';
 export * from './components/Screen';
 export * from './components/ScreenHeader';
 export * from './components/DynamicHeader/DynamicScreenHeader';
+export * from './components/DynamicHeader/DynamicScreenHeaderContext';
 export * from './components/LoadingSuccessScreen';
 export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
