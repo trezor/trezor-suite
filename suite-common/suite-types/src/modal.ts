@@ -5,7 +5,7 @@ import { UI } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
-import { EarnFlow, EarnProvider } from './staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from './staking';
 
 export type UserContextPayload =
     | {
@@ -133,21 +133,43 @@ export type UserContextPayload =
           type: 'earn-in-a-nutshell';
           flow: EarnFlow;
           provider: EarnProvider;
+          account?: EarnAccountRef;
+          yieldId?: string;
+          tokenContractAddress?: string;
+      }
+    | {
+          type: 'supply';
+          flow: EarnFlow;
+          account?: EarnAccountRef;
+          yieldId?: string;
+          tokenContractAddress?: string;
       }
     | {
           type: 'stake';
           flow: EarnFlow;
+          account?: EarnAccountRef;
+          yieldId?: string;
+          tokenContractAddress?: string;
+      }
+    | {
+          type: 'withdraw';
+          account?: EarnAccountRef;
       }
     | {
           type: 'unstake';
+          account?: EarnAccountRef;
       }
     | {
           type: 'claim';
+          account?: EarnAccountRef;
       }
     | {
           type: 'earn-provider-consent';
           flow: EarnFlow;
           provider: EarnProvider;
+          account?: EarnAccountRef;
+          yieldId?: string;
+          tokenContractAddress?: string;
       }
     | {
           type: 'change-delegate';
