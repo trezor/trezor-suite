@@ -1,6 +1,9 @@
 import { ReactNode, useRef } from 'react';
 
+import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
+import { Column, Image, Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -11,10 +14,25 @@ import { ThpPairingStartStep } from './ThpPairingStartStep';
 
 // reflection of components/onboarding/ThpPairingStep/ThpPairingStep.tsx
 export const ThpPairingStep = ({ heading }: { heading: ReactNode }) => {
+    const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
     const prevStepRef = useRef(thpStep);
     if (thpStep) {
         prevStepRef.current = thpStep;
+    }
+
+    if (!device?.connected) {
+        return (
+            <Modal
+                heading={<Translation id="TR_RECONNECT_HEADER" />}
+                onCancel={undefined}
+                data-testid="@firmware-modal/no-device"
+            >
+                <Column alignItems="center">
+                    <Image image="CONNECT_DEVICE" />
+                </Column>
+            </Modal>
+        );
     }
 
     // render thpState if set or last known step. fallback to ThpPairingStartStep with loader
