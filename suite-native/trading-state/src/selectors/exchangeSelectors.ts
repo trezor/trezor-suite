@@ -5,6 +5,7 @@ import {
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
+import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -17,11 +18,7 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 
-import {
-    TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-} from '../reducers';
+import { TradingRootState, createMemoizedSelectorWithAccounts } from '../reducers';
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
 
@@ -56,22 +53,50 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
     },
 );
 
-export const selectExchangeBuyTradeableAssets = createMemoizedSelector(
+export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectTradingExchangeBuyCryptoIds as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
         ({ wallet }) => wallet.trading.info.coins,
         (_state: TradingRootState, forbiddenCryptoId?: string) => forbiddenCryptoId,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (cryptoIds, coins, forbiddenCryptoId) => {
+    (
+        cryptoIds,
+        coins,
+        forbiddenCryptoId,
+        areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
+    ) => {
         if (!coins || !cryptoIds) {
             return [];
         }
 
         return cryptoIds
-            .filter(cryptoId => cryptoId !== forbiddenCryptoId)
-            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
+            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
+            .filter(({ cryptoId, networkId }) => {
+                if (cryptoId === forbiddenCryptoId) {
+                    return false;
+                }
+
+                const network = getNetworkByCoingeckoId(networkId);
+
+                if (!network) {
+                    return false;
+                }
+
+                if (network.isDebugOnlyNetwork) {
+                    return areDebugOnlyNetworksEnabled;
+                }
+
+                if (network.isExperimentalOnlyNetwork) {
+                    return areExperimentalOnlyNetworksEnabled;
+                }
+
+                return true;
+            });
     },
 );
 
