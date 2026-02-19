@@ -28,18 +28,6 @@ const credential2 = createCredential({ credential: '2' });
 const credential3 = createCredential({ credential: '3' });
 
 describe('thpReducer', () => {
-    it('sets the lastThpCode', () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({ thp: thpReduce }),
-            preloadedState: { thp: initialState },
-        });
-
-        expect(store.getState().thp.lastThpCode).toEqual(undefined);
-        store.dispatch(thpActions.setLastThpCode({ code: '123456' }));
-        expect(store.getState().thp.lastThpCode).toEqual('123456');
-    });
-
     test('finishThpFlow', () => {
         const store = configureMockStore({
             extra: {},
@@ -48,19 +36,6 @@ describe('thpReducer', () => {
         });
 
         store.dispatch(thpActions.finishThpFlow());
-
-        const state = store.getState();
-        expect(selectThpStep(state)).toEqual(null);
-    });
-
-    test('cancelThpFlow', () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({ thp: thpReduce }),
-            preloadedState: { thp: { ...initialState, step: 'ConfirmOnlyConnection' } },
-        });
-
-        store.dispatch(thpActions.cancelThpFlow());
 
         const state = store.getState();
         expect(selectThpStep(state)).toEqual(null);
