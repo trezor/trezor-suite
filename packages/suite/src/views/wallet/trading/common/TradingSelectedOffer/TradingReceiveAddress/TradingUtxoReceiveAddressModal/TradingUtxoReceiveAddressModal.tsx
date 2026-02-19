@@ -4,7 +4,6 @@ import { Translation, useTranslation } from '@suite/intl';
 import { Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
@@ -21,7 +20,7 @@ export const TradingUtxoReceiveAddressModal = () => {
 
     const [search, setSearch] = useState('');
 
-    const account = tradingReceiveAddress.selectedAccountOption?.account;
+    const account = tradingReceiveAddress.selectedAccount;
 
     const addresses = account?.addresses;
 
@@ -58,8 +57,9 @@ export const TradingUtxoReceiveAddressModal = () => {
             heading={<Translation id="TR_BUY_RECEIVING_ADDRESS" />}
             onCancel={onCancel}
             onBackClick={onBackClick}
+            width={600}
         >
-            <Column gap={spacings.xl}>
+            <Column gap={24}>
                 <SearchAsset
                     searchPlaceholder={translationString('TR_SEARCH')}
                     search={search}

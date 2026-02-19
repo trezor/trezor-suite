@@ -27,7 +27,7 @@ export const TradingReceiveAddressModal = () => {
         ? cryptoIdToPlatformName(networkId)
         : cryptoIdToCoinName(networkId);
 
-    const { selectedAccountOption, selectAccountOptions } = tradingReceiveAddress;
+    const { selectedAccount, selectNonSuiteAddress } = tradingReceiveAddress;
 
     const form = useForm<TradingVerifyFormProps>({
         mode: 'onChange',
@@ -85,15 +85,11 @@ export const TradingReceiveAddressModal = () => {
     const onConfirmClick = () => {
         if (form.formState.errors.address || form.formState.errors.extraField) return;
 
-        const nonSuiteOption = selectAccountOptions.find(option => option.type === 'NON_SUITE');
-        if (!nonSuiteOption) return;
-
         const { address, extraField } = form.getValues();
 
-        if (address?.trim() === '') return;
+        if (!address || address.trim() === '') return;
 
-        tradingReceiveAddress.onChangeAccount(nonSuiteOption, address);
-        tradingReceiveAddress.form.setValue('extraField', extraField);
+        selectNonSuiteAddress(address, extraField);
 
         onCancel();
     };
@@ -129,8 +125,7 @@ export const TradingReceiveAddressModal = () => {
                 <Input
                     data-testid="@trading/receive-address-input"
                     defaultValue={
-                        selectedAccountOption?.type === 'NON_SUITE' &&
-                        !!tradingReceiveAddress.receiveAddress
+                        selectedAccount === null && !!tradingReceiveAddress.receiveAddress
                             ? tradingReceiveAddress.receiveAddress
                             : undefined
                     }
@@ -143,16 +138,14 @@ export const TradingReceiveAddressModal = () => {
                 {requiresExtraField && (
                     <TradingExtraField
                         defaultChecked={
-                            selectedAccountOption?.type === 'NON_SUITE' &&
-                            !!tradingReceiveAddress.extraField
+                            selectedAccount === null && !!tradingReceiveAddress.extraField
                         }
                         inputComponent={
                             <Input
                                 data-testid="@trading/extra-field-input"
                                 label={<Translation id="DESTINATION_TAG" />}
                                 defaultValue={
-                                    selectedAccountOption?.type === 'NON_SUITE' &&
-                                    !!tradingReceiveAddress.extraField
+                                    selectedAccount === null && !!tradingReceiveAddress.extraField
                                         ? tradingReceiveAddress.extraField
                                         : undefined
                                 }
