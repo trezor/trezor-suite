@@ -71,7 +71,7 @@ describe('useBrowserAuth', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockLinkingURL = null;
-        mockDismissBrowser.mockResolvedValue({ type: WebBrowserResultType.DISMISS });
+        mockDismissBrowser.mockReturnValue(Promise.resolve({ type: WebBrowserResultType.DISMISS }));
         ({ store } = initStore({ wallet: getWalletState() }));
     });
 
@@ -239,6 +239,22 @@ describe('useBrowserAuth', () => {
                 expect.objectContaining({
                     data: expect.objectContaining({ orderId: 'trade-order-id-1' }),
                 }),
+            );
+            expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
+        });
+
+        it('should handle dismissBrowser returning undefined', () => {
+            mockLinkingURL = TRADING_URL_DEFAULT_BACK;
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            mockDismissBrowser.mockReturnValue(undefined);
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+                'window_closed_with_success',
             );
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
