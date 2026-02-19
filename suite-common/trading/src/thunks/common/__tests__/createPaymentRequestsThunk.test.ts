@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { Address, PROTO } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { invityAPI } from '../../../invityAPI';

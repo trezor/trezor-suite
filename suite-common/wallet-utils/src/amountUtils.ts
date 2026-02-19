@@ -1,5 +1,6 @@
 import { NetworkSymbol, getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
 import { TokenTransfer } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { AmountSubunit, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';

@@ -49,13 +49,16 @@ import {
     SOL_COMPUTE_UNIT_LIMIT,
     SOL_MICROLAMPORTS_PER_LAMPORT,
 } from '@suite-common/wallet-constants';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     STAKE_ACCOUNT_V2_SIZE,
     getDelegations,
     isStake,
     stakeAccountState,
 } from '@trezor/blockchain-link/src/workers/solana/utils/stakingAccounts';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { serializeError } from '@trezor/utils';
 

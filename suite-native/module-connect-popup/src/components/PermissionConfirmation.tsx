@@ -18,6 +18,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';

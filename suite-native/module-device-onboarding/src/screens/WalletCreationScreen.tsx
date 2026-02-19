@@ -19,6 +19,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

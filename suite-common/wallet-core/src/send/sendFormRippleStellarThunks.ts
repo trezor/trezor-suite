@@ -17,6 +17,7 @@ import {
     networkAmountToSmallestUnit,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect, {
     FeeLevel,
@@ -24,7 +25,9 @@ import TrezorConnect, {
     StellarOperation,
     TokenInfo,
 } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';

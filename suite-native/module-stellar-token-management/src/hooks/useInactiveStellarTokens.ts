@@ -5,6 +5,7 @@ import { TokenDefinitionsRootState, selectCoinDefinitions } from '@suite-common/
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { createLazy } from '@trezor/utils';
 

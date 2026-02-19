@@ -25,7 +25,7 @@ export const localRulesConfig = [
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
-                { packageScopes: ['@suite-native', '@suite', '@suite-common'] },
+                { packageScopes: ['@suite-native', '@suite', '@suite-common', '@trezor'] },
             ],
         },
     },

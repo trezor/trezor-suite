@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-types';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils/src/amountUtils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 import { SolanaTx } from '../types';

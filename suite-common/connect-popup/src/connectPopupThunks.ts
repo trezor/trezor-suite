@@ -10,9 +10,13 @@ import TrezorConnect, {
     CallMethodParams,
     CallMethodPayload,
 } from '@trezor/connect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { connectCallableMethods } from '@trezor/connect/src/factory';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import { resolveAfter } from '@trezor/utils';
 
