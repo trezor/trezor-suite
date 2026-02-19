@@ -3141,10 +3141,6 @@ export const messages = defineMessages({
             'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
         id: 'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
     },
-    TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_TITLE: {
-        defaultMessage: 'Suite Sync storage is full',
-        id: 'TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_TITLE',
-    },
     TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION: {
         defaultMessage:
             'Suite Sync storage is full. New labels will be saved locally on this computer, but not synced to your other devices.',
