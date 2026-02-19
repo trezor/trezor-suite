@@ -83,7 +83,7 @@ export const isThpMessageName = (name: string) =>
         'ThpCreateChannelRequest',
         'ThpHandshakeInitRequest',
         'ThpHandshakeCompletionRequest',
-        'ThpReadAck',
+        'ThpAck',
     ].includes(name);
 
 export const getThpPairingMethod = (dm: ThpPairingMethod | keyof typeof ThpPairingMethod) =>

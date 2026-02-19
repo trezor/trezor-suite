@@ -1,4 +1,4 @@
-import { type ThpState } from './ThpState';
+import { ThpState } from './ThpState';
 import { CRC_LENGTH, TAG_LENGTH, THP_DEFAULT_CHANNEL } from './constants';
 import { aesgcm, crc32 } from './crypto';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
@@ -102,11 +102,12 @@ const createChannelRequest = (data: Buffer, channel: Buffer) => {
     return Buffer.concat([message, crc]);
 };
 
-const handshakeInitRequest = (data: Buffer, channel: Buffer) => {
+const handshakeInitRequest = (data: Buffer, channel: Buffer, enablePiggybackAck: boolean) => {
     const length = Buffer.alloc(2);
     length.writeUInt16BE(data.length + CRC_LENGTH);
 
-    const magic = Buffer.from([THP_CONTROL_BYTE.HANDSHAKE_INIT_REQ]);
+    // enable piggybackAck on Trezor
+    const magic = addAckBit(THP_CONTROL_BYTE.HANDSHAKE_INIT_REQ, enablePiggybackAck ? 1 : 0);
     const message = Buffer.concat([magic, channel, length, data]);
     const crc = crc32(message);
 
@@ -124,6 +125,32 @@ const handshakeCompletionRequest = (data: Buffer, channel: Buffer, sendBit: numb
     return Buffer.concat([message, crc]);
 };
 
+const getPreviousAckBit = (thpState: ThpState) => (thpState.recvAckBit ? 0 : 1);
+
+// TODO: link-to-public-docs
+// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
+// example: 2012340004d9fcce58
+// [magic | channel | len  | crc     ]
+// [20    | 1234    | 0004 | d9fcce58]
+export const encodeAck = (state: ThpState) => {
+    const length = Buffer.alloc(2);
+    length.writeUInt16BE(CRC_LENGTH);
+
+    const magic = addAckBit(THP_CONTROL_BYTE.ACK_MESSAGE, state.recvAckBit);
+    const message = Buffer.concat([magic, state.channel, length]);
+    const crc = crc32(message);
+
+    return Buffer.concat([message, crc]);
+};
+
+// Encode previous ThpAck with flipped recvAckBit
+export const encodePreviousAck = (thpState: ThpState) => {
+    const prevState = new ThpState();
+    prevState.deserialize({ ...thpState.serialize(), recvAckBit: getPreviousAckBit(thpState) });
+
+    return encodeAck(prevState);
+};
+
 const encodeThpMessage = (
     messageType: string,
     data: Buffer,
@@ -135,11 +162,15 @@ const encodeThpMessage = (
     }
 
     if (messageType === 'ThpHandshakeInitRequest') {
-        return handshakeInitRequest(data, channel);
+        return handshakeInitRequest(data, channel, thpState.isPiggybackAckAvailable);
     }
 
     if (messageType === 'ThpHandshakeCompletionRequest') {
         return handshakeCompletionRequest(data, channel, thpState.sendBit || 0);
+    }
+
+    if (messageType === 'ThpAck') {
+        return thpState.isPiggybackAckEnabled ? encodePreviousAck(thpState) : encodeAck(thpState);
     }
 
     throw new Error(`Unknown Thp message type ${messageType}`);
@@ -161,7 +192,11 @@ export const encodeProtobufMessage = (
     length.writeUInt16BE(1 + 2 + data.length + TAG_LENGTH + CRC_LENGTH); // 1 session_id + 2 messageType + protobuf len + 16 tag + 4 crc
 
     // TODO: distinguish encrypted and decrypted messages (not implemented in FW)
-    const magic = addSequenceBit(THP_CONTROL_BYTE.ENCRYPTED, thpState.sendBit);
+    let magic = addSequenceBit(THP_CONTROL_BYTE.ENCRYPTED, thpState.sendBit);
+    if (thpState.isPiggybackAckEnabled) {
+        // send ackBit with the actual message
+        magic = addAckBit(magic.readUint8(), getPreviousAckBit(thpState));
+    }
     const header = Buffer.concat([magic, channel]);
 
     const messageTypeBytes = Buffer.alloc(2);
@@ -173,22 +208,6 @@ export const encodeProtobufMessage = (
         Buffer.concat([thpState.sessionId, messageTypeBytes, data]),
     );
     const message = Buffer.concat([header, length, cipheredMessage]);
-    const crc = crc32(message);
-
-    return Buffer.concat([message, crc]);
-};
-
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
-// example: 2012340004d9fcce58
-// [magic | channel | len  | crc     ]
-// [20    | 1234    | 0004 | d9fcce58]
-export const encodeAck = (state: ThpState) => {
-    const length = Buffer.alloc(2);
-    length.writeUInt16BE(CRC_LENGTH);
-
-    const magic = addAckBit(THP_CONTROL_BYTE.ACK_MESSAGE, state.recvAckBit);
-    const message = Buffer.concat([magic, state.channel, length]);
     const crc = crc32(message);
 
     return Buffer.concat([message, crc]);

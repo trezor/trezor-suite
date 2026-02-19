@@ -3,6 +3,7 @@ import {
     decode,
     encode,
     encodeAck,
+    encodePreviousAck,
     getExpectedResponses,
     isAckExpected,
 } from '../../src/protocol-thp';
@@ -64,15 +65,20 @@ describe('protocol-thp', () => {
     it('encode/decode ThpAck', () => {
         thpState.setChannel(Buffer.from('1234', 'hex'));
 
-        const encodeAsState1 = encodeAck(thpState); // ackByte: 0
-        expect(encodeAsState1.toString('hex')).toEqual('2012340004d9fcce58');
+        const thpAck0 = '2012340004d9fcce58'; // ackByte: 0
+        const thpAck1 = '2812340004e98c8599'; // ackByte: 1
 
-        thpState.sync('recv', 'ThpAck');
-        const encodeAsState2 = encodeAck(thpState); // ackByte: 1
-        expect(encodeAsState2.toString('hex')).toEqual('2812340004e98c8599');
+        const encodeAck0 = encodeAck(thpState);
+        expect(encodeAck0.toString('hex')).toEqual(thpAck0);
+        expect(encodePreviousAck(thpState).toString('hex')).toEqual(thpAck1);
 
-        expect(decode(decodeV2(encodeAsState1), protobufDecoder, thpState).type).toBe('ThpAck');
-        expect(decode(decodeV2(encodeAsState2), protobufDecoder, thpState).type).toBe('ThpAck');
+        thpState.sync('recv', 'Cancel'); // update state, set ackByte to 1
+        const encodeAck1 = encodeAck(thpState);
+        expect(encodeAck1.toString('hex')).toEqual(thpAck1);
+        expect(encodePreviousAck(thpState).toString('hex')).toEqual(thpAck0);
+
+        expect(decode(decodeV2(encodeAck0), protobufDecoder, thpState).type).toBe('ThpAck');
+        expect(decode(decodeV2(encodeAck1), protobufDecoder, thpState).type).toBe('ThpAck');
     });
 
     it('decode ThpError', () => {

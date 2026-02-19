@@ -370,7 +370,12 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         signal,
                         logger: this.logger,
                     });
-                    thpState?.sync('send', name);
+                    if (thpState) {
+                        if (thpState.isPiggybackAckEnabled) {
+                            thpState.enablePiggybackAck(false);
+                        }
+                        thpState.sync('send', name);
+                    }
                 } else {
                     sendResult = await sendChunks(chunks, apiWrite);
                 }

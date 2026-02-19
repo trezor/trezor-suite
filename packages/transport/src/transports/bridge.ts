@@ -319,8 +319,11 @@ export class BridgeTransport extends AbstractTransport {
                 if (!response.success) {
                     return response;
                 }
-                if (protocol.name === 'v2') {
-                    thpState?.sync('send', name);
+                if (thpState) {
+                    if (thpState.isPiggybackAckEnabled) {
+                        thpState.enablePiggybackAck(false);
+                    }
+                    thpState.sync('send', name);
                 }
 
                 return this.success(undefined);

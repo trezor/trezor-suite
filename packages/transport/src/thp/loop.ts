@@ -129,9 +129,9 @@ export const thpLoop = async ({
                     break;
                 }
 
+                const { ackBit } = protocolThp.readThpHeader(ackResult.payload.header);
                 switch (ackResult.payload.messageType) {
                     case THP_CONTROL_BYTE.ACK_MESSAGE: {
-                        const { ackBit } = protocolThp.readThpHeader(ackResult.payload.header);
                         if (ackBit === thpState.sendAckBit) {
                             phase = ThpLoopState.READ_RESPONSE;
                         } else {
@@ -145,6 +145,16 @@ export const thpLoop = async ({
                         phase = ThpLoopState.DONE;
                         break;
                     default:
+                        if (
+                            thpState.isPiggybackAckAvailable &&
+                            ackResult.payload.messageType === THP_CONTROL_BYTE.ENCRYPTED &&
+                            ackBit !== thpState.sendAckBit
+                        ) {
+                            debug(`READ_ACK received response with unexpected ThpAck bit`);
+                            phase = ThpLoopState.WRITE_REQUEST;
+                            break;
+                        }
+
                         debug(`READ_ACK received response`);
                         result = ackResult;
                         phase = ThpLoopState.SEND_ACK;
@@ -198,6 +208,7 @@ export const thpLoop = async ({
                     default:
                         result = receiveResult;
                         phase = ThpLoopState.SEND_ACK;
+
                         break;
                 }
 
@@ -207,11 +218,7 @@ export const thpLoop = async ({
             case ThpLoopState.SEND_RECENT_ACK: {
                 debug('SEND_RECENT_ACK');
 
-                const prevState = new protocolThp.ThpState();
-                prevState.deserialize({ ...thpState.serialize() });
-                prevState.updateAckBit('recv'); // downgrade ackBit
-
-                const chunk = protocolThp.encodeAck(prevState);
+                const chunk = protocolThp.encodePreviousAck(thpState);
                 const ackResult = await apiWrite(chunk, signal);
                 if (!ackResult.success) {
                     return ackResult;
@@ -227,9 +234,9 @@ export const thpLoop = async ({
 
             case ThpLoopState.SEND_ACK: {
                 const isAckExpected = protocolThp.isAckExpected(thpState.expectedResponses || []);
-                debug(`SEND_ACK ${isAckExpected}`);
+                debug(`SEND_ACK ${isAckExpected} with piggyback ${thpState.isPiggybackAckEnabled}`);
 
-                if (!skipAck && isAckExpected) {
+                if (!skipAck && isAckExpected && !thpState.isPiggybackAckEnabled) {
                     const ack = await apiWrite(protocolThp.encodeAck(thpState), signal);
                     if (!ack.success) {
                         return ack;
