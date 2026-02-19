@@ -33,7 +33,7 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         });
     }
 
-    _channel.port.onMessage.addListener((message: any) => {
+    _channel.port.onMessage.addListener((message: { type: string }) => {
         if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
             // @ts-expect-error
             eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
