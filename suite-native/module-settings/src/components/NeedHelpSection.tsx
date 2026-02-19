@@ -2,12 +2,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { CompactCardWithIconLayout, TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     SettingsStackParamList,
     SettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { useContactSupportAlert } from './useContactSupportAlert';
 
 type NavigationProps = StackNavigationProps<
     SettingsStackParamList,
@@ -16,12 +17,7 @@ type NavigationProps = StackNavigationProps<
 
 export const NeedHelpSection = () => {
     const navigation = useNavigation<NavigationProps>();
-
-    const openLink = useOpenLink();
-
-    const openContactSupport = () => {
-        openLink(SUITE_MOBILE_SUPPORT_URL);
-    };
+    const { showContactSupportAlert } = useContactSupportAlert();
 
     const navigateToAppLogs = () => {
         navigation.navigate(SettingsStackRoutes.SettingsAppLog);
@@ -32,7 +28,7 @@ export const NeedHelpSection = () => {
             <CompactCardWithIconLayout
                 title={<Translation id="moduleSettings.faq.needHelp.support" />}
                 icon="lifebuoy"
-                onPress={openContactSupport}
+                onPress={showContactSupportAlert}
             />
             <CompactCardWithIconLayout
                 title={<Translation id="moduleSettings.faq.needHelp.appLog" />}

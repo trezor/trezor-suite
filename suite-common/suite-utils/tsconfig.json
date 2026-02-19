@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../device" },
         { "path": "../suite-config" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },

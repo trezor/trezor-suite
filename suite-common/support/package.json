@@ -11,10 +11,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/urls": "workspace:*",
-        "react-redux": "9.2.0"
+        "@trezor/urls": "workspace:*"
     }
 }

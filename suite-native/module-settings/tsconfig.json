@@ -23,6 +23,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/support" },
         {
             "path": "../../suite-common/validators"
         },

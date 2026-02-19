@@ -12,7 +12,6 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@suite-common/device": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -26,7 +25,6 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "jws": "^4.0.1",
-        "react-redux": "9.2.0",
         "ua-parser-js": "^2.0.4"
     },
     "devDependencies": {
