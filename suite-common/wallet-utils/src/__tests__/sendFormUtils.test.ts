@@ -1,5 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import { networks, networksCollection } from '@suite-common/wallet-config';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,

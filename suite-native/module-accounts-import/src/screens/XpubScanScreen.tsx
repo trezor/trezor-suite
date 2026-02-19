@@ -4,6 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     XpubFormContext,
     XpubFormValues,

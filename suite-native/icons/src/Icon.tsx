@@ -3,6 +3,7 @@ import { Text, TextProps } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.json';
 import { useNativeStyles } from '@trezor/styles';
 import { CSSColor, Color, Colors } from '@trezor/theme';

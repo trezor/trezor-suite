@@ -3,6 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';

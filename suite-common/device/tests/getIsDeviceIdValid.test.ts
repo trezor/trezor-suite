@@ -1,4 +1,5 @@
 import type { UnknownDevice } from '@suite-common/suite-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 
 import { getIsDeviceIdValid } from '../src/services/getIsDeviceIdValid';

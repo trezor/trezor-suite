@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { WalletConnectSession } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     AnimatedBox,
@@ -17,6 +18,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionContent';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

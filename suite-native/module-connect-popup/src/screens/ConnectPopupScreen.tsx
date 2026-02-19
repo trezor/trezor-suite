@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     selectIsDeviceConnectedAndAuthorized,

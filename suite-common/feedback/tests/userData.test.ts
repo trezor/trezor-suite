@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import * as helpers from '@trezor/env-utils';
