@@ -1,9 +1,7 @@
 import { mocked } from 'jest-mock';
 
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { TrezorDeviceWithState } from '@suite-common/suite-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

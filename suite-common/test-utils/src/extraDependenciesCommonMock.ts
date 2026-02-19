@@ -19,14 +19,12 @@ import {
     Route,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     AddressDisplayOptions,
     SelectedAccountLoaded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';

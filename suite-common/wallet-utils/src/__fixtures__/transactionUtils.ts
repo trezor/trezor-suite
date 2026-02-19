@@ -1,5 +1,4 @@
 import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
 import { AccountTransaction } from '@trezor/connect';
