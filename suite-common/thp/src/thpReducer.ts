@@ -34,7 +34,6 @@ export type ThpState = {
     step: ThpStep;
     autoconnectStep: ThpAutoconnectStep | null;
     lastThpCode?: string;
-    lastResult?: 'finished' | 'canceled' | 'failed';
     credentials: ThpSuiteCredentials[];
 };
 
@@ -42,7 +41,6 @@ export const initialThpState: ThpState = {
     step: null,
     autoconnectStep: null,
     lastThpCode: undefined,
-    lastResult: undefined,
     credentials: [] as ThpSuiteCredentials[],
 };
 
@@ -93,11 +91,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             })
             .addCase(thpActions.finishThpFlow, state => {
                 state.step = null;
-                state.lastResult = 'finished';
             })
             .addCase(thpActions.cancelThpFlow, state => {
                 state.step = null;
-                state.lastResult = 'canceled';
             })
             .addCase(thpActions.finishAutoconnectFlow, state => {
                 state.autoconnectStep = null;
@@ -123,7 +119,6 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     if (payload.status === 'finished') {
                         state.step = null;
                         state.lastThpCode = undefined;
-                        state.lastResult = 'finished';
 
                         // find credential and increment connectionCounter or set autoconnectStep
                         const credential = state.credentials.find(stateCredential =>
@@ -148,7 +143,6 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     } else if (payload.status === 'canceled' || payload.status === 'failed') {
                         state.step = null;
                         state.lastThpCode = undefined;
-                        state.lastResult = payload.status;
                     }
                 },
             )
