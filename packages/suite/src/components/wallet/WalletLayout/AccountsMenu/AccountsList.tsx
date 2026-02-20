@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
-import { selectAccountLabels as selectAccountLabelsOld } from '@suite/metadata';
+import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { selectSelectedDevice } from '@suite-common/device';
-import { findSuiteSyncAccountLabel, selectSuiteSyncAccountLabels } from '@suite-common/suite-sync';
+import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
+import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -85,17 +85,19 @@ export const AccountsList = ({
     onItemClick,
 }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(selectAllAccountsToList);
+    const baseAccounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const accountLabels = useSelector(selectAccountLabelsOld);
+    const accountLabels = useSelector(selectAccountLabelsLegacy);
 
-    const suiteSyncAccounts = useSelector(state => {
-        if (!device?.state?.staticSessionId) return [];
-
-        return selectSuiteSyncAccountLabels(state, device.state.staticSessionId);
-    });
+    const accounts = useSelector(state =>
+        selectAccountsWithSuiteSyncLabel(
+            state,
+            baseAccounts,
+            device?.state?.staticSessionId ?? null,
+        ),
+    );
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -111,22 +113,15 @@ export const AccountsList = ({
         searchString || coinFilter
             ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabelOld = Object.prototype.hasOwnProperty.call(accountLabels, key)
-                      ? accountLabels[key]
-                      : getDefaultAccountLabel({ accountType, symbol, index });
-
-                  const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
 
                   const accountLabel =
-                      findSuiteSyncAccountLabel({
-                          accounts: suiteSyncAccounts,
-                          accountDescriptor,
-                          networkSymbol,
-                      })?.label ?? accountLabelOld;
+                      account.label ??
+                      accountLabels[key] ??
+                      getDefaultAccountLabel({ accountType, symbol, index });
 
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
-                      metadataAccountLabel: accountLabel,
+                      accountLabel,
                   });
               })
             : accounts;

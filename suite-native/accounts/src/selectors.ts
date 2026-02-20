@@ -1,7 +1,12 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import {
+    DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { SuiteSyncDataRootState, selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     SimpleTokenStructure,
     TokenDefinitionsRootState,
@@ -46,16 +51,29 @@ export type NativeAccountsRootState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
     DeviceRootState &
+    SuiteSyncDataRootState &
     TokenDefinitionsRootState &
     TransactionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
+export const selectVisibleAccountsWithLabel = createMemoizedSelector(
+    [
+        (state: NativeAccountsRootState) =>
+            selectAccountsWithSuiteSyncLabel(
+                state,
+                selectVisibleDeviceAccounts(state),
+                selectDeviceStaticSessionId(state),
+            ),
+    ],
+    accounts => accounts,
+);
+
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
     [
-        selectVisibleDeviceAccounts,
+        selectVisibleAccountsWithLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (
             _state: NativeAccountsRootState,
@@ -63,14 +81,18 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
             isSendFilterEnabled: boolean = false,
         ) => isSendFilterEnabled,
     ],
-    (accounts, filterValue, isSendFilterEnabled) =>
-        pipe(
-            accounts,
-            sortAccountsByNetworksAndAccountTypes,
-            isSendFilterEnabled ? filterSendAvailableAccounts : accountsSorted => accountsSorted,
+    (accounts, filterValue, isSendFilterEnabled) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+        const sendFilteredAccounts = isSendFilterEnabled
+            ? filterSendAvailableAccounts(sortedAccounts)
+            : sortedAccounts;
+
+        return pipe(
+            sendFilteredAccounts,
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
-        ) as GroupedByTypeAccounts,
+        ) as GroupedByTypeAccounts;
+    },
 );
 
 export const selectAccountFiatBalance = createMemoizedSelector(
