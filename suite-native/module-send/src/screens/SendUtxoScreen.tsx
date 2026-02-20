@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useFilteredUtxos } from '@suite-common/transaction-search';
 import {
     AccountsRootState,
     fetchUtxoTransactionsForAccountThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { isSameUtxo, useFilteredUtxos } from '@suite-common/wallet-utils';
+import { isSameUtxo } from '@suite-common/wallet-utils';
 import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';

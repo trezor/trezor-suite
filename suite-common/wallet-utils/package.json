@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@suite-common/fiat-services": "workspace:*",
-        "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -23,7 +22,6 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/address-validator": "workspace:*",
-        "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:*",

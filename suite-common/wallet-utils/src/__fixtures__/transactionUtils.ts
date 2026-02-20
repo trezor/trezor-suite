@@ -657,8 +657,6 @@ export const enhanceTransaction = [
     },
 ];
 
-
-
 const CHAINED_TXS = {
     'account1-key': [
         {

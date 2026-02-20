@@ -20,6 +20,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/transaction-search": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",

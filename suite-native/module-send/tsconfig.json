@@ -10,6 +10,9 @@
             "path": "../../suite-common/token-definitions"
         },
         {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {

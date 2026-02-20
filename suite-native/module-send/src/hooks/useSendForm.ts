@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -23,7 +24,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits, getExcludedUtxos } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,

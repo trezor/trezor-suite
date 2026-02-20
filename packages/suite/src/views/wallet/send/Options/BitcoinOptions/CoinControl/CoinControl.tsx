@@ -4,13 +4,10 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchUtxoTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import {
-    convertAmountUnitsToSubunits,
-    filterAndCategorizeUtxos,
-    formatNetworkAmount,
-} from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Banner,
     Card,
