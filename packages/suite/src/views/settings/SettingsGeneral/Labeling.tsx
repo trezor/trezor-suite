@@ -123,6 +123,15 @@ export const Labeling = () => {
             : LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
     };
 
+    const isOptionDisabled = (option: LabelingSelectValue) => {
+        switch (option) {
+            case 'legacy':
+                return isDeviceLabelingDisabled;
+            default:
+                return false;
+        }
+    };
+
     return (
         <>
             {legacyModalWarningVisible && (
@@ -154,7 +163,8 @@ export const Labeling = () => {
                         value={getSelectedOption()}
                         onChange={handleOnChange}
                         data-testid="@settings/labeling-select"
-                        isDisabled={isDeviceLabelingDisabled}
+                        isDisabled={isDeviceLabelingDisabled && !showSuiteSync}
+                        isOptionDisabled={option => isOptionDisabled(option.value)}
                     />
                 </ActionColumn>
             </SettingsSectionItem>
