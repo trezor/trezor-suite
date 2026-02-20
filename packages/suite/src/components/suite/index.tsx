@@ -8,6 +8,7 @@ import { AccountLabel } from './AccountLabel';
 import { Address } from './Address';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
+import { FakeSelect } from './FakeSelect';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
@@ -60,6 +61,7 @@ export {
     AccountLabel,
     DeviceConfirmImage,
     CheckItem,
+    FakeSelect,
     PrerequisitesGuide,
     BaseCurrencyValue,
     WordInput,
