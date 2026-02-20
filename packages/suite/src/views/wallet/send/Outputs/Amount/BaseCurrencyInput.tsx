@@ -28,8 +28,7 @@ import {
 } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
-import { typedObjectKeys } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

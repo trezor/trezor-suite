@@ -1,6 +1,5 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { typedObjectEntries } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
 import { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/wallet/graph';
 

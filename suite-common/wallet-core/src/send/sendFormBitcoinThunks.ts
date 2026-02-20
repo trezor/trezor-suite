@@ -26,8 +26,7 @@ import TrezorConnect, {
     SignTransaction,
     SignedTransaction,
 } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {

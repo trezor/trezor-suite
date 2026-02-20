@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Card, Column, H4, Row, SkeletonRectangle, Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
 import { Account } from 'src/types/wallet';

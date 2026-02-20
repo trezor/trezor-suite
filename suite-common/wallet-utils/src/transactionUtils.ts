@@ -29,9 +29,7 @@ import {
     TokenTransfer,
 } from '@trezor/connect';
 import { Branded } from '@trezor/type-utils';
-import { arrayPartition, typedObjectKeys } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, arrayPartition, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isCardanoStakingTx } from './cardanoStakingUtils';

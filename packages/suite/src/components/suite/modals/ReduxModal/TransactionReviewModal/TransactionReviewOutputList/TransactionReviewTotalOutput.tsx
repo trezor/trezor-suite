@@ -15,7 +15,7 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { TrezorDevice } from 'src/types/suite';

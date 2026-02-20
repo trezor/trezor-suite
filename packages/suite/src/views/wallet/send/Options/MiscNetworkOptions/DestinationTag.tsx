@@ -5,7 +5,7 @@ import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSendFormContext } from 'src/hooks/wallet';

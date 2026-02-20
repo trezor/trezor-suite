@@ -13,7 +13,7 @@ import {
 
 import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 // copy paste from protobuf to avoid extra dependency
 export type StellarAsset = {

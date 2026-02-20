@@ -13,8 +13,7 @@ import { Locale } from '@suite-common/suite-types';
 // todo: scope packages should not import from scope suite-common
 import { localizeNumber } from '@suite-common/wallet-utils/src/localizeNumberUtils';
 import { Input, InputProps } from '@trezor/components';
-import { getLocaleSeparators } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, getLocaleSeparators } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);

@@ -1,7 +1,6 @@
 import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 import type { EnhancedVinVout, Transaction } from '@trezor/blockchain-link-types/src/common';
-import { isNotUndefined, topologicalSort } from '@trezor/utils';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { BigNumber, BigNumberValue, isNotUndefined, topologicalSort } from '@trezor/utils';
 
 export type Addresses = ({ address: string } | string)[] | string;
 

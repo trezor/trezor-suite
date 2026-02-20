@@ -42,9 +42,7 @@ import {
     PROTO,
     TokenInfo,
 } from '@trezor/connect';
-import { typedObjectKeys } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { getUtxoOutpoint } from './accountUtils';
 import {

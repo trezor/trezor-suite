@@ -8,7 +8,7 @@ import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/wall
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

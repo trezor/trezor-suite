@@ -1,5 +1,4 @@
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { PROTO } from '@trezor/connect/src/exports';
+import { PROTO } from '@trezor/connect';
 
 export const UNIT_ABBREVIATIONS = {
     [PROTO.AmountUnit.BITCOIN]: 'BTC',

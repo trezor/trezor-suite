@@ -1,4 +1,4 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
 import { PROTO } from '../../constants';

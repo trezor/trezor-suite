@@ -1,6 +1,5 @@
 import { Locale } from '@suite-common/suite-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { localizeNumber } from './localizeNumberUtils';
 

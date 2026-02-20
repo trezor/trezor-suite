@@ -1,5 +1,5 @@
 import { TrezorError } from '@trezor/connect-common/src/constants/errors';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { PROTO } from '../../../constants';
 
