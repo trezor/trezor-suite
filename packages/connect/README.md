@@ -36,6 +36,14 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Versioning
 
+### Version 10
+
+Is now in alpha stage.
+
+### Version 9
+
+Version 9 is still stable but scheduled to be deprecated in Q2 2026.
+
 Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
 
 - A) The latest release will always be available on https://connect.trezor.io/9/....
@@ -43,44 +51,24 @@ Since version 9 we are adopting a new versioning strategy. With every release, w
 
 Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
 
-### Major version
-
 New major version is released when there are breaking changes on API level. Previous major version will be maintained for 12 months and after this period it can be taken down without notice.
 
 Current major version 9 is being developed on top of `develop` branch. When there is a new major version a new branch should be created (`v-<major-version>`) and mantained separately.
-
-### Minor version
 
 Minor versions are released when there are:
 
 - considerable additions to API
 - changes in npm package
 
-### Patch version
-
 Everything else that does not fall under major or minor version.
 
-## Version 8 (legacy)
+### Version 8 (legacy)
 
-Legacy version 8 is accessible from url https://connect.trezor.io/8/trezor-connect.js.
-
-Version 8 is available as `trezor-connect` npm package.
-
-If you would like to find out which version is deployed precisely simply run:
-
-`curl -s https://connect.trezor.io/8/trezor-connect.js | grep VERSION`
-
-With regards to this repo - All updates should go to current version branch, the previous releases are in corresponding branches. The gh-pages is the same older version, that is used at trezor.github.io/connect/connect.js, and it's there for backwards compatibility; please don't touch.
-
-For deployment process of trezor-connect v8 refer to [trezor/connect repository](https://github.com/trezor/connect/blob/develop/docs/deployment/index.md)
-
-Version 8 will go offline by the end of 2023.
+Version 8 is legacy and no longer maintained. Use the npm packages listed above for all current integrations.
 
 ## Docs
 
-Interactive API explorer is available on https://connect.trezor.io/9/#/
-
-Documentation is available [docs/packages/connect](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
+Interactive API explorer is available on https://connect.trezor.io/
 
 ## Examples
 
