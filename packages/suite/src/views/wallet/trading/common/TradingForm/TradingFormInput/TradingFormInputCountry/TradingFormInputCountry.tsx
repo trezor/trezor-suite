@@ -32,16 +32,24 @@ export const TradingFormInputCountry = ({
                     value={countryValue?.label ?? defaultCountry?.label ?? ''}
                     placeholder={label ? translationString(label) : undefined}
                     onClick={() => setIsModalOpen(true)}
+                    data-testid="@trading/form/country-select"
                 />
             )}
             {!renderInput && (
-                <GhostContainer onClick={() => setIsModalOpen(true)} borderRadius={0}>
+                <GhostContainer
+                    onClick={() => setIsModalOpen(true)}
+                    borderRadius={0}
+                    data-testid="@trading/form/country-select"
+                >
                     <Row alignItems="center" justifyContent="space-between" padding={20}>
                         <Text typographyStyle="body-md" align="start">
                             {label && <Translation id={label} />}
                         </Text>
                         <Row gap={16}>
-                            <Text typographyStyle="body-md">
+                            <Text
+                                typographyStyle="body-md"
+                                data-testid="@trading/form/country-select/value"
+                            >
                                 {countryValue?.label ?? defaultCountry?.label ?? ''}
                             </Text>
                             <Icon

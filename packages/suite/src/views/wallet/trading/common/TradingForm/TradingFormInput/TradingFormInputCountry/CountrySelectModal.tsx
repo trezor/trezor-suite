@@ -55,6 +55,7 @@ export const CountrySelectModal = ({ heading, onClose }: Props) => {
                             <CardList.Item
                                 key={country.value}
                                 onClick={() => selectCountry(country)}
+                                data-testid={`@trading/form/country-select/option/${country.value}`}
                             >
                                 <Row gap={16}>
                                     <Flag country={getCountryFlag(country)} size={24} />

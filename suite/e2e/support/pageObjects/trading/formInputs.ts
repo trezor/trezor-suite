@@ -26,9 +26,11 @@ export class TradingFormInputs {
     readonly fractionButtons: Locator;
     readonly bottomText: Locator;
     readonly countryDropdown: Locator;
-    readonly countryOption = (countryCode: string) =>
+    readonly countryValue: Locator;
+    readonly countryOption = (countryCode: TradingCountryCode) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
     readonly paymentMethodDropdown: Locator;
+    readonly paymentMethodValue: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
     readonly swapAmountCurrencyTicker: Locator;
@@ -40,9 +42,11 @@ export class TradingFormInputs {
         this.fiatCryptoSwitchButton = this.page.getByTestId('@trading/form/switch-crypto-fiat');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.bottomText = this.page.getByTestId('@trading/form/crypto-input/bottom-text');
-        this.countryDropdown = this.page.getByTestId('@trading/form/country-select/input');
-        this.paymentMethodDropdown = this.page.getByTestId(
-            '@trading/form/payment-method-select/input',
+        this.countryDropdown = this.page.getByTestId('@trading/form/country-select');
+        this.countryValue = this.page.getByTestId('@trading/form/country-select/value');
+        this.paymentMethodDropdown = this.page.getByTestId('@trading/form/payment-method-select');
+        this.paymentMethodValue = this.page.getByTestId(
+            '@trading/form/payment-method-select/value',
         );
         this.swapAmountCurrencyTicker = this.page.getByTestId(
             '@trading/form/crypto-input/input-addon',
@@ -52,14 +56,16 @@ export class TradingFormInputs {
     @step()
     async selectCountryOfResidence(countryCode: TradingCountryCode) {
         const countryLabel = getCountryLabel(countryCode);
-        const currentCountry = await this.countryDropdown.textContent();
-        if (currentCountry === countryLabel) {
+        const currentCountry = await this.countryValue.textContent();
+        if (currentCountry?.includes(countryLabel)) {
             return;
         }
-        await this.page.selectDropdownOptionWithRetry(
-            this.countryDropdown,
-            this.countryOption(countryCode),
+        await this.countryDropdown.click();
+        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
+            'TR_TRADING_COUNTRY',
         );
+        await this.countryOption(countryCode).click();
+        await expect(this.countryValue).toContainText(countryLabel);
     }
 
     @step()
@@ -76,15 +82,20 @@ export class TradingFormInputs {
 
     @step()
     async selectPaymentMethod(method: PaymentMethods) {
-        await this.page.selectDropdownOptionWithRetry(
-            this.paymentMethodDropdown,
-            this.paymentMethodOption(method),
+        const currentPaymentMethod = await this.paymentMethodDropdown.getAttribute('value');
+        if (currentPaymentMethod?.includes(method)) {
+            return;
+        }
+        await this.paymentMethodDropdown.click();
+        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
+            'TR_TRADING_PAYMENT_METHOD',
         );
+        await this.paymentMethodOption(method).click();
     }
 
     getSelectedPaymentMethod = async () => {
         await expect(this.paymentMethodDropdown).not.toBeEmpty();
-        const dropdownText = (await this.paymentMethodDropdown.textContent())?.trim();
+        const dropdownText = (await this.paymentMethodDropdown.getAttribute('value'))?.trim();
         if (!dropdownText) {
             throw new Error('Payment method dropdown is empty');
         }
