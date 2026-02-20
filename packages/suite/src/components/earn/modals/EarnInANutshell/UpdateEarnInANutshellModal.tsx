@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
@@ -20,16 +20,25 @@ import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
 interface UpdateEarnInANutshellModalProps {
     onCancel: () => void;
     provider: EarnProvider;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const UpdateEarnInANutshellModal = ({
     onCancel,
     provider,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: UpdateEarnInANutshellModalProps) => {
     const { handleContinue, onCancelClick } = useEarnInANutshellActions({
         flow: EarnFlow.UpdateProvider,
         provider,
         onCancel,
+        accountRef,
+        yieldId,
+        tokenContractAddress,
     });
 
     const data = useEarnInANutshellData();
@@ -38,10 +47,10 @@ export const UpdateEarnInANutshellModal = ({
         return null;
     }
 
-    const { account, displaySymbol, apy } = data;
+    const { account: selectedAccount, displaySymbol, apy } = data;
 
-    if (!account || !displaySymbol) return null;
-    if (!isStakingNetworkType(account.networkType)) return null;
+    if (!selectedAccount || !displaySymbol) return null;
+    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
 
     const apyValue = formatApyValue(apy);
 
@@ -53,7 +62,7 @@ export const UpdateEarnInANutshellModal = ({
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
             content: <EarnWithdrawingInfo flow={EarnFlow.UpdateProvider} />,
         },
     ];
@@ -65,7 +74,7 @@ export const UpdateEarnInANutshellModal = ({
             onContinue={handleContinue}
         >
             <UpdateEarnInANutshellHighlights
-                networkType={account.networkType}
+                networkType={selectedAccount.networkType}
                 displaySymbol={displaySymbol}
                 apy={apyValue}
             />

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
@@ -18,16 +18,25 @@ import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
 interface StakingEarnInANutshellModalProps {
     onCancel: () => void;
     provider: EarnProvider;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const StakingEarnInANutshellModal = ({
     onCancel,
     provider,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: StakingEarnInANutshellModalProps) => {
     const { handleContinue, onCancelClick } = useEarnInANutshellActions({
         flow: EarnFlow.Stake,
         provider,
         onCancel,
+        accountRef,
+        yieldId,
+        tokenContractAddress,
     });
 
     const data = useEarnInANutshellData();
@@ -36,10 +45,10 @@ export const StakingEarnInANutshellModal = ({
         return null;
     }
 
-    const { account, displaySymbol, unstakingPeriod } = data;
+    const { account: selectedAccount, displaySymbol, unstakingPeriod } = data;
 
-    if (!account || !displaySymbol) return null;
-    if (!isStakingNetworkType(account.networkType)) return null;
+    if (!selectedAccount || !displaySymbol) return null;
+    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
 
     const processes: EarnInANutshellProcess[] = [
         {
@@ -49,7 +58,7 @@ export const StakingEarnInANutshellModal = ({
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
             content: <EarnWithdrawingInfo flow={EarnFlow.Stake} />,
         },
     ];
@@ -61,7 +70,7 @@ export const StakingEarnInANutshellModal = ({
             onContinue={handleContinue}
         >
             <StakingEarnInANutshellHighlights
-                networkType={account.networkType}
+                networkType={selectedAccount.networkType}
                 displaySymbol={displaySymbol}
                 unstakingPeriod={unstakingPeriod}
             />

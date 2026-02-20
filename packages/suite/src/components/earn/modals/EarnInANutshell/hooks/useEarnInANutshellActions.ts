@@ -1,4 +1,4 @@
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -10,27 +10,42 @@ interface UseEarnInANutshellActionsProps {
     flow: EarnFlow;
     provider: EarnProvider;
     onCancel: () => void;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const useEarnInANutshellActions = ({
     flow,
     provider,
     onCancel,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: UseEarnInANutshellActionsProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const account = useSelector(selectSelectedAccount);
+    const selectedAccount = useSelector(selectSelectedAccount);
 
     const handleContinue = () => {
         onCancel();
-        dispatch(openModal({ type: 'earn-provider-consent', flow, provider }));
+        dispatch(
+            openModal({
+                type: 'earn-provider-consent',
+                flow,
+                provider,
+                account: accountRef,
+                yieldId,
+                tokenContractAddress,
+            }),
+        );
 
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'stake-in-a-nutshell-modal',
-                networkSymbol: account?.symbol,
+                networkSymbol: selectedAccount?.symbol,
             },
         });
     };
@@ -43,7 +58,7 @@ export const useEarnInANutshellActions = ({
             payload: {
                 action: 'cancel',
                 step: 'stake-in-a-nutshell-modal',
-                networkSymbol: account?.symbol,
+                networkSymbol: selectedAccount?.symbol,
             },
         });
     };

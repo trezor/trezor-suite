@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -14,26 +16,58 @@ import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
 interface YieldEarnProviderConsentModalProps {
     onCancel: () => void;
     provider: EarnProvider;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const YieldEarnProviderConsentModal = ({
     onCancel,
     provider,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: YieldEarnProviderConsentModalProps) => {
-    const account = useSelector(selectSelectedAccount);
-    const { proceedToStaking, onCancelClick } = useEarnProviderConsentActions({
+    const selectedAccount = useSelector(selectSelectedAccount);
+
+    const normalizedTokenContractAddress =
+        selectedAccount && tokenContractAddress
+            ? getContractAddressForNetworkSymbol(selectedAccount.symbol, tokenContractAddress)
+            : undefined;
+
+    const tokenSymbolFromAccount = selectedAccount?.tokens?.find(
+        token =>
+            normalizedTokenContractAddress !== undefined &&
+            token.contract !== undefined &&
+            getContractAddressForNetworkSymbol(selectedAccount.symbol, token.contract) ===
+                normalizedTokenContractAddress,
+    )?.symbol;
+
+    const tokenCryptoId =
+        selectedAccount && normalizedTokenContractAddress
+            ? toTokenCryptoId(selectedAccount.symbol, normalizedTokenContractAddress)
+            : undefined;
+
+    const tokenSymbolFromTrading = useSelector(state =>
+        selectTradingCoinSymbolByCryptoId(state, tokenCryptoId),
+    );
+    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
+        accountRef,
+        yieldId,
+        tokenContractAddress,
     });
 
-    if (!account) return null;
+    if (!selectedAccount) return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(selectedAccount.symbol);
+    const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
     const providerName = getEarnProviderName(provider);
 
     return (
         <EarnProviderConsentModalLayout
-            heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: displaySymbol }} />}
+            heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: supplySymbol }} />}
             description={
                 <Translation
                     id="TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED"
@@ -42,7 +76,7 @@ export const YieldEarnProviderConsentModal = ({
             }
             banners={
                 <YieldProviderConsentBanners
-                    networkType={account.networkType}
+                    networkType={selectedAccount.networkType}
                     displaySymbol={displaySymbol}
                     providerName={providerName}
                 />
@@ -53,7 +87,7 @@ export const YieldEarnProviderConsentModal = ({
                     values={{ providerName }}
                 />
             }
-            onConfirm={proceedToStaking}
+            onConfirm={proceedToSupply}
             onCancel={onCancelClick}
         >
             <VotingDelegations />

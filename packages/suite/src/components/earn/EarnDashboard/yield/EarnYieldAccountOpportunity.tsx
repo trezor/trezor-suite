@@ -1,6 +1,11 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import {
+    EarnFlow,
+    EarnProvider,
+    createEarnAccountRef,
+} from '@suite-common/suite-types/src/staking';
+import {
     getTradingPrefilledFromAccountData,
     toTokenCryptoId,
     tradingActions,
@@ -9,6 +14,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -84,6 +90,23 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     accountIndex,
                     accountType,
                 },
+            }),
+        );
+    };
+
+    const openYieldSupplyFlow = () => {
+        if (!opportunity.account) {
+            return;
+        }
+
+        dispatch(
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Yield,
+                provider: EarnProvider.YieldXyz,
+                account: createEarnAccountRef(opportunity.account),
+                yieldId: opportunity.vault.id,
+                tokenContractAddress: opportunity.vault.token.address ?? undefined,
             }),
         );
     };
@@ -186,7 +209,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 <Row justifyContent="flex-end" gap={8}>
                     {hasSuppliedBalance && (
                         <>
-                            <Button size="small">
+                            <Button size="small" onClick={openYieldSupplyFlow}>
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
                             </Button>
                             <Button size="small" intent="brand" priority="secondary">
@@ -196,7 +219,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     )}
 
                     {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
-                        <Button size="small" isDisabled={!opportunity.vault.status.enter}>
+                        <Button
+                            size="small"
+                            isDisabled={!opportunity.vault.status.enter}
+                            onClick={openYieldSupplyFlow}
+                        >
                             <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
                         </Button>
                     )}

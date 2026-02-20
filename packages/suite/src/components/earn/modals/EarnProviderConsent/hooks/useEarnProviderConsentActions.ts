@@ -1,4 +1,4 @@
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow } from '@suite-common/suite-types/src/staking';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,
@@ -15,16 +15,22 @@ interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
     onCancel: () => void;
     includeVotingDelegation?: boolean;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const useEarnProviderConsentActions = ({
     flow,
     onCancel,
     includeVotingDelegation = false,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const account = useSelector(selectSelectedAccount);
+    const selectedAccount = useSelector(selectSelectedAccount);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const report = (action: 'continue' | 'cancel') => {
@@ -33,7 +39,7 @@ export const useEarnProviderConsentActions = ({
             payload: {
                 action,
                 step: 'funds-maintained-modal',
-                networkSymbol: account?.symbol,
+                networkSymbol: selectedAccount?.symbol,
                 ...(includeVotingDelegation
                     ? { votingDelegation: selectedVotingDelegation.type }
                     : {}),
@@ -41,9 +47,17 @@ export const useEarnProviderConsentActions = ({
         });
     };
 
-    const proceedToStaking = () => {
+    const proceedToSupply = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake', flow }));
+        dispatch(
+            openModal({
+                type: 'supply',
+                flow,
+                account: accountRef,
+                yieldId,
+                tokenContractAddress,
+            }),
+        );
         report('continue');
     };
 
@@ -55,7 +69,7 @@ export const useEarnProviderConsentActions = ({
     };
 
     return {
-        proceedToStaking,
+        proceedToSupply,
         onCancelClick,
     };
 };

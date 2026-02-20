@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
@@ -14,21 +14,30 @@ import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
 interface StakingEarnProviderConsentModalProps {
     onCancel: () => void;
     provider: EarnProvider;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const StakingEarnProviderConsentModal = ({
     onCancel,
     provider,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: StakingEarnProviderConsentModalProps) => {
-    const account = useSelector(selectSelectedAccount);
-    const { proceedToStaking, onCancelClick } = useEarnProviderConsentActions({
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Stake,
         onCancel,
+        accountRef,
+        yieldId,
+        tokenContractAddress,
     });
 
-    if (!account) return null;
+    if (!selectedAccount) return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(selectedAccount.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (
@@ -39,7 +48,7 @@ export const StakingEarnProviderConsentModal = ({
             }
             banners={
                 <StakingProviderConsentBanners
-                    networkType={account.networkType}
+                    networkType={selectedAccount.networkType}
                     displaySymbol={displaySymbol}
                 />
             }
@@ -49,7 +58,7 @@ export const StakingEarnProviderConsentModal = ({
                     values={{ providerName }}
                 />
             }
-            onConfirm={proceedToStaking}
+            onConfirm={proceedToSupply}
             onCancel={onCancelClick}
         >
             <VotingDelegations />
