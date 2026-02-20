@@ -138,6 +138,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         selectThpSettings: notImplementedSelector('selectThpSettings', {
             pairingMethods: ['CodeEntry'],
         }),
+        selectAllowPrerelease: notImplementedSelector('selectAllowPrerelease', false),
     },
     actions: {
         setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),
