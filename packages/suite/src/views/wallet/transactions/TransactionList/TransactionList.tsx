@@ -4,11 +4,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import {
-    advancedSearchTransactions,
-    groupTransactionsByDate,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { advancedSearchTransactions } from '@suite-common/transaction-search';
+import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column, SkeletonStack } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
 

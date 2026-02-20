@@ -114,6 +114,9 @@
         },
         { "path": "../../suite-common/trading" },
         {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
             "path": "../../suite-common/tx-simulation"
         },
         {
