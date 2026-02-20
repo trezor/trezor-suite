@@ -15,8 +15,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import {
     EVERSTAKE_API_KEY,

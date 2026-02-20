@@ -38,7 +38,7 @@ import {
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';

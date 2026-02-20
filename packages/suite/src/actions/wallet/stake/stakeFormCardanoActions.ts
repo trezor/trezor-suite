@@ -45,7 +45,7 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { Dispatch, GetState } from 'src/types/suite';
 

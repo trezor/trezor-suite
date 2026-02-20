@@ -23,8 +23,7 @@ import {
     getStakingLimitsByNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, isChanged } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';

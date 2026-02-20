@@ -4,8 +4,7 @@ import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
-import { typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
 import {
     AggregatedAccountHistory,

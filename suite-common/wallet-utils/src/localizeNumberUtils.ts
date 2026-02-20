@@ -1,7 +1,5 @@
 import { Locale } from '@suite-common/suite-types';
-import { getLocaleSeparators } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, getLocaleSeparators } from '@trezor/utils';
 
 export const localizeNumber = (
     value: number | string | BigNumber,

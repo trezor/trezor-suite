@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { FormattedCryptoAmount } from 'src/components/suite';

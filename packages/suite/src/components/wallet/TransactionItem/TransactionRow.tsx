@@ -9,7 +9,7 @@ import {
     getCardanoStakingSignValue,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

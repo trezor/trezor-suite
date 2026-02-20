@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
 import { WalletAction } from 'src/types/wallet';

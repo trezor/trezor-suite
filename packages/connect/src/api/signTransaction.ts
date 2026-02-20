@@ -1,8 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
+import { BigNumber, promiseAllSequence } from '@trezor/utils';
 
 import { PROTO } from '../constants';
 import {

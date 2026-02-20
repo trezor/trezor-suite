@@ -6,7 +6,7 @@ import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { isInteger, localizeNumber } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

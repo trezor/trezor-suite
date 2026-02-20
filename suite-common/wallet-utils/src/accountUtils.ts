@@ -43,9 +43,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { arrayDistinct, bufferUtils } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, arrayDistinct, bufferUtils } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';

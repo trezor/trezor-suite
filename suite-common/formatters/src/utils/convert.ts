@@ -6,8 +6,7 @@ import {
     fromBaseCurrencyToCryptoUnit,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 type ConvertInput = {
     amount: string | null;

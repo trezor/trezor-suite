@@ -7,7 +7,7 @@ import { FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

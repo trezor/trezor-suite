@@ -6,7 +6,7 @@ import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Grid, Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

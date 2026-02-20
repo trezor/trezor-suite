@@ -41,9 +41,7 @@ import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaD
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { exhaustive } from '@trezor/type-utils';
-import { cloneObject, typedObjectEntries } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
 import {

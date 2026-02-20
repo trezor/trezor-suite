@@ -41,9 +41,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
-import { typedObjectEntries } from '@trezor/utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';

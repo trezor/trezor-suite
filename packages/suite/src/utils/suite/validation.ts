@@ -10,7 +10,7 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 interface ValidateDecimalsOptions {
     decimals: number;

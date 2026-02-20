@@ -13,8 +13,7 @@ import {
     RoundPhase,
     SessionPhase,
 } from '@trezor/coinjoin';
-import { isArrayMember } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import {
     ANONYMITY_GAINS_HINDSIGHT_COUNT,
