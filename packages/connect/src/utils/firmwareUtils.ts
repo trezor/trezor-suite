@@ -1,6 +1,7 @@
 import { FirmwareType } from '@trezor/device-utils';
-import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
+import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from '../data/DataManager';
 import type { CurrentVersion } from '../data/firmwareInfo';

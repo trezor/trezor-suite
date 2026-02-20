@@ -7,12 +7,12 @@ import {
     FirmwareReleaseConfig,
     FirmwareType,
     IntermediaryReleaseConfig,
-    VersionArray,
     getBootloaderVersionArray,
     getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
 } from '@trezor/device-utils';
 import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
 import { Features, StrictFeatures } from '../types/device';

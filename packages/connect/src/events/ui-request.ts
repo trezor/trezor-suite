@@ -1,13 +1,9 @@
 /*
  * messages to UI emitted as UI_EVENT
  */
-import {
-    DeviceModelInternal,
-    FirmwareRelease,
-    FirmwareType,
-    VersionArray,
-} from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';

@@ -1,4 +1,4 @@
-import type { VersionArray } from '@trezor/device-utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 /**
  * parse firmware headers
  * based on

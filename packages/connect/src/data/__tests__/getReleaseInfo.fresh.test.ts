@@ -1,9 +1,5 @@
-import {
-    DeviceModelInternal,
-    FirmwareRelease,
-    FirmwareType,
-    VersionArray,
-} from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { getReleaseInfo } from '../firmwareInfo';
 

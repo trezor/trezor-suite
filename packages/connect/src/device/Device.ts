@@ -18,6 +18,7 @@ import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceCommands } from './DeviceCommands';
 import { FIRMWARE, PROTO } from '../constants';
@@ -59,7 +60,6 @@ import {
     FirmwareType,
     KnownDevice,
     UnavailableCapabilities,
-    VersionArray,
     asBluetoothDeviceId,
 } from '../types';
 import { handshakeCancel } from './workflow/handshake';
