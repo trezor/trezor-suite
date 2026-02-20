@@ -34,7 +34,7 @@ export const quotaManagerDeviceUnspentStorageFetched = createAction(
     }),
 );
 
-export const eraseFetchedDataDebug = createAction(`${QUOTA_MANAGER_PREFIX}/eraseFetchedData`);
+export const eraseFetchedData = createAction(`${QUOTA_MANAGER_PREFIX}/eraseFetchedData`);
 
 export const quotaManagerOwnerFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/ownerFetched`,
@@ -55,6 +55,6 @@ export const suiteSyncQuotaManagerActions = {
     quotaManagerFetchError,
     quotaManagerDeviceFetched,
     quotaManagerOwnerFetched,
-    eraseFetchedDataDebug,
+    eraseFetchedData,
     noQuotaLeftWarningDismissed,
 };
