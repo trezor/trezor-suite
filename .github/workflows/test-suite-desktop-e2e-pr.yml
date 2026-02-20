@@ -55,6 +55,41 @@ jobs:
           workflow_name: ${{ github.workflow }}
           run_attempt: ${{ github.run_attempt }}
 
+  check-skipped-tests:
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests == 'true'
+    runs-on: ubuntu-latest
+    needs:
+      - check-previous-runs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Check if skip was dismissed (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        id: check-dismissal
+        uses: ./.github/actions/check-e2e-dismissal
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          pr_number: ${{ github.event.pull_request.number }}
+          commit_sha: ${{ github.event.pull_request.head.sha }}
+          target: "desktop"
+
+      - name: Fail if not dismissed
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && steps.check-dismissal.outputs.dismissed != 'true')
+        run: |
+          echo "::error::⚠️ Desktop e2e tests were skipped due to a previous successful run."
+          echo "::error::This could mean that recent changes have not been tested."
+          echo "::error::Please review your changes carefully and use '/e2e dismiss desktop' if you're confident, or rerun the workflow to execute tests."
+          exit 1
+
+
   build-app:
     needs:
       - check-previous-runs
@@ -62,10 +97,11 @@ jobs:
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
   post-currents-link:
-    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
+    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && needs.check-previous-runs.outputs.skip_tests != 'true'
     runs-on: ubuntu-latest
     needs:
       - build-app
+      - check-previous-runs
     steps:
       - name: Checkout
         uses: actions/checkout@v4

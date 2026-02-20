@@ -1,0 +1,42 @@
+name: "Check E2E Test Skip Dismissal"
+description: "Check if the test skip has been dismissed for this commit"
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  pr_number:
+    description: "Pull request number"
+    required: true
+  commit_sha:
+    description: "Commit SHA to check dismissal for"
+    required: true
+  target:
+    description: "Target platform (web or desktop)"
+    required: true
+outputs:
+  dismissed:
+    description: "Whether the skip has been dismissed"
+    value: ${{ steps.check-dismissal.outputs.dismissed }}
+runs:
+  using: "composite"
+  steps:
+    - name: Check for dismissal marker
+      id: check-dismissal
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+      run: |
+        SHORT_SHA="${{ inputs.commit_sha }}"
+        SHORT_SHA="${SHORT_SHA:0:7}"
+        DISMISS_MARKER="E2E_DISMISS target=${{ inputs.target }} sha=${SHORT_SHA}"
+
+        # Check if dismissal marker exists in PR comments
+        COMMENTS=$(gh api --paginate repos/${{ github.repository }}/issues/${{ inputs.pr_number }}/comments --jq '.[] | select(.user.login == "github-actions[bot]") | .body')
+
+        if echo "$COMMENTS" | grep -Fq "$DISMISS_MARKER"; then
+          echo "dismissed=true" >> $GITHUB_OUTPUT
+          echo "✅ Tests skip dismissed for commit ${SHORT_SHA}"
+        else
+          echo "dismissed=false" >> $GITHUB_OUTPUT
+          echo "❌ Tests skip not dismissed"
+        fi

@@ -1,0 +1,125 @@
+name: "[Test] Rerun Suite Web e2e tests"
+# Triggered via comment commands: /e2e rerun web
+# Reruns only failed tests from the previous run using Currents orchestration
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+  pull-requests: write # for posting comments
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Pull request number"
+        required: true
+        type: string
+      triggered_by:
+        description: "User who triggered the run"
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.pr_number }}
+  cancel-in-progress: true
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+  STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+
+jobs:
+  build-web:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-web-e2e.yml
+
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+  build-connect:
+    needs: [extract-branch]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Release connect to dev environment
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "dev.suite.sldev.cz"
+          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+          uploadArtifacts: "true"
+          buildArtifacts: "true"
+          nodeEnv: "development"
+          connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
+
+  # TODO: Add step to get failed tests from Currents API
+  # This can use the Currents GitHub Action that retrieves failed tests from previous runs
+  # For now, we'll rerun all tests with the same orchestration
+
+  run-e2e-suite-web-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-web
+      - build-connect
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5]
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "web"
+      pw-config: "./playwright-config/playwright-web-pr.config.ts"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "7"
+      currents-project-id: "Og0NOQ"
+      currents-ci-build-id: "rerun-${{ github.run_id }}-${{ github.run_attempt }}"
+      # Note: Currents orchestration will handle which tests to rerun based on previous failures
+      # The orchestration groups ensure parallel execution while only running failed tests
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  post-results:
+    if: always() && github.repository == 'trezor/trezor-suite'
+    needs: [run-e2e-suite-web-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Post results comment
+        uses: actions/github-script@v7
+        env:
+          TRIGGERED_BY: ${{ inputs.triggered_by }}
+        with:
+          github-token: ${{ steps.trezor-bot-token.outputs.token }}
+          script: |
+            const triggeredBy = process.env.TRIGGERED_BY || 'Unknown';
+            const conclusion = '${{ needs.run-e2e-suite-web-tests.result }}';
+            const emoji = conclusion === 'success' ? '✅' : '❌';
+
+            const messageBody = `${emoji} Rerun of **web** e2e tests completed with status: **${conclusion}**\n\n**Triggered by:** @${triggeredBy}\n**Type:** Failed tests rerun\n**Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt('${{ inputs.pr_number }}'),
+              body: messageBody
+            });

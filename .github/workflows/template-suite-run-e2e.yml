@@ -60,6 +60,11 @@ on:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
         type: string
+      test-filter:
+        description: "Test filter for custom runs (e.g., tags or spec files)"
+        required: false
+        type: string
+        default: ""
     secrets:
       currents-record-key:
         description: "Currents record key for reporting"
@@ -206,6 +211,13 @@ jobs:
             COVERAGE_OPT=""
           fi
 
+          # Handle test filter for custom runs
+          if [[ -n "${{ inputs.test-filter }}" ]]; then
+            FILTER_OPT="--grep '${{ inputs.test-filter }}'"
+          else
+            FILTER_OPT=""
+          fi
+
           # Start services
           docker compose up -d ${{ inputs.containers }}
 
@@ -216,7 +228,8 @@ jobs:
             --pwc-disable-test-tags \
             $COVERAGE_OPT \
             --forbid-only \
-            $REPORTER_OPT
+            $REPORTER_OPT \
+            $FILTER_OPT
 
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}

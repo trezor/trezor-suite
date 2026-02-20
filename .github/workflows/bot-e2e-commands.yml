@@ -6,8 +6,9 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  issues: write
   actions: write
+  checks: write
 
 jobs:
   handle-command:
@@ -98,28 +99,28 @@ jobs:
 
             if (action === 'dismiss') {
               // Mark tests as dismissed for this commit
+              const dismissMarker = `E2E_DISMISS target=${target} sha=${prSha.substring(0, 7)}`;
+              
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `✅ **${target}** e2e test skip dismissed for commit \`${prSha.substring(0, 7)}\`\n\nThe artificial failure will be cleared. Tests will be checked again on the next push.`
+                body: `✅ **${target}** e2e test skip dismissed for commit \`${prSha.substring(0, 7)}\`\n\nTests skipped verification has been dismissed.\n\n${dismissMarker}`
               });
               
-              // Add label to mark dismissal
-              const dismissLabel = `e2e-dismiss-${target}-${prSha.substring(0, 7)}`;
-              await github.rest.issues.addLabels({
+              // Create a passing check on the PR
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
-                labels: [dismissLabel]
-              });
-              
-              // Trigger re-check of the workflow to clear the failure
-              await github.rest.actions.createWorkflowDispatch({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: target === 'web' ? 'test-suite-web-e2e-pr.yml' : 'test-suite-desktop-e2e-pr.yml',
-                ref: prBranch
+                name: workflowName,
+                head_sha: prSha,
+                status: 'completed',
+                conclusion: 'success',
+                output: {
+                  title: `${target} E2E tests dismissed`,
+                  summary: `Tests were dismissed by @${context.payload.comment.user.login} for commit ${prSha.substring(0, 7)}`
+                }
               });
               
             } else if (action === 'run') {
@@ -131,6 +132,20 @@ jobs:
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
                 body: `🚀 Starting custom **${target}** e2e tests${tags ? ` with tags: ${tags}` : ''}...\n\nCheck the [Actions tab](${context.payload.repository.html_url}/actions) for progress.`
+              });
+              
+              // Create a pending check on the PR
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: workflowName,
+                head_sha: prSha,
+                status: 'in_progress',
+                output: {
+                  title: `${target} E2E tests running`,
+                  summary: `Custom tests triggered by @${context.payload.comment.user.login}`
+                }
               });
               
               await github.rest.actions.createWorkflowDispatch({
@@ -152,6 +167,20 @@ jobs:
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
                 body: `🔄 Starting rerun of **${target}** e2e tests...\n\nOnly failed tests from the previous run will be executed.\n\nCheck the [Actions tab](${context.payload.repository.html_url}/actions) for progress.`
+              });
+              
+              // Create a pending check on the PR
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: workflowName,
+                head_sha: prSha,
+                status: 'in_progress',
+                output: {
+                  title: `${target} E2E tests running (rerun)`,
+                  summary: `Failed tests rerun triggered by @${context.payload.comment.user.login}`
+                }
               });
               
               await github.rest.actions.createWorkflowDispatch({

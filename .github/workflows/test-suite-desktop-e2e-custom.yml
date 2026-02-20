@@ -1,0 +1,91 @@
+name: "[Test] Custom Suite Desktop e2e tests"
+# Triggered via comment commands: /e2e run desktop [@tags]
+# Runs custom e2e test suite for Suite Desktop based on specified tags or specs
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+  pull-requests: write # for posting comments
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Pull request number"
+        required: true
+        type: string
+      tags:
+        description: "Tags or spec files to run (e.g., @tag1 @tag2)"
+        required: false
+        type: string
+        default: ""
+      triggered_by:
+        description: "User who triggered the run"
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-e2e-suite-desktop-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "desktop"
+      pw-config: "./playwright-config/playwright-desktop-pr.config.ts"
+      workspace-dependencies: "@trezor/suite-desktop"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "7"
+      currents-project-id: "4ytF0E"
+      currents-ci-build-id: "custom-run-${{ github.run_id }}-${{ github.run_attempt }}"
+      download-artifact-name: "desktop-app-build-e2e"
+      test-filter: ${{ inputs.tags }}
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  post-results:
+    if: always() && github.repository == 'trezor/trezor-suite'
+    needs: [run-e2e-suite-desktop-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Post results comment
+        uses: actions/github-script@v7
+        env:
+          TRIGGERED_BY: ${{ inputs.triggered_by }}
+          TAGS: ${{ inputs.tags }}
+        with:
+          github-token: ${{ steps.trezor-bot-token.outputs.token }}
+          script: |
+            const triggeredBy = process.env.TRIGGERED_BY || 'Unknown';
+            const tags = process.env.TAGS || 'all tests';
+            const conclusion = '${{ needs.run-e2e-suite-desktop-tests.result }}';
+            const emoji = conclusion === 'success' ? '✅' : '❌';
+
+            const messageBody = `${emoji} Custom **desktop** e2e tests completed with status: **${conclusion}**\n\n**Triggered by:** @${triggeredBy}\n**Filter:** ${tags}\n**Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt('${{ inputs.pr_number }}'),
+              body: messageBody
+            });
