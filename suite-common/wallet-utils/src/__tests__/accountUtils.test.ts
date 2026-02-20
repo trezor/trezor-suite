@@ -181,41 +181,41 @@ describe('account utils', () => {
                     aesKey: 'foo',
                 },
             },
-            accountLabel: 'meow',
         });
 
-        expect(accountSearchFn(btcAcc, 'btc')).toBe(true);
-        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'btc' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'btc', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'btc', accountLabel: '' })).toBe(true);
         expect(
             accountSearchFn(
                 btcAcc,
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                { coinsFilter: 'btc' },
+                { coinsFilter: 'btc', accountLabel: '' },
             ),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'ltc' })).toBe(false);
-        expect(accountSearchFn(btcAcc, 'bitcoin')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'legacy')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'bitco')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'ltc')).toBe(false);
-        expect(accountSearchFn(btcAcc, 'litecoin')).toBe(false);
-        expect(accountSearchFn(btcAcc, 'meow')).toBe(true);
+        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'ltc', accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(btcAcc, 'bitcoin', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'legacy', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'bitco', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'ltc', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(btcAcc, 'litecoin', { accountLabel: '' })).toBe(false);
+        expect(accountSearchFn(btcAcc, 'meow', { accountLabel: 'meow' })).toBe(true);
         expect(
             accountSearchFn(btcAcc, 'wuff', {
-                metadataAccountLabel: 'wuff',
+                accountLabel: 'wuff',
             }),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, 'meo')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'eow')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'MEOW')).toBe(true);
-        expect(accountSearchFn(btcAcc, 'wuff')).toBe(false);
+        expect(accountSearchFn(btcAcc, 'meo', { accountLabel: 'meow' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'eow', { accountLabel: 'meow' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'MEOW', { accountLabel: 'meow' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'wuff', { accountLabel: '' })).toBe(false);
         expect(
             accountSearchFn(
                 btcAcc,
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                { accountLabel: '' },
             ),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, '#1', { metadataAccountLabel: 'Bitcoin #1' })).toBe(true);
+        expect(accountSearchFn(btcAcc, '#1', { accountLabel: 'Bitcoin #1' })).toBe(true);
     });
 
     it('getNetworkAccountFeatures', () => {

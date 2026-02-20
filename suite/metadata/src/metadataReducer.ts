@@ -198,7 +198,7 @@ export const selectLabelingDataForAccount = (
  * @deprecated Legacy Labeling
  * Returns dict <account-key: account-label>
  */
-export const selectAccountLabels = (state: {
+export const selectAccountLabelsLegacy = (state: {
     metadata: MetadataState;
     wallet: { accounts: Account[] };
 }) => {

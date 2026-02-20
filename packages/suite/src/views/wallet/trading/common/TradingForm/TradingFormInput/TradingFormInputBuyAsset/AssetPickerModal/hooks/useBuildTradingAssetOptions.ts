@@ -190,6 +190,7 @@ export function useBuildTradingAssetOptions({
                     case 'account':
                         return accountSearchFn(accountOrToken.account, search, {
                             tokensMatch: false,
+                            accountLabel: '', // Todo: select label from SuiteSync
                         });
                     case 'token':
                         return isTokenMatchesSearch(accountOrToken.token, search);

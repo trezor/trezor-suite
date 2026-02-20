@@ -33,17 +33,23 @@ export {
 } from './data/suiteSyncDataReducer';
 export {
     selectWalletById,
-    selectSuiteSyncAccountLabels,
-    selectSuiteSyncOutputLabelsByAccount,
-    selectSuiteSyncAccountAddressesByAccount,
-    selectSuiteSyncAccountLabel,
-    selectSuiteSyncAddressLabel,
-    selectSuiteSyncOutputLabel,
-    selectSuiteSyncAddressLabels,
     selectSuiteSyncWalletLabel,
+} from './data/wallet/suiteSyncWalletSelectors';
+export {
+    selectAccountsWithSuiteSyncLabel,
+    type AccountWithSuiteSyncLabel,
+} from './data/account/selectAccountsWithSuiteSyncLabel';
+export { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
+export {
+    selectSuiteSyncAccountAddressesByAccount,
+    selectSuiteSyncAddressLabel,
+    selectSuiteSyncAddressLabels,
+} from './data/address/suiteSyncAddressSelectors';
+export {
+    selectSuiteSyncOutputLabelsByAccount,
+    selectSuiteSyncOutputLabel,
     selectSuiteSyncOutputLabels,
-    findSuiteSyncAccountLabel,
-} from './data/suiteSyncDataSelectors';
+} from './data/output/suiteSyncOutputSelectors';
 export { suiteSyncToBip329 } from './data/labeling/suiteSyncToBip329';
 export {
     isSuiteSyncSupportedByDevice,

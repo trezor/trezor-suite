@@ -33,7 +33,7 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
-    const selectedAccountLabels = useSelector(state =>
+    const selectedAccountLegacyLabels = useSelector(state =>
         selectLabelingDataForAccount(state, selectedAccount.key),
     );
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
@@ -53,7 +53,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =
         selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
-    const label = suiteSyncAccountLabel ?? selectedAccountLabels.accountLabel;
+    const label = suiteSyncAccountLabel ?? selectedAccountLegacyLabels.accountLabel;
     const defaultLabel = getDefaultAccountLabel({
         accountType,
         symbol,
