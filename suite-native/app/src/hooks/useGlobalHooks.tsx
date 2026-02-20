@@ -25,7 +25,7 @@ export const useGlobalHooks = () => {
 
     useDetectDeviceError();
     useHandleDeviceAuthorization();
-    useReportDeviceCompromised({ device });
+    useReportDeviceCompromised({ device, selectAllowPrerelease: () => false });
     useRenderDeviceDangerBanner();
     useDeviceCompromisedNotification();
 
