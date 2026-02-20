@@ -66,6 +66,8 @@ export const TradingFormInputPaymentMethod = ({
         ? (selectedOption?.label ?? paymentMethod?.label ?? paymentMethods[0]?.label ?? '')
         : translationString('TR_TRADING_NO_METHODS_AVAILABLE');
 
+    console.log('label', label, 'renderInput', renderInput);
+
     return (
         <>
             {renderInput && (
@@ -75,6 +77,7 @@ export const TradingFormInputPaymentMethod = ({
                     onClick={() => setIsModalOpen(true)}
                     isLoading={isFormLoading}
                     isDisabled={isFormLoading || !hasPaymentMethods}
+                    data-testid="@trading/form/payment-method-select"
                 />
             )}
             {!renderInput && (
@@ -82,9 +85,14 @@ export const TradingFormInputPaymentMethod = ({
                     onClick={() => setIsModalOpen(true)}
                     isDisabled={!hasPaymentMethods || isFormLoading}
                     borderRadius={0}
+                    data-testid="@trading/form/payment-method-select"
                 >
                     <Row alignItems="center" justifyContent="space-between" padding={20}>
-                        <Text typographyStyle="body-md" align="start">
+                        <Text
+                            typographyStyle="body-md"
+                            align="start"
+                            data-testid="@trading/form/payment-method-select/value"
+                        >
                             {label && <Translation id={label} />}
                         </Text>
                         <TradingFormInputPaymentMethodValueContent

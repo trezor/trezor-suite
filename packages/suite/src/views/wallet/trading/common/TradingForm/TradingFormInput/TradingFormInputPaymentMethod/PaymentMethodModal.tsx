@@ -41,7 +41,11 @@ export const PaymentMethodModal = ({ onClose, heading }: Props) => {
         >
             <CardList>
                 {paymentMethods.map(item => (
-                    <CardList.Item key={item.value} onClick={() => selectPaymentMethod(item)}>
+                    <CardList.Item
+                        key={item.value}
+                        onClick={() => selectPaymentMethod(item)}
+                        data-testid={`@trading/form/payment-method-select/option/${item.value}`}
+                    >
                         {item.label}
                     </CardList.Item>
                 ))}
