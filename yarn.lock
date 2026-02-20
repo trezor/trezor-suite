@@ -11574,6 +11574,7 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@testing-library/react": "npm:^16.3.2"
     "@trezor/address-validator": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
