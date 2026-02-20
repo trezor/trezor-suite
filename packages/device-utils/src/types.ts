@@ -1,4 +1,5 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceModelInternal } from './deviceModelInternal';
 
@@ -8,8 +9,6 @@ export enum FirmwareType {
     BitcoinOnly = 'bitcoin-only',
     Universal = 'universal',
 }
-
-export type VersionArray = [number, number, number];
 
 export type FeaturesNarrowing =
     | {
