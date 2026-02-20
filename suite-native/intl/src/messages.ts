@@ -174,6 +174,11 @@ export const messages = {
                 'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
             button: 'Allow',
         },
+        suiteSyncFirmwareUpdateAlert: {
+            title: 'Firmware update required',
+            description: 'Update firmware on the device to use Suite Sync.',
+            button: 'Update',
+        },
     },
     accounts: {
         accountLabelFieldHint: {
