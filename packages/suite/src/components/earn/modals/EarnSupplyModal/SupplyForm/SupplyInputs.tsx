@@ -6,7 +6,6 @@ import { StakeFormState } from '@suite-common/wallet-types';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -142,7 +141,7 @@ export const SupplyInputs = () => {
     );
 
     return (
-        <Column gap={spacings.sm} alignItems="center">
+        <Column gap={12} alignItems="center">
             <InputWithOptions<StakeFormState>
                 data-testid="@staking/form"
                 onCurrencyChange={setCurrency}

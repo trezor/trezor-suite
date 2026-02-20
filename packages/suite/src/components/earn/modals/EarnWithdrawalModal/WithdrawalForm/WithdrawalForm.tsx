@@ -4,8 +4,7 @@ import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -51,8 +50,8 @@ export const WithdrawalForm = () => {
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(signTx)}>
-                <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
-                    <Column gap={spacings.md}>
+                <Column gap={32} margin={{ bottom: 20 }}>
+                    <Column gap={16}>
                         {canClaim && (
                             <Banner
                                 intent="info"
@@ -81,7 +80,7 @@ export const WithdrawalForm = () => {
                                 symbol={symbol}
                             />
 
-                            <Column gap={spacings.lg}>
+                            <Column gap={20}>
                                 <WithdrawalInputs />
                                 {showError && (
                                     <Banner intent="critical" description={inputError?.message} />

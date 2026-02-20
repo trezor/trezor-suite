@@ -5,7 +5,6 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { WithdrawalFormState } from 'src/components/earn/forms/SupplyFormContext';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -89,7 +88,7 @@ export const WithdrawalInputs = () => {
     const labelLeft = <Translation id="AMOUNT" />;
 
     return (
-        <Column gap={spacings.sm} alignItems="center">
+        <Column gap={12} alignItems="center">
             <InputWithOptions<WithdrawalFormState>
                 data-testid="@staking/form"
                 onCurrencyChange={setCurrency}
