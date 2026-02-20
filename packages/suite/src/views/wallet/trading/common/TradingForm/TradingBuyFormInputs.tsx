@@ -102,7 +102,7 @@ export const TradingBuyFormInputs = () => {
             </TradingFormCard>
 
             <TradingFormCard>
-                {!!quotes?.length && (
+                {quotes?.length > 0 && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />

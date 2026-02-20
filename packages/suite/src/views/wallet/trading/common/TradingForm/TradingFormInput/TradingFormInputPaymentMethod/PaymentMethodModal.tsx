@@ -14,12 +14,12 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
-interface Props {
+interface PaymentMethodModalProps {
     onClose: () => void;
     heading?: TranslationKey;
 }
 
-export const PaymentMethodModal = ({ onClose, heading }: Props) => {
+export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps) => {
     const { paymentMethods, setValue } = useTradingFormContext<TradingTradeBuySellType>();
 
     const selectPaymentMethod = useCallback(
@@ -41,7 +41,11 @@ export const PaymentMethodModal = ({ onClose, heading }: Props) => {
         >
             <CardList>
                 {paymentMethods.map(item => (
-                    <CardList.Item key={item.value} onClick={() => selectPaymentMethod(item)}>
+                    <CardList.Item
+                        key={item.value}
+                        onClick={() => selectPaymentMethod(item)}
+                        data-testid={`@trading/form/payment-method-select/option/${item.value}`}
+                    >
                         {item.label}
                     </CardList.Item>
                 ))}

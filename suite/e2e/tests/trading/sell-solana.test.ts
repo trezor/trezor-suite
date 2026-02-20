@@ -147,7 +147,10 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await expect(tradingPage.quotes.refreshTime).toHaveText(
                 /Offers refresh in(0:2[5-9]|0:30)/,
             );
-            await expect(tradingPage.inputs.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await expect(tradingPage.inputs.paymentMethodSelect).toHaveAttribute(
+                'value',
+                paymentMethodName,
+            );
             await tradingPage.quotes.validateSellQuotes(
                 sellQuotesSolana,
                 tradingPage.inputs.getSelectedPaymentMethod,
