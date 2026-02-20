@@ -19,8 +19,8 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { VersionArray } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { FirmwareChangelogButton } from './FirmwareChangelogButton';
 import { FirmwareInfoBox } from './FirmwareInfoBox';

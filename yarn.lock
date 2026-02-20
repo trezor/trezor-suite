@@ -11900,6 +11900,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:^"
     react-native: "npm:0.81.5"
   languageName: unknown
   linkType: soft
@@ -12596,6 +12597,7 @@ __metadata:
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:^"
     expo-keep-awake: "npm:~15.0.8"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
@@ -15334,6 +15336,7 @@ __metadata:
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
     "@trezor/protobuf": "workspace:*"
+    "@trezor/utils": "workspace:*"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft

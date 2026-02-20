@@ -13,13 +13,14 @@ import {
 import type { AnalyticsNativeEvents } from '@suite-native/analytics';
 import { events } from '@suite-native/analytics';
 import { Analytics } from '@trezor/analytics-uploader';
-import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
+import { Device, DeviceEvent } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,
