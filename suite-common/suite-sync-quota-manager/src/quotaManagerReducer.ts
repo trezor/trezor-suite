@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
-    eraseFetchedDataDebug,
+    eraseFetchedData,
     noQuotaLeftWarningDismissed,
     quotaManagerDeviceFetched,
     quotaManagerDeviceUnspentStorageFetched,
@@ -34,7 +34,7 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                 state.registeredDevices = [];
                 state.ownersAllowance = [];
             })
-            .addCase(eraseFetchedDataDebug, state => {
+            .addCase(eraseFetchedData, state => {
                 state.registeredDevices = [];
                 state.ownersAllowance = [];
             })

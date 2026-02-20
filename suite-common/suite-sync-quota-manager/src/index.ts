@@ -20,7 +20,7 @@ export {
     quotaManagerDeviceFetched,
     quotaManagerFetchError,
     suiteSyncQuotaManagerActions,
-    eraseFetchedDataDebug,
+    eraseFetchedData as eraseFetchedDataDebug,
     noQuotaLeftWarningDismissed,
 } from './quotaManagerActions';
 

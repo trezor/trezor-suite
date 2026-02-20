@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { eraseFetchedDataDebug } from '@suite-common/suite-sync-quota-manager';
 import {
     SuiteSyncAppReloaderDep,
     TurnOffSuiteSync,
@@ -27,6 +28,7 @@ export const createTurnOffSuiteSync =
         }
 
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: false }));
+        deps.dispatch(eraseFetchedDataDebug());
 
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 
