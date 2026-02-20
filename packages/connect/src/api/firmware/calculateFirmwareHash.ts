@@ -1,7 +1,8 @@
 import { blake2sHex } from 'blakejs';
 
-import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 // Size values are taken from
 // https://github.com/trezor/trezor-firmware/blob/56f9490c01b40e99d94fe5d8a283955800d86562/core/embed/models/T3T1/memory.h#L62

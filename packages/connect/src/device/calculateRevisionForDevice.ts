@@ -1,4 +1,4 @@
-import { VersionArray } from '@trezor/device-utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 import { isNewer } from '@trezor/utils/src/versionUtils';
 
 type calculateRevisionForDeviceParams = {
