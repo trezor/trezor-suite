@@ -1,30 +1,34 @@
 import styled from 'styled-components';
 
-import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
+import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { Column, Text } from '@trezor/components';
 import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDesktopUpdateAllowPrerelease } from 'src/reducers/suite/desktopUpdateReducer';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
+const effectiveFirmwareChannel = selectEffectiveFirmwareChannel(selectDesktopUpdateAllowPrerelease);
+
 export const FirmwareUpdateEnvironmentSelect = () => {
-    const firmwareChannel = useSelector(selectFirmwareChannel);
+    const firmwareChannel = useSelector(effectiveFirmwareChannel);
+    const isAllowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
     const dispatch = useDispatch();
 
     const options: { label: string; value: FirmwareChannel }[] = [
         { label: 'Production', value: 'production' },
+        { label: 'Production Early Access', value: 'production-early-access' },
         { label: 'Test Unsigned', value: 'test-unsigned' },
         { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
         { label: 'Test Signed', value: 'test-signed' },
         { label: 'Localhost Signed', value: 'localhost-signed' },
         { label: 'Localhost Unsigned', value: 'localhost-unsigned' },
     ];
-    const selectedOption = options.find(option => option.value === firmwareChannel) || options[0];
-
+    const selectedOption = options.find(o => o.value === firmwareChannel) ?? options[0];
     const handleChange = (item: { value: FirmwareChannel }) => {
         dispatch(firmwareActions.setFirmwareChannel(item.value));
     };
@@ -42,6 +46,12 @@ export const FirmwareUpdateEnvironmentSelect = () => {
                         <Text intent="info">
                             If you select production, the binaries will be cached.
                         </Text>
+                        {isAllowPrerelease && (
+                            <Text intent="warning">
+                                Early Access program is enabled. Firmware channel is fixed to
+                                Production Early Access.
+                            </Text>
+                        )}
                     </Column>
                 }
             />
@@ -50,6 +60,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
                     onChange={handleChange}
                     value={selectedOption}
                     options={options}
+                    isDisabled={isAllowPrerelease}
                 />
             </ActionColumn>
         </SectionItem>

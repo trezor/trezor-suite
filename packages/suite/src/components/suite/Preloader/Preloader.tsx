@@ -9,6 +9,7 @@ import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
+import { selectDesktopUpdateAllowPrerelease } from 'src/reducers/suite/desktopUpdateReducer';
 import {
     selectIsTransportInitialized,
     selectPrerequisite,
@@ -54,7 +55,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     const { device } = useDevice();
-    useReportDeviceCompromised({ device });
+    useReportDeviceCompromised({
+        device,
+        selectAllowPrerelease: selectDesktopUpdateAllowPrerelease,
+    });
     useDeviceCompromisedNotification();
 
     const dispatch = useDispatch();

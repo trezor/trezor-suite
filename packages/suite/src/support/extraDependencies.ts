@@ -186,6 +186,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
             pairingMethods: ['CodeEntry'],
             knownCredentials: state.thp?.credentials,
         }),
+        selectAllowPrerelease: (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
