@@ -42,8 +42,6 @@
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "rm -rf build && yarn build:webextension",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
