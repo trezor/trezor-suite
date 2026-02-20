@@ -13,16 +13,14 @@ const meta: Meta<TextInputArgs> = {
     component: InputComponent,
     decorators: [
         (Story, { context: { args } }) => {
-            const [{ value }, updateArgs] = useArgs();
+            const [_, updateArgs] = useArgs();
 
             return (
                 <InputWrapper hint={args.hint} label={args.wrapperLabel} error={args.error}>
                     <Story
                         args={{
                             ...args,
-                            label: undefined,
                             hasError: !!args.error,
-                            value,
                             onChangeText: (text: string) => updateArgs({ value: text }),
                         }}
                     />
@@ -38,9 +36,9 @@ export const TextInput: TextInputStory = {
     name: 'TextInput',
     args: {
         value: '',
-        wrapperLabel: 'Label',
-        hint: 'This is a hint',
-        placeholder: 'placeholder',
+        wrapperLabel: 'Wrapper label',
+        hint: 'This is a hint: always define only label or placeholder, never both',
+        label: 'Label',
     },
     argTypes: {
         label: {
