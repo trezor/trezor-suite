@@ -16,6 +16,9 @@
         {
             "path": "../../packages/address-validator"
         },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

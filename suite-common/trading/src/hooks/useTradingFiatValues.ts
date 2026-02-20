@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -16,6 +16,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import { TradingRootState } from '../reducers/tradingCommonReducer';
@@ -26,7 +27,7 @@ import {
 } from '../utils';
 
 export interface TradingFiatRatesProps {
-    fiatCurrency?: FiatCurrencyCode;
+    fiatCurrency?: BaseCurrencyCode;
     cryptoId?: CryptoId;
     amount?: string;
     shouldSendInSats?: boolean;
@@ -41,7 +42,7 @@ export interface TradingFiatRatesReturn {
     networkDecimals: number;
     tokenAddress: TokenAddress | undefined;
     fiatRatesUpdater: (
-        value: FiatCurrencyCode | undefined,
+        value: BaseCurrencyCode | undefined,
         currentTokenAddress?: TokenAddress,
     ) => Promise<FiatRatesResult | null>;
 }
@@ -82,7 +83,7 @@ export const useTradingFiatValues = ({
 
     const fiatRatesUpdater = useCallback(
         async (
-            value: FiatCurrencyCode | undefined,
+            value: BaseCurrencyCode | undefined,
             currentTokenAddress?: TokenAddress,
         ): Promise<FiatRatesResult | null> => {
             if (!value) return null;
