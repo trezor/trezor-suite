@@ -126,6 +126,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
             pairingMethods: ['CodeEntry', 'NFC'],
             knownCredentials: state.thp?.credentials,
         }),
+        selectAllowPrerelease: () => false,
         selectIsSuiteSyncEnabled,
 
         // Not implemented. We assume those are NEVER called on Native
