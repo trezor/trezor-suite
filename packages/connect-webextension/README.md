@@ -4,73 +4,45 @@
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-webextension.svg)](https://www.npmjs.org/package/@trezor/connect-webextension)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-webextension/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-webextension/package.json)
 
-The `@trezor/connect-webextension` package provides an implementation of `@trezor/connect` designed specifically for use within web extensions. Key features include:
+The `@trezor/connect-webextension` package provides an implementation of `@trezor/connect` designed specifically for MV3 web extensions. Key features include:
 
 - Compatibility with service worker environments.
 - Full access to the TrezorConnect API.
-- Automatic handling of pop-up windows for user approvals on trezor.io.
-- Direct response delivery to the calling script.
+- Popup-based user interaction through Suite Web.
+- Response delivery back to the calling service worker.
 
-## Using the Library
+## Architecture
 
-We support two methods for integrating the library into your extension:
+This package exclusively uses the `externally_connectable` API. It does **not** inject `connect-script`, does **not** use inline iframes as in the previous @trezor/connect versions.
 
-### Option 1: Using Scripting Permissions
+The flow is:
 
-For a seamless integration, especially with background processes, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:
+1. The service worker checks for suite-desktop app. If running, it opens a websocket connection to it. If not, it opens Suite Web in a browser.
+2. The user handles their request inside the dedicated Trezor UI
+3. Response is returned to your application
+
+## Setup
+
+### 1) manifest.json
+
+Allow Suite Web origins to message your extension using `externally_connectable`. Without this, the Suite Web flow would not be available.
 
 ```json
-    "permissions": ["scripting"],
-    "host_permissions": ["*://connect.trezor.io/9/*"]
-    "background": {
-        "service_worker": "serviceWorker.js"
-    }
+"externally_connectable": {
+  "matches": [
+    "https://suite.trezor.io/*"
+  ]
+}
 ```
 
-The content script will be injected automatically by the library using the scripting permission.
+### 2) Service worker
 
-#### Service Worker Import:
+Import the library in your service worker (MV3 background):
 
 ```javascript
 import TrezorConnect from '@trezor/connect-webextension';
 ```
 
-The library is only available in the service worker context, so to use it in your extension's UI, you need to communicate with the service worker. This mechanism is not provided by the library, this depends on your extension's architecture.
-Also it should be noted that the service worker may be idle when the extension is not in use, so you should implement a mechanism to keep it alive or wake it up when needed.
+The library is available in the service worker context. If you need to call it from your extension UI, communicate with the service worker using your own messaging layer.
 
-### Option 2: Manual Content Script Injection
-
-In cases where you cannot use scripting permissions, you can configure your extension to include the content script directly.
-
-#### Bundle the Library:
-
-Manually include `build/content-script.js` from this package into your project's bundle.
-Ideally, you should do this with a build tool like Webpack, so it can be easily maintained.
-
-#### manifest.json Update:
-
-Amend your manifest.json to include the script as a content script. Replace `<path>` with the real path to the library file:
-
-```json
-  "content_scripts": [
-    {
-      "js": ["<path>/content-script.js"],
-      "matches": ["*://connect.trezor.io/9/*"]
-    }
-  ],
-```
-
-After completing these steps, you can use the module in your Service Worker in the same way as described in the previous section.
-
-## Examples
-
-- [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
-- [ES6 and TypeScript example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
-
-## Development
-
-- `yarn`
-- `yarn build:libs`
-
-After completing these steps, you can import from @trezor/connect-webextension.
-The popup will run on your localhost, and you can specify it in the `TrezorConnect.init({ connectSrc: ... })`.
+Note: the service worker may be suspended when idle, so you should wake it up before invoking `TrezorConnect`.
