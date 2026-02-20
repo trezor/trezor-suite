@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { createEarnAccountRef } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
@@ -55,7 +56,12 @@ export const ClaimCard = () => {
 
     const openClaimModal = () => {
         if (!isClaimingDisabled) {
-            dispatch(openModal({ type: 'claim' }));
+            dispatch(
+                openModal({
+                    type: 'claim',
+                    account: selectedAccount ? createEarnAccountRef(selectedAccount) : undefined,
+                }),
+            );
 
             analytics.report({
                 type: events.stakingClaimEvent.name,

@@ -1,6 +1,10 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    EarnProvider,
+    createEarnAccountRef,
+} from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -37,6 +41,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.UpdateProvider,
                     provider: EarnProvider.Everstake,
+                    account: createEarnAccountRef(account),
                 }),
             );
 

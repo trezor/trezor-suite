@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
@@ -18,25 +18,34 @@ import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
 interface YieldEarnInANutshellModalProps {
     onCancel: () => void;
     provider: EarnProvider;
+    accountRef?: EarnAccountRef;
+    yieldId?: string;
+    tokenContractAddress?: string;
 }
 
 export const YieldEarnInANutshellModal = ({
     onCancel,
     provider,
+    accountRef,
+    yieldId,
+    tokenContractAddress,
 }: YieldEarnInANutshellModalProps) => {
     const { handleContinue, onCancelClick } = useEarnInANutshellActions({
         flow: EarnFlow.Yield,
         provider,
         onCancel,
+        accountRef,
+        yieldId,
+        tokenContractAddress,
     });
     const data = useEarnInANutshellData();
 
     if (!data) return null;
 
-    const { account, displaySymbol, unstakingPeriod } = data;
+    const { account: selectedAccount, displaySymbol, unstakingPeriod } = data;
 
-    if (!account || !displaySymbol) return null;
-    if (!isStakingNetworkType(account.networkType)) return null;
+    if (!selectedAccount || !displaySymbol) return null;
+    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
 
     const processes: EarnInANutshellProcess[] = [
         {
@@ -46,7 +55,7 @@ export const YieldEarnInANutshellModal = ({
         },
         {
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
             content: <EarnWithdrawingInfo flow={EarnFlow.Yield} />,
         },
     ];
@@ -58,7 +67,7 @@ export const YieldEarnInANutshellModal = ({
             onContinue={handleContinue}
         >
             <YieldEarnInANutshellHighlights
-                networkType={account.networkType}
+                networkType={selectedAccount.networkType}
                 displaySymbol={displaySymbol}
                 unstakingPeriod={unstakingPeriod}
             />

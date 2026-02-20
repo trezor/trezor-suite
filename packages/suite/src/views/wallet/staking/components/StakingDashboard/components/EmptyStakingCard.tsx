@@ -5,7 +5,11 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    EarnProvider,
+    createEarnAccountRef,
+} from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
@@ -144,6 +148,7 @@ export const EmptyStakingCard = () => {
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.Stake,
                     provider: EarnProvider.Everstake,
+                    account: account ? createEarnAccountRef(account) : undefined,
                 }),
             );
 

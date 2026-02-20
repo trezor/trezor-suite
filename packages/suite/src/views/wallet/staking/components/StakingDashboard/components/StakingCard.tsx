@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, createEarnAccountRef } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -28,7 +28,6 @@ import {
     SkeletonRectangle,
     Tooltip,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -167,7 +166,13 @@ export const StakingCard = ({
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake', flow: EarnFlow.Stake }));
+            dispatch(
+                openModal({
+                    type: 'supply',
+                    flow: EarnFlow.Stake,
+                    account: createEarnAccountRef(account),
+                }),
+            );
 
             analytics.report({
                 type: events.stakingStakeEvent.name,
@@ -182,7 +187,7 @@ export const StakingCard = ({
 
     const openClaimModal = () => {
         if (canClaimRewards) {
-            dispatch(openModal({ type: 'claim' }));
+            dispatch(openModal({ type: 'claim', account: createEarnAccountRef(account) }));
 
             analytics.report({
                 type: events.stakingClaimEvent.name,
@@ -197,7 +202,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
-            dispatch(openModal({ type: 'unstake' }));
+            dispatch(openModal({ type: 'withdraw', account: createEarnAccountRef(account) }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,
@@ -227,10 +232,10 @@ export const StakingCard = ({
 
     return (
         <Card data-testid="@wallet/staking/card">
-            <Column flex="1" gap={spacings.xxl}>
+            <Column flex="1" gap={32}>
                 {shouldShowProgressLabels && <ProgressLabels labels={progressLabelsData} />}
 
-                <Grid columns={isBelowLaptop ? 1 : 2} gap={spacings.xxl}>
+                <Grid columns={isBelowLaptop ? 1 : 2} gap={32}>
                     {isStakePending && !isCardanoNetworkType && (
                         <Item
                             label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
@@ -292,7 +297,7 @@ export const StakingCard = ({
 
                     <Item
                         label={
-                            <Row gap={spacings.xs}>
+                            <Row gap={8}>
                                 <Translation id="TR_STAKE_REWARDS" />
                                 <Tooltip
                                     maxWidth={250}
@@ -373,7 +378,7 @@ export const StakingCard = ({
                     )}
                 </Grid>
 
-                <Row margin={{ top: 'auto' }} gap={spacings.xs}>
+                <Row margin={{ top: 'auto' }} gap={8}>
                     {!isCardanoNetworkType ? (
                         <Tooltip content={stakingMessageContent}>
                             <Button
