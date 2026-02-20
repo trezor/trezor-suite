@@ -3,7 +3,6 @@ import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { EarnSupplyingInfo } from 'src/components/earn';
 import { useSelector } from 'src/hooks/suite';
@@ -34,7 +33,7 @@ export const SupplyInfoCards = ({ account, flow }: SupplyInfoCardsProps) => {
     ];
 
     return (
-        <Column gap={spacings.lg} margin={{ bottom: spacings.lg }}>
+        <Column gap={20} margin={{ bottom: 20 }}>
             {cards
                 .filter(card => card.isVisible)
                 .map((card, index) => (

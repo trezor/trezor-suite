@@ -7,7 +7,6 @@ import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_ADA_STAKING,
     HELP_CENTER_ETH_STAKING,
@@ -118,7 +117,7 @@ export const ConfirmSupplyModal = ({
                 </>
             }
         >
-            <Column gap={spacings.sm} margin={{ top: spacings.xxs, bottom: spacings.lg }}>
+            <Column gap={12} margin={{ top: 4, bottom: 20 }}>
                 <Banner
                     icon="clock"
                     description={

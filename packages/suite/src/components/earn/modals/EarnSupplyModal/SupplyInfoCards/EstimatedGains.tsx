@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
-import { negativeSpacings, spacings } from '@trezor/theme';
 import {
     HELP_CENTER_ADA_STAKING,
     HELP_CENTER_ETH_STAKING,
@@ -69,7 +68,7 @@ export const EstimatedGains = () => {
     }, [account]);
 
     return (
-        <Column gap={spacings.lg}>
+        <Column gap={20}>
             <Column>
                 <Paragraph intent="brand" typographyStyle="headline-md">
                     {apy}%
@@ -78,13 +77,13 @@ export const EstimatedGains = () => {
                     typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
-                    margin={{ bottom: negativeSpacings.xxxxl }}
+                    margin={{ bottom: -48 }}
                 >
                     <Translation id="TR_STAKE_APY_ABBR" />
                 </Paragraph>
                 <Image image="GAINS_GRAPH" width="100%" />
             </Column>
-            <Column gap={spacings.sm} hasDivider>
+            <Column gap={12} hasDivider>
                 {gains.map(({ label, value }, index) => (
                     <Grid key={index} columns={3}>
                         <Paragraph intent="neutral" priority="secondary">
