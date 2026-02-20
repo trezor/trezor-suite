@@ -7,8 +7,12 @@ import { DEVICE, createDeviceMessage } from '@trezor/connect';
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from '../src/thpActions';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
-
-import { selectThpCredentials, selectThpLastCode } from '../src/thpSelectors';
+import {
+    selectThpAutoconnectStep,
+    selectThpCredentials,
+    selectThpLastCode,
+    selectThpStep,
+} from '../src/thpSelectors';
 
 const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
 
