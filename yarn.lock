@@ -11660,6 +11660,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/transaction-search@workspace:*, @suite-common/transaction-search@workspace:suite-common/transaction-search":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/transaction-search@workspace:suite-common/transaction-search"
+  dependencies:
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/tx-simulation@workspace:*, @suite-common/tx-simulation@workspace:^, @suite-common/tx-simulation@workspace:suite-common/tx-simulation":
   version: 0.0.0-use.local
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
@@ -15934,6 +15945,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/trading": "workspace:*"
+    "@suite-common/transaction-search": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

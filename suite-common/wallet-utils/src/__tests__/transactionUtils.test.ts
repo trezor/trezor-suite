@@ -1,11 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import stMock from '../__fixtures__/searchTransactions.json';
 import * as fixtures from '../__fixtures__/transactionUtils';
 import {
     MonthKey,
-    advancedSearchTransactions,
     analyzeTransactions,
     enhanceTransaction,
     findChainedTransactions,
@@ -371,29 +369,6 @@ describe('transaction utils', () => {
                         txid: t.txid,
                     })),
                 ).toEqual(f.result.others);
-            });
-        });
-    });
-
-    describe('advancedSearchTransactions', () => {
-        const transactions = stMock.transactions as unknown as WalletAccountTransaction[];
-        const metadata = stMock.labels;
-        fixtures.searchTransactions.forEach(f => {
-            it(f.description, () => {
-                const search = advancedSearchTransactions(transactions, metadata, f.search);
-
-                if (f.result) {
-                    // expect(search.length).toBe(f.result.length);
-                    search.forEach((t, i) => {
-                        expect(t.txid).toBe(f.result[i]);
-                    });
-                }
-
-                if (f.notResult) {
-                    search.forEach((t, i) => {
-                        expect(t.txid).not.toBe(f.notResult[i]);
-                    });
-                }
             });
         });
     });

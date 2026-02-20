@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
+import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import {
     TRANSACTIONS_MODULE_PREFIX,
     selectBaseCurrency,
@@ -7,7 +8,7 @@ import {
     selectTransactions,
 } from '@suite-common/wallet-core';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
-import { advancedSearchTransactions, getAccountTransactions } from '@suite-common/wallet-utils';
+import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
