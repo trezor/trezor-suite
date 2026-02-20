@@ -9,11 +9,7 @@ import { ThemeColorVariant, prepareNativeTheme } from '@trezor/theme';
 
 const renderer = createRenderer();
 
-const storyContainerStyle = prepareNativeStyle(utils => ({
-    flex: 1,
-    paddingTop: utils.spacings.sp32,
-    paddingHorizontal: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+const storyContainerStyle = prepareNativeStyle(_ => ({
     ...StyleSheet.absoluteFillObject,
 }));
 

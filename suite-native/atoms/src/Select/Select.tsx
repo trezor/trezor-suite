@@ -19,7 +19,7 @@ export type SelectItemType<TItemValue extends SelectItemValue> = {
     badge?: ReactNode;
 };
 
-type SelectProps<TItemValue extends SelectItemValue> = {
+export type SelectProps<TItemValue extends SelectItemValue> = {
     title: ReactNode;
     items: SelectItemType<TItemValue>[];
     value: TItemValue;
