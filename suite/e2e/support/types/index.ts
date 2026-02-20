@@ -2,7 +2,8 @@ import { CryptoId } from 'invity-api';
 import { RequireExactlyOne } from 'type-fest';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
-import { urlSearchParams } from '@suite/metadata';
+// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
+import { urlSearchParams } from '@suite/metadata/src/metadataUtils';
 import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 

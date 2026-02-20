@@ -1,4 +1,5 @@
-import { metadataLabelingConstants as METADATA_LABELING } from '@suite/metadata';
+// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
+import * as METADATA_LABELING from '@suite/metadata/src/metadataLabelingConstants';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';

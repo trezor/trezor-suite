@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 
-import { urlSearchParams } from '@suite/metadata';
+// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
+import { urlSearchParams } from '@suite/metadata/src/metadataUtils';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
