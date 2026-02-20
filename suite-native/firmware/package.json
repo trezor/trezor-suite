@@ -39,6 +39,7 @@
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/utils": "workspace:^",
         "expo-keep-awake": "~15.0.8",
         "react": "19.1.0",
         "react-native": "0.81.5",
