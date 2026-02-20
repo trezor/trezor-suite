@@ -5,7 +5,7 @@ import {
     selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectFirmwareChannel } from '@suite-common/firmware';
+import { selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import {
     Feature,
     parseTimeoutThresholdsPerModel,
@@ -55,7 +55,9 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
-        const getFirmwareChannel = () => selectFirmwareChannel(getState());
+        const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(
+            extra.selectors.selectAllowPrerelease,
+        );
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -205,7 +207,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 thp,
                 debug: showConnectLogs,
                 firmwareHashCheckTimeouts,
-                firmwareChannel: getFirmwareChannel(),
+                firmwareChannel: getEffectiveFirmwareChannel(getState()),
             });
         } catch (error) {
             let formattedError: string;

@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
@@ -134,3 +134,20 @@ export const selectSwitchFirmwareType = (state: RootState) => state.firmware.swi
 
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';
+
+export const selectEffectiveFirmwareChannel = (selectAllowPrerelease: (state: any) => boolean) =>
+    createSelector(
+        selectFirmwareChannel,
+        selectAllowPrerelease,
+        (firmwareChannel, allowPrerelease): FirmwareChannel =>
+            // When a user is in the Early Access Program, the firmware channel is forced to `production-early-access`.
+            // This factory accepts `selectAllowPrerelease` as a parameter because it is a platform-specific extra dependency.
+            allowPrerelease ? 'production-early-access' : firmwareChannel,
+    );
+
+export const selectIsProductionFirmwareChannel = (selectAllowPrerelease: (state: any) => boolean) =>
+    createSelector(
+        selectEffectiveFirmwareChannel(selectAllowPrerelease),
+        (firmwareChannel): boolean =>
+            ['production', 'production-early-access'].includes(firmwareChannel),
+    );

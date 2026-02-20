@@ -7,7 +7,7 @@ import {
     getIsDeviceIdValid,
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
-import { selectFirmwareChannel } from '@suite-common/firmware';
+import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
@@ -18,9 +18,12 @@ import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
 // to avoid unnecessary wallet-core import
-type CommonProps = { device: TrezorDevice | undefined };
+type CommonProps = {
+    device: TrezorDevice | undefined;
+    selectAllowPrerelease: (state: any) => boolean;
+};
 
-const useCommonData = ({ device }: CommonProps) => {
+const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
     const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
@@ -32,10 +35,12 @@ const useCommonData = ({ device }: CommonProps) => {
     );
 };
 
-const useReportRevisionCheck = ({ device }: CommonProps) => {
+const useReportRevisionCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const firmwareSource = useSelector(selectFirmwareChannel);
+    const isProductionFirmwareChannel = useSelector(
+        selectIsProductionFirmwareChannel(selectAllowPrerelease),
+    );
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -45,7 +50,7 @@ const useReportRevisionCheck = ({ device }: CommonProps) => {
     const errorPayload = isError ? revisionCheck.errorPayload : null;
 
     const shouldReport =
-        firmwareSource === 'production' &&
+        isProductionFirmwareChannel &&
         device?.connected === true &&
         errorType !== null &&
         revisionCheckErrorScenarios[errorType].shouldReport;
@@ -64,10 +69,12 @@ const useReportRevisionCheck = ({ device }: CommonProps) => {
     }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
 };
 
-const useReportHashCheck = ({ device }: CommonProps) => {
+const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const firmwareSource = useSelector(selectFirmwareChannel);
+    const isProductionFirmwareChannel = useSelector(
+        selectIsProductionFirmwareChannel(selectAllowPrerelease),
+    );
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;
@@ -76,7 +83,7 @@ const useReportHashCheck = ({ device }: CommonProps) => {
     const attemptCount = isError ? hashCheck.attemptCount : null;
 
     const shouldReport =
-        firmwareSource === 'production' &&
+        isProductionFirmwareChannel &&
         device?.connected === true &&
         errorType !== null &&
         hashCheckErrorScenarios[errorType].shouldReport;
@@ -184,8 +191,8 @@ const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
  */
-export const useReportDeviceCompromised = ({ device }: CommonProps) => {
-    useReportRevisionCheck({ device });
-    useReportHashCheck({ device });
-    useReportDeviceMetaChecks({ device });
+export const useReportDeviceCompromised = ({ device, selectAllowPrerelease }: CommonProps) => {
+    useReportRevisionCheck({ device, selectAllowPrerelease });
+    useReportHashCheck({ device, selectAllowPrerelease });
+    useReportDeviceMetaChecks({ device, selectAllowPrerelease });
 };
