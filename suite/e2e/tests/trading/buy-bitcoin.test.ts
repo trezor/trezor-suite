@@ -49,7 +49,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                 /Offers refresh in(0:2[5-9]|0:30)/,
             );
             await expect(tradingPage.inputs.fiatAmount).toHaveValue(localizeNumber(fiatAmount));
-            await expect(tradingPage.inputs.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await expect(tradingPage.inputs.paymentMethodSelect).toHaveValue(paymentMethodName);
             await tradingPage.quotes.validateBuyQuotes(
                 buyQuotesBTC,
                 tradingPage.inputs.getSelectedPaymentMethod,

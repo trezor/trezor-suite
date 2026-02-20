@@ -127,6 +127,7 @@ export class TradingPage {
             // We clear it so we can intercept and verify request payload that is triggered by filling value.
             await inputField.fill('');
         }
+
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
 

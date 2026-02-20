@@ -95,7 +95,6 @@ export const TradingSellFormInputs = () => {
                             />
                         }
                         includedCryptoIds={sellSupportedCryptoIds}
-
                         onAssetSelect={handleSellAssetSelect}
                     />
                     <Column gap={8}>
@@ -112,19 +111,23 @@ export const TradingSellFormInputs = () => {
                                     {generateFractionButtons(helpers).map(button => {
                                         const { percentValue, ...buttonProps } = button;
 
-                                    return (
-                                        <FractionButton
-                                            key={buttonProps.id}
-                                            {...buttonProps}
-                                            onClick={() => {
-                                                analytics.report({
-                                                    type: events.appFormPercentButtonsEvent.name,
-                                                    payload: { type: 'sell', value: percentValue },
-                                                });
-                                                button.onClick();
-                                            }}
-                                        />
-                                    );
+                                        return (
+                                            <FractionButton
+                                                key={buttonProps.id}
+                                                {...buttonProps}
+                                                onClick={() => {
+                                                    analytics.report({
+                                                        type: events.appFormPercentButtonsEvent
+                                                            .name,
+                                                        payload: {
+                                                            type: 'sell',
+                                                            value: percentValue,
+                                                        },
+                                                    });
+                                                    button.onClick();
+                                                }}
+                                            />
+                                        );
                                     })}
                                 </Row>
                                 <TradingBalance
