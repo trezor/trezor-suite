@@ -17,8 +17,7 @@ import {
 import { acquireDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware/src/nativeFirmwareSlice';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
