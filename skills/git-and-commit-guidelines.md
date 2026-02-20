@@ -29,3 +29,7 @@ Common scopes: `suite`, `suite-native`, `connect`, `components`, `analytics`
 - One logical change per commit when possible
 - Reference issue numbers in commit body when applicable (e.g., `Closes #1234`)
 - Avoid committing plan documents or TODO files unless they are part of the project documentation
+
+## Pull requests
+
+- When creating a pull request to GitHub, follow this [PR description template](../.github/pull_request_template.md)
