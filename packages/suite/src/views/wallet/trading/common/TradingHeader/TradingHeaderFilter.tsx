@@ -60,10 +60,10 @@ export const TradingHeaderFilter = () => {
                 </InputWrapper>
             )}
             <InputWrapper>
-                <TradingFormInputPaymentMethod />
+                <TradingFormInputPaymentMethod renderInput />
             </InputWrapper>
             <InputWrapper>
-                <TradingFormInputCountry />
+                <TradingFormInputCountry renderInput />
             </InputWrapper>
         </Row>
     );
