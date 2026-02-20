@@ -814,7 +814,7 @@ export const getIsPhishingTransactionFixtures = [
                 data: ['aaa'],
             },
         } as TokenDefinitions,
-        result: false,
+        result: true,
     },
     {
         testName: 'solana legit tx (solana disabled)',

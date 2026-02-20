@@ -99,10 +99,10 @@ const phishingDetectors: NetworkPhishingDetectors = new Map([
     ['bitcoin', []],
     ['ethereum', [detectors.dustValue, detectors.zeroValue, detectors.fakeToken]],
     ['ripple', [detectors.dustValue]],
-    ['cardano', [detectors.dustValue]],
-    ['solana', [detectors.dustValue]],
-    ['stellar', [detectors.dustValue]],
-    ['tron', [detectors.dustValue]],
+    ['cardano', [detectors.dustValue, detectors.fakeToken]],
+    ['solana', [detectors.dustValue, detectors.fakeToken]],
+    ['stellar', [detectors.dustValue, detectors.fakeToken]],
+    ['tron', [detectors.dustValue, detectors.fakeToken]],
 ]);
 
 // NOTE: This function determins, for which symbols there are filters in the UI to hide / display spam transactions
