@@ -148,7 +148,7 @@ export const findSuiteSyncAccountLabel = (params: {
     accounts: SuiteSyncAccount[];
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
-}) =>
+}): SuiteSyncAccount | undefined =>
     params.accounts.find(
         account =>
             account.accountDescriptor === params.accountDescriptor &&

@@ -810,17 +810,18 @@ export const getAccountIdentifier = (account: Account) => ({
 
 export type AccountSearchParams = {
     coinsFilter?: NetworkSymbol[] | NetworkSymbol;
-    metadataAccountLabel?: string;
-    /**
-     * Return true if the account has token that match the search string
-     */
+
+    /** Needs to be mandatory, so it is no forgotten. */
+    accountLabel: string;
+
+    /** Return true if the account has token that match the search string */
     tokensMatch?: boolean;
 };
 
 export const accountSearchFn = (
     account: Account,
     rawSearchString: string | undefined,
-    { coinsFilter, metadataAccountLabel, tokensMatch = true }: AccountSearchParams = {},
+    { coinsFilter, accountLabel, tokensMatch = true }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -862,8 +863,7 @@ export const accountSearchFn = (
     const matchXRPAlternativeName =
         network?.networkType === 'ripple' && 'ripple'.includes(searchString);
 
-    const metadataMatch = !!metadataAccountLabel?.toLowerCase().includes(searchString);
-    const accountLabelMatch = !!account.accountLabel?.toLowerCase().includes(searchString);
+    const accountLabelMatch = !!accountLabel?.toLowerCase().includes(searchString);
 
     const filterTokens = (token: TokenInfo) =>
         token.name?.toLowerCase().includes(searchString) ||
@@ -881,7 +881,6 @@ export const accountSearchFn = (
         descriptorMatch ||
         addressMatch ||
         matchXRPAlternativeName ||
-        metadataMatch ||
         accountLabelMatch ||
         tokenMatch
     );

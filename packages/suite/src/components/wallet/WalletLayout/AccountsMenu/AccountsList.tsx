@@ -9,7 +9,7 @@ import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
+import { selectAccountLabels as selectAccountLabelsLegacy } from 'src/reducers/suite/metadataReducer';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import { AccountItemType } from 'src/types/wallet';
 import { RouteParams } from 'src/utils/suite/router';
@@ -89,7 +89,7 @@ export const AccountsList = ({
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const accountLabels = useSelector(selectAccountLabelsOld);
+    const accountLabels = useSelector(selectAccountLabelsLegacy);
 
     const suiteSyncAccounts = useSelector(state => {
         if (!device?.state?.staticSessionId) return [];
@@ -111,7 +111,11 @@ export const AccountsList = ({
         searchString || coinFilter
             ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabelOld = Object.prototype.hasOwnProperty.call(accountLabels, key)
+
+                  const accountLabelLegacy = Object.prototype.hasOwnProperty.call(
+                      accountLabels,
+                      key,
+                  )
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
 
@@ -122,11 +126,13 @@ export const AccountsList = ({
                           accounts: suiteSyncAccounts,
                           accountDescriptor,
                           networkSymbol,
-                      })?.label ?? accountLabelOld;
+                      })?.label ??
+                      accountLabelLegacy ??
+                      '';
 
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
-                      metadataAccountLabel: accountLabel,
+                      accountLabel,
                   });
               })
             : accounts;

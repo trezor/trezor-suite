@@ -21,6 +21,7 @@ export function useFilterAccountsWithTokens(
                         case 'account':
                             return accountSearchFn(item.account, search, {
                                 tokensMatch: false,
+                                accountLabel: '', // Todo: select label from SuiteSync
                             });
 
                         case 'token':
