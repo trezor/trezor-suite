@@ -25,11 +25,11 @@ export class TradingFormInputs {
     readonly fiatCryptoSwitchButton: Locator;
     readonly fractionButtons: Locator;
     readonly bottomText: Locator;
-    readonly countryDropdown: Locator;
+    readonly countrySelect: Locator;
     readonly countryValue: Locator;
     readonly countryOption = (countryCode: TradingCountryCode) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
-    readonly paymentMethodDropdown: Locator;
+    readonly paymentMethodSelect: Locator;
     readonly paymentMethodValue: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
@@ -42,9 +42,9 @@ export class TradingFormInputs {
         this.fiatCryptoSwitchButton = this.page.getByTestId('@trading/form/switch-crypto-fiat');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.bottomText = this.page.getByTestId('@trading/form/crypto-input/bottom-text');
-        this.countryDropdown = this.page.getByTestId('@trading/form/country-select');
+        this.countrySelect = this.page.getByTestId('@trading/form/country-select');
         this.countryValue = this.page.getByTestId('@trading/form/country-select/value');
-        this.paymentMethodDropdown = this.page.getByTestId('@trading/form/payment-method-select');
+        this.paymentMethodSelect = this.page.getByTestId('@trading/form/payment-method-select');
         this.paymentMethodValue = this.page.getByTestId(
             '@trading/form/payment-method-select/value',
         );
@@ -60,7 +60,7 @@ export class TradingFormInputs {
         if (currentCountry?.includes(countryLabel)) {
             return;
         }
-        await this.countryDropdown.click();
+        await this.countrySelect.click();
         await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
             'TR_TRADING_COUNTRY',
         );
@@ -82,11 +82,11 @@ export class TradingFormInputs {
 
     @step()
     async selectPaymentMethod(method: PaymentMethods) {
-        const currentPaymentMethod = await this.paymentMethodDropdown.getAttribute('value');
+        const currentPaymentMethod = await this.paymentMethodSelect.getAttribute('value');
         if (currentPaymentMethod?.includes(method)) {
             return;
         }
-        await this.paymentMethodDropdown.click();
+        await this.paymentMethodSelect.click();
         await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
             'TR_TRADING_PAYMENT_METHOD',
         );
@@ -94,8 +94,8 @@ export class TradingFormInputs {
     }
 
     getSelectedPaymentMethod = async () => {
-        await expect(this.paymentMethodDropdown).not.toBeEmpty();
-        const dropdownText = (await this.paymentMethodDropdown.getAttribute('value'))?.trim();
+        await expect(this.paymentMethodSelect).not.toBeEmpty();
+        const dropdownText = (await this.paymentMethodSelect.getAttribute('value'))?.trim();
         if (!dropdownText) {
             throw new Error('Payment method dropdown is empty');
         }
