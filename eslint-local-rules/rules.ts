@@ -53,10 +53,11 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
     }
 };
 
-const getRestrictedScopePackageImportFromSourcePath = (
-    sourcePath: string,
-    packageScopes: string[],
-) => {
+/**
+ * Returns the suggested import path for a deep import, or null if the import is allowed.
+ * Handles the mocks convention: `@scope/pkg/mocks` is allowed, but `@scope/pkg/mocks/deep` suggests `@scope/pkg/mocks`.
+ */
+const getSuggestedImportPath = (sourcePath: string, packageScopes: string[]): string | null => {
     const sourcePathParts = sourcePath.split('/');
 
     if (sourcePathParts.length < 3) {
@@ -71,76 +72,28 @@ const getRestrictedScopePackageImportFromSourcePath = (
         return null;
     }
 
-    return `${matchingPackageScope}/${sourcePathParts[1]}`;
-};
+    const packageImportPath = `${matchingPackageScope}/${sourcePathParts[1]}`;
 
-const getSuggestedImportPath = (sourcePath: string, packageScopes: string[]) => {
-    const packageImportPath = getRestrictedScopePackageImportFromSourcePath(
-        sourcePath,
-        packageScopes,
-    );
+    // Allow @scope/pkg/mocks as a valid entry point
+    if (sourcePathParts[2] === 'mocks') {
+        if (sourcePathParts.length === 3) {
+            return null;
+        }
 
-    if (packageImportPath === null) {
-        return null;
-    }
-
-    const sourcePathParts = sourcePath.split('/');
-
-    if (sourcePathParts[2] === 'mocks' && sourcePathParts.length > 3) {
         return `${packageImportPath}/mocks`;
     }
 
     return packageImportPath;
 };
 
-const shouldAllowMocksImportPath = (sourcePath: string, packageScopes: string[]) => {
-    const sourcePathParts = sourcePath.split('/');
-
-    if (sourcePathParts.length !== 3) {
-        return false;
-    }
-
-    const packageScope = sourcePathParts[0];
-
-    if (!packageScopes.includes(packageScope)) {
-        return false;
-    }
-
-    if (sourcePathParts[2] !== 'mocks') {
-        return false;
-    }
-
-    return true;
-};
-
-const checkNodeForRestrictedScopePackageSourceImport = (
-    node,
-    context,
-    sourcePath: string,
-    packageScopes: string[],
-) => {
-    const packageImportPath = getSuggestedImportPath(sourcePath, packageScopes);
-
-    if (packageImportPath === null) {
-        return;
-    }
-
-    if (shouldAllowMocksImportPath(sourcePath, packageScopes)) {
-        return;
-    }
-
-    context.report({
-        node,
-        messageId: 'doNotImportPackageDeepPath',
-        data: {
-            packageImportPath,
-            sourcePath,
-        },
-    });
-};
-
-const getNodeSourcePath = node => {
-    if (typeof node.source.value === 'string') {
+const getNodeSourcePath = (node: Rule.Node): string | null => {
+    if (
+        'source' in node &&
+        node.source &&
+        typeof node.source === 'object' &&
+        'value' in node.source &&
+        typeof node.source.value === 'string'
+    ) {
         return node.source.value;
     }
 
@@ -245,59 +198,36 @@ export default {
                 '@suite-native',
                 '@suite',
                 '@suite-common',
+                '@trezor',
             ];
 
+            const checkNode = (node: Rule.Node) => {
+                const sourcePath = getNodeSourcePath(node);
+
+                if (sourcePath === null) {
+                    return;
+                }
+
+                const packageImportPath = getSuggestedImportPath(sourcePath, packageScopes);
+
+                if (packageImportPath === null) {
+                    return;
+                }
+
+                context.report({
+                    node,
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        packageImportPath,
+                        sourcePath,
+                    },
+                });
+            };
+
             return {
-                ImportDeclaration(node) {
-                    const sourcePath = getNodeSourcePath(node);
-
-                    if (sourcePath === null) {
-                        return;
-                    }
-
-                    checkNodeForRestrictedScopePackageSourceImport(
-                        node,
-                        context,
-                        sourcePath,
-                        packageScopes,
-                    );
-                },
-                ExportAllDeclaration(node) {
-                    if (node.source === null) {
-                        return;
-                    }
-
-                    const sourcePath = getNodeSourcePath(node);
-
-                    if (sourcePath === null) {
-                        return;
-                    }
-
-                    checkNodeForRestrictedScopePackageSourceImport(
-                        node,
-                        context,
-                        sourcePath,
-                        packageScopes,
-                    );
-                },
-                ExportNamedDeclaration(node) {
-                    if (node.source === null) {
-                        return;
-                    }
-
-                    const sourcePath = getNodeSourcePath(node);
-
-                    if (sourcePath === null) {
-                        return;
-                    }
-
-                    checkNodeForRestrictedScopePackageSourceImport(
-                        node,
-                        context,
-                        sourcePath,
-                        packageScopes,
-                    );
-                },
+                ImportDeclaration: checkNode,
+                ExportAllDeclaration: checkNode,
+                ExportNamedDeclaration: checkNode,
             };
         },
     },
