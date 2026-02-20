@@ -1,7 +1,7 @@
 import { AccountLabels } from '@suite-common/metadata-types';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTokenTransferMatchesSearch } from '@suite-common/wallet-utils';
-import { typedObjectKeys } from '@trezor/utils';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';

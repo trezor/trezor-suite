@@ -1,4 +1,3 @@
-import { testMocks } from '@suite-common/test-utils';
 import { networks, networksCollection } from '@suite-common/wallet-config';
 import {
     mockWalletAccount,
@@ -9,7 +8,6 @@ import { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
-import { getUtxoOutpoint } from '../accountUtils';
 import {
     calculateMax,
     calculateTotal,
@@ -19,14 +17,11 @@ import {
     getBitcoinComposeOutputs,
     getCryptoAmountWithReserve,
     getCryptoMaxAmountWithReserve,
-    getExcludedUtxos,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
-
-const { getUtxo } = testMocks;
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -373,41 +368,6 @@ describe('sendForm utils', () => {
         // @ts-expect-error invalid params
         expect(calculateTotalGasCost(null, true)).toEqual('0');
         expect(calculateTotalGasCost('1', '2')).toEqual('2');
-    });
-
-    it('getExcludedUtxos', () => {
-        const dustUtxo = getUtxo({
-            address: 'two',
-            amount: '1',
-            vout: 1,
-        });
-        const lowAnonymityDustUtxo = getUtxo({
-            address: 'one',
-            amount: '100',
-            vout: 2,
-        });
-        const lowAnonymityUtxo = getUtxo({
-            address: 'one',
-            amount: '1000',
-            vout: 3,
-        });
-        const spendableUtxo = getUtxo({
-            address: 'two',
-            amount: '546',
-            vout: 4,
-        });
-
-        const excludedUtxos = getExcludedUtxos({
-            utxos: [dustUtxo, lowAnonymityDustUtxo, lowAnonymityUtxo, spendableUtxo],
-            anonymitySet: { one: 1, two: 2 },
-            targetAnonymity: 2,
-            dustLimit: 546,
-        });
-
-        expect(excludedUtxos[getUtxoOutpoint(dustUtxo)]).toBe('dust');
-        expect(excludedUtxos[getUtxoOutpoint(lowAnonymityDustUtxo)]).toBe('dust');
-        expect(excludedUtxos[getUtxoOutpoint(lowAnonymityUtxo)]).toBe('low-anonymity');
-        expect(excludedUtxos[getUtxoOutpoint(spendableUtxo)]).toBe(undefined);
     });
 
     describe('getAmountValidationResult', () => {

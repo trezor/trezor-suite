@@ -4,7 +4,6 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../fiat-services" },
-        { "path": "../metadata-types" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
@@ -14,9 +13,6 @@
         { "path": "../wallet-types" },
         {
             "path": "../../packages/address-validator"
-        },
-        {
-            "path": "../../packages/blockchain-link"
         },
         {
             "path": "../../packages/blockchain-link-types"
