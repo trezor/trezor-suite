@@ -35,13 +35,6 @@ export const createRefreshSuiteSync =
 
         const deviceStaticId = device.state.staticSessionId;
 
-        if (
-            !device.connected || // disconnected device cannot resolve Evolu-Keys
-            device.mode !== 'normal' // bootloader
-        ) {
-            return err(SuiteSyncUnavailableOnDeviceError());
-        }
-
         const getDelegatedIdentityKeys = async () => {
             const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 

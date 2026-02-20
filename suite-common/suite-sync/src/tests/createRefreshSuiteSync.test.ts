@@ -62,18 +62,6 @@ describe(createRefreshSuiteSync.name, () => {
         expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
     });
 
-    it('fails to get keys when device is disconnected', async () => {
-        const deps = createMockDeps();
-
-        const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
-        const result = await refreshSuiteSyncKeys({
-            device: createDevice({ connected: false }),
-        });
-
-        expect(result.success).toEqual(false);
-        expect(!result.success && result.error.type).toEqual('SuiteSyncUnavailableOnDeviceError');
-    });
-
     it('ensures that the delegated identity key is available', async () => {
         const deps = createMockDeps();
         deps.dispatch.mockImplementation(() => Promise.resolve(ok()));
