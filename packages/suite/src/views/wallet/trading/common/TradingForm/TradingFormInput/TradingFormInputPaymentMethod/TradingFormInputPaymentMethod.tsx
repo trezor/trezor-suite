@@ -66,8 +66,6 @@ export const TradingFormInputPaymentMethod = ({
         ? (selectedOption?.label ?? paymentMethod?.label ?? paymentMethods[0]?.label ?? '')
         : translationString('TR_TRADING_NO_METHODS_AVAILABLE');
 
-    console.log('label', label, 'renderInput', renderInput);
-
     return (
         <>
             {renderInput && (
