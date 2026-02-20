@@ -58,6 +58,7 @@ const UNSIGNED_LOCALHOST = {
 };
 const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
     production: RELEASES_URL_REMOTE_BASE,
+    'production-early-access': RELEASES_URL_REMOTE_BASE,
     'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
     'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
     'test-signed': SIGNED_URL_REMOTE_BASE,
@@ -65,14 +66,15 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
     'localhost-signed': SIGNED_LOCALHOST,
 };
 
-type OnlineFirmwareBaseUrl = RemoteBaseInfo & { env: FirmwareChannel };
+type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel };
 
 /**
  * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
  * Examples:
- *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', env: 'production' }
- *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', env: 'test-signed' }
- *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', env: 'localhost-unsigned' }
+ *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production' }
+ *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production-early-access' }
+ *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', firmwareChannel: 'test-signed' }
+ *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
  */
 export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
     const firmwareChannel = DataManager.getSettings('firmwareChannel');
@@ -81,13 +83,13 @@ export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
         // If for some reason `firmwareChannel` settings is not set we return production one.
         return {
             ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            env: 'production' as FirmwareChannel,
+            firmwareChannel: 'production' as FirmwareChannel,
         };
     }
 
     return {
         ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
-        env: firmwareChannel,
+        firmwareChannel,
     };
 };
 

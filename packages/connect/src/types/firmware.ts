@@ -50,6 +50,7 @@ export type FirmwareUpdateFlowType =
 
 export type FirmwareChannel =
     | 'production'
+    | 'production-early-access'
     | 'test-unsigned'
     | 'test-unsigned-stable'
     | 'test-signed'

@@ -16,12 +16,18 @@ const JWS_CONFIG = {
 
 type JwsInfo = {
     jws: string;
-    env: FirmwareChannel;
+    firmwareChannel: FirmwareChannel;
+};
+
+const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
+    production: 'config/',
+    'production-early-access': 'config-early-access/',
 };
 
 const fetchRemoteJws = async (): Promise<JwsInfo> => {
-    const { BASE_URL, MIDDLE_PATH, env } = getOnlineFirmwareBaseUrl();
-    const path = `${MIDDLE_PATH}/${env === 'production' ? 'config/' : ''}${JWS_CONFIG.REMOTE_FILENAME}`;
+    const { BASE_URL, MIDDLE_PATH, firmwareChannel } = getOnlineFirmwareBaseUrl();
+    const configPath = CONFIG_PATH_BY_CHANNEL[firmwareChannel] ?? '';
+    const path = `${MIDDLE_PATH}/${configPath}${JWS_CONFIG.REMOTE_FILENAME}`;
     const remoteReleasesUrl = new URL(path, BASE_URL);
 
     try {
@@ -44,7 +50,7 @@ const fetchRemoteJws = async (): Promise<JwsInfo> => {
             throw new Error('Invalid response format: "jws" property missing or not a string.');
         }
 
-        return { jws: data.jws, env };
+        return { jws: data.jws, firmwareChannel };
     } catch (error) {
         throw new Error(
             `Failed to fetch remote JWS: ${error instanceof Error ? error.message : String(error)}`,
@@ -78,9 +84,11 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
 
 export const getFirmwareReleaseConfig = async () => {
     try {
-        const { jws, env } = await fetchRemoteJws();
+        const { jws, firmwareChannel } = await fetchRemoteJws();
 
-        const useProductionKey = ['test-signed', 'production'].includes(env);
+        const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(
+            firmwareChannel,
+        );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
         const remoteConfig = verifyAndDecodeJws(jws, publicKey);
 
