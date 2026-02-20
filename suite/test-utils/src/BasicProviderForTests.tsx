@@ -7,6 +7,7 @@ import {
     ResponsiveContextProvider,
     SuiteServicesProvider,
 } from '@trezor/suite';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { extraDependenciesDesktopMock } from '@trezor/suite/src/support/tests/extraDependenciesDesktop.mock';
 
 export const BasicProviderForTests = ({ children }: PropsWithChildren) => (
