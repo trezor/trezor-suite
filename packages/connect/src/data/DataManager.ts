@@ -72,19 +72,19 @@ export class DataManager {
     }
 
     private static async loadFirmwareReleaseConfig(onlyLocal: boolean): Promise<void> {
-        let firmwareRelaseConfig;
+        let firmwareReleaseConfig;
         if (onlyLocal) {
-            firmwareRelaseConfig = {
+            firmwareReleaseConfig = {
                 config: this.getLocalFirmwareReleaseConfig(),
                 isRemote: false,
             };
         } else {
-            firmwareRelaseConfig = await getFirmwareReleaseConfig();
+            firmwareReleaseConfig = await getFirmwareReleaseConfig();
         }
-        const { config, isRemote } = firmwareRelaseConfig;
-        const firmwareconfig = await initializeFirmwareConfig(config, isRemote);
-        this.setFirmwareReleaseConfig(firmwareconfig.releases);
-        this.setFirmwareIntermediaryReleaseConfig(firmwareconfig.intermediaries);
+        const { config, isRemote } = firmwareReleaseConfig;
+        const firmwareConfig = await initializeFirmwareConfig(config, isRemote);
+        this.setFirmwareReleaseConfig(firmwareConfig.releases);
+        this.setFirmwareIntermediaryReleaseConfig(firmwareConfig.intermediaries);
     }
 
     public static getProtobufMessages() {
