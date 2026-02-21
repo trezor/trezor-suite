@@ -10,7 +10,7 @@ export const getEnv = () => {
             return 'react-native';
         }
         const userAgent = navigator.userAgent.toLowerCase();
-        if (userAgent.indexOf(' electron/') > -1) {
+        if (userAgent.includes(' electron/')) {
             return 'electron';
         }
     }
