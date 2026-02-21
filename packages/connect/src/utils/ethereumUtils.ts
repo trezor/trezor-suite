@@ -7,7 +7,7 @@ export const getNetworkLabel = (
     },
 ) => {
     if (network) {
-        const name = network.name.toLowerCase().indexOf('testnet') >= 0 ? 'Testnet' : network.name;
+        const name = network.name.toLowerCase().includes('testnet') ? 'Testnet' : network.name;
 
         return label.replace('#NETWORK', name);
     }

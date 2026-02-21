@@ -4,7 +4,7 @@ import { urlToOnion } from '@trezor/utils';
 
 export const getOrigin = (url: unknown) => {
     if (typeof url !== 'string') return 'unknown';
-    if (url.indexOf('file://') === 0) return 'file://';
+    if (url.startsWith('file://')) return 'file://';
     const [origin] = url.match(/^https?:\/\/[^/]+/) ?? [];
 
     return origin ?? 'unknown';

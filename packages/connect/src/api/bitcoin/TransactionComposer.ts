@@ -65,7 +65,7 @@ export class TransactionComposer {
             return {
                 ...u,
                 coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
-                own: allAddresses.indexOf(u.address) >= 0, // decide if it can be spent immediately (own) or after 6 conf (not own)
+                own: allAddresses.includes(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
             };
         });
     }
