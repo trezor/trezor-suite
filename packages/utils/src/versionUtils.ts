@@ -1,18 +1,21 @@
 import { throwError } from './throwError';
 
-type VersionArray = [number, number, number];
+type VersionArray = [number, number, number] | [number, number, number, number];
 type VersionInput = VersionArray | string;
 
 export const isVersionArray = (arr: unknown): arr is VersionArray =>
     Array.isArray(arr) &&
-    arr.length === 3 &&
+    (arr.length === 3 || arr.length === 4) &&
     arr.every(number => typeof number === 'number' && number >= 0);
 
-export const tryParse = (version: string): VersionArray | null =>
-    version
-        .match(/^(\d+)\.(\d+)\.(\d+)([+-].*)?$/) // three groups of digits separated by dot, optionally ending with '-whatever.123.@' or '+anything.456.#'
-        ?.slice(1, 4)
-        .map(n => Number(n)) as VersionArray;
+export const tryParse = (version: string): VersionArray | null => {
+    const match = version.match(/^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?([+-].*)?$/);
+    if (!match) return null;
+
+    const parts = match.slice(1, 4).map(Number) as [number, number, number];
+
+    return match[4] != null ? [...parts, Number(match[4])] : parts;
+};
 
 const validateArray = (version: VersionArray) => (isVersionArray(version) ? version : null);
 
@@ -20,32 +23,39 @@ const ensureArray = (version: VersionInput): VersionArray =>
     (typeof version === 'string' ? tryParse(version) : validateArray(version)) ??
     throwError(`version string is in wrong format: ${version}`);
 
-const compare = ([majorX, minorX, patchX]: VersionArray, [majorY, minorY, patchY]: VersionArray) =>
-    majorX - majorY || minorX - minorY || patchX - patchY;
+const compare = (x: VersionArray, y: VersionArray) => {
+    const len = Math.max(x.length, y.length);
+    for (let i = 0; i < len; i++) {
+        const diff = (x[i] ?? 0) - (y[i] ?? 0);
+        if (diff !== 0) return diff;
+    }
+
+    return 0;
+};
 
 /**
  * Is versionX (first arg) newer than versionY (second arg)
- * accepts version in two formats:
- * - string: '1.0.0'
- * - array:  [1, 0, 0]
+ * accepts version in formats:
+ * - string: '1.0.0' or '1.0.0.1'
+ * - array:  [1, 0, 0] or [1, 0, 0, 1]
  */
 export const isNewer = (versionX: VersionInput, versionY: VersionInput) =>
     compare(ensureArray(versionX), ensureArray(versionY)) > 0;
 
 /**
  * Is versionX (first arg) equal versionY (second arg)
- * accepts version in two formats:
- * - string: '1.0.0'
- * - array:  [1, 0, 0]
+ * accepts version in formats:
+ * - string: '1.0.0' or '1.0.0.1'
+ * - array:  [1, 0, 0] or [1, 0, 0, 1]
  */
 export const isEqual = (versionX: VersionInput, versionY: VersionInput) =>
     compare(ensureArray(versionX), ensureArray(versionY)) === 0;
 
 /**
  * Is versionX (first arg) newer or equal than versionY (second arg)
- * accepts version in two formats:
- * - string: '1.0.0'
- * - array:  [1, 0, 0]
+ * accepts version in formats:
+ * - string: '1.0.0' or '1.0.0.1'
+ * - array:  [1, 0, 0] or [1, 0, 0, 1]
  */
 export const isNewerOrEqual = (versionX: VersionInput, versionY: VersionInput) =>
     compare(ensureArray(versionX), ensureArray(versionY)) >= 0;
