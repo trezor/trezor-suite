@@ -1,0 +1,36 @@
+name: "[Bot] Monthly dependency maintenance issues"
+
+permissions:
+  issues: write
+  repository-projects: write
+
+on:
+  schedule:
+    #Runs on the first day of every month at 02:00 UTC
+    - cron: "0 2 1 * *"
+  workflow_dispatch:
+
+jobs:
+  create_deps_issues:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        team: ["Suite-Growth 🎨", "Suite-Wallet 📈", "Suite-Foundation 🧑‍🚀", "Suite-Trade 💹"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Create dependency maintenance issue for ${{ matrix.team }}
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          TEAM: ${{ matrix.team }}
+        run: bash scripts/create-monthly-deps-issue.sh
