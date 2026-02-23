@@ -20,7 +20,7 @@
         "@vitejs/plugin-react": "^4.7.0",
         "react": "19.1.0",
         "react-dom": "19.1.0",
-        "styled-components": "^6.1.19",
+        "styled-components": "^6.3.9",
         "ts-morph": "^27.0.2",
         "vite": "^7.2.4",
         "vite-plugin-node-polyfills": "^0.24.0"
