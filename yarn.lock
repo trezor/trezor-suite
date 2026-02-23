@@ -12060,7 +12060,7 @@ __metadata:
     react-native: "npm:0.81.5"
     react-native-ble-plx: "patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch"
     react-native-edge-to-edge: "npm:1.7.0"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-get-random-values: "npm:^2.0.0"
     react-native-keyboard-controller: "npm:1.19.2"
     react-native-launch-arguments: "npm:^4.1.1"
@@ -12158,7 +12158,7 @@ __metadata:
     lottie-react-native: "npm:7.3.5"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-keyboard-controller: "npm:1.19.2"
     react-native-reanimated: "npm:~4.1.5"
     react-native-safe-area-context: "npm:5.6.1"
@@ -12307,7 +12307,7 @@ __metadata:
     expo-linear-gradient: "npm:~15.0.8"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
   languageName: unknown
   linkType: soft
@@ -12485,7 +12485,7 @@ __metadata:
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
@@ -13656,7 +13656,7 @@ __metadata:
     react: "npm:19.1.0"
     react-intl: "npm:^8.1.3"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
     react-native-safe-area-context: "npm:5.6.1"
     react-redux: "npm:9.2.0"
@@ -13806,7 +13806,7 @@ __metadata:
     "@types/react": "npm:19.1.6"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
   languageName: unknown
   linkType: soft
@@ -13853,7 +13853,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
     type-fest: "npm:4.24.0"
@@ -14099,7 +14099,7 @@ __metadata:
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
     react-native-safe-area-context: "npm:5.6.1"
   languageName: unknown
@@ -14239,7 +14239,7 @@ __metadata:
     "@types/invity-api": "npm:^1.1.13"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-gesture-handler: "npm:2.29.0"
+    react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
     type-fest: "npm:4.24.0"
   languageName: unknown
@@ -39926,9 +39926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gesture-handler@npm:2.29.0":
-  version: 2.29.0
-  resolution: "react-native-gesture-handler@npm:2.29.0"
+"react-native-gesture-handler@npm:2.30.0":
+  version: 2.30.0
+  resolution: "react-native-gesture-handler@npm:2.30.0"
   dependencies:
     "@egjs/hammerjs": "npm:^2.0.17"
     hoist-non-react-statics: "npm:^3.3.0"
@@ -39936,7 +39936,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/f82a1aa23bf46a688133c5c58b0ca0195205c3edc5741b2edc3a969fba72f03843df9c1d2f68300096fb588dadf5f88a4445ce49237053e01ef91580ea51cfe2
+  checksum: 10/242b1eb29202bc9fc7bf0271c3da102559adc9f2810441465b6d78c1a8ed8f65bdd91335957c841a4716f796be3e7b87d1d55629d6803ea12e1be832d89c946c
   languageName: node
   linkType: hard
 
