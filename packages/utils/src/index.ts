@@ -1,6 +1,7 @@
 export * as bufferUtils from './bufferUtils';
 export * as enumUtils from './enumUtils';
 export * as versionUtils from './versionUtils';
+export type { VersionArray } from './versionUtils';
 export * as xssFilters from './xssFilters';
 export * from './addDashesToSpaces';
 export * from './arrayDistinct';
