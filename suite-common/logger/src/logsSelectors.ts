@@ -88,6 +88,7 @@ export const selectRedactedDevices = createApplicationInfoLogsMemoizedSelector(
             A.map(device => ({
                 id: shouldHideSensitiveData ? REDACTED_REPLACEMENT : device.id,
                 label: shouldHideSensitiveData ? REDACTED_REPLACEMENT : device.label,
+                path: device.path, // needed to load telemetry
                 mode: device.mode,
                 connected: device.connected,
                 passphraseProtection: device.features?.passphrase_protection,
@@ -105,6 +106,7 @@ export const selectRedactedDevices = createApplicationInfoLogsMemoizedSelector(
         );
     },
 );
+export type RedactedDevice = ReturnType<typeof selectRedactedDevices>[number];
 
 export const selectRedactedWallets = createApplicationInfoLogsMemoizedSelector(
     [selectDevices, (_state, shouldHideSensitiveData?: boolean) => shouldHideSensitiveData],

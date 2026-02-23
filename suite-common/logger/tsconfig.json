@@ -4,6 +4,7 @@
     "references": [
         { "path": "../analytics-redux" },
         { "path": "../device" },
+        { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

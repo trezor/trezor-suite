@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useQuery } from '@suite-common/react-query';
+import TrezorConnect, { PROTO } from '@trezor/connect';
+
 import {
     LogsApplicationInfoRootState,
+    RedactedDevice,
     selectRedactedActionsLog,
     selectRedactedApplicationInfo,
 } from '../logsSelectors';
@@ -22,7 +26,36 @@ export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
         (async () => setEnvInfo(await getEnvironmentInfo()))();
     }, []);
 
-    if (envInfo === null) return null;
+    // Enhance devices info with telemetry data (battery temp, etc.)
+    const devicePaths = new Set(redactedApplicationInfo.devices.map(d => d.path));
+    const { data: devicesWithTelemetry, isLoading } = useQuery({
+        queryKey: ['device-telemetry', ...devicePaths],
+        queryFn: async ({ signal }) => {
+            const _devicesWithTelemetry: (RedactedDevice & { telemetry?: PROTO.Telemetry })[] = [
+                ...redactedApplicationInfo.devices,
+            ];
+            for (const device of _devicesWithTelemetry) {
+                if (signal.aborted) break;
+                const telemetry = await TrezorConnect.telemetryGet({
+                    device: { path: device.path },
+                });
+                if (!telemetry.success) continue;
+                device.telemetry = telemetry.payload;
+            }
 
-    return [{ ...envInfo, startTime, ...redactedApplicationInfo }, redactedActionsLog];
+            return _devicesWithTelemetry;
+        },
+        staleTime: 60 * 1000,
+    });
+    if (envInfo === null || isLoading) return null;
+
+    return [
+        {
+            ...envInfo,
+            startTime,
+            ...redactedApplicationInfo,
+            devices: devicesWithTelemetry ?? redactedApplicationInfo.devices,
+        },
+        redactedActionsLog,
+    ];
 };
