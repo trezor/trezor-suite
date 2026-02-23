@@ -23,7 +23,7 @@
         "styled-components": "^6.3.9",
         "ts-morph": "^27.0.2",
         "vite": "^7.3.1",
-        "vite-plugin-node-polyfills": "^0.24.0"
+        "vite-plugin-node-polyfills": "^0.25.0"
     },
     "devDependencies": {
         "tsx": "^4.20.3"
