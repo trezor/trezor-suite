@@ -24,7 +24,7 @@
         "@trezor/theme": "workspace:*",
         "react": "19.1.0",
         "react-native": "0.81.5",
-        "react-native-keyboard-controller": "1.19.2",
+        "react-native-keyboard-controller": "1.20.7",
         "react-native-mmkv": "~4.1.2",
         "react-native-permissions": "5.4.2",
         "react-native-safe-area-context": "5.6.1",
