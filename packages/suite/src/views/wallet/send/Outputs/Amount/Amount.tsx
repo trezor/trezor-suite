@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -24,6 +25,7 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { useAnalytics } from 'src/support/useAnalytics';
 import {
     validateDecimals,
     validateInteger,
@@ -44,6 +46,7 @@ interface AmountProps {
 
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
+    const analytics = useAnalytics();
     const {
         account,
         network,
@@ -169,6 +172,12 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     };
 
     const onSwitchChange = () => {
+        if (!isSendMaxActive) {
+            analytics.report({
+                type: events.appFormPercentButtonsEvent.name,
+                payload: { type: 'send', value: 'max' },
+            });
+        }
         const clearInput = network.networkType === 'solana';
 
         setMax(outputId, isSendMaxActive, clearInput);
