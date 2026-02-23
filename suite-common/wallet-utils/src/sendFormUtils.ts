@@ -773,9 +773,8 @@ export const isAmountWithinNetworkReserve = ({
 }: IsAmountWithinNetworkReserveProps): boolean => {
     if (!reserve || !balance) return true;
 
+    const sendAmount = new BigNumber(amount);
     const accountBalance = new BigNumber(balance);
-    const networkReserve = new BigNumber(reserve);
-    const networkFee = new BigNumber(fee);
 
-    return !new BigNumber(amount).gt(accountBalance.minus(networkReserve).minus(networkFee));
+    return sendAmount.lte(accountBalance.minus(reserve).minus(fee));
 };

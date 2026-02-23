@@ -3,6 +3,9 @@
 @floating-ui/react
 @formatjs/cli
 @formatjs/intl
+@formatjs/intl-getcanonicallocales
+@formatjs/intl-listformat
+@formatjs/intl-locale
 @gorhom/bottom-sheet
 @lottiefiles/dotlottie-react
 @originjs/vite-plugin-commonjs

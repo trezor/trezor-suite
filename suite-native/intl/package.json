@@ -20,6 +20,9 @@
         "translations:download": "crowdin download --all -l en -l cs -l de -l pt-BR -l ja"
     },
     "dependencies": {
+        "@formatjs/intl-getcanonicallocales": "^3.2.1",
+        "@formatjs/intl-listformat": "^8.2.1",
+        "@formatjs/intl-locale": "^5.2.1",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
