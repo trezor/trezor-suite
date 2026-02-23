@@ -15,8 +15,7 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 
