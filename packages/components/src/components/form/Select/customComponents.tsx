@@ -192,11 +192,20 @@ export const Option = ({
         >
             <Box
                 borderRadius={8}
-                backgroundColor={props.isFocused ? 'stateFillElementGhostHovered' : undefined}
-                cursor="pointer"
+                backgroundColor={
+                    props.isFocused && !props.isDisabled
+                        ? 'stateFillElementGhostHovered'
+                        : undefined
+                }
+                cursor={props.isDisabled ? 'default' : 'pointer'}
                 padding={{ vertical: 6, horizontal: 8 }}
             >
-                <Text as="div" typographyStyle={mapSizeToTypographyStyle(size)}>
+                <Text
+                    as="div"
+                    intent="neutral"
+                    typographyStyle={mapSizeToTypographyStyle(size)}
+                    isDisabled={props.isDisabled}
+                >
                     {children}
                 </Text>
             </Box>
