@@ -87,7 +87,7 @@ export const TradingFormInputPaymentMethod = ({
                     borderRadius={0}
                     data-testid="@trading/form/payment-method-select"
                 >
-                    <Row alignItems="center" justifyContent="space-between" padding={20}>
+                    <Row justifyContent="space-between" padding={20}>
                         <Text
                             typographyStyle="body-md"
                             align="start"

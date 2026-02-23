@@ -41,7 +41,7 @@ export const TradingFormInputCountry = ({
                     borderRadius={0}
                     data-testid="@trading/form/country-select"
                 >
-                    <Row alignItems="center" justifyContent="space-between" padding={20}>
+                    <Row justifyContent="space-between" padding={20}>
                         <Text typographyStyle="body-md" align="start">
                             {label && <Translation id={label} />}
                         </Text>

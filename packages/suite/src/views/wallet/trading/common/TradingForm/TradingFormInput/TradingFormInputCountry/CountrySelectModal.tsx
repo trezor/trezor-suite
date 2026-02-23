@@ -13,12 +13,12 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
-interface Props {
+interface CountrySelectModalProps {
     onClose: () => void;
     heading?: TranslationKey;
 }
 
-export const CountrySelectModal = ({ heading, onClose }: Props) => {
+export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps) => {
     const { translationString } = useTranslation();
     const { setValue, setAmountLimits } = useTradingFormContext<TradingTradeBuySellType>();
     const { filteredData, setFilterValue, filterValue } = useCountryFilteredData();
@@ -49,7 +49,7 @@ export const CountrySelectModal = ({ heading, onClose }: Props) => {
                     showClearButton
                     value={filterValue}
                 />
-                {!!filteredData.length && (
+                {filteredData.length > 0 && (
                     <CardList>
                         {filteredData.map(country => (
                             <CardList.Item
