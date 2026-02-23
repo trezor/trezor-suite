@@ -23,6 +23,7 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
+import { FormPercentButtonValue } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
 export const SupplyInputs = () => {
     const { translationString } = useTranslation();
@@ -143,6 +144,12 @@ export const SupplyInputs = () => {
         />
     );
 
+    const reportButtonClickEvent = (value: FormPercentButtonValue) =>
+        analytics.report({
+            type: events.appFormPercentButtonsEvent.name,
+            payload: { type: 'staking', value },
+        });
+
     return (
         <Column gap={12} alignItems="center">
             <InputWithOptions<StakeFormState>
@@ -224,10 +231,7 @@ export const SupplyInputs = () => {
                         tooltip: isFractionButtonDisabled(10) && tooltip,
                         isDisabled: isFractionButtonDisabled(10),
                         onClick: () => {
-                            analytics.report({
-                                type: events.appFormPercentButtonsEvent.name,
-                                payload: { type: 'staking', value: '10%' },
-                            });
+                            reportButtonClickEvent('10%');
                             setRatioAmount(10);
                         },
                     },
@@ -237,10 +241,7 @@ export const SupplyInputs = () => {
                         tooltip: isFractionButtonDisabled(4) && tooltip,
                         isDisabled: isFractionButtonDisabled(4),
                         onClick: () => {
-                            analytics.report({
-                                type: events.appFormPercentButtonsEvent.name,
-                                payload: { type: 'staking', value: '25%' },
-                            });
+                            reportButtonClickEvent('25%');
                             setRatioAmount(4);
                         },
                     },
@@ -250,10 +251,7 @@ export const SupplyInputs = () => {
                         tooltip: isFractionButtonDisabled(2) && tooltip,
                         isDisabled: isFractionButtonDisabled(2),
                         onClick: () => {
-                            analytics.report({
-                                type: events.appFormPercentButtonsEvent.name,
-                                payload: { type: 'staking', value: '50%' },
-                            });
+                            reportButtonClickEvent('50%');
                             setRatioAmount(2);
                         },
                     },
@@ -263,10 +261,7 @@ export const SupplyInputs = () => {
                         tooltip: maxTooltip || (isBalanceBelowMinStake && tooltip),
                         isDisabled: isBalanceBelowMinStake || !!missingAmount,
                         onClick: () => {
-                            analytics.report({
-                                type: events.appFormPercentButtonsEvent.name,
-                                payload: { type: 'staking', value: 'max' },
-                            });
+                            reportButtonClickEvent('max');
                             setMax();
                         },
                     },
