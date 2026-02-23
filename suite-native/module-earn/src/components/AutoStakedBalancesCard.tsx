@@ -5,6 +5,7 @@ import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-nativ
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useSelector } from '@suite-native/staking';
+// TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { selectIsCardanoStakedOutsideEverstake } from '@suite-native/staking/src/cardanoStakingSelectors';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

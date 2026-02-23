@@ -2,6 +2,7 @@ import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reani
 import { useDispatch, useSelector } from 'react-redux';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
+// TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
@@ -14,6 +15,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
+// TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionContent';
 import { Icon } from '@suite-native/icons';
