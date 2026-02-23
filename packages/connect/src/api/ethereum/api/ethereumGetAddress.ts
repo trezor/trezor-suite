@@ -4,7 +4,12 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
@@ -30,11 +35,17 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     hasBundle?: boolean;
     progress = 0;
 
-    init() {
+    constructor(message: { id?: number; payload: Payload<'ethereumGetAddress'> }) {
+        super(message);
         this.confirmMissingBackup = true;
-        this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

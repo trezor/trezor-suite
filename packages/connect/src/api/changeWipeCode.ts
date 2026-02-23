@@ -1,14 +1,19 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 
 export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PROTO.ChangeWipeCode> {
-    init() {
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'changeWipeCode'> }) {
+        super(message);
         this.skipFinalReload = false;
         this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
 
+    init() {
         const { payload } = this;
         validateParams(payload, [{ name: 'remove', type: 'boolean' }]);
 

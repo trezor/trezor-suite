@@ -2,18 +2,23 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
-    init() {
+    constructor(message: { id?: number; payload: Payload<'changeLanguage'> }) {
+        super(message);
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useEmptyPassphrase = true;
-        this.requiredPermissions = ['management'];
         this.skipFinalReload = false;
         this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
 
+    init() {
         const { payload } = this;
 
         Assert(ChangeLanguageSchema, payload);

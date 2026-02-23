@@ -2,12 +2,14 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 
 export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
-    init() {
-        this.requiredPermissions = [];
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
+
+    init() {}
 
     run() {
         const state = this.device.getState();

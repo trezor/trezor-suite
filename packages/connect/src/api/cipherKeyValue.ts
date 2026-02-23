@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
@@ -16,10 +16,15 @@ export default class CipherKeyValue extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'cipherKeyValue'> }) {
+        super(message);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
 
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

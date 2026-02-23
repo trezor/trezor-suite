@@ -1,14 +1,19 @@
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { UI } from '../events';
 
 export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials'> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'thpRemoveCredentials'> }) {
+        super(message);
         this.useDevice = this.payload.device !== undefined;
+        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
     }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {}
 
     run() {
         const requestedCredentials = this.payload.credentials || [];

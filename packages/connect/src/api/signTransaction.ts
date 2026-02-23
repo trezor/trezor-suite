@@ -24,7 +24,7 @@ import {
     verifyTx,
 } from './bitcoin';
 import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -47,9 +47,16 @@ type Params = {
 };
 
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    get requiredPermissions(): MethodPermission[] {
+        const permissions: MethodPermission[] = ['read', 'write'];
+        if (this.params.push) {
+            permissions.push('push_tx');
+        }
 
+        return permissions;
+    }
+
+    init() {
         const { payload } = this;
 
         // validate incoming parameters
@@ -178,10 +185,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         };
 
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
-
-        if (this.params.push) {
-            this.requiredPermissions.push('push_tx');
-        }
     }
 
     get info() {

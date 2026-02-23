@@ -1,6 +1,6 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
@@ -9,12 +9,17 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
+    constructor(message: { id?: number; payload: Payload<'evoluGetDelegatedIdentityKey'> }) {
+        super(message);
         this.useDevice = true;
         this.useUi = true;
-        this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {}
 
     get info() {
         return 'Evolu get delegated identity key';

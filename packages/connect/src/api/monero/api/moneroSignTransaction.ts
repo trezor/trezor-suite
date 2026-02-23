@@ -1,7 +1,12 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -41,6 +46,10 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
     'moneroSignTransaction',
     Params
 > {
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
     private state: ProtocolState = {
         hmacs: [],
         vinis: [],
@@ -52,15 +61,17 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         rsig_parts: [],
     };
 
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'moneroSignTransaction'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Monero'),
             this.firmwareRange,
         );
+    }
 
+    init() {
         const { payload } = this;
 
         // Validate path - must be minimum 3 hardened components

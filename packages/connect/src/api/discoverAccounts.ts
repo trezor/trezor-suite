@@ -4,7 +4,12 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
+import {
+    AbstractMethod,
+    DEFAULT_FIRMWARE_RANGE,
+    MethodPermission,
+    Payload,
+} from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import type { CoinInfo, FirmwareRange } from '../types';
@@ -57,12 +62,17 @@ const substituteBip43Path = (path: string, index: number) => path.replace('i', S
 export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts', Request[]> {
     disposed = false;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'discoverAccounts'> }) {
+        super(message);
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
 
+    init() {
         const { payload } = this;
 
         // validate bundle type
