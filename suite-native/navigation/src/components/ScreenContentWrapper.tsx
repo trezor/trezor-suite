@@ -1,6 +1,9 @@
 import React, { ReactNode, useRef } from 'react';
-import { ScrollView, ScrollViewProps } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { ScrollViewProps } from 'react-native';
+import {
+    KeyboardAwareScrollView,
+    KeyboardAwareScrollViewRef,
+} from 'react-native-keyboard-controller';
 
 import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
@@ -29,7 +32,7 @@ export const ScreenContentWrapper = ({
     refreshControl,
     isDynamicHeader = false,
 }: ScreenContentProps) => {
-    const scrollViewRef = useRef<ScrollView | null>(null);
+    const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const { scrollDivider, handleScroll } = useScrollDivider();
