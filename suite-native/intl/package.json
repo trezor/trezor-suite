@@ -32,6 +32,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@crowdin/cli": "4.8.0"
+        "@crowdin/cli": "4.13.0"
     }
 }

@@ -18,7 +18,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@crowdin/cli": "4.8.0",
+        "@crowdin/cli": "4.13.0",
         "@formatjs/cli": "6.7.2",
         "@trezor/type-utils": "workspace:^",
         "react": "19.1.0",
