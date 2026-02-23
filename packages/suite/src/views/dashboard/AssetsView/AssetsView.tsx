@@ -54,7 +54,7 @@ const InfoMessage = styled.div`
 
 const GridWrapper = styled.div`
     display: grid;
-    grid-gap: ${spacingsPx.sm};
+    gap: ${spacingsPx.sm};
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 

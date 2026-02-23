@@ -164,7 +164,7 @@ const Container = styled.div`
     width: 100%;
     overflow-x: auto;
     padding: ${spacingsPx.sm} ${spacingsPx.md};
-    word-wrap: break-word;
+    overflow-wrap: break-word;
     word-break: break-all;
     min-height: 150px;
     margin-bottom: 10px;

@@ -9,7 +9,7 @@ import { NETWORK_ICONS, isNetworkSymbolWithIcon } from '../../constants/networks
 const WrapperIcons = styled.div`
     display: grid;
     width: 100%;
-    grid-gap: 5px;
+    gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 `;
 
