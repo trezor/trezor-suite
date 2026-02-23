@@ -5940,21 +5940,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lottiefiles/dotlottie-react@npm:^0.17.8":
-  version: 0.17.8
-  resolution: "@lottiefiles/dotlottie-react@npm:0.17.8"
+"@lottiefiles/dotlottie-react@npm:^0.17.14":
+  version: 0.17.14
+  resolution: "@lottiefiles/dotlottie-react@npm:0.17.14"
   dependencies:
-    "@lottiefiles/dotlottie-web": "npm:0.57.0"
+    "@lottiefiles/dotlottie-web": "npm:0.62.0"
   peerDependencies:
     react: ^17 || ^18 || ^19
-  checksum: 10/db2e3c9efeb7cb5f20922fc5576a34824ef6e2e3b664ea24504f930b0ae192aa95bcb8c25b94f81866a1ef555fc1de64eca3d91a9a1f32a148c6cae1e85df3e1
+  checksum: 10/2b8db478c0b671a66e8b195752ad97c0e3200e9721114f4a108e35b31730ca2844e41304b6d3e9b43769f5404cd6b16324f8ac4405bd422b0e027bd8e269c201
   languageName: node
   linkType: hard
 
-"@lottiefiles/dotlottie-web@npm:0.57.0":
-  version: 0.57.0
-  resolution: "@lottiefiles/dotlottie-web@npm:0.57.0"
-  checksum: 10/017dcb1fe4a85e565b17e7adea3454551c50b3f3bce9f7a56d37880e619afee877217ab573949a3ebaff97796cf16d47a949fa30e0c00079de6133b4c1220091
+"@lottiefiles/dotlottie-web@npm:0.62.0":
+  version: 0.62.0
+  resolution: "@lottiefiles/dotlottie-web@npm:0.62.0"
+  checksum: 10/570297d62934ed3d0cf6b6cc984f7ee300713c5ddf83df34a63376f53bb2071b62ca174e938d801e64eac1a95d609f64b24030cf266409299d5e36bd4155df05
   languageName: node
   linkType: hard
 
@@ -14115,7 +14115,7 @@ __metadata:
   resolution: "@suite-native/storybook@workspace:suite-native/storybook"
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.8"
-    "@lottiefiles/dotlottie-react": "npm:^0.17.8"
+    "@lottiefiles/dotlottie-react": "npm:^0.17.14"
     "@react-native-community/datetimepicker": "npm:^8.5.0"
     "@react-native-community/slider": "npm:^5.1.1"
     "@storybook/addon-ondevice-controls": "npm:^10.0.7"
