@@ -61,6 +61,5 @@ export const selectRedactedDesktopApplicationInfo = (
     transports: selectSuiteTransports(state),
     earlyAccessProgram: selectDesktopUpdateAllowPrerelease(state),
     labeling: selectSelectedLabelsProviderType(state),
-    ...selectRedactedApplicationInfo(state, shouldHideSensitiveData),
     wallets: selectRedactedWallets(state, shouldHideSensitiveData),
 });
