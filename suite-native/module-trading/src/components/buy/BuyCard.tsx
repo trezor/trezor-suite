@@ -12,6 +12,7 @@ import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { CryptoToFiatValueBadge } from '../general/CryptoToFiatValueBadge';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
 type BuyCardProps = {
@@ -45,7 +46,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
     const { watch } = useBuyFormContext();
 
-    const asset = watch('asset');
+    const [cryptoValue, asset] = watch(['cryptoValue', 'asset']);
 
     // on android fade animation looks ugly on view with shadows, better to skip it
     const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
@@ -75,7 +76,12 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                         <CardTitle>
                             <Translation id="moduleTrading.selectCoin.title" />
                         </CardTitle>
-                        <BuyFormFieldErrorBadge fieldName="cryptoValue" />
+                        <BuyFormFieldErrorBadge fieldName="cryptoValue">
+                            <CryptoToFiatValueBadge
+                                amount={cryptoValue}
+                                cryptoId={asset?.cryptoId}
+                            />
+                        </BuyFormFieldErrorBadge>
                     </HStack>
                     <BuyTradeableAssetPicker />
                     <HStack
