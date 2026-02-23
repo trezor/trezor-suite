@@ -58,6 +58,7 @@ export const localRulesConfig = [
                     ignoredPackages: publishableTrezorPackages,
                 },
             ],
+            'local-rules/analytics-event-name': 'warn',
         },
     },
 ];

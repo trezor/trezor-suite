@@ -248,4 +248,104 @@ export default {
             };
         },
     },
+    'analytics-event-name': {
+        meta: {
+            type: 'suggestion',
+            docs: {
+                description:
+                    'Enforces analytics EventType enum values to use format Domain/event with allowed domains and kebab-case for the event part.',
+                category: 'Best Practices',
+                recommended: false,
+            },
+            messages: {
+                invalidFormat:
+                    "Event name must be in format 'domain/event' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
+                invalidDomain:
+                    "Invalid domain '{{domain}}'. Allowed: accounts, app, coin, dashboard, device, firmware, guide, menu, passphrase, promo, receive, send, settings, staking, trading, transaction, wallet-connect.",
+                notKebabCase:
+                    "Event part after domain must use kebab-case (e.g. 'app-log-exported'), got '{{eventPart}}'.",
+            },
+            schema: [],
+        },
+        create(context) {
+            const ALLOWED_DOMAINS = new Set([
+                'accounts',
+                'app',
+                'coin',
+                'dashboard',
+                'device',
+                'firmware',
+                'guide',
+                'menu',
+                'passphrase',
+                'promo',
+                'receive',
+                'send',
+                'settings',
+                'staking',
+                'trading',
+                'transaction',
+                'wallet-connect',
+            ]);
+
+            const KEBAB_CASE_SEGMENT = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+            function validateEventName(
+                value: string,
+            ): { messageId: string; data?: Record<string, string> } | null {
+                if (!value.includes('/')) {
+                    return { messageId: 'invalidFormat' };
+                }
+
+                const parts = value.split('/');
+                const domain = parts[0];
+                const eventSegments = parts.slice(1);
+
+                if (!ALLOWED_DOMAINS.has(domain)) {
+                    return { messageId: 'invalidDomain', data: { domain } };
+                }
+
+                for (const segment of eventSegments) {
+                    if (!KEBAB_CASE_SEGMENT.test(segment)) {
+                        return { messageId: 'notKebabCase', data: { eventPart: value } };
+                    }
+                }
+
+                return null;
+            }
+
+            return {
+                TSEnumDeclaration(node: Rule.Node) {
+                    const enumNode = node as Rule.Node & {
+                        id?: { name?: string };
+                        members?: Array<{
+                            initializer?: Rule.Node & { type?: string; value?: string };
+                        }>;
+                    };
+                    if (enumNode.id?.name !== 'EventType') {
+                        return;
+                    }
+
+                    for (const member of enumNode.members ?? []) {
+                        const initializer = member.initializer;
+                        if (
+                            initializer?.type !== 'Literal' ||
+                            typeof initializer.value !== 'string'
+                        ) {
+                            continue;
+                        }
+
+                        const error = validateEventName(initializer.value);
+                        if (error) {
+                            context.report({
+                                node: initializer,
+                                messageId: error.messageId,
+                                data: error.data ?? {},
+                            });
+                        }
+                    }
+                },
+            };
+        },
+    },
 } satisfies Record<string, Rule.RuleModule>;
