@@ -1,10 +1,17 @@
 export enum EventType {
+    // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupCall = 'connect-popup/call',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupError = 'connect-popup/error',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupInit = 'connect-popup/init',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupPermissions = 'connect-popup/permissions',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionDeviceConfirmation = 'device-connection/device-confirmation',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionDeviceFound = 'device-connection/device-found',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionDevicePaired = 'device-connection/device-paired',
     SettingsAppLogExported = 'settings/app-log/exported',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
@@ -16,5 +23,6 @@ export enum EventType {
     WalletConnectProposalApproved = 'wallet-connect/proposal-approved',
     WalletConnectProposalRejected = 'wallet-connect/proposal-rejected',
     WalletConnectSessionRequest = 'wallet-connect/session-request',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CoinDiscovery = 'coin_discovery',
 }
