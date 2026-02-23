@@ -4339,6 +4339,10 @@
                 "thp_credential": {
                     "type": "bytes",
                     "id": 1
+                },
+                "host_static_public_key": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },

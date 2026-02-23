@@ -1439,6 +1439,7 @@ export type EvoluRegistrationRequest = {
 
 export type EvoluGetDelegatedIdentityKey = {
     thp_credential?: string;
+    host_static_public_key?: string;
 };
 
 export type EvoluDelegatedIdentityKey = {

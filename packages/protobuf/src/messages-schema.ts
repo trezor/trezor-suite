@@ -2221,6 +2221,7 @@ export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdenti
 export const EvoluGetDelegatedIdentityKey = Type.Object(
     {
         thp_credential: Type.Optional(Type.String()),
+        host_static_public_key: Type.Optional(Type.String()),
     },
     { $id: 'EvoluGetDelegatedIdentityKey' },
 );
