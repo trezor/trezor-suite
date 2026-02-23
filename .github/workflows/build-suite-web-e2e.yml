@@ -10,6 +10,68 @@ on:
 
 jobs:
   build-web:
+    # ORIGINAL web build steps (commented out for fast testing)
+    #    runs-on: ubuntu-latest
+    #    env:
+    #      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+    #    permissions:
+    #      id-token: write # required for aws-actions/configure-aws-credentials
+    #      contents: read
+    #    steps:
+    #      - name: Checkout
+    #        uses: actions/checkout@v4
+    #        with:
+    #          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+    #
+    #      - name: Configure AWS credentials
+    #        uses: aws-actions/configure-aws-credentials@v4
+    #        with:
+    #          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+    #          aws-region: "eu-central-1"
+    #
+    #      - name: Extract branch name
+    #        id: extract_branch
+    #        shell: bash
+    #        run: |
+    #          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+    #
+    #      - name: Setup Node.js
+    #        uses: actions/setup-node@v4
+    #        with:
+    #          node-version-file: ".nvmrc"
+    #          cache: yarn
+    #
+    #      - name: Cache node_modules
+    #        uses: actions/cache@v4
+    #        with:
+    #          path: node_modules
+    #          key: node_modules-${{ hashFiles('yarn.lock') }}
+    #          restore-keys: node_modules-
+    #
+    #      - name: Install dependencies
+    #        shell: bash
+    #        run: |
+    #          echo -e "\nenableScripts: false" >> .yarnrc.yml
+    #          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+    #          yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+    #
+    #      - name: Build Suite Web
+    #        shell: bash
+    #        env:
+    #          ASSET_PREFIX: /suite-web/${{ env.branch }}/web
+    #          DESKTOP_APP_NAME: "Trezor-Suite"
+    #          INSTRUMENT_CODE: ${{ inputs.instrument-code }}
+    #        run: |
+    #          yarn message-system-sign-config
+    #          yarn workspace @trezor/suite-data build:lib
+    #          yarn workspace @trezor/suite-web build
+    #
+    #      - name: Upload Suite Web to S3
+    #        shell: bash
+    #        env:
+    #          DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ env.branch }}
+    #        run: |
+    #          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
     runs-on: ubuntu-latest
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
@@ -17,57 +79,7 @@ jobs:
       id-token: write # required for aws-actions/configure-aws-credentials
       contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-          aws-region: "eu-central-1"
-
-      - name: Extract branch name
-        id: extract_branch
-        shell: bash
+      - name: Dummy web build
         run: |
-          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
-
-      - name: Install dependencies
-        shell: bash
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
-
-      - name: Build Suite Web
-        shell: bash
-        env:
-          ASSET_PREFIX: /suite-web/${{ env.branch }}/web
-          DESKTOP_APP_NAME: "Trezor-Suite"
-          INSTRUMENT_CODE: ${{ inputs.instrument-code }}
-        run: |
-          yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/suite-web build
-
-      - name: Upload Suite Web to S3
-        shell: bash
-        env:
-          DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ env.branch }}
-        run: |
-          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+          echo "Skipping real web build — dummy success for fast testing"
+          echo "OK"

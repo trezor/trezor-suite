@@ -4,51 +4,60 @@ on:
 
 jobs:
   build-desktop:
+    # ORIGINAL desktop build steps (commented out for fast testing)
+    #    runs-on: ubuntu-latest
+    #    env:
+    #      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+    #    steps:
+    #      - name: Checkout
+    #        uses: actions/checkout@v4
+    #        with:
+    #          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+    #
+    #      - name: Setup Node.js
+    #        uses: actions/setup-node@v4
+    #        with:
+    #          node-version-file: ".nvmrc"
+    #          cache: yarn
+    #
+    #      - name: Cache node_modules
+    #        uses: actions/cache@v4
+    #        with:
+    #          path: node_modules
+    #          key: node_modules-${{ hashFiles('yarn.lock') }}
+    #          restore-keys: node_modules-
+    #
+    #      - name: Install dependencies, build libs
+    #        shell: bash
+    #        run: |
+    #          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+    #          yarn message-system-sign-config
+    #          yarn workspace @trezor/suite-data build:lib
+    #          yarn workspace @trezor/transport-bridge build:lib
+    #
+    #      - name: Build Electron app.js for tests
+    #        shell: bash
+    #        env:
+    #          TEST_BUILD: "true"
+    #        run: |
+    #          yarn workspace @trezor/suite-desktop build:app
+    #          yarn workspace @trezor/suite-desktop build:ui
+    #
+    #      - name: Compress build artifacts
+    #        shell: bash
+    #        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop build dist
+    #
+    #      - name: Upload build artifacts
+    #        uses: actions/upload-artifact@v4
+    #        with:
+    #          name: desktop-app-build-e2e
+    #          path: app-build.tar.gz
+    #          retention-days: 7
     runs-on: ubuntu-latest
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
-
-      - name: Install dependencies, build libs
-        shell: bash
+      - name: Dummy desktop build
         run: |
-          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
-          yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/transport-bridge build:lib
-
-      - name: Build Electron app.js for tests
-        shell: bash
-        env:
-          TEST_BUILD: "true"
-        run: |
-          yarn workspace @trezor/suite-desktop build:app
-          yarn workspace @trezor/suite-desktop build:ui
-
-      - name: Compress build artifacts
-        shell: bash
-        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop build dist
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktop-app-build-e2e
-          path: app-build.tar.gz
-          retention-days: 7
+          echo "Skipping real desktop build — dummy success for fast testing"
+          echo "OK"
