@@ -25,6 +25,8 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
         if (thpState) {
             this.params = {
                 thp_credential: thpState.pairingCredentials[0].credential,
+                host_static_public_key:
+                    thpState.handshakeCredentials?.hostStaticPublicKey.toString('hex'),
             };
         }
 
