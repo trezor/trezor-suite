@@ -94,7 +94,14 @@ const createWorkspaceAliases = () => {
             replacement: resolve(__dirname, '../', dirent.name),
         }));
 
-    return [...suiteCommonAliases, ...trezorPackagesAliases];
+    const suiteAliases = readdirSync(resolve(__dirname, '../../suite'), { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => ({
+            find: `@suite/${dirent.name}`,
+            replacement: resolve(__dirname, '../../suite', dirent.name),
+        }));
+
+    return [...suiteCommonAliases, ...trezorPackagesAliases, ...suiteAliases];
 };
 
 const alias = [
