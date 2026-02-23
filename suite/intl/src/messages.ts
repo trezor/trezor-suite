@@ -1018,6 +1018,34 @@ export const messages = defineMessages({
         defaultMessage: 'See how fees are calculated.',
         id: 'TR_TRADING_FEES_CALCULATION_DISCLAIMER',
     },
+    TR_HOW_TRADING_WORKS_SHORT: {
+        defaultMessage: 'How trading works',
+        id: 'TR_HOW_TRADING_WORKS_SHORT',
+    },
+    TR_HOW_TRADING_WORKS: {
+        defaultMessage: 'How trading with Trezor works',
+        id: 'TR_HOW_TRADING_WORKS',
+    },
+    TR_HOW_TRADING_COMPARES_PROVIDERS: {
+        defaultMessage: 'Trezor compares trusted exchange providers to find the best offer',
+        id: 'TR_HOW_TRADING_COMPARES_PROVIDERS',
+    },
+    TR_HOW_TRADING_LOCATION_OFFERS: {
+        defaultMessage: 'Providers use your location only to show relevant offers',
+        id: 'TR_HOW_TRADING_LOCATION_OFFERS',
+    },
+    TR_HOW_TRADING_PRIVACY_KYC: {
+        defaultMessage: 'Trezor never sees your payment or KYC data',
+        id: 'TR_HOW_TRADING_PRIVACY_KYC',
+    },
+    TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT: {
+        defaultMessage: 'You share it only with the exchange if you complete the trade.',
+        id: 'TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT',
+    },
+    TR_HOW_TRADING_TERMS_OF_USE: {
+        defaultMessage: "Trezor's Terms of Use",
+        id: 'TR_HOW_TRADING_TERMS_OF_USE',
+    },
     TR_TRADING_NETWORK_FEE: {
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',

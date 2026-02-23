@@ -22,7 +22,6 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
@@ -108,9 +107,6 @@ export const TradingBuyFormInputs = () => {
                 )}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 <TradingSelectedOfferProvider />
-                <TradingFormSection>
-                    <TradingFormFeesDisclamer />
-                </TradingFormSection>
             </TradingFormCard>
         </Column>
     );
