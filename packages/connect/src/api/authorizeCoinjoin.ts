@@ -12,7 +12,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     PROTO.AuthorizeCoinJoin
 > {
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['management'];
     }
 
     init() {
