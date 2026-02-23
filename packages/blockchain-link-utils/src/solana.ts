@@ -9,7 +9,8 @@ import type {
 } from '@trezor/blockchain-link-types/src';
 import { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { BigNumber, arrayPartition } from '@trezor/utils';
+import { arrayPartition } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type {
     AccountInfo,

@@ -1,4 +1,4 @@
-import { BigNumber } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type { EthereumNetworkInfo, FeeLevel } from '../../types';
 import { Blockchain } from '../Blockchain';

@@ -5,7 +5,7 @@ import {
     TOKEN_2022_PROGRAM_PUBLIC_KEY,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const fixtures = {
     getMinimumRequiredTokenAccountsForTransfer: [
