@@ -1299,7 +1299,7 @@ export enum Enum_FailureType {
     Failure_Busy = 15,
     Failure_ThpUnallocatedSession = 16,
     Failure_InvalidProtocol = 17,
-    Failure_BufferError = 18,
+    Failure_InProgress = 19,
     Failure_FirmwareError = 99,
 }
 
@@ -2221,7 +2221,6 @@ export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdenti
 export const EvoluGetDelegatedIdentityKey = Type.Object(
     {
         thp_credential: Type.Optional(Type.String()),
-        host_static_public_key: Type.Optional(Type.String()),
     },
     { $id: 'EvoluGetDelegatedIdentityKey' },
 );
@@ -2641,6 +2640,7 @@ export const LoadDevice = Type.Object(
         u2f_counter: Type.Optional(Type.Number()),
         needs_backup: Type.Optional(Type.Boolean()),
         no_backup: Type.Optional(Type.Boolean()),
+        unfinished_backup: Type.Optional(Type.Boolean()),
     },
     { $id: 'LoadDevice' },
 );
@@ -2777,7 +2777,6 @@ export const RebootToBootloader = Type.Object(
     {
         boot_command: Type.Optional(EnumBootCommand),
         firmware_header: Type.Optional(Type.String()),
-        language_data_length: Type.Optional(Type.Number()),
     },
     { $id: 'RebootToBootloader' },
 );
@@ -3721,6 +3720,20 @@ export const StellarSignedTx = Type.Object(
     { $id: 'StellarSignedTx' },
 );
 
+export type TelemetryGet = Static<typeof TelemetryGet>;
+export const TelemetryGet = Type.Object({}, { $id: 'TelemetryGet' });
+
+export type Telemetry = Static<typeof Telemetry>;
+export const Telemetry = Type.Object(
+    {
+        min_temp_c: Type.Optional(Type.Number()),
+        max_temp_c: Type.Optional(Type.Number()),
+        battery_errors: Type.Optional(Type.Number()),
+        battery_cycles: Type.Optional(Type.Number()),
+    },
+    { $id: 'Telemetry' },
+);
+
 export type TezosGetAddress = Static<typeof TezosGetAddress>;
 export const TezosGetAddress = Type.Object(
     {
@@ -3966,6 +3979,42 @@ export const TronTriggerSmartContract = Type.Object(
     { $id: 'TronTriggerSmartContract' },
 );
 
+export enum TronResourceCode {
+    BANDWIDTH = 0,
+    ENERGY = 1,
+}
+
+export type EnumTronResourceCode = Static<typeof EnumTronResourceCode>;
+export const EnumTronResourceCode = Type.Enum(TronResourceCode);
+
+export type TronFreezeBalanceV2Contract = Static<typeof TronFreezeBalanceV2Contract>;
+export const TronFreezeBalanceV2Contract = Type.Object(
+    {
+        owner_address: Type.String(),
+        balance: Type.Number(),
+        resource: Type.Optional(EnumTronResourceCode),
+    },
+    { $id: 'TronFreezeBalanceV2Contract' },
+);
+
+export type TronUnfreezeBalanceV2Contract = Static<typeof TronUnfreezeBalanceV2Contract>;
+export const TronUnfreezeBalanceV2Contract = Type.Object(
+    {
+        owner_address: Type.String(),
+        balance: Type.Number(),
+        resource: Type.Optional(EnumTronResourceCode),
+    },
+    { $id: 'TronUnfreezeBalanceV2Contract' },
+);
+
+export type TronWithdrawUnfreeze = Static<typeof TronWithdrawUnfreeze>;
+export const TronWithdrawUnfreeze = Type.Object(
+    {
+        owner_address: Type.String(),
+    },
+    { $id: 'TronWithdrawUnfreeze' },
+);
+
 export type TronSignature = Static<typeof TronSignature>;
 export const TronSignature = Type.Object(
     {
@@ -3986,6 +4035,9 @@ export const TronRawParameter = Type.Object(
 export enum TronRawContractType {
     TransferContract = 1,
     TriggerSmartContract = 31,
+    FreezeBalanceV2Contract = 54,
+    UnfreezeBalanceV2Contract = 55,
+    WithdrawExpireUnfreezeContract = 56,
 }
 
 export type EnumTronRawContractType = Static<typeof EnumTronRawContractType>;
@@ -4323,6 +4375,8 @@ export const MessageType = Type.Object(
         StellarBumpSequenceOp,
         StellarClaimClaimableBalanceOp,
         StellarSignedTx,
+        TelemetryGet,
+        Telemetry,
         TezosGetAddress,
         TezosAddress,
         TezosGetPublicKey,
@@ -4344,6 +4398,9 @@ export const MessageType = Type.Object(
         TronContractRequest,
         TronTransferContract,
         TronTriggerSmartContract,
+        TronFreezeBalanceV2Contract,
+        TronUnfreezeBalanceV2Contract,
+        TronWithdrawUnfreeze,
         TronSignature,
         TronRawParameter,
         TronRawContract,
