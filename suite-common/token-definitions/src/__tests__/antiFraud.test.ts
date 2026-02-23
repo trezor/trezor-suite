@@ -2,12 +2,14 @@ import {
     getIsDustValuePhishingFixtures,
     getIsFakeTokenPhishingFixtures,
     getIsPhishingTransactionFixtures,
+    getIsUnknownTxPhishingFixtures,
     getIsZeroValuePhishingFixtures,
 } from '../__fixtures__/antiFraud';
 import {
     getIsDustValuePhishing,
     getIsFakeTokenPhishing,
     getIsPhishingTransaction,
+    getIsUnknownTxPhishing,
     getIsZeroValuePhishing,
 } from '../antiFraud';
 
@@ -35,6 +37,14 @@ describe('getIsFakeTokenPhishing', () => {
             });
         },
     );
+});
+
+describe('getIsUnknownTxPhishing', () => {
+    getIsUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
+        test(testName, () => {
+            expect(getIsUnknownTxPhishing({ transaction })).toBe(result);
+        });
+    });
 });
 
 describe('getIsPhishingTransaction', () => {

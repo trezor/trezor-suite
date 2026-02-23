@@ -688,6 +688,31 @@ export const getIsFakeTokenPhishingFixtures = [
     },
 ];
 
+export const getIsUnknownTxPhishingFixtures = [
+    {
+        testName: 'known transaction',
+        transaction: {
+            type: 'recv',
+            symbol: 'eth',
+            amount: '1',
+            tokens: [],
+            internalTransfers: [],
+        } as unknown as TransactionWithFiatAmount,
+        result: false,
+    },
+    {
+        testName: 'unknown transaction',
+        transaction: {
+            type: 'unknown',
+            symbol: 'eth',
+            amount: '1',
+            tokens: [],
+            internalTransfers: [],
+        } as unknown as TransactionWithFiatAmount,
+        result: true,
+    },
+];
+
 export const getIsPhishingTransactionFixtures = [
     {
         testName: 'legit tx with known token',
