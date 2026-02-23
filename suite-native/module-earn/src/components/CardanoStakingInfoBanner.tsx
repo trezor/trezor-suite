@@ -6,6 +6,7 @@ import {
     selectAPYByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
+// TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     selectIsCardanoStakedOutsideEverstake,
