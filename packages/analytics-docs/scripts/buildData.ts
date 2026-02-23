@@ -30,10 +30,25 @@ const PACKAGE_TO_PLATFORM: Record<(typeof PACKAGES)[number], string> = {
     '@suite-native/analytics': 'mobile',
 };
 
+/** Paths from repo root for packages we don't depend on (to avoid cyclic deps). */
+const PACKAGE_TO_REL_PATH: Partial<Record<(typeof PACKAGES)[number], string>> = {
+    '@suite/analytics': 'suite/analytics',
+    '@suite-native/analytics': 'suite-native/analytics',
+};
+
+const getPackageRoot = (packageName: (typeof PACKAGES)[number]): string => {
+    const relPath = PACKAGE_TO_REL_PATH[packageName];
+    if (relPath) {
+        return path.join(repoRoot, relPath);
+    }
+
+    return path.dirname(cjsRequire.resolve(`${packageName}/package.json`));
+};
+
 const loadEventsFromPackage = async (
-    packageName: string,
+    packageName: (typeof PACKAGES)[number],
 ): Promise<Array<EventDef<unknown, string>>> => {
-    const packageRoot = path.dirname(cjsRequire.resolve(`${packageName}/package.json`));
+    const packageRoot = getPackageRoot(packageName);
     const eventsPath = path.join(packageRoot, 'src', 'events', 'index.ts');
     const module = await import(pathToFileURL(eventsPath).href);
 
@@ -65,7 +80,7 @@ const getTsConfigPath = (): string => {
 
 const getPackageRoots = (): string[] => {
     const roots = PACKAGES.map(name =>
-        findPackageRoot(cjsRequire.resolve(`${name}/package.json`)),
+        findPackageRoot(path.join(getPackageRoot(name), 'package.json')),
     ).filter((x): x is string => Boolean(x));
 
     return [...new Set(roots)];
