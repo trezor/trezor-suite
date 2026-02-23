@@ -28,7 +28,6 @@ import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingFormFees } from './TradingFormFees';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
@@ -208,9 +207,6 @@ export const TradingExchangeFormInputs = () => {
                 changeFeeLevel={changeFeeLevel}
             />
             <TradingSelectedOfferProvider />
-            <TradingFormSection>
-                <TradingFormFeesDisclamer />
-            </TradingFormSection>
         </TradingFormCard>
     );
 };
