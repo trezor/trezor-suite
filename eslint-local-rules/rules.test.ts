@@ -113,3 +113,39 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
         },
     ],
 });
+
+ruleTester.run('analytics-event-name', rules['analytics-event-name'], {
+    parser: require.resolve('typescript-eslint/parser'),
+    parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+    valid: [
+        { code: "export enum EventType { Foo = 'settings/app-log-exported' }" },
+        { code: "export enum EventType { Bar = 'dashboard/send-modal' }" },
+        { code: "export enum EventType { Baz = 'wallet-connect/init' }" },
+        { code: "export enum EventType { A = 'device/connect', B = 'receive/flow-entered' }" },
+        { code: "export enum OtherEnum { X = 'anything' }" },
+        { code: "const x = 'settings/foo';" },
+    ],
+    invalid: [
+        {
+            code: "export enum EventType { Bad = 'coin_discovery' }",
+            errors: [{ messageId: 'invalidFormat' }],
+        },
+        {
+            code: "export enum EventType { Bad = 'unknown-domain/event' }",
+            errors: [{ messageId: 'invalidDomain', data: { domain: 'unknown-domain' } }],
+        },
+        {
+            code: "export enum EventType { Bad = 'settings/appLogExported' }",
+            errors: [{ messageId: 'notKebabCase', data: { eventPart: 'settings/appLogExported' } }],
+        },
+        {
+            code: "export enum EventType { Bad = 'settings/device/change_pin' }",
+            errors: [
+                {
+                    messageId: 'notKebabCase',
+                    data: { eventPart: 'settings/device/change_pin' },
+                },
+            ],
+        },
+    ],
+} as Parameters<typeof ruleTester.run>[2]);
