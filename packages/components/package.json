@@ -38,7 +38,7 @@
         "react-select": "^5.10.2",
         "react-svg": "16.4.2",
         "react-use": "^17.6.0",
-        "styled-components": "^6.1.19"
+        "styled-components": "^6.3.9"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.28.5",

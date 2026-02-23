@@ -29,7 +29,7 @@
         "react": "19.1.0",
         "react-dom": "19.1.0",
         "react-redux": "9.2.0",
-        "styled-components": "^6.1.19"
+        "styled-components": "^6.3.9"
     },
     "devDependencies": {
         "@types/react": "19.1.6",
