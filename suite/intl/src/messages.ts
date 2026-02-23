@@ -766,6 +766,11 @@ export const messages = defineMessages({
         defaultMessage:
             'This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn’t involved.',
     },
+    TR_TRADING_TERMS_NO_PROVIDER: {
+        id: 'TR_TRADING_TERMS_NO_PROVIDER',
+        defaultMessage:
+            'This service is provided by provider and governed by their Terms & Conditions. Trezor isn’t involved.',
+    },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_BUY_MODAL_SECURITY_HEADER',
