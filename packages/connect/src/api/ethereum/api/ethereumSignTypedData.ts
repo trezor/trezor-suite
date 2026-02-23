@@ -6,7 +6,7 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { EthereumNetworkInfo } from '../../../types';
 import {
@@ -43,10 +43,16 @@ const Params = Type.Intersect([
 ]);
 
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'ethereumSignTypedData'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init() {
         const { payload } = this;
 
         // validate incoming parameters

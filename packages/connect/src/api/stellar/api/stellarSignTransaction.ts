@@ -3,7 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     StellarSignTransaction as StellarSignTransactionSchema,
@@ -28,15 +28,21 @@ export default class StellarSignTransaction extends AbstractMethod<
     'stellarSignTransaction',
     Params
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'stellarSignTransaction'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Stellar'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init() {
         const { payload } = this;
         // validate incoming parameters
         // TODO: weak assert for compatibility purposes (issue #10841)

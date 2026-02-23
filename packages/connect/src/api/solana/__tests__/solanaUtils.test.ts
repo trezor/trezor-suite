@@ -46,12 +46,13 @@ describe('solana utils', () => {
         fixtures.buildCreateAssociatedTokenAccountInstruction.forEach(
             ({ description, input, expectedOutput }) => {
                 it(description, async () => {
-                    const [txix, pubkey] = await buildCreateAssociatedTokenAccountInstruction(
+                    const result = await buildCreateAssociatedTokenAccountInstruction(
                         input.funderAddress,
                         input.newOwnerAddress,
                         input.tokenMintAddress,
                         input.tokenProgramName,
                     );
+                    const [txix, pubkey] = result;
 
                     expect(pubkey).toEqual(expectedOutput.pubkey);
                     expect(txix.accounts).toEqual(expectedOutput.accounts);

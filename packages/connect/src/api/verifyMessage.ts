@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../constants';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
@@ -13,9 +13,11 @@ import { messageToHex } from '../utils/formatUtils';
 import { getLabel } from '../utils/pathUtils';
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
 
+    init() {
         const { payload } = this;
 
         // validate incoming parameters for each batch

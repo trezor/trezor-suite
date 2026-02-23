@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { CARDANO, PROTO } from '../../../constants';
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     CardanoMessageHeaders,
@@ -34,14 +34,20 @@ export default class CardanoSignMessage extends AbstractMethod<
 > {
     static readonly VERSION = 1;
 
-    init(): void {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'cardanoSignMessage'> }) {
+        super(message);
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init(): void {
         const { payload } = this;
 
         Assert(CardanoSignMessageSchema, payload);

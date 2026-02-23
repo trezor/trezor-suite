@@ -4,7 +4,7 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import {
     EthereumNetworkInfoDefinitionValues,
@@ -53,10 +53,16 @@ export default class EthereumSignTransaction extends AbstractMethod<
     'ethereumSignTransaction',
     Params
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'ethereumSignTransaction'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init() {
         const { payload } = this;
         // validate incoming parameters
         Assert(EthereumSignTransactionSchema, payload);

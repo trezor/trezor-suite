@@ -3,14 +3,21 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
-    init() {
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'applySettings'> }) {
+        super(message);
         this.useDeviceState = false;
         this.skipFinalReload = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {
         const { payload } = this;
 
         Assert(ApplySettingsSchema, payload);

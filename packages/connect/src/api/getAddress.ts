@@ -5,7 +5,12 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import { type BitcoinNetworkInfo, Bundle } from '../types';
@@ -22,10 +27,16 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    init() {
+    constructor(message: { id?: number; payload: Payload<'getAddress'> }) {
+        super(message);
         this.confirmMissingBackup = true;
-        this.requiredPermissions = ['read'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

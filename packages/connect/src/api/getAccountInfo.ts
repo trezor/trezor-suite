@@ -4,7 +4,13 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
+import {
+    AbstractMethod,
+    DEFAULT_FIRMWARE_RANGE,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
@@ -21,11 +27,17 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     hasBundle?: boolean;
     discovery?: Discovery;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'getAccountInfo'> }) {
+        super(message);
         this.useDevice = true;
         this.useUi = true;
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // assume that device will not be used
         let willUseDevice = false;
 

@@ -137,7 +137,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     protected firmwareRange: FirmwareRange;
 
-    protected requiredPermissions: MethodPermission[];
+    abstract get requiredPermissions(): MethodPermission[];
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
@@ -175,7 +175,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
         // default values for all methods
         this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
-        this.requiredPermissions = [];
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;

@@ -1,16 +1,21 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { getThpCredentials } from '../device/thp';
 import { DEVICE, UI } from '../events';
 
 export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials'> {
-    init() {
+    constructor(message: { id?: number; payload: Payload<'thpGetCredentials'> }) {
+        super(message);
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
         this.useDeviceState = false;
     }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {}
 
     async run() {
         const thpState = this.device.getThpState();

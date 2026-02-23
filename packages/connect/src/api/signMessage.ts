@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 import type { BitcoinNetworkInfo } from '../types';
 import { SignMessage as SignMessageSchema } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
@@ -15,9 +15,11 @@ import { getLabel, getScriptType, getSerializedPath, validatePath } from '../uti
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
     coinInfo: BitcoinNetworkInfo | undefined;
 
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
 
+    init() {
         const { payload } = this;
 
         // validate incoming parameters

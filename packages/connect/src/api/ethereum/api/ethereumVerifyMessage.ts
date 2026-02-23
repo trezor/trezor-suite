@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
 import { messageToHex, stripHexPrefix } from '../../../utils/formatUtils';
@@ -13,11 +13,17 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
     PROTO.EthereumVerifyMessage
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    constructor(message: { id?: number; payload: Payload<'ethereumVerifyMessage'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         const { payload } = this;
 
         // validate incoming parameters

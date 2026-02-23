@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { RippleSignTransaction as RippleSignTransactionSchema } from '../../../types/api/ripple';
 import { validatePath } from '../../../utils/pathUtils';
@@ -13,15 +13,21 @@ export default class RippleSignTransaction extends AbstractMethod<
     'rippleSignTransaction',
     PROTO.RippleSignTx
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'rippleSignTransaction'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Ripple'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init() {
         const { payload } = this;
         // validate incoming parameters
         // TODO: weak assert for compatibility purposes (issue #10841)
