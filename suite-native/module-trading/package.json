@@ -14,7 +14,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.6",
+        "@gorhom/bottom-sheet": "5.2.8",
         "@react-native-community/netinfo": "^11.4.1",
         "@react-navigation/native": "7.1.26",
         "@react-navigation/native-stack": "7.9.0",

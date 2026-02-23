@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.6",
+        "@gorhom/bottom-sheet": "5.2.8",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.2.0",
