@@ -11857,7 +11857,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
   languageName: unknown
   linkType: soft
 
@@ -12071,7 +12071,7 @@ __metadata:
     react-native-quick-crypto: "npm:0.7.17"
     react-native-reanimated: "npm:~4.1.5"
     react-native-restart: "npm:0.0.27"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-native-screens: "npm:~4.18.0"
     react-native-svg: "npm:15.14.0"
     react-native-tcp-socket: "npm:6.4.1"
@@ -12161,7 +12161,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.30.0"
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
     storybook: "npm:^10.1.0"
@@ -12407,7 +12407,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -13234,7 +13234,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -13658,7 +13658,7 @@ __metadata:
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -13735,7 +13735,7 @@ __metadata:
     react-native-edge-to-edge: "npm:1.7.0"
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.2.0"
     type-fest: "npm:4.24.0"
   languageName: unknown
@@ -14063,7 +14063,7 @@ __metadata:
     react-intl: "npm:^8.1.3"
     react-native: "npm:0.81.4"
     react-native-mmkv: "npm:~4.1.2"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-native-web: "npm:^0.21.0"
     storybook: "npm:^10.1.0"
     vite: "npm:^7.0.6"
@@ -14101,7 +14101,7 @@ __metadata:
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
   languageName: unknown
   linkType: soft
 
@@ -14126,7 +14126,7 @@ __metadata:
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-mmkv: "npm:~4.1.2"
     react-native-permissions: "npm:5.4.2"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -14178,7 +14178,7 @@ __metadata:
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native-reanimated: "npm:~4.1.5"
-    react-native-safe-area-context: "npm:5.6.1"
+    react-native-safe-area-context: "npm:5.6.2"
   languageName: unknown
   linkType: soft
 
@@ -40088,13 +40088,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:5.6.1":
-  version: 5.6.1
-  resolution: "react-native-safe-area-context@npm:5.6.1"
+"react-native-safe-area-context@npm:5.6.2":
+  version: 5.6.2
+  resolution: "react-native-safe-area-context@npm:5.6.2"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/2fc93cf46a6cbad28e5850bef009905c6db44066fb7e6f7bbce52c2ae4b0467c6718e4f572a42f8387c6b37f6d61ebe79980d0c2b5899e23dc19482a7db8417b
+  checksum: 10/880d87ee60119321b366eef2c151ecefe14f5bc0d39cf5cfbfb167684e571d3dae2600ee19b9bc8521f5726eb285abecaa7aafb1a3b213529dafbac24703d302
   languageName: node
   linkType: hard
 
