@@ -7865,10 +7865,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/slider@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@react-native-community/slider@npm:5.1.1"
-  checksum: 10/513493a8948095bbe87fb066653482c58e50359b2d9027e77eb8e103fcd89484d65a4961d983ee3acbe854f65a5584fab7186f996c757a6d6ef053b6894afd10
+"@react-native-community/slider@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@react-native-community/slider@npm:5.1.2"
+  checksum: 10/465e42b05cf47ac590ea66c8b1bb29dc1d0925ab1a8c41c8c9fce28e464bef02c629ca9eceece63f1128132f11877800e59e918d040c1ad15ea03c58ec23b5b9
   languageName: node
   linkType: hard
 
@@ -14117,7 +14117,7 @@ __metadata:
     "@gorhom/bottom-sheet": "npm:5.2.8"
     "@lottiefiles/dotlottie-react": "npm:^0.17.14"
     "@react-native-community/datetimepicker": "npm:^8.6.0"
-    "@react-native-community/slider": "npm:^5.1.1"
+    "@react-native-community/slider": "npm:^5.1.2"
     "@storybook/addon-ondevice-controls": "npm:^10.0.7"
     "@storybook/react": "npm:10.1.0"
     "@storybook/react-native": "npm:^10.0.7"

@@ -18,7 +18,7 @@
         "@gorhom/bottom-sheet": "5.2.8",
         "@lottiefiles/dotlottie-react": "^0.17.14",
         "@react-native-community/datetimepicker": "^8.6.0",
-        "@react-native-community/slider": "^5.1.1",
+        "@react-native-community/slider": "^5.1.2",
         "@storybook/addon-ondevice-controls": "^10.0.7",
         "@storybook/react": "10.1.0",
         "@storybook/react-native": "^10.0.7",
