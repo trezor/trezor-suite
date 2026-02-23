@@ -16,6 +16,6 @@
     },
     "devDependencies": {
         "@types/node": "^18.19.26",
-        "node-gyp": "12.1.0"
+        "node-gyp": "12.2.0"
     }
 }
