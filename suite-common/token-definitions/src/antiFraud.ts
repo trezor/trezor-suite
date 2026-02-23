@@ -87,10 +87,14 @@ export const getIsFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenD
         );
     }); // there is hidden or unknown token in tx
 
+export const getIsUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) =>
+    transaction.type === 'unknown';
+
 const detectors = {
     dustValue: getIsDustValuePhishing,
     zeroValue: getIsZeroValuePhishing,
     fakeToken: getIsFakeTokenPhishing,
+    unknownTx: getIsUnknownTxPhishing,
 } as const;
 
 type NetworkPhishingDetectors = Map<NetworkType, PhishingDetectorFn[]>;
@@ -101,7 +105,7 @@ const phishingDetectors: NetworkPhishingDetectors = new Map([
     ['ripple', [detectors.dustValue]],
     ['cardano', [detectors.dustValue, detectors.fakeToken]],
     ['solana', [detectors.dustValue, detectors.fakeToken]],
-    ['stellar', [detectors.dustValue, detectors.fakeToken]],
+    ['stellar', [detectors.dustValue, detectors.fakeToken, detectors.unknownTx]],
     ['tron', [detectors.dustValue, detectors.fakeToken]],
 ]);
 
