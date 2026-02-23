@@ -1,0 +1,193 @@
+name: "[Bot] E2E Comment Commands (dispatch)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        required: true
+        type: string
+      pr_branch:
+        required: true
+        type: string
+      pr_sha:
+        required: true
+        type: string
+      comment_body:
+        required: true
+        type: string
+      commenter:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  actions: write
+  checks: write
+
+jobs:
+  handle-command:
+    name: Handle E2E command (dispatch)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if user is collaborator
+        id: check-permission
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              const commenter = context.payload.inputs.commenter;
+              const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: commenter
+              });
+
+              const allowed = ['admin', 'write', 'maintain'].includes(permission.permission);
+              core.setOutput('allowed', allowed);
+
+              if (!allowed) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.inputs.pr_number,
+                  body: `@${commenter} You don't have permission to run E2E commands. Only repository collaborators can use this feature.`
+                });
+              }
+              return allowed;
+            } catch (error) {
+              core.setFailed(`Permission check failed: ${error.message}`);
+              return false;
+            }
+
+      - name: Parse and execute command
+        if: steps.check-permission.outputs.allowed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = context.payload.inputs.comment_body.trim();
+            const prBranch = context.payload.inputs.pr_branch;
+            const prSha = context.payload.inputs.pr_sha;
+            const prNumber = context.payload.inputs.pr_number;
+            const commenter = context.payload.inputs.commenter;
+
+            // Parse command: /e2e <action> <target> [args...]
+            const match = comment.match(/^\/e2e\s+(dismiss|run|rerun)\s+(web|desktop)(?:\s+(.+))?$/);
+
+            if (!match) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `❌ Invalid command format. Usage:\n                - \`/e2e dismiss web\` or \`/e2e dismiss desktop\`\n                - \`/e2e run web [@tag1 @tag2]\` or \`/e2e run desktop [@tag1 @tag2]\`\n                - \`/e2e rerun web\` or \`/e2e rerun desktop\``
+              });
+              return;
+            }
+
+            const [_, action, target, args] = match;
+
+            if (action === 'dismiss') {
+              const dismissMarker = `E2E_DISMISS target=${target} sha=${prSha.substring(0, 7)}`;
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `✅ **${target}** e2e test skip dismissed for commit \`${prSha.substring(0, 7)}\`\n\nTests skipped verification has been dismissed.\n\n${dismissMarker}`
+              });
+
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: workflowName,
+                head_sha: prSha,
+                status: 'completed',
+                conclusion: 'success',
+                completed_at: new Date().toISOString(),
+                output: {
+                  title: `${target} E2E tests dismissed`,
+                  summary: `Tests were dismissed by @${commenter} for commit ${prSha.substring(0, 7)}`
+                }
+              });
+
+            } else if (action === 'run') {
+              const tags = args ? args.trim() : '';
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `🚀 Starting custom **${target}** e2e tests${tags ? ` with tags: ${tags}` : ''}...\n\nCheck the [Actions tab](${context.payload.repository.html_url}/actions) for progress.`
+              });
+
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: workflowName,
+                head_sha: prSha,
+                status: 'in_progress',
+                output: {
+                  title: `${target} E2E tests running`,
+                  summary: `Custom tests triggered by @${commenter}`
+                }
+              });
+
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: target === 'web' ? 'test-suite-web-e2e-custom.yml' : 'test-suite-desktop-e2e-custom.yml',
+                ref: prBranch,
+                inputs: {
+                  pr_number: prNumber,
+                  tags: tags,
+                  triggered_by: commenter
+                }
+              });
+
+            } else if (action === 'rerun') {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `🔄 Starting rerun of **${target}** e2e tests...\n\nOnly failed tests from the previous run will be executed.\n\nCheck the [Actions tab](${context.payload.repository.html_url}/actions) for progress.`
+              });
+
+              const workflowName = target === 'web' ? '[Test] PR Suite Web e2e tests' : '[Test] PR Suite Desktop e2e tests';
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: workflowName,
+                head_sha: prSha,
+                status: 'in_progress',
+                output: {
+                  title: `${target} E2E tests running (rerun)`,
+                  summary: `Failed tests rerun triggered by @${commenter}`
+                }
+              });
+
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: target === 'web' ? 'test-suite-web-e2e-rerun.yml' : 'test-suite-desktop-e2e-rerun.yml',
+                ref: prBranch,
+                inputs: {
+                  pr_number: prNumber,
+                  triggered_by: commenter
+                }
+              });
+            }
+
+      - name: Handle errors
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.inputs.pr_number,
+              body: `❌ Failed to execute E2E command. Please check the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`
+            });
