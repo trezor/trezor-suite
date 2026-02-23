@@ -15831,7 +15831,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^18.19.26"
     node-addon-api: "npm:^5.0.0"
-    node-gyp: "npm:12.1.0"
+    node-gyp: "npm:12.2.0"
   languageName: unknown
   linkType: soft
 
@@ -36667,9 +36667,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:12.1.0":
-  version: 12.1.0
-  resolution: "node-gyp@npm:12.1.0"
+"node-gyp@npm:12.2.0":
+  version: 12.2.0
+  resolution: "node-gyp@npm:12.2.0"
   dependencies:
     env-paths: "npm:^2.2.0"
     exponential-backoff: "npm:^3.1.1"
@@ -36678,12 +36678,12 @@ __metadata:
     nopt: "npm:^9.0.0"
     proc-log: "npm:^6.0.0"
     semver: "npm:^7.3.5"
-    tar: "npm:^7.5.2"
+    tar: "npm:^7.5.4"
     tinyglobby: "npm:^0.2.12"
     which: "npm:^6.0.0"
   bin:
     node-gyp: bin/node-gyp.js
-  checksum: 10/d93079236cef1dd7fa4df683708d8708ad255c55865f6656664c8959e4d3963d908ac48e8f9f341705432e979dbbf502a40d68d65a17fe35956a5a05ba6c1cb4
+  checksum: 10/4ebab5b77585a637315e969c2274b5520562473fe75de850639a580c2599652fb9f33959ec782ea45a2e149d8f04b548030f472eeeb3dbdf19a7f2ccbc30b908
   languageName: node
   linkType: hard
 
@@ -44147,7 +44147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^7.5.2, tar@npm:^7.5.6":
+"tar@npm:^7.5.2, tar@npm:^7.5.4, tar@npm:^7.5.6":
   version: 7.5.7
   resolution: "tar@npm:7.5.7"
   dependencies:
@@ -44642,7 +44642,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
     jest-expo: "npm:^54.0.12"
-    node-gyp: "npm:12.1.0"
+    node-gyp: "npm:12.2.0"
     nx: "npm:^22.4.3"
     patch-package: "npm:8.0.1"
     prettier: "npm:^3.8.1"
