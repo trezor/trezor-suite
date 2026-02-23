@@ -26,6 +26,11 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
             code: "import { foo } from '@suite-common/wallet-utils/src/deep';",
             options: [{ packageScopes: ['@custom'] }],
         },
+        // Deep imports can be allowed for selected package entry points
+        {
+            code: "import { connectCallableMethods } from '@trezor/connect/src/factory';",
+            options: [{ ignoredPackages: ['@trezor/connect'] }],
+        },
     ],
     invalid: [
         // Deep imports from @suite-common

@@ -1,12 +1,10 @@
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountType, BackendType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     AddressAlias,
     ContractInfo,
     StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
 import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 import { Branded } from '@trezor/type-utils';

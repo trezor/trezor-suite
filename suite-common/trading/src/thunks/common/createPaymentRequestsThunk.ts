@@ -9,7 +9,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { getSlip44ByPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { exhaustive } from '@trezor/type-utils';
 

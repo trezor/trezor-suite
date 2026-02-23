@@ -8,13 +8,11 @@ import {
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     buildAddTrustlineTransaction,
     buildRemoveTrustlineTransaction,
 } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
 
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
