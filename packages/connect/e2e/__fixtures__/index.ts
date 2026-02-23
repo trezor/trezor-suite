@@ -53,6 +53,7 @@ export { default as solanaGetPublicKey } from './solanaGetPublicKey';
 export { default as solanaSignTransaction } from './solanaSignTransaction';
 export { default as stellarGetAddress } from './stellarGetAddress';
 export { default as stellarSignTransaction } from './stellarSignTransaction';
+export { default as telemetryGet } from './telemetryGet';
 export { default as tezosGetAddress } from './tezosGetAddress';
 export { default as tezosGetPublicKey } from './tezosGetPublicKey';
 export { default as tezosSignTransaction } from './tezosSignTransaction';

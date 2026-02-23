@@ -81,6 +81,7 @@ import { solanaGetPublicKey } from './solanaGetPublicKey';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { stellarGetAddress } from './stellarGetAddress';
 import { stellarSignTransaction } from './stellarSignTransaction';
+import { telemetryGet } from './telemetryGet';
 import { tezosGetAddress } from './tezosGetAddress';
 import { tezosGetPublicKey } from './tezosGetPublicKey';
 import { tezosSignTransaction } from './tezosSignTransaction';
@@ -345,6 +346,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/stellar/stellarSignTransaction/
     stellarSignTransaction: typeof stellarSignTransaction;
+
+    // https://connect.trezor.io/9/methods/device/telemetryGet/
+    telemetryGet: typeof telemetryGet;
 
     // https://connect.trezor.io/9/methods/tezos/tezosGetAddress/
     tezosGetAddress: typeof tezosGetAddress;

@@ -27,7 +27,7 @@ const groups = {
         name: 'management',
         pattern: 'methods',
         includeFilter:
-            'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage,loadDevice',
+            'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage,loadDevice,telemetryGet',
     },
     btcSign: {
         name: 'btc-sign',

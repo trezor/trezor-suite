@@ -93,6 +93,7 @@ export const connectCallableMethods = [
     'solanaSignTransaction',
     'stellarGetAddress',
     'stellarSignTransaction',
+    'telemetryGet',
     'tezosGetAddress',
     'tezosGetPublicKey',
     'tezosSignTransaction',
