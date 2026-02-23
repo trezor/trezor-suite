@@ -6,6 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCryptoBalance';
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 const nonEditableCardStyle = prepareNativeStyle(({ colors, borders }) => ({
@@ -18,7 +19,7 @@ export const ExchangeReceiveCard = () => {
     const { applyStyle } = useNativeStyles();
     const { watch } = useExchangeFormContext();
 
-    const asset = watch('receiveAsset');
+    const [asset, cryptoAmount] = watch(['receiveAsset', 'receiveCryptoAmount']);
 
     return (
         <Card style={applyStyle(nonEditableCardStyle)}>
@@ -27,6 +28,7 @@ export const ExchangeReceiveCard = () => {
                     <CardTitle>
                         <Translation id="moduleTrading.selectCoin.title" />
                     </CardTitle>
+                    <CryptoToFiatValueBadge cryptoId={asset?.cryptoId} amount={cryptoAmount} />
                 </HStack>
                 <ExchangeTradeableAssetPicker />
                 <HStack
