@@ -14126,7 +14126,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    babel-plugin-react-native-web: "npm:^0.19.10"
+    babel-plugin-react-native-web: "npm:^0.21.2"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-intl: "npm:^8.0.6"
@@ -20085,14 +20085,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-react-native-web@npm:^0.19.10":
-  version: 0.19.13
-  resolution: "babel-plugin-react-native-web@npm:0.19.13"
-  checksum: 10/05ef14f7ffad194a80f27624d52d6f661e5956e606a41aefd34220016357068b6dead23f5c80671345f4e5878dd6ed5cb3a567aef128e38570780458a141d07a
-  languageName: node
-  linkType: hard
-
-"babel-plugin-react-native-web@npm:~0.21.0":
+"babel-plugin-react-native-web@npm:^0.21.2, babel-plugin-react-native-web@npm:~0.21.0":
   version: 0.21.2
   resolution: "babel-plugin-react-native-web@npm:0.21.2"
   checksum: 10/511fe25e4fc76ac68e6edd3177676251c65e96b3e516805c21d4106bf998439dba5a96f80981a3dda39d2c09b95dc9dd62852fc465b433b2831657f8fd376eaf
