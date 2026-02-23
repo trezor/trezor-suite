@@ -131,10 +131,18 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.download-artifact-name }}
+          path: ${{ github.workspace }}/artifact-download
 
-      - name: Extract build artifact
-        if: inputs.download-artifact-name != ''
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+      - name: Extract build artifact (desktop)
+        if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
+        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+
+      - name: Extract build artifact (webextension)
+        if: inputs.download-artifact-name != '' && contains(inputs.download-artifact-name, 'webextension')
+        shell: bash
+        run: |
+          rm -rf ${{ github.workspace }}/packages/connect-explorer/build-webextension
+          mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
       - name: Install PW Dependencies
         shell: bash

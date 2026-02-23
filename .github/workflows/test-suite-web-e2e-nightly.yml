@@ -80,6 +80,7 @@ jobs:
       currents-project-id: "Og0NOQ"
       currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
       enable-coverage: "true"
+      download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
