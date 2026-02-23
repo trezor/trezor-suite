@@ -15,7 +15,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['management'];
     }
 
     init() {

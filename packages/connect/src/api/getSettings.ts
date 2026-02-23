@@ -10,7 +10,7 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
         this.useUi = false;
     }
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['management'];
     }
 
     init() {
