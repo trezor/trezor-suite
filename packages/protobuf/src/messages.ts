@@ -870,7 +870,7 @@ export enum Enum_FailureType {
     Failure_Busy = 15,
     Failure_ThpUnallocatedSession = 16,
     Failure_InvalidProtocol = 17,
-    Failure_InProgress = 19,
+    Failure_BufferError = 18,
     Failure_FirmwareError = 99,
 }
 
@@ -1439,6 +1439,7 @@ export type EvoluRegistrationRequest = {
 
 export type EvoluGetDelegatedIdentityKey = {
     thp_credential?: string;
+    host_static_public_key?: string;
 };
 
 export type EvoluDelegatedIdentityKey = {
@@ -1729,7 +1730,6 @@ export type LoadDevice = {
     u2f_counter?: number;
     needs_backup?: boolean;
     no_backup?: boolean;
-    unfinished_backup?: boolean;
 };
 
 export type ResetDevice = {
@@ -1810,6 +1810,7 @@ export enum BootCommand {
 export type RebootToBootloader = {
     boot_command?: BootCommand;
     firmware_header?: string;
+    language_data_length?: number;
 };
 
 export type GetNonce = {};
@@ -2394,15 +2395,6 @@ export type StellarSignedTx = {
     signature: string;
 };
 
-export type TelemetryGet = {};
-
-export type Telemetry = {
-    min_temp_c?: number;
-    max_temp_c?: number;
-    battery_errors?: number;
-    battery_cycles?: number;
-};
-
 export type TezosGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2561,27 +2553,6 @@ export type TronTriggerSmartContract = {
     data: string;
 };
 
-export enum TronResourceCode {
-    BANDWIDTH = 0,
-    ENERGY = 1,
-}
-
-export type TronFreezeBalanceV2Contract = {
-    owner_address: string;
-    balance: number;
-    resource?: TronResourceCode;
-};
-
-export type TronUnfreezeBalanceV2Contract = {
-    owner_address: string;
-    balance: number;
-    resource?: TronResourceCode;
-};
-
-export type TronWithdrawUnfreeze = {
-    owner_address: string;
-};
-
 export type TronSignature = {
     signature: string;
 };
@@ -2594,9 +2565,6 @@ export type TronRawParameter = {
 export enum TronRawContractType {
     TransferContract = 1,
     TriggerSmartContract = 31,
-    FreezeBalanceV2Contract = 54,
-    UnfreezeBalanceV2Contract = 55,
-    WithdrawExpireUnfreezeContract = 56,
 }
 
 export type TronRawContract = {
@@ -2922,8 +2890,6 @@ export type MessageType = {
     StellarBumpSequenceOp: StellarBumpSequenceOp;
     StellarClaimClaimableBalanceOp: StellarClaimClaimableBalanceOp;
     StellarSignedTx: StellarSignedTx;
-    TelemetryGet: TelemetryGet;
-    Telemetry: Telemetry;
     TezosGetAddress: TezosGetAddress;
     TezosAddress: TezosAddress;
     TezosGetPublicKey: TezosGetPublicKey;
@@ -2945,9 +2911,6 @@ export type MessageType = {
     TronContractRequest: TronContractRequest;
     TronTransferContract: TronTransferContract;
     TronTriggerSmartContract: TronTriggerSmartContract;
-    TronFreezeBalanceV2Contract: TronFreezeBalanceV2Contract;
-    TronUnfreezeBalanceV2Contract: TronUnfreezeBalanceV2Contract;
-    TronWithdrawUnfreeze: TronWithdrawUnfreeze;
     TronSignature: TronSignature;
     TronRawParameter: TronRawParameter;
     TronRawContract: TronRawContract;
