@@ -52,9 +52,10 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             // expand method tester
             await page.getByTestId('@api-playground/collapsible-box').click();
             await expect(page.getByTestId('@submit-button')).toBeVisible();
-            await page.getByTestId('@submit-button').click();
-            // await popup opening
-            const suite = await page.waitForEvent('popup');
+            const [suite] = await Promise.all([
+                page.waitForEvent('popup'),
+                page.getByTestId('@submit-button').click(),
+            ]);
             const connectPermissionsModal = new ConnectPermissionsModal(suite);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
                 timeout: 10_000,
@@ -96,11 +97,10 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             // expand method tester
             await page.getByTestId('@api-playground/collapsible-box').click();
             await expect(page.getByTestId('@submit-button')).toBeVisible();
-            await page.getByTestId('@submit-button').click();
-
-            // await popup opening
-            const suite = await page.waitForEvent('popup');
-
+            const [suite] = await Promise.all([
+                page.waitForEvent('popup'),
+                page.getByTestId('@submit-button').click(),
+            ]);
             const connectPermissionsModal = new ConnectPermissionsModal(suite);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
                 timeout: 10_000,
