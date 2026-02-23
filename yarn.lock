@@ -12120,7 +12120,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-junit: "npm:^16.0.0"
     jotai: "npm:2.15.0"
-    lottie-react-native: "npm:7.3.4"
+    lottie-react-native: "npm:7.3.5"
     metro-config: "npm:^0.82.4"
     minimist: "npm:^1.2.8"
     react: "npm:19.1.0"
@@ -12224,7 +12224,7 @@ __metadata:
     expo-image: "npm:~3.0.11"
     expo-linear-gradient: "npm:~15.0.8"
     jotai: "npm:2.15.0"
-    lottie-react-native: "npm:7.3.4"
+    lottie-react-native: "npm:7.3.5"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-gesture-handler: "npm:2.29.0"
@@ -33355,9 +33355,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-react-native@npm:7.3.4":
-  version: 7.3.4
-  resolution: "lottie-react-native@npm:7.3.4"
+"lottie-react-native@npm:7.3.5":
+  version: 7.3.5
+  resolution: "lottie-react-native@npm:7.3.5"
   peerDependencies:
     "@lottiefiles/dotlottie-react": ^0.13.5
     react: "*"
@@ -33368,7 +33368,7 @@ __metadata:
       optional: true
     react-native-windows:
       optional: true
-  checksum: 10/c22cbac35b426d3d348448e7de3254b1825734b445d6dfee27dca03b8b231d9ba288dffb4890ae5a909314eedf2e2340545e1b8bbfd0c1b58e8e317b095b66c8
+  checksum: 10/3bea1979d9354172b989c96b9f10589333cf47becf3aa9231641b3531613b3286edc5c90f229a1f3cae0dfb67ad33faa2f6c78b536025aa5c2003ccc6ab29301
   languageName: node
   linkType: hard
 

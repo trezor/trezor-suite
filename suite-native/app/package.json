@@ -132,7 +132,7 @@
         "expo-web-browser": "~15.0.10",
         "https-browserify": "^1.0.0",
         "jotai": "2.15.0",
-        "lottie-react-native": "7.3.4",
+        "lottie-react-native": "7.3.5",
         "metro-config": "^0.82.4",
         "minimist": "^1.2.8",
         "react": "19.1.0",
