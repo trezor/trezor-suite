@@ -4563,6 +4563,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "@floating-ui/core@npm:1.7.4"
+  dependencies:
+    "@floating-ui/utils": "npm:^0.2.10"
+  checksum: 10/b750f306a99be879f0bce879108c440d5b0a67303d3d8318e153687f6ed1af27908428e27cc955475253bd902b95452a3434bd4f0cf96e66e5b5d0db1aa8ea3c
+  languageName: node
+  linkType: hard
+
 "@floating-ui/dom@npm:^1.0.0, @floating-ui/dom@npm:^1.0.1":
   version: 1.7.1
   resolution: "@floating-ui/dom@npm:1.7.1"
@@ -4573,7 +4582,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom@npm:^2.1.2, @floating-ui/react-dom@npm:^2.1.3":
+"@floating-ui/dom@npm:^1.7.5":
+  version: 1.7.5
+  resolution: "@floating-ui/dom@npm:1.7.5"
+  dependencies:
+    "@floating-ui/core": "npm:^1.7.4"
+    "@floating-ui/utils": "npm:^0.2.10"
+  checksum: 10/2764990da82bd5cfe942211480aa82352926326008de93f5f3f19749cc8b171fe05b77526a2652605eadcbeab902c6506f18d60a4c43281f2651802047de100b
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom@npm:^2.1.2":
   version: 2.1.3
   resolution: "@floating-ui/react-dom@npm:2.1.3"
   dependencies:
@@ -4582,6 +4601,18 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: 10/185223bb436f719943054f634ab5c885b32df745c7bc27504d77783944cfe02ce0f16a01d222d7abc511d3fc56fd36703ce6056eb2c4451b6666a7800b74a29f
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "@floating-ui/react-dom@npm:2.1.7"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.7.5"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 10/870eb2109af3ab09ea0076eb8e0ad307da274978c3dfe28e83422136a7f85cac700f62c37663c75bc25b174d33457c0224d1944e80b9a7ca5ff7b28b8f77b7ab
   languageName: node
   linkType: hard
 
@@ -4599,17 +4630,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:^0.27.12":
-  version: 0.27.12
-  resolution: "@floating-ui/react@npm:0.27.12"
+"@floating-ui/react@npm:^0.27.17":
+  version: 0.27.17
+  resolution: "@floating-ui/react@npm:0.27.17"
   dependencies:
-    "@floating-ui/react-dom": "npm:^2.1.3"
-    "@floating-ui/utils": "npm:^0.2.9"
+    "@floating-ui/react-dom": "npm:^2.1.7"
+    "@floating-ui/utils": "npm:^0.2.10"
     tabbable: "npm:^6.0.0"
   peerDependencies:
     react: ">=17.0.0"
     react-dom: ">=17.0.0"
-  checksum: 10/1bd397df1aca2a095d46085f8f8763eb7ade13997a73d5148b559709991737d575d9706612a56da8051081e52d5e441ccabcc3057c81395faf2cb871f3edc2b8
+  checksum: 10/467fac66e149fb8e779ad18124f1dd610ac61987ec70bb3a3eeb384045f583641f363e577e92ae93cfa804d5d47d53b3f8be28d8f758b0972a2aa153d660d4eb
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.2.10":
+  version: 0.2.10
+  resolution: "@floating-ui/utils@npm:0.2.10"
+  checksum: 10/b635ea865a8be2484b608b7157f5abf9ed439f351011a74b7e988439e2898199a9a8b790f52291e05bdcf119088160dc782d98cff45cc98c5a271bc6f51327ae
   languageName: node
   linkType: hard
 
@@ -15063,7 +15101,7 @@ __metadata:
   resolution: "@trezor/components@workspace:packages/components"
   dependencies:
     "@babel/preset-react": "npm:^7.28.5"
-    "@floating-ui/react": "npm:^0.27.12"
+    "@floating-ui/react": "npm:^0.27.17"
     "@storybook/addon-docs": "npm:^9.0.16"
     "@storybook/addon-links": "npm:^9.0.16"
     "@storybook/react": "npm:^9.0.16"
@@ -15938,7 +15976,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
-    "@floating-ui/react": "npm:^0.27.12"
+    "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:3.1.6"
     "@hookform/resolvers": "npm:^5.2.2"
     "@mobily/ts-belt": "npm:^3.13.1"

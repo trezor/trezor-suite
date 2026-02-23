@@ -19,7 +19,7 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@floating-ui/react": "^0.27.12",
+        "@floating-ui/react": "^0.27.17",
         "@suite-common/icons": "workspace:*",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/env-utils": "workspace:*",
