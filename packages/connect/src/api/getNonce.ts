@@ -11,7 +11,7 @@ export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce>
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['management'];
     }
 
     override init() {}
