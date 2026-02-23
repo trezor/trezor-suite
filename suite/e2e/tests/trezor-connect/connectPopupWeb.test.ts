@@ -116,4 +116,36 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             await expect(response).toHaveText(/success: false/);
         },
     );
+
+    test(
+        'closing popup window returns Method_Interrupted error',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect: Closing the popup window (not close button) returns a proper error',
+            }),
+        },
+        async ({ page }) => {
+            await gotoConnectExplorer(page, 'bitcoin/getAddress');
+
+            // expand method tester
+            await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
+            const [suite] = await Promise.all([
+                page.waitForEvent('popup'),
+                page.getByTestId('@submit-button').click(),
+            ]);
+            const connectPermissionsModal = new ConnectPermissionsModal(suite);
+            await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
+                timeout: 10_000,
+            });
+
+            // Close the browser popup window directly (simulates user clicking X)
+            await suite.close();
+
+            const response = page.getByTestId('@response');
+            await expect(response).toHaveText(/success: false/);
+            await expect(response).toHaveText(/Method_Interrupted/);
+        },
+    );
 });
