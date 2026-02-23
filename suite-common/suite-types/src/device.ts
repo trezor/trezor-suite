@@ -13,8 +13,8 @@ import {
     UnreadableDevice as UnreadableDeviceBase,
     Unsuccessful,
 } from '@trezor/connect';
-import { VersionArray } from '@trezor/device-utils';
 import { Branded, UnionSubset } from '@trezor/type-utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:

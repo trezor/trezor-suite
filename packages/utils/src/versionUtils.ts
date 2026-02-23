@@ -1,6 +1,7 @@
 import { throwError } from './throwError';
 
-type VersionArray = [number, number, number];
+export type VersionArray = [number, number, number];
+
 type VersionInput = VersionArray | string;
 
 export const isVersionArray = (arr: unknown): arr is VersionArray =>

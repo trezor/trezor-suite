@@ -42,5 +42,5 @@ export type {
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
 } from '@trezor/blockchain-link';
 
-export { FirmwareType, type VersionArray } from '@trezor/device-utils';
+export { FirmwareType } from '@trezor/device-utils';
 export { ThpPairingMethod } from '@trezor/protocol/src/protocol-thp/messages';

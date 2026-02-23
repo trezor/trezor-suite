@@ -11,7 +11,7 @@ import {
 } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
-import type { IntervalId, TimerId } from '@trezor/type-utils';
+import type { IntervalId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 
 // Util
@@ -29,8 +29,6 @@ const checkIfTabExists = (tabId: number | undefined) =>
         chrome.tabs.get(tabId, callback);
     });
 
-// Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
-const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
 
 type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'env' | 'version'> & { logger: Log };
@@ -52,8 +50,6 @@ export class PopupManager {
     channel: AbstractMessageChannel<CoreEventMessage>;
 
     handshakePromise: Deferred<void> | undefined;
-
-    private requestTimeout: TimerId | undefined;
 
     private closeInterval: IntervalId | undefined;
 
@@ -129,14 +125,8 @@ export class PopupManager {
             this.close();
         }
 
-        const openFn = this.open.bind(this);
         this.locked = true;
-
-        const timeout = this.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
-        this.requestTimeout = setTimeout(() => {
-            this.requestTimeout = undefined;
-            openFn();
-        }, timeout);
+        this.open();
     }
 
     private open() {
@@ -286,10 +276,6 @@ export class PopupManager {
             this.channel.disconnect();
         }
 
-        if (this.requestTimeout) {
-            clearTimeout(this.requestTimeout);
-            this.requestTimeout = undefined;
-        }
         if (this.closeInterval) {
             clearInterval(this.closeInterval);
             this.closeInterval = undefined;
