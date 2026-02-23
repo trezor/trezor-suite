@@ -44567,6 +44567,7 @@ __metadata:
     tslib: "npm:^2.6.2"
     tsx: "npm:^4.21.0"
     typescript: "npm:5.8.3"
+    typescript-eslint: "npm:^8.54.0"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     better-sqlite3:
