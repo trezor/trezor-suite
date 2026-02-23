@@ -15189,7 +15189,7 @@ __metadata:
     react-dom: "npm:19.1.0"
     react-inspector: "npm:^6.0.2"
     react-markdown: "npm:^10.1.0"
-    react-medium-image-zoom: "npm:^5.2.14"
+    react-medium-image-zoom: "npm:^5.4.0"
     react-redux: "npm:9.2.0"
     redux: "npm:^5.0.1"
     redux-logger: "npm:^3.0.6"
@@ -39876,13 +39876,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-medium-image-zoom@npm:^5.2.14":
-  version: 5.2.14
-  resolution: "react-medium-image-zoom@npm:5.2.14"
+"react-medium-image-zoom@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "react-medium-image-zoom@npm:5.4.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/8996271bb7fc5dfbfe854236f1ec4d02aab5a3456d9c6fef9d940fb7b94af58427c0b804a490927be0600cd17927484b888e9c3474b259eb7ed20b43e0a7e545
+  checksum: 10/ae1891f0e89d4aa3b74a0548c5c59ff176eb97744c8737a93aa091af0dbeea22f9fdb52fac314f0f591f16c1cd20d273ef36d0943bf846d53cfb98a09e62f417
   languageName: node
   linkType: hard
 
