@@ -3,16 +3,23 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
-    init() {
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'recoveryDevice'> }) {
+        super(message);
+        this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE];
+        this.useDeviceState = false;
         this.skipFinalReload = false;
         this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
 
+    init() {
         const { payload } = this;
 
         Assert(RecoveryDeviceSchema, payload);
@@ -27,9 +34,6 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
             type: payload.type,
             u2f_counter: payload.u2f_counter,
         };
-
-        this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE];
-        this.useDeviceState = false;
     }
 
     get confirmation() {

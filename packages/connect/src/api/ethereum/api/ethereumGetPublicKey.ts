@@ -3,7 +3,12 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfo } from '../../../types';
@@ -19,10 +24,16 @@ type Params = PROTO.EthereumGetPublicKey & {
 export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'ethereumGetPublicKey'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

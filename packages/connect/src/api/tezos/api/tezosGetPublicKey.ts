@@ -3,7 +3,12 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
@@ -16,15 +21,21 @@ export default class TezosGetPublicKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'tezosGetPublicKey'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Tezos'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

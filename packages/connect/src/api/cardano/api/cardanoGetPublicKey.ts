@@ -3,14 +3,18 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { CardanoGetPublicKey as CardanoGetPublicKeySchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
-
 interface Params extends PROTO.CardanoGetPublicKey {
     suppressBackupWarning?: boolean;
 }
@@ -18,15 +22,21 @@ interface Params extends PROTO.CardanoGetPublicKey {
 export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'cardanoGetPublicKey'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

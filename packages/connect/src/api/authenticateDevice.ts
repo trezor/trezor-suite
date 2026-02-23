@@ -8,7 +8,7 @@ import {
 } from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
@@ -17,14 +17,19 @@ export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
     AuthenticateDeviceParams
 > {
-    init() {
+    constructor(message: { id?: number; payload: Payload<'authenticateDevice'> }) {
+        super(message);
         this.useEmptyPassphrase = true;
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
         this.skipFinalReload = false;
         this.useDeviceState = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
 
+    init() {
         const { payload } = this;
 
         Assert(AuthenticateDeviceParams, payload);
@@ -53,7 +58,7 @@ export default class AuthenticateDevice extends AbstractMethod<
             allowDebugKeys: this.params.allowDebugKeys,
             config,
             blacklistConfig,
-        } as const;
+        };
 
         const getOptigaResult = async (): Promise<VerifyAuthenticityProofResult> => {
             const { optiga_signature: signature, optiga_certificates: certificates } = message;

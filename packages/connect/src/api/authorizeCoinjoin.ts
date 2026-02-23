@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '../types/api/authorizeCoinjoin';
@@ -11,6 +11,10 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     'authorizeCoinjoin',
     PROTO.AuthorizeCoinJoin
 > {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
     init() {
         const { payload } = this;
 

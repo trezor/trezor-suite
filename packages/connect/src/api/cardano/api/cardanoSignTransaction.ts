@@ -8,7 +8,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     type CardanoAuxiliaryDataSupplement,
@@ -77,15 +77,21 @@ export default class CardanoSignTransaction extends AbstractMethod<
     'cardanoSignTransaction',
     CardanoSignTransactionParams
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    constructor(message: { id?: number; payload: Payload<'cardanoSignTransaction'> }) {
+        super(message);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
+    }
+
+    init() {
         const { payload } = this;
 
         // @ts-expect-error payload.metadata is a legacy param

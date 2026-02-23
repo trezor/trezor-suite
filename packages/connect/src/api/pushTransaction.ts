@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 import { PushTransaction as PushTransactionSchema } from '../types/api/pushTransaction';
@@ -16,11 +16,16 @@ type Params = {
 };
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
-    init() {
-        this.requiredPermissions = ['push_tx'];
+    constructor(message: { id?: number; payload: Payload<'pushTransaction'> }) {
+        super(message);
         this.useUi = false;
         this.useDevice = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['push_tx'];
+    }
 
+    init() {
         const { payload } = this;
 
         // validate incoming parameters

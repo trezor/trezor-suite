@@ -1,12 +1,18 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 
 export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.TelemetryGet> {
-    init() {
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'telemetryGet'> }) {
+        super(message);
         this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {
         const { payload } = this;
 
         Assert(PROTO.TelemetryGet, payload);

@@ -3,14 +3,20 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 
 export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.BackupDevice> {
-    init() {
-        this.requiredPermissions = ['management'];
+    constructor(message: { id?: number; payload: Payload<'backupDevice'> }) {
+        super(message);
         this.skipFinalReload = false;
         this.useDeviceState = false;
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {
         const { payload } = this;
 
         Assert(PROTO.BackupDevice, payload);

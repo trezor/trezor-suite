@@ -8,7 +8,7 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import {
     TransactionComposer,
@@ -67,9 +67,16 @@ type Params = {
 export default class ComposeTransaction extends AbstractMethod<'composeTransaction', Params> {
     discovery?: Discovery;
 
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+    get requiredPermissions(): MethodPermission[] {
+        const permissions: MethodPermission[] = ['read', 'write'];
+        if (this.params.push) {
+            permissions.push('push_tx');
+        }
 
+        return permissions;
+    }
+
+    init() {
         const { payload } = this;
         // validate incoming parameters
         validateParams(payload, [
@@ -135,10 +142,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             push: typeof payload.push === 'boolean' ? payload.push : false,
             total,
         };
-
-        if (this.params.push) {
-            this.requiredPermissions.push('push_tx');
-        }
     }
 
     get info() {

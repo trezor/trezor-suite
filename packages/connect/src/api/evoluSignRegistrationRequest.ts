@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluSignRegistrationRequest extends AbstractMethod<
@@ -10,11 +10,16 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'evoluSignRegistrationRequest'> }) {
+        super(message);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
 
+    init() {
         const { payload } = this;
 
         Assert(PROTO.EvoluSignRegistrationRequest, payload);

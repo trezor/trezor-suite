@@ -1,22 +1,23 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { DEVICE, createDeviceMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
-    init() {
+    constructor(message: { id?: number; payload: Payload<'setBusy'> }) {
+        super(message);
         this.useDeviceState = false;
-        this.requiredPermissions = ['management'];
         this.skipFinalReload = false;
-        this.overridePreviousCall = true; // currently used only in cj and should always override
-
-        const { payload } = this;
-
-        Assert(PROTO.SetBusy, payload);
-
+        this.overridePreviousCall = true;
         this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {
+        const { payload } = this;
 
         this.params = {
             expiry_ms: payload.expiry_ms,

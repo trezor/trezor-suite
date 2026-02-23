@@ -3,7 +3,12 @@ import bs58 from 'bs58';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
@@ -16,16 +21,22 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
+    constructor(message: { id?: number; payload: Payload<'solanaGetPublicKey'> }) {
+        super(message);
         this.confirmMissingBackup = true;
-        this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Solana'),
             this.firmwareRange,
         );
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import type { BitcoinNetworkInfo } from '../types';
@@ -22,9 +22,11 @@ type Params = PROTO.GetPublicKey & {
 export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
 
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

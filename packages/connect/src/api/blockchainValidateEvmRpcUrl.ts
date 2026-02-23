@@ -2,7 +2,7 @@ import BlockchainLink from '@trezor/blockchain-link';
 import { MESSAGES } from '@trezor/blockchain-link-types/src/constants';
 import { ValidateEvmRpc } from '@trezor/blockchain-link-types/src/responses';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { EvmRpcWorker } from '../workers/workers';
 import { validateParams } from './common/paramsValidator';
 
@@ -15,10 +15,17 @@ export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
     'blockchainValidateEvmRpcUrl',
     Params
 > {
-    init() {
+    constructor(message: { id?: number; payload: Payload<'blockchainValidateEvmRpcUrl'> }) {
+        super(message);
         this.useDevice = false;
         this.useUi = false;
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    init() {
         const { payload } = this;
 
         validateParams(payload, [

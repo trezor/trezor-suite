@@ -2,7 +2,12 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import {
+    AbstractMethod,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../../../core/AbstractMethod';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
@@ -16,11 +21,17 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     hasBundle?: boolean;
     progress = 0;
 
-    init() {
+    constructor(message: { id?: number; payload: Payload<'tronGetAddress'> }) {
+        super(message);
         this.confirmMissingBackup = true;
-        this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Tron'];
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle

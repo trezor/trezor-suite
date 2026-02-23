@@ -1,13 +1,20 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 
 export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce> {
-    override init() {
+    constructor(message: { id?: number; payload: Payload<'getNonce'> }) {
+        super(message);
         this.useDeviceState = false;
         // TODO should nonce really be always used with useEmptyPassphrase (as it currently is)?
         this.useEmptyPassphrase = true;
     }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    override init() {}
 
     override async run() {
         const cmd = this.device.getCommands();

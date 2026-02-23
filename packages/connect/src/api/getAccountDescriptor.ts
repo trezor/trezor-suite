@@ -2,7 +2,13 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { getFirmwareRange } from './common/paramsValidator';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
+import {
+    AbstractMethod,
+    DEFAULT_FIRMWARE_RANGE,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import { Bundle, type CoinInfo, type DerivationPath } from '../types';
@@ -22,11 +28,17 @@ export default class GetAccountDescriptor extends AbstractMethod<
     disposed = false;
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
+    constructor(message: { id?: number; payload: Payload<'getAccountDescriptor'> }) {
+        super(message);
         this.useDevice = true;
         this.useUi = true;
+    }
 
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle
