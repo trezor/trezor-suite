@@ -27,6 +27,7 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingFormFees } from './TradingFormFees';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputSellAsset,
@@ -35,7 +36,6 @@ import {
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
-import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
@@ -114,7 +114,7 @@ export const TradingSellFormInputs = () => {
                                             onClick={() => {
                                                 analytics.report({
                                                     type: events.appFormPercentButtonsEvent.name,
-                                                    payload: { type: 'send', value: percentValue },
+                                                    payload: { type: 'sell', value: percentValue },
                                                 });
                                                 button.onClick();
                                             }}
