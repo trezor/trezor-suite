@@ -27,7 +27,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "babel-plugin-react-native-web": "^0.19.10",
+        "babel-plugin-react-native-web": "^0.21.2",
         "react": "19.1.0",
         "react-dom": "19.1.0",
         "react-intl": "^8.0.6",
