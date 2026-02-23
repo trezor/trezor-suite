@@ -34,7 +34,6 @@ export const ORDER = {
     RecoveryType: 'RecoveryDevice',
     RecoveryDeviceInputMethod: 'RecoveryType',
     EthereumDefinitions: 'EthereumSignTypedData',
-    TronResourceCode: 'TronFreezeBalanceV2Contract',
 };
 
 // enums used as keys (string), used as values (number) by default
