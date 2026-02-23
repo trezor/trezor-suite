@@ -177,24 +177,32 @@ export const useVisibleTransactions = ({
         selectNetworkTokenDefinitions(state, account.symbol),
     );
 
+    // The selector may include null/undefined placeholders for pagination gaps.
+    const transactionsWithoutPlaceholders = useMemo(
+        () =>
+            allTransactions.filter(
+                (transaction): transaction is WalletAccountTransaction => transaction != null,
+            ),
+        [allTransactions],
+    );
+
     const visibleTransactions = useMemo(
         () =>
             tokenDefinitions && enableFiltering
-                ? allTransactions.filter(
-                      transaction =>
-                          // NOTE: due to some weirdness, the transaction here can be `undefined`!
-                          transaction
-                              ? !getIsPhishingTransaction(transaction, tokenDefinitions)
-                              : false, // NOTE: when transaction is falsy, hide it
+                ? transactionsWithoutPlaceholders.filter(
+                      transaction => !getIsPhishingTransaction(transaction, tokenDefinitions),
                   )
-                : allTransactions,
-        [allTransactions, tokenDefinitions, enableFiltering],
+                : transactionsWithoutPlaceholders,
+        [transactionsWithoutPlaceholders, tokenDefinitions, enableFiltering],
     );
 
     const perPage = getTxsPerPage(account.networkType);
     // NOTE: as the paging increases / all is fetched, the number of the "all transactions" increases as the visible transactions decrease
     // that's how the estimate of the "totalPossiblyVisible" gets more an more accurate
-    const numberOfHiddenInTheBatch = allTransactions.length - visibleTransactions.length;
+    const numberOfHiddenInTheBatch =
+        tokenDefinitions && enableFiltering
+            ? transactionsWithoutPlaceholders.length - visibleTransactions.length
+            : 0;
     const totalPossiblyVisible = allAccountTransactions - numberOfHiddenInTheBatch;
 
     useEffect(() => {
