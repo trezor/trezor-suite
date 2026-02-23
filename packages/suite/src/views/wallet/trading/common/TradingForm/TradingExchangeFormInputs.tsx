@@ -159,7 +159,7 @@ export const TradingExchangeFormInputs = () => {
                                                 analytics.report({
                                                     type: events.appFormPercentButtonsEvent.name,
                                                     payload: {
-                                                        type: 'exchange',
+                                                        type: 'swap',
                                                         value: percentValue,
                                                     },
                                                 });
