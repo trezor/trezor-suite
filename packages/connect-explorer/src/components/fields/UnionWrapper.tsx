@@ -5,7 +5,7 @@ import { SelectBar } from '@trezor/components';
 import { FieldWithUnion } from '../../types';
 
 const UnionHeader = styled.div`
-    word-wrap: break-word;
+    overflow-wrap: break-word;
     word-break: break-all;
     display: flex;
     justify-content: space-between;

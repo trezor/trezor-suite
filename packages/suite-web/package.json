@@ -33,8 +33,8 @@
         "@types/react-dom": "19.1.6",
         "postcss-styled-syntax": "^0.7.1",
         "rimraf": "^6.0.1",
-        "stylelint": "^16.17.0",
-        "stylelint-config-standard": "^38.0.0",
+        "stylelint": "^17.1.1",
+        "stylelint-config-standard": "^40.0.0",
         "tsx": "^4.21.0",
         "vite": "^7.3.1"
     }
