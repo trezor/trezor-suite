@@ -1,3 +1,4 @@
+/* eslint-disable local-rules/analytics-event-name -- legacy event names; prefer domain/kebab-case for new events */
 export enum EventType {
     AppReady = 'app_ready',
     AssetDetail = 'asset_detail',
@@ -79,3 +80,4 @@ export enum EventType {
     UnsupportedDevice = 'unsupported_device',
     WatchPortfolioTimeframeChange = 'watch_portfolio/timeframe_change',
 }
+/* eslint-enable local-rules/analytics-event-name */

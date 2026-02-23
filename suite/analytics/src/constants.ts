@@ -7,27 +7,42 @@ export enum EventType {
     AccountsStatus = 'accounts/status',
     AccountsTokensStatus = 'accounts/tokens-status',
     AccountsTransactionsExport = 'accounts/transactions-export',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AddToken = 'add-token',
     AppFormPercentButtons = 'app/form-percent-buttons',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AppUpdate = 'app-update',
     AppUriHandler = 'app/uri-handler',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AutostartModal = 'autostart-modal',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateBackup = 'create-backup',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressConfirmOnTrezor = 'create-receive-address/confirm-on-trezor',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressCopyAddress = 'create-receive-address/copy-address',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressShowAddress = 'create-receive-address/show-address',
     DashboardActions = 'dashboard/actions',
     DashboardReceiveModal = 'dashboard/receive-modal',
     DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
     DashboardSendModal = 'dashboard/send-modal',
     DashboardSendModalOptions = 'dashboard/send-modal/options',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnect = 'device-connect',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionConnectButton = 'device-connection/connect-button',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnectionHintModal = 'device-connection/hint-modal', // The rest of device-connection events are in shared constants.
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceDisconnect = 'device-disconnect',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupCompleted = 'device-setup-completed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupStarted = 'device-setup-started',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceUpdateFirmware = 'device-update-firmware',
     GuideFeedbackNavigation = 'guide/feedback/navigation',
     GuideFeedbackSubmit = 'guide/feedback/submit',
@@ -41,13 +56,17 @@ export enum EventType {
     PromoDesktop = 'promo/desktop',
     PromoMobile = 'promo/mobile',
     PromoReferralButton = 'promo/referral-button',
+    // eslint-disable-next-line local-rules/analytics-event-name
     RemoveToken = 'remove-token',
+    // eslint-disable-next-line local-rules/analytics-event-name
     RouterLocationChange = 'router/location-change',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SelectWalletType = 'select-wallet-type',
     SendConfirmedOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
     SendInitialised = 'send/initialised',
     SendQrScan = 'send/qr-scan',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendRawTransaction = 'send-raw-transaction',
     SettingsAnalytics = 'settings/analytics',
     SettingsCoins = 'settings/coins',
@@ -86,21 +105,36 @@ export enum EventType {
     StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
     StakingYield = 'staking/yield',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SwitchDeviceEject = 'switch-device/eject',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SwitchDeviceForget = 'switch-device/forget',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SwitchDeviceRemember = 'switch-device/remember',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeApproval = 'trade/approval',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeBuy = 'trade/buy',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeCompareOffers = 'trade/compare-offers',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeConfirmTrade = 'trade/confirm-trade',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeExchange = 'trade/exchange',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeNavigate = 'trade/navigate',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeReceivedQuotes = 'trade/received-quotes',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeSell = 'trade/sell',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradeStatus = 'trade/status',
     TransactionCancel = 'transaction/cancel',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionCreated = 'transaction-created',
     TransactionTimeoutRetry = 'transaction/timeout-retry',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransportType = 'transport-type',
 }
