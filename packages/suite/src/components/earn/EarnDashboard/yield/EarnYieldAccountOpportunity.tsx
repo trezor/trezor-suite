@@ -31,10 +31,8 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const hasMatchedToken = opportunity.matchedToken !== undefined;
     const hasSuppliedBalance = new BigNumber(opportunity.suppliedAmount).gt(0);
-    const hasMatchedTokenWithBalance =
-        hasMatchedToken && new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+    const hasMatchedTokenWithBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
     const hasRewardsData = hasMatchedTokenWithBalance || hasSuppliedBalance;
     const hasApy = opportunity.apyPercentage !== null;
     const yearlyRewards = hasRewardsData
@@ -119,15 +117,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     symbol={opportunity.networkSymbol}
                     iconToken={opportunity.vault.token}
                     showAssetNetworkIcon
-                    tokenBalance={
-                        hasMatchedToken
-                            ? {
-                                  value: opportunity.additionalSupplyAmount,
-                                  symbol: opportunity.suppliedSymbol,
-                                  contractAddress: opportunity.suppliedContractAddress,
-                              }
-                            : undefined
-                    }
+                    tokenBalance={{
+                        value: opportunity.additionalSupplyAmount,
+                        symbol: opportunity.suppliedSymbol,
+                        contractAddress: opportunity.suppliedContractAddress,
+                    }}
                 />
             </Table.Cell>
 
