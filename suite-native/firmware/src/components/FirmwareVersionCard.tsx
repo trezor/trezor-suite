@@ -20,7 +20,7 @@ import {
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 import { FirmwareChangelogButton } from './FirmwareChangelogButton';
 import { FirmwareInfoBox } from './FirmwareInfoBox';

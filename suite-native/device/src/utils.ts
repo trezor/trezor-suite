@@ -20,7 +20,7 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,
