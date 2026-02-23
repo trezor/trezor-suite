@@ -55,6 +55,9 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         const contractMapping = {
             TransferContract: 'TronTransferContract',
             TriggerSmartContract: 'TronTriggerSmartContract',
+            FreezeBalanceV2Contract: 'TronFreezeBalanceV2Contract',
+            UnfreezeBalanceV2Contract: 'TronUnfreezeBalanceV2Contract',
+            WithdrawExpireUnfreezeContract: 'TronWithdrawUnfreeze',
         } as const;
 
         const { message } = await cmd.typedCall(
