@@ -9,15 +9,17 @@ type Attributes = {
 
 export const appFormPercentButtonsEvent: EventDef<Attributes, EventType.AppFormPercentButtons> = {
     name: EventType.AppFormPercentButtons,
-    descriptionTrigger: 'fired when user clicks 10%, 25%, 50% or MAX in send or staking form',
+    descriptionTrigger: 'Fired when user clicks 10%, 25%, 50% or MAX in send/staking/exchange form',
     changelog: [{ version: '26.0.0', notes: 'added' }],
 
     attributes: {
         type: {
             changelog: [{ version: '26.3.0', notes: 'added' }],
+            description: 'Specifies place in the app where the button was clicked',
         },
         value: {
             changelog: [{ version: '26.3.0', notes: 'added' }],
+            description: 'Specifies the value of the button that was clicked (percentage or max)',
         },
     },
 };
