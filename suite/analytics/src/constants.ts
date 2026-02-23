@@ -8,6 +8,7 @@ export enum EventType {
     AccountsTokensStatus = 'accounts/tokens-status',
     AccountsTransactionsExport = 'accounts/transactions-export',
     AddToken = 'add-token',
+    AppFormPercentButtons = 'app/form-percent-buttons',
     AppUpdate = 'app-update',
     AppUriHandler = 'app/uri-handler',
     AutostartModal = 'autostart-modal',

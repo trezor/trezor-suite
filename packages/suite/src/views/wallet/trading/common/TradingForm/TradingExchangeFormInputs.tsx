@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { events } from '@suite/analytics';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -22,12 +23,15 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingFormFees } from './TradingFormFees';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputBuyAsset,
@@ -40,11 +44,10 @@ import {
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
-import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
+    const analytics = useAnalytics();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
@@ -145,16 +148,27 @@ export const TradingExchangeFormInputs = () => {
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <Row gap={8} data-testid="@trading/form/fraction-buttons">
-                                {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton
-                                        key={button.id}
-                                        {...button}
-                                        onClick={() => {
-                                            button.onClick();
-                                            context.resetSelectedOffer();
-                                        }}
-                                    />
-                                ))}
+                                {generateFractionButtons(helpers).map(button => {
+                                    const { percentValue, ...buttonProps } = button;
+
+                                    return (
+                                        <FractionButton
+                                            key={buttonProps.id}
+                                            {...buttonProps}
+                                            onClick={() => {
+                                                analytics.report({
+                                                    type: events.appFormPercentButtonsEvent.name,
+                                                    payload: {
+                                                        type: 'exchange',
+                                                        value: percentValue,
+                                                    },
+                                                });
+                                                button.onClick();
+                                                context.resetSelectedOffer();
+                                            }}
+                                        />
+                                    );
+                                })}
                             </Row>
                             <TradingBalance
                                 balance={outputAmount}

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { events } from '@suite/analytics';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -17,6 +18,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
@@ -37,6 +39,7 @@ import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSel
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
+    const analytics = useAnalytics();
 
     const {
         feeInfo,
@@ -101,9 +104,23 @@ export const TradingSellFormInputs = () => {
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <Row gap={8} data-testid="@trading/form/fraction-buttons">
-                                {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton key={button.id} {...button} />
-                                ))}
+                                {generateFractionButtons(helpers).map(button => {
+                                    const { percentValue, ...buttonProps } = button;
+
+                                    return (
+                                        <FractionButton
+                                            key={buttonProps.id}
+                                            {...buttonProps}
+                                            onClick={() => {
+                                                analytics.report({
+                                                    type: events.appFormPercentButtonsEvent.name,
+                                                    payload: { type: 'send', value: percentValue },
+                                                });
+                                                button.onClick();
+                                            }}
+                                        />
+                                    );
+                                })}
                             </Row>
                             <TradingBalance
                                 balance={outputAmount}
