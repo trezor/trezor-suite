@@ -25,14 +25,13 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const [sendSymbol, setSendSymbol] = useState<string | undefined>(undefined);
     const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
 
-    const networkReserve =
-        sendSymbol && isNetworkReserveEnabled
-            ? getNetworkReserve({
-                  symbol: sendSymbol.toLowerCase() as NetworkSymbol,
-                  contractAddress,
-                  isEnabled: isNetworkReserveEnabled,
-              })
-            : undefined;
+    const networkReserve = sendSymbol
+        ? getNetworkReserve({
+              symbol: sendSymbol.toLowerCase() as NetworkSymbol,
+              contractAddress,
+              isEnabled: isNetworkReserveEnabled,
+          })
+        : undefined;
 
     const context = useMemo<TradingFormContext>(
         () => ({

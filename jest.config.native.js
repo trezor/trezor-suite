@@ -22,6 +22,7 @@ module.exports = {
         '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native/expo-sqlite$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
+        '^(@formatjs/[^/]+)/(polyfill|locale-data/.+)$': '<rootDir>/../../node_modules/$1/$2.js',
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',

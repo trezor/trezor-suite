@@ -1400,7 +1400,7 @@ export const messages = {
             networkReserve: {
                 title: 'Network reserve',
                 subtitle:
-                    'We reserve a small amount of ETH on Base or Optimism, and SOL on Solana, to cover extra network fees when you send, swap, or sell your assets.',
+                    'We’ve reserved a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
             },
             mevProtection: {
                 title: 'MEV Protection',

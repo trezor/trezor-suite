@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
 
 import { Box } from './Box';
 import { Button } from './Button/Button';
@@ -12,6 +11,23 @@ import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
 import { Text } from './Text';
 
+export const TouchableSwitchRowDescription = ({ children }: { children: ReactNode }) => (
+    <Text variant="body-sm" color="textSubdued">
+        {children}
+    </Text>
+);
+
+const LearnMoreButton = ({ onPress }: { onPress: () => void }) => (
+    <Button
+        size="small"
+        viewLeft="arrowSquareOut"
+        onPress={onPress}
+        colorScheme="tertiaryElevation0"
+    >
+        <Translation id="generic.buttons.learnMore" />
+    </Button>
+);
+
 export type TouchableSwitchRowProps = {
     icon: IconName;
     accessibilityLabel: string;
@@ -20,32 +36,7 @@ export type TouchableSwitchRowProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     testID?: string;
-    learnMoreUrl?: string;
-};
-
-export const TouchableSwitchRowDescription = ({ children }: { children: ReactNode }) => (
-    <Text variant="body-sm" color="textSubdued">
-        {children}
-    </Text>
-);
-
-const LearnMoreButton = ({ learnMoreUrl }: { learnMoreUrl: string }) => {
-    const openLink = useOpenLink();
-
-    const handleButtonPress = () => {
-        openLink(learnMoreUrl);
-    };
-
-    return (
-        <Button
-            size="small"
-            viewLeft="arrowSquareOut"
-            onPress={handleButtonPress}
-            colorScheme="tertiaryElevation0"
-        >
-            <Translation id="generic.buttons.learnMore" />
-        </Button>
-    );
+    onLearnMorePress?: () => void;
 };
 
 export const TouchableSwitchRow = ({
@@ -56,7 +47,7 @@ export const TouchableSwitchRow = ({
     isChecked,
     onChange,
     testID,
-    learnMoreUrl,
+    onLearnMorePress,
 }: TouchableSwitchRowProps) => {
     const handleChange = () => {
         onChange(!isChecked);
@@ -88,7 +79,7 @@ export const TouchableSwitchRow = ({
                                 onChange={() => onChange(!isChecked)}
                             />
                         </HStack>
-                        {learnMoreUrl && <LearnMoreButton learnMoreUrl={learnMoreUrl} />}
+                        {onLearnMorePress && <LearnMoreButton onPress={onLearnMorePress} />}
                     </VStack>
                 </HStack>
             </PressableOpacity>

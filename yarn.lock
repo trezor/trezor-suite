@@ -4745,6 +4745,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/intl-getcanonicallocales@npm:3.2.1, @formatjs/intl-getcanonicallocales@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@formatjs/intl-getcanonicallocales@npm:3.2.1"
+  dependencies:
+    tslib: "npm:^2.8.1"
+  checksum: 10/7982699fbcfbc5f4cece8ab6a22bded7b0881901fd56924fa4085b3a01755696e2f6c70a854e34256a8c00fb5b2094bf8264e5ae3a814f326f92a7fd3a4b1682
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-listformat@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "@formatjs/intl-listformat@npm:8.2.1"
+  dependencies:
+    "@formatjs/ecma402-abstract": "npm:3.1.1"
+    "@formatjs/intl-localematcher": "npm:0.8.1"
+    tslib: "npm:^2.8.1"
+  checksum: 10/78548365d7af8280c2cd24d4500242590b4374cc6cde09c65f24752599506a4d8ea3825fa60a6efa552e3fbe45e5aa1a32361081258529bb66f4e1fd4bb03ddc
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-locale@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "@formatjs/intl-locale@npm:5.2.1"
+  dependencies:
+    "@formatjs/ecma402-abstract": "npm:3.1.1"
+    "@formatjs/intl-getcanonicallocales": "npm:3.2.1"
+    "@formatjs/intl-supportedvaluesof": "npm:2.2.1"
+    tslib: "npm:^2.8.1"
+  checksum: 10/dce1701ff44006b73037129fa7ea994103407f3a8d8a323633149a0e64153eb2222823355bfc98140763d8e2ba99b841c2756a7bb4694d464ae1c39af47d2107
+  languageName: node
+  linkType: hard
+
 "@formatjs/intl-localematcher@npm:0.8.1":
   version: 0.8.1
   resolution: "@formatjs/intl-localematcher@npm:0.8.1"
@@ -4752,6 +4784,17 @@ __metadata:
     "@formatjs/fast-memoize": "npm:3.1.0"
     tslib: "npm:^2.8.1"
   checksum: 10/789cb556a15acfb51ad8150558966e9b9fe65e64b573c16475a51c6abd352488c4dca745b174819d584633073c70147f590b9c45586a202acaeb6942c6bad39f
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-supportedvaluesof@npm:2.2.1":
+  version: 2.2.1
+  resolution: "@formatjs/intl-supportedvaluesof@npm:2.2.1"
+  dependencies:
+    "@formatjs/ecma402-abstract": "npm:3.1.1"
+    "@formatjs/fast-memoize": "npm:3.1.0"
+    tslib: "npm:^2.8.1"
+  checksum: 10/efa90f2e509608cd55ca30ede420323e1b7416ecfffda60acd5984d42a6580f97b756cb29c633370da213ded279dd2403d9a38b49864786f5dd221e57cf0f2b6
   languageName: node
   linkType: hard
 
@@ -12725,6 +12768,9 @@ __metadata:
   resolution: "@suite-native/intl@workspace:suite-native/intl"
   dependencies:
     "@crowdin/cli": "npm:4.13.0"
+    "@formatjs/intl-getcanonicallocales": "npm:^3.2.1"
+    "@formatjs/intl-listformat": "npm:^8.2.1"
+    "@formatjs/intl-locale": "npm:^5.2.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13505,6 +13551,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
+    react-intl: "npm:^8.1.3"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
