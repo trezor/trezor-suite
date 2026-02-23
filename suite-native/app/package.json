@@ -153,7 +153,7 @@
         "react-native-restart": "0.0.27",
         "react-native-safe-area-context": "5.6.2",
         "react-native-screens": "~4.23.0",
-        "react-native-svg": "15.14.0",
+        "react-native-svg": "15.15.2",
         "react-native-tcp-socket": "6.4.1",
         "react-native-worklets": "^0.6.1",
         "react-redux": "9.2.0",
