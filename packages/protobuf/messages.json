@@ -2320,7 +2320,7 @@
                         "Failure_Busy": 15,
                         "Failure_ThpUnallocatedSession": 16,
                         "Failure_InvalidProtocol": 17,
-                        "Failure_BufferError": 18,
+                        "Failure_InProgress": 19,
                         "Failure_FirmwareError": 99
                     }
                 }
@@ -4339,10 +4339,6 @@
                 "thp_credential": {
                     "type": "bytes",
                     "id": 1
-                },
-                "host_static_public_key": {
-                    "type": "bytes",
-                    "id": 2
                 }
             }
         },
@@ -4983,6 +4979,10 @@
                 "no_backup": {
                     "type": "bool",
                     "id": 10
+                },
+                "unfinished_backup": {
+                    "type": "bool",
+                    "id": 11
                 }
             }
         },
@@ -5227,13 +5227,6 @@
                 "firmware_header": {
                     "type": "bytes",
                     "id": 2
-                },
-                "language_data_length": {
-                    "type": "uint32",
-                    "id": 3,
-                    "options": {
-                        "default": 0
-                    }
                 }
             },
             "nested": {
@@ -7042,6 +7035,29 @@
                 }
             }
         },
+        "TelemetryGet": {
+            "fields": {}
+        },
+        "Telemetry": {
+            "fields": {
+                "min_temp_c": {
+                    "type": "sint32",
+                    "id": 1
+                },
+                "max_temp_c": {
+                    "type": "sint32",
+                    "id": 2
+                },
+                "battery_errors": {
+                    "type": "uint32",
+                    "id": 3
+                },
+                "battery_cycles": {
+                    "type": "uint32",
+                    "id": 4
+                }
+            }
+        },
         "TezosGetAddress": {
             "fields": {
                 "address_n": {
@@ -7562,6 +7578,63 @@
                 }
             }
         },
+        "TronFreezeBalanceV2Contract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "balance": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "resource": {
+                    "type": "TronResourceCode",
+                    "id": 3,
+                    "options": {
+                        "default": "BANDWIDTH"
+                    }
+                }
+            }
+        },
+        "TronUnfreezeBalanceV2Contract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "balance": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "resource": {
+                    "type": "TronResourceCode",
+                    "id": 3,
+                    "options": {
+                        "default": "BANDWIDTH"
+                    }
+                }
+            }
+        },
+        "TronWithdrawUnfreeze": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "TronResourceCode": {
+            "values": {
+                "BANDWIDTH": 0,
+                "ENERGY": 1
+            }
+        },
         "TronSignature": {
             "fields": {
                 "signature": {
@@ -7639,7 +7712,10 @@
                         "TronRawContractType": {
                             "values": {
                                 "TransferContract": 1,
-                                "TriggerSmartContract": 31
+                                "TriggerSmartContract": 31,
+                                "FreezeBalanceV2Contract": 54,
+                                "UnfreezeBalanceV2Contract": 55,
+                                "WithdrawExpireUnfreezeContract": 56
                             }
                         }
                     }
@@ -7900,7 +7976,12 @@
                 "TronSignature": 2203,
                 "TronContractRequest": 2204,
                 "TronTransferContract": 2205,
-                "TronTriggerSmartContract": 2206
+                "TronTriggerSmartContract": 2206,
+                "TronFreezeBalanceV2Contract": 2207,
+                "TronUnfreezeBalanceV2Contract": 2208,
+                "TronWithdrawUnfreeze": 2209,
+                "TelemetryGet": 1100,
+                "Telemetry": 1101
             }
         }
     }
