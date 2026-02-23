@@ -1,6 +1,7 @@
 import { RefObject, memo } from 'react';
 
 import { TranslationKey, useTranslation } from '@suite/intl';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -23,6 +24,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     listRef,
     modal,
 }: AssetSearchWithNetworkFilterProps) {
+    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+
     const [search, setSearch] = useSearchFilter();
     const [networkFilter, setNetworkFilter] = useNetworkFilter({
         modal,
@@ -40,18 +43,22 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
 
     useListScrollReset(listRef, search);
 
+    const selectConfig = isBitcoinOnlyFirmware
+        ? undefined
+        : {
+              networks,
+              selectedNetwork: networkFilter,
+              onChange: setNetworkFilter,
+              includeAllOption: !protocolSymbol,
+              allLabel: translationString('TR_ALL_NETWORKS'),
+          };
+
     return (
         <SearchAsset
             searchPlaceholder={translationString(placeholder)}
             search={search}
             setSearch={setSearch}
-            selectConfig={{
-                networks,
-                selectedNetwork: networkFilter,
-                onChange: setNetworkFilter,
-                includeAllOption: !protocolSymbol,
-                allLabel: translationString('TR_ALL_NETWORKS'),
-            }}
+            selectConfig={selectConfig}
         />
     );
 });
