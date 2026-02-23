@@ -4,8 +4,9 @@ import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-
 
 import { Translation } from '@suite/intl';
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { Column, InfoSegments, Link, Text, Tooltip } from '@trezor/components';
-import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
+import { Column, Link, Text } from '@trezor/components';
+
+import { TradingFormFeesDisclaimer } from '../TradingFormFeesDisclaimer/TradingFormFeesDisclaimer';
 
 type TradingFooterProps = {
     provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
@@ -30,25 +31,7 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => {
                     <Translation id="TR_TRADING_TERMS_NO_PROVIDER" />
                 )}
             </Text>
-
-            <InfoSegments typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Link href={TREZOR_SUITE_TOS_URL}>
-                    <Translation id="TR_TERMS_OF_USE_TREZOR" />
-                </Link>
-                <Tooltip
-                    content={
-                        <Column gap={12}>
-                            <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                            <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                        </Column>
-                    }
-                    cursor="default"
-                >
-                    <Link href={TREZOR_TRADING_LEARN_MORE_URL}>
-                        <Translation id="TR_BUY_LEARN_MORE" />
-                    </Link>
-                </Tooltip>
-            </InfoSegments>
+            <TradingFormFeesDisclaimer />
         </Column>
     );
 };
