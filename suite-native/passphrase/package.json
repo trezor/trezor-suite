@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.6",
+        "@gorhom/bottom-sheet": "5.2.8",
         "@react-navigation/native": "7.1.26",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",

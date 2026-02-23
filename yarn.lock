@@ -4885,9 +4885,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gorhom/bottom-sheet@npm:5.2.6":
-  version: 5.2.6
-  resolution: "@gorhom/bottom-sheet@npm:5.2.6"
+"@gorhom/bottom-sheet@npm:5.2.8":
+  version: 5.2.8
+  resolution: "@gorhom/bottom-sheet@npm:5.2.8"
   dependencies:
     "@gorhom/portal": "npm:1.0.14"
     invariant: "npm:^2.2.4"
@@ -4903,7 +4903,7 @@ __metadata:
       optional: true
     "@types/react-native":
       optional: true
-  checksum: 10/bca8cf14a7627d2fb2b5e6ed75e5fa79be373ee1d227941e0a3c1b33b3385b04a24353b0c48c00b8aeea72a17a4612eefd31ac1b38ab66f5b3103d3d4eb9fef2
+  checksum: 10/b237f04dfd2b7ea2a24b12d2186f38b8debf95a5ef660802f7c2a19998ec8a7f7d599cd9079b9ba5bba2c6958cee2040d3d1adc3d3ace8c4964a469c751f4a5a
   languageName: node
   linkType: hard
 
@@ -11992,7 +11992,7 @@ __metadata:
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:^1.9.4"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@jest/globals": "npm:^29.7.0"
     "@jest/reporters": "npm:^29.7.0"
     "@react-native-async-storage/async-storage": "npm:2.2.0"
@@ -12202,7 +12202,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.2.0"
@@ -12847,7 +12847,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/labeling@workspace:suite-native/labeling"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
@@ -13258,7 +13258,7 @@ __metadata:
   resolution: "@suite-native/module-device-onboarding@workspace:suite-native/module-device-onboarding"
   dependencies:
     "@animatereactnative/marquee": "npm:^0.5.2"
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13497,7 +13497,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send@workspace:suite-native/module-send"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
@@ -13617,7 +13617,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-stellar-token-management@workspace:suite-native/module-stellar-token-management"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13654,7 +13654,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-trading@workspace:suite-native/module-trading"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-native-community/netinfo": "npm:^11.4.1"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
@@ -13814,7 +13814,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
@@ -14114,7 +14114,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/storybook@workspace:suite-native/storybook"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@lottiefiles/dotlottie-react": "npm:^0.17.8"
     "@react-native-community/datetimepicker": "npm:^8.5.0"
     "@react-native-community/slider": "npm:^5.1.1"
@@ -14178,7 +14178,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/test-utils@workspace:suite-native/test-utils"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/formatters": "workspace:*"

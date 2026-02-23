@@ -28,7 +28,7 @@
     "dependencies": {
         "@bitcoinerlab/secp256k1": "1.2.0",
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
-        "@gorhom/bottom-sheet": "5.2.6",
+        "@gorhom/bottom-sheet": "5.2.8",
         "@jest/reporters": "^29.7.0",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-community/netinfo": "^11.4.1",
