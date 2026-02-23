@@ -24,7 +24,7 @@ import {
     Switch,
     Text,
     TextButton,
-    TextButtonVariant,
+    TextButtonIntent,
     VStack,
 } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
@@ -84,7 +84,15 @@ export const DemoScreen = () => {
         'backgroundSurfaceElevation0',
     ] satisfies ButtonColorScheme[];
 
-    const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
+    const textButtonIntents = [
+        'neutralPrimary',
+        'neutralSecondary',
+        'brand',
+        'info',
+        'warning',
+        'critical',
+        'accentViolet',
+    ] satisfies TextButtonIntent[];
     const badgeVariants = [
         'neutral',
         'green',
@@ -260,18 +268,18 @@ export const DemoScreen = () => {
                 </VStack>
                 <VStack>
                     <Text variant="headline-sm">TextButton:</Text>
-                    {textButtonVariants.map(variant => (
+                    {textButtonIntents.map(intent => (
                         <HStack
-                            key={variant}
+                            key={intent}
                             flexDirection="row"
                             justifyContent="space-around"
                             alignItems="center"
                         >
-                            {buttonSizes.map(buttonSize => (
+                            {(['small', 'medium'] as const).map(buttonSize => (
                                 <TextButton
-                                    variant={variant}
-                                    key={variant + buttonSize}
-                                    viewLeft="trezorSafe5"
+                                    intent={intent}
+                                    key={intent + buttonSize}
+                                    iconLeft="trezorSafe5"
                                     size={buttonSize}
                                 >
                                     {buttonSize}

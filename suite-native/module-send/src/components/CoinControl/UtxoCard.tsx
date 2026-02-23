@@ -177,7 +177,7 @@ export const UtxoCard = ({
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}
-                    <TextButton variant="primary" onPress={handleShowDetails} isBold size="small">
+                    <TextButton intent="brand" onPress={handleShowDetails} size="small">
                         <Translation id="moduleSend.coinControl.utxos.showDetails" />
                     </TextButton>
                 </HStack>

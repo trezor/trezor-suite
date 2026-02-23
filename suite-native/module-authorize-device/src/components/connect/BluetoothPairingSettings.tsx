@@ -14,9 +14,9 @@ export const BluetoothPairingSettings = () => {
         <VStack spacing="sp24">
             <Image source={imageSource} height={150} contentFit="contain" />
             <TextButton
-                variant="blue"
+                intent="info"
                 isUnderlined
-                viewRight="arrowSquareOut"
+                iconRight="arrowSquareOut"
                 onPress={openBluetoothSettings}
             >
                 <Translation id="moduleConnectDevice.helpModal.pairing.settings.goToSettingsButton" />

@@ -28,7 +28,7 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
         <>
             <TextButton
                 onPress={() => handleAddLabel(openModal)}
-                viewRight="pencil"
+                iconRight="pencil"
                 testID={testID}
             >
                 {label ?? <Translation id="suiteSync.addLabel" />}

@@ -1,5 +1,6 @@
 import { FlexStyle, Pressable } from 'react-native';
 import Animated, {
+    FadeIn,
     interpolateColor,
     useAnimatedStyle,
     useSharedValue,
@@ -9,35 +10,75 @@ import Animated, {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
+import { Loader } from '../Loader';
 import { HStack } from '../Stack';
 import { pressTimingConfig } from '../constants';
-import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
+import {
+    ButtonAccessory,
+    ButtonAccessoryView,
+    ButtonProps,
+    buttonToTextSizeMap,
+} from './Button';
 
-export const TEXT_BUTTON_VARIANTS = ['primary', 'tertiary', 'blue'] as const;
-export type TextButtonVariant = (typeof TEXT_BUTTON_VARIANTS)[number];
+export const TEXT_BUTTON_INTENTS = [
+    'neutralPrimary',
+    'neutralSecondary',
+    'brand',
+    'info',
+    'warning',
+    'critical',
+    'accentViolet',
+] as const;
+export type TextButtonIntent = (typeof TEXT_BUTTON_INTENTS)[number];
 
-export type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
+export const TEXT_BUTTON_SIZES = ['small', 'medium'] as const;
+export type TextButtonSize = (typeof TEXT_BUTTON_SIZES)[number];
+
+export type TextButtonProps = Omit<
+    ButtonProps,
+    'colorScheme' | 'size' | 'viewLeft' | 'viewRight'
+> & {
+    iconLeft?: ButtonAccessory;
+    iconRight?: ButtonAccessory;
     isUnderlined?: boolean;
-    variant?: TextButtonVariant;
-    isBold?: boolean;
+    intent?: TextButtonIntent;
+    size?: TextButtonSize;
     justifyContent?: FlexStyle['justifyContent'];
     testID?: string;
 };
 
-const variantToColorsMap = {
-    primary: {
+const intentToColorsMap = {
+    neutralPrimary: {
+        color: 'textDefault',
+        pressedColor: 'textSubdued',
+    },
+    neutralSecondary: {
+        color: 'textSubdued',
+        pressedColor: 'textOnTertiary',
+    },
+    brand: {
         color: 'textPrimaryDefault',
         pressedColor: 'textPrimaryPressed',
     },
-    tertiary: {
-        color: 'textOnTertiary',
-        pressedColor: 'textSubdued',
-    },
-    blue: {
+    info: {
         color: 'textAlertBlue',
         pressedColor: 'textAlertBlue',
     },
-} as const satisfies Record<TextButtonVariant, { color: Color; pressedColor: Color }>;
+    warning: {
+        color: 'textAlertYellow',
+        pressedColor: 'textAlertYellow',
+    },
+    critical: {
+        color: 'textAlertRed',
+        pressedColor: 'textAlertRed',
+    },
+    accentViolet: {
+        color: 'textAlertPurple',
+        pressedColor: 'textAlertPurple',
+    },
+} as const satisfies Record<TextButtonIntent, { color: Color; pressedColor: Color }>;
+
+const LOADER_FADE_IN_DURATION = 500;
 
 const buttonContainerStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
@@ -49,8 +90,7 @@ const textStyle = prepareNativeStyle(
         {
             buttonSize,
             isUnderlined,
-            isBold,
-        }: { buttonSize: ButtonSize; isUnderlined: boolean; isBold: boolean },
+        }: { buttonSize: TextButtonSize; isUnderlined: boolean },
     ) => ({
         ...utils.typography[buttonToTextSizeMap[buttonSize]],
         extend: [
@@ -60,26 +100,20 @@ const textStyle = prepareNativeStyle(
                     textDecorationLine: 'underline',
                 },
             },
-            {
-                condition: isBold,
-                style: {
-                    fontWeight: utils.fontWeights.bold,
-                },
-            },
         ],
     }),
 );
 
 export const TextButton = ({
-    viewLeft,
-    viewRight,
+    iconLeft,
+    iconRight,
     style,
     children,
-    variant = 'primary',
+    intent = 'neutralPrimary',
     size = 'medium',
     isDisabled = false,
+    isLoading = false,
     isUnderlined = false,
-    isBold = false,
     justifyContent,
     testID,
     ...pressableProps
@@ -87,7 +121,7 @@ export const TextButton = ({
     const { applyStyle, utils } = useNativeStyles();
     const textPressedColorValue = useSharedValue(0);
 
-    const { color, pressedColor } = variantToColorsMap[variant];
+    const { color, pressedColor } = intentToColorsMap[intent];
 
     const animatedColor = useSharedValue(utils.colors[color]);
 
@@ -120,34 +154,47 @@ export const TextButton = ({
 
     return (
         <Pressable
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             style={applyStyle(buttonContainerStyle)}
             testID={`${testID}/button`}
             {...pressableProps}
         >
-            <HStack alignItems="center" justifyContent={justifyContent}>
-                {viewLeft && (
-                    <ButtonAccessoryView element={viewLeft} iconColor={iconColor} iconSize={size} />
-                )}
-                <Animated.Text
-                    testID={`${testID}/text`}
-                    style={[
-                        applyStyle(textStyle, { buttonSize: size, isUnderlined, isBold }),
-                        animatedTextStyle,
-                    ]}
+            {isLoading ? (
+                <Animated.View
+                    testID={`${testID}/loading`}
+                    entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
                 >
-                    {children}
-                </Animated.Text>
-                {viewRight && (
-                    <ButtonAccessoryView
-                        element={viewRight}
-                        iconColor={iconColor}
-                        iconSize={size}
-                    />
-                )}
-            </HStack>
+                    <Loader color={color} />
+                </Animated.View>
+            ) : (
+                <HStack alignItems="center" justifyContent={justifyContent}>
+                    {iconLeft && (
+                        <ButtonAccessoryView
+                            element={iconLeft}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
+                    <Animated.Text
+                        testID={`${testID}/text`}
+                        style={[
+                            applyStyle(textStyle, { buttonSize: size, isUnderlined }),
+                            animatedTextStyle,
+                        ]}
+                    >
+                        {children}
+                    </Animated.Text>
+                    {iconRight && (
+                        <ButtonAccessoryView
+                            element={iconRight}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
+                </HStack>
+            )}
         </Pressable>
     );
 };

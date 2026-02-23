@@ -50,7 +50,7 @@ export const ShowAddressButtons = ({ onShowAddress, isLoading }: ShowAddressButt
                     }
                 />
             </Button>
-            <TextButton size="small" onPress={handleOpenEduLink} viewRight="arrowUpRight">
+            <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
                 <Translation id="moduleReceive.receiveAddressCard.showAddress.learnMore" />
             </TextButton>
             <ShowAddressViewOnlyBottomSheet
