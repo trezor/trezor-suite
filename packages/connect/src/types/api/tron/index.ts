@@ -17,8 +17,35 @@ const TronTriggerSmartContract = Type.Object({
     }),
 });
 
+const TronFreezeBalanceV2Contract = Type.Object({
+    type: Type.Literal('FreezeBalanceV2Contract'),
+    parameter: Type.Object({
+        value: PROTO.TronFreezeBalanceV2Contract,
+    }),
+});
+
+const TronUnfreezeBalanceV2Contract = Type.Object({
+    type: Type.Literal('UnfreezeBalanceV2Contract'),
+    parameter: Type.Object({
+        value: PROTO.TronUnfreezeBalanceV2Contract,
+    }),
+});
+
+const TronWithdrawExpireUnfreezeContract = Type.Object({
+    type: Type.Literal('WithdrawExpireUnfreezeContract'),
+    parameter: Type.Object({
+        value: PROTO.TronWithdrawUnfreeze,
+    }),
+});
+
 export type TronContracts = Static<typeof TronContracts>;
-export const TronContracts = Type.Union([TronTransferContract, TronTriggerSmartContract]);
+export const TronContracts = Type.Union([
+    TronTransferContract,
+    TronTriggerSmartContract,
+    TronFreezeBalanceV2Contract,
+    TronUnfreezeBalanceV2Contract,
+    TronWithdrawExpireUnfreezeContract,
+]);
 
 export type TronContractsTypes = TronContracts['type'];
 export type TronContractsParameters = TronContracts['parameter']['value'];
