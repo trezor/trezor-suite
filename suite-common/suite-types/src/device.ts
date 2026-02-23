@@ -14,7 +14,7 @@ import {
     Unsuccessful,
 } from '@trezor/connect';
 import { Branded, UnionSubset } from '@trezor/type-utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:
