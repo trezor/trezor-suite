@@ -3,7 +3,7 @@ import { Locator, Page } from '@playwright/test';
 import { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
+import { calculatePercentageOfBalance, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 
@@ -55,9 +55,8 @@ export class TradingFormInputs {
 
     @step()
     async selectCountryOfResidence(countryCode: TradingCountryCode) {
-        const countryLabel = getCountryLabel(countryCode);
         const currentCountry = await this.countryValue.textContent();
-        if (currentCountry?.includes(countryLabel)) {
+        if (currentCountry?.includes(countryCode)) {
             return;
         }
         await this.countrySelect.click();
@@ -65,7 +64,7 @@ export class TradingFormInputs {
             'TR_TRADING_COUNTRY',
         );
         await this.countryOption(countryCode).click();
-        await expect(this.countryValue).toContainText(countryLabel);
+        await expect(this.countryValue).toContainText(countryCode);
     }
 
     @step()

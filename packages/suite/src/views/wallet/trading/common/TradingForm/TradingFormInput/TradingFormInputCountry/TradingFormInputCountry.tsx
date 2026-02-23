@@ -29,7 +29,7 @@ export const TradingFormInputCountry = ({
         <>
             {renderInput && (
                 <FakeSelect
-                    value={countryValue?.label ?? defaultCountry?.label ?? ''}
+                    value={countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
                     placeholder={label ? translationString(label) : undefined}
                     onClick={() => setIsModalOpen(true)}
                     data-testid="@trading/form/country-select"
@@ -50,7 +50,7 @@ export const TradingFormInputCountry = ({
                                 typographyStyle="body-md"
                                 data-testid="@trading/form/country-select/value"
                             >
-                                {countryValue?.label ?? defaultCountry?.label ?? ''}
+                                {countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
                             </Text>
                             <Icon
                                 name="caretRight"
