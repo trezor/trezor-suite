@@ -6,7 +6,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, FormOptions } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';

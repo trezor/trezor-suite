@@ -15,9 +15,9 @@ import {
     PrepareStakeSolTxResponse,
     PriorityFees,
 } from '@suite-common/wallet-types';
+// TODO: fix this (Important: beware of depcheck ignore in this package in `.depcheckrc.json` - there is a circular dependency that needs to be solved)
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils/src/amountUtils';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 import { SolanaTx } from '../types';

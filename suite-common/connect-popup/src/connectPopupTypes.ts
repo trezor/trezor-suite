@@ -1,8 +1,6 @@
 import { AccountKey, TxSimulationAction } from '@suite-common/wallet-types';
 import { CallMethodKeys } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {

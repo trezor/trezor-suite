@@ -8,9 +8,7 @@ import {
 import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type { CallMethodKeys, EthereumSignTransaction } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';

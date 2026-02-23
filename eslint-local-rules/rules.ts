@@ -57,7 +57,11 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
  * Returns the suggested import path for a deep import, or null if the import is allowed.
  * Handles the mocks convention: `@scope/pkg/mocks` is allowed, but `@scope/pkg/mocks/deep` suggests `@scope/pkg/mocks`.
  */
-const getSuggestedImportPath = (sourcePath: string, packageScopes: string[]): string | null => {
+const getSuggestedImportPath = (
+    sourcePath: string,
+    packageScopes: string[],
+    ignoredPackages: string[],
+): string | null => {
     const sourcePathParts = sourcePath.split('/');
 
     if (sourcePathParts.length < 3) {
@@ -73,6 +77,10 @@ const getSuggestedImportPath = (sourcePath: string, packageScopes: string[]): st
     }
 
     const packageImportPath = `${matchingPackageScope}/${sourcePathParts[1]}`;
+
+    if (ignoredPackages.includes(packageImportPath)) {
+        return null;
+    }
 
     // Allow @scope/pkg/mocks as a valid entry point
     if (sourcePathParts[2] === 'mocks') {
@@ -188,6 +196,10 @@ export default {
                             items: { type: 'string' },
                             minItems: 1,
                         },
+                        ignoredPackages: {
+                            type: 'array',
+                            items: { type: 'string' },
+                        },
                     },
                     additionalProperties: false,
                 },
@@ -200,6 +212,7 @@ export default {
                 '@suite-common',
                 '@trezor',
             ];
+            const ignoredPackages = context.options[0]?.ignoredPackages ?? [];
 
             const checkNode = (node: Rule.Node) => {
                 const sourcePath = getNodeSourcePath(node);
@@ -208,7 +221,11 @@ export default {
                     return;
                 }
 
-                const packageImportPath = getSuggestedImportPath(sourcePath, packageScopes);
+                const packageImportPath = getSuggestedImportPath(
+                    sourcePath,
+                    packageScopes,
+                    ignoredPackages,
+                );
 
                 if (packageImportPath === null) {
                     return;
