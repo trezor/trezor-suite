@@ -10,7 +10,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { checkBackupThunk } from '../checkBackupThunks';

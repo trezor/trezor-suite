@@ -1,6 +1,5 @@
 import { SolanaTx, SolanaTxMeta } from '@suite-common/staking-solana';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 import { Blockchain } from './backend';

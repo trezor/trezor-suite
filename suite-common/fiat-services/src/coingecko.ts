@@ -1,7 +1,6 @@
 import { getNetwork, networks } from '@suite-common/wallet-config';
 import { HistoricRates, TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 import { fetchUrl } from './fetch';

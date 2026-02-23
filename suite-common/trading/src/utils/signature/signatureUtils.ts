@@ -8,7 +8,6 @@ import {
 import type { Network } from '@suite-common/wallet-config';
 import { asAmountUnit, formatBigUintToLE, unitsToSubunits } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 

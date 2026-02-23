@@ -6,7 +6,6 @@ import TrezorConnect, {
     SuccessWithDevice,
     Unsuccessful,
 } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     BlockchainEstimatedFee,
     BlockchainEstimatedFeeLevel,

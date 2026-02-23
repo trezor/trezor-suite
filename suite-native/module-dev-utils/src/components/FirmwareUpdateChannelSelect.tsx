@@ -6,7 +6,6 @@ import { reloadAppAsync } from 'expo';
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
 import { useAlert } from '@suite-native/alerts';
 import { Select, SelectItemType } from '@suite-native/atoms';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 const options: SelectItemType<FirmwareChannel>[] = [

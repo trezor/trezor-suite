@@ -39,7 +39,6 @@ import TrezorConnect, {
     StaticSessionId,
     UI,
 } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 import { BigNumber, typedObjectEntries } from '@trezor/utils';
 

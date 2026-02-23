@@ -8,7 +8,6 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };

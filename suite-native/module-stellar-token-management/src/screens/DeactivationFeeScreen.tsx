@@ -21,7 +21,6 @@ import {
     StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-// eslint-disable-next-line local-rules/no-package-deep-imports
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 
 import { FeeOptionsSection } from '../components/FeeOptionsSection';
