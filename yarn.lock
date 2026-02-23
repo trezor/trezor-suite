@@ -16071,7 +16071,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
     "@types/invity-api": "npm:^1.1.13"
-    "@types/pako": "npm:^2.0.3"
+    "@types/pako": "npm:^2.0.4"
     "@types/pdfmake": "npm:^0.2.11"
     "@types/react": "npm:19.1.6"
     "@types/react-dom": "npm:19.1.6"
@@ -17460,10 +17460,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pako@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@types/pako@npm:2.0.3"
-  checksum: 10/afa618a0a05a931216703a30f4cba6902ce5cd4db8170a480f95bc8e268afebb3bb8deea4444e8292aba86348e400e068af1b5f4c75b9185b3a7efd1999fb78e
+"@types/pako@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@types/pako@npm:2.0.4"
+  checksum: 10/9be5167f5cb45d405d92e8b320219e6d26f244880893425abb16b998cde0386185f048d60de609672f1e8654c44b77344e754138da3784460f4543fe8576fa62
   languageName: node
   linkType: hard
 
