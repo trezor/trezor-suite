@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -51,7 +52,6 @@ export const AccountTopPanel = () => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const baseCurrency = useSelector(selectBaseCurrency);
     const { balanceSectionRef } = useAccountHeaderContext();
-    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
 
     if (status === 'exception') {
         return null;
@@ -67,12 +67,14 @@ export const AccountTopPanel = () => {
     }
 
     const { symbol, formattedBalance, accountType } = account;
+    const shouldDisplayBaseCurrency = baseCurrency !== symbol;
+    const isMainnet = !isTestnet(symbol);
 
     return (
         <Container>
             <Column ref={balanceSectionRef}>
                 <AmountUnitSwitchWrapper symbol={symbol}>
-                    {shallDisplayBaseCurrency && (
+                    {shouldDisplayBaseCurrency && (
                         <AccountCryptoBalance>
                             <FormattedCryptoAmount
                                 data-testid="@wallet/account-top-panel/crypto-balance"
@@ -82,13 +84,15 @@ export const AccountTopPanel = () => {
                         </AccountCryptoBalance>
                     )}
                 </AmountUnitSwitchWrapper>
-                <FiatHeader
-                    symbol={account.symbol}
-                    amount={account.formattedBalance}
-                    size="large"
-                    localCurrency={baseCurrency}
-                    data-testid="@wallet/account-top-panel/fiat-amount"
-                />
+                {isMainnet && (
+                    <FiatHeader
+                        symbol={account.symbol}
+                        amount={account.formattedBalance}
+                        size="large"
+                        localCurrency={baseCurrency}
+                        data-testid="@wallet/account-top-panel/fiat-amount"
+                    />
+                )}
             </Column>
             <ContextMessage context={Context.getAccount(symbol, accountType)} />
         </Container>

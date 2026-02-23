@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';
 
@@ -138,7 +139,10 @@ export class WalletPage {
     @step()
     async openAccount(params: WalletParams = {}) {
         await this.accountButton(params).click();
-        await expect(this.fiatAmount).toBeVisible();
+
+        if (!params.symbol || !isTestnet(params.symbol)) {
+            await expect(this.fiatAmount).toBeVisible();
+        }
     }
 
     @step()
