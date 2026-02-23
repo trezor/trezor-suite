@@ -1,83 +1,151 @@
-/* eslint-disable local-rules/analytics-event-name -- legacy event names; prefer domain/kebab-case for new events */
 export enum EventType {
+    // eslint-disable-next-line local-rules/analytics-event-name -- legacy; prefer domain/kebab-case for new events
     AppReady = 'app_ready',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AssetDetail = 'asset_detail',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AssetDetailTimeframeChange = 'asset_detail/timeframe_change',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AssetsSync = 'assets_sync',
+    // eslint-disable-next-line local-rules/analytics-event-name
     AutoEjectModal = 'auto_eject_modal',
+    // eslint-disable-next-line local-rules/analytics-event-name
     BiometricsChange = 'biometrics_change',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CoinEnablingInitState = 'coin-enabling/init_state',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddress = 'create_receive_address',
+    // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressShowAddress = 'create_receive_address/show_address',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DemoAccountQuestionnaireDashboard = 'demo-account/questionnaire-dashboard',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DemoAccountQuestionnaireLinks = 'demo-account/questionnaire-links',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DemoAccountQuestionnaireQuestion = 'demo-account/questionnaire-question',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DemoAccountQuestionnaireStart = 'demo-account/questionnaire-start',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnect = 'device_connect',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsAuthenticityCheck = 'device_settings/authenticity_check',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsCheckBackupEntered = 'device_settings/check_backup_entered',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsCheckBackupExited = 'device_settings/check_backup_exited',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsCheckBackupFinished = 'device_settings/check_backup_finished',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsCheckBackupSupport = 'device_settings/check_backup_support',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSettingsPinProtectionChange = 'device_settings/pin_protection_change',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupCompleted = 'device_setup/completed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupInfo = 'device_setup/info',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupSecurityCheck = 'device_setup/security_check',
+    // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupStarted = 'device_setup/started',
+    // eslint-disable-next-line local-rules/analytics-event-name
     EarnNavigate = 'earn/navigate',
+    // eslint-disable-next-line local-rules/analytics-event-name
     EarnStakeTilePressed = 'earn/stake_tile_pressed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     EjectDeviceClick = 'eject_device/click',
+    // eslint-disable-next-line local-rules/analytics-event-name
     EmptyDashboardAction = 'empty_dashboard/action',
+    // eslint-disable-next-line local-rules/analytics-event-name
     FirmwareFirmwareUpdateCancel = 'firmware/firmware_update_cancel',
+    // eslint-disable-next-line local-rules/analytics-event-name
     FirmwareFirmwareUpdateFinished = 'firmware/firmware_update_finished',
+    // eslint-disable-next-line local-rules/analytics-event-name
     FirmwareFirmwareUpdateStarted = 'firmware/firmware_update_started',
+    // eslint-disable-next-line local-rules/analytics-event-name
     FirmwareFirmwareUpdateStucked = 'firmware/firmware_update_stucked',
+    // eslint-disable-next-line local-rules/analytics-event-name
     OnboardingCompleted = 'onboarding_completed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseAddHiddenWallet = 'passphrase/add_hidden_wallet',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseArticleOpened = 'passphrase/article_opened',
     PassphraseDuplicate = 'passphrase/duplicate',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseEnterInApp = 'passphrase/enter_in_app',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseEnterOnTrezor = 'passphrase/enter_on_trezor',
     PassphraseExit = 'passphrase/exit',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseFlowFinished = 'passphrase/flow_finished',
     PassphraseMismatch = 'passphrase/mismatch',
+    // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseTryAgain = 'passphrase/try_again',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveAddressConfirmOnTrezor = 'receiveAddress/confirm_on_trezor',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveFlowEntered = 'receive/flow_entered',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ReferralButtonPress = 'referral/button_press',
+    // eslint-disable-next-line local-rules/analytics-event-name
     ScreenChange = 'screen_change',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendAddressFilled = 'send/address_filled',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendAmountInputSwitched = 'send/amount_input_switched',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendFeeLevelChanged = 'send/fee_level_changed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendFlowEntered = 'send/flow_entered',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendFlowExited = 'send/flow_exited',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SendTransactionDispatched = 'send/transaction_dispatched',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsAutoEjectToggle = 'settings/auto_eject_toggle',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeCoinBackend = 'settings/change_coin_backend',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeCoinEnabled = 'settings/change_coin_enabled',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeCurrency = 'settings/change_currency',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeTheme = 'settings/change_theme',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDataPermission = 'settings/data_permission',
+    // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
+    // eslint-disable-next-line local-rules/analytics-event-name
     Switcher = 'switcher',
     TradingBuy = 'trading/buy',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradingCompareOffers = 'trading/compare_offers',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradingConfirmTrade = 'trading/confirm_trade',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradingCountrySelection = 'trading/country_selection',
     TradingExchange = 'trading/exchange',
     TradingNavigate = 'trading/navigate',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradingParameterChanged = 'trading/parameter_changed',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TradingQuoteReceived = 'trading/quote_received',
     TradingSell = 'trading/sell',
     TradingStatus = 'trading/status',
     TradingSuccess = 'trading/success',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionDetail = 'transaction_detail',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionDetailCompareValues = 'transaction_detail/compare_values',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionDetailExploreInBlockchain = 'transaction_detail/explore_in_blockchain',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionDetailInputOutput = 'transaction_detail/input_output',
+    // eslint-disable-next-line local-rules/analytics-event-name
     TransactionDetailParameters = 'transaction_detail/parameters',
+    // eslint-disable-next-line local-rules/analytics-event-name
     UnsupportedDevice = 'unsupported_device',
+    // eslint-disable-next-line local-rules/analytics-event-name
     WatchPortfolioTimeframeChange = 'watch_portfolio/timeframe_change',
 }
-/* eslint-enable local-rules/analytics-event-name */
