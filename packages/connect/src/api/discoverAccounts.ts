@@ -5,16 +5,20 @@ import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import {
+    CARDANO_TXS_PER_PAGE,
+    DEFAULT_TXS_PER_PAGE,
+    SOLANA_TXS_PER_PAGE,
+} from '../constants/paging';
+import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
     MethodPermission,
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
+import type { AccountDescriptor } from '../device/DeviceCommands';
 import { UI_REQUEST, createUiMessage } from '../events';
 import type { CoinInfo, FirmwareRange } from '../types';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import type { AccountDescriptor } from '../device/DeviceCommands';
 import {
     ACCOUNT_TYPES,
     AccountTypeItem,
@@ -25,9 +29,9 @@ import {
 } from '../types/api/discoverAccounts';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
 
 const ACCOUNT_LIMIT = 10;
-const TXS_PER_PAGE = 25;
 const DETAILS = 'txs';
 
 type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
@@ -58,6 +62,17 @@ const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${typ
 
 // TODO use substituteBip43Path from wallet-utils somehow
 const substituteBip43Path = (path: string, index: number) => path.replace('i', String(index));
+
+export const getTxsPerPage = (account: AccountTypeItem) => {
+    switch (account.symbol) {
+        case 'ada':
+            return CARDANO_TXS_PER_PAGE;
+        case 'sol':
+            return SOLANA_TXS_PER_PAGE;
+        default:
+            return DEFAULT_TXS_PER_PAGE;
+    }
+};
 
 export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts', Request[]> {
     disposed = false;
@@ -122,7 +137,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 .map(account => [account, knownAccs?.find(t => t.type === account.type)] as const) // Pair all coin accounts with possibly known account types
                 .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
                 .map(([account, known]) => ({
-                    pageSize: isCardano(account) ? 8 : TXS_PER_PAGE,
+                    pageSize: getTxsPerPage(account),
                     details: DETAILS,
                     coinInfo,
                     firmwareRange,

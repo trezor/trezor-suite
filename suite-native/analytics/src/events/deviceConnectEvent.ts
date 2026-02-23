@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { DeviceMode } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { VersionArray } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils';
 
 import { EventType } from '../constants';
 

@@ -1,10 +1,13 @@
-import { settingsCommonConfig } from '@suite-common/suite-config';
 import type { Account } from '@suite-common/wallet-types';
+import { PAGING } from '@trezor/connect';
 
 export const getTxsPerPage = (networkType: Account['networkType']) => {
-    if (networkType === 'solana' || networkType === 'cardano') {
-        return 8;
+    switch (networkType) {
+        case 'cardano':
+            return PAGING.CARDANO_TXS_PER_PAGE;
+        case 'solana':
+            return PAGING.SOLANA_TXS_PER_PAGE;
+        default:
+            return PAGING.DEFAULT_TXS_PER_PAGE;
     }
-
-    return settingsCommonConfig.TXS_PER_PAGE;
 };
