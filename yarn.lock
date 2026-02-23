@@ -15124,7 +15124,7 @@ __metadata:
     react: "npm:19.1.0"
     react-date-range: "npm:^2.0.1"
     react-dom: "npm:19.1.0"
-    react-focus-lock: "npm:^2.13.6"
+    react-focus-lock: "npm:^2.13.7"
     react-intl: "npm:^8.0.6"
     react-markdown: "npm:^10.1.0"
     react-select: "npm:^5.10.2"
@@ -16095,7 +16095,7 @@ __metadata:
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-error-boundary: "npm:^6.0.0"
-    react-focus-lock: "npm:^2.13.6"
+    react-focus-lock: "npm:^2.13.7"
     react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.71.1"
     react-intl: "npm:^8.0.6"
@@ -39792,9 +39792,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-focus-lock@npm:^2.13.6":
-  version: 2.13.6
-  resolution: "react-focus-lock@npm:2.13.6"
+"react-focus-lock@npm:^2.13.7":
+  version: 2.13.7
+  resolution: "react-focus-lock@npm:2.13.7"
   dependencies:
     "@babel/runtime": "npm:^7.0.0"
     focus-lock: "npm:^1.3.6"
@@ -39808,7 +39808,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/f880eba6ae0c51b4b31920058234005c90fe1ed4d9f20b07c563e97e773affe0695dc6b2f00f68c0d4ba4442ad381f608dc88dfda59efd0901ce3ee677a460f6
+  checksum: 10/6d139be2dda350648febcfa1f08c341f65db0e4e3388cb322377a26fa7773605abd4f1fbd621a026bc2c55010d6e41ccb1ab0ae66577ce61404321aad0682a61
   languageName: node
   linkType: hard
 
