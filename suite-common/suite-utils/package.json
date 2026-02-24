@@ -25,7 +25,7 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "jws": "^4.0.1",
-        "ua-parser-js": "^2.0.4"
+        "ua-parser-js": "^2.0.9"
     },
     "devDependencies": {
         "@trezor/device-utils": "workspace:^"
