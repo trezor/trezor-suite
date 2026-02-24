@@ -108,6 +108,13 @@ const getNodeSourcePath = (node: Rule.Node): string | null => {
     return null;
 };
 
+const normalizePathSeparators = (filePath: string) => filePath.replace(/\\/g, '/');
+
+const isSuiteCommonFile = (filename: string) => filename.includes('/suite-common/');
+
+const isSuiteOrSuiteNativeImport = (sourcePath: string) =>
+    sourcePath.startsWith('@suite/') || sourcePath.startsWith('@suite-native/');
+
 export default {
     'no-override-ds-component': {
         meta: {
@@ -236,6 +243,54 @@ export default {
                     messageId: 'doNotImportPackageDeepPath',
                     data: {
                         packageImportPath,
+                        sourcePath,
+                    },
+                });
+            };
+
+            return {
+                ImportDeclaration: checkNode,
+                ExportAllDeclaration: checkNode,
+                ExportNamedDeclaration: checkNode,
+            };
+        },
+    },
+    'no-suite-imports-in-suite-common': {
+        meta: {
+            type: 'problem',
+            docs: {
+                description:
+                    'Disallows imports from suite and suite-native packages in suite-common code.',
+                category: 'Best Practices',
+                recommended: false,
+            },
+            messages: {
+                doNotImportSuiteIntoSuiteCommon:
+                    "Importing from '{{sourcePath}}' is not allowed in suite-common. Move shared code to @suite-common or @trezor package.",
+            },
+            schema: [],
+        },
+        create(context) {
+            const filename =
+                'filename' in context && typeof context.filename === 'string'
+                    ? normalizePathSeparators(context.filename)
+                    : null;
+
+            if (filename === null || !isSuiteCommonFile(filename)) {
+                return {};
+            }
+
+            const checkNode = (node: Rule.Node) => {
+                const sourcePath = getNodeSourcePath(node);
+
+                if (sourcePath === null || !isSuiteOrSuiteNativeImport(sourcePath)) {
+                    return;
+                }
+
+                context.report({
+                    node,
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: {
                         sourcePath,
                     },
                 });
