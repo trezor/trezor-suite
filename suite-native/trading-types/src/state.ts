@@ -1,4 +1,4 @@
-import type { CryptoId, ProviderMetadata } from 'invity-api';
+import type { ProviderMetadata } from 'invity-api';
 
 import type {
     TradingBuyState as CommonTradingBuyState,
@@ -36,7 +36,6 @@ export interface TradingState extends CommonTradingState {
     exchange: TradingExchangeState;
     sell: TradingSellState;
     residence: TradingResidenceState;
-    favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;

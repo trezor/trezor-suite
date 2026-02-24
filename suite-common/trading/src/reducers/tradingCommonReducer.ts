@@ -62,6 +62,7 @@ export interface TradingState {
     verifiedAddress: TradingVerifiedAddress;
     settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
+    favouriteAssets: Record<CryptoId, true>;
 }
 
 export type TradingRootState = {
@@ -92,12 +93,24 @@ export const initialState: TradingState = {
     },
     verifiedAddress: undefined,
     settings: settingsInitialState,
+    favouriteAssets: {},
 };
 
 const tradingCommonSlice = createSlice({
     name: TRADING_PREFIX,
     initialState,
     reducers: {
+        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+            if (!state.favouriteAssets) {
+                state.favouriteAssets = {};
+            }
+            state.favouriteAssets[payload] = true;
+        },
+        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+            if (state.favouriteAssets) {
+                delete state.favouriteAssets[payload];
+            }
+        },
         saveInfo(state, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;

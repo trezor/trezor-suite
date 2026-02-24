@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import type { CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -147,6 +148,30 @@ describe('Testing trading reducer', () => {
                 expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
                     providerMetadata,
                 );
+            });
+
+            it('should initialize favouriteAssets for legacy state before adding favourites', () => {
+                const legacyStore = configureMockStore({
+                    extra: {},
+                    reducer: combineReducers({
+                        wallet: combineReducers({
+                            trading: tradingReducer,
+                        }),
+                    }),
+                    preloadedState: {
+                        wallet: {
+                            trading: { ...initialState, favouriteAssets: undefined },
+                        },
+                    },
+                });
+
+                legacyStore.dispatch(
+                    tradingActions.addTradeableAssetToFavourites('bitcoin' as CryptoId),
+                );
+
+                expect(legacyStore.getState().wallet.trading.favouriteAssets).toEqual({
+                    bitcoin: true,
+                });
             });
         });
 

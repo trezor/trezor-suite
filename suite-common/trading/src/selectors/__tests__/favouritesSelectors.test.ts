@@ -1,34 +1,34 @@
 import type { CryptoId } from 'invity-api';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { btcAsset } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
 
-import { TradingState, tradingActions, tradingSlice } from '../../reducers';
+import type { TradingState } from '../../reducers/tradingCommonReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import {
-    selectIsTradingFavouriteAsset,
+    selectIsTradingFavouriteAssetByCryptoId,
     selectTradingFavouriteAssets,
     selectTradingFavouriteAssetsArray,
 } from '../favouritesSelectors';
 
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
 describe('favouritesSelectors', () => {
-    let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
     let state: TradingState;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesCommonMock);
         state = tradingReducer(
             undefined,
-            tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
+            tradingActions.addTradeableAssetToFavourites('bitcoin' as CryptoId),
         );
     });
 
     it('selectTradingFavouriteAssets should return favourites assets map', () => {
-        const favouritesArray = selectTradingFavouriteAssets({
+        const favourites = selectTradingFavouriteAssets({
             wallet: { trading: state },
         });
 
-        expect(favouritesArray).toEqual({ bitcoin: true });
+        expect(favourites).toEqual({ bitcoin: true });
     });
 
     it('selectTradingFavouriteAssetsArray should return memoized array', () => {
@@ -47,13 +47,11 @@ describe('favouritesSelectors', () => {
         [false, 'eth'],
         [false, 'eth__0x0000000000000000000000000000000000000000'],
     ] as [boolean, CryptoId][])(
-        'selectIsTradingFavouriteAsset should be [%s] for asset with cryptoId [%s] ',
+        'selectIsTradingFavouriteAssetByCryptoId should be [%s] for asset with cryptoId [%s]',
         (expectedValue, cryptoId) => {
-            const asset = { cryptoId } as unknown as TradeableAsset;
-
-            expect(selectIsTradingFavouriteAsset({ wallet: { trading: state } }, asset)).toBe(
-                expectedValue,
-            );
+            expect(
+                selectIsTradingFavouriteAssetByCryptoId({ wallet: { trading: state } }, cryptoId),
+            ).toBe(expectedValue);
         },
     );
 });
