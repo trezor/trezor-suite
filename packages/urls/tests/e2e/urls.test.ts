@@ -1,4 +1,4 @@
-import * as URLS from '../src/urls';
+import * as URLS from '../../src/urls';
 
 // Excluded urls
 const excluded = [

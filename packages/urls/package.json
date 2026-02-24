@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+        "test:e2e": "yarn g:jest -c ../../jest.config.base.js --testPathPattern=tests/e2e",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js --testPathIgnorePatterns tests/e2e"
     }
 }
