@@ -1,5 +1,10 @@
 import { Utxo } from '@trezor/blockchain-link';
 
+import {
+    FilterAndCategorizeUtxosParams,
+    FilterAndCategorizeUtxosResult,
+} from '../filterAndCategorizeUtxos';
+
 export const baseUtxo: Omit<Utxo, 'address'> = {
     txid: '1',
     vout: 1,
@@ -9,25 +14,9 @@ export const baseUtxo: Omit<Utxo, 'address'> = {
     confirmations: 100,
 };
 
-type FilterUtxosParams = {
-    searchQuery: string;
-    utxos: Utxo[];
-    spendableUtxos: Utxo[];
-    lowAnonymityUtxos: Utxo[];
-    dustUtxos: Utxo[];
-    outputLabels: { [txid: string]: any };
-};
-
-type FilterUtxosResult = {
-    filteredUtxos: Utxo[];
-    filteredSpendableUtxos: Utxo[];
-    filteredLowAnonymityUtxos: Utxo[];
-    filteredDustUtxos: Utxo[];
-};
-
 type FilterAndCategorize = {
-    params: FilterUtxosParams;
-    checkResult: (result: FilterUtxosResult) => boolean;
+    params: FilterAndCategorizeUtxosParams;
+    checkResult: (result: FilterAndCategorizeUtxosResult) => boolean;
 };
 
 const filterByAddress: FilterAndCategorize[] = [
@@ -66,7 +55,7 @@ const filterByAddress: FilterAndCategorize[] = [
                     ...baseUtxo,
                 },
             ],
-            outputLabels: {},
+            outputLabels: new Map(),
         },
         checkResult: result =>
             result.filteredUtxos.length == 1 &&
@@ -112,7 +101,7 @@ const filterByTxid: FilterAndCategorize[] = [
                     ...baseUtxo,
                 },
             ],
-            outputLabels: {},
+            outputLabels: new Map(),
         },
         checkResult: result =>
             result.filteredUtxos.length == 3 &&
@@ -160,11 +149,7 @@ const filterByLabel: FilterAndCategorize[] = [
                     ...baseUtxo,
                 },
             ],
-            outputLabels: {
-                '2': {
-                    1: 'label',
-                },
-            },
+            outputLabels: new Map([['2', new Map([[1, 'label']])]]),
         },
         checkResult: result =>
             result.filteredUtxos.length == 1 &&

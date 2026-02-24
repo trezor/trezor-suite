@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 
 import { Utxo } from '@trezor/blockchain-link-types';
 
-import { OutputLabels, filterUtxos } from './filterAndCategorizeUtxos';
+import { filterUtxos } from './filterAndCategorizeUtxos';
+import { SearchOutputLabels } from './searchLabels';
 
 export const useFilteredUtxos = (
     utxos: Utxo[] = [],
     query: string = '',
-    outputLabels?: OutputLabels,
+    outputLabels?: SearchOutputLabels,
 ) =>
     useMemo(() => {
         if (!query.trim()) {

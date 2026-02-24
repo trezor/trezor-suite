@@ -11593,7 +11593,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/transaction-search@workspace:suite-common/transaction-search"
   dependencies:
-    "@suite-common/metadata-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"

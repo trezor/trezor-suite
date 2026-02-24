@@ -36,7 +36,7 @@ describe(filterAndCategorizeUtxos.name, () => {
             spendableUtxos: [],
             lowAnonymityUtxos: [],
             utxos: [{ ...baseUtxo, address: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q' }],
-            outputLabels: {},
+            outputLabels: new Map(),
         });
 
         expect(categorized.filteredUtxos.map(utxo => utxo.address)).toStrictEqual([
