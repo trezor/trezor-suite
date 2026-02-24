@@ -6,6 +6,11 @@
         "package.json",
         "styled.d.ts"
     ],
+    "exclude": [
+        "src/**/__tests__/**",
+        "**/*.test.ts",
+        "**/*.test.tsx"
+    ],
     "compilerOptions": {
         "outDir": "libDev",
         "types": ["vite/client"]
