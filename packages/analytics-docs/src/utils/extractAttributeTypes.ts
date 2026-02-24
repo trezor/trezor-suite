@@ -200,18 +200,28 @@ const getEventDefTypeArgs = (
     return { attributesType: args[0], nameType: args[1] };
 };
 
+/** Key used for events whose attributes type is a single Record/index type (no named properties). */
+export const RECORD_TYPE_ATTRIBUTE_KEY = '[key: string]';
+
 /** Builds a map of attribute name to formatted type string from an EventDef attributes type. */
 const extractAttributeTypesFromType = (
     attributesType: Type,
     varDecl: VariableDeclaration,
 ): Record<string, string> => {
     const out: Record<string, string> = {};
-    for (const p of attributesType.getProperties()) {
-        const optional = isOptionalProperty(p);
-        const propType = p.getTypeAtLocation(varDecl);
-        const valueType = getAttributeValueType(propType, optional);
-        out[p.getName()] = formatTypeAsString(valueType, varDecl);
+    const properties = attributesType.getProperties();
+    if (properties.length > 0) {
+        for (const p of properties) {
+            const optional = isOptionalProperty(p);
+            const propType = p.getTypeAtLocation(varDecl);
+            const valueType = getAttributeValueType(propType, optional);
+            out[p.getName()] = formatTypeAsString(valueType, varDecl);
+        }
+
+        return out;
     }
+    // No named properties – type is e.g. Record<string, number>; show the whole type as one row.
+    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatTypeAsString(attributesType, varDecl);
 
     return out;
 };
