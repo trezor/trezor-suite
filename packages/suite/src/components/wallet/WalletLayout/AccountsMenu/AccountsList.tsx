@@ -89,7 +89,7 @@ export const AccountsList = ({
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const accountLabels = useSelector(selectAccountLabelsLegacy);
+    const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
 
     const accounts = useSelector(state =>
         selectAccountsWithSuiteSyncLabel(
@@ -116,8 +116,10 @@ export const AccountsList = ({
 
                   const accountLabel =
                       account.label ??
-                      accountLabels[key] ??
-                      getDefaultAccountLabel({ accountType, symbol, index });
+                      (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
+                          ? accountLegacyLabels[key]
+                          : getDefaultAccountLabel({ accountType, symbol, index })) ??
+                      '';
 
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
