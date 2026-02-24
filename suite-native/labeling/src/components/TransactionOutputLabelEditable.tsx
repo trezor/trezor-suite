@@ -37,6 +37,7 @@ export const TransactionOutputLabelEditable = ({
         selectSuiteSyncOutputLabel(state, txId, txTargetId, deviceStaticSessionId),
     );
 
+    // Tokens labels wouldn't sync properly between desktop & mobile, so labeling is turned off for tokens until it's fixed.
     if (!isLabellingAllowed || isTokenTxTargetId) {
         return null;
     }

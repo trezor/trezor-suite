@@ -16,6 +16,7 @@ type AddressQRCodeProps = {
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
+    showLabelEdit?: boolean;
 };
 
 const addressContainer = prepareNativeStyle(() => ({
@@ -27,6 +28,7 @@ export const AddressQRCode = ({
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
+    showLabelEdit = true,
 }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
@@ -58,13 +60,15 @@ export const AddressQRCode = ({
                     {address}
                 </Text>
             </Pressable>
-            <AddressLabelEditable
-                accountDescriptor={accountDescriptor}
-                address={address}
-                deviceStaticSessionId={deviceStaticSessionId}
-                networkSymbol={networkSymbol}
-                testID="@receive/address-label"
-            />
+            {showLabelEdit && (
+                <AddressLabelEditable
+                    accountDescriptor={accountDescriptor}
+                    address={address}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    networkSymbol={networkSymbol}
+                    testID="@receive/address-label"
+                />
+            )}
             <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"

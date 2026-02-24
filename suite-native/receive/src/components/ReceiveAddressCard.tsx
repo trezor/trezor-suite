@@ -81,6 +81,7 @@ export const ReceiveAddressCard = ({
                             address={address}
                             deviceStaticSessionId={deviceStaticSessionId}
                             networkSymbol={symbol}
+                            showLabelEdit={!isTokenAddress}
                         />
                     ) : (
                         <UnverifiedAddress
