@@ -12,7 +12,6 @@ describe('utils/formatUtils', () => {
 
     // todo:
     describe.skip('btckb2satoshib', () => {});
-    describe.skip('formatTime', () => {});
     describe.skip('hasHexPrefix', () => {});
     describe.skip('messageToHex', () => {});
     describe.skip('stripHexPrefix', () => {});

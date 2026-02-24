@@ -7,25 +7,6 @@ import type { CoinInfo } from '../types';
 export const formatAmount = (n: string, coinInfo: CoinInfo) =>
     `${new BigNumber(n).div(10 ** coinInfo.decimals).toString(10)} ${coinInfo.shortcut}`;
 
-export const formatTime = (n: number) => {
-    if (!n || n <= 0) return 'No time estimate';
-    const hours = Math.floor(n / 60);
-    const minutes = n % 60;
-    let res = '';
-    if (hours !== 0) {
-        res += `${hours} hour`;
-        if (hours > 1) {
-            res += 's';
-        }
-        res += ' ';
-    }
-    if (minutes !== 0) {
-        res += `${minutes} minutes`;
-    }
-
-    return res;
-};
-
 export const hasHexPrefix = (str: string) => str.slice(0, 2).toLowerCase() === '0x';
 
 export const stripHexPrefix = (str: string) => (hasHexPrefix(str) ? str.slice(2) : str);
