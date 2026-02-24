@@ -10,11 +10,11 @@ Trezor Connect is a platform for easy integration of Trezor into 3rd party servi
 
 This package is intended to be used in node.js environment. If you wan't to build a web application please refer to [@trezor/connect-web package](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/README.md).
 
-> **Building a web app?** Use [@trezor/connect-web](https://www.npmjs.com/package/@trezor/connect-web) instead — it adds browser transport handling and popup-based UI.
+> **Building a web app?** Use [@trezor/connect-web](../connect-web/README.md) instead — it adds browser transport handling and popup-based UI.
 >
-> **Building a browser extension?** Use [@trezor/connect-webextension](https://www.npmjs.com/package/@trezor/connect-webextension) instead — it handles Manifest V3 and service worker constraints.
+> **Building a browser extension?** Use [@trezor/connect-webextension](../connect-webextension/README.md) instead — it handles Manifest V3 and service worker constraints.
 >
-> **Building a React Native app?** Use [@trezor/connect-mobile](https://www.npmjs.com/package/@trezor/connect-mobile) instead — it communicates with Trezor Suite via deep links.
+> **Building a React Native app?** Use [@trezor/connect-mobile](../connect-mobile/README.md) instead — it communicates with Trezor Suite via deep links.
 
 ## Installation
 
@@ -44,7 +44,33 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ### Version 10
 
-Is now in alpha stage. Information about legacy versions can be found in [README_LEGACY.md](./README_LEGACY.md)
+Is now in alpha stage.
+
+### Version 9
+
+Version 9 is still stable but scheduled to be deprecated in Q2 2026.
+
+Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
+
+- A) The latest release will always be available on https://connect.trezor.io/9/....
+- B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1.1/... Please note that these endpoints will not receive any further updates including security updates.
+
+Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
+
+New major version is released when there are breaking changes on API level. Previous major version will be maintained for 12 months and after this period it can be taken down without notice.
+
+Current major version 9 is being developed on top of `develop` branch. When there is a new major version a new branch should be created (`v-<major-version>`) and mantained separately.
+
+Minor versions are released when there are:
+
+- considerable additions to API
+- changes in npm package
+
+Everything else that does not fall under major or minor version.
+
+### Version 8 (legacy)
+
+Version 8 is legacy and no longer maintained. Use the npm packages listed above for all current integrations.
 
 ## Docs
 
