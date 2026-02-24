@@ -10,6 +10,7 @@ export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataT
 export { MetadataProviderModal } from './MetadataProviderModal';
 export { slip15ToBip329 } from './slip15ToBip329';
 export { metadataMiddleware } from './metadataMiddleware';
+export * from './fromLegacyMetadataToSearchLabels';
 
 // used in e2e tests
 export * from './metadataUtils';

@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import {
+    fromLegacyMetadataToSearchOutputLabels,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -47,7 +50,8 @@ type CoinControlProps = {
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const { outputLabels: legacyOutputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const outputLabels = fromLegacyMetadataToSearchOutputLabels(legacyOutputLabels);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const dispatch = useDispatch();
 
