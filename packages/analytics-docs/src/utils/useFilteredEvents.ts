@@ -107,6 +107,14 @@ export const useFilteredEvents = () => {
         setTimeout(() => setIsPlatformSortFiltering(false), 300);
     };
 
+    const generatedAt =
+        analyticsData !== null &&
+        typeof analyticsData === 'object' &&
+        'generatedAt' in analyticsData &&
+        typeof (analyticsData as { generatedAt?: unknown }).generatedAt === 'string'
+            ? (analyticsData as { generatedAt: string }).generatedAt
+            : undefined;
+
     return {
         filteredEvents,
         setQuery,
@@ -124,6 +132,7 @@ export const useFilteredEvents = () => {
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading: analyticsData === null,
+        generatedAt,
         setIsSidebarOpen,
         setIsSidebarLoading,
     };

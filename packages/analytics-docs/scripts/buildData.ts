@@ -111,7 +111,10 @@ const mergeRuntimeTypes = (
     }
 };
 
-const writeOutput = (data: { events: Record<string, EventDoc> }, outputPath: string): void => {
+const writeOutput = (
+    data: { events: Record<string, EventDoc>; generatedAt: string },
+    outputPath: string,
+): void => {
     const pretty = process.env.PRETTY_ANALYTICS_JSON === '1';
     const json = pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data);
     fs.writeFileSync(outputPath, json, 'utf-8');
@@ -136,7 +139,8 @@ const run = async () => {
     const publicDir = path.resolve(__dirname, '../public');
     fs.mkdirSync(publicDir, { recursive: true });
     const outputPath = path.join(publicDir, 'analytics.json');
-    writeOutput({ events: normalizedEvents }, outputPath);
+    const generatedAt = new Date().toISOString();
+    writeOutput({ events: normalizedEvents, generatedAt }, outputPath);
 
     // eslint-disable-next-line no-console
     console.log(
