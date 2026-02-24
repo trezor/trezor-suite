@@ -17,6 +17,7 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { AppState } from 'src/types/suite';
 
 import {
+    selectIsDebugModeActive,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
@@ -96,17 +97,19 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
 };
 
 export const selectIsDeviceIdCheckEnabledAndFailed = (state: AppState) => {
+    const isDebugMode = selectIsDebugModeActive(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.idCheck);
     const isDeviceIdValid = selectIsDeviceIdCheckSuccess(state);
 
-    return !isDisabledByMessageSystem && !isDeviceIdValid;
+    return !isDebugMode && !isDisabledByMessageSystem && !isDeviceIdValid;
 };
 
 export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AppState) => {
+    const isDebugMode = selectIsDebugModeActive(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.invariabilityCheck);
     const isDeviceInvariabilityCheckSuccess = selectIsDeviceInvariabilityCheckSuccess(state);
 
-    return !isDisabledByMessageSystem && !isDeviceInvariabilityCheckSuccess;
+    return !isDebugMode && !isDisabledByMessageSystem && !isDeviceInvariabilityCheckSuccess;
 };
 
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
