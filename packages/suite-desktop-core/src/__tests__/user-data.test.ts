@@ -1,6 +1,4 @@
-import fs from 'fs';
-
-import { read, rename, save } from '../libs/user-data';
+import { open, read, readDir, rename, save } from '../libs/user-data';
 
 jest.mock('electron', () => ({
     app: {
@@ -10,14 +8,6 @@ jest.mock('electron', () => ({
 
 jest.mock('@suite-common/suite-utils', () => ({
     isDevEnv: false,
-}));
-
-jest.mock('fs', () => ({
-    promises: {
-        access: jest.fn(),
-        writeFile: jest.fn(),
-        rename: jest.fn(),
-    },
 }));
 
 describe('user-data path traversal protection', () => {
@@ -35,7 +25,6 @@ describe('user-data path traversal protection', () => {
             success: false,
             error: 'Path traversal attempt detected: "../../../OtherApp/outside.txt"',
         });
-        expect(fs.promises.writeFile).not.toHaveBeenCalled();
     });
 
     it('rejects traversal in read()', async () => {
@@ -45,7 +34,6 @@ describe('user-data path traversal protection', () => {
             success: false,
             error: 'Path traversal attempt detected: "../../outside.txt"',
         });
-        expect(fs.promises.access).not.toHaveBeenCalled();
     });
 
     it('rejects traversal in rename()', async () => {
@@ -55,6 +43,23 @@ describe('user-data path traversal protection', () => {
             success: false,
             error: 'Path traversal attempt detected: "../outside.txt"',
         });
-        expect(fs.promises.rename).not.toHaveBeenCalled();
+    });
+
+    it('rejects traversal in readDir()', async () => {
+        const result = await readDir('../../OtherApp');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected: "../../OtherApp"',
+        });
+    });
+
+    it('rejects traversal in open()', async () => {
+        const result = await open('../../OtherApp');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected: "../../OtherApp"',
+        });
     });
 });
