@@ -12,6 +12,7 @@ import {
     findPackageRoot,
     findUp,
 } from '../src/utils/extractAttributeTypes';
+import { normalizeChangelog } from '../src/utils/normalizeChangelog';
 import { normalizeEvents } from '../src/utils/normalizeEvents';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -77,6 +78,24 @@ const getEventFileGlobs = (packageRoots: string[]): string[] =>
         path.join(root, 'dist/**/*.d.ts'),
     ]);
 
+/** Adds attribute docs for type-only keys (e.g. Record<string, number>) so runtimeType can be merged. */
+const ensureAttributeDocsFromTypes = (
+    events: Record<string, EventDoc>,
+    attributeTypesByEventName: AttributeTypesByEventName,
+): void => {
+    for (const [eventName, eventDoc] of Object.entries(events)) {
+        const eventTypes = attributeTypesByEventName[eventName];
+        if (!eventTypes) continue;
+
+        for (const attrName of Object.keys(eventTypes)) {
+            if (attrName in eventDoc.attributes) continue;
+            eventDoc.attributes[attrName] = {
+                changelog: eventDoc.changelog ?? normalizeChangelog(),
+            };
+        }
+    }
+};
+
 const mergeRuntimeTypes = (
     events: Record<string, EventDoc>,
     attributeTypesByEventName: AttributeTypesByEventName,
@@ -111,6 +130,7 @@ const run = async () => {
         eventFileGlobs,
     });
 
+    ensureAttributeDocsFromTypes(normalizedEvents, attributeTypesByEventName);
     mergeRuntimeTypes(normalizedEvents, attributeTypesByEventName);
 
     const publicDir = path.resolve(__dirname, '../public');
