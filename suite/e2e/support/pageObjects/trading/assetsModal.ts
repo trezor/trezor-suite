@@ -60,8 +60,11 @@ export class TradingAssetPicker {
 
     @step()
     async filterByNetwork(networkFilter: AssetPickerNetworkFilter) {
-        await this.networkFilterButton.click();
-        await this.networkFilterOption(networkFilter).click();
+        // use global retry helper since opening the dropdown is flaky in automation
+        await this.page.selectDropdownOptionWithRetry(
+            this.networkFilterButton,
+            this.networkFilterOption(networkFilter),
+        );
     }
 
     @step()
