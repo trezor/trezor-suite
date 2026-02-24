@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { isTokenTargetId } from '@suite-common/wallet-core';
 import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
@@ -30,12 +31,13 @@ export const TransactionOutputLabelEditable = ({
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
+    const isTokenTxTargetId = isTokenTargetId(txTargetId);
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncOutputLabel(state, txId, txTargetId, deviceStaticSessionId),
     );
 
-    if (!isLabellingAllowed) {
+    if (!isLabellingAllowed || isTokenTxTargetId) {
         return null;
     }
 

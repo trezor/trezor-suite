@@ -81,6 +81,9 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     };
 
     const utxoLabel = watch(utxoLabelFieldName);
+    const tokenFieldName = getOutputFieldName(index, 'token');
+    const outputToken = watch(tokenFieldName);
+    const shouldShowSendFormLabelEditable = !outputToken;
 
     return (
         <VStack spacing="sp12">
@@ -88,12 +91,14 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                 <Text variant="body-sm">
                     <Translation id="moduleSend.outputs.recipients.addressLabel" />
                 </Text>
-                <SendFormLabelEditable
-                    label={utxoLabel ?? null}
-                    onLabelChange={newUtxoLabel => {
-                        setValue(utxoLabelFieldName, newUtxoLabel, { shouldValidate: true });
-                    }}
-                />
+                {shouldShowSendFormLabelEditable && (
+                    <SendFormLabelEditable
+                        label={utxoLabel ?? null}
+                        onLabelChange={newUtxoLabel => {
+                            setValue(utxoLabelFieldName, newUtxoLabel, { shouldValidate: true });
+                        }}
+                    />
+                )}
             </HStack>
             {isDebugEnv() && (
                 <Button size="small" colorScheme="tertiaryElevation0" onPress={fillSelfAddress}>
