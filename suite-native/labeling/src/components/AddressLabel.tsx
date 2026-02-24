@@ -24,5 +24,5 @@ export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: Addre
         return fallback;
     }
 
-    return <Text>{label}</Text>;
+    return <Text numberOfLines={1}>{label}</Text>;
 };
