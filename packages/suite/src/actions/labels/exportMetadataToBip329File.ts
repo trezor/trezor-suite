@@ -3,10 +3,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Bip329Label } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
-    selectSuiteSyncAccountAddressesByAccount,
-    selectSuiteSyncAccountLabel,
-    selectSuiteSyncOutputLabelsByAccount,
     selectSuiteSyncOwnerForDeviceStaticId,
     suiteSyncToBip329,
 } from '@suite-common/suite-sync';
@@ -66,33 +64,22 @@ export const exportMetadataToBip329File = createThunk<
 
                 const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
 
-                const suiteSyncAccountLabel = selectSuiteSyncAccountLabel(
+                const { accountLabel, addressLabels, outputLabels } = selectAllLabelsForAccount(
                     state,
-                    walletDescriptor,
-                    account.descriptor,
-                    account.symbol,
+                    {
+                        walletDescriptor,
+                        accountDescriptor: account.descriptor,
+                        networkSymbol: account.symbol,
+                    },
                 );
-                if (suiteSyncAccountLabel) {
-                    finalAccountLabel = suiteSyncAccountLabel;
+
+                if (accountLabel) {
+                    finalAccountLabel = accountLabel;
                 }
 
-                const suiteSyncAddressLabels = selectSuiteSyncAccountAddressesByAccount(
-                    state,
-                    walletDescriptor,
-                    account.descriptor,
-                    account.symbol,
-                );
-
-                const suiteSyncOutputLabels = selectSuiteSyncOutputLabelsByAccount(
-                    state,
-                    walletDescriptor,
-                    account.descriptor,
-                    account.symbol,
-                );
-
                 labelsToExport = suiteSyncToBip329({
-                    outputLabels: suiteSyncOutputLabels,
-                    addressLabels: suiteSyncAddressLabels,
+                    outputLabels,
+                    addressLabels,
                     allSpendable: true,
                 });
             } else {

@@ -65,7 +65,7 @@ export const TransactionList = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
 
-    const searchLabels = useMemo(
+    const legacyLabels = useMemo(
         () => fromLegacyMetadataToSearchAccountLabels(accountMetadata),
         [accountMetadata],
     );
@@ -74,11 +74,11 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+            const results = advancedSearchTransactions(transactions, legacyLabels, searchQuery);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, searchQuery, searchLabels],
+        [transactions, searchQuery, legacyLabels],
     );
 
     useEffect(() => {
