@@ -9,6 +9,7 @@ import {
     Box,
     Button,
     Column,
+    Divider,
     H2,
     H3,
     IconButton,
@@ -117,11 +118,23 @@ const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
     return null;
 };
 
+const formatGeneratedAt = (isoString: string): string => {
+    const d = new Date(isoString);
+    const YYYY = d.getFullYear();
+    const MM = String(d.getMonth() + 1).padStart(2, '0');
+    const DD = String(d.getDate()).padStart(2, '0');
+    const HH = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+
+    return `${YYYY}-${MM}-${DD}, ${HH}:${mm}`;
+};
+
 type AnalyticsContentProps = {
     isAnalyticsDataLoading: boolean;
     isAnalyticsDataGenerated: boolean;
     eventCards: ReactNode;
     hasEventCards: boolean;
+    generatedAt?: string;
     onContentReady?: () => void;
 };
 
@@ -130,6 +143,7 @@ const AnalyticsContent = ({
     isAnalyticsDataGenerated,
     eventCards,
     hasEventCards,
+    generatedAt,
     onContentReady,
 }: AnalyticsContentProps) => {
     if (isAnalyticsDataLoading) return <Spinner size={20} />;
@@ -163,6 +177,14 @@ const AnalyticsContent = ({
         <Column gap={40}>
             {eventCards}
             {onContentReady && hasEventCards && <ScrollWhenReady onReady={onContentReady} />}
+            {generatedAt && (
+                <Box>
+                    <Divider margin={{ top: 0, bottom: 12 }} />
+                    <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                        Docs generated at {formatGeneratedAt(generatedAt)}
+                    </Text>
+                </Box>
+            )}
         </Column>
     );
 };
@@ -184,6 +206,7 @@ export const App = ({ theme }: AppProps) => {
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading,
+        generatedAt,
         setIsSidebarOpen,
         setIsSidebarLoading,
     } = useFilteredEvents();
@@ -345,6 +368,7 @@ export const App = ({ theme }: AppProps) => {
                                     isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                     eventCards={eventCards}
                                     hasEventCards={filteredEvents.length > 0}
+                                    generatedAt={generatedAt}
                                     onContentReady={handleContentReady}
                                 />
                             </ContentContainer>
@@ -362,6 +386,7 @@ export const App = ({ theme }: AppProps) => {
                                 isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                 eventCards={eventCards}
                                 hasEventCards={filteredEvents.length > 0}
+                                generatedAt={generatedAt}
                                 onContentReady={handleContentReady}
                             />
                         </ContentContainer>
