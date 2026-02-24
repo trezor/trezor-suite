@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import {
-    Column,
     Icon,
     IconCircle,
     IconName,
@@ -94,11 +93,9 @@ export const TradingFormFeesDisclaimer = () => {
                                 </Text>
 
                                 {item.subTextId && (
-                                    <Column>
-                                        <Text typographyStyle="body-sm" color="textSubdued">
-                                            <Translation id={item.subTextId} />
-                                        </Text>
-                                    </Column>
+                                    <Text typographyStyle="body-sm" color="textSubdued" as="p">
+                                        <Translation id={item.subTextId} />
+                                    </Text>
                                 )}
                             </List.Item>
                         ))}
