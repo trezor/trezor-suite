@@ -28,11 +28,7 @@ export const selectIsLabelActionEnabled = (
 
     // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
     // clicking on the stuff.
-    if (isSuiteSyncEnabled) {
-        return false;
-    }
-
-    const isLegacyLabelingInitPossible = selectIsLabelingInitPossible(state);
+    const isLegacyLabelingInitPossible = !isSuiteSyncEnabled && selectIsLabelingInitPossible(state);
     const isLegacyLabelingEnabled = selectIsLabelingAvailableForEntity(
         state,
         legacyEntityKey,
