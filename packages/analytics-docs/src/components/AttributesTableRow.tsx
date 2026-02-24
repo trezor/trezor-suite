@@ -115,7 +115,7 @@ export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTable
         <>
             <Table.Row key={attributeKey} verticalAlign="top">
                 <Table.Cell width={200}>
-                    <Text typographyStyle="body-xs" isMonospaced>
+                    <Text typographyStyle="body-xs" isMonospaced overflow="auto">
                         {attributeKey}
                     </Text>
                 </Table.Cell>
@@ -134,7 +134,7 @@ export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTable
                     </Row>
                 </Table.Cell>
                 <Table.Cell>
-                    <Column>
+                    <Column overflow="auto">
                         <Markdown>{attribute.description}</Markdown>
                     </Column>
                 </Table.Cell>
