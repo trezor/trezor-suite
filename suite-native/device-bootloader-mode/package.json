@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",

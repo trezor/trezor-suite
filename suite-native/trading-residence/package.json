@@ -14,7 +14,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",

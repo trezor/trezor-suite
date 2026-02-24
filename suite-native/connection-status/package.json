@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-native-community/netinfo": "^11.4.1",
+        "@react-native-community/netinfo": "^11.5.2",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
