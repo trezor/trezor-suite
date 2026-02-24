@@ -3,7 +3,10 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import {
+    fromLegacyMetadataToSearchAccountLabels,
+    selectLabelingDataForAccount,
+} from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -62,15 +65,20 @@ export const TransactionList = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
 
+    const searchLabels = useMemo(
+        () => fromLegacyMetadataToSearchAccountLabels(accountMetadata),
+        [accountMetadata],
+    );
+
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, accountMetadata, searchQuery);
+            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, searchQuery, accountMetadata],
+        [transactions, searchQuery, searchLabels],
     );
 
     useEffect(() => {

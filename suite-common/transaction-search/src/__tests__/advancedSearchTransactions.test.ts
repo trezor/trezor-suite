@@ -6,8 +6,9 @@ import stMock from '../__fixtures__/searchTransactions.json';
 import { advancedSearchTransactions } from '../advancedSearchTransactions';
 import { SearchAccountLabels, SearchOutputLabels } from '../searchLabels';
 
-// Todo: this is the legacy-metadata => search type
-const asSearchOutputLabels = (
+// Original Fixtures were create with legacy metadata structure,
+// so we need to transform them to fit the new SearchAccountLabels structure used in the tests
+const toSearchOutputLabels = (
     outputLabels: Record<string, Record<string, string>>,
 ): SearchOutputLabels =>
     new Map(
@@ -17,19 +18,21 @@ const asSearchOutputLabels = (
         ]),
     );
 
-const asSearchAccountLabels = (labels: {
+// Original Fixtures were create with legacy metadata structure,
+// so we need to transform them to fit the new SearchAccountLabels structure used in the tests
+const toSearchAccountLabels = (labels: {
     outputLabels: Record<string, Record<string, string>>;
     addressLabels: Record<string, string>;
     accountLabel?: string;
 }): SearchAccountLabels => ({
     ...labels,
-    outputLabels: asSearchOutputLabels(labels.outputLabels),
+    outputLabels: toSearchOutputLabels(labels.outputLabels),
     addressLabels: new Map(Object.entries(labels.addressLabels)),
 });
 
 describe(advancedSearchTransactions.name, () => {
     const transactions = stMock.transactions as unknown as WalletAccountTransaction[];
-    const accountLabels = asSearchAccountLabels(stMock.labels);
+    const accountLabels = toSearchAccountLabels(stMock.labels);
 
     searchTransactionsFixture.forEach(f => {
         it(f.description, () => {

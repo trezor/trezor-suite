@@ -1,4 +1,7 @@
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import {
+    fromLegacyMetadataToSearchAccountLabels,
+    selectLabelingDataForAccount,
+} from '@suite/metadata';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
@@ -63,9 +66,11 @@ export const exportTransactionsThunk = createThunk(
                 })),
             }));
 
+        const metadataLabels = fromLegacyMetadataToSearchAccountLabels(accountMetadata);
+
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, accountMetadata, searchQuery)
+                ? advancedSearchTransactions(transactions, metadataLabels, searchQuery)
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted

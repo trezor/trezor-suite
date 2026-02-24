@@ -24,7 +24,8 @@ export const filterUtxos = (
     outputLabels?: SearchOutputLabels,
 ): boolean => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
-    const outputLabel = outputLabels?.get(utxo.txid)?.get(utxo.vout);
+    const accountOutputLabels = outputLabels?.get(utxo.txid);
+    const outputLabel = accountOutputLabels?.get(String(utxo.vout));
 
     return (
         utxo.address.toLowerCase().includes(lowerCaseSearchQuery) ||

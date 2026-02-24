@@ -149,7 +149,7 @@ const filterByLabel: FilterAndCategorize[] = [
                     ...baseUtxo,
                 },
             ],
-            outputLabels: new Map([['2', new Map([[1, 'label']])]]),
+            outputLabels: new Map([['2', new Map([['1', 'label']])]]),
         },
         checkResult: result =>
             result.filteredUtxos.length == 1 &&
