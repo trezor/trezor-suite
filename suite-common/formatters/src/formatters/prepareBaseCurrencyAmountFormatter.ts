@@ -51,10 +51,68 @@ const formatSats = ({ intl, dataContext, value }: FormatParams) => {
     return `${formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), '')} sat`.trim();
 };
 
-const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) => {
+const THOUSAND = 1e3;
+const MILLION = 1e6;
+const BILLION = 1e9;
+const TRILLION = 1e12;
+
+type ShortFiatSuffix = 'K' | 'M' | 'B' | 'T';
+
+const getShortFiatParts = (
+    value: BaseCurrencyAmount,
+): { shortValue: number; suffix: ShortFiatSuffix } | null => {
+    const n = value.toNumber();
+    if (n >= TRILLION) {
+        return { shortValue: n / TRILLION, suffix: 'T' };
+    }
+    if (n >= BILLION) {
+        return { shortValue: n / BILLION, suffix: 'B' };
+    }
+    if (n >= MILLION) {
+        return { shortValue: n / MILLION, suffix: 'M' };
+    }
+    if (n >= THOUSAND) {
+        return { shortValue: n / THOUSAND, suffix: 'K' };
+    }
+
+    return null;
+};
+
+const formatShortFiat = ({
+    intl,
+    currency,
+    value,
+}: Omit<FormatParams, 'dataContext'> & { dataContext?: FormatParams['dataContext'] }) => {
+    const parts = getShortFiatParts(value);
+    if (!parts) return null;
+
+    const { shortValue, suffix } = parts;
+    const formattedNumber = intl.formatNumber(shortValue, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+    const currencySuffix = currency.toUpperCase();
+
+    return `${formattedNumber}${suffix} ${currencySuffix}`;
+};
+
+const formatStandard = ({
+    intl,
+    currency,
+    value,
+    dataContext,
+    useShortFiatFormat,
+}: FormatParams & { useShortFiatFormat?: boolean }) => {
     if (value.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
         return `${value} ${currency}`;
+    }
+
+    if (useShortFiatFormat) {
+        const shortFormatted = formatShortFiat({ intl, currency, value, dataContext });
+        if (shortFormatted !== null) {
+            return shortFormatted;
+        }
     }
 
     const { minimumFractionDigits, maximumFractionDigits, style } = dataContext;
@@ -77,7 +135,7 @@ const handleBigNumberFormatting = (
     dataContext: BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>,
     config: FormatterConfig,
 ) => {
-    const { intl, baseCurrency, bitcoinAmountUnit } = config;
+    const { intl, baseCurrency, bitcoinAmountUnit, useShortFiatFormat } = config;
     const { currency: currencyFromContext } = dataContext;
     const currency =
         (currencyFromContext !== undefined
@@ -94,7 +152,9 @@ const handleBigNumberFormatting = (
         currency,
     };
 
-    return isSats ? formatSats(formatParams) : formatStandard(formatParams);
+    return isSats
+        ? formatSats(formatParams)
+        : formatStandard({ ...formatParams, useShortFiatFormat });
 };
 
 export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
