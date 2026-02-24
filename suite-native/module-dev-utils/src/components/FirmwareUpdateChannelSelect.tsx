@@ -10,6 +10,7 @@ import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 const options: SelectItemType<FirmwareChannel>[] = [
     { label: 'Production', value: 'production' },
+    { label: 'Production Early Access', value: 'production-early-access' },
     { label: 'Test Unsigned', value: 'test-unsigned' },
     { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
     { label: 'Test Signed', value: 'test-signed' },
