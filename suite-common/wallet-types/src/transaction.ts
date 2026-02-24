@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
 import { TranslationKey } from '@suite/intl';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';

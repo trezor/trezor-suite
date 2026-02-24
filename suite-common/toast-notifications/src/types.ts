@@ -1,5 +1,6 @@
 import { type CSSProperties } from 'react';
 
+// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
 import { TranslationKey } from '@suite/intl';
 import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';

@@ -17,6 +17,7 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
+// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
 import { ExtendedMessageDescriptor } from '@suite/intl';
 import { CountryCode } from '@suite-common/geolocation';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';

@@ -61,4 +61,10 @@ export const localRulesConfig = [
             'local-rules/analytics-event-name': 'error',
         },
     },
+    {
+        files: ['suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        rules: {
+            'local-rules/no-suite-imports-in-suite-common': 'error',
+        },
+    },
 ];

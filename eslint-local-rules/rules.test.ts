@@ -114,6 +114,49 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
     ],
 });
 
+ruleTester.run('no-suite-imports-in-suite-common', rules['no-suite-imports-in-suite-common'], {
+    valid: [
+        {
+            code: "import { foo } from '@suite-common/wallet-utils';",
+            filename: '/repo/suite-common/example/src/file.ts',
+        },
+        {
+            code: "import { foo } from '@trezor/utils';",
+            filename: '/repo/suite-common/example/src/file.ts',
+        },
+        {
+            code: "import { foo } from '@suite/intl';",
+            filename: '/repo/suite/app/src/file.ts',
+        },
+        {
+            code: "export { foo } from '@suite-common/wallet-utils';",
+            filename: '/repo/suite-common/example/src/file.ts',
+        },
+    ],
+    invalid: [
+        {
+            code: "import { TranslationKey } from '@suite/intl';",
+            filename: '/repo/suite-common/wallet-types/src/transaction.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: { sourcePath: '@suite/intl' },
+                },
+            ],
+        },
+        {
+            code: "import { getTranslation } from '@suite-native/intl';",
+            filename: '/repo/suite-common/intl-types/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: { sourcePath: '@suite-native/intl' },
+                },
+            ],
+        },
+    ],
+});
+
 ruleTester.run('analytics-event-name', rules['analytics-event-name'], {
     parser: require.resolve('typescript-eslint/parser'),
     parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
