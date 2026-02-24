@@ -9,7 +9,6 @@ export const residenceInitialState: TradingResidenceState = {
 export const tradingInitialState: TradingState = {
     ...commonInitialState,
     residence: residenceInitialState,
-    favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
     isAmountInputActive: false,

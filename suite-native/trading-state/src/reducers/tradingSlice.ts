@@ -1,5 +1,4 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
-import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
@@ -43,12 +42,6 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState: tradingInitialState,
     reducers: {
-        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
-            state.favouriteAssets[payload] = true;
-        },
-        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
-            delete state.favouriteAssets[payload];
-        },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
