@@ -2,11 +2,20 @@ import Svg, { G, Path, SvgProps } from 'react-native-svg';
 
 import { useIllustrationColors } from '@suite-native/atoms';
 
+export const GLOBE_SIZE_DEFAULT = 224;
+export const GLOBE_SIZE_MINIMUM = 50;
+
 export const GlobeSvg = (props: SvgProps) => {
     const { lineColor, fillColor } = useIllustrationColors();
 
     return (
-        <Svg width={224} height={224} fill="none" {...props}>
+        <Svg
+            width={GLOBE_SIZE_DEFAULT}
+            height={GLOBE_SIZE_DEFAULT}
+            viewBox="0 0 224 224"
+            fill="none"
+            {...props}
+        >
             <G clipPath="url(#a)">
                 <Path
                     d="M222.439 107.473C222.439 166.964 176.315 218.561 117.693 219.291C48.9088 220.153 2.65524 166.96 2.65524 107.473C2.65524 47.986 55.8861 2.13156 114.512 2.13156C173.138 2.13156 222.439 47.986 222.439 107.473Z"
