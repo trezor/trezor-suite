@@ -4,6 +4,7 @@
     "type": "module",
     "scripts": {
         "build-data": "tsx ./scripts/buildData.ts",
+        "test:unit": "yarn g:jest -c ./jest.config.cjs",
         "dev": "[ -f public/analytics.json ] || yarn build-data; vite",
         "build": "yarn build-data && vite build",
         "preview": "vite preview",
