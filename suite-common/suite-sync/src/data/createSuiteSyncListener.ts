@@ -4,7 +4,7 @@ import { SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import {
-    clearAll,
+    clearDataForWallet,
     upsertManyAccounts,
     upsertManyAddresses,
     upsertManyOutputs,
@@ -33,7 +33,7 @@ export const createSuiteSyncListener = (deps: CreateSuiteSyncListenerDeps): Suit
             deps.dispatch(upsertManyOutputs({ walletDescriptor, outputs: entities }));
         },
     },
-    onUnsubscribe: () => {
-        deps.dispatch(clearAll());
+    onUnsubscribe: ({ walletDescriptor }) => {
+        deps.dispatch(clearDataForWallet(walletDescriptor));
     },
 });
