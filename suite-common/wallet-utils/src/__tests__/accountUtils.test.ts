@@ -12,7 +12,6 @@ import {
     getBip43Type,
     getFirstFreshAddress,
     getNetworkAccountFeatures,
-    getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
@@ -60,14 +59,6 @@ describe('account utils', () => {
     fixtures.sortByCoin.forEach(f => {
         it('accountUtils.sortByCoin', () => {
             expect(sortByCoin(f.accounts as Account[])).toEqual(f.result);
-        });
-    });
-
-    describe('get title for coinjoin accounts', () => {
-        fixtures.accountTitleCoinjoinFixture.forEach(fixture => {
-            it(fixture.symbol, () => {
-                expect(getTitleForCoinjoinAccount(fixture.symbol)).toBe(fixture.title);
-            });
         });
     });
 
