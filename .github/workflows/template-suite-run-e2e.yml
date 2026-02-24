@@ -218,6 +218,14 @@ jobs:
             --forbid-only \
             $REPORTER_OPT
 
+
+      - name: Upload Istanbul HTML Coverage Report
+        if: inputs.enable-coverage == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-html
+          path: coverage/lcov-report/
+
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs

@@ -306,4 +306,6 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             await expect(page.getByTestId('@response')).toHaveText(/success: true/);
         },
     );
+
+    // trigger test run
 });
