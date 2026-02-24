@@ -1,13 +1,13 @@
-|             Package              | Stable | Canary |
-| :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 9.7.1  |   -    |
-|     npm @trezor/connect-web      | 9.7.1  |   -    |
-| npm @trezor/connect-webextension | 9.7.1  |   -    |
-|    npm @trezor/connect-mobile    | 9.7.1  |   -    |
+|             Package              | Stable |    Canary    |
+| :------------------------------: | :----: | :----------: |
+|       npm @trezor/connect        | 9.7.1  | 9.7.2-beta.1 |
+|     npm @trezor/connect-web      | 9.7.1  | 9.7.2-beta.1 |
+| npm @trezor/connect-webextension | 9.7.1  | 9.7.2-beta.1 |
+|    npm @trezor/connect-mobile    | 9.7.1  | 9.7.2-beta.1 |
 
-|     Deployment     | Stable | Canary |
-| :----------------: | :----: | :----: |
-| connect.trezor.io/ | 9.7.1  |   -    |
+|     Deployment     | Stable |    Canary    |
+| :----------------: | :----: | :----------: |
+| connect.trezor.io/ | 9.7.1  | 9.7.2-beta.1 |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
@@ -52,7 +52,7 @@ This release also fixes import issues with CommonJS in Node environments.
 - feat(connect): use existing message channels for suite web (314464a)
 - feat(connect): suite web popup implementation (6bafb1e)
 
-#  9.7.0
+# 9.7.0
 
 This release had an issue with TypeScript definitions files.
 
