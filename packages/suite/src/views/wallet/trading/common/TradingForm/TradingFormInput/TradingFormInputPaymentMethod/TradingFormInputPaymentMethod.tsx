@@ -2,7 +2,11 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { TRADING_FORM_PAYMENT_METHOD_SELECT } from '@suite-common/trading';
+import { PaymentMethodIcon } from '@suite/trading';
+import {
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TradingPaymentMethodProps,
+} from '@suite-common/trading';
 import { GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
@@ -16,10 +20,12 @@ const TradingFormInputPaymentMethodValueContent = ({
     isFormLoading,
     hasPaymentMethods,
     displayLabel,
+    paymentMethod,
 }: {
     isFormLoading: boolean;
     hasPaymentMethods: boolean;
     displayLabel: ReactNode;
+    paymentMethod: TradingPaymentMethodProps;
 }) => {
     if (isFormLoading) {
         return <SkeletonRectangle animate />;
@@ -27,7 +33,12 @@ const TradingFormInputPaymentMethodValueContent = ({
 
     return (
         <Row gap={16}>
-            <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>{displayLabel}</Text>
+            <Row gap={4} alignItems="center">
+                <PaymentMethodIcon paymentMethod={paymentMethod} size={16} />
+                <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>
+                    {displayLabel}
+                </Text>
+            </Row>
             {hasPaymentMethods && (
                 <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
             )}
@@ -61,6 +72,9 @@ export const TradingFormInputPaymentMethod = ({
     const selectedOption = hasPaymentMethods
         ? paymentMethods.find(item => item.value === (paymentMethod?.value ?? defaultPaymentMethod))
         : undefined;
+
+    const paymentMethodValue =
+        selectedOption?.value ?? paymentMethod?.value ?? paymentMethods[0]?.value;
 
     const displayLabel = hasPaymentMethods
         ? (selectedOption?.label ?? paymentMethod?.label ?? paymentMethods[0]?.label ?? '')
@@ -97,6 +111,7 @@ export const TradingFormInputPaymentMethod = ({
                             isFormLoading={isFormLoading}
                             hasPaymentMethods={hasPaymentMethods}
                             displayLabel={displayLabel}
+                            paymentMethod={paymentMethodValue}
                         />
                     </Row>
                 </GhostContainer>

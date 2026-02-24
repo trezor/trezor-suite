@@ -76,6 +76,7 @@
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/suite-sync": "workspace:*",
+        "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
         "@tanstack/react-query": "5.90.20",
         "@testing-library/jest-dom": "6.9.1",
