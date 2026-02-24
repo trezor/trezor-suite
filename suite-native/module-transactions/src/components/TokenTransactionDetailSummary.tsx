@@ -42,12 +42,14 @@ export const TokenTransactionDetailSummary = ({
                 addressesType="inputs"
                 addresses={inputAddresses}
                 onShowMore={onShowMore}
+                showOutputLabels={false}
             />
             <TransactionDetailAddressesSection
                 transaction={transaction}
                 addressesType="outputs"
                 addresses={outputAddresses}
                 onShowMore={onShowMore}
+                showOutputLabels={false}
             />
             <VerticalSeparator inputsCount={inputAddresses.length} />
         </VStack>

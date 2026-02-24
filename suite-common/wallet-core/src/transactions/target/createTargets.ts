@@ -37,6 +37,8 @@ export const createSimpleTarget = (t: BlockchainlinkTarget): SimpleTarget => ({
 export const createTokenTargetId = (t: TokenTransfer): TxTargetId =>
     asTxTargetId(`token-${t.contract}`);
 
+export const isTokenTargetId = (targetId: TxTargetId) => `${targetId}`.startsWith('token-');
+
 export const createTokenTarget = (t: TokenTransfer): TokenTarget => ({
     type: 'token' as const,
     targetId: createTokenTargetId(t),

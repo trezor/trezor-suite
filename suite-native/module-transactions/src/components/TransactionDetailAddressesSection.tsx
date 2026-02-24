@@ -16,6 +16,7 @@ type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
+    showOutputLabels?: boolean;
 };
 
 const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
@@ -36,6 +37,7 @@ export const TransactionDetailAddressesSection = ({
     addressesType,
     addresses,
     onShowMore,
+    showOutputLabels = true,
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -55,6 +57,7 @@ export const TransactionDetailAddressesSection = ({
     const isShowMoreButtonVisible = addresses.length > 2;
     const hiddenAddressesCount = targetAddresses.length - 2;
     const areChangeAddressesVisible = changeAddresses.length > 0;
+    const shouldShowLabels = addressesType === 'outputs' && showOutputLabels;
 
     return (
         <VStack>
@@ -77,7 +80,7 @@ export const TransactionDetailAddressesSection = ({
                                 // Todo: input not implemented yet. The idea is, that transaction input is just output
                                 //       of the previous transaction. So for inputs we would need to pass previous txid
                                 //       (and figure out correct `n` output index of the utxo on the previous transaction)
-                                showLabels={addressesType === 'outputs'}
+                                showLabels={shouldShowLabels}
                                 accountDescriptor={transaction.descriptor}
                                 networkSymbol={transaction.symbol}
                             />
@@ -114,7 +117,7 @@ export const TransactionDetailAddressesSection = ({
                                         // Todo: input not implemented yet. The idea is, that transaction input is just output
                                         //       of the previous transaction. So for inputs we would need to pass previous txid
                                         //       (and figure out correct `n` output index of the utxo on the previous transaction)
-                                        showLabels={addressesType === 'outputs'}
+                                        showLabels={shouldShowLabels}
                                         accountDescriptor={transaction.descriptor}
                                         networkSymbol={transaction.symbol}
                                     />
