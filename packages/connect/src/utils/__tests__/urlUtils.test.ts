@@ -1,4 +1,4 @@
-import { getHost, getOnionDomain, getOrigin } from '../urlUtils';
+import { getHost, getOrigin } from '../urlUtils';
 
 describe('utils/urlUtils', () => {
     it('getOrigin', () => {
@@ -25,24 +25,5 @@ describe('utils/urlUtils', () => {
         expect(getHost(undefined)).toEqual(undefined);
         expect(getHost(null)).toEqual(undefined);
         expect(getHost({})).toEqual(undefined);
-    });
-
-    it('getOnionDomain', () => {
-        const dict = {
-            'trezor.io': 'trezor.onion',
-        };
-        // expect(getOnionDomain('trezor.io', dict)).toEqual('trezor.io');
-        expect(getOnionDomain('https://trezor.io', dict)).toEqual('http://trezor.onion');
-        expect(getOnionDomain('http://trezor.io', dict)).toEqual('http://trezor.onion');
-        expect(getOnionDomain('http://connect.trezor.io', dict)).toEqual(
-            'http://connect.trezor.onion',
-        );
-        expect(getOnionDomain('http://foo.bar.connect.trezor.io/9/?query=1#hash2', dict)).toEqual(
-            'http://foo.bar.connect.trezor.onion/9/?query=1#hash2',
-        );
-        expect(getOnionDomain('wss://trezor.io', dict)).toEqual('ws://trezor.onion');
-        expect(getOnionDomain('ws://foo.bar.trezor.io/?foo=bar', dict)).toEqual(
-            'ws://foo.bar.trezor.onion/?foo=bar',
-        );
     });
 });

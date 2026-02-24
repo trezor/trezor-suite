@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/urlUtils.js
 
-import { urlToOnion } from '@trezor/utils';
-
 export const getOrigin = (url: unknown) => {
     if (typeof url !== 'string') return 'unknown';
     if (url.startsWith('file://')) return 'file://';
@@ -24,16 +22,4 @@ export const getHost = (url: unknown) => {
               parts.slice(parts.length - 2, parts.length).join('.')
             : uri;
     }
-};
-
-interface GetOnionDomain {
-    (url: string, dict: { [domain: string]: string }): string;
-    (url: string[], dict: { [domain: string]: string }): string[];
-}
-
-export const getOnionDomain: GetOnionDomain = (url, dict): any => {
-    if (Array.isArray(url)) return url.map(u => urlToOnion(u, dict) ?? u);
-    if (typeof url === 'string') return urlToOnion(url, dict) ?? url;
-
-    return url;
 };
