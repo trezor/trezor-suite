@@ -24,13 +24,8 @@ import {
     TextButton,
     VStack,
 } from '@suite-native/atoms';
-import {
-    AddressFormatter,
-    BaseCurrencyAmountFormatter,
-    CryptoAmountFormatter,
-} from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { AddressLabel, TransactionOutputLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -42,9 +37,7 @@ import { Utxo } from '@trezor/blockchain-link-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const accountAddressFormatterStyle = prepareNativeStyle(() => ({
-    maxWidth: '80%',
-}));
+import { UtxoCoinControlLabel } from './UtxoCoinControlLabel';
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.large,
@@ -122,7 +115,7 @@ export const UtxoCard = ({
                         justifyContent="space-between"
                         alignItems="center"
                     >
-                        <VStack>
+                        <VStack flex={1}>
                             <HStack alignItems="center">
                                 <CryptoAmountFormatter
                                     color="textDefault"
@@ -143,25 +136,12 @@ export const UtxoCard = ({
                                 )}
                             </HStack>
 
-                            <HStack>
-                                <AddressLabel
-                                    address={utxo.address}
-                                    deviceStaticSessionId={deviceStaticSessionId}
-                                    fallback={
-                                        <AddressFormatter
-                                            style={applyStyle(accountAddressFormatterStyle)}
-                                            value={utxo.address}
-                                            variant="body-sm"
-                                            color="textSubdued"
-                                        />
-                                    }
-                                />
-                                <TransactionOutputLabel
-                                    txId={utxo.txid}
-                                    outputIndex={`${utxo.vout}`}
-                                    deviceStaticSessionId={deviceStaticSessionId}
-                                />
-                            </HStack>
+                            <UtxoCoinControlLabel
+                                address={utxo.address}
+                                txId={utxo.txid}
+                                outputIndex={`${utxo.vout}`}
+                                deviceStaticSessionId={deviceStaticSessionId}
+                            />
                         </VStack>
                         <CheckBox isChecked={isSelected} onChange={handleToggle} />
                     </HStack>
