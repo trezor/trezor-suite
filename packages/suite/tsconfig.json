@@ -150,6 +150,7 @@
             "path": "../../suite/platform-encryption-webauthn"
         },
         { "path": "../../suite/suite-sync" },
+        { "path": "../../suite/trading" },
         { "path": "../../suite/tx-simulation" },
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },

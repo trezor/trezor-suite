@@ -14579,6 +14579,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/trading@workspace:*, @suite/trading@workspace:suite/trading":
+  version: 0.0.0-use.local
+  resolution: "@suite/trading@workspace:suite/trading"
+  dependencies:
+    "@suite-common/icons": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/tx-simulation@workspace:^, @suite/tx-simulation@workspace:suite/tx-simulation":
   version: 0.0.0-use.local
   resolution: "@suite/tx-simulation@workspace:suite/tx-simulation"
@@ -15912,6 +15923,7 @@ __metadata:
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/suite-sync": "workspace:*"
+    "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
     "@tanstack/react-query": "npm:5.90.20"
     "@testing-library/jest-dom": "npm:6.9.1"

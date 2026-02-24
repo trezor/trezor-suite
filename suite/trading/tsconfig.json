@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "plugins": [
+            { "name": "typescript-styled-plugin" }
+        ]
+    },
+    "include": ["src/**/*", "styled.d.ts"],
+    "references": [
+        { "path": "../../suite-common/icons" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/theme" }
+    ]
+}

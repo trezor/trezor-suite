@@ -2,12 +2,13 @@ import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
     TradingPaymentMethodListProps,
 } from '@suite-common/trading';
-import { Modal } from '@trezor/components';
+import { Modal, Row } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -46,7 +47,10 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
                         onClick={() => selectPaymentMethod(item)}
                         data-testid={`@trading/form/payment-method-select/option/${item.value}`}
                     >
-                        {item.label}
+                        <Row gap={12} alignItems="center">
+                            <PaymentMethodIcon paymentMethod={item.value} />
+                            {item.label}
+                        </Row>
                     </CardList.Item>
                 ))}
             </CardList>
