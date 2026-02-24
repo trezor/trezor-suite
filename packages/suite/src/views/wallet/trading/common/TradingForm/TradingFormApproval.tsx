@@ -283,6 +283,7 @@ export const TradingFormApproval = () => {
                                     <Button
                                         onClick={onRevokeApprovalClick}
                                         intent="brand"
+                                        size="large"
                                         width="100%"
                                         isLoading={isRevokeButtonLoading}
                                         isDisabled={isRevokeButtonDisabled}
@@ -303,6 +304,7 @@ export const TradingFormApproval = () => {
                                     <Button
                                         onClick={onApproveTransactionClick}
                                         intent="brand"
+                                        size="large"
                                         width="100%"
                                         isLoading={
                                             isApproveButtonLoading ||
@@ -338,6 +340,7 @@ export const TradingFormApproval = () => {
                         <Button
                             onClick={onApproveTransactionClick}
                             intent="brand"
+                            size="large"
                             width="100%"
                             isLoading={isApproveButtonLoading}
                             isDisabled={isApproveButtonDisabled}
@@ -353,6 +356,7 @@ export const TradingFormApproval = () => {
                     <Button
                         onClick={onProceedToSwapClick}
                         intent="brand"
+                        size="large"
                         width="100%"
                         isLoading={
                             isSwapButtonLoading ||
@@ -381,7 +385,7 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Button intent="brand" width="100%" isDisabled={true}>
+                <Button intent="brand" size="large" width="100%" isDisabled={true}>
                     <Translation id="TR_TRADING_SWAP" />
                 </Button>
             )}
@@ -390,6 +394,7 @@ export const TradingFormApproval = () => {
                 <Button
                     onClick={onRefreshClick}
                     intent="brand"
+                    size="large"
                     width="100%"
                     isLoading={isRefreshButtonLoading}
                     isDisabled={isRefreshButtonDisabled}
