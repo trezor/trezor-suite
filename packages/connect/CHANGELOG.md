@@ -11,6 +11,10 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.7.2-beta.1
+
+We have added support for Tron network in Connect APIs - `tronGetAddress`, `tronSignTransaction`. Available for firmware 2.10.1 and later.
+
 # 9.7.1
 
 We are deprecating `coreMode: 'iframe'` for connect-web, which is now limited due to [Local Network Access](https://developer.chrome.com/blog/local-network-access) permission. If you are using it explicitly, we recommend moving to `coreMode: 'auto'` for a better user experience.
