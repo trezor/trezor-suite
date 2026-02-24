@@ -25,7 +25,7 @@ const mapAccountsToSuiteSyncLabel = (
                 accountDescriptor: account.descriptor,
                 networkSymbol: account.symbol,
             })?.label ??
-            account.accountLabel ??
+            // account.accountLabel ??
             null,
     }));
 
