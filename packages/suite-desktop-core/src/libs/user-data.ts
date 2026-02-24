@@ -5,8 +5,19 @@ import path from 'path';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
+const resolveDirectoryInUserDataDir = (directory: string) => {
+    const userDataDir = path.resolve(app.getPath('userData'));
+    const dir = path.resolve(path.join(userDataDir, directory));
+
+    if (!dir.startsWith(userDataDir + path.sep) && dir !== userDataDir) {
+        throw new Error(`Path traversal attempt detected in directory: "${directory}"`);
+    }
+
+    return dir;
+};
+
 const resolvePathInUserDataDir = (directory: string, filename: string) => {
-    const dir = path.resolve(path.join(app.getPath('userData'), directory));
+    const dir = resolveDirectoryInUserDataDir(directory);
     const file = path.resolve(dir, filename);
 
     if (!file.startsWith(dir + path.sep)) {
@@ -111,7 +122,13 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 };
 
 export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
-    const dir = path.join(app.getPath('userData'), directory);
+    let dir: string;
+
+    try {
+        dir = resolveDirectoryInUserDataDir(directory);
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 
     try {
         await fs.promises.access(dir, fs.constants.R_OK);
@@ -178,7 +195,14 @@ export const getInfo = () => ({
 });
 
 export const open = async (directory: string): Promise<InvokeResult> => {
-    const dir = path.join(app.getPath('userData'), directory);
+    let dir: string;
+
+    try {
+        dir = resolveDirectoryInUserDataDir(directory);
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+
     try {
         const errorMessage = await shell.openPath(dir);
         if (errorMessage) {
