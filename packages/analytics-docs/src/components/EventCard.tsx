@@ -19,7 +19,7 @@ import { AttributesTable } from './AttributesTable';
 import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { Markdown } from './Markdown';
-import { getEventId } from '../utils/filterUtils';
+import { getEventId, toEventExportName } from '../utils/filterUtils';
 import { getPlatformIcon } from '../utils/getPlatformIcon';
 import { useChangelogButton } from '../utils/useChangelogButton';
 
@@ -33,16 +33,6 @@ const getPlatformDirectory = (platform: string) => {
             return 'suite-common/analytics';
     }
 };
-
-const toEventName = (input: string): string =>
-    input
-        .split(/[/_-]+/)
-        .map((part, index) =>
-            index === 0
-                ? part.toLowerCase()
-                : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
-        )
-        .join('') + 'Event';
 
 const COPY_FEEDBACK_MS = 2000;
 
@@ -66,10 +56,10 @@ const Header = ({ event, onEdit }: HeaderProps) => {
     if (!event.name) return null;
 
     const getEventDefinitionUrl = (eventName: string) =>
-        `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventName(eventName)}.ts`;
+        `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventExportName(eventName)}.ts`;
 
     const getEventUsagesUrl = (eventName: string) =>
-        `https://github.com/search?q=repo%3Atrezor%2Ftrezor-suite%20${toEventName(eventName)}.name&type=code`;
+        `https://github.com/search?q=repo%3Atrezor%2Ftrezor-suite%20${toEventExportName(eventName)}.name&type=code`;
 
     const getEventAnchorLink = () =>
         `${typeof window !== 'undefined' ? window.location.origin + window.location.pathname : ''}#${getEventId(event.name)}`;
@@ -121,7 +111,9 @@ const Header = ({ event, onEdit }: HeaderProps) => {
                 flexWrap={isMobile ? 'wrap' : undefined}
             >
                 <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
-                    <H3>{event.name} </H3>
+                    <Tooltip content={toEventExportName(event.name)} hasArrow>
+                        <H3>{event.name} </H3>
+                    </Tooltip>
                     <Row gap={4} alignItems="center">
                         <ChangelogButton />
 
