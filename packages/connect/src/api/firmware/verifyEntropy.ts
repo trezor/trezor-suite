@@ -129,7 +129,7 @@ type VerifyEntropyOptions = {
     commitment?: string; // entropy_commitment received from previous EntropyRequest
     hostEntropy: string; // host_entropy used in previous EntropyAck
     trezorEntropy?: string; // prev_entropy received from current EntropyRequest, after ResetDeviceContinue
-    xpubs: Record<string, string>; // <address_n, xpub>
+    xpubs: Record<string, string>; // <Bip43 path, xpub>
 };
 
 export const verifyEntropy = async ({

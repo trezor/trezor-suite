@@ -10,6 +10,9 @@ import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMetho
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
+import { calculateXPubHashes } from './firmware/calculateXPubHash';
+
+type XPubsPerBip43Path = Record<string, string>; // used only internally, not exported
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     constructor(message: { id?: number; payload: Payload<'resetDevice'> }) {
@@ -65,15 +68,26 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-    private async entropyCheckWorkflow() {
+    private async entropyCheckWorkflow(): Promise<XPubsPerBip43Path> {
         const cmd = this.device.getCommands();
         const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
+        const parsedPaths = paths.map(path => ({ path, address_n: validatePath(path) }));
 
         // error.message should be one of ERRORS_WITHOUT_DEVICE_INTERACTION, otherwise it could be a fake device's attempt to bypass the entropy check.
         const handleErr = (error: any) => {
             throw error instanceof TransportError
                 ? error
                 : ERRORS.TypedError('Failure_EntropyCheck', error.message);
+        };
+
+        const getXPubs = async () => {
+            const xpubs: XPubsPerBip43Path = {};
+            for (const { path, address_n } of parsedPaths) {
+                const pubKey = await cmd.getPublicKey({ address_n }).catch(handleErr);
+                xpubs[path] = pubKey.xpub;
+            }
+
+            return xpubs;
         };
 
         // steps: 1 - 4
@@ -91,13 +105,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             // steps: 5 - 6
             // GetPublicKey > PublicKey > EntropyCheckContinue > EntropyRequest > EntropyAck > EntropyCheckReady
 
-            const xpubs: Record<string, string> = {}; // <path, xpub>
-            for (const path of paths) {
-                const pubKey = await cmd
-                    .getPublicKey({ address_n: validatePath(path) })
-                    .catch(handleErr);
-                xpubs[path] = pubKey.xpub;
-            }
+            const xpubs = await getXPubs();
 
             const { prev_entropy, entropy_commitment } = await cmd
                 .typedCall('EntropyCheckContinue', 'EntropyRequest', {})
@@ -123,10 +131,14 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
             await cmd.typedCall('EntropyAck', 'EntropyCheckReady', { entropy }).catch(handleErr);
         }
+        const finalXPubs = await getXPubs();
 
         // step 7 EntropyCheckContinue > Success
         // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
         await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
+
+        // Entropy check success, so the xpubs are considered genuine
+        return finalXPubs;
     }
 
     async run() {
@@ -136,10 +148,13 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         }
 
         if (this.params.entropy_check) {
-            await this.entropyCheckWorkflow();
-        } else {
-            await this.resetDeviceWorkflow();
+            const xpubs = await this.entropyCheckWorkflow();
+            const xpubHashes = calculateXPubHashes(xpubs);
+
+            return { message: 'Success', xpubHashes };
         }
+
+        await this.resetDeviceWorkflow();
 
         return { message: 'Success' };
     }

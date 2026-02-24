@@ -117,6 +117,9 @@ export type FirmwareHashCheckResult =
           errorPayload?: unknown;
       };
 
+export type XPubHashesPerBip43Path = Record<string, string>;
+export type EntropyCheckResult = { success: boolean; xpubHashes?: XPubHashesPerBip43Path };
+
 /**
  * The Unique Device Identifier per Suite run & Connected Device.
  * When Suite is restarted or the Device is reconnected this will change.
