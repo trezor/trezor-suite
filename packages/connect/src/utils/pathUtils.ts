@@ -47,7 +47,7 @@ export const getHDPath = (path: string): number[] => {
 export const isSegwitPath = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(49);
 
-export const isBech32Path = (path: number[] | undefined) =>
+const isBech32Path = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(84);
 
 export const isTaprootPath = (path: number[] | undefined) =>
@@ -180,23 +180,6 @@ export const getSerializedPath = (path: number[]) =>
             return s;
         })
         .join('/')}`;
-
-export const getPathFromIndex = (bip44purpose: number, bip44cointype: number, index: number) => [
-    toHardened(bip44purpose),
-    toHardened(bip44cointype),
-    toHardened(index),
-];
-
-export const getIndexFromPath = (path: number[]) => {
-    if (path.length < 3) {
-        throw ERRORS.TypedError(
-            'Method_InvalidParameter',
-            `getIndexFromPath: invalid path length ${path.toString()}`,
-        );
-    }
-
-    return fromHardened(path[2]);
-};
 
 export const fixPath = <
     T extends
