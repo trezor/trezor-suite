@@ -35,3 +35,21 @@ After any code changes, run formatting on changed files before finishing:
 - **Windows**: Use Git Bash instead of cmd/PowerShell; consider WSL for better performance
 - **Testing**: Some tests may time out in CI environments without network access
 - **Hardware wallets**: Use trezor/trezor-user-env emulator for development
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | Command | Port | Notes |
+|---------|---------|------|-------|
+| Suite Web | `yarn suite:dev` | 8000 | Primary app; see `skills/development-commands.md` for all commands |
+
+### Caveats
+
+- **Node version**: Requires Node.js 24 (see `.nvmrc` for exact version). Use `nvm use` before running commands.
+- **Essential build required**: Before starting `yarn suite:dev`, you must run `yarn build:essential` once. This builds `@trezor/suite-data`, `@trezor/transport-bridge`, and message-system config (~20s).
+- **Webpack initial compile**: First `yarn suite:dev` webpack compile takes ~60s. Subsequent HMR is fast. Use `yarn suite:dev:vite` for faster cold starts.
+- **Unit tests**: `yarn workspace @trezor/utils test:unit` is a quick smoke test (~3s). Full suite via `yarn test:unit` takes much longer.
+- **Lint**: `yarn g:eslint --max-warnings 0 --flag v10_config_lookup_from_file --concurrency auto <files>` for targeted linting. Full repo lint via `yarn lint:js`.
+- **Hardware wallet features**: Cannot be tested without a Trezor device or the `trezor-user-env` Docker emulator. The app still loads and navigates without one.
+- **Pre-commit hook**: Runs ESLint on staged `.js/.jsx/.ts/.tsx` files. Can be skipped with `export TREZOR_PRE_COMMIT_ESLINT_SKIP=true`.
