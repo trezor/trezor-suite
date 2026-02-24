@@ -7,7 +7,6 @@ type Config = {
     webusb: typeof TREZOR_USB_DESCRIPTORS;
     whitelist: Array<{ origin: string; priority: number }>;
     management: Array<{ origin: string }>;
-    knownHosts: Array<{ origin: string; label: string }>;
     onionDomains: Record<string, string>;
     supportedBrowsers: Record<
         string,
@@ -39,54 +38,6 @@ export const config: Config = {
         { origin: 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', priority: 0 },
     ],
     management: [{ origin: 'trezor.io' }, { origin: 'sldev.cz' }, { origin: 'localhost' }],
-    knownHosts: [
-        {
-            origin: 'imloifkgjagghnncjkhggdhalmcnfklk',
-            label: 'Trezor Password Manager (Develop)',
-        },
-        { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager' },
-        {
-            origin: 'mnpfhpndmjholfdlhpkjfmjkgppmodaf',
-            label: 'MetaMask',
-        },
-        {
-            origin: 'webextension@metamask.io',
-            label: 'MetaMask',
-        },
-        {
-            origin: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
-            label: 'MetaMask',
-        },
-        {
-            origin: 'bfibaipbbpipfifeecgfehbpmfhdakgo',
-            label: 'Nightly DEV',
-        },
-        {
-            origin: 'fiikommddbeccaoicoejoniammnalkfa',
-            label: 'Nightly',
-        },
-        {
-            origin: 'bpcdaglidgnlggelgbjfagekoapjmccp',
-            label: 'Rainbow DEV',
-        },
-        {
-            origin: 'opfgelmcmbiajamepnmloijbpoleiama',
-            label: 'Rainbow',
-        },
-        {
-            origin: 'acmacodkjbdgmoleebolmdjonilkdbch',
-            label: 'Rabby',
-        },
-        {
-            origin: 'ehnpnhnhcickeknioaiodjmielfaoajd',
-            label: 'Ambire DEV',
-        },
-        {
-            origin: 'ehgjhhccekdedpbkifaojjaefeohnoea',
-            label: 'Ambire',
-        },
-        { origin: 'file://', label: ' ' },
-    ],
     onionDomains: {
         'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
     },
