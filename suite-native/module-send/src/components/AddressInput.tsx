@@ -19,12 +19,12 @@ import { SendFormLabelEditable } from '@suite-native/labeling';
 import { useAnalytics } from '@suite-native/services';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
+import { AddressInfoMessage } from './AddressInfoMessage';
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
+import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
-import { AddressInfoMessage } from './AddressInfoMessage';
-import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 
 type AddressInputProps = {
     index: number;
@@ -86,7 +86,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     return (
         <VStack spacing="sp12">
-            <HStack flex={1} justifyContent="space-between" alignItems="center">
+            <HStack alignItems="center" spacing="sp12">
                 <Text variant="body-sm">
                     <Translation id="moduleSend.outputs.recipients.addressLabel" />
                 </Text>
@@ -96,7 +96,9 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                     <SendFormLabelEditable
                         label={utxoLabel ?? null}
                         onLabelChange={newUtxoLabel => {
-                            setValue(utxoLabelFieldName, newUtxoLabel, { shouldValidate: true });
+                            setValue(utxoLabelFieldName, newUtxoLabel, {
+                                shouldValidate: true,
+                            });
                         }}
                     />
                 )}

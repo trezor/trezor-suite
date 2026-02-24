@@ -53,6 +53,7 @@ const textStyle = prepareNativeStyle(
         }: { buttonSize: ButtonSize; isUnderlined: boolean; isBold: boolean },
     ) => ({
         ...utils.typography[buttonToTextSizeMap[buttonSize]],
+        flexShrink: 1,
         extend: [
             {
                 condition: isUnderlined,
@@ -133,6 +134,7 @@ export const TextButton = ({
                 )}
                 <Animated.Text
                     testID={`${testID}/text`}
+                    numberOfLines={1}
                     style={[
                         applyStyle(textStyle, { buttonSize: size, isUnderlined, isBold }),
                         animatedTextStyle,

@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { Box } from '@suite-native/atoms';
+
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
 import { selectIsLabellingAllowed } from '../selectors';
@@ -15,16 +17,18 @@ export const SendFormLabelEditable = ({ onLabelChange, label }: SendFormLabelEdi
     if (!isLabellingAllowed) return null;
 
     return (
-        <EditableLabelLayout label={label}>
-            {({ onClose }) => (
-                <LabelEditForm
-                    label={label}
-                    onSubmit={newLabel => {
-                        onLabelChange(newLabel);
-                        onClose();
-                    }}
-                />
-            )}
-        </EditableLabelLayout>
+        <Box flex={1} alignItems="flex-end">
+            <EditableLabelLayout label={label}>
+                {({ onClose }) => (
+                    <LabelEditForm
+                        label={label}
+                        onSubmit={newLabel => {
+                            onLabelChange(newLabel);
+                            onClose();
+                        }}
+                    />
+                )}
+            </EditableLabelLayout>
+        </Box>
     );
 };
