@@ -101,6 +101,10 @@ export const suiteSyncDataSlice = createSlice({
             });
         },
 
+        clearDataForWallet: (state, action: PayloadAction<WalletDescriptor>) => {
+            delete state.wallets[action.payload];
+        },
+
         clearAll: () => initialSuiteSyncDataState,
     },
 });
@@ -110,6 +114,7 @@ export const {
     upsertManyAccounts,
     upsertManyAddresses,
     upsertManyOutputs,
+    clearDataForWallet,
     clearAll,
 } = suiteSyncDataSlice.actions;
 
