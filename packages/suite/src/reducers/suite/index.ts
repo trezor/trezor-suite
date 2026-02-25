@@ -1,3 +1,4 @@
+import { experimentalFeedbackSlice } from '@suite/experimental-feedback';
 import { metadataReducer } from '@suite/metadata';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -23,6 +24,7 @@ const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = deviceSlice.prepareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
+const experimentalFeedbackReducer = experimentalFeedbackSlice.reducer;
 
 export default {
     suite,
@@ -38,6 +40,7 @@ export default {
     messageSystem,
     guide,
     protocol,
+    experimentalFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
 };
