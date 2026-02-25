@@ -102,12 +102,6 @@ export const config: Config = {
             ],
         },
         {
-            coin: ['dcr', 'tdcr'],
-            methods: ['signTransaction'],
-            min: { T1B1: '1.10.1', T2T1: '2.4.0' },
-            comment: [''],
-        },
-        {
             methods: ['ethereumSignTypedData'],
             min: { T1B1: '1.10.5', T2T1: '2.4.3' },
             comment: ['EIP-712 typed signing support added in 1.10.5/2.4.3'],
