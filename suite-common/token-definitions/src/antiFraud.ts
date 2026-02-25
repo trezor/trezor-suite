@@ -1,9 +1,26 @@
 import { D } from '@mobily/ts-belt';
 
-import { NetworkSymbol, NetworkType, getNetworkType } from '@suite-common/wallet-config';
-import type { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isNftTokenTransfer } from '@suite-common/wallet-utils';
-import { InternalTransfer, TokenTransfer } from '@trezor/blockchain-link-types';
+import {
+    NetworkSymbol,
+    NetworkType,
+    getNetworkFeatures,
+    getNetworkType,
+} from '@suite-common/wallet-config';
+import type {
+    RatesByTimestamps,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import {
+    asAmountSubunit,
+    getFiatRateKey,
+    isNftTokenTransfer,
+    roundTimestampToNearestPastHour,
+    subunitsToUnits,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
+import { BaseCurrencyCode, InternalTransfer, TokenTransfer } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import type { TokenDefinitions } from './tokenDefinitionsTypes';
@@ -30,10 +47,24 @@ type PhishingDetectorFnProps = {
 
 type PhishingDetectorFn = (props: PhishingDetectorFnProps) => boolean;
 
-// dust threshold in USD
-export const DUST_PHISHING_THRESHOLD = '0.001';
+/** The dust threshold is in fiat (USD), as we want to detect economically meaningful dust-sized value movements */
+export const DUST_PHISHING_THRESHOLD = '0.005';
+const DUST_PHISHING_THRESHOLD_CURRENCY = 'usd' satisfies BaseCurrencyCode;
+/** Transaction types that are not considered during phishing detection */
+const PHISHING_WHITELISTED_TX_TYPES: WalletAccountTransaction['type'][] = [
+    'sent',
+    'self',
+    'contract',
+];
 
-export const getIsDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
+export const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
+    const hasFiatAmount =
+        !!transaction.amountInFiat &&
+        transaction.tokens.every(token => !!token.amountInFiat) &&
+        transaction.internalTransfers.every(internalTransfer => !!internalTransfer.amountInFiat);
+
+    if (!hasFiatAmount) return false;
+
     const nativeTokenFiatAmount = new BigNumber(transaction.amountInFiat ?? '0');
 
     const tokensFiatAmount = transaction.tokens.reduce(
@@ -51,18 +82,15 @@ export const getIsDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
         .plus(tokensFiatAmount)
         .plus(internalTransfersFiatAmount);
 
-    // if the total fiat amount is zero, don't consider it as dust
-    if (totalFiatAmount.isEqualTo(0)) return false;
-
     return totalFiatAmount.isLessThanOrEqualTo(DUST_PHISHING_THRESHOLD);
 };
 
-export const getIsZeroValuePhishing: PhishingDetectorFn = ({ transaction }) =>
+export const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) =>
     new BigNumber(transaction.amount).isEqualTo(0) &&
     D.isNotEmpty(transaction.tokens) &&
     transaction.tokens.every(token => new BigNumber(token.amount).isEqualTo(0));
 
-export const getIsFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions }) =>
+export const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions }) =>
     !!tokenDefinitions &&
     D.isNotEmpty(tokenDefinitions) &&
     new BigNumber(transaction.amount).isEqualTo(0) && // native currency is zero
@@ -87,20 +115,19 @@ export const getIsFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenD
         );
     }); // there is hidden or unknown token in tx
 
-export const getIsUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) =>
+export const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) =>
     transaction.type === 'unknown';
 
 const detectors = {
-    dustValue: getIsDustValuePhishing,
-    zeroValue: getIsZeroValuePhishing,
-    fakeToken: getIsFakeTokenPhishing,
-    unknownTx: getIsUnknownTxPhishing,
-} as const;
+    dustValue: isDustValuePhishing,
+    zeroValue: isZeroValuePhishing,
+    fakeToken: isFakeTokenPhishing,
+    unknownTx: isUnknownTxPhishing,
+} as const satisfies Record<string, PhishingDetectorFn>;
 
 type NetworkPhishingDetectors = Map<NetworkType, PhishingDetectorFn[]>;
 
 const phishingDetectors: NetworkPhishingDetectors = new Map([
-    ['bitcoin', []],
     ['ethereum', [detectors.dustValue, detectors.zeroValue, detectors.fakeToken]],
     ['ripple', [detectors.dustValue]],
     ['cardano', [detectors.dustValue, detectors.fakeToken]],
@@ -109,19 +136,124 @@ const phishingDetectors: NetworkPhishingDetectors = new Map([
     ['tron', [detectors.dustValue, detectors.fakeToken]],
 ]);
 
-// NOTE: This function determins, for which symbols there are filters in the UI to hide / display spam transactions
+// NOTE: This function determines for which symbols there are filters in the UI to hide/display spam transactions
 // when handling fraud for other symbols, make sure this function is updated!
 export const hasNetworkPotentialFraudTransactions = (symbol: NetworkSymbol) =>
     phishingDetectors.has(getNetworkType(symbol));
 
-export const getIsPhishingTransaction = (
-    transaction: TransactionWithFiatAmount,
-    tokenDefinitions: TokenDefinitions,
-) => {
-    const networkType = getNetworkType(transaction.symbol);
+interface GetTransactionAmountInFiatProps {
+    transaction: WalletAccountTransaction;
+    amount: string;
+    contractAddress?: TokenAddress;
+    decimals?: number;
+    historicRates?: RatesByTimestamps;
+}
+
+const getTransactionAmountInFiat = ({
+    transaction,
+    amount,
+    contractAddress,
+    decimals,
+    historicRates,
+}: GetTransactionAmountInFiatProps) => {
+    if (amount === '') return '0';
+
+    const fiatRateKey = getFiatRateKey(
+        transaction.symbol,
+        DUST_PHISHING_THRESHOLD_CURRENCY,
+        contractAddress,
+    );
+    const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
+
+    const amountInUnits = subunitsToUnits(
+        decimals
+            ? {
+                  value: asAmountSubunit(new BigNumber(amount)),
+                  decimals,
+              }
+            : {
+                  value: asAmountSubunit(new BigNumber(amount)),
+                  symbol: transaction.symbol,
+              },
+    );
+
+    const fiatRate = historicRates?.[fiatRateKey]?.[roundedTimestamp];
+
+    return toFiatCurrency({ amount: amountInUnits, rate: fiatRate })?.toString();
+};
+
+interface GetTransactionWithFiatAmountsProps {
+    transaction: WalletAccountTransaction;
+    historicRates?: RatesByTimestamps;
+}
+
+export const getTransactionWithFiatAmounts = ({
+    transaction,
+    historicRates,
+}: GetTransactionWithFiatAmountsProps): TransactionWithFiatAmount => ({
+    ...transaction,
+    amountInFiat: getTransactionAmountInFiat({
+        transaction,
+        amount: transaction.amount,
+        historicRates,
+    }),
+    tokens: transaction.tokens.map(token => ({
+        ...token,
+        amountInFiat: getTransactionAmountInFiat({
+            transaction,
+            amount: token.amount,
+            contractAddress: token.contract as TokenAddress,
+            decimals: token.decimals,
+            historicRates,
+        }),
+    })),
+    internalTransfers: transaction.internalTransfers.map(internalTransfer => ({
+        ...internalTransfer,
+        amountInFiat: getTransactionAmountInFiat({
+            transaction,
+            amount: internalTransfer.amount,
+            historicRates,
+        }),
+    })),
+});
+
+interface IsPhishingTransactionProps {
+    transaction?: WalletAccountTransaction;
+    tokenDefinitions?: TokenDefinitions;
+    historicRates?: RatesByTimestamps;
+    txsMarkedAsNotScam: string[];
+}
+
+// NOTE: this is the single main function that is used
+// across Suite to determine if a transaction is phishing
+export const isPhishingTransaction = ({
+    transaction,
+    tokenDefinitions,
+    historicRates,
+    txsMarkedAsNotScam,
+}: IsPhishingTransactionProps) => {
+    if (!transaction) return false;
+
+    if (PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type)) return false;
+
+    const { symbol } = transaction;
+    const networkFeatures = getNetworkFeatures(symbol);
+    const hasCoinDefinitionsFeature = networkFeatures.includes('coin-definitions');
+
+    if (!tokenDefinitions && hasCoinDefinitionsFeature) return false;
+    if (txsMarkedAsNotScam.includes(transaction.txid)) return false;
+
+    const transactionWithFiatAmounts = getTransactionWithFiatAmounts({
+        transaction,
+        historicRates,
+    });
+
+    const networkType = getNetworkType(transactionWithFiatAmounts.symbol);
     const networkDetectors = phishingDetectors.get(networkType);
 
     if (!networkDetectors || networkDetectors.length === 0) return false;
 
-    return networkDetectors.some(detector => detector({ transaction, tokenDefinitions }));
+    return networkDetectors.some(detector =>
+        detector({ transaction: transactionWithFiatAmounts, tokenDefinitions }),
+    );
 };

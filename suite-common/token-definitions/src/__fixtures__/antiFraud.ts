@@ -1,10 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import {
-    DUST_PHISHING_THRESHOLD,
-    TokenTransferWithFiatAmount,
-    TransactionWithFiatAmount,
-} from '../antiFraud';
+import { DUST_PHISHING_THRESHOLD, TransactionWithFiatAmount } from '../antiFraud';
 import type { TokenDefinitions } from '../tokenDefinitionsTypes';
 
 const DUST_UNIT = new BigNumber(DUST_PHISHING_THRESHOLD).dividedBy(10);
@@ -12,7 +8,7 @@ const EXACT_DUST = DUST_PHISHING_THRESHOLD;
 const BELOW_DUST = new BigNumber(DUST_PHISHING_THRESHOLD).minus(DUST_UNIT).toString();
 const ABOVE_DUST = new BigNumber(DUST_PHISHING_THRESHOLD).plus(DUST_UNIT).toString();
 
-export const getIsDustValuePhishingFixtures = [
+export const isDustValuePhishingFixtures = [
     {
         testName: 'transaction with exact-dust native token and no tokens',
         transaction: {
@@ -43,7 +39,8 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and one exact-dust token',
         transaction: {
-            tokens: [{ amountInFiat: EXACT_DUST } as TokenTransferWithFiatAmount],
+            amountInFiat: '0',
+            tokens: [{ amountInFiat: EXACT_DUST }],
             internalTransfers: [],
         } as unknown as TransactionWithFiatAmount,
         result: true,
@@ -51,7 +48,8 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and one below-dust token',
         transaction: {
-            tokens: [{ amountInFiat: BELOW_DUST } as TokenTransferWithFiatAmount],
+            amountInFiat: '0',
+            tokens: [{ amountInFiat: BELOW_DUST }],
             internalTransfers: [],
         } as unknown as TransactionWithFiatAmount,
         result: true,
@@ -59,7 +57,8 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and one above-dust token',
         transaction: {
-            tokens: [{ amountInFiat: ABOVE_DUST } as TokenTransferWithFiatAmount],
+            amountInFiat: '0',
+            tokens: [{ amountInFiat: ABOVE_DUST }],
             internalTransfers: [],
         } as unknown as TransactionWithFiatAmount,
         result: false,
@@ -67,6 +66,7 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and exact-dust tokens',
         transaction: {
+            amountInFiat: '0',
             tokens: [
                 {
                     amountInFiat: new BigNumber(EXACT_DUST).dividedBy(2).toString(),
@@ -82,6 +82,7 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and below-dust tokens',
         transaction: {
+            amountInFiat: '0',
             tokens: [
                 {
                     amountInFiat: new BigNumber(EXACT_DUST)
@@ -100,6 +101,7 @@ export const getIsDustValuePhishingFixtures = [
     {
         testName: 'transaction with zero native token and above-dust tokens',
         transaction: {
+            amountInFiat: '0',
             tokens: [
                 {
                     amountInFiat: new BigNumber(EXACT_DUST).dividedBy(2).plus(DUST_UNIT).toString(),
@@ -224,11 +226,11 @@ export const getIsDustValuePhishingFixtures = [
             tokens: [{ amountInFiat: '0' }, { amountInFiat: '0' }],
             internalTransfers: [],
         } as unknown as TransactionWithFiatAmount,
-        result: false,
+        result: true,
     },
 ];
 
-export const getIsZeroValuePhishingFixtures = [
+export const isZeroValuePhishingFixtures = [
     {
         testName: 'detects potential zero-value phishing transactions',
         transaction: {
@@ -285,7 +287,7 @@ export const getIsZeroValuePhishingFixtures = [
     },
 ];
 
-export const getIsFakeTokenPhishingFixtures = [
+export const isFakeTokenPhishingFixtures = [
     {
         testName: 'non-zero tx',
         transaction: {
@@ -688,7 +690,7 @@ export const getIsFakeTokenPhishingFixtures = [
     },
 ];
 
-export const getIsUnknownTxPhishingFixtures = [
+export const isUnknownTxPhishingFixtures = [
     {
         testName: 'known transaction',
         transaction: {
@@ -713,7 +715,7 @@ export const getIsUnknownTxPhishingFixtures = [
     },
 ];
 
-export const getIsPhishingTransactionFixtures = [
+export const isPhishingTransactionFixtures = [
     {
         testName: 'legit tx with known token',
         transaction: {
