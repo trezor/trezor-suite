@@ -1,18 +1,16 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { Translation, useTranslation } from '@suite/intl';
 import {
     Button,
     Card,
     Column,
-    ElevationUp,
     IconButton,
     Paragraph,
     Row,
     SuiteThemeColors,
 } from '@trezor/components';
-// TODO fix this import
-import { ExperimentalFeature } from '@trezor/suite/src/constants/suite/experimental';
 
 const emojiIcon = '☺️';
 
@@ -24,7 +22,7 @@ const EmojiIconContainer = styled.div<{ theme: SuiteThemeColors }>`
     justify-content: center;
     align-items: center;
     font-size: 22px;
-    background: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation1};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
 `;
 
 type RateYourExperienceCardProps = {
@@ -37,8 +35,10 @@ export const RateYourExperienceCard = ({
     onRate,
     onSkip,
     feature,
-}: RateYourExperienceCardProps) => (
-    <ElevationUp>
+}: RateYourExperienceCardProps) => {
+    const { translationString } = useTranslation();
+
+    return (
         <Card fillType="default">
             <Column gap={12}>
                 <EmojiIconContainer>{emojiIcon}</EmojiIconContainer>
@@ -47,7 +47,7 @@ export const RateYourExperienceCard = ({
                         <Translation
                             id="TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING"
                             values={{
-                                feature,
+                                feature: translationString(translatedExperimentalFeatures[feature]),
                             }}
                         />
                     </Paragraph>
@@ -76,5 +76,5 @@ export const RateYourExperienceCard = ({
                 </Row>
             </Column>
         </Card>
-    </ElevationUp>
-);
+    );
+};

@@ -1,17 +1,21 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { Translation, useTranslation } from '@suite/intl';
 import { Rating } from '@suite-common/feedback';
-import { Column, Modal, Paragraph, Textarea } from '@trezor/components';
+import { Card, Column, Modal, Paragraph, Textarea } from '@trezor/components';
 
 import { EmojiRatingSelector } from './EmojiRatingSelector';
 
 export interface FeedbackFormModalProps {
+    feature: ExperimentalFeature;
     onDismiss: () => void;
     onSubmit: (rating: Rating, description: string) => void;
 }
 
-export const FeedbackFormModal = ({ onDismiss, onSubmit }: FeedbackFormModalProps) => {
+export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackFormModalProps) => {
+    const { translationString } = useTranslation();
+
     const [rating, setRating] = useState<Rating | undefined>();
     const [description, setDescription] = useState('');
 
@@ -26,7 +30,14 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit }: FeedbackFormModalProp
 
     return (
         <Modal
-            heading={<Translation id="TR_EXPERIMENTAL_FEEDBACK_MODAL_HEADING" />}
+            heading={
+                <Translation
+                    id="TR_EXPERIMENTAL_FEEDBACK_MODAL_HEADING"
+                    values={{
+                        feature: translationString(translatedExperimentalFeatures[feature]),
+                    }}
+                />
+            }
             bottomContent={
                 <>
                     <Modal.Button isDisabled={!isFormValid} onClick={handleSubmit}>
@@ -38,22 +49,25 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit }: FeedbackFormModalProp
                 </>
             }
             onCancel={onDismiss}
+            variant="primary"
         >
-            <Column gap={16} alignItems="start">
-                <EmojiRatingSelector value={rating} onChange={setRating} />
+            <Card>
+                <Column gap={16} alignItems="start">
+                    <EmojiRatingSelector value={rating} onChange={setRating} />
 
-                <Paragraph typographyStyle="body-sm">
-                    <Translation id="TR_EXPERIMENTAL_FEEDBACK_MODAL_DESCRIPTION" />
-                </Paragraph>
+                    <Paragraph typographyStyle="body-sm">
+                        <Translation id="TR_EXPERIMENTAL_FEEDBACK_MODAL_DESCRIPTION" />
+                    </Paragraph>
 
-                <Textarea
-                    rows={3}
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    characterCount
-                    maxLength={1000}
-                />
-            </Column>
+                    <Textarea
+                        rows={3}
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        characterCount
+                        maxLength={1000}
+                    />
+                </Column>
+            </Card>
         </Modal>
     );
 };
