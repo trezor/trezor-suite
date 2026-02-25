@@ -47,7 +47,7 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const RightText = ({ color, variant = 'body-md', testID, children }: RightTextProps) => (
+const RightText = ({ color, variant = 'body-sm', testID, children }: RightTextProps) => (
     <Text
         color={color}
         variant={variant}

@@ -35,7 +35,7 @@ const BuyPaymentMethodPickerRight = ({
         return (
             <Text
                 color="textSubdued"
-                variant="body-md"
+                variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedPaymentMethod')}
                 testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
             >
@@ -47,7 +47,7 @@ const BuyPaymentMethodPickerRight = ({
     return (
         <Text
             color="textDisabled"
-            variant="body-md"
+            variant="body-sm"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noPaymentMethod')}
         >
             <Translation id="moduleTrading.notSelected" />

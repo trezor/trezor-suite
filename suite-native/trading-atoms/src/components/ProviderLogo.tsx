@@ -17,7 +17,7 @@ const imageStyle = prepareNativeStyle<{ size: NativeTypographyStyle }>(
     }),
 );
 
-export const ProviderLogo = ({ logo, size = 'body-md' }: TradingProviderLogoProps) => {
+export const ProviderLogo = ({ logo, size = 'body-sm' }: TradingProviderLogoProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
