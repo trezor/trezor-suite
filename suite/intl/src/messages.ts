@@ -747,20 +747,6 @@ export const messages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
-    TR_BUY_FOOTER_TEXT_1: {
-        defaultMessage:
-            'Trezor Suite helps you compare trusted exchange providers to find the best offers. Your location is used only to show options that are relevant to you.',
-        id: 'TR_BUY_FOOTER_TEXT_1',
-    },
-    TR_BUY_FOOTER_TEXT_2: {
-        defaultMessage:
-            "Trezor doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
-        id: 'TR_BUY_FOOTER_TEXT_2',
-    },
-    TR_TERMS_PROVIDER_PLACEHOLDER: {
-        defaultMessage: 'provider',
-        id: 'TR_TERMS_PROVIDER_PLACEHOLDER',
-    },
     TR_TRADING_TERMS: {
         id: 'TR_TRADING_TERMS',
         defaultMessage:
@@ -821,14 +807,6 @@ export const messages = defineMessages({
     TR_LOGIN_PROCEED: {
         id: 'TR_LOGIN_PROCEED',
         defaultMessage: 'Proceed',
-    },
-    TR_TERMS_OF_USE_TREZOR: {
-        defaultMessage: 'Terms of Use',
-        id: 'TR_TERMS_OF_USE_TREZOR',
-    },
-    TR_BUY_LEARN_MORE: {
-        defaultMessage: 'Learn more',
-        id: 'TR_BUY_LEARN_MORE',
     },
     TR_BUY_BUY: {
         defaultMessage: 'Buy',
@@ -997,10 +975,6 @@ export const messages = defineMessages({
     TR_TRADING_COUNTRY_NOT_FOUND: {
         defaultMessage: 'Country not found',
         id: 'TR_TRADING_COUNTRY_NOT_FOUND',
-    },
-    TR_TRADING_FILTERING_ERROR: {
-        defaultMessage: 'Check the spelling or browse the list to select an option.',
-        id: 'TR_TRADING_FILTERING_ERROR',
     },
     TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
@@ -2916,7 +2890,7 @@ export const messages = defineMessages({
     },
     TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY: {
         defaultMessage:
-            'Standard recovery is sufficiently secure and more efficient. Choose advanced recovery if you prefer entering your wallet backup on your Trezor’s screen for ultimate security. To learn more, visit <a>our guide</a>.',
+            'Standard recovery is secure and efficient. Choose advanced recovery if you prefer entering your wallet backup on your Trezor’s screen. <a>Learn more</a>',
         description:
             'The updated recovery types description for T1B1 with standard or advanced recovery for 24 words backup. It is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY',
@@ -3174,11 +3148,11 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER: {
         defaultMessage:
-            'Firmware update required. Update firmware on the device to use Suite Sync.',
+            'Firmware update required. Update firmware on your Trezor to use Suite Sync.',
         id: 'TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER',
     },
     TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP: {
-        defaultMessage: 'Connect your device to proceed.',
+        defaultMessage: 'Connect your Trezor to continue.',
         id: 'TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP',
     },
     TR_SUITE_SYNC_KEYS_NEEDED_BANNER: {
@@ -4491,7 +4465,7 @@ export const messages = defineMessages({
     },
     TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
         defaultMessage:
-            'Assets couldn’t be loaded. If using a VPN, disable it and try again. {details}',
+            'Your assets couldn’t be loaded. If using a VPN, disable it and try again. {details}',
         id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
     },
     TR_PIN: {
@@ -6088,15 +6062,8 @@ export const messages = defineMessages({
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
-    },
-    FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT: {
-        id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT',
-        defaultMessage: 'Got it',
-    },
-    FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_BUY: {
-        id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_BUY',
-        defaultMessage: 'Buy on Trezor.io',
+        defaultMessage:
+            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -7034,7 +7001,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_SUPPORT: {
         id: 'TR_GUIDE_SUPPORT',
-        defaultMessage: 'Contact Trezor Support',
+        defaultMessage: 'Trezor Support',
     },
     TR_GUIDE_FORUM: {
         id: 'TR_GUIDE_FORUM',
@@ -7739,11 +7706,11 @@ export const messages = defineMessages({
     },
     TR_EARN_AMOUNT_STAKED_INSTANTLY: {
         id: 'TR_EARN_AMOUNT_STAKED_INSTANTLY',
-        defaultMessage: '{amount} {symbol} staked instantly!',
+        defaultMessage: '{amount} {symbol} staked instantly',
     },
     TR_EARN_AMOUNT_UNSTAKED_INSTANTLY: {
         id: 'TR_EARN_AMOUNT_UNSTAKED_INSTANTLY',
-        defaultMessage: '{amount} {symbol} unstaked instantly!',
+        defaultMessage: '{amount} {symbol} unstaked instantly',
     },
     TR_INSTANT_UNSTAKING: {
         id: 'TR_INSTANT_UNSTAKING',
@@ -9018,7 +8985,7 @@ export const messages = defineMessages({
     TR_EARN_APY_WITH_EVERSTAKE: {
         id: 'TR_EARN_APY_WITH_EVERSTAKE',
         defaultMessage:
-            'Earn ~{apy}% APY with our trusted new staking partner, Everstake. Your initial 2 {networkDisplaySymbol} deposit moves with you—you won’t pay it again.',
+            'Earn ~{apy}% APY with our trusted new staking partner, Everstake. Your initial 2 {networkDisplaySymbol} deposit stays with you—no need to pay it again.',
     },
     TR_STAKING_BANNER_DETAIL_TEXT_EMPTY: {
         id: 'TR_STAKING_BANNER_DETAIL_TEXT_EMPTY',
@@ -9234,7 +9201,7 @@ export const messages = defineMessages({
     },
     TR_EARN_APY_REQUIRED: {
         id: 'TR_EARN_APY_REQUIRED',
-        defaultMessage: 'APY required to calculate rewards',
+        defaultMessage: 'APY is required to calculate rewards',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
@@ -10095,7 +10062,7 @@ export const messages = defineMessages({
     },
     TR_BLUETOOTH_UNPAIRING: {
         id: 'TR_BLUETOOTH_UNPAIRING',
-        defaultMessage: 'Unpairing the Bluetooth device...',
+        defaultMessage: 'Unpairing Bluetooth device...',
     },
     TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION: {
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
@@ -10393,15 +10360,11 @@ export const messages = defineMessages({
     },
     TR_SWITCH_ANYWAY: {
         id: 'TR_SWITCH_ANYWAY',
-        defaultMessage: 'Switch',
+        defaultMessage: 'Yes, switch',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
         defaultMessage: 'Turn on Suite Sync',
-    },
-    TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
-        id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
-        defaultMessage: 'Suite Sync keeps your data up to date on all your devices.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
@@ -10421,7 +10384,7 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION',
-        defaultMessage: 'Update the firmware on the device {name} to use Suite Sync.',
+        defaultMessage: 'Update firmware on the device {name} to use Suite Sync.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
@@ -10437,11 +10400,11 @@ export const messages = defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Suite Sync can’t be migrated and won’t be visible.',
+        defaultMessage: 'Labels created with Suite Sync can’t be migrated.',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
-        defaultMessage: 'Legacy labeling doesn’t sync labels to your mobile devices.',
+        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices.',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
