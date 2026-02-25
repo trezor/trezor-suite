@@ -33,7 +33,6 @@ describe('Trade Buy [@noDevice]', () => {
 
         await tradingBuyActions.confirmTradingForm();
         await tradingBuyActions.expectBrowserAuthTriggered();
-        await tradingBuyActions.scrollScreenToBottom();
 
         await tradingHistoryActions.openTradeHistory();
         await tradingHistoryActions.openTradeDetail('PLN\xa0100.00');
