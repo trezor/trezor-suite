@@ -36,7 +36,7 @@ test.describe(
                     const suiteReadyEvent = analytics.findAnalyticsEventByType<
                         ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
                     >(events.suiteReadyEvent.name);
-                    expect(suiteReadyEvent).toContainSubObject({
+                    expect(suiteReadyEvent).toMatchObject({
                         language: 'en-US',
                         enabledNetworks: 'btc',
                         customBackends: '',
@@ -63,7 +63,7 @@ test.describe(
                     const deviceConnectEvent = analytics.findAnalyticsEventByType<
                         ExtractByEventType<(typeof events.deviceConnectEvent)['name']>
                     >(events.deviceConnectEvent.name);
-                    expect(deviceConnectEvent).toContainSubObject({
+                    expect(deviceConnectEvent).toMatchObject({
                         mode: 'normal',
                         firmware: firmwareVersion,
                         bootloaderHash: '',
@@ -188,7 +188,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             const suiteReadyEvent = analytics.findAnalyticsEventByType<
                 ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
             >(events.suiteReadyEvent.name);
-            expect(suiteReadyEvent).toContainSubObject({
+            expect(suiteReadyEvent).toMatchObject({
                 language: 'en-US',
                 enabledNetworks: 'eth,thod',
                 customBackends: 'eth',
