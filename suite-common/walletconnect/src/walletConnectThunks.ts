@@ -1,5 +1,5 @@
 import { WalletKit, WalletKitTypes } from '@reown/walletkit';
-import type { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
+import type { IWalletKit } from '@reown/walletkit';
 import { Core } from '@walletconnect/core';
 import {
     buildApprovedNamespaces,
@@ -24,7 +24,7 @@ import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './wall
 import { selectPendingProposal } from './walletConnectReducer';
 import { PendingConnectionProposalNetwork } from './walletConnectTypes';
 
-let walletKit: WalletKitClient;
+let walletKit: IWalletKit;
 
 export const sessionAuthenticateThunk = createThunk<
     void,
