@@ -46,9 +46,11 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {
         handleSubmit,
-        formState: { isValid },
+        formState: { errors },
         control,
     } = form;
+
+    const hasErrors = Object.keys(errors).length > 0;
 
     const accountLabelLength = useWatch({ control, name: 'accountLabel' })?.length ?? 0;
 
@@ -117,7 +119,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         ref={inputRef}
                         name="accountLabel"
                         label={coinLabelFieldLabel}
-                        hint={isValid ? hint : undefined}
+                        hint={hasErrors ? undefined : hint}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
                         asBottomSheetInput
                         testID="@account-detail/settings/account-rename/input"
@@ -125,7 +127,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                     <Button
                         onPress={handleRenameAccount}
                         size="large"
-                        isDisabled={!isValid}
+                        isDisabled={hasErrors}
                         testID="@account-detail/settings/account-rename/confirm-button"
                     >
                         <Translation id="generic.buttons.confirm" />
