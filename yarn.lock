@@ -14276,8 +14276,10 @@ __metadata:
   resolution: "@suite-native/trading-fixtures@workspace:suite-native/trading-fixtures"
   dependencies:
     "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-types": "workspace:*"

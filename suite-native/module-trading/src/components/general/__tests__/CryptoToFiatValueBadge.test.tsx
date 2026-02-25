@@ -1,10 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Rate, Timestamp, WalletSettings } from '@suite-common/wallet-types';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { FullAppState } from '@suite-native/state';
-import { PreloadedState, act, renderWithStoreProvider } from '@suite-native/test-utils';
-import { btcAsset, ethAsset } from '@suite-native/trading-fixtures';
-import { PROTO } from '@trezor/connect';
+import { act, renderWithStoreProvider } from '@suite-native/test-utils';
+import { btcAsset, ethAsset, mockWalletFiatRatesAndSettings } from '@suite-native/trading-fixtures';
 
 import { CryptoToFiatValueBadge, CryptoToFiatValueBadgeProps } from '../CryptoToFiatValueBadge';
 
@@ -14,40 +9,13 @@ jest.mock('@suite-common/fiat-services', () => ({
 }));
 
 describe('CryptoToFiatValueBadge', () => {
-    const createMockRate = (rate: number, symbol: NetworkSymbol): Rate => ({
-        rate,
-        lastTickerTimestamp: 1000000 as Timestamp,
-        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
-        isLoading: false,
-        error: null,
-        ticker: { symbol },
+    const getPreloadedState = () => ({
+        wallet: mockWalletFiatRatesAndSettings(),
     });
 
-    const getPreloadedState = (
-        walletOverrides: Partial<FullAppState['wallet']> = {},
-    ): Partial<FullAppState> => ({
-        wallet: {
-            settings: {
-                localCurrency: 'usd',
-                bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-            } as WalletSettings,
-            fiat: {
-                current: {
-                    [getFiatRateKey('btc', 'usd')]: createMockRate(50000, 'btc'),
-                },
-                lastWeek: {},
-                historic: {},
-            },
-            ...walletOverrides,
-        } as FullAppState['wallet'],
-    });
-
-    const renderCryptoToFiatValueBadge = async (
-        props: CryptoToFiatValueBadgeProps,
-        preloadedState: PreloadedState = {},
-    ) => {
+    const renderCryptoToFiatValueBadge = async (props: CryptoToFiatValueBadgeProps) => {
         const res = renderWithStoreProvider(<CryptoToFiatValueBadge {...props} />, {
-            preloadedState,
+            preloadedState: getPreloadedState(),
         });
 
         // await mocked loading of rates
@@ -57,10 +25,10 @@ describe('CryptoToFiatValueBadge', () => {
     };
 
     it('should render nothing when no rate is loaded', async () => {
-        const { toJSON } = await renderCryptoToFiatValueBadge(
-            { amount: '1', cryptoId: ethAsset.cryptoId },
-            getPreloadedState(),
-        );
+        const { toJSON } = await renderCryptoToFiatValueBadge({
+            amount: '1',
+            cryptoId: ethAsset.cryptoId,
+        });
 
         expect(toJSON()).toBeNull();
     });
@@ -68,48 +36,49 @@ describe('CryptoToFiatValueBadge', () => {
     it.each([undefined, ''])(
         'should render nothing when cryptoValue is [%s]',
         async cryptoValue => {
-            const { toJSON } = await renderCryptoToFiatValueBadge(
-                { amount: cryptoValue, cryptoId: btcAsset.cryptoId },
-
-                getPreloadedState(),
-            );
+            const { toJSON } = await renderCryptoToFiatValueBadge({
+                amount: cryptoValue,
+                cryptoId: btcAsset.cryptoId,
+            });
 
             expect(toJSON()).toBeNull();
         },
     );
 
     it('should render rate for 0', async () => {
-        const { getByText } = await renderCryptoToFiatValueBadge(
-            { amount: '0', cryptoId: btcAsset.cryptoId },
-            getPreloadedState(),
-        );
+        const { getByText } = await renderCryptoToFiatValueBadge({
+            amount: '0',
+            cryptoId: btcAsset.cryptoId,
+        });
 
         expect(getByText('$0.00')).toBeOnTheScreen();
     });
 
     it('should render rate otherwise', async () => {
-        const { getByText } = await renderCryptoToFiatValueBadge(
-            { amount: '1', cryptoId: btcAsset.cryptoId },
-            getPreloadedState(),
-        );
+        const { getByText } = await renderCryptoToFiatValueBadge({
+            amount: '1',
+            cryptoId: btcAsset.cryptoId,
+        });
 
         expect(getByText('$50,000.00')).toBeOnTheScreen();
     });
 
     it('should render prefix, if specified', async () => {
-        const { getByText } = await renderCryptoToFiatValueBadge(
-            { amount: '1', cryptoId: btcAsset.cryptoId, prefix: ':fire: ' },
-            getPreloadedState(),
-        );
+        const { getByText } = await renderCryptoToFiatValueBadge({
+            amount: '1',
+            cryptoId: btcAsset.cryptoId,
+            prefix: ':fire: ',
+        });
 
         expect(getByText(':fire: $50,000.00')).toBeOnTheScreen();
     });
 
     it('should not render prefix when no value is rendered ', async () => {
-        const { toJSON } = await renderCryptoToFiatValueBadge(
-            { amount: '1', cryptoId: ethAsset.cryptoId, prefix: ':sweat_drops: ' },
-            getPreloadedState(),
-        );
+        const { toJSON } = await renderCryptoToFiatValueBadge({
+            amount: '1',
+            cryptoId: ethAsset.cryptoId,
+            prefix: ':sweat_drops: ',
+        });
 
         expect(toJSON()).toBeNull();
     });
