@@ -16,7 +16,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.2.0",
         "@shopify/react-native-skia": "2.2.12",
-        "@storybook/react-native": "^10.0.7",
+        "@storybook/react-native": "^10.2.1",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -41,7 +41,7 @@
         "react-native-safe-area-context": "5.6.2",
         "react-native-svg": "15.15.2",
         "react-redux": "9.2.0",
-        "storybook": "^10.1.0",
+        "storybook": "^10.2.8",
         "type-fest": "4.24.0"
     },
     "devDependencies": {
