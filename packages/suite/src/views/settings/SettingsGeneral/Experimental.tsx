@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { feedbackRequested } from '@suite/experimental-feedback';
 import { Translation } from '@suite/intl';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -43,6 +44,9 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
                         : enabledFeatures.filter(enabledFeature => enabledFeature !== feature),
                 },
             });
+            if (!newValue) {
+                dispatch(feedbackRequested({ feature, isDisabled: true }));
+            }
         } catch (error) {
             console.error('Could not turn on an experimental feature: ', error);
         }
