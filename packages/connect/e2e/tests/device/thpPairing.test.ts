@@ -74,7 +74,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.nfc_secret_trezor },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
 
@@ -144,7 +144,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.code_entry_code },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
 
@@ -203,7 +203,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: '111111' },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
 
@@ -279,7 +279,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.code_entry_code },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
         result = await TrezorConnect.getFeatures({ device });
@@ -304,7 +304,7 @@ describe('THP pairing', () => {
                     passphraseOnDevice: false,
                     value,
                 },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
             TrezorConnect.removeAllListeners('ui-request_passphrase');
         };

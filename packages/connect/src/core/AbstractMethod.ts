@@ -10,7 +10,7 @@ import {
     UI,
     UiPromiseCreator,
     UiRequestButtonData,
-    UiRequestConfirmation,
+    UiRequestConfirmationView,
 } from '../events';
 import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
 import type { DeviceState, StaticSessionId } from '../types/device';
@@ -32,7 +32,7 @@ export type MethodInfo = {
     // available after init
     info: string;
     precomposed?: PrecomposeResultFinal;
-    confirmation?: UiRequestConfirmation['payload'];
+    confirmation?: UiRequestConfirmationView;
 };
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
@@ -121,7 +121,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    protected get confirmation(): UiRequestConfirmation['payload'] | undefined {
+    protected get confirmation(): UiRequestConfirmationView | undefined {
         return undefined;
     }
 

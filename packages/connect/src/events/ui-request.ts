@@ -147,26 +147,30 @@ export interface UiRequestAddressValidation {
     payload: UiRequestButtonData | undefined;
 }
 
+export type UiRequestConfirmationView = {
+    view:
+        | 'thp-pairing-start'
+        | 'thp-pairing-failed'
+        | 'no-backup'
+        | 'export-xpub'
+        | 'export-address'
+        | 'export-account-info'
+        | 'device-management';
+    label?: string;
+    customConfirmButton?: {
+        className: string;
+        label: string;
+    };
+    customCancelButton?: {
+        className: string;
+        label: string;
+    };
+};
+
 export interface UiRequestConfirmation {
     type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
-    payload: {
-        view:
-            | 'thp-pairing-start'
-            | 'thp-pairing-failed'
-            | 'no-backup'
-            | 'export-xpub'
-            | 'export-address'
-            | 'export-account-info'
-            | 'device-management';
-        label?: string;
-        customConfirmButton?: {
-            className: string;
-            label: string;
-        };
-        customCancelButton?: {
-            className: string;
-            label: string;
-        };
+    payload: UiRequestConfirmationView & {
+        device: Device;
     };
 }
 

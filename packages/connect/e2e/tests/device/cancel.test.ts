@@ -18,7 +18,7 @@ const passphraseHandler = (value: string) => (event: any) => {
             passphraseOnDevice: false,
             value,
         },
-        device: { path: event.payload.device.path },
+        device: { path: event.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_passphrase');
 };
@@ -27,7 +27,7 @@ const addressHandler = () => (event: any) => {
     TrezorConnect.uiResponse({
         type: 'ui-receive_confirmation',
         payload: true,
-        device: { path: event.payload.device.path },
+        device: { path: event.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_confirmation');
 };

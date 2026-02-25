@@ -65,6 +65,7 @@ const waitForThpPairingConfirmation = async ({
     postMessage(
         createUiMessage(UI.REQUEST_CONFIRMATION, {
             view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+            device: device.toMessageObject(),
         }),
     );
 

@@ -25,7 +25,7 @@ describe('keepSession common param', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: { value: 'a' },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
 

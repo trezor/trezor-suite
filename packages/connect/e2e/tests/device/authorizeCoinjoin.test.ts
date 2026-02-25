@@ -212,7 +212,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                     passphraseOnDevice: false,
                     value: 'a',
                 },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
         });
         const walletA = await TrezorConnect.getDeviceState({

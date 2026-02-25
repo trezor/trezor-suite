@@ -19,7 +19,7 @@ const passphraseHandler = (value: string) => (event: any) => {
             value,
             save: true, // NOTE: this field is used only in legacy test of T1B1 firmware
         },
-        device: { path: event.payload.device.path },
+        device: { path: event.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_passphrase');
 };
@@ -250,7 +250,7 @@ describe('TrezorConnect passphrase', () => {
                     passphraseOnDevice: true,
                     value: '',
                 },
-                device: { path: event.payload.device.path },
+                device: { path: event.device.path },
             });
             TrezorConnect.removeAllListeners('ui-request_passphrase');
             // Due to race condition with node-bridge, we have to wait a bit

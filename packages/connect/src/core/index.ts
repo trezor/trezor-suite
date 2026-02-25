@@ -97,6 +97,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             sendCoreMessage(
                 createUiMessage(UI.REQUEST_CONFIRMATION, {
                     view: 'no-backup',
+                    device: device.toMessageObject(),
                 }),
             );
 
