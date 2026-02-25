@@ -8,5 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite/intl": "workspace:*"
     }
 }
