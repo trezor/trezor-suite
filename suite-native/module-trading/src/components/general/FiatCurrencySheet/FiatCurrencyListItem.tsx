@@ -24,7 +24,7 @@ export const FiatCurrencyListItem = ({
                 <Text variant="body-md" color="textDefault">
                     {label}
                 </Text>
-                <Text variant="body-md" color="textSubdued">
+                <Text variant="body-sm" color="textSubdued">
                     {displayValue}
                 </Text>
             </VStack>

@@ -42,7 +42,7 @@ const SellReceiveMethodPickerRight = ({
         return (
             <Text
                 color="textSubdued"
-                variant="body-md"
+                variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
             >
@@ -54,7 +54,7 @@ const SellReceiveMethodPickerRight = ({
     return (
         <Text
             color="textSubdued"
-            variant="body-md"
+            variant="body-sm"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noReceiveMethod')}
             testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
         >

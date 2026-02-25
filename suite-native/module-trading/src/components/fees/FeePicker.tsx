@@ -26,7 +26,7 @@ export const FeePicker = ({ fee, symbol, onPress, isLoading = false }: FeePicker
                 </Text>
             )}
             <CryptoToFiatAmountFormatter
-                variant="body-md"
+                variant="body-sm"
                 color="textDefault"
                 value={fee}
                 symbol={symbol}
