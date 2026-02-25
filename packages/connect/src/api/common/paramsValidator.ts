@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceModelInternal, FirmwareVersionString } from '@trezor/device-utils';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
-import { config } from '../../data/config';
+import { type FirmwareCapability, config } from '../../data/config';
+import type { CallMethodKeys } from '../../events';
 import type { CoinInfo, FirmwareRange } from '../../types';
 import { fromHardened } from '../../utils/pathUtils';
 
@@ -102,7 +103,7 @@ export const validateCoinPath = (path: number[], coinInfo?: CoinInfo) => {
 };
 
 export const getFirmwareRange = (
-    method: string,
+    method: CallMethodKeys | FirmwareCapability,
     coinInfo: CoinInfo | null | undefined,
     currentRange: FirmwareRange,
 ) => {
@@ -119,7 +120,7 @@ export const getFirmwareRange = (
                 typeof supportVersion === 'string' &&
                 versionUtils.isNewer(supportVersion, range[model].min)
             ) {
-                range[model].min = supportVersion;
+                range[model].min = supportVersion as FirmwareVersionString;
             }
         });
     }
@@ -131,11 +132,11 @@ export const getFirmwareRange = (
         .filter(rule => {
             // check if rule applies to requested method
             if (rule.methods) {
-                return rule.methods.includes(method);
+                return rule.methods.includes(method as CallMethodKeys);
             }
             // check if rule applies to capability
             if (rule.capabilities) {
-                return rule.capabilities.includes(method);
+                return rule.capabilities.includes(method as FirmwareCapability);
             }
 
             // rule doesn't have specified methods
@@ -167,9 +168,9 @@ export const getFirmwareRange = (
         // 0 may be confusing. means: no-support for "min" and unlimited support for "max"
         if (rule.min) {
             models.forEach(model => {
-                const modelMin = (rule.min as Record<DeviceModelInternal, string | undefined>)[
-                    model
-                ];
+                const modelMin = (
+                    rule.min as Record<DeviceModelInternal, FirmwareVersionString | '0' | undefined>
+                )[model];
                 if (modelMin) {
                     if (
                         modelMin === '0' ||
@@ -184,7 +185,7 @@ export const getFirmwareRange = (
         if (rule.max) {
             models.forEach(model => {
                 // @ts-expect-error same issue as in coinType above, config needs to be typed not inferred.
-                const modelMax = rule.max[model];
+                const modelMax = rule.max[model] as FirmwareVersionString | '0' | undefined;
                 if (modelMax) {
                     if (
                         modelMax === '0' ||

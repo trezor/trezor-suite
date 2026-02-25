@@ -3,6 +3,7 @@ import type {
     DeviceModelInternal,
     FirmwareRelease,
     FirmwareType,
+    FirmwareVersionString,
     IntermediaryReleaseConfig,
 } from '@trezor/device-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
@@ -10,8 +11,8 @@ import type { VersionArray } from '@trezor/utils/src/versionUtils';
 export type FirmwareRange = Record<
     DeviceModelInternal,
     {
-        min: string;
-        max: string;
+        min: FirmwareVersionString | '0';
+        max: FirmwareVersionString | '0';
     }
 >;
 

@@ -1,4 +1,8 @@
-import { DeviceModelInternal, getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    FirmwareVersionString,
+    getFirmwareOrBootloaderVersionArray,
+} from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 
@@ -127,7 +131,9 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     // 4. check if firmware version is in range of capabilities in "config.supportedFirmware"
     config.supportedFirmware.forEach(s => {
         if (!s.capabilities) return;
-        const min = s.min ? (s.min as Record<DeviceModelInternal, string | undefined>)[key] : null;
+        const min = s.min
+            ? (s.min as Record<DeviceModelInternal, FirmwareVersionString | '0' | undefined>)[key]
+            : null;
         const max = s.max ? s.max[key] : null;
         if (min && (min === '0' || versionUtils.isNewer(min, fw))) {
             const value = min === '0' ? 'no-support' : 'update-required';

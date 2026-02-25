@@ -1,13 +1,37 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareVersionString } from '@trezor/device-utils';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
 
+import { CallMethodKeys } from '../events/call';
+
+export type FirmwareCapability =
+    | 'replaceTransaction'
+    | 'amountUnit'
+    | 'decreaseOutput'
+    | 'eip1559'
+    | 'taproot'
+    | 'signMessageNoScriptType'
+    | 'eip712-domain-only'
+    | 'coinjoin'
+    | 'tutorial'
+    | 'tropicDeviceAuthentication'
+    | 'getFirmwareHash'
+    | 'chunkify'
+    | 'entropyCheck'
+    | 'evmApproval'
+    | 'slip24'
+    | 'evolu'
+    | 'monero'
+    | 'telemetry';
+
 type Config = {
+    // todo: this doesn't have to be here. we can consume it directly
     webusb: typeof TREZOR_USB_DESCRIPTORS;
+    // this is the only thing left in the config. maybe we could dissolve it into Device somehow?
     supportedFirmware: Array<{
-        coin?: string[];
-        capabilities?: string[];
-        methods?: string[];
-        min: Partial<Record<DeviceModelInternal, string>>;
+        coin?: Lowercase<string>[];
+        capabilities?: FirmwareCapability[];
+        methods?: CallMethodKeys[];
+        min: Partial<Record<DeviceModelInternal, FirmwareVersionString | '0'>>;
         max?: undefined; // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
         comment?: string[];
     }>;

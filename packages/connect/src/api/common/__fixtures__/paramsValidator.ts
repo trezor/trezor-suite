@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareVersionString } from '@trezor/device-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { FirmwareRange } from '../../../types';
@@ -184,7 +184,7 @@ const DEFAULT_RANGE: FirmwareRange = {
 };
 
 const DEFAULT_COIN_INFO: {
-    support: Record<DeviceModelInternal, string>;
+    support: Record<DeviceModelInternal, FirmwareVersionString>;
     shortcut: string;
     type: string;
 } = {
@@ -251,7 +251,10 @@ export const getFirmwareRange = [
             DEFAULT_RANGE,
         ],
         result: (
-            Object.entries(DEFAULT_COIN_INFO.support) as [DeviceModelInternal, string][]
+            Object.entries(DEFAULT_COIN_INFO.support) as [
+                DeviceModelInternal,
+                FirmwareVersionString,
+            ][]
         ).reduce((acc, [model, min]) => {
             acc[model] = { min: model === 'T1B1' ? '0' : min, max: '0' };
 
@@ -279,7 +282,10 @@ export const getFirmwareRange = [
             DEFAULT_RANGE,
         ],
         result: (
-            Object.entries(DEFAULT_COIN_INFO.support) as [DeviceModelInternal, string][]
+            Object.entries(DEFAULT_COIN_INFO.support) as [
+                DeviceModelInternal,
+                FirmwareVersionString,
+            ][]
         ).reduce((acc, [model, min]) => {
             acc[model] = { min: model === 'T1B1' ? min : '0', max: '0' };
 

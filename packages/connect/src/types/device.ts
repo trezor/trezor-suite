@@ -5,6 +5,7 @@ import { Descriptor } from '@trezor/transport';
 import { Branded } from '@trezor/type-utils';
 
 import type { FirmwareReleaseConfigInfo } from './firmware';
+import { FirmwareCapability } from '../data/config';
 
 /**
  * - `busy`               application has an active session but device is currently unresponsive (example: connect to host device screen after RebootToBootloader)
@@ -83,8 +84,10 @@ export type DeviceThpState = {
 
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
-// key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
-export type UnavailableCapabilities = { [key: string]: UnavailableCapability };
+// key = coin shortcut lowercase (ex: btc, eth, xrp) OR capability declared in config.supportedFirmware
+export type UnavailableCapabilities = Partial<
+    Record<FirmwareCapability | (string & {}), UnavailableCapability>
+>;
 
 export type FirmwareRevisionCheckError =
     | 'revision-mismatch'
