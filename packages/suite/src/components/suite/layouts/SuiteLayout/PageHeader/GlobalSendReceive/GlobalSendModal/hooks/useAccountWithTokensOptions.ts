@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -13,6 +14,7 @@ import {
     accountsFiatBalanceInDescOrderComparator,
     filterAccountsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
+import { StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
@@ -27,8 +29,10 @@ import {
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
+
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
+    staticSessionId: StaticSessionId | null;
 
     /**
      * Each account might have expandable hidden token group.
@@ -39,8 +43,14 @@ export interface UseAccountWithTokensOptionsProps {
 export function useAccountWithTokensOptions({
     networkSymbolFilter,
     expandedHiddenTokensGroups,
+    staticSessionId,
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
-    const accounts = useSelector(selectVisibleDeviceAccounts);
+    const baseAccounts = useSelector(selectVisibleDeviceAccounts);
+
+    const accounts = useSelector(state =>
+        selectAccountsWithSuiteSyncLabel(state, baseAccounts, staticSessionId),
+    );
+
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);

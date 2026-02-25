@@ -3,6 +3,8 @@ import { useThrottle } from 'react-use';
 
 import { CryptoId } from 'invity-api';
 
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
@@ -72,7 +74,17 @@ export function useAccountWithTokensOptions({
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
 } {
-    const accounts = useSelector(selectVisibleDeviceAccounts);
+    const device = useSelector(selectSelectedDevice);
+    const baseAccounts = useSelector(selectVisibleDeviceAccounts);
+
+    const accounts = useSelector(state =>
+        selectAccountsWithSuiteSyncLabel(
+            state,
+            baseAccounts,
+            device?.state?.staticSessionId ?? null,
+        ),
+    );
+
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
