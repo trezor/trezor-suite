@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import type { ExperimentalFeature } from '@suite/experimental';
 import type { CountryCode } from '@suite-common/geolocation';
 import { OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { Locale } from '@suite-common/suite-types';
@@ -12,7 +13,6 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import { LOCK_TYPE } from 'src/actions/suite/constants/suiteConstants';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 
