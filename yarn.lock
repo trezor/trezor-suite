@@ -12952,6 +12952,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
+    react-hook-form: "npm:^7.71.1"
     react-native: "npm:0.81.5"
     react-redux: "npm:9.2.0"
   languageName: unknown

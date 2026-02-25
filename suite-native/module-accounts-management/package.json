@@ -53,6 +53,7 @@
         "date-fns": "^4.1.0",
         "jotai": "2.15.0",
         "react": "19.1.0",
+        "react-hook-form": "^7.71.1",
         "react-native": "0.81.5",
         "react-redux": "9.2.0"
     }
