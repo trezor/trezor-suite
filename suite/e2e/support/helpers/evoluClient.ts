@@ -141,17 +141,17 @@ export class EvoluClient {
         const omitFields = options?.omit ?? ['id', 'createdAt'];
         const timeout = options?.timeout ?? 5_000;
         const expectFn = options?.softExpect ? expect.soft : expect;
-        const expectedOrdered = orderBy(expectedData, ['label']);
 
         await expectFn(async () => {
             const actualData = await this.readFrom(table);
-            const actualOmitted = actualData.map(item => omit(item, omitFields));
-            // Unfortunately label is the only guaranteed property for ordering
-            // might not be sufficient for more advance test scenarios. YAGNI for now.
-            const actualOrdered = orderBy(actualOmitted, ['label']);
-            if (!isEqual(expectedOrdered, actualOrdered)) {
+            // Sort by createdAt (ascending) before omitting so rows are in insertion order.
+            // Expected data must be provided in the same chronological order.
+            const actualOmitted = orderBy(actualData, ['createdAt']).map(item =>
+                omit(item, omitFields),
+            );
+            if (!isEqual(expectedData, actualOmitted)) {
                 throw new Error(
-                    `Table "${table}" data does not match.\nDiff:\n${diff(expectedOrdered, actualOrdered)}`,
+                    `Table "${table}" data does not match.\nDiff:\n${diff(expectedData, actualOmitted)}`,
                 );
             }
         }).toPass({ timeout });

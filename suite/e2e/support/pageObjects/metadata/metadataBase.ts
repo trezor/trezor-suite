@@ -11,6 +11,7 @@ export class MetadataBase {
     readonly metadataCancelButton: Locator;
     readonly metadataInput: Locator;
     readonly editButtonId = '@metadata/edit';
+    readonly deleteButtonId = '@metadata/delete';
     readonly inputId = '@metadata/input';
     readonly successId = '@metadata/success';
 

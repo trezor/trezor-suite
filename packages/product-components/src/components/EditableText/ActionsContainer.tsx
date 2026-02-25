@@ -152,6 +152,7 @@ export const ActionsContainer = ({
                             delayShow={1000}
                         >
                             <IconButton
+                                data-testid="@metadata/delete"
                                 intent="critical"
                                 icon="trash"
                                 onClick={onDelete}
