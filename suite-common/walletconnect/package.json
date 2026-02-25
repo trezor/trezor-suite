@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@reown/walletkit": "^1.2.8",
+        "@reown/walletkit": "^1.5.5",
         "@scure/base": "^2.0.0",
         "@stellar/stellar-sdk": "14.5.0",
         "@suite-common/analytics": "workspace:*",
@@ -34,8 +34,8 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
-        "@walletconnect/core": "^2.21.5",
-        "@walletconnect/types": "2.21.4",
-        "@walletconnect/utils": "^2.21.5"
+        "@walletconnect/core": "^2.23.9",
+        "@walletconnect/types": "^2.23.9",
+        "@walletconnect/utils": "^2.23.9"
     }
 }

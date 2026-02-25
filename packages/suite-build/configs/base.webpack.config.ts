@@ -97,6 +97,14 @@ const config: webpack.Configuration = {
         // Throw error on missing exports instead of warning
         strictExportPresence: true,
         rules: [
+            // Allow extensionless imports from ESM packages in node_modules (webpack 5 strict ESM)
+            {
+                test: /\.m?js$/,
+                include: /node_modules/,
+                resolve: {
+                    fullySpecified: false,
+                },
+            },
             // TypeScript/JavaScript
             {
                 test: /\.(j|t)sx?$/,
