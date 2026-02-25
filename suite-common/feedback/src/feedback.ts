@@ -10,6 +10,7 @@ export type FeedbackCategory =
     | 'send'
     | 'receive'
     | 'trade'
+    | 'experimental'
     | 'other';
 
 type FeedbackExtras = Record<string, any>;
