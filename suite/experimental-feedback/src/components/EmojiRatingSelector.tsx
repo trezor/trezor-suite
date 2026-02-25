@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { Rating, ratingOptions } from '@suite-common/feedback';
 import { Row, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
+const Item = styled.button<{ $selected?: boolean }>`
     width: 48px;
     height: 47px;
     border-radius: 50%;
@@ -14,14 +14,8 @@ const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
     cursor: pointer;
     font-size: 30px;
     padding: 1px 4px;
-    border: 1px solid
-        ${({ $selected, theme, $elevation }) =>
-            $selected
-                ? theme.backgroundPrimaryDefault
-                : mapElevationToBorder({
-                      theme,
-                      $elevation,
-                  })};
+
+    border: none;
 
     background: ${({ $selected, theme }) =>
         $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};

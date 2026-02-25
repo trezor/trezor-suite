@@ -1,4 +1,6 @@
-import { ExperimentalFeature, ExperimentalFeedbackRootState } from './experimentalFeedbackSlice';
+import { ExperimentalFeature } from '@suite/experimental';
+
+import { ExperimentalFeedbackRootState } from './experimentalFeedbackSlice';
 
 export const selectExperimentalFeatureUsageCount = (
     state: ExperimentalFeedbackRootState,

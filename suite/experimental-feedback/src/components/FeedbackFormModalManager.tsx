@@ -42,7 +42,11 @@ export const FeedbackFormManager = () => {
 
     if (isModalOpen) {
         return (
-            <FeedbackFormModal onDismiss={() => setIsModalOpen(false)} onSubmit={handleSubmit} />
+            <FeedbackFormModal
+                feature={pendingFeature}
+                onDismiss={() => setIsModalOpen(false)}
+                onSubmit={handleSubmit}
+            />
         );
     }
 
