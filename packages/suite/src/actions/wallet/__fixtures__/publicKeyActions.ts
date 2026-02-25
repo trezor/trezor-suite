@@ -122,7 +122,7 @@ export default [
         description: 'Show public key, @trezor/connect error',
         initialState: undefined,
         mocks: {
-            getPublicKey: { success: false, payload: { error: 'Runtime error' } },
+            getPublicKey: { success: false, error: { message: 'Runtime error' } },
         },
         action: publicKeyActions.showXpub,
         result: {
@@ -148,7 +148,7 @@ export default [
         mocks: {
             getPublicKey: {
                 success: false,
-                payload: { error: 'Runtime error', code: 'Method_PermissionsNotGranted' },
+                error: { message: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
         action: publicKeyActions.showXpub,

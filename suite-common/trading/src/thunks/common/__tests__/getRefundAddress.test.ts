@@ -188,7 +188,7 @@ describe('getRefundAddress thunk', () => {
             (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
                 createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                     success: false,
-                    payload: { error: 'Device confirmation failed' },
+                    error: { message: 'Device confirmation failed' },
                 })),
             );
 

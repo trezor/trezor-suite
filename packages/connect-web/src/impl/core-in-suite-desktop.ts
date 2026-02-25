@@ -141,11 +141,22 @@ export class CoreInSuiteDesktop implements ConnectImpl {
                 throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
             }
 
-            return response;
+            if (response.success === false) {
+                return {
+                    success: false,
+                    error: response.error,
+                };
+            }
+
+            return {
+                success: true,
+                payload: response.payload,
+                device: response.device,
+            };
         } catch (err) {
             return {
                 success: false,
-                payload: ERRORS.serializeError(this.error(err)),
+                error: ERRORS.serializeError(this.error(err)),
             };
         }
     }

@@ -72,11 +72,11 @@ export const verifyAddressThunk = createThunk(
             );
         } else {
             // special case: device no-backup permissions not granted
-            if (response.payload.code === 'Method_PermissionsNotGranted') return;
+            if (response.error.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
                 logErrorThunk({
-                    errorMessage: response.payload.error,
+                    errorMessage: response.error.message,
                     tradingType: activeSection,
                     toastType: 'verify-address-error',
                 }),

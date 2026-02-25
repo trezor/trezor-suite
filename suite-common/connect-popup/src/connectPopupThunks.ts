@@ -51,7 +51,7 @@ export const connectPopupCallThunkInner = createThunk<
                 __precomposed: true,
             } as CallMethodPayload);
             if (!methodInfo.success) {
-                throw methodInfo.payload;
+                throw methodInfo.error;
             }
             const methodInfoPayload = methodInfo.payload as MethodInfo;
             if (
@@ -145,7 +145,7 @@ export const connectPopupCallThunkInner = createThunk<
                 source,
             });
             if (!response.success) {
-                throw response.payload;
+                throw response.error;
             }
             if (!postCallOngoing) {
                 dispatch(connectPopupActions.finishCall());
@@ -210,7 +210,7 @@ export const connectPopupCallThunkInner = createThunk<
 
             getPopupCallDeferred().resolve({
                 success: false,
-                payload: serializeError(error),
+                error: serializeError(error),
             });
         } finally {
             dispatch(extra.actions.lockDevice(false));

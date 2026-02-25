@@ -105,7 +105,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                 },
                 showOnTrezor: false,
             });
-            if (!accountAddress.success) throw new Error(accountAddress.payload.error);
+            if (!accountAddress.success) throw new Error(accountAddress.error.message);
             dispatch(
                 connectPopupActions.txSimulation({
                     fromAddress: accountAddress.payload.address,
@@ -138,7 +138,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                     __precomposed: true,
                 });
                 if (!methodInfo.success) {
-                    throw methodInfo.payload;
+                    throw methodInfo.error;
                 }
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)

@@ -411,7 +411,7 @@ describe('coinjoinClientActions', () => {
         } as any);
 
         testMocks.setTrezorConnectFixtures([
-            { success: false, payload: { error: 'Firmware error' } },
+            { success: false, error: { message: 'Firmware error' } },
         ]);
 
         await store.dispatch(initCoinjoinService('btc'));

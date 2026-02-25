@@ -128,7 +128,7 @@ export const sendTransactionThunk = createThunk<
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
-                    payload && 'error' in payload
+                    payload && 'error' in payload && 'id' in payload.error
                         ? payload.error
                         : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });

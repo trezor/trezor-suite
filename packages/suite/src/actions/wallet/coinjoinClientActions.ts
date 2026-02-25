@@ -343,7 +343,7 @@ export const stopCoinjoinSession =
                 dispatch(
                     notificationsActions.addToast({
                         type: 'error',
-                        error: `Cancel coinjoin authorization ${result.payload.error}`,
+                        error: `Cancel coinjoin authorization ${result.error.message}`,
                     }),
                 );
             }
@@ -533,7 +533,10 @@ const getOwnershipProof =
                     return;
                 }
                 utxos.forEach(u => {
-                    response.inputs.push({ outpoint: u.outpoint, error: proof.payload?.error });
+                    response.inputs.push({
+                        outpoint: u.outpoint,
+                        error: proof.error?.message,
+                    });
                 });
             }),
         );
@@ -678,14 +681,14 @@ const signCoinjoinTx =
                         utxos.forEach(u => {
                             response.inputs.push({
                                 outpoint: u.outpoint,
-                                error: `${fwVersion} (${getOsName()}) ${signTx.payload.error}`,
+                                error: `${fwVersion} (${getOsName()}) ${signTx.error.message}`,
                             });
                         });
 
                         dispatch(
                             notificationsActions.addToast({
                                 type: 'error',
-                                error: `Coinjoin signTransaction: ${signTx.payload.error}`,
+                                error: `Coinjoin signTransaction: ${signTx.error.message}`,
                             }),
                         );
                     },

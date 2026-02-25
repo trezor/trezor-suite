@@ -7,8 +7,10 @@ import {
     PrecomposedTransactionFinal,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
+import { PROTO, TokenInfo } from '@trezor/connect';
 import { ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Err } from '@trezor/type-utils';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
@@ -58,7 +60,7 @@ export type SignTransactionTimeoutError = {
 
 export type PushTransactionError = {
     error: 'push-transaction-failed';
-    metadata: Unsuccessful;
+    metadata: Err<SerializedError>;
 };
 
 export type SendFormError =

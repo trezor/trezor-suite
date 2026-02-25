@@ -176,8 +176,8 @@ export const actions = [
         mocks: {
             connect: {
                 success: false,
-                payload: {
-                    error: 'foo',
+                error: {
+                    message: 'foo',
                 },
             },
         },
@@ -213,8 +213,8 @@ export const actions = [
         mocks: {
             connect: {
                 success: false,
-                payload: {
-                    error: 'Firmware install failed',
+                error: {
+                    message: 'Firmware install failed',
                 },
             },
         },

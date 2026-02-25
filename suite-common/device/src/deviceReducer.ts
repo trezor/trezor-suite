@@ -10,8 +10,10 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice, Unsuccessful } from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice } from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { Err } from '@trezor/type-utils';
 
 import { DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
@@ -39,7 +41,7 @@ export type DeviceReducerState = {
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
     // Setting with no UI to toggle it on, used in tests to simulate various outcomes of entropy check failure
-    simulatedEntropyCheckFail?: Unsuccessful;
+    simulatedEntropyCheckFail?: Err<SerializedError>;
 };
 
 export const deviceInitialState: DeviceReducerState = {

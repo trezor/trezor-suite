@@ -234,7 +234,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
 
@@ -259,7 +259,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             fetchedFeeLimit = feeLevel.feeLimit;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
-            console.warn('Error fetching fee, using default values.', estimatedFee.payload.error);
+            console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
         }
 
         // FeeLevels are read-only, so we create a copy if need be
@@ -378,7 +378,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
 
@@ -403,8 +403,8 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

@@ -316,15 +316,15 @@ export const signTransaction =
             });
 
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') {
+            if (signedTx.error.message === 'tx-cancelled') {
                 return;
             }
 
-            if (signedTx.payload.error !== 'tx-timeout') {
+            if (signedTx.error.message !== 'tx-timeout') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: signedTx.payload.error,
+                        error: signedTx.error.message,
                     }),
                 );
             }

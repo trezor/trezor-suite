@@ -18,6 +18,9 @@
         },
         { "path": "../../packages/connect" },
         {
+            "path": "../../packages/connect-common"
+        },
+        {
             "path": "../../packages/connect-plugin-ethereum"
         },
         { "path": "../../packages/env-utils" },

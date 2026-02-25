@@ -9,6 +9,7 @@ import { Network, getNetwork, networksCollection } from '@suite-common/wallet-co
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
+import { Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -54,7 +55,7 @@ const solanaSignTransaction = createThunk<
             },
         });
         if (!estimatedFee.success) {
-            throw new Error('Failed to estimate fee. ' + estimatedFee.payload.error);
+            throw new Error('Failed to estimate fee. ' + estimatedFee.error.message);
         }
         // Get from argument or use decoded from estimate fee
         feePayer = feePayer || estimatedFee.payload.levels[0].feePayer;
@@ -87,16 +88,16 @@ const solanaSignTransaction = createThunk<
                 },
             }),
         );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        const typedPayload = response.payload as CallMethodResponse<'solanaSignTransaction'>;
-        if (!response.success || !typedPayload.serializedTx) {
+        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
+            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+        if (!response.success || !response.payload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('Solana signing error');
         }
 
         return {
-            signature: typedPayload.signature,
-            transaction: typedPayload.serializedTx,
+            signature: response.payload.signature,
+            transaction: response.payload.serializedTx,
         };
     },
 );

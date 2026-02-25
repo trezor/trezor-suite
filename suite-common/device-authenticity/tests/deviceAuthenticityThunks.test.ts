@@ -4,12 +4,8 @@ import { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suit
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import type {
-    AuthenticateDeviceResult,
-    Response,
-    SuccessWithDevice,
-    Unsuccessful,
-} from '@trezor/connect';
+import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
+import { Err, Ok } from '@trezor/type-utils';
 
 import { checkDeviceAuthenticityThunk } from '../src/checkDeviceAuthenticityThunk';
 
@@ -29,12 +25,12 @@ const getDevice = (isLocked: boolean) => ({
     ...mockSuiteDevice(undefined, { bootloader_locked: isLocked }),
 });
 
-const connectCallFailResponse: Unsuccessful = {
+const connectCallFailResponse: Err<any> = {
     success: false,
-    payload: { error: 'error' },
+    error: { message: 'error' },
 };
 
-const verificationSuccessResponse: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verificationSuccessResponse: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {
@@ -46,7 +42,7 @@ const verificationSuccessResponse: SuccessWithDevice<AuthenticateDeviceResult> =
     },
 };
 
-const verifyFailureResponseNotFound: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verifyFailureResponseNotFound: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {
@@ -58,7 +54,7 @@ const verifyFailureResponseNotFound: SuccessWithDevice<AuthenticateDeviceResult>
     },
 };
 
-const verifyFailureResponseBlacklisted: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verifyFailureResponseBlacklisted: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {

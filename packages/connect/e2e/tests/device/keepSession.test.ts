@@ -32,7 +32,7 @@ describe('keepSession common param', () => {
             keepSession: true,
         });
         if (noDerivation.success) throw new Error('noDerivation should not succeed');
-        expect(noDerivation.payload.error).toBe(
+        expect(noDerivation.error.message).toBe(
             'Cardano derivation is not enabled for this session',
         );
 
@@ -42,7 +42,7 @@ describe('keepSession common param', () => {
             useCardanoDerivation: true,
             keepSession: true,
         });
-        if (!enableDerivation.success) throw new Error(enableDerivation.payload.error);
+        if (!enableDerivation.success) throw new Error(enableDerivation.error.message);
         expect(enableDerivation.payload.descriptor).toBeDefined();
 
         const { device } = enableDerivation;
@@ -70,7 +70,7 @@ describe('keepSession common param', () => {
             },
             // useCardanoDerivation: true, // NOTE: not required, its in the state
         });
-        if (!keepCardanoDerivation.success) throw new Error(keepCardanoDerivation.payload.error);
+        if (!keepCardanoDerivation.success) throw new Error(keepCardanoDerivation.error.message);
         expect(keepCardanoDerivation.payload.descriptor).toEqual(
             enableDerivation.payload.descriptor,
         );

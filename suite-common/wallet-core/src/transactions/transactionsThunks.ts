@@ -504,7 +504,7 @@ export const fetchTransactionsPageThunk = createThunk(
 
             return result.payload;
         } else {
-            const error = result ? result.payload.error : 'unknown error';
+            const error = result ? result.error.message : 'unknown error';
 
             throw new Error(error);
         }
@@ -540,7 +540,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         }
 
         if (!result.success) {
-            throw new Error(result.payload.error);
+            throw new Error(result.error.message);
         }
 
         dispatch(

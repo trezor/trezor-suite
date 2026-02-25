@@ -93,7 +93,7 @@ describe('Backup Actions', () => {
     it('backup error', async () => {
         testMocks.setTrezorConnectFixtures({
             success: false,
-            payload: { error: 'avadakedavra' },
+            error: { message: 'avadakedavra' },
         });
 
         const state = getInitialState({});

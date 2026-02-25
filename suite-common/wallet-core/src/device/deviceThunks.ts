@@ -38,8 +38,8 @@ import TrezorConnect, {
     Response as ConnectResponse,
     DEVICE,
     Device,
-    Unsuccessful,
 } from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -172,12 +172,12 @@ export const acquireDevice = createThunk(
         const response = await TrezorConnect.getFeatures({ device });
 
         if (!response.success) {
-            if (response.payload.code !== 'Device_ThpPairingTagInvalid') {
+            if (response.error.code !== 'Device_ThpPairingTagInvalid') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'acquire-error',
                         device,
-                        error: response.payload.error,
+                        error: response.error.message,
                     }),
                 );
             }
@@ -241,7 +241,10 @@ export const confirmAddressOnDeviceThunk = createThunk(
         if (!device || !account)
             return {
                 success: false,
-                payload: { error: 'Device or account does not exist.', code: undefined },
+                error: {
+                    message: 'Device or account does not exist.',
+                    code: 'Failure_UnknownCode',
+                },
             };
 
         const params = {
@@ -293,7 +296,10 @@ export const confirmAddressOnDeviceThunk = createThunk(
             default:
                 response = {
                     success: false,
-                    payload: { error: 'Method for getAddress not defined', code: undefined },
+                    error: {
+                        message: 'Method for getAddress not defined',
+                        code: 'Failure_UnknownCode',
+                    },
                 } as const;
         }
 
@@ -507,22 +513,22 @@ export const wipeDeviceThunk = createThunk(
         if (
             result.success ||
             // This is an expected success for Bluetooth-connected devices
-            (device.bluetoothProps !== undefined && result.payload.code === 'Device_Disconnected')
+            (device.bluetoothProps !== undefined && result.error.code === 'Device_Disconnected')
         ) {
             // The wipe was successful, now run the shared cleanup logic.
             // We pass the original `device` object to the cleanup thunk.
             dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
 
-            return rejectWithValue(result.payload.error);
+            return rejectWithValue(result.error.message);
         }
     },
 );
 
 type FailEntropyCheckParams = {
     device: AcquiredDevice;
-    error: Unsuccessful['payload'];
+    error: SerializedError;
 };
 
 const failEntropyCheckThunk = createThunk(
@@ -541,7 +547,7 @@ const failEntropyCheckThunk = createThunk(
             payload: error,
         });
 
-        if (!getIsIgnoredEntropyCheckError(error.error)) {
+        if (!getIsIgnoredEntropyCheckError(error.message)) {
             dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
         }
     },
@@ -558,9 +564,9 @@ export const processEntropyCheckResultThunk = createThunk(
         if (result.success) {
             dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }));
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-            if (result.payload.code === 'Failure_EntropyCheck') {
-                dispatch(failEntropyCheckThunk({ device, error: result.payload }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+            if (result.error.code === 'Failure_EntropyCheck') {
+                dispatch(failEntropyCheckThunk({ device, error: result.error }));
             }
         }
     },

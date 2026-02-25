@@ -23,7 +23,7 @@ export const stellarGetAddress = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundleAddress.payload.address.toLowerCase();
     } else {
-        bundleAddress.payload.error.toLowerCase();
+        bundleAddress.error.message.toLowerCase();
     }
 
     // with all possible params

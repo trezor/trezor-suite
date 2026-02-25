@@ -39,13 +39,13 @@ export const checkDeviceAuthenticityThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: `Unable to validate device: ${result.payload.error}`,
+                    error: `Unable to validate device: ${result.error.message}`,
                 }),
             );
             const isDeviceBootloaderUnlocked = device?.features?.bootloader_locked !== true;
             const storedResult = isDeviceBootloaderUnlocked
                 ? // error can be because bootloader is unlocked (definite cause of failure, should persist)
-                  { valid: false, error: result.payload.error }
+                  { valid: false, error: result.error.message }
                 : // or internal error (then skip the check by storing undefined)
                   undefined;
             dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));

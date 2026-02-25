@@ -24,7 +24,7 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundleAddress.payload.address.toLowerCase();
     } else {
-        bundleAddress.payload.error.toLowerCase();
+        bundleAddress.error.message.toLowerCase();
     }
 
     // with all possible params
@@ -86,7 +86,7 @@ export const ethereumGetPublicKey = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundlePK.payload.address.toLowerCase();
     } else {
-        bundlePK.payload.error.toLowerCase();
+        bundlePK.error.message.toLowerCase();
     }
 };
 

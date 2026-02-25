@@ -227,8 +227,8 @@ describe('signDataAndConfirmThunk', () => {
 
         TrezorConnect.ethereumSignTypedData = jest.fn().mockResolvedValue({
             success: false,
-            payload: {
-                error: 'Data is not correct',
+            error: {
+                message: 'Data is not correct',
             },
         });
 
