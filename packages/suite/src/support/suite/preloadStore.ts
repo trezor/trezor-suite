@@ -54,6 +54,7 @@ export const preloadStore = async () => {
             suiteSyncSettings,
             suiteSyncOwners,
             suiteSyncQuotaManager,
+            experimentalFeedback,
         ] = await Promise.all([
             db.getItemByPK('suiteSettings', 'suite'),
             db.getItemsExtended('devices'),
@@ -82,6 +83,7 @@ export const preloadStore = async () => {
             db.getItemByPK('suiteSyncSettings', 'suiteSyncSettings'),
             db.getItemsWithKeys('suiteSyncOwners'),
             db.getItemByPK('suiteSyncQuotaManager', 'suiteSyncQuotaManager'),
+            db.getItemByPK('experimentalFeedback', 'experimentalFeedback'),
         ]);
 
         return {
@@ -114,6 +116,7 @@ export const preloadStore = async () => {
                 suiteSyncSettings,
                 suiteSyncOwners,
                 suiteSyncQuotaManager,
+                experimentalFeedback,
             },
         } as const;
     } catch (error) {

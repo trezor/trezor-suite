@@ -2,6 +2,7 @@ import { FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import type { ExperimentalFeedbackState } from '@suite/experimental-feedback';
 import { AnalyticsState } from '@suite-common/analytics-redux';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
@@ -183,5 +184,9 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             permissions: AppRememberedPermission[];
         };
+    };
+    experimentalFeedback: {
+        key: 'experimentalFeedback';
+        value: ExperimentalFeedbackState;
     };
 }

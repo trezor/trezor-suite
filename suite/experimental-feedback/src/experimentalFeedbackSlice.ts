@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 
@@ -14,10 +14,8 @@ export type ExperimentalFeedbackRootState = {
 };
 
 const initialState: ExperimentalFeedbackState = {
-    usageCounts: {
-        'suite-sync': 3,
-    },
-    pendingFeedbackFeatures: ['suite-sync'],
+    usageCounts: {},
+    pendingFeedbackFeatures: [],
 };
 
 export const experimentalFeedbackSlice = createSlice({
@@ -57,6 +55,12 @@ export const experimentalFeedbackSlice = createSlice({
                 state.pendingFeedbackFeatures.splice(index, 1);
             }
         },
+    },
+    extraReducers: builder => {
+        builder.addMatcher(
+            (action): action is AnyAction => action.type === '@storage/load',
+            (state, action: AnyAction) => action.payload.experimentalFeedback ?? state,
+        );
     },
 });
 

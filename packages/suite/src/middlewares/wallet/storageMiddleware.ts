@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
+import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/experimental-feedback';
 import { METADATA, metadataActions } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -280,6 +281,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (firmwareActions.setFirmwareChannel.match(action)) {
                 api.dispatch(storageActions.saveFirmwareSettings());
+            }
+
+            if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
+                api.dispatch(storageActions.saveExperimentalFeedback());
             }
 
             if (
