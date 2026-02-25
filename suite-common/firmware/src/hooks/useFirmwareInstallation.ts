@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES, selectThpStep } from '@suite-common/thp';
-import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
+import {
+    DEVICE,
+    type Device,
+    DeviceButtonRequestPayload,
+    FirmwareType,
+    UI_REQUEST,
+} from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersion,
@@ -110,13 +116,13 @@ export const useFirmwareInstallation = () => {
 
     const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
         if (firmware.uiEvent) {
-            if (firmware.uiEvent.type === UI.FIRMWARE_RECONNECT) {
+            if (firmware.uiEvent.type === UI_REQUEST.FIRMWARE_RECONNECT) {
                 return [firmware.uiEvent.payload];
             }
             if (firmware.uiEvent.type === DEVICE.BUTTON) {
                 return [undefined, firmware.uiEvent.payload];
             }
-            if (firmware.uiEvent.type === UI.FIRMWARE_PROGRESS) {
+            if (firmware.uiEvent.type === UI_REQUEST.FIRMWARE_PROGRESS) {
                 return [undefined, undefined, firmware.uiEvent.payload];
             }
         }
@@ -129,7 +135,7 @@ export const useFirmwareInstallation = () => {
     const originalDevice = firmware.cachedDevice || device;
 
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
-    // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
+    // and UI_REQUEST.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
     const deviceIsWaitingForConfirmationToInitiateConnection =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
@@ -171,7 +177,7 @@ export const useFirmwareInstallation = () => {
     const showConfirmationPill =
         (!showReconnectPrompt && progressEvent?.operation === 'downloading') ||
         isThpConfirmationRequested ||
-        firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT ||
+        firmware.uiEvent?.type === UI_REQUEST.FIRMWARE_RECONNECT ||
         firmware.uiEvent?.type === 'button';
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {

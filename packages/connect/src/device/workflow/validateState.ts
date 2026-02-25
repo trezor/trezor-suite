@@ -1,6 +1,6 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { DEVICE, UI, createDeviceMessage, createUiMessage } from '../../events';
+import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '../../events';
 import { StaticSessionId } from '../../types';
 import { WorkflowContext } from '../../types/workflow';
 import { toHardened } from '../../utils/pathUtils';
@@ -68,7 +68,9 @@ const validateDeviceState = async (context: WorkflowContext) => {
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 context.method.postMessage(
-                    createUiMessage(UI.INVALID_PIN, { device: context.device.toMessageObject() }),
+                    createUiMessage(UI_REQUEST.INVALID_PIN, {
+                        device: context.device.toMessageObject(),
+                    }),
                 );
             } else {
                 throw error;
@@ -79,7 +81,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
     return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
             context.method.postMessage(
-                createUiMessage(UI.INVALID_PIN_ATTEMPTS_DEPLETED, {
+                createUiMessage(UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, {
                     device: context.device.toMessageObject(),
                 }),
             );

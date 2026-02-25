@@ -10,7 +10,7 @@ import {
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { DEVICE, UI } from '@trezor/connect';
+import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -83,8 +83,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 [DEVICE.CONNECT_UNACQUIRED]: device => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
-                [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(modalActions.openModal({ type: UI.INVALID_PIN_ATTEMPTS_DEPLETED }));
+                [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
+                    dispatch(
+                        modalActions.openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }),
+                    );
                     dispatch(modalActions.preserve());
                 },
             }),

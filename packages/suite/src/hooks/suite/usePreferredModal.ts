@@ -1,7 +1,7 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -71,7 +71,7 @@ export const usePreferredModal = () => {
         // NOTE: in case when passphrase flow is active, we handle the device passphrase request
         // within the passphrase flow
         const windowType = 'windowType' in modal ? modal.windowType : undefined;
-        if (windowType === UI.REQUEST_PASSPHRASE) {
+        if (windowType === UI_REQUEST.REQUEST_PASSPHRASE) {
             if (isPassphraseFlow && discoveryForSelectedDevice) {
                 return {
                     type: 'passphrase-flow',

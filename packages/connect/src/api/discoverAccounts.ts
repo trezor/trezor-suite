@@ -11,7 +11,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, createUiMessage } from '../events';
 import type { CoinInfo, FirmwareRange } from '../types';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import type { AccountDescriptor } from '../device/DeviceCommands';
@@ -149,7 +149,11 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
             (Object.keys(this.progress).length || 1);
 
         this.postMessage(
-            createUiMessage(UI.BUNDLE_PROGRESS, { total: 100, progress: 100 * progress, response }),
+            createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                total: 100,
+                progress: 100 * progress,
+                response,
+            }),
         );
     }
 
@@ -190,11 +194,11 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
                 let error;
                 if (min === '0') {
-                    error = UI.FIRMWARE_NOT_SUPPORTED;
+                    error = UI_REQUEST.FIRMWARE_NOT_SUPPORTED;
                 } else if (!versionUtils.isNewerOrEqual(version, min)) {
-                    error = UI.FIRMWARE_OLD;
+                    error = UI_REQUEST.FIRMWARE_OLD;
                 } else if (max !== '0' && versionUtils.isNewer(version, max)) {
-                    error = UI.FIRMWARE_NOT_COMPATIBLE;
+                    error = UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
                 }
 
                 return error ? { ...item, error } : item;

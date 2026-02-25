@@ -10,7 +10,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, createUiMessage } from '../events';
 import { Bundle, type CoinInfo, type DerivationPath } from '../types';
 import {
     GetAccountDescriptorParams,
@@ -151,7 +151,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             if (!this.hasBundle || this.disposed) return;
             // send progress to UI
             this.postMessage(
-                createUiMessage(UI.BUNDLE_PROGRESS, {
+                createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
                     response,

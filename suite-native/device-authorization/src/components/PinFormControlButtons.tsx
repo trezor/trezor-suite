@@ -13,7 +13,7 @@ import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import TrezorConnect, { DEVICE, UI } from '@trezor/connect';
+import TrezorConnect, { DEVICE, UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { PIN_HELP_URL } from '@trezor/urls';
 
@@ -81,15 +81,15 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [openLink, reset, showAlert]);
 
     useEffect(() => {
-        // UI.INVALID_PIN is emitted when user enters wrong PIN for first 3 attempts.
+        // UI_REQUEST.INVALID_PIN is emitted when user enters wrong PIN for first 3 attempts.
         // See https://github.com/trezor/trezor-suite/blob/0498c2ef4c0a61ff56fc60cff0f545636592814d/packages/connect/src/core/index.ts#L598
-        TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);
+        TrezorConnect.on(UI_REQUEST.INVALID_PIN, handleInvalidPin);
 
-        return () => TrezorConnect.off(UI.INVALID_PIN, handleInvalidPin);
+        return () => TrezorConnect.off(UI_REQUEST.INVALID_PIN, handleInvalidPin);
     }, [handleInvalidPin]);
 
     const onSubmit = handleSubmit(values => {
-        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: values.pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: values.pin });
     });
 
     const handleDelete = () => {

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { PinMatrix } from 'src/components/suite';
@@ -14,7 +14,7 @@ export const ShowPinMatrixStep = () => {
     const device = useSelector(selectSelectedDevice);
     const { activeStepId, showPinMatrix } = useOnboarding();
     const handlePinSubmit = () => {
-        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
         setPin('');
     };
 

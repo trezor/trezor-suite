@@ -12,7 +12,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, createUiMessage } from '../events';
 import { type BitcoinNetworkInfo, Bundle } from '../types';
 import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -179,7 +179,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

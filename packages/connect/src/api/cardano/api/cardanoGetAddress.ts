@@ -11,7 +11,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
@@ -171,7 +171,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

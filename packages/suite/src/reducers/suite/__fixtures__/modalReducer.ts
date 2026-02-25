@@ -1,5 +1,5 @@
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { DEVICE, UI } from '@trezor/connect';
+import { DEVICE, UI_REQUEST } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 
@@ -80,11 +80,11 @@ export default [
         },
     },
     {
-        description: 'UI.REQUEST_PIN',
+        description: 'UI_REQUEST.REQUEST_PIN',
         initialState,
         actions: [
             {
-                type: UI.REQUEST_PIN,
+                type: UI_REQUEST.REQUEST_PIN,
                 payload: {
                     device: CONNECT_DEVICE,
                 },
@@ -93,15 +93,15 @@ export default [
         result: {
             ...deviceContextState,
             device: CONNECT_DEVICE,
-            windowType: UI.REQUEST_PIN,
+            windowType: UI_REQUEST.REQUEST_PIN,
         },
     },
     {
-        description: 'UI.INVALID_PIN',
+        description: 'UI_REQUEST.INVALID_PIN',
         initialState,
         actions: [
             {
-                type: UI.INVALID_PIN,
+                type: UI_REQUEST.INVALID_PIN,
                 payload: {
                     device: CONNECT_DEVICE,
                 },
@@ -110,15 +110,15 @@ export default [
         result: {
             ...deviceContextState,
             device: CONNECT_DEVICE,
-            windowType: UI.INVALID_PIN,
+            windowType: UI_REQUEST.INVALID_PIN,
         },
     },
     {
-        description: 'UI.REQUEST_PASSPHRASE',
+        description: 'UI_REQUEST.REQUEST_PASSPHRASE',
         initialState,
         actions: [
             {
-                type: UI.REQUEST_PASSPHRASE,
+                type: UI_REQUEST.REQUEST_PASSPHRASE,
                 payload: {
                     device: CONNECT_DEVICE,
                 },
@@ -127,15 +127,15 @@ export default [
         result: {
             ...deviceContextState,
             device: CONNECT_DEVICE,
-            windowType: UI.REQUEST_PASSPHRASE,
+            windowType: UI_REQUEST.REQUEST_PASSPHRASE,
         },
     },
     {
-        description: 'UI.REQUEST_BUTTON',
+        description: 'UI_REQUEST.REQUEST_BUTTON',
         initialState,
         actions: [
             {
-                type: UI.REQUEST_BUTTON,
+                type: UI_REQUEST.REQUEST_BUTTON,
                 payload: {
                     device: CONNECT_DEVICE,
                     code: 'ButtonRequest_SignTx',
@@ -149,11 +149,11 @@ export default [
         },
     },
     {
-        description: 'UI.REQUEST_WORD',
+        description: 'UI_REQUEST.REQUEST_WORD',
         initialState: undefined,
         actions: [
             {
-                type: UI.REQUEST_WORD,
+                type: UI_REQUEST.REQUEST_WORD,
                 payload: {
                     device: CONNECT_DEVICE,
                     type: 'WordRequestType_Plain',
@@ -167,11 +167,11 @@ export default [
         },
     },
     {
-        description: 'UI.REQUEST_CONFIRMATION',
+        description: 'UI_REQUEST.REQUEST_CONFIRMATION',
         initialState,
         actions: [
             {
-                type: UI.REQUEST_CONFIRMATION,
+                type: UI_REQUEST.REQUEST_CONFIRMATION,
                 payload: {
                     view: 'no-backup',
                 },
@@ -183,11 +183,11 @@ export default [
         },
     },
     {
-        description: 'UI.CLOSE_UI_WINDOW',
+        description: 'UI_REQUEST.CLOSE_UI_WINDOW',
         initialState: deviceContextState,
         actions: [
             {
-                type: UI.CLOSE_UI_WINDOW,
+                type: UI_REQUEST.CLOSE_UI_WINDOW,
             },
         ],
         result: initialState,

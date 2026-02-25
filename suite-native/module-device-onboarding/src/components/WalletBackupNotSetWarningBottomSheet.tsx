@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 type WalletBackupNotSetWarningBottomSheetProps = {
     onConfirm?: () => void;
@@ -34,7 +34,7 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
     const handleContinueAnyway = useCallback(() => {
         // When Trezor has no backup, it awaits confirmation to continue.
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_CONFIRMATION,
+            type: UI_RESPONSE.RECEIVE_CONFIRMATION,
             payload: true,
         });
         onConfirm?.();

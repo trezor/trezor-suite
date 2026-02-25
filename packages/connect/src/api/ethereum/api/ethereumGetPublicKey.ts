@@ -10,7 +10,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfo } from '../../../types';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
@@ -102,7 +102,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

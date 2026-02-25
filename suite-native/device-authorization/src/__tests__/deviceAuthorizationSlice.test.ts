@@ -1,5 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
 import {
     DeviceAuthorizationState,
@@ -22,9 +22,9 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI.REQUEST_PIN', () => {
+    describe('UI_REQUEST.REQUEST_PIN', () => {
         it('should set deviceAuthorizationStep to PinRequested', () => {
-            const state = deviceAuthorizationReducer(undefined, { type: UI.REQUEST_PIN });
+            const state = deviceAuthorizationReducer(undefined, { type: UI_REQUEST.REQUEST_PIN });
 
             expect(state).toEqual({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
@@ -32,10 +32,10 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI.REQUEST_PASSPHRASE', () => {
+    describe('UI_REQUEST.REQUEST_PASSPHRASE', () => {
         it('should set deviceAuthorizationStep to PassphraseRequested when device has staticSessionId', () => {
             const state = deviceAuthorizationReducer(undefined, {
-                type: UI.REQUEST_PASSPHRASE,
+                type: UI_REQUEST.REQUEST_PASSPHRASE,
                 payload: {
                     // @ts-expect-error This is how connect sends the payload for device state, but then it's stored differently in redux so this util doesn't recognize
                     // this type of property. For testing purposes however, it's fine.
@@ -57,7 +57,7 @@ describe('deviceAuthorizationSlice', () => {
             });
 
             const state = deviceAuthorizationReducer(prevState, {
-                type: UI.REQUEST_PASSPHRASE,
+                type: UI_REQUEST.REQUEST_PASSPHRASE,
             });
 
             expect(state).toEqual({
@@ -67,7 +67,7 @@ describe('deviceAuthorizationSlice', () => {
 
         it('should set deviceAuthorizationStep to Idle when device staticSessionId from connect is undefined', () => {
             const state = deviceAuthorizationReducer(undefined, {
-                type: UI.REQUEST_PASSPHRASE,
+                type: UI_REQUEST.REQUEST_PASSPHRASE,
                 payload: {
                     device: { ...mockSuiteDevice(), state: { staticSessionId: undefined } },
                 },
@@ -79,13 +79,15 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI.CLOSE_UI_WINDOW', () => {
+    describe('UI_REQUEST.CLOSE_UI_WINDOW', () => {
         it('should reset deviceAuthorizationStep to Idle from any state', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PassphraseRequested,
             });
 
-            const state = deviceAuthorizationReducer(prevState, { type: UI.CLOSE_UI_WINDOW });
+            const state = deviceAuthorizationReducer(prevState, {
+                type: UI_REQUEST.CLOSE_UI_WINDOW,
+            });
 
             expect(state).toEqual({
                 deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
@@ -98,7 +100,7 @@ describe('deviceAuthorizationSlice', () => {
             'should set deviceAuthorizationStep to PinRequested for %s code',
             code => {
                 const state = deviceAuthorizationReducer(undefined, {
-                    type: UI.REQUEST_BUTTON,
+                    type: UI_REQUEST.REQUEST_BUTTON,
                     payload: { code },
                 });
 
@@ -118,7 +120,7 @@ describe('deviceAuthorizationSlice', () => {
                 });
 
                 const state = deviceAuthorizationReducer(prevState, {
-                    type: UI.REQUEST_BUTTON,
+                    type: UI_REQUEST.REQUEST_BUTTON,
                     payload: { code },
                 });
 
@@ -132,7 +134,7 @@ describe('deviceAuthorizationSlice', () => {
     describe('isSuiteSyncButtonRequest matcher', () => {
         it('should set deviceAuthorizationStep to ContinueOnTrezorRequested for secure_sync button request', () => {
             const state = deviceAuthorizationReducer(undefined, {
-                type: UI.REQUEST_BUTTON,
+                type: UI_REQUEST.REQUEST_BUTTON,
                 payload: { name: 'secure_sync' },
             });
 

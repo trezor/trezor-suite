@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
@@ -39,7 +39,7 @@ export const PinStep = () => {
     };
 
     const handlePinSubmit = () => {
-        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
 
         setPin('');
     };

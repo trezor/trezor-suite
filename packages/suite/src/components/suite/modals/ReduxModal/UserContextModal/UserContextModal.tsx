@@ -1,6 +1,6 @@
 import { MetadataProviderModal } from '@suite/metadata';
 import { AccountKey } from '@suite-common/wallet-types';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -106,7 +106,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatchModal />;
-        case UI.INVALID_PIN_ATTEMPTS_DEPLETED:
+        case UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED:
             return <PinInvalidModal onCancel={onCancel} />;
         case 'application-log':
             return <ApplicationLogModal onCancel={onCancel} />;

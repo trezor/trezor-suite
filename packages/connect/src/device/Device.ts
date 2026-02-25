@@ -40,7 +40,7 @@ import {
     DeviceThpPairingPayload,
     DeviceThpPairingStatus,
     DeviceVersionChanged,
-    UI,
+    UI_REQUEST,
     UiResponsePassphrase,
     UiResponsePin,
     UiResponseThpPairingTag,
@@ -1072,14 +1072,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // both allow and require cases might generate single unexpected mode
         if (this.features) {
             // allow cases
-            if (this.isBootloader() && !allow.includes(UI.BOOTLOADER)) {
-                return UI.BOOTLOADER;
+            if (this.isBootloader() && !allow.includes(UI_REQUEST.BOOTLOADER)) {
+                return UI_REQUEST.BOOTLOADER;
             }
-            if (!this.isInitialized() && !allow.includes(UI.INITIALIZE)) {
-                return UI.INITIALIZE;
+            if (!this.isInitialized() && !allow.includes(UI_REQUEST.INITIALIZE)) {
+                return UI_REQUEST.INITIALIZE;
             }
-            if (this.isSeedless() && !allow.includes(UI.SEEDLESS)) {
-                return UI.SEEDLESS;
+            if (this.isSeedless() && !allow.includes(UI_REQUEST.SEEDLESS)) {
+                return UI_REQUEST.SEEDLESS;
             }
         }
 

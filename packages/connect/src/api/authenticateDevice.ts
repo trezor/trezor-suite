@@ -9,7 +9,7 @@ import {
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI } from '../events';
+import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
 
@@ -20,7 +20,7 @@ export default class AuthenticateDevice extends AbstractMethod<
     constructor(message: { id?: number; payload: Payload<'authenticateDevice'> }) {
         super(message);
         this.useEmptyPassphrase = true;
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.skipFinalReload = false;
         this.useDeviceState = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);

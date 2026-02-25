@@ -1,7 +1,8 @@
 const TrezorConnect = require('@trezor/connect').default;
 const {
     TRANSPORT_EVENT,
-    UI,
+    UI_REQUEST,
+    UI_RESPONSE,
     UI_EVENT,
     DEVICE_EVENT,
     TRANSPORT,
@@ -45,24 +46,24 @@ exports.initTrezorConnect = sender => {
     TrezorConnect.on(UI_EVENT, event => {
         sender.send('trezor-connect', event);
 
-        if (event.type === UI.REQUEST_PIN) {
+        if (event.type === UI_REQUEST.REQUEST_PIN) {
             // example how to respond to pin request
-            TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: '1234' });
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: '1234' });
         }
 
-        if (event.type === UI.REQUEST_PASSPHRASE) {
+        if (event.type === UI_REQUEST.REQUEST_PASSPHRASE) {
             if (event.payload.device.features.capabilities.includes('Capability_PassphraseEntry')) {
                 // device does support entering passphrase on device
                 // let user choose where to enter
                 // if he choose to do it on device respond with:
                 TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_PASSPHRASE,
+                    type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                     payload: { passphraseOnDevice: true, value: '' },
                 });
             } else {
                 // example how to respond to passphrase request from regular UI input (form)
                 TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_PASSPHRASE,
+                    type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                     payload: { value: 'type your passphrase here', save: true },
                 });
             }
@@ -71,9 +72,9 @@ exports.initTrezorConnect = sender => {
         // getAddress from device which is not backed up
         // there is a high risk of coin loss at this point
         // warn user about it
-        if (event.type === UI.REQUEST_CONFIRMATION) {
+        if (event.type === UI_REQUEST.REQUEST_CONFIRMATION) {
             // payload: true - user decides to continue anyway
-            TrezorConnect.uiResponse({ type: UI.RECEIVE_CONFIRMATION, payload: true });
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_CONFIRMATION, payload: true });
         }
     });
 

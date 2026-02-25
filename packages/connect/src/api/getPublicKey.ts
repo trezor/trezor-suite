@@ -5,7 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, createUiMessage } from '../events';
 import type { BitcoinNetworkInfo } from '../types';
 import { Bundle } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
@@ -101,7 +101,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

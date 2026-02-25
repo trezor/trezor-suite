@@ -4,13 +4,13 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI } from '../events';
+import { UI_REQUEST } from '../events';
 import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
     constructor(message: { id?: number; payload: Payload<'recoveryDevice'> }) {
         super(message);
-        this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE];
+        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.useEmptyPassphrase = true;

@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl';
 
 import { messages } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
@@ -32,11 +32,11 @@ export const DeviceContextModal = ({
 
     switch (windowType) {
         // T1B1 firmware
-        case UI.REQUEST_PIN:
-        case UI.INVALID_PIN:
+        case UI_REQUEST.REQUEST_PIN:
+        case UI_REQUEST.INVALID_PIN:
             return <PinModal device={device} />;
         // T2T1 firmware
-        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDeviceModal device={device} />;
         case 'ButtonRequest_ConfirmOutput':

@@ -10,7 +10,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { CardanoGetPublicKey as CardanoGetPublicKeySchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
@@ -101,7 +101,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

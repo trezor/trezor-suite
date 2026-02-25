@@ -7,14 +7,14 @@ import { getRandomInt } from '@trezor/utils';
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { PROTO } from '../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI } from '../events';
+import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     constructor(message: { id?: number; payload: Payload<'resetDevice'> }) {
         super(message);
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);

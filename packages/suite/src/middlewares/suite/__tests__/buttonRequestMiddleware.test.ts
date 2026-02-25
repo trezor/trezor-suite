@@ -3,7 +3,7 @@ import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
-import { UI, UI_EVENT } from '@trezor/connect';
+import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { SUITE } from 'src/actions/suite/constants';
@@ -55,11 +55,11 @@ describe('buttonRequest middleware', () => {
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
-            type: UI.REQUEST_BUTTON,
+            type: UI_REQUEST.REQUEST_BUTTON,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
         emitTestEvent(UI_EVENT, {
-            type: UI.REQUEST_PIN,
+            type: UI_REQUEST.REQUEST_PIN,
             payload: { type: 'PinMatrixRequestType_NewFirst', device },
         });
 
@@ -71,12 +71,15 @@ describe('buttonRequest middleware', () => {
             { type: connectInitThunk.pending.type, payload: undefined },
             { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: SUITE.LOCK_DEVICE, payload: true },
-            { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
+            { type: UI_REQUEST.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
-            { type: UI.REQUEST_PIN, payload: { type: 'PinMatrixRequestType_NewFirst', device } },
+            {
+                type: UI_REQUEST.REQUEST_PIN,
+                payload: { type: 'PinMatrixRequestType_NewFirst', device },
+            },
             {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },

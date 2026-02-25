@@ -4,7 +4,7 @@ import { selectDeviceInternalModel } from '@suite-common/device';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 export const NoPassphraseButton = () => {
     const deviceModel = useSelector(selectDeviceInternalModel);
@@ -12,7 +12,7 @@ export const NoPassphraseButton = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleSubmitOnDevice = () => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
+            type: UI_RESPONSE.RECEIVE_PASSPHRASE,
             payload: {
                 value: '',
                 passphraseOnDevice: false,

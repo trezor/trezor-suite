@@ -24,7 +24,8 @@ import {
     POPUP,
     RESPONSE_EVENT,
     TransportInfo,
-    UI,
+    UI_REQUEST,
+    UI_RESPONSE,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
@@ -91,11 +92,11 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     if (deviceNeedsBackup) {
         if (method.confirmMissingBackup) {
             // initialize user response promise
-            const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+            const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
 
             // request confirmation view
             sendCoreMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
+                createUiMessage(UI_REQUEST.REQUEST_CONFIRMATION, {
                     view: 'no-backup',
                 }),
             );
@@ -109,13 +110,13 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             }
         }
         // show notification
-        sendCoreMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
+        sendCoreMessage(createUiMessage(UI_REQUEST.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
     }
 
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
         // show notification
-        sendCoreMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
+        sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject()));
     }
 
     const workflowCtx = {
@@ -237,7 +238,7 @@ const onCallDevice = async (
         } catch (error) {
             if (error.code === 'Transport_Missing') {
                 // show message about transport
-                sendCoreMessage(createUiMessage(UI.TRANSPORT));
+                sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
 
                 // Retry selectDevice again
                 // NOTE: this should change after multi-transports refactor, where transport will be always alive
@@ -396,7 +397,7 @@ const cleanup = ({ uiPromises }: CoreContext) => {
  * @memberof Core
  */
 const closePopup = ({ sendCoreMessage }: CoreContext) => {
-    sendCoreMessage(createUiMessage(UI.CLOSE_UI_WINDOW));
+    sendCoreMessage(createUiMessage(UI_REQUEST.CLOSE_UI_WINDOW));
 };
 
 /**
@@ -420,14 +421,14 @@ const onDeviceButtonHandler =
             createDeviceMessage(DEVICE.BUTTON, { ...request, device: device.toMessageObject() }),
         );
         sendCoreMessage(
-            createUiMessage(UI.REQUEST_BUTTON, {
+            createUiMessage(UI_REQUEST.REQUEST_BUTTON, {
                 ...request,
                 device: device.toMessageObject(),
                 data,
             }),
         );
         if (addressRequest && !method?.useUi) {
-            sendCoreMessage(createUiMessage(UI.ADDRESS_VALIDATION, data));
+            sendCoreMessage(createUiMessage(UI_REQUEST.ADDRESS_VALIDATION, data));
         }
     };
 
@@ -436,16 +437,19 @@ const onDevicePinHandler =
     async ({ type, callback }: DeviceEvents['pin']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
-        const uiPromise = uiPromises.create(UI.RECEIVE_PIN, device);
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PIN, device);
         // request pin view
         sendCoreMessage(
-            createUiMessage(UI.REQUEST_PIN, { device: device.toMessageObject(), type }),
+            createUiMessage(UI_REQUEST.REQUEST_PIN, { device: device.toMessageObject(), type }),
         );
         // wait for pin
         try {
             const uiResp = await uiPromise.promise;
             if (uiResp.payload == null) {
-                callback({ success: false, error: new Error(`${UI.RECEIVE_PIN} missing payload`) });
+                callback({
+                    success: false,
+                    error: new Error(`${UI_RESPONSE.RECEIVE_PIN} missing payload`),
+                });
             } else {
                 callback({ success: true, payload: uiResp.payload });
             }
@@ -459,9 +463,9 @@ const onDeviceWordHandler =
     async ({ type, callback }: DeviceEvents['word']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
-        const uiPromise = uiPromises.create(UI.RECEIVE_WORD, device);
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_WORD, device);
         sendCoreMessage(
-            createUiMessage(UI.REQUEST_WORD, { device: device.toMessageObject(), type }),
+            createUiMessage(UI_REQUEST.REQUEST_WORD, { device: device.toMessageObject(), type }),
         );
         // wait for word
         try {
@@ -469,7 +473,7 @@ const onDeviceWordHandler =
             if (uiResp.payload == null) {
                 callback({
                     success: false,
-                    error: new Error(`${UI.RECEIVE_WORD} missing payload`),
+                    error: new Error(`${UI_RESPONSE.RECEIVE_WORD} missing payload`),
                 });
             } else {
                 callback({ success: true, payload: uiResp.payload });
@@ -484,10 +488,10 @@ const onDevicePassphraseHandler =
     async ({ callback }: DeviceEvents['passphrase']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
-        const uiPromise = uiPromises.create(UI.RECEIVE_PASSPHRASE, device);
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PASSPHRASE, device);
         // request passphrase view
         sendCoreMessage(
-            createUiMessage(UI.REQUEST_PASSPHRASE, { device: device.toMessageObject() }),
+            createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE, { device: device.toMessageObject() }),
         );
         // wait for passphrase
         try {
@@ -495,7 +499,7 @@ const onDevicePassphraseHandler =
             if (uiResp.payload == null) {
                 callback({
                     success: false,
-                    error: new Error(`${UI.RECEIVE_PASSPHRASE} missing payload`),
+                    error: new Error(`${UI_RESPONSE.RECEIVE_PASSPHRASE} missing payload`),
                 });
             } else {
                 callback({ success: true, payload: uiResp.payload });
@@ -523,10 +527,10 @@ const onThpPairingHandler =
     async ({ callback, payload }: DeviceEvents['thp_pairing']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
-        const uiPromise = uiPromises.create(UI.RECEIVE_THP_PAIRING_TAG, device);
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_THP_PAIRING_TAG, device);
 
         sendCoreMessage(
-            createUiMessage(UI.REQUEST_THP_PAIRING, {
+            createUiMessage(UI_REQUEST.REQUEST_THP_PAIRING, {
                 device: device.toMessageObject(),
                 ...payload,
             }),
@@ -537,7 +541,7 @@ const onThpPairingHandler =
             if (uiResp.payload == null) {
                 callback({
                     success: false,
-                    error: new Error(`${UI.RECEIVE_THP_PAIRING_TAG} missing payload`),
+                    error: new Error(`${UI_RESPONSE.RECEIVE_THP_PAIRING_TAG} missing payload`),
                 });
             } else {
                 callback({ success: true, payload: uiResp.payload });
@@ -588,7 +592,7 @@ const registerDeviceEvents =
         );
         device.on(DEVICE.PASSPHRASE_ON_DEVICE, () => {
             context.sendCoreMessage(
-                createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, {
+                createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE, {
                     device: device.toMessageObject(),
                 }),
             );
@@ -769,16 +773,16 @@ export class Core extends EventEmitter {
                 break;
 
             // messages from UI (popup/modal...)
-            case UI.RECEIVE_CONFIRMATION:
-            case UI.RECEIVE_PIN:
-            case UI.RECEIVE_PASSPHRASE:
-            case UI.RECEIVE_THP_PAIRING_TAG:
-            case UI.RECEIVE_ACCOUNT:
-            case UI.RECEIVE_FEE:
-            case UI.RECEIVE_WORD:
+            case UI_RESPONSE.RECEIVE_CONFIRMATION:
+            case UI_RESPONSE.RECEIVE_PIN:
+            case UI_RESPONSE.RECEIVE_PASSPHRASE:
+            case UI_RESPONSE.RECEIVE_THP_PAIRING_TAG:
+            case UI_RESPONSE.RECEIVE_ACCOUNT:
+            case UI_RESPONSE.RECEIVE_FEE:
+            case UI_RESPONSE.RECEIVE_WORD:
                 this.uiPromises.resolve(message);
                 break;
-            case UI.RECEIVE_FIRMWARE: {
+            case UI_RESPONSE.RECEIVE_FIRMWARE: {
                 const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
                 if (localFirmwares) {
                     DataManager.setLocalFirmwares(localFirmwares);
