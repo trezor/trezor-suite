@@ -22,6 +22,7 @@ export type BaseCurrencyAmountFormatterDataContext<T> = {
 
 // `currency` param in intl.formatNumber works only wit 3 letter currencies
 const BITCOIN_SATS_PLACEHOLDER = 'sat';
+const FIAT_AMOUNT_CURRENCY_NBSP = '\u00A0'; // non-breaking space between amount and currency
 
 type FormatParams = {
     value: BaseCurrencyAmount;
@@ -93,7 +94,7 @@ const formatShortFiat = ({
     });
     const currencySuffix = currency.toUpperCase();
 
-    return `${formattedNumber}${suffix} ${currencySuffix}`;
+    return `${formattedNumber}${suffix}${FIAT_AMOUNT_CURRENCY_NBSP}${currencySuffix}`;
 };
 
 const formatStandard = ({
@@ -105,7 +106,7 @@ const formatStandard = ({
 }: FormatParams & { useShortFiatFormat?: boolean }) => {
     if (value.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
-        return `${value} ${currency}`;
+        return `${value}${FIAT_AMOUNT_CURRENCY_NBSP}${currency}`;
     }
 
     if (useShortFiatFormat) {
@@ -126,7 +127,7 @@ const formatStandard = ({
     });
 
     return currency.toLowerCase() === 'btc' // In the case of Crypto Base-Currency, we always want to have currency ticker as suffix.
-        ? `${result.replace(/BTC|btc/, '').trim()} ${currency.toUpperCase()}`
+        ? `${result.replace(/BTC|btc/, '').trim()}${FIAT_AMOUNT_CURRENCY_NBSP}${currency.toUpperCase()}`
         : result;
 };
 
