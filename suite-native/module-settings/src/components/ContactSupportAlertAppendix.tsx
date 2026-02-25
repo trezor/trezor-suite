@@ -30,7 +30,7 @@ export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendi
     useImperativeHandle(ref, () => ({ getSupportChatUrl: () => supportChatUrlRef.current }), []);
 
     return (
-        <VStack spacing="sp8">
+        <VStack spacing="sp12">
             <HStack spacing="sp12" alignItems="center" style={applyStyle(checkboxRowStyle)}>
                 <CheckBox
                     isChecked={isChecked}

@@ -7007,6 +7007,23 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT',
         defaultMessage: 'Trezor Support',
     },
+    TR_GUIDE_SUPPORT_CONSENT_TITLE: {
+        id: 'TR_GUIDE_SUPPORT_CONSENT_TITLE',
+        defaultMessage: 'Help us help you, privately',
+    },
+    TR_GUIDE_SUPPORT_CONSENT_TOGGLE: {
+        id: 'TR_GUIDE_SUPPORT_CONSENT_TOGGLE',
+        defaultMessage: 'Temporarily share system info',
+    },
+    TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION: {
+        id: 'TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION',
+        defaultMessage:
+            'Send a one-time snapshot of your system info (firmware, Suite version, and device type) so our team can skip these questions and jump straight to a solution.',
+    },
+    TR_GUIDE_SUPPORT_CONSENT_BUTTON: {
+        id: 'TR_GUIDE_SUPPORT_CONSENT_BUTTON',
+        defaultMessage: 'Contact support',
+    },
     TR_GUIDE_FORUM: {
         id: 'TR_GUIDE_FORUM',
         defaultMessage: 'Trezor Forum',
@@ -7037,7 +7054,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_VIEW_HEADLINE_NEED_HELP: {
         id: 'TR_GUIDE_VIEW_HEADLINE_NEED_HELP',
-        defaultMessage: 'Need help?',
+        defaultMessage: 'Need more help?',
     },
     TR_GUIDE_VIEW_HEADLINE_REPORT_BUG: {
         id: 'TR_GUIDE_VIEW_HEADLINE_REPORT_BUG',

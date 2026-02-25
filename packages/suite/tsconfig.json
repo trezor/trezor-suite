@@ -102,6 +102,7 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../../suite-common/support" },
         {
             "path": "../../suite-common/test-utils"
         },

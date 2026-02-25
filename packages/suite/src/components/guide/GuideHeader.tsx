@@ -106,7 +106,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
             {useBreadcrumb && <HeaderBreadcrumb />}
 
             <IconButton
-                icon="arrowLineRight"
+                icon="x"
                 intent="neutral"
                 priority="secondary"
                 onClick={handleClose}

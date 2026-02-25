@@ -106,17 +106,21 @@ export class OnboardingPage {
     }
 
     @step()
+    async pairTHP() {
+        if (this.device.hasTHP) {
+            await this.devicePrompt.allowConnectToTrezor();
+            await this.enterTHPPairingCode();
+            await this.enableAutoconnect();
+        }
+    }
+    @step()
     async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
         await this.disableNecessaryFirmwareChecks();
         await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
 
-        if (this.device.hasTHP) {
-            await this.devicePrompt.allowConnectToTrezor();
-            await this.enterTHPPairingCode();
-            await this.enableAutoconnect();
-        }
+        await this.pairTHP();
 
         await this.completeOnboardingButton.click();
         if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
