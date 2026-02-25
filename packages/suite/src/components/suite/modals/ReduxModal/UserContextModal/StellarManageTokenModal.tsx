@@ -16,7 +16,7 @@ import {
     fetchAndUpdateAccountThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
@@ -25,6 +25,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -79,34 +80,14 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     });
 
     const { watch, handleSubmit } = methods;
-
     const selectedFee = watch('selectedFee');
     const feePerUnit = watch('feePerUnit');
 
-    const composedLevels = useMemo(() => {
-        const levels: PrecomposedLevels = {};
-
-        const createComposedTx = (feeValue: string) => ({
-            type: 'final' as const,
-            totalSpent: '0',
-            fee: feeValue,
-            feePerByte: feeValue,
-            bytes: 0,
-            inputs: [],
-            outputs: [],
-            outputsPermutation: [],
-        });
-
-        feeInfo.levels.forEach(level => {
-            levels[level.label] = createComposedTx(level.feePerUnit);
-        });
-
-        if (selectedFee === 'custom' && feePerUnit) {
-            levels.custom = createComposedTx(feePerUnit);
-        }
-
-        return levels;
-    }, [feeInfo.levels, feePerUnit, selectedFee]);
+    const composedLevels = useComposedLevelsPlaceholder({
+        feeInfo,
+        selectedFee,
+        feePerUnit,
+    });
 
     const composedTx = composedLevels[selectedFee || 'normal'];
     const currentFee = composedTx?.type === 'final' ? composedTx.fee : '0';

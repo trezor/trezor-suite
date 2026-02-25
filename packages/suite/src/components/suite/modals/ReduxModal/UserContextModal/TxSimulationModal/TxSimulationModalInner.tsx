@@ -28,7 +28,7 @@ interface TxSimulationModalInnerProps {
 export function TxSimulationModalInner({ action, account }: TxSimulationModalInnerProps) {
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
 
-    const { form, changeFeeLevel, feeInfo, defaultGasLimit } = useTxFeesForm({
+    const { form, changeFeeLevel, feeInfo, defaultGasLimit, composedLevels } = useTxFeesForm({
         networkType: account.networkType,
         networkSymbol: account.symbol,
         defaultGasLimit:
@@ -55,6 +55,8 @@ export function TxSimulationModalInner({ action, account }: TxSimulationModalInn
             }
         },
     });
+    // Show only after simulation is loaded
+    const composedLevelsFiltered = txSimulationQuery.isLoading ? null : composedLevels;
 
     const { confirm, cancel } = useTxSimulationActions({
         method: action.method,
@@ -157,7 +159,7 @@ export function TxSimulationModalInner({ action, account }: TxSimulationModalInn
                                     account={account}
                                     feeInfo={feeInfo}
                                     changeFeeLevel={changeFeeLevel}
-                                    composedLevels={null}
+                                    composedLevels={composedLevelsFiltered}
                                 />
                             )}
                         </Column>

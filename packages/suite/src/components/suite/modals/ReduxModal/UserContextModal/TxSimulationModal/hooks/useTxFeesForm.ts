@@ -1,12 +1,14 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseTxFeesFormProps {
@@ -43,10 +45,31 @@ export function useTxFeesForm({
         composeRequest: () => {},
     });
 
+    const { watch } = form;
+    const selectedFee = watch('selectedFee');
+    const feePerUnit = watch('feePerUnit');
+    const maxFeePerGas = watch('maxFeePerGas');
+    const feeLimit = watch('feeLimit');
+
+    // calculate levels with total max fee
+    const feeTotalCalculation = useCallback(
+        (feeValue: string) =>
+            new BigNumber(feeValue).multipliedBy(1e9).multipliedBy(feeLimit).toString(),
+        [feeLimit],
+    );
+    const composedLevels = useComposedLevelsPlaceholder({
+        feeTotalCalculation,
+        feeInfo,
+        selectedFee,
+        feePerUnit,
+        maxFeePerGas,
+    });
+
     return {
         form,
         changeFeeLevel,
         feeInfo,
         defaultGasLimit,
+        composedLevels,
     };
 }
