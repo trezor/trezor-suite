@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { Account } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
@@ -42,11 +43,14 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
     const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
         useExpandableAccountGroups();
+    const device = useSelector(selectSelectedDevice);
 
     const accountsWithTokens = useAccountWithTokensOptions({
         networkSymbolFilter,
         expandedHiddenTokensGroups: expandedAccountTokensGroups,
+        staticSessionId: device?.state?.staticSessionId ?? null,
     });
+
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(
         accountsWithTokens,
         searchFilter,

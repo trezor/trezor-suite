@@ -1,4 +1,5 @@
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
@@ -12,7 +13,7 @@ export function calculateExpandableTokensHeight(expanded: boolean, hiddenTokensL
 }
 
 interface CreateHiddenTokensOptionProps {
-    account: Account;
+    account: AccountWithSuiteSyncLabel;
     hiddenTokens: TokensWithRates[];
     expandedHiddenTokensGroups: AccountKey[];
 }
@@ -34,7 +35,7 @@ export function createHiddenTokensOption({
 }
 
 interface CreateNonradableTokensOptionProps {
-    account: Account;
+    account: AccountWithSuiteSyncLabel;
     nonTradableTokens: TokensWithRates[];
     expandedNonTradableTokensGroups: AccountKey[];
 }
@@ -55,14 +56,14 @@ export function createNonTradableTokensOption({
     } satisfies Extract<AccountWithTokensOption, { type: 'non-tradable-tokens' }>;
 }
 
-export const createAccountOption = (account: Account) =>
+export const createAccountOption = (account: AccountWithSuiteSyncLabel) =>
     ({
         type: 'account',
         account,
         height: ASSET_ROW_HEIGHT,
     }) satisfies Extract<AccountWithTokensOption, { type: 'account' }>;
 
-export const createTokenOption = (account: Account, token: TokensWithRates) =>
+export const createTokenOption = (account: AccountWithSuiteSyncLabel, token: TokensWithRates) =>
     ({
         type: 'token',
         account,

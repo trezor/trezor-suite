@@ -28,7 +28,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
-    const acccountModal = useModal(false);
+    const accountModal = useModal(false);
     const dispatch = useDispatch();
 
     const listRef = useRef<HTMLDivElement>(null);
@@ -130,11 +130,11 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     </div>
                 </Column>
             </Modal>
-            {acccountModal.open && device && (
+            {accountModal.open && device && (
                 <AddAccountModal
                     noRedirect
                     device={device}
-                    onCancel={acccountModal.closeModal}
+                    onCancel={accountModal.closeModal}
                     onAddAccount={account => {
                         onSubmit(account, 'coin', filledSearch);
                     }}
