@@ -1,23 +1,19 @@
 import { useSelector } from 'react-redux';
 
-import {
-    SuiteSyncDataRootState,
-    selectSuiteSyncAddressLabel,
-    selectSuiteSyncOutputLabel,
-} from '@suite-common/suite-sync';
+import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import { HStack, Text, TextProps } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
+import {
+    AddressLabel,
+    TransactionOutputLabel,
+    selectIsLabellingAllowed,
+} from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const ADDRESS_LABEL_MAX_LENGTH = 25;
 
-const truncateAddressLabel = (label: string | null) =>
-    label && label.length > ADDRESS_LABEL_MAX_LENGTH
-        ? `${label.slice(0, ADDRESS_LABEL_MAX_LENGTH)}…`
-        : label;
-
-const textStyle = prepareNativeStyle(() => ({
+const flexStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
@@ -40,40 +36,45 @@ export const UtxoCoinControlLabel = ({
 }: UtxoCoinControlLabelProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const addressLabel = useSelector((state: SuiteSyncDataRootState) =>
-        selectSuiteSyncAddressLabel(state, deviceStaticSessionId, address),
-    );
-    const utxoLabel = useSelector((state: SuiteSyncDataRootState) =>
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
+
+    const outputLabel = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
     );
 
-    if (!utxoLabel && !addressLabel) {
-        return <AddressFormatter value={address} variant="body-sm" color="textSubdued" />;
-    }
-
-    if (!utxoLabel) {
-        return <LabelText>{addressLabel}</LabelText>;
-    }
-
-    const truncatedAddressLabel = truncateAddressLabel(addressLabel);
-
-    const addressPart = truncatedAddressLabel ? (
-        <LabelText>{truncatedAddressLabel}</LabelText>
-    ) : (
-        <AddressFormatter
-            value={address}
-            variant="body-sm"
-            color="textSubdued"
-            style={applyStyle(textStyle)}
-        />
-    );
+    const hasOutputLabel = isLabellingAllowed && !!outputLabel;
 
     return (
         <HStack alignItems="center">
-            {addressPart}
-            <LabelText>•</LabelText>
-
-            <LabelText style={applyStyle(textStyle)}>{utxoLabel}</LabelText>
+            <AddressLabel
+                address={address}
+                deviceStaticSessionId={deviceStaticSessionId}
+                variant="body-sm"
+                color="textSubdued"
+                style={hasOutputLabel ? undefined : applyStyle(flexStyle)}
+                maxLength={hasOutputLabel ? ADDRESS_LABEL_MAX_LENGTH : undefined}
+                fallback={
+                    <AddressFormatter
+                        value={address}
+                        variant="body-sm"
+                        color="textSubdued"
+                        style={applyStyle(flexStyle)}
+                    />
+                }
+            />
+            {hasOutputLabel && (
+                <>
+                    <LabelText>•</LabelText>
+                    <TransactionOutputLabel
+                        txId={txId}
+                        outputIndex={outputIndex}
+                        deviceStaticSessionId={deviceStaticSessionId}
+                        variant="body-sm"
+                        color="textSubdued"
+                        style={applyStyle(flexStyle)}
+                    />
+                </>
+            )}
         </HStack>
     );
 };
