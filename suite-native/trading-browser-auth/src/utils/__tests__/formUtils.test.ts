@@ -1,60 +1,16 @@
-import type { FormResponse } from 'invity-api';
-
 import { trezorLogo } from '@suite-common/suite-constants';
 
-import type { BuildTradingUrlProps } from '../formUtils';
-
-const mockIsProduction = jest.fn();
-
-jest.mock('@suite-native/config', () => ({
-    isProduction: () => mockIsProduction(),
-}));
-
-const importModules = () => {
-    const { TRADING_URL_BASE, TRADING_URL_DEFAULT_BACK } = require('../../consts');
-    const {
-        applyHtmlTemplate,
-        buildTradingUrl,
-        getRequestFormSource,
-        getSourceForForm,
-    } = require('../formUtils');
-
-    return {
-        TRADING_URL_BASE: TRADING_URL_BASE as string,
-        TRADING_URL_DEFAULT_BACK: TRADING_URL_DEFAULT_BACK as string,
-        applyHtmlTemplate: applyHtmlTemplate as (
-            content?: string,
-            options?: Record<string, string>,
-        ) => string,
-        buildTradingUrl: buildTradingUrl as (props: BuildTradingUrlProps) => string,
-        getRequestFormSource: getRequestFormSource as (args: {
-            form?: FormResponse['form'];
-        }) => { uri?: string; html?: string } | null,
-        getSourceForForm: getSourceForForm as (
-            form: FormResponse['form'] | undefined,
-            backUrl?: string,
-        ) => { uri?: string; html?: string } | null,
-    };
-};
+import {
+    applyHtmlTemplate,
+    buildTradingUrl,
+    getRequestFormSource,
+    getSourceForForm,
+} from '../formUtils';
 
 describe('formUtils', () => {
-    describe('dev environment', () => {
-        let applyHtmlTemplate: ReturnType<typeof importModules>['applyHtmlTemplate'];
-        let buildTradingUrl: ReturnType<typeof importModules>['buildTradingUrl'];
-        let getRequestFormSource: ReturnType<typeof importModules>['getRequestFormSource'];
-        let getSourceForForm: ReturnType<typeof importModules>['getSourceForForm'];
-
-        beforeAll(() => {
-            mockIsProduction.mockReturnValue(false);
-            jest.isolateModules(() => {
-                ({ applyHtmlTemplate, buildTradingUrl, getRequestFormSource, getSourceForForm } =
-                    importModules());
-            });
-        });
-
-        describe('applyHtmlTemplate', () => {
-            it('should have content with dev back URL', () => {
-                expect(applyHtmlTemplate('CONTENT_TO_EMBED')).toBe(`
+    describe('applyHtmlTemplate', () => {
+        it('should have content', () => {
+            expect(applyHtmlTemplate('CONTENT_TO_EMBED')).toBe(`
         <!DOCTYPE html>
         <html>
             <head>
@@ -92,16 +48,16 @@ ${' '.repeat(16)}
             </body>
         </html>
     `);
-            });
+        });
 
-            it('should have content with options', () => {
-                expect(
-                    applyHtmlTemplate('CONTENT_TO_EMBED', {
-                        title: 'TITLE',
-                        script: 'SCRIPT',
-                        backUrl: 'BACK_URL',
-                    }),
-                ).toStrictEqual(`
+        it('should have content with options', () => {
+            expect(
+                applyHtmlTemplate('CONTENT_TO_EMBED', {
+                    title: 'TITLE',
+                    script: 'SCRIPT',
+                    backUrl: 'BACK_URL',
+                }),
+            ).toStrictEqual(`
         <!DOCTYPE html>
         <html>
             <head>
@@ -139,132 +95,101 @@ ${' '.repeat(16)}
             </body>
         </html>
     `);
+        });
+    });
+
+    describe('getRequestFormSource', () => {
+        it('should return null when no form is provided', () => {
+            expect(getRequestFormSource({})).toBeNull();
+        });
+
+        it('should return uri for GET formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'GET',
+                        formAction: 'get_action',
+                        fields: {},
+                    },
+                }),
+            ).toStrictEqual({
+                uri: 'get_action',
             });
         });
 
-        describe('getRequestFormSource', () => {
-            it('should return null when no form is provided', () => {
-                expect(getRequestFormSource({})).toBeNull();
-            });
+        it('should return null for IFRAME formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'IFRAME',
+                        formAction: 'get_action',
+                        fields: {},
+                    },
+                }),
+            ).toBeNull();
+        });
 
-            it('should return uri for GET formMethod', () => {
-                expect(
-                    getRequestFormSource({
-                        form: {
-                            formMethod: 'GET',
-                            formAction: 'get_action',
-                            fields: {},
-                        },
-                    }),
-                ).toStrictEqual({
-                    uri: 'get_action',
-                });
-            });
-
-            it('should return null for IFRAME formMethod', () => {
-                expect(
-                    getRequestFormSource({
-                        form: {
-                            formMethod: 'IFRAME',
-                            formAction: 'get_action',
-                            fields: {},
-                        },
-                    }),
-                ).toBeNull();
-            });
-
-            it('should create script with form for POST formMethod', () => {
-                expect(
-                    getRequestFormSource({
-                        form: {
-                            formMethod: 'POST',
-                            formAction: 'post_action',
-                            fields: { key1: 'value1', key2: 'value2' },
-                        },
-                    }),
-                ).toStrictEqual({
-                    html: `
+        it('should create script with form for POST formMethod', () => {
+            expect(
+                getRequestFormSource({
+                    form: {
+                        formMethod: 'POST',
+                        formAction: 'post_action',
+                        fields: { key1: 'value1', key2: 'value2' },
+                    },
+                }),
+            ).toStrictEqual({
+                html: `
         Forwarding to post_action...
         <form id="buy-form" method="POST" action="post_action" target='_self'>
         <input type="hidden" name="key1" value="value1"><input type="hidden" name="key2" value="value2">
         </form>
         <script type="text/javascript">document.getElementById("buy-form").submit();</script>`,
-                });
-            });
-        });
-
-        describe('getSourceForForm', () => {
-            it('should return null when no form is provided', () => {
-                expect(getSourceForForm(undefined)).toBeNull();
-            });
-
-            it('should return uri object for GET form', () => {
-                expect(
-                    getSourceForForm({
-                        formMethod: 'GET',
-                        formAction: 'get_action',
-                        fields: {},
-                    }),
-                ).toStrictEqual({
-                    uri: 'get_action',
-                });
-            });
-
-            it('should return html object for POST form', () => {
-                const result = getSourceForForm(
-                    {
-                        formMethod: 'POST',
-                        formAction: 'post_action',
-                        fields: { key: 'value' },
-                    },
-                    'custom_back_url',
-                );
-
-                expect(result).toHaveProperty('html');
-                expect(result?.html).toContain('post_action');
-                expect(result?.html).toContain('custom_back_url');
-            });
-        });
-
-        describe('buildTradingUrl', () => {
-            it('should return correct url format with dev base', () => {
-                expect(
-                    buildTradingUrl({
-                        actionType: 'quote',
-                        tradeType: 'buy',
-                        orderId: '1234',
-                    }),
-                ).toBe('trezorsuite://trading?action=quote&tradeType=buy&orderId=1234');
             });
         });
     });
 
-    describe('production environment', () => {
-        let applyHtmlTemplate: ReturnType<typeof importModules>['applyHtmlTemplate'];
-        let buildTradingUrl: ReturnType<typeof importModules>['buildTradingUrl'];
+    describe('getSourceForForm', () => {
+        it('should return null when no form is provided', () => {
+            expect(getSourceForForm(undefined)).toBeNull();
+        });
 
-        beforeAll(() => {
-            mockIsProduction.mockReturnValue(true);
-            jest.isolateModules(() => {
-                ({ applyHtmlTemplate, buildTradingUrl } = importModules());
+        it('should return uri object for GET form', () => {
+            expect(
+                getSourceForForm({
+                    formMethod: 'GET',
+                    formAction: 'get_action',
+                    fields: {},
+                }),
+            ).toStrictEqual({
+                uri: 'get_action',
             });
         });
 
-        it('should use production back URL in applyHtmlTemplate', () => {
-            const html = applyHtmlTemplate('CONTENT_TO_EMBED');
-            expect(html).toContain('href="https://trezor.io/suite/deeplinks/trade/back"');
-        });
+        it('should return html object for POST form', () => {
+            const result = getSourceForForm(
+                {
+                    formMethod: 'POST',
+                    formAction: 'post_action',
+                    fields: { key: 'value' },
+                },
+                'custom_back_url',
+            );
 
-        it('should return correct url format with production base', () => {
+            expect(result).toHaveProperty('html');
+            expect(result?.html).toContain('post_action');
+            expect(result?.html).toContain('custom_back_url');
+        });
+    });
+    describe('buildTradingUrl', () => {
+        it('should return correct url format', () => {
             expect(
                 buildTradingUrl({
                     actionType: 'quote',
                     tradeType: 'buy',
                     orderId: '1234',
                 }),
-            ).toBe(
-                'https://trezor.io/suite/deeplinks/trade?action=quote&tradeType=buy&orderId=1234',
-            );
+            ).toBe('trezorsuite://trading?action=quote&tradeType=buy&orderId=1234');
         });
     });
 });

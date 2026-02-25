@@ -14200,7 +14200,6 @@ __metadata:
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/sentry": "workspace:*"
