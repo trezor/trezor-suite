@@ -9700,14 +9700,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox-codegen@npm:^0.10.4":
-  version: 0.10.5
-  resolution: "@sinclair/typebox-codegen@npm:0.10.5"
+"@sinclair/typebox-codegen@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "@sinclair/typebox-codegen@npm:0.11.1"
   dependencies:
     "@sinclair/typebox": "npm:^0.33.1"
     prettier: "npm:^2.8.7"
     typescript: "npm:^5.4.5"
-  checksum: 10/99d3a370735b42f875297bc707fdbb6925d4151a297963a62e6a1721dd2ffebd925ebda146fac646ee3b59351d29cf58f25fb287ecc9a940010e902744af2592
+  checksum: 10/8584fe2e1c4090df1e8abb81c0891b68f7411f76f0fda25cb06340eecbc4a116c896d9abe5e219ac94d9b1aed67c19f2a0c566a1b6987a91e370c5024b18c14e
   languageName: node
   linkType: hard
 
@@ -9718,17 +9718,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12, @sinclair/typebox@npm:^0.33.7":
+"@sinclair/typebox@npm:^0.33.1":
   version: 0.33.12
   resolution: "@sinclair/typebox@npm:0.33.12"
   checksum: 10/3b868a540480a914fb05e939fd875f1db9d078671038786394d8ac21f1cb12f2e5e25f0cc1092925f613821d0a959a14c8c8ad35a4064639822ce5f7b83ce380
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.34.0":
-  version: 0.34.33
-  resolution: "@sinclair/typebox@npm:0.34.33"
-  checksum: 10/7948758249860cb6d6d093bea5902ab2e8cfd5095f4882d5a709773f69e4678a6e8f2b384d3116c021c4ebc11727e033882b791d146691a7d388dd78f36e611d
+"@sinclair/typebox@npm:^0.34.0, @sinclair/typebox@npm:^0.34.48":
+  version: 0.34.48
+  resolution: "@sinclair/typebox@npm:0.34.48"
+  checksum: 10/186eebb338255db7cfd77c2f94be0ad91816c7b5ee994c3adb95e0474ae98b769574c2b6b1f26a81613d7148ed20b11e02528f4263d8d95e3ca8dcf8faaf5306
   languageName: node
   linkType: hard
 
@@ -15131,7 +15131,7 @@ __metadata:
   dependencies:
     "@codemirror/state": "npm:^6.4.1"
     "@hbsnow/rehype-sectionize": "npm:^1.0.7"
-    "@sinclair/typebox": "npm:^0.33.12"
+    "@sinclair/typebox": "npm:^0.34.48"
     "@trezor/components": "workspace:^"
     "@trezor/connect-common": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
@@ -15557,8 +15557,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
   dependencies:
-    "@sinclair/typebox": "npm:^0.33.7"
-    "@sinclair/typebox-codegen": "npm:^0.10.4"
+    "@sinclair/typebox": "npm:^0.34.48"
+    "@sinclair/typebox-codegen": "npm:^0.11.1"
     "@trezor/eslint": "workspace:*"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
