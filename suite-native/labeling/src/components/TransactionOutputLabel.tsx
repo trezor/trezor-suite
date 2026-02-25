@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { Text } from '@suite-native/atoms';
+import { Text, TextProps } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { selectIsLabellingAllowed } from '../selectors';
 
-type TransactionOutputLabelProps = {
+type TransactionOutputLabelProps = TextProps & {
     txId: string;
     outputIndex: string;
     deviceStaticSessionId: StaticSessionId;
@@ -16,6 +16,7 @@ export const TransactionOutputLabel = ({
     txId,
     outputIndex,
     deviceStaticSessionId,
+    ...textProps
 }: TransactionOutputLabelProps) => {
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
@@ -23,5 +24,13 @@ export const TransactionOutputLabel = ({
         selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
     );
 
-    return isLabellingAllowed ? <Text>{label}</Text> : null;
+    if (!isLabellingAllowed || !label) {
+        return null;
+    }
+
+    return (
+        <Text numberOfLines={1} {...textProps}>
+            {label}
+        </Text>
+    );
 };

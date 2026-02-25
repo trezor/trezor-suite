@@ -13416,6 +13416,7 @@ __metadata:
     "@shopify/flash-list": "npm:2.2.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/validators": "workspace:*"
