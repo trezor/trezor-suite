@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useRef } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
 
@@ -47,6 +47,22 @@ const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, Transl
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
 };
 
+const ENTRANCE_ANIMATION_SEQUENCE = ['drop', 'shake'] as const;
+
+const useAnimateEntranceOnce = () => {
+    const hasAnimatedRef = useRef(false);
+
+    return {
+        initial: hasAnimatedRef.current ? 'drop' : 'initial',
+        animate: hasAnimatedRef.current ? 'drop' : ENTRANCE_ANIMATION_SEQUENCE,
+        onAnimationComplete: hasAnimatedRef.current
+            ? undefined
+            : () => {
+                  hasAnimatedRef.current = true;
+              },
+    };
+};
+
 export const UpdateNotificationBanner = ({
     updateStatusDevice,
     updateStatusSuite,
@@ -54,6 +70,7 @@ export const UpdateNotificationBanner = ({
 }: UpdateNotificationBannerProps) => {
     const dispatch = useDispatch();
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
+    const entranceAnimation = useAnimateEntranceOnce();
 
     const translationHeader =
         updateStatusSuite !== 'up-to-date'
@@ -114,9 +131,10 @@ export const UpdateNotificationBanner = ({
         <ElevationContext baseElevation={0}>
             <motion.div
                 variants={variants}
-                initial="initial"
+                initial={entranceAnimation.initial}
                 exit="exit"
-                animate={['drop', 'shake']}
+                animate={entranceAnimation.animate}
+                onAnimationComplete={entranceAnimation.onAnimationComplete}
             >
                 <Card
                     onClick={handleOnClick}
