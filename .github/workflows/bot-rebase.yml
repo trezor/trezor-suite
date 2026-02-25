@@ -37,11 +37,11 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.trezor-bot-token.outputs.token }}
       - name: Auto rebase pull request
-        uses: cirrus-actions/rebase@1.8
-        with:
-          autosquash: true
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          INPUT_AUTOSQUASH: true
+        run: |
+          bash scripts/ci/bot-rebase.sh
       - name: Report failure
         if: ${{ failure() }}
         uses: actions/github-script@v6
