@@ -50,6 +50,7 @@ export { default as setBrightness } from './setBrightness';
 export { default as setBusy } from './setBusy';
 export { default as signMessage } from './signMessage';
 export { default as signTransaction } from './signTransaction';
+export { default as telemetryGet } from './telemetryGet';
 export { default as unlockPath } from './unlockPath';
 export { default as thpGetCredentials } from './thpGetCredentials';
 export { default as thpRemoveCredentials } from './thpRemoveCredentials';

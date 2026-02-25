@@ -363,5 +363,11 @@ export const config: Config = {
                 T2B1: '2.5.3',
             },
         },
+        {
+            capabilities: ['telemetry'],
+            methods: ['telemetryGet'],
+            min: { T1B1: '0', T2T1: '2.10.1', T2B1: '2.10.1', T3B1: '2.10.1', T3T1: '2.10.1' },
+            comment: ['Supported since 2.10.1'],
+        },
     ],
 };
