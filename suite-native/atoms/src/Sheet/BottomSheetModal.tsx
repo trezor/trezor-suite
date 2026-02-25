@@ -91,6 +91,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                 maxDynamicContentSize={maxDynamicContentSize}
                 backgroundStyle={applyStyle(backgroundStyle)}
                 backdropComponent={renderBackdrop}
+                keyboardBlurBehavior="restore"
                 handleComponent={() => (
                     <BottomSheetHeader
                         title={title}
