@@ -1,14 +1,18 @@
+import type { StorybookConfig } from '@storybook/react-webpack5';
+import { createRequire } from 'module';
 import { dirname, join } from 'path';
+
+const require = createRequire(import.meta.url);
 
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
  */
-function getAbsolutePath(value) {
+function getAbsolutePath(value: string): string {
     return dirname(require.resolve(join(value, 'package.json')));
 }
 
-module.exports = {
+const config: StorybookConfig = {
     stories: ['../src/**/*.stories.*'],
     logLevel: 'debug',
 
@@ -31,9 +35,9 @@ module.exports = {
         },
     },
 
-    webpackFinal: config => {
+    webpackFinal: webpackConfig => {
         // Add TypeScript support
-        config.module.rules.push({
+        webpackConfig.module!.rules!.push({
             test: /\.tsx?$/,
             use: [
                 {
@@ -50,25 +54,31 @@ module.exports = {
         });
 
         // Add polyfill for Node.js 'stream' module (required by jws)
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
+        webpackConfig.resolve!.fallback = {
+            ...webpackConfig.resolve!.fallback,
             stream: require.resolve('stream-browserify'),
         };
 
         // NOTE: remove the previous loaders from handling the svgs
-        const imageRule = config.module.rules.find(rule => rule?.['test']?.test('.svg'));
+        const imageRule = webpackConfig.module!.rules!.find(
+            (rule): rule is { test?: RegExp; exclude?: RegExp } =>
+                (rule as { test?: RegExp })?.test?.test('.svg') ?? false,
+        );
         if (imageRule) {
-            imageRule['exclude'] = /\.svg$/;
+            imageRule.exclude = /\.svg$/;
         }
 
         // Configure SVG files to match the main project's webpack config
-        config.module.rules.push({
+        webpackConfig.module!.rules!.push({
             test: /\.(gif|jpe?g|png|svg|webp)$/,
             type: 'asset/resource',
         });
 
-        return config;
+        return webpackConfig;
     },
 
     docs: {},
 };
+
+// eslint-disable-next-line import/no-default-export
+export default config;
