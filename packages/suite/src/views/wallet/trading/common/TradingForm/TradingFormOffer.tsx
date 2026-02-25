@@ -7,7 +7,7 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
     isCountrySubdivisionEmpty,
-    isSendingEvmNativeToken,
+    requiresTokenApproval,
     selectTradingComposedTransactionInfo,
     tradingExchangeActions,
     tradingSellActions,
@@ -138,13 +138,8 @@ export const TradingFormOffer = () => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const requiresTokenApproval =
-        isTradingExchangeContext(context) &&
-        quote &&
-        (quote as ExchangeTrade)?.isDex &&
-        context.getValues('sendCryptoSelect') &&
-        account.networkType === 'ethereum' &&
-        !isSendingEvmNativeToken(context.getValues('sendCryptoSelect')?.id);
+    const shouldShowApprovalStep =
+        isTradingExchangeContext(context) && quote && requiresTokenApproval(quote as ExchangeTrade);
 
     const isQuoteOutdated =
         isTradingExchangeContext(context) &&
@@ -165,7 +160,7 @@ export const TradingFormOffer = () => {
         const initConfirmTrade = async () => {
             if (
                 isTradingExchangeContext(context) &&
-                requiresTokenApproval &&
+                shouldShowApprovalStep &&
                 tradingReceiveAddress?.receiveAddress
             ) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
@@ -180,7 +175,7 @@ export const TradingFormOffer = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, requiresTokenApproval, tradingReceiveAddress?.receiveAddress]);
+    }, [quote, shouldShowApprovalStep, tradingReceiveAddress?.receiveAddress]);
 
     const onSelectQuote = async () => {
         if (!quote) {
@@ -253,7 +248,7 @@ export const TradingFormOffer = () => {
         areFeesLoading ||
         isFeeRequiredButMissingValue;
 
-    const isLoading = requiresTokenApproval
+    const isLoading = shouldShowApprovalStep
         ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
         : state.isFormLoading || isLoadingQuote;
 
@@ -349,7 +344,7 @@ export const TradingFormOffer = () => {
             ) : (
                 <>
                     {isTradingExchangeContext(context) &&
-                    requiresTokenApproval &&
+                    shouldShowApprovalStep &&
                     bestScoredQuote &&
                     !isLoading ? (
                         <TradingFormApproval />

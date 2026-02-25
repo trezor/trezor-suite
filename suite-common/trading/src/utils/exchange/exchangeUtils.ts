@@ -109,6 +109,34 @@ export const tokenSupportsIncreasingAllowance = (contractAddress?: string): bool
     return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
 };
 
+export type ApprovalStatus = 'approved' | 'needs_approval' | 'needs_increase' | 'not_needed' | null;
+
+export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
+    !!quote && !!quote.isDex && !!quote.send && !isSendingEvmNativeToken(quote.send);
+
+export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+    if (!candidateQuote) {
+        return null;
+    }
+
+    if (!requiresTokenApproval(candidateQuote)) {
+        return 'not_needed';
+    }
+
+    const isApprovalTxPreApproved =
+        candidateQuote.preapprovedStringAmount && candidateQuote.preapprovedStringAmount !== '0';
+
+    if (isApprovalTxPreApproved && candidateQuote.status === 'APPROVAL_REQ') {
+        return 'needs_increase';
+    }
+
+    if (isApprovalTxPreApproved) {
+        return 'approved';
+    }
+
+    return 'needs_approval';
+};
+
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -116,4 +144,6 @@ export const exchangeUtils = {
     getSuccessQuotesOrdered,
     getStatusMessage,
     tokenSupportsIncreasingAllowance,
+    requiresTokenApproval,
+    getApprovalStatus,
 };
