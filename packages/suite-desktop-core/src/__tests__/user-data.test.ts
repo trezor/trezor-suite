@@ -18,48 +18,57 @@ describe('user-data path traversal protection', () => {
         } as any;
     });
 
-    it('rejects traversal in save()', async () => {
+    it('rejects file path traversal in save()', async () => {
         const result = await save('/metadata', '../../../OtherApp/outside.txt', 'payload', 'utf-8');
 
         expect(result).toStrictEqual({
             success: false,
-            error: 'Path traversal attempt detected: "../../../OtherApp/outside.txt"',
+            error: 'Path traversal attempt detected, file: "../../../OtherApp/outside.txt"',
         });
     });
 
-    it('rejects traversal in read()', async () => {
+    it('rejects directory and file path traversal in save()', async () => {
+        const result = await save('../../metadata', '../outside.txt', 'payload', 'utf-8');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, directory: "../../metadata"',
+        });
+    });
+
+    it('rejects file path traversal in read()', async () => {
         const result = await read('/metadata', '../../outside.txt');
 
         expect(result).toStrictEqual({
             success: false,
-            error: 'Path traversal attempt detected: "../../outside.txt"',
+            error: 'Path traversal attempt detected, file: "../../outside.txt"',
         });
     });
 
-    it('rejects traversal in rename()', async () => {
+    it('rejects file path traversal in rename()', async () => {
         const result = await rename('/metadata', 'labels.json', '../outside.txt');
 
         expect(result).toStrictEqual({
             success: false,
-            error: 'Path traversal attempt detected: "../outside.txt"',
+            error: 'Path traversal attempt detected, file: "../outside.txt"',
         });
     });
 
-    it('rejects traversal in readDir()', async () => {
+    it('rejects directory path traversal in readDir()', async () => {
         const result = await readDir('../../OtherApp');
 
         expect(result).toStrictEqual({
             success: false,
-            error: 'Path traversal attempt detected: "../../OtherApp"',
+            error: 'Path traversal attempt detected, directory: "../../OtherApp"',
         });
     });
 
-    it('rejects traversal in open()', async () => {
+    it('rejects directory path traversal in open()', async () => {
         const result = await open('../../OtherApp');
 
         expect(result).toStrictEqual({
             success: false,
-            error: 'Path traversal attempt detected: "../../OtherApp"',
+            error: 'Path traversal attempt detected, directory: "../../OtherApp"',
         });
     });
 });
