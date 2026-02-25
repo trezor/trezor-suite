@@ -10,7 +10,6 @@ import {
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
-import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -45,7 +44,6 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
 
-
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
@@ -78,7 +76,6 @@ const rootReducer = combineReducers({
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFilters.reducer,
-    experimentalFeedback: experimentalFeedbackReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

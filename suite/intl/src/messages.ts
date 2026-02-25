@@ -6321,6 +6321,10 @@ export const messages = defineMessages({
         id: 'TR_FEEDBACK_CATEGORY_OTHER',
         defaultMessage: 'Other',
     },
+    TR_FEEDBACK_CATEGORY_EXPERIMENTAL: {
+        id: 'TR_FEEDBACK_CATEGORY_EXPERIMENTAL',
+        defaultMessage: 'Experimental',
+    },
     FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
         defaultMessage: 'Yes, I do.',

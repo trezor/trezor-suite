@@ -12,17 +12,17 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^2.11.2",
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/feedback": "workspace:*",
         "@suite/experimental": "workspace:*",
-        "@suite/intl": "workspace:^",
+        "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "^19.2.4",
+        "react": "19.1.0",
         "react-redux": "^9.2.0",
-        "styled-components": "^6.1.19"
+        "styled-components": "^6.3.9"
     },
     "devDependencies": {
-        "@types/react": "^19"
+        "@types/react": "19.1.6"
     }
 }

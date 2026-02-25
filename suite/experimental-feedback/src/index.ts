@@ -19,3 +19,5 @@ export {
 export { FEEDBACK_THRESHOLD } from './constants';
 
 export { FeedbackFormManager } from './components/FeedbackFormModalManager';
+
+export { initialState } from './experimentalFeedbackSlice';

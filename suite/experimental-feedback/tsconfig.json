@@ -3,9 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["."],
     "references": [
-        { "path": "../../packages/components" },
-        { "path": "../../packages/theme" },
+        { "path": "../../suite-common/feedback" },
         { "path": "../experimental" },
-        { "path": "../intl" }
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/theme" }
     ]
 }

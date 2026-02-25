@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
 import {
+    Box,
     Button,
     Card,
     Column,
@@ -15,14 +16,9 @@ import {
 const emojiIcon = '☺️';
 
 const EmojiIconContainer = styled.div<{ theme: SuiteThemeColors }>`
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 22px;
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    line-height: 32px;
+    text-align: center;
 `;
 
 type RateYourExperienceCardProps = {
@@ -41,7 +37,14 @@ export const RateYourExperienceCard = ({
     return (
         <Card fillType="default">
             <Column gap={12}>
-                <EmojiIconContainer>{emojiIcon}</EmojiIconContainer>
+                <Box
+                    backgroundColor="baseFillElementNeutralSoft"
+                    width={32}
+                    height={32}
+                    borderRadius={8}
+                >
+                    <EmojiIconContainer>{emojiIcon}</EmojiIconContainer>
+                </Box>
                 <Column gap={4}>
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation

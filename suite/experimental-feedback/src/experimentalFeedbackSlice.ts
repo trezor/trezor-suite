@@ -13,7 +13,7 @@ export type ExperimentalFeedbackRootState = {
     experimentalFeedback: ExperimentalFeedbackState;
 };
 
-const initialState: ExperimentalFeedbackState = {
+export const initialState: ExperimentalFeedbackState = {
     usageCounts: {},
     pendingFeedbackFeatures: [],
 };
@@ -22,6 +22,8 @@ export const experimentalFeedbackSlice = createSlice({
     name: 'experimentalFeedback',
     initialState,
     reducers: {
+        /** Increments usage count and queues the feedback modal once the threshold is reached.
+         * Counting stops at the threshold to avoid re-triggering the modal. */
         featureUsed: (state, { payload }: PayloadAction<ExperimentalFeature>) => {
             const currentCount = state.usageCounts[payload] ?? 0;
 
@@ -38,11 +40,17 @@ export const experimentalFeedbackSlice = createSlice({
                 }
             }
         },
+        /** Queues the feedback modal for a feature. Pass `isFeatureBeingDisabled: true` when the
+         * user turns the feature off — this resets the usage count so a fresh count starts if
+         * the feature is re-enabled later. This is the intended way to trigger feedback on
+         * toggle-off: a single dispatch both resets the count and opens the modal. */
         feedbackRequested: (
             state,
-            { payload }: PayloadAction<{ feature: ExperimentalFeature; isDisabled?: boolean }>,
+            {
+                payload,
+            }: PayloadAction<{ feature: ExperimentalFeature; isFeatureBeingDisabled?: boolean }>,
         ) => {
-            if (payload.isDisabled) {
+            if (payload.isFeatureBeingDisabled) {
                 delete state.usageCounts[payload.feature];
             }
             if (!state.pendingFeedbackFeatures.includes(payload.feature)) {

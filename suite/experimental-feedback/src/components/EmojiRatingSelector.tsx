@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Rating, ratingOptions } from '@suite-common/feedback';
-import { Row, useElevation } from '@trezor/components';
+import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const Item = styled.button<{ $selected?: boolean }>`
@@ -18,11 +18,11 @@ const Item = styled.button<{ $selected?: boolean }>`
     border: none;
 
     background: ${({ $selected, theme }) =>
-        $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
+        $selected ? theme.backgroundPrimaryDefault : theme.baseFillElementNeutralSoft};
 
     &:hover {
         background: ${({ $selected, theme }) =>
-            $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
+            $selected ? theme.backgroundPrimaryDefault : theme.baseFillElementNeutralSoft};
     }
 `;
 
@@ -42,23 +42,18 @@ export const EmojiRatingSelector = ({
     value,
     onChange,
     'data-testid': dataTestId,
-}: EmojiRatingSelectorProps) => {
-    const { elevation } = useElevation();
-
-    return (
-        <Row gap={spacings.xs} data-testid={dataTestId}>
-            {ratingOptions.map(({ id, emoji }) => (
-                <Item
-                    key={id}
-                    $selected={value === id}
-                    data-testid={`${dataTestId}/${id}`}
-                    onClick={() => onChange(id)}
-                    type="button"
-                    $elevation={elevation}
-                >
-                    {emoji}
-                </Item>
-            ))}
-        </Row>
-    );
-};
+}: EmojiRatingSelectorProps) => (
+    <Row gap={spacings.xs} data-testid={dataTestId}>
+        {ratingOptions.map(({ id, emoji }) => (
+            <Item
+                key={id}
+                $selected={value === id}
+                data-testid={`${dataTestId}/${id}`}
+                onClick={() => onChange(id)}
+                type="button"
+            >
+                {emoji}
+            </Item>
+        ))}
+    </Row>
+);

@@ -1,4 +1,2 @@
-/*
-  Representing the threshold for tracking feature usage in the experimental feedback system.
-*/
+/** Number of feature uses after which the feedback modal is automatically triggered. */
 export const FEEDBACK_THRESHOLD = 3;

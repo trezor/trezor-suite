@@ -1,3 +1,4 @@
+import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
 import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
@@ -115,4 +116,5 @@ export const initialAppState: AppState = {
         search: '',
         networkSymbol: undefined,
     },
+    experimentalFeedback: experimentalFeedbackInitialState,
 };

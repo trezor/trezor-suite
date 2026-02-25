@@ -143,6 +143,9 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/experimental" },
         {
+            "path": "../../suite/experimental-feedback"
+        },
+        {
             "path": "../../suite/idb-migration-utils"
         },
         { "path": "../../suite/intl" },
