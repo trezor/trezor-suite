@@ -25,6 +25,9 @@ export const filterUtxos = (
 ): boolean => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
     const accountOutputLabels = outputLabels?.get(utxo.txid);
+
+    // Todo: This `utxo.vout` is bad nad will not work for SuiteSync & Tokens
+    //       The `TxTargetId` type shall be constructed and used instead of `vout` number
     const outputLabel = accountOutputLabels?.get(String(utxo.vout));
 
     return (

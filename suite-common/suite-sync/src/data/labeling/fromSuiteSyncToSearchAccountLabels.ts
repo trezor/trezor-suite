@@ -19,7 +19,7 @@ export const fromSuiteSyncToSearchOutputLabels = (
         return acc;
     }, new Map());
 
-const fromSuiteSyncToSearchAddressLabels = (
+export const fromSuiteSyncToSearchAddressLabels = (
     addressLabels: SuiteSyncAddress[] = [],
 ): Map<string, string> =>
     new Map(

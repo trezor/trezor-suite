@@ -3,10 +3,6 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
-import {
-    fromLegacyMetadataToSearchAccountLabels,
-    selectLabelingDataForAccount,
-} from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -16,6 +12,7 @@ import { arrayPartition } from '@trezor/utils';
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 
@@ -57,18 +54,13 @@ export const TransactionList = ({
 }: TransactionListProps) => {
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
-    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
+    const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
-
-    const searchLabels = useMemo(
-        () => fromLegacyMetadataToSearchAccountLabels(accountMetadata),
-        [accountMetadata],
-    );
 
     const sectionRef = useRef<HTMLDivElement>(null);
 

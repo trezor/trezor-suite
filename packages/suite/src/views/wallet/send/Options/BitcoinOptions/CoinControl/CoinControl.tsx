@@ -3,10 +3,6 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import {
-    fromLegacyMetadataToSearchOutputLabels,
-    selectLabelingDataForSelectedAccount,
-} from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -32,6 +28,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
@@ -50,11 +47,6 @@ type CoinControlProps = {
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-    const { outputLabels: legacyOutputLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const outputLabels = fromLegacyMetadataToSearchOutputLabels(legacyOutputLabels);
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const dispatch = useDispatch();
-
     const {
         account,
         formState: { errors },
@@ -74,6 +66,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             toggleCoinControl,
         },
     } = useSendFormContext();
+    const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const dispatch = useDispatch();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 

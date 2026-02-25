@@ -34,6 +34,9 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
