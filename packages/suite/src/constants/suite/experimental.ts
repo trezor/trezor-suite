@@ -7,19 +7,12 @@ import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '
 
 import { SuiteServices } from '../../support/extraDependencies';
 
+export type { ExperimentalFeature } from '@suite/experimental';
+
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
 );
 const experimentalNetworkNames = experimentalNetworks.map(network => network.name);
-
-export type ExperimentalFeature =
-    | 'password-manager'
-    | 'tor-external'
-    | 'testnet-networks'
-    | 'nft-section'
-    | 'slip24'
-    | 'experimental-networks'
-    | 'suite-sync';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
