@@ -5,22 +5,20 @@ import {
 } from '@solana/kit';
 
 import {
-    SOL_COMPUTE_UNIT_LIMIT,
-    SOL_COMPUTE_UNIT_PRICE,
-    WALLET_SDK_SOURCE,
-} from '@suite-common/wallet-constants';
-import {
     PrepareClaimSolTxParams,
     PrepareStakeSolTxParams,
     PrepareStakeSolTxResponse,
     PriorityFees,
-} from '@suite-common/wallet-types';
-// TODO: fix this (Important: beware of depcheck ignore in this package in `.depcheckrc.json` - there is a circular dependency that needs to be solved)
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils/src/amountUtils';
+    SolanaTx,
+} from '@suite-common/staking-solana-types';
+import {
+    SOL_COMPUTE_UNIT_LIMIT,
+    SOL_COMPUTE_UNIT_PRICE,
+    WALLET_SDK_SOURCE,
+} from '@suite-common/wallet-constants';
+import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
-import { SolanaTx } from '../types';
 import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 
 export const transformTx = (

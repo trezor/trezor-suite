@@ -1,8 +1,7 @@
-import { SolanaTx, SolanaTxMeta } from '@suite-common/staking-solana';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Blockchain } from '@suite-common/wallet-types';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
-
-import { Blockchain } from './backend';
+import type { SolanaSignTransaction } from '@trezor/connect';
 
 export const supportedSolanaNetworkSymbols = ['sol', 'dsol'] as const;
 
@@ -11,6 +10,23 @@ export type SupportedSolanaNetworkSymbols = (typeof supportedSolanaNetworkSymbol
 export type PriorityFees = {
     computeUnitPrice: bigint;
     computeUnitLimit: number;
+};
+
+export type TransactionShim = {
+    addSignature(signerPubKey: string, signatureHex: string): void;
+    serializeMessage(): string;
+    serialize(): string;
+};
+
+export type SolanaTxMeta = {
+    deviceAmountLamports: string;
+    feeLamports: string;
+    rentLamports: string;
+    feeIncludingRentLamports: string;
+};
+
+export type SolanaTx = SolanaSignTransaction & {
+    txShim: TransactionShim;
 };
 
 export interface PrepareStakeSolTxParams {

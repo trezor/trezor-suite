@@ -5,6 +5,7 @@ import {
     calculate,
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
+import { EstimatedFee } from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -19,7 +20,6 @@ import {
     CardanoAction,
     CardanoPoolInfo,
     ComposeActionContext,
-    EstimatedFee,
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,

@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../metadata-types" },
-        { "path": "../staking-solana" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../../suite/intl" },

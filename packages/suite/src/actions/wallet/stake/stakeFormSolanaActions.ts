@@ -8,11 +8,15 @@ import {
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import {
-    SolanaTxMeta,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
 } from '@suite-common/staking-solana';
+import {
+    EstimatedFee,
+    PrepareStakeSolTxResponse,
+    SolanaTxMeta,
+} from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -26,12 +30,10 @@ import {
     AddressDisplayOptions,
     BlockchainNetworks,
     ComposeActionContext,
-    EstimatedFee,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
-    PrepareStakeSolTxResponse,
     SelectedAccountStatus,
     StakeFormState,
 } from '@suite-common/wallet-types';

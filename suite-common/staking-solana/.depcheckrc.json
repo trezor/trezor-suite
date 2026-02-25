@@ -1,8 +1,0 @@
-{
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": [
-        "// Todo: This need so be solved, the types are badly structured. See: https://github.com/trezor/trezor-suite/issues/21550",
-        "@suite-common/wallet-types",
-        "@suite-common/wallet-utils"
-    ]
-}

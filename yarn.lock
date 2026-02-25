@@ -11228,6 +11228,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/staking-solana-types@workspace:*, @suite-common/staking-solana-types@workspace:suite-common/staking-solana-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/staking-solana-types@workspace:suite-common/staking-solana-types"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/staking-solana@workspace:*, @suite-common/staking-solana@workspace:suite-common/staking-solana":
   version: 0.0.0-use.local
   resolution: "@suite-common/staking-solana@workspace:suite-common/staking-solana"
@@ -11236,12 +11247,13 @@ __metadata:
     "@solana-program/stake": "npm:^0.2.1"
     "@solana-program/system": "npm:^0.7.0"
     "@solana/kit": "npm:^2.3.0"
+    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11253,6 +11265,7 @@ __metadata:
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
     "@everstake/wallet-sdk-ethereum": "npm:1.0.5"
+    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11645,6 +11658,7 @@ __metadata:
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
+    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11678,7 +11692,6 @@ __metadata:
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
     "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/staking-solana": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -11696,6 +11709,7 @@ __metadata:
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -15900,6 +15914,7 @@ __metadata:
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/staking-solana": "workspace:*"
+    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
