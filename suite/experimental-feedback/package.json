@@ -1,0 +1,28 @@
+{
+    "name": "@suite/experimental-feedback",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^2.11.2",
+        "@suite-common/feedback": "workspace:*",
+        "@suite/experimental": "workspace:*",
+        "@suite/intl": "workspace:^",
+        "@trezor/components": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "^19.2.4",
+        "react-redux": "^9.2.0",
+        "styled-components": "^6.1.19"
+    },
+    "devDependencies": {
+        "@types/react": "^19"
+    }
+}
