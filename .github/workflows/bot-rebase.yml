@@ -3,6 +3,8 @@ name: "[Bot] rebase pull request"
 on:
   issue_comment:
     types: [created]
+  pull_request:
+    types: [opened, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -12,7 +14,7 @@ jobs:
   rebase-pr:
     name: Rebase pull request
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase') && github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Respond in pull request
         uses: actions/github-script@v6
