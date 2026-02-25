@@ -3,19 +3,17 @@ import fs from 'fs';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Success, Unsuccessful } from '@trezor/connect';
 import { InvokeResult } from '@trezor/suite-desktop-api';
+import type { Result } from '@trezor/type-utils';
 
-const resolveDirectoryInUserDataDir = (
-    directory: string,
-): Success<{ dir: string }> | Unsuccessful => {
+const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string }, string> => {
     const userDataDir = path.resolve(app.getPath('userData'));
     const dir = path.resolve(path.join(userDataDir, directory));
 
     if (!dir.startsWith(userDataDir + path.sep)) {
         return {
             success: false,
-            payload: { error: `Path traversal attempt detected, directory: "${directory}"` },
+            error: `Path traversal attempt detected, directory: "${directory}"`,
         };
     }
 
@@ -25,7 +23,7 @@ const resolveDirectoryInUserDataDir = (
 const resolvePathInUserDataDir = (
     directory: string,
     filename: string,
-): Success<{ dir: string; file: string }> | Unsuccessful => {
+): Result<{ dir: string; file: string }, string> => {
     const dirResult = resolveDirectoryInUserDataDir(directory);
     if (!dirResult.success) {
         return dirResult;
@@ -36,7 +34,7 @@ const resolvePathInUserDataDir = (
     if (!file.startsWith(dir + path.sep)) {
         return {
             success: false,
-            payload: { error: `Path traversal attempt detected, file: "${filename}"` },
+            error: `Path traversal attempt detected, file: "${filename}"`,
         };
     }
 
@@ -80,7 +78,7 @@ export const save: {
 } = async (directory, name, content, encoding) => {
     const resolvedPathResult = resolvePathInUserDataDir(directory, name);
     if (!resolvedPathResult.success) {
-        return { success: false, ...resolvedPathResult.payload };
+        return { success: false, error: resolvedPathResult.error };
     }
     const { dir, file } = resolvedPathResult.payload;
 
@@ -111,7 +109,7 @@ export const save: {
 export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
     const resolvedPathResult = resolvePathInUserDataDir(directory, name);
     if (!resolvedPathResult.success) {
-        return { success: false, ...resolvedPathResult.payload };
+        return { success: false, error: resolvedPathResult.error };
     }
     const { file } = resolvedPathResult.payload;
 
@@ -135,7 +133,7 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
     const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
     if (!resolvedDirResult.success) {
-        return { success: false, ...resolvedDirResult.payload };
+        return { success: false, error: resolvedDirResult.error };
     }
     const { dir } = resolvedDirResult.payload;
 
@@ -166,13 +164,13 @@ export const rename = async (
 ): Promise<InvokeResult> => {
     const resolvedFromResult = resolvePathInUserDataDir(directory, from);
     if (!resolvedFromResult.success) {
-        return { success: false, ...resolvedFromResult.payload };
+        return { success: false, error: resolvedFromResult.error };
     }
     const { file: fromPath } = resolvedFromResult.payload;
 
     const resolvedToResult = resolvePathInUserDataDir(directory, to);
     if (!resolvedToResult.success) {
-        return { success: false, ...resolvedToResult.payload };
+        return { success: false, error: resolvedToResult.error };
     }
     const { file: toPath } = resolvedToResult.payload;
 
@@ -208,7 +206,7 @@ export const getInfo = () => ({
 export const open = async (directory: string): Promise<InvokeResult> => {
     const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
     if (!resolvedDirResult.success) {
-        return { success: false, ...resolvedDirResult.payload };
+        return { success: false, error: resolvedDirResult.error };
     }
     const { dir } = resolvedDirResult.payload;
 
