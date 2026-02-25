@@ -1,10 +1,5 @@
 import { ComponentProps, PropsWithChildren } from 'react';
-import Animated, {
-    SlideInDown,
-    SlideOutDown,
-    useAnimatedStyle,
-    withTiming,
-} from 'react-native-reanimated';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { Button } from '@suite-native/atoms';
 
@@ -19,22 +14,15 @@ export const FormSubmitButton = ({
     children,
     ...restProps
 }: FormSubmitButtonProps) => {
-    const animatedButtonContainerStyle = useAnimatedStyle(
-        () => ({
-            height: withTiming(isVisible ? 50 : 0),
-        }),
-        [isVisible],
-    );
+    if (!isVisible) {
+        return null;
+    }
 
     return (
-        <Animated.View style={animatedButtonContainerStyle}>
-            {isVisible && (
-                <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-                    <Button onPress={onPress} {...restProps}>
-                        {children}
-                    </Button>
-                </Animated.View>
-            )}
+        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+            <Button onPress={onPress} {...restProps}>
+                {children}
+            </Button>
         </Animated.View>
     );
 };
