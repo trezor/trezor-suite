@@ -20,7 +20,7 @@ export const fromLegacyMetadataToSearchOutputLabels = (
 export const fromLegacyMetadataToSearchAccountLabels = (
     legacyLabels: AccountLabels,
 ): SearchAccountLabels => ({
-    accountLabel: legacyLabels.accountLabel,
+    accountLabel: legacyLabels.accountLabel ?? null,
     outputLabels: fromLegacyMetadataToSearchOutputLabels(legacyLabels.outputLabels),
     addressLabels: new Map(typedObjectEntries(legacyLabels.addressLabels ?? {})),
 });
