@@ -140,7 +140,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 const device = account
                     ? findAccountDevice(account, selectDevices(api.getState()))
                     : undefined;
-                if (account && isDeviceRemembered(device)) {
+                if (account && getIsDeviceRemembered(device)) {
                     api.dispatch(storageActions.saveAccountTransactions(account));
                 }
             }

@@ -1,58 +1,60 @@
 import {
-    getIsDustValuePhishingFixtures,
-    getIsFakeTokenPhishingFixtures,
-    getIsPhishingTransactionFixtures,
-    getIsUnknownTxPhishingFixtures,
-    getIsZeroValuePhishingFixtures,
+    isDustValuePhishingFixtures,
+    isFakeTokenPhishingFixtures,
+    isPhishingTransactionFixtures,
+    isUnknownTxPhishingFixtures,
+    isZeroValuePhishingFixtures,
 } from '../__fixtures__/antiFraud';
 import {
-    getIsDustValuePhishing,
-    getIsFakeTokenPhishing,
-    getIsPhishingTransaction,
-    getIsUnknownTxPhishing,
-    getIsZeroValuePhishing,
+    isDustValuePhishing,
+    isFakeTokenPhishing,
+    isPhishingTransaction,
+    isUnknownTxPhishing,
+    isZeroValuePhishing,
 } from '../antiFraud';
 
-describe('getIsDustValuePhishing', () => {
-    getIsDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
+describe('isDustValuePhishing', () => {
+    isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(getIsDustValuePhishing({ transaction })).toBe(result);
+            expect(isDustValuePhishing({ transaction })).toBe(result);
         });
     });
 });
 
-describe('getIsZeroValuePhishing', () => {
-    getIsZeroValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
+describe('isZeroValuePhishing', () => {
+    isZeroValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(getIsZeroValuePhishing({ transaction })).toBe(result);
+            expect(isZeroValuePhishing({ transaction })).toBe(result);
         });
     });
 });
 
-describe('getIsFakeTokenPhishing', () => {
-    getIsFakeTokenPhishingFixtures.forEach(
-        ({ testName, transaction, tokenDefinitions, result }) => {
-            test(testName, () => {
-                expect(getIsFakeTokenPhishing({ transaction, tokenDefinitions })).toBe(result);
-            });
-        },
-    );
-});
-
-describe('getIsUnknownTxPhishing', () => {
-    getIsUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
+describe('isFakeTokenPhishing', () => {
+    isFakeTokenPhishingFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
         test(testName, () => {
-            expect(getIsUnknownTxPhishing({ transaction })).toBe(result);
+            expect(isFakeTokenPhishing({ transaction, tokenDefinitions })).toBe(result);
         });
     });
 });
 
-describe('getIsPhishingTransaction', () => {
-    getIsPhishingTransactionFixtures.forEach(
-        ({ testName, transaction, tokenDefinitions, result }) => {
-            test(testName, () => {
-                expect(getIsPhishingTransaction(transaction, tokenDefinitions)).toBe(result);
-            });
-        },
-    );
+describe('isUnknownTxPhishing', () => {
+    isUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
+        test(testName, () => {
+            expect(isUnknownTxPhishing({ transaction })).toBe(result);
+        });
+    });
+});
+
+describe('isPhishingTransaction', () => {
+    isPhishingTransactionFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
+        test(testName, () => {
+            expect(
+                isPhishingTransaction({
+                    transaction,
+                    tokenDefinitions,
+                    txsMarkedAsNotScam: [],
+                }),
+            ).toBe(result);
+        });
+    });
 });
