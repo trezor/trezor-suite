@@ -1,7 +1,7 @@
+import { SupportedSolanaNetworkSymbols } from '@suite-common/staking-solana-types';
 import {
     SupportedCardanoNetworkSymbols,
     SupportedEthereumNetworkSymbol,
-    SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 
 import { VotingDelegationOption } from './stakeActions';

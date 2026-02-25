@@ -13,7 +13,6 @@ export * from './transactionReviewOutput';
 export * from './ethereumStaking';
 export * from './stakeForm';
 export * from './send';
-export * from './solanaStaking';
 export * from './wallet';
 export * from './globalSendReceive';
 export * from './baseCurrency';

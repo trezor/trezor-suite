@@ -44,6 +44,7 @@ import {
     getTransferSolInstruction,
 } from '@solana-program/system';
 
+import { SolanaTxMeta } from '@suite-common/staking-solana-types';
 import {
     SOL_BASE_FEE,
     SOL_COMPUTE_UNIT_LIMIT,
@@ -75,7 +76,6 @@ import {
     Connection,
     Delegations,
     Params,
-    SolanaTxMeta,
     StakeParams,
     StakeResponse,
     UnstakeResponse,

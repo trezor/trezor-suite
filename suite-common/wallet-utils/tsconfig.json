@@ -4,6 +4,7 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../fiat-services" },
+        { "path": "../staking-solana-types" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

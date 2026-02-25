@@ -73,6 +73,9 @@
             "path": "../../suite-common/staking-solana"
         },
         {
+            "path": "../../suite-common/staking-solana-types"
+        },
+        {
             "path": "../../suite-common/suite-config"
         },
         {

@@ -1,7 +1,7 @@
+import { EstimatedFee } from '@suite-common/staking-solana-types';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ComposeActionContext,
-    EstimatedFee,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
