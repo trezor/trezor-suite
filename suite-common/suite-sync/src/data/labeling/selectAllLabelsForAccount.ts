@@ -1,3 +1,4 @@
+import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 
@@ -12,10 +13,16 @@ type SelectAllLabelsForAccountParams = {
     networkSymbol: NetworkSymbol;
 };
 
+export type AllLabelsForAccount = {
+    accountLabel: string | null;
+    addressLabels: SuiteSyncAddress[];
+    outputLabels: SuiteSyncOutput[];
+};
+
 export const selectAllLabelsForAccount = (
     state: SuiteSyncDataRootState,
     { walletDescriptor, accountDescriptor, networkSymbol }: SelectAllLabelsForAccountParams,
-) => ({
+): AllLabelsForAccount => ({
     accountLabel: selectSuiteSyncAccountLabel(
         state,
         walletDescriptor,

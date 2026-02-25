@@ -53,6 +53,10 @@ export {
 export { selectAllLabelsForAccount } from './data/labeling/selectAllLabelsForAccount';
 export { suiteSyncToBip329 } from './data/labeling/suiteSyncToBip329';
 export {
+    fromSuiteSyncToSearchAccountLabels,
+    fromSuiteSyncToSearchOutputLabels,
+} from './data/labeling/fromSuiteSyncToSearchAccountLabels';
+export {
     isSuiteSyncSupportedByDevice,
     isFwUpgradeNeededForSuiteSync,
     getIsSuiteSyncLabelingActionEnabled,

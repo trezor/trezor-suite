@@ -11,7 +11,7 @@ export type SearchAccountOutputLabels = Map<TxTargetId, string>;
 export type SearchOutputLabels = Map<TxId, SearchAccountOutputLabels>;
 
 export interface SearchAccountLabels {
-    accountLabel?: string;
+    accountLabel: string | null;
     outputLabels: SearchOutputLabels;
     addressLabels: Map<Address, string>;
 }
