@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     exchangeThunks,
+    getApprovalStatus,
     parseCryptoId,
     selectTradingExchangeIsLoading,
     selectTradingMaxSlippagePercentage,
@@ -26,7 +27,6 @@ import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearExchangeFormQuoteData } from './useExchangeForm';
-import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

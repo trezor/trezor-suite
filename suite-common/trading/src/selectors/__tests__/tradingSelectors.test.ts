@@ -585,6 +585,24 @@ describe('tradingSelectors', () => {
         );
     });
 
+    it('selectTradingExchangeQuotes should return correct data', () => {
+        expect(selectTradingExchangeQuotes(state)).toBe(state.wallet.trading.exchange.quotes);
+    });
+
+    it('selectTradingExchangeDexQuoteApprovalPrefetchLoading should return correct data', () => {
+        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state)).toBe(
+            !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        );
+    });
+
+    it('selectTradingExchangeDexQuoteApprovalPrefetchLoading should return correct data by quoteId', () => {
+        state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId = 'quoteId1';
+
+        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state, 'quoteId1')).toBe(true);
+        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state, 'quoteId2')).toBe(false);
+        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state, undefined)).toBe(true);
+    });
+
     it('selectTradingSellQuotesRequest should return correct data', () => {
         expect(selectTradingSellQuotesRequest(state)).toBe(state.wallet.trading.sell.quotesRequest);
     });
