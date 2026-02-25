@@ -197,7 +197,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     return {
         ...config,
         name,
-        scheme: buildType === 'production' ? undefined : 'trezorsuite',
+        scheme: 'trezorsuite',
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
