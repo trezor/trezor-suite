@@ -5,7 +5,7 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
