@@ -12,13 +12,14 @@ export const NoPassphraseButton = () => {
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleSubmitOnDevice = () => {
+        if (!device) return;
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
             payload: {
                 value: '',
                 passphraseOnDevice: false,
             },
-            device: { path: device?.path },
+            device: { path: device.path },
         });
         navigateToInitialScreen();
     };

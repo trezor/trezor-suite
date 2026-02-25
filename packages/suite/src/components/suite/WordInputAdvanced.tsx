@@ -28,14 +28,15 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
 
     const onSubmit = useCallback(
         async (value: string) => {
+            if (!device) return;
             await resolveAfter(600);
             TrezorConnect.uiResponse({
                 type: UI.RECEIVE_WORD,
                 payload: value,
-                device: { path: device?.path },
+                device: { path: device.path },
             });
         },
-        [device?.path],
+        [device],
     );
 
     const backspace = useCallback(() => {

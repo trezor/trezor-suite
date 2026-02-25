@@ -90,7 +90,13 @@ export type UiResponseEvent =
     | UiResponseFee
     | UiResponseFirmwares;
 
-export type UiResponseEventWithDevice = UiResponseEvent & { device: DeviceIdentity };
+export type UiResponseDevice = Required<Pick<DeviceIdentity, 'path'>> &
+    Omit<DeviceIdentity, 'path'>;
+
+// Device-specific UI responses require a device path
+export type UiResponseEventWithDevice =
+    | (Exclude<UiResponseEvent, UiResponseFirmwares> & { device: UiResponseDevice })
+    | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEventWithDevice & { event: typeof UI_EVENT };
 

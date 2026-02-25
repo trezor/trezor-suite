@@ -11,23 +11,23 @@ const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>
         showOnTrezor,
     });
 
-const passphraseHandler = (value: string) => () => {
+const passphraseHandler = (value: string) => (event: any) => {
     TrezorConnect.uiResponse({
         type: 'ui-receive_passphrase',
         payload: {
             passphraseOnDevice: false,
             value,
         },
-        device: {},
+        device: { path: event.payload.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_passphrase');
 };
 
-const addressHandler = () => () => {
+const addressHandler = () => (event: any) => {
     TrezorConnect.uiResponse({
         type: 'ui-receive_confirmation',
         payload: true,
-        device: {},
+        device: { path: event.payload.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_confirmation');
 };

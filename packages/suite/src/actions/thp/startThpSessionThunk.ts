@@ -8,10 +8,11 @@ export const startThpSessionThunk = createThunk<void, void, void>(
     `${THP_PREFIX}/startThpSessionThunk`,
     (_, { getState }) => {
         const device = selectSelectedDevice(getState() as any);
+        if (!device) return;
         TrezorConnect.uiResponse({
             type: 'ui-receive_confirmation',
             payload: true,
-            device: { path: device?.path },
+            device: { path: device.path },
         });
     },
 );

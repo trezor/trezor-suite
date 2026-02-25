@@ -147,7 +147,6 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_FIRMWARE,
             payload: event,
-            device: {},
         });
     });
 

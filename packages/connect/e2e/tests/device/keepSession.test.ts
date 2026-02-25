@@ -21,11 +21,11 @@ describe('keepSession common param', () => {
     });
 
     conditionalTest(['1', '<2.3.2'], 'keepSession with changing useCardanoDerivation', async () => {
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.on('ui-request_passphrase', event => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: { value: 'a' },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
 

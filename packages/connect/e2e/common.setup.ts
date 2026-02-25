@@ -179,11 +179,11 @@ export const initTrezorConnect = async (
         console.log('Transport started: ', event.version);
     });
 
-    TrezorConnect.on(UI.REQUEST_CONFIRMATION, () => {
+    TrezorConnect.on(UI.REQUEST_CONFIRMATION, event => {
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
             payload: true,
-            device: {},
+            device: { path: event.payload.device.path },
         });
     });
 

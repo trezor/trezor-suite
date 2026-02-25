@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ButtonRequest } from '@suite-common/suite-types';
-import TrezorConnect, { DeviceIdentity, UI } from '@trezor/connect';
+import TrezorConnect, { UI, UiResponseDevice } from '@trezor/connect';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];
 const NEW_WIPE_CODE_REQUEST_TYPES = [
@@ -9,7 +9,7 @@ const NEW_WIPE_CODE_REQUEST_TYPES = [
     'PinMatrixRequestType_WipeCodeSecond',
 ];
 
-export const usePin = (buttonRequests: ButtonRequest[], device: DeviceIdentity) => {
+export const usePin = (buttonRequests: ButtonRequest[], device: UiResponseDevice) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 

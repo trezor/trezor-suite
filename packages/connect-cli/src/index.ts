@@ -1,7 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import TrezorConnect, { Device, ThpPairingMethod, UiRequestThpPairing } from '@trezor/connect';
+import TrezorConnect, {
+    Device,
+    DeviceUniquePath,
+    ThpPairingMethod,
+    UiRequestThpPairing,
+} from '@trezor/connect';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
@@ -122,6 +127,7 @@ const run = async () => {
     }
 
     let testIsRunning = false;
+    let lastDevicePath: DeviceUniquePath | undefined;
 
     console.log('Running @trezor/connect CLI with args', args);
 
@@ -132,6 +138,7 @@ const run = async () => {
             }
 
             const device = event.payload;
+            lastDevicePath = device.path;
             if (device.features && device.mode === 'initialize') {
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 await TrezorConnect.loadDevice({
@@ -179,10 +186,12 @@ const run = async () => {
         console.warn('UI_EVENT', event.type);
 
         if (event.type === 'ui-request_confirmation') {
+            if (!lastDevicePath) return;
+
             return TrezorConnect.uiResponse({
                 type: 'ui-receive_confirmation',
                 payload: true,
-                device: {},
+                device: { path: lastDevicePath },
             });
         }
 

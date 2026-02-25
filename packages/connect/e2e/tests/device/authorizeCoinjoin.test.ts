@@ -205,14 +205,14 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             },
         });
 
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.on('ui-request_passphrase', event => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: {
                     passphraseOnDevice: false,
                     value: 'a',
                 },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
         const walletA = await TrezorConnect.getDeviceState({

@@ -4,6 +4,7 @@ import {
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
+    DeviceUniquePath,
     TRANSPORT,
     TRANSPORT_EVENT,
     ThpPairingMethod,
@@ -144,43 +145,45 @@ export const events = (api: TrezorConnect) => {
 
         if (event.type === 'ui-request_thp_pairing') {
             if (event.payload.device.thp?.properties?.pairing_methods[0] === 'CodeEntry') {
+                const devicePath = {} as DeviceUniquePath;
+
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { selectedMethod: ThpPairingMethod.NFC },
-                    device: {},
+                    device: { path: devicePath },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { selectedMethod: 'SkipPairing' },
-                    device: {},
+                    device: { path: devicePath },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     // @ts-expect-error invalid string
                     payload: { selectedMethod: 'unknown method' },
-                    device: {},
+                    device: { path: devicePath },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     // @ts-expect-error invalid enum
                     payload: { selectedMethod: 7 },
-                    device: {},
+                    device: { path: devicePath },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { tag: '0000' },
-                    device: {},
+                    device: { path: devicePath },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     // @ts-expect-error invalid tag
                     payload: { tag: 1234 },
-                    device: {},
+                    device: { path: devicePath },
                 });
             }
         }

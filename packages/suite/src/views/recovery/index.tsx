@@ -41,7 +41,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
     const intl = useIntl();
     const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], {
-        path: device?.path,
+        path: device!.path,
     });
 
     const deviceModelInternal = device?.features?.internal_model;

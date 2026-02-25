@@ -35,14 +35,15 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
     const device = useSelector(selectSelectedDevice);
 
     const handleContinueAnyway = useCallback(() => {
+        if (!device) return;
         // When Trezor has no backup, it awaits confirmation to continue.
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
             payload: true,
-            device: { path: device?.path },
+            device: { path: device.path },
         });
         onConfirm?.();
-    }, [onConfirm, device?.path]);
+    }, [onConfirm, device]);
 
     const handleCreateBackup = useCallback(() => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {

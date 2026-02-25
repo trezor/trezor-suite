@@ -92,10 +92,11 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [handleInvalidPin]);
 
     const onSubmit = handleSubmit(values => {
+        if (!selectedDevice) return;
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PIN,
             payload: values.pin,
-            device: { path: selectedDevice?.path },
+            device: { path: selectedDevice.path },
         });
     });
 

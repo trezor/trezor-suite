@@ -27,6 +27,7 @@ export const ConfirmPassphraseBeforeAction = () => {
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
+            if (!device) return;
             TrezorConnect.uiResponse({
                 type: UI.RECEIVE_PASSPHRASE,
                 payload: {
@@ -34,10 +35,10 @@ export const ConfirmPassphraseBeforeAction = () => {
                     save: true,
                     passphraseOnDevice: !!passphraseOnDevice,
                 },
-                device: { path: device?.path },
+                device: { path: device.path },
             });
         },
-        [device?.path],
+        [device],
     );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);

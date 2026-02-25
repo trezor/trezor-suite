@@ -29,11 +29,12 @@ export const WordInput = memo(() => {
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }
             onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
+                if (!device) return;
                 await resolveAfter(600);
                 TrezorConnect.uiResponse({
                     type: UI.RECEIVE_WORD,
                     payload: item.value,
-                    device: { path: device?.path },
+                    device: { path: device.path },
                 });
                 ref?.clearValue();
             }}

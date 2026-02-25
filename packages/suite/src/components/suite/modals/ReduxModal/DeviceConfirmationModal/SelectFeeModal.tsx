@@ -81,7 +81,6 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const deviceIdentity = { path: selectedDevice?.path };
 
     const fees = useMemo(() => data?.feeLevels ?? [], [data]);
     const minFee = data.coinInfo.minFeeSatoshiKb / 1000;
@@ -127,6 +126,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     } = methods;
 
     const onSend = handleSubmit(data => {
+        if (!selectedDevice) return;
         const { selectedFee, feePerUnit } = data;
         if (selectedFee === 'custom') {
             dispatch(
@@ -135,7 +135,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                         type: 'compose-custom',
                         value: feePerUnit,
                     },
-                    deviceIdentity,
+                    { path: selectedDevice.path },
                 ),
             );
         }
@@ -145,22 +145,24 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                     type: 'send',
                     value: selectedFee || 'normal',
                 },
-                deviceIdentity,
+                { path: selectedDevice.path },
             ),
         );
     });
     const onChangeAccount = () => {
+        if (!selectedDevice) return;
         dispatch(
             onReceiveFee(
                 {
                     type: 'change-account',
                 },
-                deviceIdentity,
+                { path: selectedDevice.path },
             ),
         );
     };
     const onClose = () => {
-        dispatch(onReceiveFee(null, deviceIdentity));
+        if (!selectedDevice) return;
+        dispatch(onReceiveFee(null, { path: selectedDevice.path }));
     };
 
     return (

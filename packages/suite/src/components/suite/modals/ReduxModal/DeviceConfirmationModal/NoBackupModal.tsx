@@ -12,8 +12,14 @@ export const NoBackupModal = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
 
-    const confirm = () => dispatch(onReceiveConfirmation(true, { path: device?.path }));
-    const close = () => dispatch(onReceiveConfirmation(false, { path: device?.path }));
+    const confirm = () => {
+        if (!device) return;
+        dispatch(onReceiveConfirmation(true, { path: device.path }));
+    };
+    const close = () => {
+        if (!device) return;
+        dispatch(onReceiveConfirmation(false, { path: device.path }));
+    };
     const goToSettings = () => {
         close();
         dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupRecoverySeed }));

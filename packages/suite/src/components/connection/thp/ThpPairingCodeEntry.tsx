@@ -22,14 +22,15 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
 
     const onCodeEntry = useCallback(
         (tag: string) => {
+            if (!device) return;
             setLoading(true);
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag },
-                device: { path: device?.path },
+                device: { path: device.path },
             });
         },
-        [device?.path],
+        [device],
     );
 
     return (

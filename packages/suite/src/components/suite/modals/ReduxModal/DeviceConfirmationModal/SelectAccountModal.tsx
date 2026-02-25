@@ -37,10 +37,14 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
     const [accountTypes, setAccountTypes] = useState(data.accountTypes);
     const [selectedAccountType, setSelectedAccountType] = useState(data.defaultAccountType);
 
-    const deviceIdentity = { path: selectedDevice?.path };
-    const confirm = (accountIndex: number) =>
-        dispatch(onReceiveAccount(accountIndex, deviceIdentity));
-    const close = () => dispatch(onReceiveAccount(null, deviceIdentity));
+    const confirm = (accountIndex: number) => {
+        if (!selectedDevice) return;
+        dispatch(onReceiveAccount(accountIndex, { path: selectedDevice.path }));
+    };
+    const close = () => {
+        if (!selectedDevice) return;
+        dispatch(onReceiveAccount(null, { path: selectedDevice.path }));
+    };
 
     useEffect(() => {
         if (data.accountTypes) {

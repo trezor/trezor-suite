@@ -11,7 +11,7 @@ import {
 
 const controller = getController();
 
-const passphraseHandler = (value: string) => () => {
+const passphraseHandler = (value: string) => (event: any) => {
     TrezorConnect.uiResponse({
         type: 'ui-receive_passphrase',
         payload: {
@@ -19,7 +19,7 @@ const passphraseHandler = (value: string) => () => {
             value,
             save: true, // NOTE: this field is used only in legacy test of T1B1 firmware
         },
-        device: {},
+        device: { path: event.payload.device.path },
     });
     TrezorConnect.removeAllListeners('ui-request_passphrase');
 };
@@ -243,14 +243,14 @@ describe('TrezorConnect passphrase', () => {
 
     // passphrase on device not available on T1B1
     conditionalTest(['1'], 'Input passphrase on device', async () => {
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.on('ui-request_passphrase', event => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: {
                     passphraseOnDevice: true,
                     value: '',
                 },
-                device: {},
+                device: { path: event.payload.device.path },
             });
             TrezorConnect.removeAllListeners('ui-request_passphrase');
             // Due to race condition with node-bridge, we have to wait a bit

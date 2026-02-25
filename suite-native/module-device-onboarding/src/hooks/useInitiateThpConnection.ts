@@ -26,11 +26,12 @@ export const useInitiateThpConnection = () => {
     const device = useSelector(selectSelectedDevice);
 
     const initiateThpConnection = () => {
+        if (!device) return;
         // Device is acquired by the FW installation hook, just respond as expected.
         TrezorConnect.uiResponse({
             type: 'ui-receive_confirmation',
             payload: true,
-            device: { path: device?.path },
+            device: { path: device.path },
         });
     };
 

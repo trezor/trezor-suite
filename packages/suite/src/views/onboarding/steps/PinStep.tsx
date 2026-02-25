@@ -39,10 +39,11 @@ export const PinStep = () => {
     };
 
     const handlePinSubmit = () => {
+        if (!device) return;
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PIN,
             payload: pin,
-            device: { path: device?.path },
+            device: { path: device.path },
         });
 
         setPin('');

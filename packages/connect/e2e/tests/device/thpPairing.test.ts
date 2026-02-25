@@ -74,7 +74,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.nfc_secret_trezor },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
 
@@ -144,7 +144,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.code_entry_code },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
 
@@ -198,12 +198,12 @@ describe('THP pairing', () => {
             statusChangeEvents.push(status);
         });
 
-        TrezorConnect.on('ui-request_thp_pairing', () => {
+        TrezorConnect.on('ui-request_thp_pairing', event => {
             TrezorConnect.removeAllListeners('ui-request_thp_pairing');
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: '111111' },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
 
@@ -279,7 +279,7 @@ describe('THP pairing', () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { tag: state.code_entry_code },
-                device: {},
+                device: { path: event.payload.device.path },
             });
         });
         result = await TrezorConnect.getFeatures({ device });
@@ -297,14 +297,14 @@ describe('THP pairing', () => {
 
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
 
-        const enterPassphraseOnHost = (value: string) => () => {
+        const enterPassphraseOnHost = (value: string) => (event: any) => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: {
                     passphraseOnDevice: false,
                     value,
                 },
-                device: {},
+                device: { path: event.payload.device.path },
             });
             TrezorConnect.removeAllListeners('ui-request_passphrase');
         };
