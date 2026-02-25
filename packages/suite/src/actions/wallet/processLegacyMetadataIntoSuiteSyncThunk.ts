@@ -1,3 +1,4 @@
+import { featureUsed } from '@suite/experimental-feedback';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
@@ -24,8 +25,12 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
     void
 >(
     '@suite/labeling/processMetadataMessageThunk',
-    async ({ payload, deviceStaticSessionId, value }, { extra: { services } }) => {
+    async ({ payload, deviceStaticSessionId, value }, { dispatch, extra: { services } }) => {
         const labelType = payload.type;
+
+        if (value) {
+            dispatch(featureUsed('suite-sync'));
+        }
 
         switch (labelType) {
             case 'walletLabel':
