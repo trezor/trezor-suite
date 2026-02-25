@@ -4,10 +4,7 @@ import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useSelector } from '@suite-native/staking';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectIsCardanoStakedOutsideEverstake } from '@suite-native/staking/src/cardanoStakingSelectors';
+import { selectIsCardanoStakedOutsideEverstake, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
