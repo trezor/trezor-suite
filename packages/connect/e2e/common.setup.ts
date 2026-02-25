@@ -183,6 +183,7 @@ export const initTrezorConnect = async (
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
             payload: true,
+            device: {},
         });
     });
 

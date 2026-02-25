@@ -1,3 +1,3 @@
-import type { UiResponseEvent } from '../../events/ui-response';
+import type { UiResponseEventWithDevice } from '../../events/ui-response';
 
-export declare function uiResponse(response: UiResponseEvent): void;
+export declare function uiResponse(response: UiResponseEventWithDevice): void;

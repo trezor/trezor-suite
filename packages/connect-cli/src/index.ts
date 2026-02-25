@@ -182,10 +182,12 @@ const run = async () => {
             return TrezorConnect.uiResponse({
                 type: 'ui-receive_confirmation',
                 payload: true,
+                device: {},
             });
         }
 
         if (event.type === 'ui-request_passphrase') {
+            const deviceIdentity = { path: event.payload.device.path };
             if (args['cancel-passphrase']) {
                 return TrezorConnect.cancel();
             }
@@ -194,6 +196,7 @@ const run = async () => {
                 // @ts-expect-error
                 return TrezorConnect.uiResponse({
                     type: 'ui-receive_passphrase',
+                    device: deviceIdentity,
                 });
             }
 
@@ -201,15 +204,18 @@ const run = async () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: { value, passphraseOnDevice: args['passphrase-on-device'] },
+                device: deviceIdentity,
             });
         }
 
         if (event.type === 'ui-request_thp_pairing') {
+            const deviceIdentity = { path: event.payload.device.path };
             const tag = await waitForPairingTag(event);
             if (tag) {
                 TrezorConnect.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { tag },
+                    device: deviceIdentity,
                 });
             } else {
                 return TrezorConnect.cancel();

@@ -2,10 +2,13 @@ import { memo } from 'react';
 import { SelectInstance, createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Select } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { bip39 } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 const options = bip39.map(item => ({ label: item, value: item }));
 
@@ -13,6 +16,7 @@ type Option = { label: string; value: string };
 
 export const WordInput = memo(() => {
     const { translationString } = useTranslation();
+    const device = useSelector(selectSelectedDevice);
 
     return (
         <Select
@@ -26,7 +30,11 @@ export const WordInput = memo(() => {
             }
             onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
                 await resolveAfter(600);
-                TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: item.value });
+                TrezorConnect.uiResponse({
+                    type: UI.RECEIVE_WORD,
+                    payload: item.value,
+                    device: { path: device?.path },
+                });
                 ref?.clearValue();
             }}
             options={options}

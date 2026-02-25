@@ -25,16 +25,20 @@ export const ConfirmPassphraseBeforeAction = () => {
     const onEnterPassphraseDialogCancel = () =>
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const onSubmit = useCallback((value: string, passphraseOnDevice?: boolean) => {
-        TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
-            payload: {
-                value,
-                save: true,
-                passphraseOnDevice: !!passphraseOnDevice,
-            },
-        });
-    }, []);
+    const onSubmit = useCallback(
+        (value: string, passphraseOnDevice?: boolean) => {
+            TrezorConnect.uiResponse({
+                type: UI.RECEIVE_PASSPHRASE,
+                payload: {
+                    value,
+                    save: true,
+                    passphraseOnDevice: !!passphraseOnDevice,
+                },
+                device: { path: device?.path },
+            });
+        },
+        [device?.path],
+    );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 

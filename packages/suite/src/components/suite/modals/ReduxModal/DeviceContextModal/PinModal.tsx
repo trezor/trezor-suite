@@ -20,7 +20,7 @@ export const PinModal = ({ device }: PinModalProps) => {
         setPin,
         pin,
         submitted,
-    } = usePin(device.buttonRequests);
+    } = usePin(device.buttonRequests, { path: device.path });
     if (!device.features) return null;
 
     const getHeading = () => {

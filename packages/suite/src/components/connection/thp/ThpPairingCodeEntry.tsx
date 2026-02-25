@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { SpacingValues } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite';
 
 const SPINNER_SIZE = 32;
 
@@ -15,14 +18,19 @@ type ThpPairingPinEntryProps =
 
 export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryProps) => {
     const [isLoading, setLoading] = useState(false);
+    const device = useSelector(selectSelectedDevice);
 
-    const onCodeEntry = useCallback((tag: string) => {
-        setLoading(true);
-        TrezorConnect.uiResponse({
-            type: 'ui-receive_thp_pairing_tag',
-            payload: { tag },
-        });
-    }, []);
+    const onCodeEntry = useCallback(
+        (tag: string) => {
+            setLoading(true);
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: { tag },
+                device: { path: device?.path },
+            });
+        },
+        [device?.path],
+    );
 
     return (
         <Row

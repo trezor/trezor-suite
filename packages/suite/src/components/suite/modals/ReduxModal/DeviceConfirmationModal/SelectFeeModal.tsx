@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectSelectedDevice } from '@suite-common/device';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
 import { Account, FormState } from '@suite-common/wallet-types';
@@ -79,6 +80,8 @@ interface SelectAccountModalProps {
 export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const deviceIdentity = { path: selectedDevice?.path };
 
     const fees = useMemo(() => data?.feeLevels ?? [], [data]);
     const minFee = data.coinInfo.minFeeSatoshiKb / 1000;
@@ -127,28 +130,37 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         const { selectedFee, feePerUnit } = data;
         if (selectedFee === 'custom') {
             dispatch(
-                onReceiveFee({
-                    type: 'compose-custom',
-                    value: feePerUnit,
-                }),
+                onReceiveFee(
+                    {
+                        type: 'compose-custom',
+                        value: feePerUnit,
+                    },
+                    deviceIdentity,
+                ),
             );
         }
         dispatch(
-            onReceiveFee({
-                type: 'send',
-                value: selectedFee || 'normal',
-            }),
+            onReceiveFee(
+                {
+                    type: 'send',
+                    value: selectedFee || 'normal',
+                },
+                deviceIdentity,
+            ),
         );
     });
     const onChangeAccount = () => {
         dispatch(
-            onReceiveFee({
-                type: 'change-account',
-            }),
+            onReceiveFee(
+                {
+                    type: 'change-account',
+                },
+                deviceIdentity,
+            ),
         );
     };
     const onClose = () => {
-        dispatch(onReceiveFee(null));
+        dispatch(onReceiveFee(null, deviceIdentity));
     };
 
     return (

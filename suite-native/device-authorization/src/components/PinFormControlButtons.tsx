@@ -7,7 +7,9 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
@@ -38,6 +40,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const handleSuccess = useCallback(() => {
         onSuccess?.();
@@ -89,7 +92,11 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [handleInvalidPin]);
 
     const onSubmit = handleSubmit(values => {
-        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: values.pin });
+        TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PIN,
+            payload: values.pin,
+            device: { path: selectedDevice?.path },
+        });
     });
 
     const handleDelete = () => {

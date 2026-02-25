@@ -40,7 +40,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [wordCount, setWordCount] = useState<WordCount | undefined>();
     const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
     const intl = useIntl();
-    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? []);
+    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], {
+        path: device?.path,
+    });
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;

@@ -16,7 +16,7 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UiResponseEvent,
+    UiResponseEventWithDevice,
     createErrorMessage,
 } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
@@ -233,7 +233,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         }
     }
 
-    public uiResponse(response: UiResponseEvent) {
+    public uiResponse(response: UiResponseEventWithDevice) {
         const core = this._coreManager.get();
         if (!core) {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');

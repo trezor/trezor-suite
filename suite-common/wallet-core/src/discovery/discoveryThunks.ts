@@ -828,6 +828,7 @@ export const submitPassphrase = createThunk(
                 save: true,
                 passphraseOnDevice,
             },
+            device: { path: device.path },
         });
     },
 );

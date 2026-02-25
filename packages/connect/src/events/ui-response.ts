@@ -1,6 +1,7 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
 import { UI_EVENT } from './ui-request';
+import type { DeviceIdentity } from '../types/params';
 import type { LocalFirmwares } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
@@ -89,9 +90,11 @@ export type UiResponseEvent =
     | UiResponseFee
     | UiResponseFirmwares;
 
-export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
+export type UiResponseEventWithDevice = UiResponseEvent & { device: DeviceIdentity };
 
-export const createUiResponse: MessageFactoryFn<typeof UI_EVENT, UiResponseEvent> = (
+export type UiResponseMessage = UiResponseEventWithDevice & { event: typeof UI_EVENT };
+
+export const createUiResponse: MessageFactoryFn<typeof UI_EVENT, UiResponseEventWithDevice> = (
     type,
     payload,
 ) =>

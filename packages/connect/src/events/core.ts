@@ -12,7 +12,7 @@ import type {
     TransportSetTransports,
 } from './transport';
 import type { UiEventMessage } from './ui-request';
-import type { UiResponseEvent } from './ui-response';
+import type { UiResponseEventWithDevice } from './ui-response';
 import type { Unsuccessful } from '../types/params';
 
 export const CORE_EVENT = 'CORE_EVENT';
@@ -23,7 +23,7 @@ export type CoreRequestMessage =
     | TransportSetTransports
     | TransportRequestWebUSBDevice
     | TransportGetInfo
-    | UiResponseEvent
+    | UiResponseEventWithDevice
     | CoreCallMessage;
 
 export type CoreEventMessage = {

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import {
     FirmwareUpdateStackParamList,
@@ -20,11 +21,16 @@ export const useInitiateThpConnection = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const thpStep = useSelector(selectThpStep);
+    const device = useSelector(selectSelectedDevice);
 
     const initiateThpConnection = useCallback(() => {
         // Device is acquired by the FW installation hook, just respond as expected.
-        TrezorConnect.uiResponse({ type: 'ui-receive_confirmation', payload: true });
-    }, []);
+        TrezorConnect.uiResponse({
+            type: 'ui-receive_confirmation',
+            payload: true,
+            device: { path: device?.path },
+        });
+    }, [device?.path]);
 
     useEffect(() => {
         if (thpStep === 'ConfirmOnlyConnection') {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
@@ -30,13 +31,16 @@ interface SelectAccountModalProps {
 export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
     const dispatch = useDispatch();
     const suiteAccounts = useSelector(selectAccounts);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const [accounts, setAccounts] = useState(data.accounts);
     const [accountTypes, setAccountTypes] = useState(data.accountTypes);
     const [selectedAccountType, setSelectedAccountType] = useState(data.defaultAccountType);
 
-    const confirm = (accountIndex: number) => dispatch(onReceiveAccount(accountIndex));
-    const close = () => dispatch(onReceiveAccount(null));
+    const deviceIdentity = { path: selectedDevice?.path };
+    const confirm = (accountIndex: number) =>
+        dispatch(onReceiveAccount(accountIndex, deviceIdentity));
+    const close = () => dispatch(onReceiveAccount(null, deviceIdentity));
 
     useEffect(() => {
         if (data.accountTypes) {

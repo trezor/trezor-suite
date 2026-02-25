@@ -1,17 +1,19 @@
 import { Translation } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const NoBackupModal = () => {
     const dispatch = useDispatch();
+    const device = useSelector(selectSelectedDevice);
 
-    const confirm = () => dispatch(onReceiveConfirmation(true));
-    const close = () => dispatch(onReceiveConfirmation(false));
+    const confirm = () => dispatch(onReceiveConfirmation(true, { path: device?.path }));
+    const close = () => dispatch(onReceiveConfirmation(false, { path: device?.path }));
     const goToSettings = () => {
         close();
         dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupRecoverySeed }));

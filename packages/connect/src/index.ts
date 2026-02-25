@@ -16,7 +16,7 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UiResponseEvent,
+    UiResponseEventWithDevice,
     createErrorMessage,
 } from './events';
 import { factory } from './factory';
@@ -153,7 +153,7 @@ const updateConnectSettings = async (params: UpdateConnectSettings) => {
     return { success: true as const, payload: { message: 'success' } } as const;
 };
 
-const uiResponse = (response: UiResponseEvent) => {
+const uiResponse = (response: UiResponseEventWithDevice) => {
     const core = coreManager.get();
     if (!core) {
         throw ERRORS.TypedError('Init_NotInitialized');

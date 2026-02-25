@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { UserContextPayload } from '@suite-common/suite-types';
-import TrezorConnect, { UI, UiResponseFee } from '@trezor/connect';
+import TrezorConnect, { DeviceIdentity, UI, UiResponseFee } from '@trezor/connect';
 import { DeferredResponse, createDeferred } from '@trezor/utils';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -30,38 +30,44 @@ export const preserve = createAction(MODAL.PRESERVE);
  */
 export const removePreserve = createAction(MODAL.REMOVE_PRESERVE);
 
-export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
-    TrezorConnect.uiResponse({
-        type: UI.RECEIVE_CONFIRMATION,
-        payload: confirmation,
-    });
-
-    dispatch(onCancel());
-};
-export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Dispatch) => {
-    if (accountIndex === null) {
-        TrezorConnect.cancel();
-    } else {
+export const onReceiveConfirmation =
+    (confirmation: boolean, device: DeviceIdentity) => (dispatch: Dispatch) => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_ACCOUNT,
-            payload: accountIndex,
+            type: UI.RECEIVE_CONFIRMATION,
+            payload: confirmation,
+            device,
         });
-    }
 
-    dispatch(onCancel());
-};
-export const onReceiveFee = (payload: UiResponseFee['payload'] | null) => (dispatch: Dispatch) => {
-    if (payload === null) {
-        TrezorConnect.cancel();
-    } else {
-        TrezorConnect.uiResponse({
-            type: UI.RECEIVE_FEE,
-            payload,
-        });
-    }
+        dispatch(onCancel());
+    };
+export const onReceiveAccount =
+    (accountIndex: number | null, device: DeviceIdentity) => (dispatch: Dispatch) => {
+        if (accountIndex === null) {
+            TrezorConnect.cancel();
+        } else {
+            TrezorConnect.uiResponse({
+                type: UI.RECEIVE_ACCOUNT,
+                payload: accountIndex,
+                device,
+            });
+        }
 
-    dispatch(onCancel());
-};
+        dispatch(onCancel());
+    };
+export const onReceiveFee =
+    (payload: UiResponseFee['payload'] | null, device: DeviceIdentity) => (dispatch: Dispatch) => {
+        if (payload === null) {
+            TrezorConnect.cancel();
+        } else {
+            TrezorConnect.uiResponse({
+                type: UI.RECEIVE_FEE,
+                payload,
+                device,
+            });
+        }
+
+        dispatch(onCancel());
+    };
 
 export const openModal = createAction(MODAL.OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({
     payload,

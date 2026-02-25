@@ -6,8 +6,8 @@ import { Static, TSchema, Type } from '@trezor/schema-utils';
 import { DeviceState, DeviceUniquePath } from './device';
 
 export interface DeviceIdentity {
-    path?: DeviceUniquePath;
-    state?: DeviceState;
+    path?: DeviceUniquePath; // defines physical device
+    state?: DeviceState; // defines logical
     instance?: number;
 }
 

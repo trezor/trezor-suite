@@ -1,8 +1,10 @@
 import { forwardRef, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { BottomSheetModal, Button, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -30,15 +32,17 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
     WalletBackupNotSetWarningBottomSheetProps
 >(({ onConfirm, onClose }, ref) => {
     const navigation = useNavigation<NavigationProps>();
+    const device = useSelector(selectSelectedDevice);
 
     const handleContinueAnyway = useCallback(() => {
         // When Trezor has no backup, it awaits confirmation to continue.
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
             payload: true,
+            device: { path: device?.path },
         });
         onConfirm?.();
-    }, [onConfirm]);
+    }, [onConfirm, device?.path]);
 
     const handleCreateBackup = useCallback(() => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
