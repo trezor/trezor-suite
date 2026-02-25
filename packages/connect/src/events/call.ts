@@ -1,7 +1,4 @@
-import { serializeError } from '@trezor/connect-common/src/constants/errors';
-
 import type { CORE_CALL } from './core-call';
-import type { Device } from '../device/Device';
 import type { TrezorConnect } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
@@ -82,24 +79,3 @@ export interface MethodResponseMessage {
     payload: CallMethodResponse<CallMethodKeys>;
     device?: DeviceIdentity;
 }
-
-export const createResponseMessage = (
-    id: number,
-    success: boolean,
-    payload: any,
-    device?: Device,
-): MethodResponseMessage => ({
-    event: RESPONSE_EVENT,
-    type: RESPONSE_EVENT,
-    id,
-    success,
-
-    payload: success ? payload : serializeError(payload),
-    device: device
-        ? {
-              path: device?.getUniquePath(),
-              state: device?.getState(),
-              instance: device?.getInstance(),
-          }
-        : undefined,
-});

@@ -2,6 +2,7 @@
 import EventEmitter from 'events';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
@@ -21,18 +22,39 @@ import {
     CoreEventMessage,
     CoreRequestMessage,
     DEVICE,
+    MethodResponseMessage,
     POPUP,
     RESPONSE_EVENT,
     TransportInfo,
     UI,
     createDeviceMessage,
-    createResponseMessage,
     createTransportMessage,
     createUiMessage,
 } from '../events';
 import type { ConnectSettings, DeviceIdentity } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
+
+const createResponseMessage = (
+    id: number,
+    success: boolean,
+    payload: any,
+    device?: Device,
+): MethodResponseMessage => ({
+    event: RESPONSE_EVENT,
+    type: RESPONSE_EVENT,
+    id,
+    success,
+
+    payload: success ? payload : serializeError(payload),
+    device: device
+        ? {
+              path: device?.getUniquePath(),
+              state: device?.getState(),
+              instance: device?.getInstance(),
+          }
+        : undefined,
+});
 
 // custom log
 const _log = initLog('Core');
