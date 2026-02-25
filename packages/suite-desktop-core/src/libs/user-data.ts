@@ -3,14 +3,14 @@ import fs from 'fs';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { InvokeResult } from '@trezor/suite-desktop-api';
+import type { InvokeResult } from '@trezor/suite-desktop-api';
 import type { Result } from '@trezor/type-utils';
 
 const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string }, string> => {
     const userDataDir = path.resolve(app.getPath('userData'));
     const dir = path.resolve(path.join(userDataDir, directory));
 
-    if (!dir.startsWith(userDataDir + path.sep)) {
+    if (!dir.startsWith(userDataDir)) {
         return {
             success: false,
             error: `Path traversal attempt detected, directory: "${directory}"`,

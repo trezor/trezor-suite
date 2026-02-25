@@ -63,6 +63,12 @@ describe('user-data path traversal protection', () => {
         });
     });
 
+    it('allows reading user data root directory', async () => {
+        const result = await readDir('');
+
+        expect(result.success).toBe(true);
+    });
+
     it('rejects directory path traversal in open()', async () => {
         const result = await open('../../OtherApp');
 
