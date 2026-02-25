@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
@@ -28,8 +28,11 @@ export const InvityApi = () => {
     const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
         dispatch(setDebugMode({ invityServerEnvironment: item.value }));
         invityAPI.setInvityServersEnvironment(item.value);
-        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-        reloadApp(100);
+        if (desktopApi.available) {
+            desktopApi.reloadBrowserWindow();
+        } else {
+            window.location.reload();
+        }
     };
 
     return (
