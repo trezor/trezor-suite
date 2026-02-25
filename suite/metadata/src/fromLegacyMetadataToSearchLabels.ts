@@ -1,22 +1,17 @@
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
-
-type SearchOutputLabels = Map<string, Map<string, string>>;
-
-type SearchAccountLabels = {
-    accountLabel?: string;
-    outputLabels: SearchOutputLabels;
-    addressLabels: Map<string, string>;
-};
+import { SearchAccountLabels, SearchOutputLabels, TxId } from '@suite-common/transaction-search';
+import { asTxTargetId } from '@suite-common/wallet-types';
+import { typedObjectEntries } from '@trezor/utils';
 
 export const fromLegacyMetadataToSearchOutputLabels = (
     outputLabels: AccountLabels['outputLabels'] = {},
 ): SearchOutputLabels =>
     new Map(
-        Object.entries(outputLabels).map(([txid, accountOutputLabels]) => [
-            txid,
+        typedObjectEntries(outputLabels).map(([txid, accountOutputLabels]) => [
+            txid as TxId,
             new Map(
-                Object.entries(accountOutputLabels as AccountOutputLabels).map(
-                    ([targetId, label]) => [targetId, label],
+                typedObjectEntries(accountOutputLabels as AccountOutputLabels).map(
+                    ([targetId, label]) => [asTxTargetId(`${targetId}`), label],
                 ),
             ),
         ]),
@@ -27,5 +22,5 @@ export const fromLegacyMetadataToSearchAccountLabels = (
 ): SearchAccountLabels => ({
     accountLabel: legacyLabels.accountLabel,
     outputLabels: fromLegacyMetadataToSearchOutputLabels(legacyLabels.outputLabels),
-    addressLabels: new Map(Object.entries(legacyLabels.addressLabels ?? {})),
+    addressLabels: new Map(typedObjectEntries(legacyLabels.addressLabels ?? {})),
 });
