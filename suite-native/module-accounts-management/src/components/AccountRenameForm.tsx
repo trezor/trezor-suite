@@ -60,7 +60,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         // Also, it's needed to prevent the keyboard from opening when the modal is animating.
         const timeout = setTimeout(() => {
             inputRef.current?.focus();
-        }, 300);
+        }, 1000); // If this is lower, than the position is sometimes miscalculated and the keybord jumps behind the keyboard.
 
         return () => clearTimeout(timeout);
     }, [inputRef]);
