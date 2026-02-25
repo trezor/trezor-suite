@@ -54,8 +54,8 @@
     },
     "devDependencies": {
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10",
-        "@types/web": "^0.0.197",
+        "@types/node": "24.10.13",
+        "@types/web": "^0.0.331",
         "@types/ws": "^8.5.13",
         "tsx": "^4.21.0"
     }

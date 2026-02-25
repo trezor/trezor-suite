@@ -147,7 +147,7 @@
         "@types/react-dom": "19.1.6",
         "@types/redux-logger": "^3.0.13",
         "@types/redux-mock-store": "^1.5.0",
-        "@types/semver": "^7.7.0",
+        "@types/semver": "^7.7.1",
         "jest-canvas-mock": "^2.5.2",
         "jest-mock": "^29.7.0",
         "jest-watch-typeahead": "3.0.1",

@@ -54,9 +54,9 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@types/chrome": "^0.0.299",
+        "@types/chrome": "^0.1.36",
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10",
+        "@types/node": "24.10.13",
         "tsx": "^4.21.0"
     }
 }

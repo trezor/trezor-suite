@@ -56,7 +56,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/semver": "^7.7.0",
+        "@types/semver": "^7.7.1",
         "expo": "~54.0.30",
         "expo-video": "~3.0.15",
         "jotai": "2.15.0",

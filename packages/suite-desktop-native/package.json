@@ -15,7 +15,7 @@
         "node-addon-api": "^5.0.0"
     },
     "devDependencies": {
-        "@types/node": "^18.19.26",
+        "@types/node": "24.10.13",
         "node-gyp": "12.2.0"
     }
 }

@@ -27,7 +27,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/semver": "^7.7.0",
+        "@types/semver": "^7.7.1",
         "fs-extra": "^11.3.1",
         "json-schema-to-typescript": "^15.0.4",
         "react": "19.1.0",
