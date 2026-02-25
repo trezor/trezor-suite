@@ -71,6 +71,8 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/experimental": "workspace:*",
+        "@suite/experimental-feedback": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
