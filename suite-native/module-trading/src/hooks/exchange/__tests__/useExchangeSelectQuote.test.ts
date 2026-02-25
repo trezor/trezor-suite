@@ -20,11 +20,11 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
-import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
 const mockTokenSupportsIncreasingAllowance = jest.fn();
+const mockGetApprovalStatus = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -36,6 +36,7 @@ jest.mock('@suite-common/trading', () => ({
     },
     tokenSupportsIncreasingAllowance: (contractAddress?: string) =>
         mockTokenSupportsIncreasingAllowance(contractAddress),
+    getApprovalStatus: (quote?: any) => mockGetApprovalStatus(quote),
 }));
 
 const mockNavigation = {
@@ -253,7 +254,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangePreview when approval status is "approved"', () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('approved');
+            mockGetApprovalStatus.mockReturnValue('approved');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
@@ -282,7 +283,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangePreview when approval status is "not_needed"', () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('not_needed');
+            mockGetApprovalStatus.mockReturnValue('not_needed');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
@@ -307,7 +308,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_approval');
+            mockGetApprovalStatus.mockReturnValue('needs_approval');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
@@ -337,7 +338,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+            mockGetApprovalStatus.mockReturnValue('needs_increase');
             mockTokenSupportsIncreasingAllowance.mockReturnValue(true);
 
             act(() => {
@@ -369,7 +370,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+            mockGetApprovalStatus.mockReturnValue('needs_increase');
             mockTokenSupportsIncreasingAllowance.mockReturnValue(false);
 
             act(() => {

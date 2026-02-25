@@ -1,11 +1,11 @@
 import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
 
+import { getApprovalStatus } from '@suite-common/trading';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeSelectQuote } from '../../hooks/exchange/useExchangeSelectQuote';
-import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 
 export type ExchangeConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
