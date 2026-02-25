@@ -263,8 +263,6 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     tbtg: 'no-support',
                     dash: 'no-support',
                     tdash: 'no-support',
-                    dcr: 'no-support',
-                    tdcr: 'no-support',
                     dgb: 'no-support',
                     nmc: 'no-support',
                     vtc: 'no-support',
