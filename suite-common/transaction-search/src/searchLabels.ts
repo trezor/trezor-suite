@@ -1,7 +1,10 @@
 import { TxTargetId } from '@suite-common/wallet-types';
 
-export type TxId = string; // Todo: hopefully Branded type one day
-export type Address = string; // Todo: hopefully Branded type one day
+/** @deprecated hopefully Branded type one day */
+export type TxId = string;
+
+/** @deprecated hopefully Branded type one day */
+export type Address = string;
 
 export type SearchAccountOutputLabels = Map<TxTargetId, string>;
 
