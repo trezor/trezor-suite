@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountFormValues,
-    AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
     useAccountLabelForm,
 } from '@suite-native/accounts';
@@ -49,6 +49,8 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         formState: { isValid },
         control,
     } = form;
+
+    const accountLabelLength = useWatch({ control, name: 'accountLabel' })?.length ?? 0;
 
     useEffect(() => {
         // Focus account label input field and open keyboard on the first render.
@@ -98,6 +100,11 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         onSubmit();
     });
 
+    const hint = translate('accounts.accountLabelFieldHint.letterCount', {
+        current: accountLabelLength,
+        max: MAX_ACCOUNT_LABEL_LENGTH,
+    });
+
     const coinLabelFieldLabel = translate(
         'moduleAccountManagement.accountSettingsScreen.renameForm.coinLabel',
     );
@@ -110,11 +117,11 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         ref={inputRef}
                         name="accountLabel"
                         label={coinLabelFieldLabel}
+                        hint={isValid ? hint : undefined}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
                         asBottomSheetInput
                         testID="@account-detail/settings/account-rename/input"
                     />
-                    <AccountLabelFieldHint formControl={control} />
                     <Button
                         onPress={handleRenameAccount}
                         size="large"
