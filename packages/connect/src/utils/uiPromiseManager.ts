@@ -3,6 +3,9 @@ import { arrayPartition, createDeferred } from '@trezor/utils';
 import { AnyUiPromise, DEVICE, UiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
 import { DeviceUniquePath } from '../types/device';
 
+// Resolve event includes device path for targeted resolution.
+type UiPromiseResolveEvent = UiPromiseResponse & { device?: { path: DeviceUniquePath } };
+
 export const createUiPromiseManager = () => {
     let _uiPromises: AnyUiPromise[] = [];
 
@@ -15,7 +18,10 @@ export const createUiPromiseManager = () => {
             device,
         };
 
-        const existing = _uiPromises.findIndex(p => p.id === promiseEvent);
+        const devicePath = device?.getUniquePath();
+        const existing = _uiPromises.findIndex(
+            p => p.id === promiseEvent && p.device?.getUniquePath() === devicePath,
+        );
         if (existing >= 0) {
             console.warn(`UiPromise '${promiseEvent}' already exists.`);
             _uiPromises.splice(existing, 1);
@@ -33,10 +39,16 @@ export const createUiPromiseManager = () => {
         return uiPromise;
     };
 
-    const resolve = (event: UiPromiseResponse) => {
-        const uiPromise = _uiPromises.find(p => p.id === event.type) as
-            | UiPromise<typeof event.type>
-            | undefined;
+    const resolve = (event: UiPromiseResolveEvent) => {
+        const eventDevicePath = event.device?.path;
+
+        const uiPromise = _uiPromises.find(p => {
+            if (p.id !== event.type) return false;
+
+            // Always match by device path. Both sides must agree.
+            return p.device?.getUniquePath() === eventDevicePath;
+        }) as UiPromise<typeof event.type> | undefined;
+
         if (!uiPromise) return false;
         uiPromise.resolve(event);
         _uiPromises = _uiPromises.filter(p => p !== uiPromise);

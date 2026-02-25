@@ -13,11 +13,19 @@ export const NoBackupModal = () => {
     const device = useSelector(selectSelectedDevice);
 
     const confirm = () => {
-        if (!device) return;
+        if (!device) {
+            console.warn('NoBackupModal: confirm called without device');
+
+            return;
+        }
         dispatch(onReceiveConfirmation(true, { path: device.path }));
     };
     const close = () => {
-        if (!device) return;
+        if (!device) {
+            console.warn('NoBackupModal: close called without device');
+
+            return;
+        }
         dispatch(onReceiveConfirmation(false, { path: device.path }));
     };
     const goToSettings = () => {

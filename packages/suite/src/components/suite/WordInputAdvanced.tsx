@@ -28,7 +28,11 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
 
     const onSubmit = useCallback(
         async (value: string) => {
-            if (!device) return;
+            if (!device) {
+                console.warn('WordInputAdvanced: onSubmit called without device');
+
+                return;
+            }
             await resolveAfter(600);
             TrezorConnect.uiResponse({
                 type: UI.RECEIVE_WORD,

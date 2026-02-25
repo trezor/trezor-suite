@@ -22,7 +22,11 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
 
     const onCodeEntry = useCallback(
         (tag: string) => {
-            if (!device) return;
+            if (!device) {
+                console.warn('ThpPairingCodeEntry: onCodeEntry called without device');
+
+                return;
+            }
             setLoading(true);
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',

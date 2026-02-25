@@ -14,7 +14,11 @@ export const ShowPinMatrixStep = () => {
     const device = useSelector(selectSelectedDevice);
     const { activeStepId, showPinMatrix } = useOnboarding();
     const handlePinSubmit = () => {
-        if (!device) return;
+        if (!device) {
+            console.warn('ShowPinMatrixStep: handlePinSubmit called without device');
+
+            return;
+        }
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PIN,
             payload: pin,

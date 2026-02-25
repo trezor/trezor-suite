@@ -20,7 +20,11 @@ export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!device) {
+            console.warn('applySettings: no selected device');
+
+            return;
+        }
         const result = await TrezorConnect.applySettings({
             device: {
                 path: device.path,
@@ -41,7 +45,11 @@ export const changePin =
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('changePin: no selected device');
+
+            return;
+        }
 
         const result = await TrezorConnect.changePin({
             device: {
@@ -74,7 +82,11 @@ export const changeWipeCode =
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('changeWipeCode: no selected device');
+
+            return;
+        }
 
         const result = await TrezorConnect.changeWipeCode({
             device: {
@@ -180,7 +192,11 @@ export const changeLanguage = createThunk(
     async (params: Parameters<typeof TrezorConnect.changeLanguage>[0], { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('changeLanguage: no selected device');
+
+            return;
+        }
 
         const result = await TrezorConnect.changeLanguage({
             device: {

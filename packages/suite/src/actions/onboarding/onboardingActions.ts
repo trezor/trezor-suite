@@ -178,7 +178,11 @@ const updateBackupType = (payload: BackupType): OnboardingAction => ({
 
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
-    if (!device) return;
+    if (!device) {
+        console.warn('beginOnboardingTutorial: no selected device');
+
+        return;
+    }
 
     await TrezorConnect.showDeviceTutorial({ device });
     dispatch(goToNextStep());

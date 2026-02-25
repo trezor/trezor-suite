@@ -840,7 +840,11 @@ export const startOrRestartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
     (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!device) {
+            console.warn('startOrRestartDiscoveryThunk: no selected device');
+
+            return;
+        }
         const staticSessionId = device.state?.staticSessionId;
         if (staticSessionId) {
             // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
@@ -864,7 +868,11 @@ export const switchToDuplicatedWallet = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`,
     (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!device) {
+            console.warn('switchToDuplicatedWallet: no selected device');
+
+            return;
+        }
 
         const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 

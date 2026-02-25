@@ -23,7 +23,11 @@ export const verifyAddressThunk = createThunk(
         const device = selectSelectedDevice(getState());
         const activeSection = selectTradingActiveSection(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('verifyAddressThunk: no selected device');
+
+            return;
+        }
 
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;

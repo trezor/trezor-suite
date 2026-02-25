@@ -39,7 +39,11 @@ const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, v
     async ({ bluetoothId }, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('unpairCurrentBondThunk: no selected device');
+
+            return;
+        }
 
         const result = await TrezorConnect.bleUnpair({ device, all: false });
         if (

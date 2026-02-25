@@ -167,7 +167,11 @@ export const acquireDevice = createThunk(
     ) => {
         const device = requestedDevice ?? selectSelectedDevice(getState());
 
-        if (!device) return;
+        if (!device) {
+            console.warn('acquireDevice: no device available');
+
+            return;
+        }
 
         const response = await TrezorConnect.getFeatures({ device });
 
@@ -480,7 +484,11 @@ export const deviceWipedFromDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/deviceWipedFromDeviceThunk`,
     (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!device) {
+            console.warn('deviceWipedFromDeviceThunk: no selected device');
+
+            return;
+        }
         const devices = selectDevices(getState());
         // collect devices with old "device.id" to be removed (see description below)
         const deviceInstances = getDeviceInstances(device, devices);
@@ -494,7 +502,11 @@ export const wipeDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/wipeDevice`,
     async (_, { dispatch, getState, rejectWithValue }) => {
         const device = selectSelectedDevice(getState());
-        if (!device) return;
+        if (!device) {
+            console.warn('wipeDeviceThunk: no selected device');
+
+            return;
+        }
 
         const devices = selectDevices(getState());
         // collect devices with old "device.id" to be removed (see description below)

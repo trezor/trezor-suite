@@ -39,7 +39,11 @@ export const PinStep = () => {
     };
 
     const handlePinSubmit = () => {
-        if (!device) return;
+        if (!device) {
+            console.warn('PinStep: handlePinSubmit called without device');
+
+            return;
+        }
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PIN,
             payload: pin,

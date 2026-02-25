@@ -27,7 +27,11 @@ export const ConfirmPassphraseBeforeAction = () => {
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            if (!device) return;
+            if (!device) {
+                console.warn('ConfirmPassphraseBeforeAction: onSubmit called without device');
+
+                return;
+            }
             TrezorConnect.uiResponse({
                 type: UI.RECEIVE_PASSPHRASE,
                 payload: {
