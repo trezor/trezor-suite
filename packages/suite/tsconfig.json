@@ -141,6 +141,7 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/experimental" },
         {
             "path": "../../suite/idb-migration-utils"
         },
