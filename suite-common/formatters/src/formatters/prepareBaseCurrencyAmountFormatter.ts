@@ -88,13 +88,32 @@ const formatShortFiat = ({
     if (!parts) return null;
 
     const { shortValue, suffix } = parts;
-    const formattedNumber = intl.formatNumber(shortValue, {
-        minimumFractionDigits: 2,
+
+    // Use same locale-aware formatting as formatStandard: number + suffix + currency (symbol/code per locale)
+    const partsArray = intl.formatNumberToParts(shortValue, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 0,
         maximumFractionDigits: 2,
     });
-    const currencySuffix = currency.toUpperCase();
 
-    return `${formattedNumber}${suffix}${FIAT_AMOUNT_CURRENCY_NBSP}${currencySuffix}`;
+    const numberPartTypes = ['integer', 'group', 'decimal', 'fraction'] as const;
+    const numberParts: string[] = [];
+    let currencyPartValue = '';
+
+    for (const p of partsArray) {
+        if (numberPartTypes.includes(p.type as (typeof numberPartTypes)[number])) {
+            const val = p.value as string;
+            numberParts.push(p.type === 'fraction' ? val.replace(/0+$/, '') : val);
+        } else if (p.type === 'currency') {
+            currencyPartValue = p.value as string;
+        }
+    }
+
+    const numberStr = numberParts.join('').replace(/[.,]$/, '');
+    const currencyDisplay = currencyPartValue || currency.toUpperCase();
+
+    return `${numberStr}${suffix}${FIAT_AMOUNT_CURRENCY_NBSP}${currencyDisplay}`;
 };
 
 const formatStandard = ({
@@ -109,7 +128,8 @@ const formatStandard = ({
         return `${value}${FIAT_AMOUNT_CURRENCY_NBSP}${currency}`;
     }
 
-    if (useShortFiatFormat) {
+    const {skipShortFormat} = (dataContext as { skipShortFormat?: boolean });
+    if (useShortFiatFormat && !skipShortFormat) {
         const shortFormatted = formatShortFiat({ intl, currency, value, dataContext });
         if (shortFormatted !== null) {
             return shortFormatted;
