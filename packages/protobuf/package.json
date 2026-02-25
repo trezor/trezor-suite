@@ -36,7 +36,7 @@
         "messages.json"
     ],
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
