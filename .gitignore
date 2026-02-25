@@ -55,6 +55,7 @@ libDev
 libESM
 dist
 public
+!packages/analytics-docs/public/
 coverage
 tmp
 
