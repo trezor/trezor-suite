@@ -1,7 +1,3 @@
-import {
-    fromLegacyMetadataToSearchAccountLabels,
-    selectLabelingDataForAccount,
-} from '@suite/metadata';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
@@ -14,6 +10,7 @@ import {
 import { Account, ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
 export const exportTransactionsThunk = createThunk(
@@ -33,7 +30,6 @@ export const exportTransactionsThunk = createThunk(
         { getState, extra },
     ) => {
         const { services } = extra;
-        const accountMetadata = selectLabelingDataForAccount(getState(), account.key);
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());
@@ -66,11 +62,11 @@ export const exportTransactionsThunk = createThunk(
                 })),
             }));
 
-        const metadataLabels = fromLegacyMetadataToSearchAccountLabels(accountMetadata);
+        const searchLabels = selectAccountLabelsForSearch(getState(), account);
 
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, metadataLabels, searchQuery)
+                ? advancedSearchTransactions(transactions, searchLabels, searchQuery)
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted

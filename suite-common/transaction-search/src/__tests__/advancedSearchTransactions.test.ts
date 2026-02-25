@@ -23,7 +23,7 @@ const toSearchOutputLabels = (
 const toSearchAccountLabels = (labels: {
     outputLabels: Record<string, Record<string, string>>;
     addressLabels: Record<string, string>;
-    accountLabel?: string;
+    accountLabel: string | null;
 }): SearchAccountLabels => ({
     ...labels,
     outputLabels: toSearchOutputLabels(labels.outputLabels),

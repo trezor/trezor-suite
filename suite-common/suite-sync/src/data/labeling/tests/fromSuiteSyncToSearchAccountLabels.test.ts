@@ -8,7 +8,6 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import {
     fromSuiteSyncToSearchAccountLabels,
-    fromSuiteSyncToSearchAddressLabels,
     fromSuiteSyncToSearchOutputLabels,
 } from '../fromSuiteSyncToSearchAccountLabels';
 
@@ -69,14 +68,6 @@ describe(fromSuiteSyncToSearchOutputLabels.name, () => {
 });
 
 describe(fromSuiteSyncToSearchAccountLabels.name, () => {
-    it('converts address labels to Map', () => {
-        const addressLabels = fromSuiteSyncToSearchAddressLabels(addressLabelsFixture);
-
-        expect(addressLabels).toBeInstanceOf(Map);
-        expect(addressLabels.get('tb1qaddress1')).toBe('Address label 1');
-        expect(addressLabels.get('tb1qaddress2')).toBeUndefined();
-    });
-
     it('converts account labels to search labels shape', () => {
         const searchLabels = fromSuiteSyncToSearchAccountLabels({
             accountLabel: null,
@@ -84,7 +75,7 @@ describe(fromSuiteSyncToSearchAccountLabels.name, () => {
             addressLabels: addressLabelsFixture,
         });
 
-        expect(searchLabels.accountLabel).toBeUndefined();
+        expect(searchLabels.accountLabel).toBeNull();
         expect(searchLabels.outputLabels).toBeInstanceOf(Map);
         expect(searchLabels.outputLabels.get('txid1')?.get('0')).toBe('Label A');
         expect(searchLabels.addressLabels).toBeInstanceOf(Map);

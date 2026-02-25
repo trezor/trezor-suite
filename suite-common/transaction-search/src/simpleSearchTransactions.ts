@@ -73,7 +73,7 @@ const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
 
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
-    accountLabels: SearchAccountLabels, // Todo: this is wrong, this shall reflect SuiteSync labels. See https://github.com/trezor/trezor-suite/issues/24803
+    accountLabels: SearchAccountLabels,
     search: string,
 ) => {
     // Trim
