@@ -4,14 +4,10 @@ import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     selectAPYByAccountKey,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-native/staking/src/cardanoStakingSelectors';
+    useSelector as useNativeStakingSelector,
+} from '@suite-native/staking';
 
 type CardanoStakingInfoBannerProps = {
     accountKey: AccountKey;

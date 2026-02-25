@@ -8,14 +8,12 @@ import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-n
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
+    NativeStakingRootState,
     selectIsStakeConfirmingByAccountKey,
     selectIsStakePendingByAccountKey,
     selectTotalStakePendingByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { NativeStakingRootState } from '@suite-native/staking/src/types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type StakePendingCardProps = {
