@@ -1,7 +1,8 @@
 // API params
 
-import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { Static, TSchema, Type } from '@trezor/schema-utils';
+import { Err, Ok } from '@trezor/type-utils';
 
 import { DeviceState, DeviceUniquePath } from './device';
 
@@ -42,21 +43,11 @@ export interface CommonParamsWithCoin extends CommonParams {
     identity?: string; // ensures that different backend connections are opened for different identities
 }
 
-export interface Unsuccessful {
-    success: false;
-    payload: { error: string; code?: ErrorCode };
-}
-
-export interface Success<T> {
-    success: true;
-    payload: T;
-}
-
-export interface SuccessWithDevice<T> extends Success<T> {
+export interface OkWithDevice<T> extends Ok<T> {
     device?: DeviceIdentity;
 }
 
-export type Response<T> = Promise<SuccessWithDevice<T> | Unsuccessful>;
+export type Response<T> = Promise<OkWithDevice<T> | Err<SerializedError>>;
 
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {

@@ -36,11 +36,11 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
     } else {
         dispatch(onCancel());
         // Special case: closing no-backup warning modal should not show a toast.
-        if (response.payload.code === 'Method_PermissionsNotGranted') return;
+        if (response.error.code === 'Method_PermissionsNotGranted') return;
         dispatch(
             notificationsActions.addToast({
                 type: 'verify-xpub-error',
-                error: response.payload.error,
+                error: response.error.message,
             }),
         );
     }

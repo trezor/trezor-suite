@@ -41,9 +41,9 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
             return ok(asDelegatedIdentityKey(result.payload.private_key));
         }
 
-        if (isCanceledErrorMessage(result.payload.error)) {
+        if (isCanceledErrorMessage(result.error.message)) {
             return err(DeviceCancelledErr());
         }
 
-        return err(DeviceError(result.payload.error));
+        return err(DeviceError(result.error.message));
     };

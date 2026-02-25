@@ -49,14 +49,14 @@ describe('TrezorConnect passphrase', () => {
             },
         });
         if (!walletDefault.success) {
-            throw new Error(`default Wallet exception: ${walletDefault.payload.error}`);
+            throw new Error(`default Wallet exception: ${walletDefault.error.message}`);
         }
         const xpub = await TrezorConnect.getPublicKey({
             device: { instance: 0, useEmptyPassphrase: true },
             path: XPUB_PATH,
         });
         if (!xpub.success) {
-            throw new Error(`getPublicKey exception: ${xpub.payload.error}`);
+            throw new Error(`getPublicKey exception: ${xpub.error.message}`);
         }
         expect(xpub.payload).toMatchObject({
             xpub: 'xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF',
@@ -75,7 +75,7 @@ describe('TrezorConnect passphrase', () => {
             },
         });
         if (!walletA.success) {
-            throw new Error(`Wallet A exception: ${walletA.payload.error}`);
+            throw new Error(`Wallet A exception: ${walletA.error.message}`);
         }
         const xpubA = await TrezorConnect.getPublicKey({
             device: {
@@ -85,7 +85,7 @@ describe('TrezorConnect passphrase', () => {
             path: XPUB_PATH,
         });
         if (!xpubA.success) {
-            throw new Error(`getPublicKey A exception: ${xpubA.payload.error}`);
+            throw new Error(`getPublicKey A exception: ${xpubA.error.message}`);
         }
         expect(xpubA.payload).toMatchObject({
             xpub: 'xpub6CixwCVCacLWy2pdyzvcWATbm8cHRqLkmC3B335NzEVx3DBMG8mhoqyJzm62Qkv3UyN4haP7xnihe7ZR134vVGY8pjAHtGgiyD139Ro29N8',
@@ -103,7 +103,7 @@ describe('TrezorConnect passphrase', () => {
             },
         });
         if (!walletB.success) {
-            throw new Error(`Wallet B exception: ${walletB.payload.error}`);
+            throw new Error(`Wallet B exception: ${walletB.error.message}`);
         }
         const xpubB = await TrezorConnect.getPublicKey({
             device: {
@@ -113,7 +113,7 @@ describe('TrezorConnect passphrase', () => {
             path: XPUB_PATH,
         });
         if (!xpubB.success) {
-            throw new Error(`getPublicKey B exception: ${xpubB.payload.error}`);
+            throw new Error(`getPublicKey B exception: ${xpubB.error.message}`);
         }
         expect(xpubB.payload).toMatchObject({
             xpub: 'xpub6CUsAXLNQXX9oGjwXi2EjL1Hp8BMPSKXsgdRHv5pgPoqb9CxncThcup7YAsbYcKMgRqDbedLCNUWzD7JhPVsEc82yYz15AYR35UGiUkXtWa',
@@ -131,6 +131,7 @@ describe('TrezorConnect passphrase', () => {
             },
             path: ADDRESS_PATH,
         });
+        if (!addressA.success) throw new Error(addressA.error.message);
         expect(addressA.payload).toMatchObject({
             address: 'bc1qjgjmd5mg4acxghjcmflpvh44dfxdwnespafrd3',
         });
@@ -141,6 +142,7 @@ describe('TrezorConnect passphrase', () => {
             },
             path: ADDRESS_PATH,
         });
+        if (!addressB.success) throw new Error(addressB.error.message);
         expect(addressB.payload).toMatchObject({
             address: 'bc1qrfe6tkm77tgg03xzgvnjf9mgrr7sfez2gk2h47',
         });
@@ -152,6 +154,7 @@ describe('TrezorConnect passphrase', () => {
             path: ADDRESS_PATH,
             showOnTrezor: false,
         });
+        if (!address.success) throw new Error(address.error.message);
         expect(address.payload).toMatchObject({
             address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
         });
@@ -168,8 +171,12 @@ describe('TrezorConnect passphrase', () => {
             path: "m/84'/0'/0'/0/0",
             showOnTrezor: false,
         });
-        expect(invalidState.payload).toMatchObject({
-            error: 'Passphrase is incorrect',
+        if (invalidState.success) {
+            throw new Error('Expected to fail');
+        }
+        expect(invalidState.error).toMatchObject({
+            code: 'Device_InvalidState',
+            message: 'Passphrase is incorrect',
         });
         TrezorConnect.removeAllListeners('ui-request_passphrase');
     });
@@ -179,14 +186,14 @@ describe('TrezorConnect passphrase', () => {
         const standard = await TrezorConnect.getDeviceState({
             device: { instance: 0, state: undefined, useEmptyPassphrase: true },
         });
-        if (!standard.success) throw new Error(standard.payload.error);
+        if (!standard.success) throw new Error(standard.error.message);
 
         // get passphrase wallet state
         TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
         const passphrase = await TrezorConnect.getDeviceState({
             device: { instance: 1, state: undefined },
         });
-        if (!passphrase.success) throw new Error(passphrase.payload.error);
+        if (!passphrase.success) throw new Error(passphrase.error.message);
 
         // restart the device
         await restartEmu(controller);
@@ -199,7 +206,7 @@ describe('TrezorConnect passphrase', () => {
                 state: { staticSessionId: passphrase.payload.state.staticSessionId },
             },
         });
-        if (!passphrase2.success) throw new Error(passphrase2.payload.error);
+        if (!passphrase2.success) throw new Error(passphrase2.error.message);
 
         // try to get standard wallet state, with sessionId now used for passphrase wallet
         const standard2 = await TrezorConnect.getDeviceState({
@@ -211,7 +218,7 @@ describe('TrezorConnect passphrase', () => {
                 useEmptyPassphrase: true,
             },
         });
-        if (!standard2.success) throw new Error(standard2.payload.error);
+        if (!standard2.success) throw new Error(standard2.error.message);
 
         expect(passphrase2.payload.state.staticSessionId).toEqual(
             passphrase.payload.state.staticSessionId,
@@ -233,7 +240,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         if (!xpub.success) {
-            throw new Error(`Passphrase exception: ${xpub.payload.error}`);
+            throw new Error(`Passphrase exception: ${xpub.error.message}`);
         }
         expect(xpub.payload).toMatchObject({
             xpub: 'xpub6Gw8xpZ3YUTF7ebfnT3bGLHYrZ5mRQU14SXfGsjopTx1yVcZwkXSz2TPGyS7zqvzL9McXUjBG87FugyENjxpFCCv5W3ic1SWW5oQbRKx368',
@@ -263,7 +270,7 @@ describe('TrezorConnect passphrase', () => {
             },
         });
         if (!walletA.success) {
-            throw new Error(`Wallet A exception: ${walletA.payload.error}`);
+            throw new Error(`Wallet A exception: ${walletA.error.message}`);
         }
         const xpubA = await TrezorConnect.getPublicKey({
             device: {
@@ -273,6 +280,9 @@ describe('TrezorConnect passphrase', () => {
             path: "m/84'/0'/0'",
         });
         // same xpub as walletA from previous test case enforced on instance 0
+        if (!xpubA.success) {
+            throw new Error(`getPublicKey A exception: ${xpubA.error.message}`);
+        }
         expect(xpubA.payload).toMatchObject({
             xpub: 'xpub6CixwCVCacLWy2pdyzvcWATbm8cHRqLkmC3B335NzEVx3DBMG8mhoqyJzm62Qkv3UyN4haP7xnihe7ZR134vVGY8pjAHtGgiyD139Ro29N8',
         });

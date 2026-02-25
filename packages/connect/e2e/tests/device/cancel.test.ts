@@ -87,8 +87,8 @@ describe('TrezorConnect.cancel', () => {
 
         expect(response).toMatchObject({
             success: false,
-            payload: {
-                error: 'Cancel reason',
+            error: {
+                message: 'Cancel reason',
                 code: 'Method_Cancel',
             },
         });
@@ -124,8 +124,8 @@ describe('TrezorConnect.cancel', () => {
 
         expect(response).toMatchObject({
             success: false,
-            payload: {
-                error: 'Cancel reason',
+            error: {
+                message: 'Cancel reason',
             },
         });
 
@@ -197,6 +197,7 @@ describe('TrezorConnect.cancel', () => {
 
         // assertGetAddressWorks will not work without providing pin
         const feat = await TrezorConnect.getFeatures();
+        if (!feat.success) throw new Error(feat.error.message);
         expect(feat.payload).toMatchObject({ initialized: true });
     });
 
@@ -231,6 +232,7 @@ describe('TrezorConnect.cancel', () => {
 
         // assertGetAddressWorks will not work here, device is not initialized
         const feat = await TrezorConnect.getFeatures();
+        if (!feat.success) throw new Error(feat.error.message);
         expect(feat.payload).toMatchObject({ initialized: false });
     });
 });

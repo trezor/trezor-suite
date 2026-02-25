@@ -10927,6 +10927,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
+    "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.1.6"
     react: "npm:19.1.0"
@@ -10983,6 +10984,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -10996,6 +10998,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11306,6 +11309,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     web3-utils: "npm:^4.3.2"
@@ -11596,6 +11600,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.2"
     "@trezor/address-validator": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -11774,6 +11779,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@walletconnect/core": "npm:^2.21.5"
     "@walletconnect/types": "npm:^2.21.4"
@@ -12452,6 +12458,7 @@ __metadata:
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -13867,7 +13874,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft

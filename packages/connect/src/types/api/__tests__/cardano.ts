@@ -116,7 +116,7 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundleAddress.payload.address.toLowerCase();
     } else {
-        bundleAddress.payload.error.toLowerCase();
+        bundleAddress.error.message.toLowerCase();
     }
 
     // with all possible params
@@ -185,7 +185,7 @@ export const cardanoGetNativeScriptHash = async (api: TrezorConnect) => {
     if (result.success) {
         result.payload.scriptHash.toLowerCase();
     } else {
-        result.payload.error.toLowerCase();
+        result.error.message.toLowerCase();
     }
 };
 
@@ -214,7 +214,7 @@ export const cardanoGetPublicKey = async (api: TrezorConnect) => {
         // @ts-expect-error
         bundlePK.payload.path.toLowerCase();
     } else {
-        bundlePK.payload.error.toLowerCase();
+        bundlePK.error.message.toLowerCase();
     }
 };
 

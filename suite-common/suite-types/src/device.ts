@@ -11,7 +11,6 @@ import {
     StaticSessionId,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
-    Unsuccessful,
 } from '@trezor/connect';
 import { Branded, UnionSubset } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
@@ -109,7 +108,7 @@ export type TrezorDeviceWithState = AcquiredDevice & {
     state: NonNullable<AcquiredDevice['state']> & { staticSessionId: StaticSessionId };
 };
 
-type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | Unsuccessful['payload'];
+type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | { error: string };
 /**
  * Processed result of TrezorConnect.authenticateDevice call that we may store in the Redux state.
  * We want to:

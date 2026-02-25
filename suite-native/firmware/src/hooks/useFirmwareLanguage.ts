@@ -40,8 +40,8 @@ export const useFirmwareLanguage = () => {
                 return;
             }
 
-            const { success, payload } = result.payload;
-            if (success) {
+            const unwrappedResult = result.payload;
+            if (unwrappedResult.success) {
                 showToast({
                     variant: 'default',
                     message: translate('firmware.changeLanguage.success', {
@@ -50,7 +50,7 @@ export const useFirmwareLanguage = () => {
                 });
                 navigation.goBack();
             } else {
-                const errorCode = payload.code;
+                const errorCode = unwrappedResult.error.code;
                 if (
                     errorCode === 'Failure_ActionCancelled' ||
                     errorCode === 'Failure_PinCancelled' ||

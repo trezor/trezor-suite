@@ -25,7 +25,9 @@ import {
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -204,7 +206,7 @@ const pushTransaction =
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: sentTx.payload.error,
+                    error: sentTx.error.message,
                 }),
             );
         }
@@ -241,7 +243,7 @@ export const signTransaction =
         dispatch(modalActions.preserve());
 
         // signTransaction by Trezor
-        let serializedTx: undefined | string | Unsuccessful;
+        let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
@@ -261,7 +263,7 @@ export const signTransaction =
         }
 
         if (typeof serializedTx !== 'string') {
-            if (serializedTx?.payload?.error === 'tx-timeout') {
+            if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked

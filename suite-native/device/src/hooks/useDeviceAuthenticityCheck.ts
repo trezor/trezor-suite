@@ -79,7 +79,7 @@ export const useDeviceAuthenticityCheck = () => {
             // Otherwise it may be cancel on device (must not be considered device compromised), or a transport error, etc.
             if (!result.success) {
                 return isDeviceBootloaderUnlocked
-                    ? { valid: false, error: result.payload.error }
+                    ? { valid: false, error: result.error.message }
                     : undefined;
             }
 
@@ -174,8 +174,8 @@ export const useDeviceAuthenticityCheck = () => {
             const result = deviceAccessResponse.payload;
 
             if (!result.success) {
-                const { error, code } = result.payload;
-                handleError(error, code);
+                const { message, code } = result.error;
+                handleError(message, code);
             }
 
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);

@@ -53,7 +53,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 setTokenInfo(undefined);
                 setError(
                     translationString('TR_ADD_TOKEN_TOAST_ERROR', {
-                        error: response.payload.error,
+                        error: response.error.message,
                     }),
                 );
             }

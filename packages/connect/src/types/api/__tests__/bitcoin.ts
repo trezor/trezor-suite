@@ -23,7 +23,7 @@ export const getAddress = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundleAddress.payload.address.toLowerCase();
     } else {
-        bundleAddress.payload.error.toLowerCase();
+        bundleAddress.error.message.toLowerCase();
     }
 
     // with all possible params
@@ -88,7 +88,7 @@ export const getPublicKey = async (api: TrezorConnect) => {
         // @ts-expect-error, payload is an array
         bundlePK.payload.xpub.toLowerCase();
     } else {
-        bundlePK.payload.error.toLowerCase();
+        bundlePK.error.message.toLowerCase();
     }
 };
 
@@ -522,7 +522,7 @@ export const composeTransaction = async (api: TrezorConnect) => {
             tx.outputs.map((a: any) => a);
         }
     } else {
-        precompose.payload.error.toLowerCase();
+        precompose.error.message.toLowerCase();
         // @ts-expect-error
         precompose.payload.type.toLowerCase();
     }
@@ -699,7 +699,7 @@ export const getOwnershipId = async (api: TrezorConnect) => {
         // @ts-expect-error
         bundleId.payload.ownership_id.toLowerCase();
     } else {
-        bundleId.payload.error.toLowerCase();
+        bundleId.error.message.toLowerCase();
     }
 
     // @ts-expect-error missing path
@@ -737,7 +737,7 @@ export const getOwnershipProof = async (api: TrezorConnect) => {
         // @ts-expect-error
         bundleId.payload.ownership_proof.toLowerCase();
     } else {
-        bundleId.payload.error.toLowerCase();
+        bundleId.error.message.toLowerCase();
     }
 
     // @ts-expect-error missing path

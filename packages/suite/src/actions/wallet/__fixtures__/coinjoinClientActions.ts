@@ -408,8 +408,8 @@ export const getOwnershipProof = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'Firmware error',
+                error: {
+                    message: 'Firmware error',
                 },
             },
             {
@@ -761,8 +761,8 @@ export const signCoinjoinTx = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'Firmware error',
+                error: {
+                    message: 'Firmware error',
                 },
             },
         ],

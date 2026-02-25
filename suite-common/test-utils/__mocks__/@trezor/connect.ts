@@ -47,7 +47,7 @@ const result = (methodName: string, defaults: any) =>
         });
     });
 
-const ERROR_RESULT = { success: false, payload: { error: 'Default mock error' } };
+const ERROR_RESULT = { success: false, error: { message: 'Default mock error' } };
 
 // Override connect methods with mocked default response (success: true)
 const methods = connect.default;
@@ -92,7 +92,7 @@ methods.composeTransaction = jest.fn(async _params => {
         await new Promise(resolve => setTimeout(resolve, fixture.delay));
     }
 
-    return { success: false, payload: { error: 'error' }, ...fixture, _params };
+    return { success: false, error: { message: 'error' }, ...fixture, _params };
 });
 
 // Add custom methods

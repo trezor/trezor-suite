@@ -580,7 +580,7 @@ export const createCoinjoinAccount =
         const device = selectSelectedDevice(getState());
         const unlockPath = await TrezorConnect.unlockPath({ path: "m/10025'", device });
         if (!unlockPath.success) {
-            dispatch(handleError(unlockPath.payload.error));
+            dispatch(handleError(unlockPath.error.message));
             dispatch(clearCoinjoinInstances(network.symbol));
             dispatch(coinjoinAccountPreloading(false));
 
@@ -598,7 +598,7 @@ export const createCoinjoinAccount =
             suppressBackupWarning: true,
         });
         if (!publicKey.success) {
-            dispatch(handleError(publicKey.payload.error));
+            dispatch(handleError(publicKey.error.message));
             dispatch(clearCoinjoinInstances(network.symbol));
             dispatch(coinjoinAccountPreloading(false));
 
@@ -708,12 +708,12 @@ const authorizeCoinjoin =
             return true;
         }
 
-        dispatch(coinjoinAccountAuthorizeFailed(account.key, auth.payload.error));
+        dispatch(coinjoinAccountAuthorizeFailed(account.key, auth.error.message));
 
         dispatch(
             notificationsActions.addToast({
                 type: 'error',
-                error: `Coinjoin not authorized: ${auth.payload.error}`,
+                error: `Coinjoin not authorized: ${auth.error.message}`,
             }),
         );
     };

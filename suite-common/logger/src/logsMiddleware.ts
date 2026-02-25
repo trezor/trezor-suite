@@ -82,7 +82,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
         );
     }
     if (action.type === TRANSPORT.ERROR) {
-        dispatch(addLog({ type: action.type, payload: { error: action.payload.error } }));
+        dispatch(addLog({ type: action.type, payload: { error: action.error.message } }));
     }
 
     if (isAnyOf(accountsActions.updateSelectedAccount)(action)) {

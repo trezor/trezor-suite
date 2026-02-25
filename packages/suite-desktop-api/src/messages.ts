@@ -160,6 +160,14 @@ export type ConnectPopupCancel = {
 
 export type ConnectPopupResponse = {
     id: string;
-    success: boolean;
-    payload: any;
-};
+} & (
+    | {
+          success: true;
+          payload: any;
+      }
+    | {
+          success: false;
+          payload: any; // for backward compatibility with v9
+          error: any;
+      }
+);

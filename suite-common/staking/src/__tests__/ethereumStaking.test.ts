@@ -1,15 +1,11 @@
 import { ValidatorsQueue, WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, {
-    AccountInfo,
-    InternalTransfer,
-    Success,
-    SuccessWithDevice,
-    Unsuccessful,
-} from '@trezor/connect';
+import TrezorConnect, { AccountInfo, InternalTransfer, OkWithDevice } from '@trezor/connect';
 import {
     BlockchainEstimatedFee,
     BlockchainEstimatedFeeLevel,
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Err, Ok, Result } from '@trezor/type-utils';
 
 import {
     claimFailedFixture,
@@ -62,7 +58,6 @@ describe('transformTx', () => {
     });
 });
 
-type Result<T> = Unsuccessful | Success<T>;
 type AccountInfoResult = Result<(AccountInfo | null)[]>;
 type EstimateFeeResult = Result<BlockchainEstimatedFeeLevel>;
 
@@ -213,7 +208,7 @@ describe('getDaysToAddToPoolInitial', () => {
     });
 });
 
-type GetAdjustedGasLimitConsumptionArgs = Success<BlockchainEstimatedFee>;
+type GetAdjustedGasLimitConsumptionArgs = Ok<BlockchainEstimatedFee>;
 
 describe('getAdjustedGasLimitConsumption', () => {
     getAdjustedGasLimitConsumptionFixture.forEach(test => {
@@ -262,7 +257,7 @@ describe('getChangedInternalTx', () => {
     });
 });
 
-type BlockchainEvmRpcCallResult = Unsuccessful | SuccessWithDevice<{ data: string }>;
+type BlockchainEvmRpcCallResult = Err<SerializedError> | OkWithDevice<{ data: string }>;
 type SimulateUnstakeArgs = StakeTxBaseArgs & { amount: string };
 
 describe('simulateUnstake', () => {

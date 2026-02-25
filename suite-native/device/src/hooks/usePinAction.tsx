@@ -101,12 +101,12 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
             return;
         }
 
-        const { success, payload } = result.payload;
-        if (success) {
+        const unwrappedResult = result.payload;
+        if (unwrappedResult.success) {
             showSuccess(successMessageKey);
             onSuccess();
         } else {
-            const errorCode = payload.code;
+            const errorCode = unwrappedResult.error.code;
             if (
                 errorCode === 'Failure_ActionCancelled' ||
                 errorCode === 'Failure_PinCancelled' ||

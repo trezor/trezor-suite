@@ -133,13 +133,13 @@ const manageTrustline = async (
         } else {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: pushResponse.payload.error,
+                message: pushResponse.error.message,
             });
         }
     } else {
         return rejectWithValue({
             error: 'sign-transaction-failed',
-            message: response.payload.error,
+            message: response.error.message,
         });
     }
 };

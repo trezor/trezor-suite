@@ -67,5 +67,5 @@ export const createRetrieveSuiteSyncOwner =
             return deps.createSuiteSyncOwner({ data: result.payload.data });
         }
 
-        return err(DeviceError(result.payload.error));
+        return err(DeviceError(result.error.message));
     };

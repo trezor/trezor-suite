@@ -22,7 +22,7 @@ describe('TrezorConnect.unlockPath', () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
-        if (!unlockPath.success) throw new Error(unlockPath.payload.error);
+        if (!unlockPath.success) throw new Error(unlockPath.error.message);
 
         expect(unlockPath.payload).toMatchObject({
             address_n: [2147493673],
@@ -34,6 +34,7 @@ describe('TrezorConnect.unlockPath', () => {
             unlockPath: unlockPath.payload,
             coin: 'Testnet',
         });
+        if (!address.success) throw new Error(address.error.message);
 
         expect(address.payload).toMatchObject({
             address: 'tb1pl3y9gf7xk2ryvmav5ar66ra0d2hk7lhh9mmusx3qvn0n09kmaghqh32ru7',
@@ -44,6 +45,7 @@ describe('TrezorConnect.unlockPath', () => {
             unlockPath: unlockPath.payload,
             coin: 'Testnet',
         });
+        if (!address2.success) throw new Error(address2.error.message);
 
         expect(address2.payload).toMatchObject({
             address: 'tb1p64rqq64rtt7eq6p0htegalcjl2nkjz64ur8xsclc59s5845jty7skp2843',
@@ -66,6 +68,7 @@ describe('TrezorConnect.unlockPath', () => {
                 },
             ],
         });
+        if (!bundle.success) throw new Error(bundle.error.message);
 
         expect(bundle.payload).toMatchObject([
             {
@@ -82,7 +85,8 @@ describe('TrezorConnect.unlockPath', () => {
             unlockPath: unlockPath.payload,
             coin: 'Testnet',
         });
-        expect(changeAddress.payload).toMatchObject({ error: 'Forbidden key path' });
+        if (changeAddress.success) throw new Error('Expected error');
+        expect(changeAddress.error).toMatchObject({ message: 'Forbidden key path' });
 
         // Ensure that another SLIP-0025 account is inaccessible with the same MAC.
         const otherAccount = await TrezorConnect.getAddress({
@@ -90,14 +94,15 @@ describe('TrezorConnect.unlockPath', () => {
             unlockPath: unlockPath.payload,
             coin: 'Testnet',
         });
-        expect(otherAccount.payload).toMatchObject({ error: 'Forbidden key path' });
+        if (otherAccount.success) throw new Error('Expected error');
+        expect(otherAccount.error).toMatchObject({ message: 'Forbidden key path' });
     });
 
     conditionalTest(['1', '<2.5.3'], 'Unlock SLIP-25 + getPublicKey', async () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
-        if (!unlockPath.success) throw new Error(unlockPath.payload.error);
+        if (!unlockPath.success) throw new Error(unlockPath.error.message);
 
         expect(unlockPath.payload).toMatchObject({
             address_n: [2147493673],
@@ -110,6 +115,7 @@ describe('TrezorConnect.unlockPath', () => {
             coin: 'Testnet',
         });
 
+        if (!unlockedPublicKey.success) throw new Error(unlockedPublicKey.error.message);
         expect(unlockedPublicKey.payload).toMatchObject({
             xpub: 'tpubDEMKm4M3S2Grx5DHTfbX9et5HQb9KhdjDCkUYdH9gvVofvPTE6yb2MH52P9uc4mx6eFohUmfN1f4hhHNK28GaZnWRXr3b8KkfFcySo1SmXU',
             xpubSegwit: `tr([5c9e228d/10025'/1'/0'/1']tpubDEMKm4M3S2Grx5DHTfbX9et5HQb9KhdjDCkUYdH9gvVofvPTE6yb2MH52P9uc4mx6eFohUmfN1f4hhHNK28GaZnWRXr3b8KkfFcySo1SmXU/<0;1>/*)`,
@@ -133,6 +139,7 @@ describe('TrezorConnect.unlockPath', () => {
             ],
         });
 
+        if (!bundle.success) throw new Error(bundle.error.message);
         expect(bundle.payload).toMatchObject([
             {
                 xpub: 'tpubDEMKm4M3S2Grx5DHTfbX9et5HQb9KhdjDCkUYdH9gvVofvPTE6yb2MH52P9uc4mx6eFohUmfN1f4hhHNK28GaZnWRXr3b8KkfFcySo1SmXU',
@@ -150,14 +157,15 @@ describe('TrezorConnect.unlockPath', () => {
             coin: 'Testnet',
         });
 
-        expect(forbiddenPublicKey.payload).toMatchObject({ error: 'Forbidden key path' });
+        if (forbiddenPublicKey.success) throw new Error('Expected error');
+        expect(forbiddenPublicKey.error).toMatchObject({ message: 'Forbidden key path' });
     });
 
     conditionalTest(['1', '<2.5.3'], 'Unlock SLIP-25 + signTransaction', async () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
-        if (!unlockPath.success) throw new Error(unlockPath.payload.error);
+        if (!unlockPath.success) throw new Error(unlockPath.error.message);
 
         expect(unlockPath.payload).toMatchObject({
             address_n: [2147493673],
@@ -197,12 +205,14 @@ describe('TrezorConnect.unlockPath', () => {
             unlockPath: unlockPath.payload,
         });
 
+        if (!unlockedSignTx.success) throw new Error(unlockedSignTx.error.message);
         expect(unlockedSignTx.payload).toMatchObject({
             serializedTx:
                 '010000000001010ab6ad3ba09261cfb4fa1d3680cb19332a8fe4d9de9ea89aa565bd83a2c082f90100000000ffffffff02c8736e0000000000225120c5c7c63798b59dc16e97d916011e99da5799d1b3dd81c2f2e93392477417e71e50c30000000000001976a914a579388225827d9f2fe9014add644487808c695d88ac014006bc29900d39570fca291c038551817430965ac6aa26f286483559e692a14a82cfaf8e57610eae12a5af05ee1e9600acb31de4757349c0e3066701aa78f65d2a00000000',
         });
 
         const forbiddenSignTx = await TrezorConnect.signTransaction(params);
-        expect(forbiddenSignTx.payload).toMatchObject({ error: 'Forbidden key path' });
+        if (forbiddenSignTx.success) throw new Error('Expected error');
+        expect(forbiddenSignTx.error).toMatchObject({ message: 'Forbidden key path' });
     });
 });

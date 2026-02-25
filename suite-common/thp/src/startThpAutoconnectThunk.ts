@@ -21,11 +21,11 @@ export const startThpAutoconnectThunk = createThunk<void, StartThpAutoconnectThu
             return;
         } else {
             dispatch(
-                notificationsActions.addToast({ type: 'error', error: response.payload.error }),
+                notificationsActions.addToast({ type: 'error', error: response.error.message }),
             );
             dispatch(thpActions.finishAutoconnectFlow());
 
-            return rejectWithValue(response.payload.error);
+            return rejectWithValue(response.error.message);
         }
     },
 );

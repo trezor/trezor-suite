@@ -28,9 +28,10 @@ import {
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { PROTO, Success, Unsuccessful } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { Timer } from '@trezor/react-utils';
-import { PrimitiveType } from '@trezor/type-utils';
+import { Err, Ok, PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
 
@@ -307,4 +308,4 @@ export type TradingVerifiedAddress =
       }
     | undefined;
 
-export type TradingFulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
+export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;

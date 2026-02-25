@@ -139,7 +139,7 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
             }
             const response = await this.getTarget().call(params);
             if (!response.success) {
-                if (await this.handleErrorFallback(response.payload.code)) {
+                if (await this.handleErrorFallback(response.error.code)) {
                     return await this.getTarget().call(params);
                 }
             }

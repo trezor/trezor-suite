@@ -367,8 +367,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         // catch manual error from TransactionReviewModal
         return rejectWithValue({
             error: 'sign-transaction-failed',
-            errorCode: response.payload.code,
-            message: response.payload.error,
+            errorCode: response.error.code,
+            message: response.error.message,
         });
     },
 );

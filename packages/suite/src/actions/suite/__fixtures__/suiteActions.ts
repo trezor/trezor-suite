@@ -761,8 +761,8 @@ const acquireDevice = [
         },
         getFeatures: {
             success: false,
-            payload: {
-                error: 'getFeatures error',
+            error: {
+                message: 'getFeatures error',
             },
         },
         result: notificationsActions.addToast.type,

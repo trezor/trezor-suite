@@ -399,8 +399,10 @@ export const runDiscoveryThunk = createThunk(
             }
 
             if (!deviceStateResponse.success) {
-                const { error, code } = deviceStateResponse.payload;
-                dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
+                const { message, code } = deviceStateResponse.error;
+                dispatch(
+                    applyDeviceStateErrorThunk({ error: message, code, devicePath: device.path }),
+                );
 
                 return;
             }
@@ -536,8 +538,8 @@ export const runDiscoveryThunk = createThunk(
                     discoveryActions.updateDiscovery(
                         {
                             status: 'failed',
-                            error: result.payload.error,
-                            errorCode: result.payload.code,
+                            error: result.error.message,
+                            errorCode: result.error.code,
                         },
                         device.path,
                     ),
@@ -596,8 +598,10 @@ export const runDiscoveryThunk = createThunk(
             }
 
             if (!getDeviceState2Res.success) {
-                const { error, code } = getDeviceState2Res.payload;
-                dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
+                const { message, code } = getDeviceState2Res.error;
+                dispatch(
+                    applyDeviceStateErrorThunk({ error: message, code, devicePath: device.path }),
+                );
                 dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, false));
 
                 return;
@@ -715,8 +719,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
         });
 
         if (!deviceStateResponse.success) {
-            const { error, code } = deviceStateResponse.payload;
-            dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
+            const { message, code } = deviceStateResponse.error;
+            dispatch(applyDeviceStateErrorThunk({ error: message, code, devicePath: device.path }));
 
             return;
         }
@@ -775,8 +779,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
                     ? { status: 'complete' }
                     : {
                           status: 'failed',
-                          error: result.payload.error,
-                          errorCode: result.payload.code,
+                          error: result.error.message,
+                          errorCode: result.error.code,
                       },
                 updatedDevice.path,
             ),

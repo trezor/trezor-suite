@@ -9,8 +9,9 @@ import { createThunk } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
+import TrezorConnect, { OkWithDevice, PROTO } from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 
@@ -36,7 +37,7 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 };
 
 export const createAndBackupWalletThunk = createThunk<
-    Unsuccessful | SuccessWithDevice<PROTO.Success>,
+    Err<SerializedError> | OkWithDevice<PROTO.Success>,
     { walletBackupType: BackupType },
     { rejectValue: string }
 >(

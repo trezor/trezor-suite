@@ -197,7 +197,7 @@ describe('useRbfForm hook', () => {
                 .mockImplementation(() =>
                     Promise.resolve({
                         success: false,
-                        payload: { error: 'error' },
+                        error: { message: 'error', code: 'Failure_UnknownCode' },
                     }),
                 );
 

@@ -89,7 +89,7 @@ const getLatestAccountInfo = async ({
     });
 
     if (!accountInfo?.success) {
-        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
+        throw new Error(`Get account balance info error: ${accountInfo.error.message}`);
     }
 
     return accountInfo.payload;
@@ -202,7 +202,7 @@ const getAccountBalanceHistory = async ({
 
         if (!connectBalanceHistory?.success) {
             throw new Error(
-                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+                `Get account balance movement error: ${connectBalanceHistory.error.message}`,
             );
         }
 

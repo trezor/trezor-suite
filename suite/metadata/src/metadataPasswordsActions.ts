@@ -114,7 +114,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
             askOnDecrypt: true,
         });
         if (!res.success) {
-            throw new Error(res.payload.error);
+            throw new Error(res.error.message);
         }
         const encryptionKey = res.payload.value.substring(
             res.payload.value.length / 2,
