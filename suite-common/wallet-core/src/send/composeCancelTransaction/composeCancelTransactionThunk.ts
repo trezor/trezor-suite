@@ -73,7 +73,7 @@ const calculateNewTransactionSize = createThunk<
         });
 
         if (!tempCancelTxResult.success) {
-            return rejectWithValue(`Unexpected compose error: ${tempCancelTxResult.payload.error}`);
+            return rejectWithValue(`Unexpected compose error: ${tempCancelTxResult.error.message}`);
         }
 
         const tempCancelTx = tempCancelTxResult.payload[0];

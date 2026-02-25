@@ -20,6 +20,7 @@
             "path": "../../packages/connect-plugin-ethereum"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

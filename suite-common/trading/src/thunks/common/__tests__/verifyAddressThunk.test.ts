@@ -290,7 +290,7 @@ describe('verifyAddressThunk', () => {
         (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
             createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                 success: false,
-                payload: {
+                error: {
                     code: 'Method_PermissionsNotGranted',
                 },
             })),
@@ -336,8 +336,8 @@ describe('verifyAddressThunk', () => {
         (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
             createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                 success: false,
-                payload: {
-                    error,
+                error: {
+                    message: error,
                     code: 'error-code',
                 },
             })),

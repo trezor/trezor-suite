@@ -65,7 +65,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
             if (
                 !response.payload.success &&
-                response.payload.payload.code === 'Failure_ActionCancelled'
+                response.payload.error.code === 'Failure_ActionCancelled'
             ) {
                 showToast({
                     icon: 'warningCircle',
@@ -81,7 +81,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
             if (
                 !response.payload.success &&
-                response.payload.payload.error === 'Passphrase is incorrect'
+                response.payload.error.message === 'Passphrase is incorrect'
             ) {
                 showAlert({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
@@ -102,11 +102,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     'Failure_PinInvalid',
                     'Method_Cancel',
                     'Failure_PinCancelled',
-                ].includes(response.payload.payload.code ?? '')
+                ].includes(response.payload.error.code ?? '')
             ) {
                 showAlert({
-                    title: response.payload.payload.code,
-                    description: response.payload.payload.error,
+                    title: response.payload.error.code,
+                    description: response.payload.error.message,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     onPressPrimaryButton: () => {

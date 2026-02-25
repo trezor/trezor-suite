@@ -116,12 +116,12 @@ export const firmwareUpdate = createThunk<
 
         if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));
-            dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.payload.error));
+            dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.error.message));
 
             return rejectWithValue({
                 device,
                 ...targetProperties,
-                ...firmwareUpdateResponse.payload,
+                error: firmwareUpdateResponse.error.message,
                 connectResponse: firmwareUpdateResponse,
             });
         } else {

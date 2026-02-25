@@ -1174,7 +1174,7 @@ export const prepareNewAccountPayload = async ({
         details: 'txs',
     });
 
-    if (!res.success) return new Error(res.payload.error);
+    if (!res.success) return new Error(res.error.message);
 
     return {
         accountInfo: res.payload,

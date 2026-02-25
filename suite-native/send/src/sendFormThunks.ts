@@ -31,7 +31,7 @@ import {
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Success } from '@trezor/connect';
+import { Ok } from '@trezor/type-utils';
 import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
@@ -173,7 +173,7 @@ type SendTransactionThunkParams = {
 };
 
 export const sendTransactionThunk = createThunk<
-    Success<{ txid: string }>,
+    Ok<{ txid: string }>,
     SendTransactionThunkParams,
     { rejectValue: PushTransactionError }
 >(
@@ -192,7 +192,10 @@ export const sendTransactionThunk = createThunk<
         if (sendResponse.payload === undefined) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: { success: false, payload: { error: 'Payload is undefined.' } },
+                metadata: {
+                    success: false,
+                    error: { message: 'Payload is undefined.', code: 'Failure_UnknownCode' },
+                },
             });
         }
 

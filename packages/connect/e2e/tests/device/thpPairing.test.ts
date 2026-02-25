@@ -208,7 +208,7 @@ describe('THP pairing', () => {
         if (result.success) throw ERR;
 
         expect(statusChangeEvents).toEqual(['started', 'invalid-tag']);
-        expect(result.payload.code).toMatch('Device_ThpPairingTagInvalid');
+        expect(result.error.code).toMatch('Device_ThpPairingTagInvalid');
     });
 
     it('ThpPairing cancel workflow', async () => {
@@ -230,7 +230,7 @@ describe('THP pairing', () => {
         TrezorConnect.on('ui-request_thp_pairing', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(1));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
@@ -243,7 +243,7 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(2));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
@@ -256,7 +256,7 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(3));
 
         // 3. reject pairing confirmation from host
@@ -264,7 +264,7 @@ describe('THP pairing', () => {
         TrezorConnect.on('ui-button', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
+        expect(result.error.message).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(4));
 
         // check if pairing is still responsive
@@ -321,7 +321,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 4. reject ButtonRequest from Trezor
         TrezorConnect.removeAllListeners('ui-button');
@@ -334,7 +334,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // 5. reject passphrase from host
         TrezorConnect.removeAllListeners('ui-request_passphrase');
@@ -350,7 +350,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 6. reject passphrase from Trezor
         TrezorConnect.removeAllListeners('ui-request_passphrase');
@@ -366,7 +366,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // and finally check if device is still responsive
         TrezorConnect.removeAllListeners('ui-button');

@@ -30,7 +30,7 @@ export const applySettings =
         if (result.success) {
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }
 
         return result;
@@ -53,9 +53,9 @@ export const changePin =
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
             }
-        } else if (result.payload.code === 'Failure_PinMismatch') {
+        } else if (result.error.code === 'Failure_PinMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
-        } else if (result.payload.error.includes('string overflow')) {
+        } else if (result.error.message.includes('string overflow')) {
             // this is a workaround for FW < 1.10.0
             // translate generic error from the device if the entered PIN is longer than 9 digits
             dispatch(
@@ -65,7 +65,7 @@ export const changePin =
                 }),
             );
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }
     };
 
@@ -88,10 +88,10 @@ export const changeWipeCode =
                     type: remove ? 'wipe-code-removed' : 'wipe-code-changed',
                 }),
             );
-        } else if (result.payload.code === 'Failure_WipeCodeMismatch') {
+        } else if (result.error.code === 'Failure_WipeCodeMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }
     };
 
@@ -194,9 +194,9 @@ export const changeLanguage = createThunk(
         } else {
             // Different errors for desktop/Chrome/Firefox
             const isFetchError =
-                result.payload.code === ('ENOTFOUND' as ERRORS.ErrorCode) ||
+                result.error.code === ('ENOTFOUND' as ERRORS.ErrorCode) ||
                 ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
-                    result.payload.error,
+                    result.error.message,
                 );
             if (isFetchError) {
                 dispatch(notificationsActions.addToast({ type: 'firmware-language-fetch-error' }));
@@ -204,7 +204,7 @@ export const changeLanguage = createThunk(
                 dispatch(
                     notificationsActions.addToast({
                         type: 'error',
-                        error: result.payload.error,
+                        error: result.error.message,
                     }),
                 );
             }

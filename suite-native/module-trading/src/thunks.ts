@@ -106,7 +106,7 @@ export const pushTradingTxnThunk = createThunk(
             });
 
             if (!pushTxResponse.success) {
-                return rejectWithValue(pushTxResponse.payload ?? 'Push transaction failed');
+                return rejectWithValue(pushTxResponse.error ?? 'Push transaction failed');
             }
 
             return fulfillWithValue(pushTxResponse);

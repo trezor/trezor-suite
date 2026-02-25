@@ -83,7 +83,7 @@ export const fetchCurrentFiatRates = ({
             // directly from Coingecko to ensure up-to-date values.
             if (isBlockbookBasedNetwork(ticker.symbol) && backendType !== 'evm-rpc' && !skipCache) {
                 if (backendType !== 'electrum') {
-                    const { success, payload } = await scheduleAction(
+                    const result = await scheduleAction(
                         () =>
                             TrezorConnect.blockchainGetCurrentFiatRates({
                                 coin: ticker.symbol,
@@ -93,7 +93,7 @@ export const fetchCurrentFiatRates = ({
                         { timeout: CONNECT_FETCH_TIMEOUT },
                     );
 
-                    if (!success && payload.error === 'No tickers found!') {
+                    if (!result.success && result.error.message === 'No tickers found!') {
                         const fallbackCoinGeckoResponse =
                             await coingeckoService.fetchCurrentFiatRates(ticker);
 
@@ -107,16 +107,16 @@ export const fetchCurrentFiatRates = ({
                         };
                     }
 
-                    if (!success) return null;
+                    if (!result.success) return null;
 
-                    const rate = payload.rates?.[localCurrency];
+                    const rate = result.payload.rates?.[localCurrency];
 
                     // in case blockbook does not know fiat rate, it returns -1
                     if (!rate || rate < 0) return null;
 
                     return {
                         rate,
-                        lastTickerTimestamp: payload.ts as Timestamp,
+                        lastTickerTimestamp: result.payload.ts as Timestamp,
                     };
                 }
 
@@ -161,22 +161,22 @@ export const fetchLastWeekFiatRates = ({
 
             if (isBlockbookBasedNetwork(ticker.symbol)) {
                 if (backendType !== 'electrum') {
-                    const { success, payload } = await getConnectFiatRatesForTimestamp(
+                    const result = await getConnectFiatRatesForTimestamp(
                         ticker,
                         timestamps,
                         localCurrency,
                     );
 
-                    if (!success) return null;
+                    if (!result.success) return null;
 
-                    const rate = payload.tickers?.[0]?.rates?.[localCurrency];
+                    const rate = result.payload.tickers?.[0]?.rates?.[localCurrency];
 
                     // in case blockbook does not know fiat rate, it returns -1
                     if (!rate || rate < 0) return null;
 
                     return {
                         rate,
-                        lastTickerTimestamp: payload.tickers?.[0]?.ts as Timestamp,
+                        lastTickerTimestamp: result.payload.tickers?.[0]?.ts as Timestamp,
                     };
                 }
 
@@ -225,16 +225,16 @@ export const getFiatRatesForTimestamps = (
         async () => {
             if (isBlockbookBasedNetwork(ticker.symbol)) {
                 if (!isElectrumBackend) {
-                    const { success, payload } = await getConnectFiatRatesForTimestamp(
+                    const result = await getConnectFiatRatesForTimestamp(
                         ticker,
                         timestamps,
                         baseCurrencyCode,
                     );
 
-                    if (!success) return null;
+                    if (!result.success) return null;
 
                     // in case blockbook does not know fiat rate, it returns -1
-                    const validTickers = payload.tickers.filter(
+                    const validTickers = result.payload.tickers.filter(
                         tick => tick.rates[baseCurrencyCode] && tick.rates[baseCurrencyCode] >= 0,
                     );
 

@@ -35,10 +35,9 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
-import { exhaustive } from '@trezor/type-utils';
+import { Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
@@ -147,10 +146,6 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
         });
     },
 );
-
-const isSuccessfullyPushedTransaction = (
-    results: SuccessWithDevice<PushedTransaction> | Unsuccessful,
-): results is SuccessWithDevice<PushedTransaction> => results.success;
 
 type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeBitcoinTransactionFeeLevelsThunk
@@ -307,7 +302,7 @@ const synchronizeSentTransactionThunk = createThunk(
 );
 
 export const pushSendFormTransactionThunk = createThunk<
-    Success<{ txid: string }>,
+    Ok<{ txid: string }>,
     { selectedAccount: Account; isMevProtectionEnabled: boolean },
     { rejectValue: PushTransactionError }
 >(
@@ -328,7 +323,10 @@ export const pushSendFormTransactionThunk = createThunk<
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: { success: false, payload: { error: 'Transaction not found.' } },
+                metadata: {
+                    success: false,
+                    error: { message: 'Transaction not found.', code: 'Failure_UnknownCode' },
+                },
             });
 
         const txData = getMevProtectedTxData(
@@ -356,7 +354,7 @@ export const pushSendFormTransactionThunk = createThunk<
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
         const evmApprovalData = getEvmApprovalTxData(precomposedForm?.transactionData);
 
-        if (isSuccessfullyPushedTransaction(pushTxResponse)) {
+        if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
 
             if (evmApprovalData && token) {
@@ -436,12 +434,12 @@ export const pushSendFormTransactionThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: pushTxResponse.payload.error,
+                    error: pushTxResponse.error.message,
                 }),
             );
         }
 
-        return isSuccessfullyPushedTransaction(pushTxResponse)
+        return pushTxResponse.success
             ? fulfillWithValue(pushTxResponse)
             : rejectWithValue({
                   error: 'push-transaction-failed',
@@ -474,7 +472,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
             identity: payload.identity,
         });
 
-        if (isSuccessfullyPushedTransaction(sentTx)) {
+        if (sentTx.success) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'raw-tx-sent',
@@ -484,17 +482,18 @@ export const pushSendFormRawTransactionThunk = createThunk(
             dispatch(syncAccountsWithBlockchainThunk(payload.symbol));
 
             return fulfillWithValue(true);
+        } else {
+            console.warn(sentTx.error.message);
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: sentTx.error.message,
+                }),
+            );
+
+            return rejectWithValue(sentTx.error.message);
         }
-
-        console.warn(sentTx.payload.error);
-        dispatch(
-            notificationsActions.addToast({
-                type: 'sign-tx-error',
-                error: sentTx.payload.error,
-            }),
-        );
-
-        return rejectWithValue(sentTx.payload.error);
     },
 );
 

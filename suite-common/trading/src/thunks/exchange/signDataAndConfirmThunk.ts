@@ -105,7 +105,7 @@ export const signDataAndConfirmThunk = createThunk(
         if (!result.success) {
             dispatch(
                 logErrorThunk({
-                    errorMessage: result.payload.error,
+                    errorMessage: result.error.message,
                     tradingType: 'exchange',
                     toastType: 'sign-message-error',
                 }),

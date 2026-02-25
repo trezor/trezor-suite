@@ -40,7 +40,7 @@ const mockAccountInfoResponses = {
     },
     networkError: {
         success: false,
-        payload: { error: 'Network error' },
+        error: { message: 'Network error', code: 'Backend_Disconnected' },
     },
 } as const;
 

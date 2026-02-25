@@ -227,12 +227,12 @@ export const signTransaction =
             });
 
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') return;
+            if (signedTx.error.message === 'tx-cancelled') return;
 
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: signedTx.payload.error,
+                    error: signedTx.error.message,
                 }),
             );
 

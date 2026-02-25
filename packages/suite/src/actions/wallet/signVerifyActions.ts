@@ -8,8 +8,10 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Result } from '@trezor/type-utils';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -28,10 +30,10 @@ type StateParams = {
     chunkify?: boolean;
 };
 
-const throwWhenFailed = <T>(response: Unsuccessful | Success<T>) =>
+const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
     response.success
         ? Promise.resolve(response.payload)
-        : Promise.reject(new Error(response.payload.error));
+        : Promise.reject(new Error(response.error.message));
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
     const {

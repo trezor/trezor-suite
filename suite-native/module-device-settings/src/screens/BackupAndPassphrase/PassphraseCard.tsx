@@ -36,7 +36,7 @@ export const PassphraseCard = () => {
         if (!response.success) {
             showToast({
                 variant: 'default',
-                message: response.payload.error,
+                message: response.error.message,
                 icon: 'check',
             });
         }

@@ -44,12 +44,12 @@ const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, v
         const result = await TrezorConnect.bleUnpair({ device, all: false });
         if (
             result.success ||
-            result.payload.code === 'Device_Disconnected' // This is an expected success
+            result.error.code === 'Device_Disconnected' // This is an expected success
         ) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             dispatch(forgetBluetoothDeviceThunk({ bluetoothId }));
         } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }
     },
 );

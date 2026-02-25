@@ -25,7 +25,7 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
         // @ts-expect-error
         bundleKV.payload.xpub.toLowerCase();
     } else {
-        bundleKV.payload.error.toLowerCase();
+        bundleKV.error.message.toLowerCase();
     }
 };
 
@@ -35,7 +35,7 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     if (proxy.success) {
         proxy.payload.message.toLowerCase();
     } else {
-        proxy.payload.error.toLowerCase();
+        proxy.error.message.toLowerCase();
     }
     api.updateConnectSettings({
         proxy: {

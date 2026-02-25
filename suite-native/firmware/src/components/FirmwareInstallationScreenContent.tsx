@@ -145,7 +145,7 @@ export const FirmwareInstallationScreenContent = ({
         if (!result.success) {
             if (
                 // Action cancelled on device
-                result.payload?.code === 'Failure_ActionCancelled'
+                result.error?.code === 'Failure_ActionCancelled'
             ) {
                 handleAnalyticsReportCancelled();
                 onFirmwareInstallationFailure?.();
@@ -153,7 +153,7 @@ export const FirmwareInstallationScreenContent = ({
                 return;
             }
 
-            handleAnalyticsReportFinished({ error: result.payload?.error ?? 'Unknown error' });
+            handleAnalyticsReportFinished({ error: result.error?.message ?? 'Unknown error' });
 
             return;
         }

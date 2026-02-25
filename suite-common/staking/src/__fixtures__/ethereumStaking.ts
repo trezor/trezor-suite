@@ -125,8 +125,8 @@ export const stakeFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',
@@ -184,8 +184,8 @@ export const unstakeFailedFixture = [
         },
         accountInfo: {
             success: false,
-            payload: {
-                error: 'Account info error',
+            error: {
+                message: 'Account info error',
             },
         },
         estimatedFee: {
@@ -244,8 +244,8 @@ export const unstakeFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',
@@ -322,8 +322,8 @@ export const claimFailedFixture = [
         },
         accountInfo: {
             success: false,
-            payload: {
-                error: 'Account info error',
+            error: {
+                message: 'Account info error',
             },
         },
         result: 'Account info error',
@@ -350,8 +350,8 @@ export const claimFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',

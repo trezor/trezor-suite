@@ -707,7 +707,7 @@ export const composeDebouncedTransaction = [
         description: '@trezor/connect call respond with success:false',
         connect: {
             success: false,
-            payload: { error: 'error' },
+            error: { message: 'error' },
         },
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '1' }],
         finalResult: {
@@ -1694,8 +1694,8 @@ export const signAndPush: SignAndPush[] = [
             getComposeResponse(),
             {
                 success: false,
-                payload: {
-                    error: 'signTx error',
+                error: {
+                    message: 'signTx error',
                 },
             },
         ],
@@ -1723,8 +1723,8 @@ export const signAndPush: SignAndPush[] = [
             getComposeResponse(),
             {
                 success: false,
-                payload: {
-                    error: 'tx-cancelled',
+                error: {
+                    message: 'tx-cancelled',
                 },
             },
         ],
@@ -1753,8 +1753,8 @@ export const signAndPush: SignAndPush[] = [
             },
             {
                 success: false,
-                payload: {
-                    error: 'pushTx error',
+                error: {
+                    message: 'pushTx error',
                 },
             },
         ],
@@ -1812,8 +1812,8 @@ export const feeChange: FeeChangeFixture[] = [
             success: false,
             payload: {
                 success: false,
-                payload: {
-                    error: 'compose-response-is-irrelevant',
+                error: {
+                    message: 'compose-response-is-irrelevant',
                 },
             },
         },
@@ -1955,8 +1955,8 @@ export const feeChange: FeeChangeFixture[] = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'irrelevant',
+                error: {
+                    message: 'irrelevant',
                 },
             },
             {

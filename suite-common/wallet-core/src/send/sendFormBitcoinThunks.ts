@@ -137,13 +137,13 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: response.payload.error,
+                    error: response.error.message,
                 }),
             );
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: response.payload.error,
+                message: response.error.message,
             });
         }
 
@@ -353,8 +353,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

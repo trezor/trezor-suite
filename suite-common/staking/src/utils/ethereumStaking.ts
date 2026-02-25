@@ -31,10 +31,9 @@ import TrezorConnect, {
     EthereumTransaction,
     EthereumTransactionEIP1559,
     InternalTransfer,
-    Success,
 } from '@trezor/connect';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { PartialRecord } from '@trezor/type-utils';
+import { Ok, PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -68,7 +67,7 @@ export const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddress
     return ETH_NETWORK_ADDRESSES[ethNetwork] ?? defaultAddresses;
 };
 
-export const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
+export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstimatedFee>) =>
     new BigNumber(estimatedFee.payload.levels[0].feeLimit || '')
         .plus(STAKE_GAS_LIMIT_RESERVE)
         .integerValue(BigNumber.ROUND_DOWN)
@@ -114,7 +113,7 @@ export const stake = async ({
         });
 
         if (!estimatedFee.success) {
-            throw new Error(estimatedFee.payload.error);
+            throw new Error(estimatedFee.error.message);
         }
 
         // Create the transaction
@@ -149,7 +148,7 @@ export const unstake = async ({
             descriptor: from,
         });
         if (!accountInfo.success) {
-            throw new Error(accountInfo.payload.error);
+            throw new Error(accountInfo.error.message);
         }
 
         const { autocompoundBalance } = accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
@@ -191,7 +190,7 @@ export const unstake = async ({
             },
         });
         if (!estimatedFee.success) {
-            throw new Error(estimatedFee.payload.error);
+            throw new Error(estimatedFee.error.message);
         }
 
         // Create the transaction
@@ -221,7 +220,7 @@ export const claimWithdrawRequest = async ({
             descriptor: from,
         });
         if (!accountInfo.success) {
-            throw new Error(accountInfo.payload.error);
+            throw new Error(accountInfo.error.message);
         }
 
         const { withdrawTotalAmount, claimableAmount } =
@@ -263,7 +262,7 @@ export const claimWithdrawRequest = async ({
             },
         });
         if (!estimatedFee.success) {
-            throw new Error(estimatedFee.payload.error);
+            throw new Error(estimatedFee.error.message);
         }
 
         return {
@@ -683,7 +682,7 @@ export const simulateUnstake = async ({
     });
 
     if (!transactionData.success) {
-        throw new Error(transactionData.payload.error);
+        throw new Error(transactionData.error.message);
     }
 
     const approximatedAmount = transactionData.payload.data;

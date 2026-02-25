@@ -1,4 +1,4 @@
-import { serializeError } from '@trezor/connect-common/src/constants/errors';
+import { SerializedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 
 import type { CORE_CALL } from './core-call';
 import type { Device } from '../device/Device';
@@ -73,33 +73,55 @@ export interface CoreCallMessage {
 
 export const RESPONSE_EVENT = 'RESPONSE_EVENT';
 
-export interface MethodResponseMessage {
+export type MethodResponseMessage = {
     // extends AnyResponse
     event: typeof RESPONSE_EVENT;
     type: typeof RESPONSE_EVENT;
     id: number;
-    success: boolean;
-    payload: CallMethodResponse<CallMethodKeys>;
+
     device?: DeviceIdentity;
-}
+} & (
+    | {
+          success: true;
+          payload: CallMethodResponse<CallMethodKeys>;
+          error?: undefined;
+      }
+    | {
+          success: false;
+          payload?: undefined;
+          error: SerializedError;
+      }
+);
 
 export const createResponseMessage = (
     id: number,
     success: boolean,
     payload: any,
     device?: Device,
-): MethodResponseMessage => ({
-    event: RESPONSE_EVENT,
-    type: RESPONSE_EVENT,
-    id,
-    success,
-
-    payload: success ? payload : serializeError(payload),
-    device: device
+): MethodResponseMessage => {
+    const deviceIdentity = device
         ? {
               path: device?.getUniquePath(),
               state: device?.getState(),
               instance: device?.getInstance(),
           }
-        : undefined,
-});
+        : undefined;
+    if (success)
+        return {
+            event: RESPONSE_EVENT,
+            type: RESPONSE_EVENT,
+            id,
+            success: true,
+            payload,
+            device: deviceIdentity,
+        };
+
+    return {
+        event: RESPONSE_EVENT,
+        type: RESPONSE_EVENT,
+        id,
+        success: false,
+        error: serializeError(payload),
+        device: deviceIdentity,
+    };
+};

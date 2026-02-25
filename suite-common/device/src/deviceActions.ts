@@ -14,8 +14,9 @@ import {
     Device,
     DeviceState,
     StaticSessionId,
-    Unsuccessful,
 } from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Err } from '@trezor/type-utils';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -166,7 +167,7 @@ const setDeviceAuthenticityResult = createAction(
 // Use in tests only! See deviceReducer for the property definition.
 const setSimulatedEntropyCheckFail = createAction(
     `${DEVICE_MODULE_PREFIX}/setSimulatedEntropyCheckFail`,
-    (payload: Unsuccessful) => ({ payload }),
+    (payload: Err<SerializedError>) => ({ payload }),
 );
 
 export const deviceActions = {

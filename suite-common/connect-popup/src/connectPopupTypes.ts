@@ -1,7 +1,7 @@
 import { AccountKey, TxSimulationAction } from '@suite-common/wallet-types';
 import { CallMethodKeys } from '@trezor/connect';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {
     appName: string;
@@ -16,7 +16,7 @@ export const CALL_SOURCE_WEB = 'web';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
-export type ConnectSerializedError = { error: string; code: ErrorCode };
+export type ConnectSerializedError = SerializedError;
 export type ConnectProcessInfo = {
     name: string;
     fullPath: string;

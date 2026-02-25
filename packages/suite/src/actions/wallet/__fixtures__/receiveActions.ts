@@ -180,7 +180,7 @@ export default [
     {
         description: 'Show address, @trezor/connect error',
         mocks: {
-            getAddress: { success: false, payload: { error: 'Runtime error' } },
+            getAddress: { success: false, error: { message: 'Runtime error' } },
         },
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
@@ -208,7 +208,7 @@ export default [
         mocks: {
             getAddress: {
                 success: false,
-                payload: { error: 'Runtime error', code: 'Method_PermissionsNotGranted' },
+                error: { message: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
         action: () => receiveActions.showAddress(PATH, ADDRESS),

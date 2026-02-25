@@ -103,7 +103,7 @@ export const events = (api: TrezorConnect) => {
     api.on(UI_EVENT, event => {
         if (event.type === UI_REQUEST.BUNDLE_PROGRESS) {
             // event.payload.progress;
-            // event.payload.error;
+            // event.error.message;
             // event.payload.response;
         }
         if (event.type === UI_REQUEST.REQUEST_BUTTON) {

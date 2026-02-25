@@ -45,13 +45,13 @@ export const useBluetoothDevice = () => {
                 return;
             }
 
-            const { success, payload } = result.payload;
-            if (success || payload.code === 'Device_Disconnected') {
+            const unwrappedResult = result.payload;
+            if (unwrappedResult.success || unwrappedResult.error.code === 'Device_Disconnected') {
                 dispatch(forgetBluetoothDeviceThunk({ bluetoothId: deviceBluetoothId }));
                 onSuccess();
             } else if (
-                payload.code === 'Failure_ActionCancelled' ||
-                payload.code === 'Method_Interrupted'
+                unwrappedResult.error.code === 'Failure_ActionCancelled' ||
+                unwrappedResult.error.code === 'Method_Interrupted'
             ) {
                 onCancel();
             }

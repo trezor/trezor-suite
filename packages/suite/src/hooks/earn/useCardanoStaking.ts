@@ -106,7 +106,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 testnet: isTestnet(account.symbol),
             });
 
-            if (!response.success) throw new Error(response.payload.error);
+            if (!response.success) throw new Error(response.error.message);
 
             return { txPlan: response.payload[0], certificates, withdrawals };
         },

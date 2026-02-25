@@ -204,8 +204,8 @@ export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =
 
 export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
     const asAny = rejectedValue as any;
-    if (asAny?.payload) {
-        return `[${asAny.payload.error ?? 'Unknown error'}]: ${asAny.payload.message ?? 'No description'}`;
+    if (asAny?.error?.error) {
+        return `[${asAny.error.error}]: ${asAny.error.message ?? 'No description'}`;
     }
 
     if (asAny?.error?.message) {

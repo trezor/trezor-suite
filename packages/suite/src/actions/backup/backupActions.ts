@@ -73,13 +73,13 @@ export const backupDevice =
             dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             dispatch({
                 type: BACKUP.SET_ERROR,
-                payload: result.payload.error,
+                payload: result.error.message,
             });
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.createBackupEvent.name,
                 payload: {
                     status: 'error',
-                    error: result.payload.error,
+                    error: result.error.message,
                 },
             });
         } else {

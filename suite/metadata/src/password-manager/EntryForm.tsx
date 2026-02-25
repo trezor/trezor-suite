@@ -65,7 +65,7 @@ export const EntryForm = ({ onEncrypted, entry, cancel }: Props) => {
         })
             .then(result => {
                 if (!result.success) {
-                    throw new Error(result.payload.error);
+                    throw new Error(result.error.message);
                 }
 
                 return Promise.all([

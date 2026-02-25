@@ -105,12 +105,12 @@ export const showAddress =
         } else {
             dispatch(modalActions.onCancel());
             // special case: device no-backup permissions not granted
-            if (response.payload.code === 'Method_PermissionsNotGranted') return;
+            if (response.error.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
                 notificationsActions.addToast({
                     type: 'verify-address-error',
-                    error: response.payload.error,
+                    error: response.error.message,
                 }),
             );
         }

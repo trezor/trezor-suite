@@ -1,7 +1,9 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
-import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { Result } from '@trezor/type-utils';
 
 export const showXpubOnDevice = async (device: TrezorDevice, account: Account) => {
     const params = {
@@ -12,7 +14,7 @@ export const showXpubOnDevice = async (device: TrezorDevice, account: Account) =
         coin: account.symbol,
     };
 
-    let response: Success<unknown> | Unsuccessful;
+    let response: Result<unknown, SerializedError>;
     switch (account.networkType) {
         case 'bitcoin':
             response = await TrezorConnect.getPublicKey(params);
@@ -26,7 +28,10 @@ export const showXpubOnDevice = async (device: TrezorDevice, account: Account) =
         default:
             response = {
                 success: false,
-                payload: { error: 'Method for getPublicKey not defined', code: undefined },
+                error: {
+                    message: 'Method for getPublicKey not defined',
+                    code: 'Failure_UnknownCode',
+                },
             };
     }
 

@@ -11,6 +11,7 @@ import {
     CoreEventMessage,
     CoreRequestMessage,
     DEVICE_EVENT,
+    MethodResponseMessage,
     POPUP,
     RESPONSE_EVENT,
     TRANSPORT,
@@ -20,7 +21,7 @@ import {
     createErrorMessage,
 } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
+import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { Log, initLog } from '../utils/debug';
 
@@ -30,12 +31,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     private _coreManager?: any;
     private _log: Log;
-    private _messagePromises: DeferredManager<{
-        id: number;
-        success: boolean;
-        payload: any;
-        device?: DeviceIdentity;
-    }>;
+    private _messagePromises: DeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>;
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
@@ -113,11 +109,12 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
         switch (event) {
             case RESPONSE_EVENT: {
-                const { id = 0, success, device } = message;
+                const { id = 0, success, error, device } = message;
                 const resolved = this._messagePromises.resolve(id, {
                     id,
                     success,
                     payload,
+                    error,
                     device,
                 });
                 if (!resolved) this._log.warn(`Unknown message id ${id}`);

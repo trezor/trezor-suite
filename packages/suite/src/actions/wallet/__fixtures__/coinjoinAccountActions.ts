@@ -38,8 +38,8 @@ export const createCoinjoinAccount = [
         description: 'path not unlocked',
         connect: {
             success: false,
-            payload: {
-                error: 'Canceled',
+            error: {
+                message: 'Canceled',
             },
         },
         params: {
@@ -70,8 +70,8 @@ export const createCoinjoinAccount = [
             },
             {
                 success: false, // getPublicKey
-                payload: {
-                    error: 'Forbidden key path',
+                error: {
+                    message: 'Forbidden key path',
                 },
             },
         ],
@@ -160,8 +160,8 @@ export const startCoinjoinSession = [
         description: 'authorizeCoinjoin cancelled',
         connect: {
             success: false,
-            payload: {
-                error: 'Canceled',
+            error: {
+                message: 'Canceled',
             },
         },
         state: {

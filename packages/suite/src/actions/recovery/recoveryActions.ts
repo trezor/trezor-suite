@@ -84,12 +84,12 @@ const checkSeed =
         });
 
         if (!response.success) {
-            dispatch(setError(response.payload.error));
+            dispatch(setError(response.error.message));
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.settingsDeviceCheckSeedEvent.name,
                 payload: {
                     status: 'error',
-                    error: response.payload.code,
+                    error: response.error.code,
                 },
             });
         } else {
@@ -141,7 +141,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!response.success) {
-        dispatch(setError(response.payload.error));
+        dispatch(setError(response.error.message));
     }
 
     dispatch(setStatus('finished'));

@@ -359,18 +359,18 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
-                    const { payload, success } = await TrezorConnect.getAccountInfo({
+                    const result = await TrezorConnect.getAccountInfo({
                         descriptor: value,
                         coin: symbol,
                         details: 'basic',
                     });
 
-                    if (!success) {
+                    if (!result.success) {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
                     if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
-                        if (isProgramDerivedAccount(payload)) {
+                        if (isProgramDerivedAccount(result.payload)) {
                             return translationString('TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT');
                         }
                     }

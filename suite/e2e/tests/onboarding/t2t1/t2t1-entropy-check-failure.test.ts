@@ -30,7 +30,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 action => window.store.dispatch(action),
                 deviceActions.setSimulatedEntropyCheckFail({
                     success: false,
-                    payload: { code: 'Failure_EntropyCheck', error: 'SIMULATED ERROR' },
+                    error: { code: 'Failure_EntropyCheck', message: 'SIMULATED ERROR' },
                 }),
             );
 
@@ -66,7 +66,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 action => window.store.dispatch(action),
                 deviceActions.setSimulatedEntropyCheckFail({
                     success: false,
-                    payload: { code: 'Failure_EntropyCheck', error: mockedError },
+                    error: { code: 'Failure_EntropyCheck', message: mockedError },
                 }),
             );
 

@@ -227,7 +227,7 @@ const fixture: Fixture[] = [
     {
         description: 'Wipe device errored',
         action: () => wipeDeviceThunk(),
-        mocks: { success: false, payload: { error: 'fuuu' } },
+        mocks: { success: false, error: { message: 'fuuu', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -265,7 +265,7 @@ const fixture: Fixture[] = [
     {
         description: 'Apply settings - connect error',
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
-        mocks: { success: false, payload: { error: 'eeeh' } },
+        mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -298,7 +298,7 @@ const fixture: Fixture[] = [
     {
         description: 'Change pin - connect error',
         action: () => deviceSettingsActions.changePin({}),
-        mocks: { success: false, payload: { error: 'eeeh' } },
+        mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -317,7 +317,7 @@ const fixture: Fixture[] = [
     {
         description: 'Reset device - Cancel - Entropy check not triggered',
         action: () => deviceSettingsActions.resetDevice(),
-        mocks: { success: false, payload: { error: 'Canceled', code: 'Method_Cancel' } },
+        mocks: { success: false, error: { message: 'Canceled', code: 'Method_Cancel' } },
         result: {
             actions: [
                 {
@@ -364,7 +364,7 @@ const fixture: Fixture[] = [
         action: () => deviceSettingsActions.resetDevice(),
         mocks: {
             success: false,
-            payload: { error: 'Entropy check failed', code: 'Failure_EntropyCheck' },
+            error: { message: 'Entropy check failed', code: 'Failure_EntropyCheck' },
         },
         result: {
             actions: [

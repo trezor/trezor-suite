@@ -47,7 +47,16 @@ export const useConnectPopupDesktop = () => {
                     }),
                 );
                 const response = await deferred.promise;
-                desktopApi.connectPopupResponse({ ...response, id: params.id });
+                if (response.success) {
+                    desktopApi.connectPopupResponse({ ...response, id: params.id });
+                } else {
+                    desktopApi.connectPopupResponse({
+                        success: false,
+                        error: response.error,
+                        payload: response.error, // for backward compatibility with v9
+                        id: params.id,
+                    });
+                }
             });
             desktopApi.on('connect-popup/cancel', params => {
                 dispatch(connectPopupCancelThunk(params));
