@@ -17,7 +17,7 @@ import {
     Tooltip,
     motionEasing,
 } from '@trezor/components';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
@@ -61,7 +61,7 @@ export const PassphraseInputCard = ({
     const setValue = setExternalValue ?? setInternalValue;
 
     const isDeviceLoading = !(
-        modal.context === CONTEXT_DEVICE && modal.windowType === UI.REQUEST_PASSPHRASE
+        modal.context === CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
     );
 
     const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;

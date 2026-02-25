@@ -11,7 +11,7 @@ import {
     KEYBOARD_CODE,
     Paragraph,
 } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
@@ -26,7 +26,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
 
     const onSubmit = useCallback(async (value: string) => {
         await resolveAfter(600);
-        TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value });
     }, []);
 
     const backspace = useCallback(() => {

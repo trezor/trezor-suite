@@ -1,6 +1,6 @@
 import type { EventEmitter } from 'events';
 
-import { UI } from './events';
+import { UI_REQUEST } from './events';
 import type { CallMethod, CallMethodKeys } from './events/call';
 import type { TrezorConnect } from './types';
 import type { InitType } from './types/api/init';
@@ -132,7 +132,7 @@ export const factory = <
                     ...params,
                     method,
                     useEventListener: method.toLowerCase().endsWith('getaddress')
-                        ? eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0
+                        ? eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0
                         : undefined,
                 }),
         ]),

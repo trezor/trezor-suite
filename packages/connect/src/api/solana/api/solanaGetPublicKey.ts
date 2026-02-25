@@ -10,7 +10,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -88,7 +88,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

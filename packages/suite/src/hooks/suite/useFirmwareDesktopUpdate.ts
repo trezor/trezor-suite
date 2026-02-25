@@ -6,7 +6,7 @@ import {
     selectFirmware,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
 import { useSelector } from './useSelector';
 
@@ -30,7 +30,7 @@ export const useFirmwareDesktopUpdate = () => {
     useEffect(() => {
         if (
             !startTime &&
-            firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+            firmware.uiEvent?.type === UI_REQUEST.FIRMWARE_PROGRESS &&
             firmware.uiEvent.payload.operation === 'start-flashing'
         ) {
             setStartTime(new Date().getTime());
@@ -47,7 +47,7 @@ export const useFirmwareDesktopUpdate = () => {
 
             if (now - startTime > TIME_THRESHOLD_SLOW_INSTALLATION_MS) {
                 if (
-                    firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+                    firmware.uiEvent?.type === UI_REQUEST.FIRMWARE_PROGRESS &&
                     firmware.uiEvent.payload.progress < PERCENTAGE_THRESHOLD_SLOW_INSTALLATION
                 ) {
                     setIsSlow(true);

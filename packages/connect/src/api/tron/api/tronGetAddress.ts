@@ -8,7 +8,7 @@ import {
     MethodReturnType,
     Payload,
 } from '../../../core/AbstractMethod';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
@@ -134,7 +134,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

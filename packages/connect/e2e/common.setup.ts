@@ -10,7 +10,7 @@ import {
 import { versionUtils } from '@trezor/utils';
 
 // import TrezorConnect from '../src';
-import { UI } from '../src/events';
+import { UI_REQUEST, UI_RESPONSE } from '../src/events';
 
 const emulatorStartOpts: EmuStartOptsType =
     (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
@@ -179,15 +179,15 @@ export const initTrezorConnect = async (
         console.log('Transport started: ', event.version);
     });
 
-    TrezorConnect.on(UI.REQUEST_CONFIRMATION, () => {
+    TrezorConnect.on(UI_REQUEST.REQUEST_CONFIRMATION, () => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_CONFIRMATION,
+            type: UI_RESPONSE.RECEIVE_CONFIRMATION,
             payload: true,
         });
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI.REQUEST_BUTTON, e => {
+        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
             setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
         });

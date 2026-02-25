@@ -1,6 +1,6 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 type ThpPairingRequestPayload = {
@@ -8,14 +8,14 @@ type ThpPairingRequestPayload = {
 };
 
 type ThpPairingRequestAction = {
-    type: typeof UI.REQUEST_BUTTON;
+    type: typeof UI_REQUEST.REQUEST_BUTTON;
     payload: ThpPairingRequestPayload;
 };
 
 export const isThpPairingUIRequestButtonAction = (
     action: UnknownAction,
 ): action is ThpPairingRequestAction =>
-    action.type === UI.REQUEST_BUTTON &&
+    action.type === UI_REQUEST.REQUEST_BUTTON &&
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&

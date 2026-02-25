@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { Action, AppState, Dispatch } from 'src/types/suite';
@@ -9,7 +9,10 @@ const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        if (action.type === UI.FIRMWARE_DISCONNECT && action.payload.device.bluetoothProps) {
+        if (
+            action.type === UI_REQUEST.FIRMWARE_DISCONNECT &&
+            action.payload.device.bluetoothProps
+        ) {
             const { id } = action.payload.device.bluetoothProps;
             bluetoothIpc
                 .disconnectDevice(id)
@@ -21,7 +24,10 @@ const buttonRequest =
         // ugly hack to make Cardano review modal work
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
-        if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Other') {
+        if (
+            action.type === UI_REQUEST.REQUEST_BUTTON &&
+            action.payload.code === 'ButtonRequest_Other'
+        ) {
             const {
                 wallet: {
                     selectedAccount: { account },
@@ -55,7 +61,7 @@ const buttonRequest =
             }
         }
         if (
-            action.type === UI.REQUEST_BUTTON &&
+            action.type === UI_REQUEST.REQUEST_BUTTON &&
             action.payload.name === 'confirm_ethereum_approve' &&
             (action.payload.code === 'ButtonRequest_Other' ||
                 action.payload.code === 'ButtonRequest_Warning')
@@ -68,7 +74,10 @@ const buttonRequest =
             return action;
         }
 
-        if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Address') {
+        if (
+            action.type === UI_REQUEST.REQUEST_BUTTON &&
+            action.payload.code === 'ButtonRequest_Address'
+        ) {
             const {
                 connectPopup: { activeCall },
             } = api.getState();

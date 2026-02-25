@@ -10,7 +10,7 @@ import {
     FirmwareProgressUnexpectedDelay,
     FirmwareReconnect,
     FirmwareType,
-    UI,
+    UI_REQUEST,
     UiRequestConfirmation,
 } from '@trezor/connect';
 
@@ -104,7 +104,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
             state.firmwareChannel = payload;
         })
         .addMatcher<UiRequestConfirmation>(
-            action => action.type === UI.REQUEST_CONFIRMATION,
+            action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
             (state, action) => {
                 if (state.status === 'started' && action.payload.view === 'thp-pairing-start') {
                     state.status = 'thp-pairing';
@@ -113,9 +113,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         )
         .addMatcher<FirmwareUpdateUiEvent>(
             (action: FirmwareUpdateUiEvent) =>
-                action.type === UI.FIRMWARE_RECONNECT ||
-                action.type === UI.FIRMWARE_PROGRESS ||
-                action.type === UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
+                action.type === UI_REQUEST.FIRMWARE_RECONNECT ||
+                action.type === UI_REQUEST.FIRMWARE_PROGRESS ||
+                action.type === UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
                 // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,

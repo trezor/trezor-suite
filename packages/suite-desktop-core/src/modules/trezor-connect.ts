@@ -1,6 +1,12 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { ConnectSettings, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
+import TrezorConnect, {
+    ConnectSettings,
+    LocalFirmwares,
+    UI_EVENT,
+    UI_REQUEST,
+    UI_RESPONSE,
+} from '@trezor/connect';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -145,7 +151,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 export const init: ModuleInit = ({ mainThreadEmitter }) => {
     mainThreadEmitter.on('module/firmware/list', (event: LocalFirmwares) => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_FIRMWARE,
+            type: UI_RESPONSE.RECEIVE_FIRMWARE,
             payload: event,
         });
     });
@@ -163,7 +169,7 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
 
         TrezorConnect.on(UI_EVENT, event => {
             const { type } = event;
-            if (type === UI.FIRMWARE_DOWNLOADED) {
+            if (type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
                 mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
             }
         });

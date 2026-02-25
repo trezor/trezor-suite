@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
 import { MODAL } from '../../../../actions/suite/constants';
 import { closeModalApp } from '../../../../actions/suite/routerActions';
@@ -22,7 +22,7 @@ export const DeviceContextModal = ({
 
     switch (windowType) {
         // T2T1 firmware
-        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDeviceModal device={device} />;
         default:

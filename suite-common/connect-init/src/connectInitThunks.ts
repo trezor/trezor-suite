@@ -21,7 +21,6 @@ import TrezorConnect, {
     DEVICE_EVENT,
     Device,
     TRANSPORT_EVENT,
-    UI,
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
@@ -43,7 +42,7 @@ type ConnectInitHooks = Partial<
         (device: Device, prevConnectedDevices: TrezorDevice[]) => void
     >
 > &
-    Partial<Record<typeof UI.INVALID_PIN_ATTEMPTS_DEPLETED, () => void>>;
+    Partial<Record<typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, () => void>>;
 
 export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>(
     `${CONNECT_INIT_MODULE}/initThunk`,
@@ -98,8 +97,8 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             // this switch is still one more layer of indirection to be removed. connect actions are dispatched
             // and could be handled directly in reducers
             switch (action.type) {
-                case UI.REQUEST_PIN:
-                case UI.INVALID_PIN:
+                case UI_REQUEST.REQUEST_PIN:
+                case UI_REQUEST.INVALID_PIN:
                     dispatch(
                         deviceActions.addButtonRequest({
                             // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
@@ -111,7 +110,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                         }),
                     );
                     break;
-                case UI.REQUEST_BUTTON: {
+                case UI_REQUEST.REQUEST_BUTTON: {
                     const { device: _, ...request } = action.payload;
                     dispatch(
                         deviceActions.addButtonRequest({
@@ -124,11 +123,11 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             }
 
             if (
-                action.type === UI.INVALID_PIN_ATTEMPTS_DEPLETED &&
+                action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED &&
                 connectInitHooks &&
-                UI.INVALID_PIN_ATTEMPTS_DEPLETED in connectInitHooks
+                UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED in connectInitHooks
             ) {
-                connectInitHooks?.[UI.INVALID_PIN_ATTEMPTS_DEPLETED]?.();
+                connectInitHooks?.[UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]?.();
             }
         });
 

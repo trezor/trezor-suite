@@ -9,7 +9,7 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import {
     TransactionComposer,
     deriveOutputScript,
@@ -234,12 +234,12 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async selectAccount() {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain();
-        const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT, this.device);
+        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
 
         if (this.discovery && this.discovery.completed) {
             const { discovery } = this;
             this.postMessage(
-                createUiMessage(UI.SELECT_ACCOUNT, {
+                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'end',
                     coinInfo,
                     accountTypes: discovery.types.map(t => t.type),
@@ -268,7 +268,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         discovery.on('progress', accounts => {
             this.postMessage(
-                createUiMessage(UI.SELECT_ACCOUNT, {
+                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'progress',
                     // preventEmpty: true,
                     coinInfo,
@@ -278,7 +278,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         });
         discovery.on('complete', () => {
             this.postMessage(
-                createUiMessage(UI.SELECT_ACCOUNT, {
+                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'end',
                     coinInfo,
                 }),
@@ -294,7 +294,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // set select account view
         // this view will be updated from discovery events
         this.postMessage(
-            createUiMessage(UI.SELECT_ACCOUNT, {
+            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                 type: 'start',
                 accountTypes: discovery.types.map(t => t.type),
                 coinInfo,
@@ -340,7 +340,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const hasFunds = composer.composeAllFeeLevels();
         if (!hasFunds) {
             // show error view
-            this.postMessage(createUiMessage(UI.INSUFFICIENT_FUNDS));
+            this.postMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
             // wait few seconds...
             await resolveAfter(2000);
 
@@ -351,7 +351,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // set select account view
         // this view will be updated from discovery events
         this.postMessage(
-            createUiMessage(UI.SELECT_FEE, {
+            createUiMessage(UI_REQUEST.SELECT_FEE, {
                 feeLevels: composer.getFeeLevelList(),
                 coinInfo: this.params.coinInfo,
             }),
@@ -364,13 +364,13 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async _selectFeeUiResponse(
         composer: TransactionComposer,
     ): Promise<SignedTransaction | 'change-account'> {
-        const resp = await this.createUiPromise(UI.RECEIVE_FEE, this.device).promise;
+        const resp = await this.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.device).promise;
         switch (resp.payload.type) {
             case 'compose-custom':
                 // recompose custom fee level with requested value
                 composer.composeCustomFee(resp.payload.value);
                 this.postMessage(
-                    createUiMessage(UI.UPDATE_CUSTOM_FEE, {
+                    createUiMessage(UI_REQUEST.UPDATE_CUSTOM_FEE, {
                         feeLevels: composer.getFeeLevelList(),
                         coinInfo: this.params.coinInfo,
                     }),

@@ -12,7 +12,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
 import { Discovery } from './common/Discovery';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
@@ -206,7 +206,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (!this.hasBundle || this.device?.getCurrentSession().isDisposed()) return;
             // send progress to UI
             this.postMessage(
-                createUiMessage(UI.BUNDLE_PROGRESS, {
+                createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
                     response,
@@ -323,7 +323,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     async discover(request: Request) {
         const { coinInfo, identity, defaultAccountType, derivationType } = request;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
-        const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT, this.device);
+        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
 
         const discovery = new Discovery({
             blockchain,
@@ -333,7 +333,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         discovery.on('progress', accounts => {
             this.postMessage(
-                createUiMessage(UI.SELECT_ACCOUNT, {
+                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'progress',
                     coinInfo,
                     accounts,
@@ -342,7 +342,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         });
         discovery.on('complete', () => {
             this.postMessage(
-                createUiMessage(UI.SELECT_ACCOUNT, {
+                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'end',
                     coinInfo,
                 }),
@@ -356,7 +356,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         // set select account view
         // this view will be updated from discovery events
         this.postMessage(
-            createUiMessage(UI.SELECT_ACCOUNT, {
+            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                 type: 'start',
                 accountTypes: discovery.types.map(t => t.type),
                 defaultAccountType,

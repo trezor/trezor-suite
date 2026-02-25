@@ -11,7 +11,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
+import { UI_REQUEST, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
@@ -168,7 +168,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

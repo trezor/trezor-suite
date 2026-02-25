@@ -2,14 +2,14 @@
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
 import { Device } from '../device/Device';
-import { DEVICE, UI } from '../events';
+import { DEVICE, UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     constructor(message: { id?: number; payload: Payload<'wipeDevice'> }) {
         super(message);
 
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS, UI.BOOTLOADER];
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS, UI_REQUEST.BOOTLOADER];
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);

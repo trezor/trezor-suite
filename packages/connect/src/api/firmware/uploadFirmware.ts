@@ -8,7 +8,7 @@ import { isWithinRange } from '@trezor/utils/src/versionUtils';
 import { PROTO } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
-import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
+import { CoreEventMessage, DEVICE, UI_REQUEST, createUiMessage } from '../../events';
 import { FirmwareUpdateFlowType } from '../../types';
 
 // Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW
@@ -27,7 +27,7 @@ const postProgressMessage = (
     postMessage: (message: CoreEventMessage) => void,
 ) => {
     postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
+        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'flashing',
             progress,
@@ -64,7 +64,7 @@ export const uploadFirmware = async ({
             const version = getFirmwareVersionArray(device.toMessageObject());
             if (version === null) return;
             if (isWithinRange(version, TIMEOUT_MIN_FW_VERSION, TIMEOUT_MAX_FW_VERSION)) {
-                postMessage(createUiMessage(UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+                postMessage(createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
             }
         }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});
@@ -96,7 +96,7 @@ export const uploadFirmware = async ({
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
         // We are starting the flashing process.
         postMessage(
-            createUiMessage(UI.FIRMWARE_PROGRESS, {
+            createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
                 device: device.toMessageObject(),
                 operation: 'start-flashing',
                 progress,

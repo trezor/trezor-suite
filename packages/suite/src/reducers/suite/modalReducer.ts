@@ -3,7 +3,7 @@ import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     DEVICE,
     Device,
-    UI,
+    UI_REQUEST,
     UiRequestButtonData,
     UiRequestConfirmation,
     UiRequestSelectAccount,
@@ -26,12 +26,12 @@ export type ModalState =
       }
     | {
           context: typeof MODAL.CONTEXT_DEVICE_CONFIRMATION;
-          windowType: typeof UI.SELECT_ACCOUNT;
+          windowType: typeof UI_REQUEST.SELECT_ACCOUNT;
           data?: UiRequestSelectAccount['payload'];
       }
     | {
           context: typeof MODAL.CONTEXT_DEVICE_CONFIRMATION;
-          windowType: typeof UI.SELECT_FEE;
+          windowType: typeof UI_REQUEST.SELECT_FEE;
           data?: UiRequestSelectFee['payload'];
       }
     | {
@@ -66,17 +66,17 @@ const modalReducer = (state: State = initialState, action: Action): State => {
 
             return state;
         // assign device to modal context
-        case UI.REQUEST_PIN:
-        case UI.INVALID_PIN:
-        case UI.REQUEST_PASSPHRASE:
-        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI_REQUEST.REQUEST_PIN:
+        case UI_REQUEST.INVALID_PIN:
+        case UI_REQUEST.REQUEST_PASSPHRASE:
+        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.type,
                 preserve: state.preserve,
             };
-        case UI.REQUEST_BUTTON:
+        case UI_REQUEST.REQUEST_BUTTON:
             // THP ButtonRequests handled separately in the `thpReducer`
             if (
                 action.payload.name !== undefined &&
@@ -92,33 +92,33 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 data: action.payload.data,
                 preserve: state.preserve,
             };
-        case UI.FIRMWARE_PROGRESS:
-            // firmware update first sends UI.REQUEST_BUTTON. Clear it after first progress is received
+        case UI_REQUEST.FIRMWARE_PROGRESS:
+            // firmware update first sends UI_REQUEST.REQUEST_BUTTON. Clear it after first progress is received
             return initialState;
-        case UI.REQUEST_CONFIRMATION:
+        case UI_REQUEST.REQUEST_CONFIRMATION:
             return {
                 context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
                 windowType: action.payload.view,
                 preserve: state.preserve,
             };
-        case UI.REQUEST_WORD:
+        case UI_REQUEST.REQUEST_WORD:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.type,
                 preserve: state.preserve,
             };
-        case UI.SELECT_ACCOUNT:
+        case UI_REQUEST.SELECT_ACCOUNT:
             return {
                 context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
-                windowType: UI.SELECT_ACCOUNT,
+                windowType: UI_REQUEST.SELECT_ACCOUNT,
                 data: action.payload,
                 preserve: state.preserve,
             };
-        case UI.SELECT_FEE:
+        case UI_REQUEST.SELECT_FEE:
             return {
                 context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
-                windowType: UI.SELECT_FEE,
+                windowType: UI_REQUEST.SELECT_FEE,
                 data: action.payload,
                 preserve: state.preserve,
             };
@@ -133,7 +133,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         case MODAL.CLOSE:
             return initialState;
 
-        case UI.CLOSE_UI_WINDOW:
+        case UI_REQUEST.CLOSE_UI_WINDOW:
             return state.preserve ? state : initialState;
 
         case MODAL.PRESERVE:

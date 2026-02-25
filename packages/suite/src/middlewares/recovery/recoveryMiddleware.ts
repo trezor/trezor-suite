@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import { deviceActions } from '@suite-common/device';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
@@ -26,7 +26,10 @@ const recovery =
 
         const { recovery, analytics } = api.getState();
 
-        if (action.type === UI.REQUEST_WORD && recovery.status === 'waiting-for-confirmation') {
+        if (
+            action.type === UI_REQUEST.REQUEST_WORD &&
+            recovery.status === 'waiting-for-confirmation'
+        ) {
             // Since the device asked for a first word, we can safely assume we've received confirmation from the user
             api.dispatch(recoveryActions.setStatus('in-progress'));
         }

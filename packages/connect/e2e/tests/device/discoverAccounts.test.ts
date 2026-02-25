@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { BundleProgress, UI } from '@trezor/connect';
+import TrezorConnect, { BundleProgress, UI_REQUEST } from '@trezor/connect';
 import type { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 
 import { getController, initTrezorConnect, setup } from '../../common.setup';
@@ -67,7 +67,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             */
         };
 
-        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on<DiscoverAccountsProgress>(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
         /*
         new Promise(resolve => setTimeout(resolve, 600)).then(() =>
             TrezorConnect.cancel('CANCELLED'),
@@ -86,7 +86,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             useCardanoDerivation: true,
         });
 
-        TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
         expect(result).toMatchObject({});
     }, 180000);

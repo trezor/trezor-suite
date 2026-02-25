@@ -37,7 +37,8 @@ import TrezorConnect, {
     DeviceState,
     DeviceUniquePath,
     StaticSessionId,
-    UI,
+    UI_REQUEST,
+    UI_RESPONSE,
 } from '@trezor/connect';
 import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 import { BigNumber, typedObjectEntries } from '@trezor/utils';
@@ -505,7 +506,10 @@ export const runDiscoveryThunk = createThunk(
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
             };
 
-            TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.on<DiscoverAccountsProgress>(
+                UI_REQUEST.BUNDLE_PROGRESS,
+                onBundleProgress,
+            );
 
             // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
             // before asnyc onBundleProgress is called which sets progress
@@ -525,7 +529,7 @@ export const runDiscoveryThunk = createThunk(
                 coins: accountsParam,
             });
 
-            TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
                 return;
@@ -760,14 +764,14 @@ export const runAdditionalDiscoveryThunk = createThunk(
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
-        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on<DiscoverAccountsProgress>(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
         const result = await TrezorConnect.discoverAccounts({
             device: updatedDevice,
             coins: accountsParam,
         });
 
-        TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
         dispatch(
             discoveryActions.updateDiscovery(
@@ -822,7 +826,7 @@ export const submitPassphrase = createThunk(
         }
 
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
+            type: UI_RESPONSE.RECEIVE_PASSPHRASE,
             payload: {
                 value: passphrase,
                 save: true,

@@ -4,7 +4,7 @@ import { Assert } from '@trezor/schema-utils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
+import { UI_REQUEST, createUiMessage } from '../events';
 import { Bundle } from '../types';
 import { GetOwnershipProof as GetOwnershipProofSchema } from '../types/api/getOwnershipProof';
 import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -79,7 +79,7 @@ export default class GetOwnershipProof extends AbstractMethod<
             if (this.hasBundle) {
                 // send progress
                 this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

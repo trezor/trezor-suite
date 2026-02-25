@@ -1,7 +1,7 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
+import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -53,7 +53,7 @@ const setStatus = (status: SeedInputStatus): RecoveryAction => ({
 });
 
 const submit = (word: string) => () => {
-    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: word });
+    TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word });
 };
 
 const checkSeed =

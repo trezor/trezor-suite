@@ -5,7 +5,7 @@ import { Translation, messages } from '@suite/intl';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -113,7 +113,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 // and we want to allow devices that have unsupported FW to be able to check the seed.
                 if (isT1B1) {
                     switch (modal.windowType) {
-                        case UI.REQUEST_PIN:
+                        case UI_REQUEST.REQUEST_PIN:
                             return (
                                 <PinMatrix
                                     pin={pin}
@@ -232,7 +232,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 if (
                     isT1B1 &&
                     modal.context === MODAL.CONTEXT_DEVICE &&
-                    modal.windowType === UI.REQUEST_PIN
+                    modal.windowType === UI_REQUEST.REQUEST_PIN
                 ) {
                     return (
                         <Modal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">

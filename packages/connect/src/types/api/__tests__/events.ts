@@ -8,8 +8,8 @@ import {
     TRANSPORT_EVENT,
     ThpPairingMethod,
     TrezorConnect,
-    UI,
     UI_EVENT,
+    UI_REQUEST,
 } from '../../..';
 
 export const events = (api: TrezorConnect) => {
@@ -101,12 +101,12 @@ export const events = (api: TrezorConnect) => {
     api.off('transport-start', () => {});
 
     api.on(UI_EVENT, event => {
-        if (event.type === UI.BUNDLE_PROGRESS) {
+        if (event.type === UI_REQUEST.BUNDLE_PROGRESS) {
             // event.payload.progress;
             // event.payload.error;
             // event.payload.response;
         }
-        if (event.type === UI.REQUEST_BUTTON) {
+        if (event.type === UI_REQUEST.REQUEST_BUTTON) {
             if (event.payload.code === 'ButtonRequest_ConfirmOutput') {
                 //
             }
@@ -126,7 +126,7 @@ export const events = (api: TrezorConnect) => {
             event.payload.device.label.toLowerCase();
         }
 
-        if (event.type === UI.REQUEST_PIN) {
+        if (event.type === UI_REQUEST.REQUEST_PIN) {
             if (event.payload.type === 'PinMatrixRequestType_Current') {
                 //
             }
@@ -136,7 +136,7 @@ export const events = (api: TrezorConnect) => {
             }
         }
 
-        if (event.type === UI.REQUEST_WORD) {
+        if (event.type === UI_REQUEST.REQUEST_WORD) {
             if (event.payload.type === 'WordRequestType_Plain') {
                 //
             }
@@ -182,10 +182,10 @@ export const events = (api: TrezorConnect) => {
     api.off(UI_EVENT, () => {});
 
     // event without payload
-    api.on(UI.REQUEST_BUTTON, () => {});
-    api.on(UI.REQUEST_BUTTON, _payload => {});
+    api.on(UI_REQUEST.REQUEST_BUTTON, () => {});
+    api.on(UI_REQUEST.REQUEST_BUTTON, _payload => {});
 
-    api.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, event => {
+    api.on<AccountInfo | null>(UI_REQUEST.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         if (event.response?.empty === false) {
@@ -193,23 +193,23 @@ export const events = (api: TrezorConnect) => {
         }
     });
 
-    api.on<Address>(UI.BUNDLE_PROGRESS, event => {
+    api.on<Address>(UI_REQUEST.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         event.response.serializedPath.toLowerCase();
         event.response.address.toLowerCase();
     });
-    api.off(UI.BUNDLE_PROGRESS, () => {});
-    api.removeAllListeners(UI.BUNDLE_PROGRESS);
+    api.off(UI_REQUEST.BUNDLE_PROGRESS, () => {});
+    api.removeAllListeners(UI_REQUEST.BUNDLE_PROGRESS);
 
-    api.on(UI.REQUEST_BUTTON, event => {
+    api.on(UI_REQUEST.REQUEST_BUTTON, event => {
         // @ts-expect-error
         if (event.code === 'a') {
             //
         }
     });
-    api.off(UI.REQUEST_BUTTON, () => {});
-    api.removeAllListeners(UI.BUNDLE_PROGRESS);
+    api.off(UI_REQUEST.REQUEST_BUTTON, () => {});
+    api.removeAllListeners(UI_REQUEST.BUNDLE_PROGRESS);
 
     api.on(BLOCKCHAIN_EVENT, event => {
         if (event.type === BLOCKCHAIN.CONNECT) {

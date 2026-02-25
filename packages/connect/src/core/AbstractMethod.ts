@@ -7,7 +7,7 @@ import {
     CallMethodPayload,
     CallMethodResponse,
     CoreEventMessage,
-    UI,
+    UI_REQUEST,
     UiPromiseCreator,
     UiRequestButtonData,
     UiRequestConfirmation,
@@ -20,7 +20,10 @@ export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
 export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
-export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
+export type DeviceMode =
+    | typeof UI_REQUEST.SEEDLESS
+    | typeof UI_REQUEST.BOOTLOADER
+    | typeof UI_REQUEST.INITIALIZE;
 
 export type MethodInfo = {
     // static fields
@@ -139,7 +142,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract get requiredPermissions(): MethodPermission[];
 
-    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
+    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
 
@@ -171,7 +174,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.device?.useEmptyPassphrase === 'boolean'
                 ? payload.device.useEmptyPassphrase
                 : false;
-        this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
+        this.allowDeviceMode = [UI_REQUEST.SEEDLESS]; // Allow seedless by default
 
         // default values for all methods
         this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
@@ -213,14 +216,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const range = this.firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
-            return UI.FIRMWARE_NOT_INSTALLED;
+            return UI_REQUEST.FIRMWARE_NOT_INSTALLED;
         }
         if (!range) {
             // range not known only for custom (unknown) models
             return;
         }
         if (range.min === '0') {
-            return UI.FIRMWARE_NOT_SUPPORTED;
+            return UI_REQUEST.FIRMWARE_NOT_SUPPORTED;
         }
 
         const version = device.getVersion();
@@ -232,11 +235,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             (device.firmwareStatus === 'required' ||
                 !versionUtils.isNewerOrEqual(version, range.min))
         ) {
-            return UI.FIRMWARE_OLD;
+            return UI_REQUEST.FIRMWARE_OLD;
         }
 
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
-            return UI.FIRMWARE_NOT_COMPATIBLE;
+            return UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
         }
     }
 
