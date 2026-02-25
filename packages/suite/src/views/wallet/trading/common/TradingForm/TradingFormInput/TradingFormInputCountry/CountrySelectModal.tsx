@@ -7,7 +7,7 @@ import {
     TradingCountryOption,
     useCountryFilteredData,
 } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Row, Text } from '@trezor/components';
+import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -40,10 +40,11 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
     return (
         <Modal
             width={400}
+            height="85vh"
             onCancel={onClose}
             heading={heading ? <Translation id={heading} /> : undefined}
         >
-            <Column gap={16}>
+            <Column gap={16} height="100%">
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
                     placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
@@ -68,10 +69,13 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
                     </CardList>
                 )}
                 {!filteredData.length && (
-                    <Column justifyContent="center">
-                        <Text align="center">
+                    <Column justifyContent="center" flex="0.75">
+                        <Paragraph align="center">
                             <Translation id="TR_TRADING_COUNTRY_NOT_FOUND" />
-                        </Text>
+                        </Paragraph>
+                        <Paragraph align="center" typographyStyle="body-sm" color="textSubdued">
+                            <Translation id="TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION" />
+                        </Paragraph>
                     </Column>
                 )}
             </Column>
