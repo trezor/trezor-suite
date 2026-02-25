@@ -107,7 +107,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         });
 
         await test.step('Verify data are sync to Relay', async () => {
-            await evoluClient.init({ ownerSecret });
+            evoluClient.init({ ownerSecret });
             await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
             await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
             await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });

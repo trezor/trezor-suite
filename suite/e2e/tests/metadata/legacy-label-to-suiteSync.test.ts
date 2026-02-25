@@ -8,8 +8,8 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
     test.beforeEach(async ({ metadataMock, evoluClient, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
-        await test.step('Seed Evolu relay server', async () => {
-            await evoluClient.init({ ownerSecret });
+        await test.step('Seed Evolu relay server', () => {
+            evoluClient.init({ ownerSecret });
             evoluClient.writeTo('account', accountSeed);
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
