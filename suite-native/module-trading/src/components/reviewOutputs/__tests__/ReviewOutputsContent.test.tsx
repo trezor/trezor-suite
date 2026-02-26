@@ -1,5 +1,6 @@
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { ReviewOutputsContent, ReviewOutputsContentProps } from '../ReviewOutputsContent';
 

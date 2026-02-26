@@ -1,10 +1,11 @@
 import { Form } from '@suite-native/forms';
+import { userEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';

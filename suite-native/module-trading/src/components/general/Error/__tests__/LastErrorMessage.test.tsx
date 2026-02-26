@@ -1,5 +1,6 @@
 import { tradingBuyActions } from '@suite-common/trading';
-import { TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { LastErrorMessage, LastErrorMessageProps } from '../LastErrorMessage';
 

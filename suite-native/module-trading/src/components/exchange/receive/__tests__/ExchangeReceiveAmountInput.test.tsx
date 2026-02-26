@@ -1,11 +1,11 @@
 import { Form } from '@suite-native/forms';
+import { act, fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
-    act,
-    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     exchangeQuotes,
     getInitializedTradingState,

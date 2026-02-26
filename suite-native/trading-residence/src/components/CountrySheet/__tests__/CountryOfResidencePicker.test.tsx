@@ -3,11 +3,12 @@ import { Form, useForm } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
     renderHookWithBasicProvider,
-    renderHookWithStoreProvider,
     renderWithBasicProvider,
     screen,
     userEvent,
 } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
 import { TradingLocationFormValues } from '../../../types/tradingLocationForm';

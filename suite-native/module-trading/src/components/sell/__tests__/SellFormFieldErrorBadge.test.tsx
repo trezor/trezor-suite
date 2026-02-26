@@ -1,10 +1,11 @@
 import { Form } from '@suite-native/forms';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
-    act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { btcAsset, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

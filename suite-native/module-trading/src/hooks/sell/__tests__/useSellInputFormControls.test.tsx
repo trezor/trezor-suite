@@ -1,8 +1,7 @@
 import { Form } from '@suite-native/forms';
-import {
-    renderHookWithBasicProvider,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';

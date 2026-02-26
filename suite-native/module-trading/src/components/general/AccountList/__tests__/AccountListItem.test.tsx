@@ -1,11 +1,8 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { ReceiveAccount } from '@suite-native/trading-types';
 import { StaticSessionId } from '@trezor/connect';
 

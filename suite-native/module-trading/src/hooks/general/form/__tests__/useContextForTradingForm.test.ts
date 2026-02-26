@@ -1,5 +1,7 @@
 import { TradingAmountLimitProps } from '@suite-common/trading';
-import { PreloadedState, act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { useContextForTradingForm } from '../useContextForTradingForm';
 

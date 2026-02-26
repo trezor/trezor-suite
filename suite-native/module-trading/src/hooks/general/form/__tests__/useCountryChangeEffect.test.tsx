@@ -1,5 +1,10 @@
 import { TradingCountryCode, TradingCountryOption } from '@suite-common/trading';
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import {
+    TestStore,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils/store';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';

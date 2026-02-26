@@ -2,12 +2,13 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useSellFlow } from '../useSellFlow';

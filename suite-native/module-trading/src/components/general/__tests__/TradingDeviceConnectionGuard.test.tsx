@@ -1,7 +1,8 @@
 import { Text } from 'react-native';
 
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { TradingDeviceConnectionGuard } from '../TradingDeviceConnectionGuard';
 

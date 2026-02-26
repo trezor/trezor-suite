@@ -1,11 +1,8 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+import { act, waitFor } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';

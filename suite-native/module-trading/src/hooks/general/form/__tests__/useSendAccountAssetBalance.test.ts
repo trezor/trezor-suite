@@ -1,5 +1,6 @@
 import { Account } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType, SellFormType, TradeableAsset } from '@suite-native/trading-types';
 

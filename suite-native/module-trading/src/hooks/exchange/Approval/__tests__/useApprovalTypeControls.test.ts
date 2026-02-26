@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite-common/trading';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useApprovalTypeControls } from '../useApprovalTypeControls';

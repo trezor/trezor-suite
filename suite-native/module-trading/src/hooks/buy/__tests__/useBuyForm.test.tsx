@@ -6,14 +6,14 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
+import { act, renderHook } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
-    act,
     initStore,
-    renderHook,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     btcAsset,
     buyMercuryo,

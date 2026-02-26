@@ -1,13 +1,14 @@
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { useAnalytics } from '@suite-native/services';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
-    fireEvent,
     initStore,
     renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from '../Header';

@@ -2,7 +2,9 @@ import type { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';

@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountPicker } from '../SellBankAccountPicker';

@@ -1,4 +1,6 @@
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { ProviderSheetHandle, ProviderSheetHandleProps } from '../ProviderSheetHandle';
 

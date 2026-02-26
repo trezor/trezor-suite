@@ -1,10 +1,11 @@
 import { Form } from '@suite-native/forms';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { BuyFormType } from '@suite-native/trading-types';
 

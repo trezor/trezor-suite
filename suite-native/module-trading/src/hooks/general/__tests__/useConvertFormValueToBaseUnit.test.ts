@@ -1,5 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { PROTO } from '@trezor/connect';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';

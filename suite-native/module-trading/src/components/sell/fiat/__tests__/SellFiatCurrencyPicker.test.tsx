@@ -1,12 +1,11 @@
 import { useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
+import { act, fireEvent, screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
-    act,
-    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';

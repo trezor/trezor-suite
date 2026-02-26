@@ -1,7 +1,8 @@
 import { yup } from '@suite-common/validators';
 import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesContent, FeesContentProps } from '../FeesContent';

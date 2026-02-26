@@ -1,9 +1,10 @@
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 
 import { useMaxSlippageForm } from '../useMaxSlippageForm';
 

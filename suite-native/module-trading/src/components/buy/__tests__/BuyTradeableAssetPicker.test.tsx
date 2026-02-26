@@ -1,13 +1,13 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 
 import { Form } from '@suite-native/forms';
+import { fireEvent, screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
-    fireEvent,
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';

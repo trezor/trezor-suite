@@ -1,12 +1,12 @@
 import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import { act, userEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
-    act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

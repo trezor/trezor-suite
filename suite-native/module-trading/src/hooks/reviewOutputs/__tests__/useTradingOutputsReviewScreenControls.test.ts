@@ -1,11 +1,12 @@
 import { sendFormActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { transactionManagementActions } from '@suite-native/transaction-management';
 

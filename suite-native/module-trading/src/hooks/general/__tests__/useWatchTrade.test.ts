@@ -2,11 +2,12 @@ import React from 'react';
 
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAnalytics } from '@suite-native/services';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useWatchTrade } from '../useWatchTrade';

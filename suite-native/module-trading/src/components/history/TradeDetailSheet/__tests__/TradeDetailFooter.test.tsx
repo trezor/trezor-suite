@@ -1,5 +1,7 @@
 import { TradingTransaction } from '@suite-common/trading';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getInitializedTradingState, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradeDetailFooter } from '../TradeDetailFooter';

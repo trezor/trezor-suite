@@ -1,12 +1,13 @@
 import { tradingActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
+import { waitFor } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
     initStore,
     renderHookWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useEvmApprovalFees } from '../useEvmApprovalFees';

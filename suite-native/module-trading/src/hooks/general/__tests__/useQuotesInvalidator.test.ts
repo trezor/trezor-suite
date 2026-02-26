@@ -1,6 +1,11 @@
 import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import {
+    TestStore,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils/store';
 import { AbortablePromise } from '@suite-native/trading-types';
 
 import { UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';

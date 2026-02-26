@@ -1,7 +1,9 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingHistoryScreen } from '../TradingHistoryScreen';

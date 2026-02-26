@@ -1,7 +1,8 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     accounts,
     exchangeQuotes,

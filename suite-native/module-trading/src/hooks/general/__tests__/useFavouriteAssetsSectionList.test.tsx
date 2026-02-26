@@ -1,11 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
-import {
-    PreloadedState,
-    StoreProviderForTests,
-    renderHook,
-    waitFor,
-} from '@suite-native/test-utils';
+import { renderHook, waitFor } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, StoreProviderForTests } from '@suite-native/test-utils/store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { TradeableAsset } from '@suite-native/trading-types';
 

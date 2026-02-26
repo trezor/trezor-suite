@@ -1,6 +1,8 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { getTranslation } from '@suite-native/intl';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EmptyHomeRenderer } from '../EmptyHomeRenderer';

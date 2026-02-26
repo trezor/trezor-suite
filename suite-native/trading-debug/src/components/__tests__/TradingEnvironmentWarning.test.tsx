@@ -1,4 +1,5 @@
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { TradingState } from '@suite-native/trading-types';
 

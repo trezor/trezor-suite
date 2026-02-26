@@ -1,4 +1,6 @@
-import { PreloadedState, act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import { btcAsset, ethAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 
 import { useExchangeBuyTradeableAssetsFilteredData } from '../useExchangeBuyTradeableAssetsFilteredData';

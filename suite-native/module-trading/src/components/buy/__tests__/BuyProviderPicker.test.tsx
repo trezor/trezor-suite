@@ -1,14 +1,13 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
+import { act, fireEvent, screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
-    act,
-    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     buyCexdirect,
     buyInvity,

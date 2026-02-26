@@ -1,4 +1,6 @@
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { ReceiveAccountPicker, ReceiveAccountPickerProps } from '../ReceiveAccountPicker';

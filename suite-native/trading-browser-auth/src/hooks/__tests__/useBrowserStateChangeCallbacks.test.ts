@@ -1,5 +1,7 @@
 import { TradingType } from '@suite-common/trading';
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallbacks';

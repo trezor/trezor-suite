@@ -1,10 +1,11 @@
 import { SupportedLocaleCode } from '@suite-native/intl';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
     initStore,
     renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import { AmountUnit } from '@trezor/protobuf/src/messages';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';

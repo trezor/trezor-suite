@@ -1,4 +1,5 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { BuyConfirmation } from '../BuyConfirmation';

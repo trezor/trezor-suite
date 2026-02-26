@@ -1,5 +1,6 @@
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { ReviewOutputItemValues, ReviewOutputItemValuesProps } from '../ReviewOutputItemValues';

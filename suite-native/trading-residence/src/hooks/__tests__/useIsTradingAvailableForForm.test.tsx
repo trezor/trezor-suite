@@ -1,5 +1,6 @@
 import { TradingCountryCode } from '@suite-common/trading';
-import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { LocationForm } from '../../components/LocationForm';
 import { useIsTradingAvailableForForm } from '../useIsTradingAvailableForForm';

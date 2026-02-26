@@ -1,5 +1,6 @@
 import { TradingTradeType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { ProviderListItem, ProviderListItemProps } from '../ProviderListItem';

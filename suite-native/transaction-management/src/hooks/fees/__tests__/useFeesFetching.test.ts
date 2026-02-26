@@ -1,11 +1,12 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FeesStatus } from '@suite-common/wallet-types';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesFetching } from '../useFeesFetching';

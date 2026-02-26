@@ -1,6 +1,8 @@
 import { TradingTradeType, TradingType } from '@suite-common/trading';
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { buyQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ProviderSheet, ProviderSheetProps } from '../ProviderSheet';

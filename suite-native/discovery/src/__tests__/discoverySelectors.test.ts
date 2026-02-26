@@ -1,6 +1,7 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
-import { PreloadedState, initStore } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, initStore } from '@suite-native/test-utils/store';
 
 import { selectDiscoverySupportedNetworks } from '../discoverySelectors';
 

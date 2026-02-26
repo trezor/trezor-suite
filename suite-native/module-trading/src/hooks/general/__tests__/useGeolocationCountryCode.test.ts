@@ -1,5 +1,10 @@
 import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import {
+    TestStore,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils/store';
 
 import { useGeolocationCountryCode } from '../useGeolocationCountryCode';
 

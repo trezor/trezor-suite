@@ -1,13 +1,14 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
     initStore,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 
 import { FeesFormType } from '../../../..';
 import { getWalletState } from '../../../../__fixtures__/walletState';

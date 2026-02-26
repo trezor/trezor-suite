@@ -1,6 +1,8 @@
 import Localization, { type Locale } from 'expo-localization';
 
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import { residenceActions } from '@suite-native/trading-state';
 
 import { useLocationForm } from '../useLocationForm';

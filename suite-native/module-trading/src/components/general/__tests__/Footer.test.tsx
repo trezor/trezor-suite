@@ -1,6 +1,8 @@
 import { Linking } from 'react-native';
 
-import { PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { exchangeCexdirect } from '@suite-native/trading-fixtures';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 

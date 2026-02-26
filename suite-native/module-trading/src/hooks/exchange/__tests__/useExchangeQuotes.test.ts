@@ -7,13 +7,14 @@ import {
 } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     btcAsset,
     ethAsset,

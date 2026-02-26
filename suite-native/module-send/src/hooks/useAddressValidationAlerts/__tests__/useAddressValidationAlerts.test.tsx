@@ -2,12 +2,9 @@ import { useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+import { act, waitFor } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import TrezorConnect from '@trezor/connect';
 
 import { useAddressValidationAlerts } from '../useAddressValidationAlerts';

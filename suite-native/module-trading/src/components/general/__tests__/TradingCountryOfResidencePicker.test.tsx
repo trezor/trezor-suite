@@ -4,14 +4,13 @@ import { events } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
+import { act, screen, userEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
-    act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     residenceCheckDisabledState,
     residenceCheckEnabledState,

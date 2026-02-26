@@ -1,12 +1,13 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingSellActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
+import { act } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     PreloadedState,
     TestStore,
-    act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     bnbAsset,
     getBtcAccount,

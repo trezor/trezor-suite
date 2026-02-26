@@ -1,6 +1,7 @@
 import { Context, ContextDomain } from '@suite-common/message-system';
 import { Action, Message } from '@suite-common/suite-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { ContextMessage } from '../ContextMessage';
 

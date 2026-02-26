@@ -1,12 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { fireEvent, screen } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,

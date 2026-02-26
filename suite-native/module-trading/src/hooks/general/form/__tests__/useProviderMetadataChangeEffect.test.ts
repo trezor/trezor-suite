@@ -1,5 +1,6 @@
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import { buyMercuryo, getWalletState } from '@suite-native/trading-fixtures';
 
 import {

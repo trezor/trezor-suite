@@ -4,13 +4,9 @@ import {
     RootStackRoutes,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-    waitFor,
-} from '@suite-native/test-utils';
+import { act, waitFor } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,4 +1,5 @@
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { ResidenceCheckAwareAnimatedBox } from '../ResidenceCheckAwareAnimatedBox';
 

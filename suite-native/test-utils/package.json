@@ -19,6 +19,7 @@
         "@suite-native/formatters-config": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/state": "workspace:*",
         "@testing-library/react-native": "13.3.3",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

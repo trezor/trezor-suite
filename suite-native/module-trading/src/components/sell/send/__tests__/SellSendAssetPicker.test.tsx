@@ -2,13 +2,14 @@ import type { CryptoId } from 'invity-api';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import { userEvent } from '@suite-native/test-utils';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import {
     TestStore,
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils/store';
 import {
     getBtcAccount,
     getEthAccount,
