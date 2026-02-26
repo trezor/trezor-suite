@@ -12463,7 +12463,6 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@suite-native/test-utils": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"

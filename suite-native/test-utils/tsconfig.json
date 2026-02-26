@@ -14,7 +14,6 @@
         { "path": "../formatters-config" },
         { "path": "../intl" },
         { "path": "../services" },
-        { "path": "../state" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

@@ -1,7 +1,5 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { PreloadedState, initStore } from '@suite-native/test-utils/store';
 
 import { selectDiscoverySupportedNetworks } from '../discoverySelectors';
 
@@ -20,26 +18,40 @@ jest.mock('@suite-common/wallet-config', () => ({
     })),
 }));
 
-describe('selectDiscoverySupportedNetworks', () => {
-    const createMockState = (overrides: Partial<PreloadedState> = {}): PreloadedState => ({
+// Derive the state type from the selector itself — avoids importing PreloadedState
+// from @suite-native/state (which depends on this package, creating a circular dep).
+type SelectorState = Parameters<typeof selectDiscoverySupportedNetworks>[0];
+
+// Calling the selector directly with a plain state object (no Redux store) cuts the
+// circular module chain: discovery → test-utils/store → state → discovery.
+// The selector only reads `device.selectedDevice`, `appSettings`, and `featureFlags`.
+// `selectedDevice: undefined` means all networks pass the firmware capability filter.
+const createMockState = (
+    overrides: {
+        appSettings?: Partial<typeof appSettingsInitialState>;
+        featureFlags?: Partial<typeof featureFlagsInitialState>;
+    } = {},
+): SelectorState =>
+    ({
+        device: { selectedDevice: undefined, devices: [], persistentDeviceData: [] },
         appSettings: {
             ...appSettingsInitialState,
             areTestnetsEnabled: false,
-            ...overrides?.appSettings,
+            ...overrides.appSettings,
         },
         featureFlags: {
             ...featureFlagsInitialState,
             areDebugOnlyNetworksEnabled: false,
             ...overrides.featureFlags,
         },
-    });
+    }) as SelectorState;
 
+describe('selectDiscoverySupportedNetworks', () => {
     it('should be stable (return same reference for same inputs)', () => {
         const state = createMockState();
-        const { store } = initStore(state);
 
-        const firstCall = selectDiscoverySupportedNetworks(store.getState());
-        const secondCall = selectDiscoverySupportedNetworks(store.getState());
+        const firstCall = selectDiscoverySupportedNetworks(state);
+        const secondCall = selectDiscoverySupportedNetworks(state);
 
         expect(firstCall).toBe(secondCall);
     });
@@ -48,9 +60,8 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = initStore(state);
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(state);
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be filtered out
@@ -69,9 +80,8 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: true },
         });
-        const { store } = initStore(state);
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(state);
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be included
@@ -90,9 +100,8 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
-        const { store } = initStore(state);
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(state);
         const networkSymbols = result.map(n => n.symbol);
 
         // XLM is marked as debug-only in our mock, so it should be filtered out
@@ -106,9 +115,8 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
-        const { store } = initStore(state);
 
-        const result = selectDiscoverySupportedNetworks(store.getState());
+        const result = selectDiscoverySupportedNetworks(state);
         const networkSymbols = result.map(n => n.symbol);
 
         // XLM should be included when debug networks are enabled
@@ -121,10 +129,9 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = initStore(state);
 
         // Force testnets enabled even though app setting is false
-        const result = selectDiscoverySupportedNetworks(store.getState(), true);
+        const result = selectDiscoverySupportedNetworks(state, true);
         const networkSymbols = result.map(n => n.symbol);
 
         // Test networks should be included due to forced parameter

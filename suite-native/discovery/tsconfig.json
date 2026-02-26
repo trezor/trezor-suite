@@ -32,7 +32,6 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../../packages/utils" }
     ]
 }

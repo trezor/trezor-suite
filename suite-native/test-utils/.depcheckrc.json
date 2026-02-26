@@ -1,0 +1,7 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "// This can't be solved without introducing a circular Nx task-graph dep (discovery → test-utils → state → discovery)",
+        "@suite-native/state"
+    ]
+}
