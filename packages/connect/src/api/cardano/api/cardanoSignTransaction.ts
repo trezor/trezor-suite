@@ -5,7 +5,7 @@
 import { trezorUtils } from '@fivebinaries/coin-selection';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak, Type } from '@trezor/schema-utils';
+import { Assert, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
@@ -133,11 +133,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(
-            Type.Union([CardanoSignTransactionSchema, CardanoSignTransactionExtended]),
-            payload,
-        );
+        Assert(Type.Union([CardanoSignTransactionSchema, CardanoSignTransactionExtended]), payload);
 
         const inputsWithPath = payload.inputs.map(transformInput);
 

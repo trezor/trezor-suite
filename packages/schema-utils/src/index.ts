@@ -100,25 +100,6 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
     }
 }
 
-export function AssertWeak<T extends TSchema>(
-    schema: T,
-    value: unknown,
-): asserts value is Static<T> {
-    try {
-        Assert(schema, value);
-    } catch (e) {
-        if (e instanceof InvalidParameter) {
-            if (e.type === ValueErrorType.ObjectRequiredProperty) {
-                // We consider this error to be serious
-                throw e;
-            }
-            console.warn('Method params validation failed', e);
-        } else {
-            throw e;
-        }
-    }
-}
-
 export const Type = new CustomTypeBuilder();
 export { Optional, CloneType };
 export type * from '@sinclair/typebox';

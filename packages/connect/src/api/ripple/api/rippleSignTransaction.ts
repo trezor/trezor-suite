@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RippleSignTransaction.js
 
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { AssertWeak } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
@@ -30,8 +30,7 @@ export default class RippleSignTransaction extends AbstractMethod<
     init() {
         const { payload } = this;
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(RippleSignTransactionSchema, payload);
+        Assert(RippleSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 5);
         // incoming data should be in ripple-sdk format

@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
@@ -45,8 +45,7 @@ export default class StellarSignTransaction extends AbstractMethod<
     init() {
         const { payload } = this;
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(StellarSignTransactionSchema, payload);
+        Assert(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in stellar-sdk format
