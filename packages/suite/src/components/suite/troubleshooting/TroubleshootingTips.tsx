@@ -18,7 +18,6 @@ type TroubleshootingTipsBaseProps = {
     label?: ReactNode;
     ctaLabel?: ReactNode;
     cta?: ReactNode;
-    initiallyIsOpen?: boolean;
     'data-testid'?: string;
     toggleText?: ReactNode;
     intent?: BannerIntent;
@@ -30,13 +29,14 @@ export const TroubleshootingTips = ({
     items,
     cta,
     ctaLabel,
-    initiallyIsOpen,
     toggleText,
     intent = 'warning',
     'data-testid': dataTest,
 }: TroubleshootingTipsBaseProps) => {
     // todo: this filter is duplicated with TroubleshootingTipsList
     const visibleTips = items.filter(item => !item.hide);
+
+    const hasOtherCta = Boolean(cta);
 
     const TroubleshootingButton = () => {
         const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(false);
@@ -55,8 +55,8 @@ export const TroubleshootingTips = ({
                 <Button
                     onClick={onOpen}
                     intent="neutral"
-                    size="small"
-                    priority={!initiallyIsOpen ? 'secondary' : 'primary'}
+                    size={hasOtherCta ? 'small' : 'large'}
+                    priority={hasOtherCta ? 'secondary' : undefined}
                     iconLeft="question"
                     data-testid="@onboarding/troubleshooting-tips/button"
                 >
