@@ -125,10 +125,10 @@ const formatAmounts =
 const loadPdfMake = async () => {
     const pdfMake = (await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake'))
         .default;
-    const fonts = (await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts'))
+    const vfs = (await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts'))
         .default;
-    if (fonts?.vfs) {
-        pdfMake.vfs = fonts.vfs;
+    if (vfs) {
+        pdfMake.addVirtualFileSystem(vfs);
     }
 
     return pdfMake;
@@ -137,12 +137,7 @@ const loadPdfMake = async () => {
 const makePdf = (
     definitions: TDocumentDefinitions,
     pdfMake: typeof import('pdfmake/build/pdfmake'),
-): Promise<Blob> =>
-    new Promise(resolve => {
-        pdfMake.createPdf(definitions).getBlob(blob => {
-            resolve(blob);
-        });
-    });
+): Promise<Blob> => pdfMake.createPdf(definitions).getBlob();
 
 const prepareContent = (
     data: Data,
