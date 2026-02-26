@@ -1,28 +1,52 @@
 # @trezor/connect tests
 
-## jest test
+## docker-connect-test.sh
 
-Testing `@trezor/connect` npm package in nodejs environment.
+The script at `docker/docker-connect-test.sh` (repo root) spins up `trezor-user-env` via Docker and runs the integration tests. The first argument is required and selects the test environment:
 
-```
-./docker/docker-connect-test.sh
-```
+```sh
+# Node.js (jest)
+./docker/docker-connect-test.sh node
 
-you may use the following params:
-
-```
--f <semver string such as 2.5.2>
--p <pattern to match tests files>
--i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
+# Browser (karma)
+./docker/docker-connect-test.sh web
 ```
 
-## karma test
+All options:
 
-Browser console is not visible in the terminal. Use KARMA_SINGLE_RUN env variable and debug test at http://localhost:8099/debug.html in your favorite browser.
+| Flag             | Description                                                  | Default        |
+| ---------------- | ------------------------------------------------------------ | -------------- |
+| `-f <version>`   | Firmware version, e.g. `2.5.2`                               | latest main    |
+| `-b <branch>`    | Firmware branch                                              |                |
+| `-u <url>`       | Firmware URL                                                 |                |
+| `-m <model>`     | Firmware model, e.g. `R`                                     |                |
+| `-o`             | Use BTC-only firmware (requires `-b`)                        |                |
+| `-i <methods>`   | Run only these methods, e.g. `applySettings,signTransaction` |                |
+| `-e <methods>`   | Exclude these methods                                        |                |
+| `-p <pattern>`   | Test file pattern                                            |                |
+| `-r`             | Randomize test order (node only)                             |                |
+| `-t <transport>` | Transport / bridge version                                   | `node-bridge`  |
+| `-c`             | Disable transaction and WebSocket cache                      | cache enabled  |
+| `-d`             | Skip Docker (use your own `trezor-user-env` instance)        | Docker enabled |
+| `-D <path>`      | Path to docker executable (e.g. `podman`)                    | `docker`       |
 
-For local changes to take effect build connect-iframe or connect-web depending where they were made and restart test.
+Examples:
 
+```sh
+# Run against a specific firmware version
+./docker/docker-connect-test.sh node -p "methods" -f "2-latest" -m T3W1 -i signTransaction -t node-bridge
+
+# Run browser tests without Docker (own trezor-user-env instance)
+./docker/docker-connect-test.sh web -d
 ```
+
+## karma test (browser, without Docker)
+
+Browser console is not visible in the terminal. Use `KARMA_SINGLE_RUN=false` and open http://localhost:8099/debug.html to inspect.
+
+For local changes to take effect, rebuild `connect-web` before restarting.
+
+```sh
 TESTS_PATTERN="init" KARMA_SINGLE_RUN=false yarn workspace @trezor/connect test:e2e:web
 ```
 
