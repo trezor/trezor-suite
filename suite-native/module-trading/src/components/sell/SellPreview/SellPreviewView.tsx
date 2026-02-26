@@ -21,7 +21,7 @@ export type SellPreviewViewProps = {
 export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
 
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+    const { fromStringValue, toStringValue, fromValue } = useChangeStringsExtractor(quote);
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
         quote?.bankAccounts?.[0].bankAccount,
     );
@@ -45,6 +45,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
             <SellFromAccountTradePreviewCard
                 cryptoId={quote?.cryptoCurrency}
                 fromStringValue={fromStringValue}
+                fromValue={fromValue}
             />
             <SellToFiatTradePreviewCard quote={quote} toStringValue={toStringValue} />
             <SellFeePickerCard quote={quote} isTxnError={isTxnError} />

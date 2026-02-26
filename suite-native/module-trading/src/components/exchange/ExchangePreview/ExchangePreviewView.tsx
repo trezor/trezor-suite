@@ -21,7 +21,8 @@ export type ExchangePreviewViewProps = {
 
 export const ExchangePreviewView = memo(
     ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
-        const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+        const { fromStringValue, toStringValue, fromValue, toValue } =
+            useChangeStringsExtractor(quote);
         const isTxnError = !!txnErrorString;
         const isFusionPlus = quote?.exchange === '1inchfusionplus';
 
@@ -44,8 +45,13 @@ export const ExchangePreviewView = memo(
                 <ExchangeFromAccountTradePreviewCard
                     quote={quote}
                     fromStringValue={fromStringValue}
+                    fromValue={fromValue}
                 />
-                <ExchangeToAccountTradePreviewCard quote={quote} toStringValue={toStringValue} />
+                <ExchangeToAccountTradePreviewCard
+                    quote={quote}
+                    toStringValue={toStringValue}
+                    toValue={toValue}
+                />
                 <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
                 {isFusionPlus && <ExchangeFusionPlusInfo />}
             </VStack>
