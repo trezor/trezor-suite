@@ -51,7 +51,6 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         {
             children,
             footer,
-            style,
             title,
             isCloseDisplayed = false,
             subtitle,
