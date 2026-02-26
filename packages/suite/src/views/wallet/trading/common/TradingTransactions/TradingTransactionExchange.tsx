@@ -41,6 +41,7 @@ export const TradingTransactionExchange = ({
 
     return (
         <TradingTransactionContainer
+            data-testid={`@trading/transactions/list/swap-transaction/${trade.data.orderId}`}
             TradeDetail={
                 <>
                     <TradingTransactionAmounts trade={trade} />
@@ -52,7 +53,13 @@ export const TradingTransactionExchange = ({
                 <TradingTransactionProvider exchange={trade.data.exchange} providers={providers} />
             }
             TradeButton={
-                <Button size="small" intent="neutral" priority="secondary" onClick={viewDetail}>
+                <Button
+                    size="small"
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={viewDetail}
+                    data-testid="@trading/transactions/view-details-button"
+                >
                     <Translation id="TR_TRADING_VIEW_DETAILS" />
                 </Button>
             }
