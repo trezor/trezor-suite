@@ -2,20 +2,14 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import {
-    TradingRootState,
-    cryptoIdToNetworkAndContractAddress,
-    isCryptoIdForNativeToken,
-    selectTradingTradeByOrderId,
-} from '@suite-common/trading';
-import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { AccountsRootState } from '@suite-common/wallet-core';
-import { Card, HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { CombinedLabelingState } from '@suite-native/labeling';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
+import { TradeDetailAmountStack } from './TradeDetailAmountStack';
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
@@ -23,22 +17,7 @@ export type TradeDetailTransactionInfoProps = {
     orderId: string;
 };
 
-type CryptoIdIconProps = { cryptoId: CryptoId | undefined };
-
 const TRADE_DETAIL_TEST_ID = '@trading/history/detail';
-
-const CryptoIdIcon = ({ cryptoId }: CryptoIdIconProps) => {
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
-    if (!network || !cryptoId) {
-        return null;
-    }
-
-    return isCryptoIdForNativeToken(cryptoId) ? (
-        <CryptoIcon symbol={network.displaySymbol as NetworkDisplaySymbol} size="tiny" />
-    ) : (
-        <CryptoIcon symbol={network.symbol} contractAddress={contractAddress} size="tiny" />
-    );
-};
 
 export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionInfoProps) => {
     const { translate } = useTranslate();
@@ -49,8 +28,16 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
     const isSell = tradeType === 'sell';
     const isBuy = tradeType === 'buy';
 
-    const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
-        useChangeStringsExtractor(trade?.data);
+    const {
+        fromStringValue,
+        toStringValue,
+        fromCurrency,
+        toCurrency,
+        isFromCrypto,
+        isToCrypto,
+        fromValue,
+        toValue,
+    } = useChangeStringsExtractor(trade?.data);
 
     const fromAccountLabel = useSelector((state: AccountsRootState & CombinedLabelingState) => {
         if (isBuy) {
@@ -85,12 +72,13 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             <TradeDetailInfoRow
                 title={<Translation id="moduleTrading.tradeHistory.detail.paid" />}
                 content={
-                    <HStack alignItems="center" spacing="sp2">
-                        {isFromCrypto && <CryptoIdIcon cryptoId={fromCurrency} />}
-                        <Text variant="body-sm" testID={TRADE_DETAIL_TEST_ID + '/paid'}>
-                            {fromStringValue}
-                        </Text>
-                    </HStack>
+                    <TradeDetailAmountStack
+                        isCrypto={isFromCrypto}
+                        amountValue={fromValue}
+                        amountString={fromStringValue}
+                        currency={fromCurrency}
+                        testID={TRADE_DETAIL_TEST_ID + '/paid'}
+                    />
                 }
             />
             {!isBuy && (
@@ -102,10 +90,13 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             <TradeDetailInfoRow
                 title={<Translation id="moduleTrading.tradeHistory.detail.received" />}
                 content={
-                    <HStack alignItems="center" spacing="sp2">
-                        {isToCrypto && <CryptoIdIcon cryptoId={toCurrency} />}
-                        <Text variant="body-sm">{toStringValue}</Text>
-                    </HStack>
+                    <TradeDetailAmountStack
+                        isCrypto={isToCrypto}
+                        amountValue={toValue}
+                        amountString={toStringValue}
+                        currency={toCurrency}
+                        testID={TRADE_DETAIL_TEST_ID + '/received'}
+                    />
                 }
             />
             {!isSell && (
