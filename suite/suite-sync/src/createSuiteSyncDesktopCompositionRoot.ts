@@ -4,8 +4,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { DesktopAnalyticsDep } from '@suite/analytics';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
+    createSuiteSyncCompositionRoot,
+    createSuiteSyncErrorHandler,
+} from '@suite-common/suite-sync';
+import {
+    createEvoluErrorHandler,
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
@@ -31,20 +35,21 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
-    const run = createRun(createEvoluDeps());
+    const evoluDeps = createEvoluDeps();
+    const run = createRun(evoluDeps);
+
+    const suiteSyncErrorHandler = createSuiteSyncErrorHandler({ dispatch: deps.dispatch });
+    evoluDeps.evoluError.subscribe(
+        createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
+    );
 
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
-            const createEvoluInstance = createEvoluInstanceFactory({
-                run,
-                suiteSyncErrorHandler,
-            });
-
-            return createEvoluStorageFactory({ createEvoluInstance });
-        },
+        createSuiteStorage: createEvoluStorageFactory({
+            createEvoluInstance: createEvoluInstanceFactory({ run }),
+        }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
     });
 

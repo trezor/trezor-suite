@@ -8,6 +8,7 @@ export { createEvoluInstanceFactory } from './createEvoluInstance';
 export { evoluCreateSuiteSyncOwner } from './evoluCreateSuiteSyncOwner';
 export { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 export { Schema } from './schema';
+export { createEvoluErrorHandler } from './createEvoluErrorHandler';
 
 // Useful in e2e to easily create fixtures
 export { WalletEvoluSchema } from './data/walletTable';

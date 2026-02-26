@@ -8,15 +8,10 @@ import {
     selectEnforceQuotaManager,
     selectHasDeviceAllowance,
 } from '@suite-common/suite-sync-quota-manager';
-import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import {
-    SuiteSync,
-    SuiteSyncAppReloaderDep,
-    SuiteSyncErrorHandler,
-} from '@suite-common/suite-sync-types';
+import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
-import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSubscribeSuiteSyncData';
@@ -48,20 +43,12 @@ import {
     selectSuiteSyncRelayUrl,
 } from './suiteSyncSelectors';
 
-type CreateSuiteStorageFactory = (deps: {
-    suiteSyncErrorHandler: SuiteSyncErrorHandler;
-}) => CreateSuiteStorage;
-
-type CreateSuiteStorageFactoryDep = {
-    createSuiteStorageFactory: CreateSuiteStorageFactory;
-};
-
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'];
 } & EnsureDelegatedIdentityKeyDep &
-    CreateSuiteStorageFactoryDep &
+    CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
     SuiteSyncAppReloaderDep;
@@ -111,17 +98,11 @@ export const createSuiteSyncCompositionRoot = (
         getEnforceQuotaManager: toGetter(deps.getState, selectEnforceQuotaManager),
     });
 
-    const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({
-        dispatch: deps.dispatch,
-    });
-
-    const createSuiteStorage = deps.createSuiteStorageFactory({ suiteSyncErrorHandler });
-
     const ensureStorage = createEnsureStorage({
         refreshSuiteSyncKeys,
         ensureQuota,
         suiteSyncStorageRepository,
-        createSuiteStorage,
+        createSuiteStorage: deps.createSuiteStorage,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
     });

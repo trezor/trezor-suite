@@ -1,8 +1,7 @@
-import { AppName, createEvolu, Evolu, getOrThrow, type Run } from '@evolu/common';
+import { AppName, Evolu, type Run, createEvolu, getOrThrow } from '@evolu/common';
 import { EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import { SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 import { Schema } from './schema';
@@ -13,13 +12,7 @@ import { Schema } from './schema';
 const VERSION = 8;
 
 type CreateEvoluInstanceFactoryDeps = {
-    suiteSyncErrorHandler: SuiteSyncErrorHandler;
     run: Run<EvoluPlatformDeps>;
-
-    // Todo: Temp. Hack: this is only because of concurrency in tests in future versions of Evolu,
-    //       this shall be done over evoluDeps. With upgrade of Evolu please check
-    //       if this is still needed.
-    _evoluDbNameSuffix?: string;
 };
 
 export type CreateEvoluInstance = (params: {
@@ -41,7 +34,7 @@ export const createEvoluInstanceFactory =
             throw owner.error;
         }
 
-        const appName = AppName.from(`trezor-suite-v${VERSION}-${deps._evoluDbNameSuffix ?? ''}`);
+        const appName = AppName.from(`trezor-suite-v${VERSION}`);
 
         if (!appName.ok) {
             console.error(appName.error);

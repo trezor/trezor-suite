@@ -40,12 +40,14 @@ export const createEvoluStorageFactory =
             };
 
             ownerDispose();
-            // ownerDispose = evolu.useOwner(syncOwner);
+            ownerDispose = evolu.useOwner(syncOwner);
         };
 
         return {
             data: {
-                accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountTableSchema>),
+                accounts: new EvoluAccountTable(
+                    evolu as unknown as Evolu<typeof AccountTableSchema>,
+                ),
                 wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletTableSchema>),
                 outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputTableSchema>),
                 addresses: new AddressEvoluTable(
