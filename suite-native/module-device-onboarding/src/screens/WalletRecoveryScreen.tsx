@@ -24,7 +24,11 @@ export const WalletRecoveryScreen = ({
             });
         }
         // Do not retry if user cancelled the flow via the app UI
-        if (response.error.code && response.error.code === 'Method_Interrupted') return;
+        if (
+            response.error.code === 'Failure_ActionCancelled' ||
+            response.error.code === 'Method_Interrupted'
+        )
+            return;
 
         // This code is OK, but the eslint plugin crashes on recursive calls
         // eslint-disable-next-line react-hooks/immutability
