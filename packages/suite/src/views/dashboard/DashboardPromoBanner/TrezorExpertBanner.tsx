@@ -17,8 +17,8 @@ const mainImage = resolveStaticPath(`${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BAN
 const StyledImage = styled.img`
     flex: 1;
     height: 100%;
-    padding-top: ${spacingsPx.xs};
-    padding-bottom: ${spacingsPx.sm};
+    margin-top: ${spacingsPx.xs};
+    margin-bottom: ${spacingsPx.sm};
     object-fit: cover;
     border-radius: ${borders.radii.md};
     max-width: 40%;
