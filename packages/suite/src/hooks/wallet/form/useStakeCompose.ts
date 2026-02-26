@@ -16,7 +16,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch } from 'src/hooks/suite';
 
-import { StakeContextValues } from '../../../components/wallet/stakeForm/StakeContext';
+import { StakeContextValues } from '../../../components/earn/forms/SupplyFormContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
