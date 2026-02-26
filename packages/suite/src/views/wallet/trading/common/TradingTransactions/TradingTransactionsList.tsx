@@ -84,7 +84,7 @@ export const TradingTransactionsList = () => {
             {!isEmpty && (
                 <>
                     <Header>
-                        <H3>
+                        <H3 data-testid="@trading/transactions/heading">
                             <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
                         </H3>
                         <TransactionCount data-testid="@trading/transactions/count">

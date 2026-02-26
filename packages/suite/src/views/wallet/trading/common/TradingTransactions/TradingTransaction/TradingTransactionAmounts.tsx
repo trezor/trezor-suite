@@ -50,12 +50,14 @@ export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsPr
                     value={sendStringAmount}
                     symbol={sendCoinSymbol}
                     contractAddress={sendContractAddress}
+                    data-testid="@trading/transactions/send/amount"
                 />
                 <Arrow />
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
                     symbol={receiveCoinSymbol}
                     contractAddress={receiveContractAddress}
+                    data-testid="@trading/transactions/receive/amount"
                 />
             </Row>
         );

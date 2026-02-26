@@ -24,6 +24,8 @@ interface TradingInfoItemProps {
     amount?: string;
     isReceive?: boolean;
     receiveAddress?: string;
+    cryptoAmountTestId?: string;
+    accountInfoTestId?: string;
 }
 
 export const TradingInfoItem = ({
@@ -34,6 +36,8 @@ export const TradingInfoItem = ({
     currency,
     amount,
     receiveAddress,
+    cryptoAmountTestId,
+    accountInfoTestId,
 }: TradingInfoItemProps) => {
     const { translationString } = useTranslation();
     const { createAssetOptionFromCryptoId } = useTradingAssets();
@@ -74,7 +78,7 @@ export const TradingInfoItem = ({
                         priority="secondary"
                         typographyStyle="body-sm"
                         as="div"
-                        data-testid={`${testIdPrefix}-account`}
+                        data-testid={accountInfoTestId ?? `${testIdPrefix}-account`}
                     >
                         <Row>
                             {accountLabelPrefix}&nbsp;
@@ -138,7 +142,11 @@ export const TradingInfoItem = ({
                             </Column>
                         </Row>
                         <Column alignItems="flex-end">
-                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
+                            <TradingCryptoAmount
+                                amount={amount}
+                                cryptoId={currency}
+                                testId={cryptoAmountTestId}
+                            />
 
                             {currencyInfo?.symbol && (
                                 <Text

@@ -17,12 +17,14 @@ export interface TradingCryptoAmountProps {
     amount?: string | number;
     cryptoId: CryptoId;
     displayLogo?: boolean;
+    testId?: string;
 }
 
 export const TradingCryptoAmount = ({
     amount,
     cryptoId,
     displayLogo,
+    testId,
 }: TradingCryptoAmountProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
@@ -52,7 +54,7 @@ export const TradingCryptoAmount = ({
                     value={amount}
                     symbol={coinSymbol}
                     contractAddress={contractAddress}
-                    data-testid="@trading/offers/quote/crypto-amount"
+                    data-testid={testId ?? '@trading/offers/quote/crypto-amount'}
                 />
             </Row>
         </TradingTestWrapper>

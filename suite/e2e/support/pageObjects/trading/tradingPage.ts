@@ -6,6 +6,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
+import { TradingTransactionsSection } from './transactionsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { FeeSection } from './feeSection';
 import { TradingFormInputs } from './formInputs';
@@ -47,6 +48,8 @@ export class TradingPage {
 
     // Transactions
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetail: Locator;
+    readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
     readonly swapToastSendAccount: Locator;
@@ -82,8 +85,9 @@ export class TradingPage {
         this.sendBalance = this.page.getByTestId('outputs.0.token');
         this.setMax = this.page.getByTestId('outputs.0.setMax');
 
-        // Transactions
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications
         this.swapToastSendAccount = this.page.getByTestId('@toast/tx-exchange/send-account');
