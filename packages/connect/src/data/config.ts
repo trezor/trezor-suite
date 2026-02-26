@@ -241,8 +241,8 @@ export const config: Config = {
         {
             capabilities: ['telemetry'],
             methods: ['telemetryGet'],
-            min: { T1B1: '0', T2T1: '2.10.1', T2B1: '2.10.1', T3B1: '2.10.1', T3T1: '2.10.1' },
-            comment: ['Supported since 2.10.1'],
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '2.11.0' },
+            comment: ['Supported since 2.11.0, only on T3W1'],
         },
     ],
 };

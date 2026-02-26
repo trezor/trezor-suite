@@ -208,7 +208,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'no-support',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
                 tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
@@ -242,7 +242,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'update-required',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
             });
         });
 
@@ -321,7 +321,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'no-support',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
                 tutorial: 'no-support',
                 monero: 'update-required',
                 ...T1B1_UPDATE_REQUIRED,
