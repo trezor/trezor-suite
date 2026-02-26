@@ -1,3 +1,7 @@
+# 0.5.1
+
+- feat(connect): add support for discovery of Tron in Suite (6672c8823d)
+
 # 0.5.0
 
 - chore: remove tada from suite (2e60907d0c)
