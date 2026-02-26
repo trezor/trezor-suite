@@ -5,6 +5,7 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[{ title: 'Advanced schema', method: 'recoveryDevice', schema: PROTO.RecoveryDevice }]}
@@ -61,13 +62,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

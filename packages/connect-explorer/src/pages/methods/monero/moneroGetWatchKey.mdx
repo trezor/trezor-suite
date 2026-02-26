@@ -4,6 +4,7 @@ import { MoneroGetWatchKey } from '@trezor/connect/src/types/api/monero';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import getWatchKey from '../../../data/methods/monero/getWatchKey';
 
 <ApiPlayground
@@ -76,13 +77,4 @@ TrezorConnect.moneroGetWatchKey({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

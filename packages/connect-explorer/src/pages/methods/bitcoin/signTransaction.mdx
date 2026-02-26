@@ -4,6 +4,7 @@ import { Type } from '@trezor/schema-utils';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signTransactionCustom from '../../../data/methods/bitcoin/signTransaction.custom';
 import signTransactionMultisig from '../../../data/methods/bitcoin/signTransaction.multisig';
 import signTransactionOpreturn from '../../../data/methods/bitcoin/signTransaction.opreturn';
@@ -255,13 +256,4 @@ TrezorConnect.signTransaction({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

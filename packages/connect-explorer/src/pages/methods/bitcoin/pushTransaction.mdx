@@ -3,6 +3,7 @@ import { PushTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import pushTransaction from '../../../data/methods/bitcoin/pushTransaction.ts';
 
 <ApiPlayground
@@ -55,13 +56,4 @@ TrezorConnect.pushTransaction({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

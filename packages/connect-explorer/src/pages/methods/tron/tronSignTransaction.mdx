@@ -3,6 +3,7 @@ import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connec
 import { ApiPlayground } from '../../../components/ApiPlayground.tsx';
 import { CommonParamsLink } from '../../../components/CommonParamsLink.tsx';
 import { ParamsTable } from '../../../components/ParamsTable.tsx';
+import { ResultError } from '../../../components/ResultError';
 import signTransaction from '../../../data/methods/tron/signTransaction.ts';
 
 <ApiPlayground
@@ -110,13 +111,4 @@ const sent = await tronWeb.trx.sendRawTransaction({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

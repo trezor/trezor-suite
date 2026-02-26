@@ -3,6 +3,7 @@ import { EthereumSignMessage } from '@trezor/connect/src/types/api/ethereum';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signMessage from '../../../data/methods/ethereum/signMessage.ts';
 
 <ApiPlayground
@@ -61,13 +62,4 @@ TrezorConnect.ethereumSignMessage({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

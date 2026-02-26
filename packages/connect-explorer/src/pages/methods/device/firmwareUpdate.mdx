@@ -4,6 +4,7 @@ import { FirmwareUpdate } from '@trezor/connect/src/types/api/firmwareUpdate';
 
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 export const paramDescriptions = {
     binary: '',
@@ -88,13 +89,4 @@ TrezorConnect.firmwareUpdate({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

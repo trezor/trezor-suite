@@ -3,6 +3,7 @@ import { VerifyMessage } from '@trezor/connect/src/types/api/bitcoin';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import verifyMessage from '../../../data/methods/bitcoin/verifyMessage.ts';
 
 <ApiPlayground
@@ -62,13 +63,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

@@ -8,6 +8,7 @@ import {
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signTypedData from '../../../data/methods/ethereum/signTypedData.ts';
 
 <ApiPlayground
@@ -126,13 +127,4 @@ TrezorConnect.ethereumSignTypedData({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

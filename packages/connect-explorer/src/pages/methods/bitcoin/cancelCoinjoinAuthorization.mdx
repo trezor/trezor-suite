@@ -4,6 +4,7 @@ import { CancelCoinjoinAuthorization } from '@trezor/connect/src/types/api/cance
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[
@@ -57,13 +58,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

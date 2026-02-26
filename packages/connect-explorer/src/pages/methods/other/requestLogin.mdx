@@ -3,6 +3,7 @@ import { RequestLoginSchema } from '@trezor/connect/src/types/api/requestLogin';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import login from '../../../data/methods/other/login.ts';
 
 <ApiPlayground
@@ -77,16 +78,7 @@ TrezorConnect.requestLogin({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />
 
 ### Server side examples
 

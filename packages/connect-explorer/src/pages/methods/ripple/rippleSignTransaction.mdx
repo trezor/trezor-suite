@@ -3,6 +3,7 @@ import { RippleSignTransaction } from '@trezor/connect/src/types/api/ripple';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signTransaction from '../../../data/methods/ripple/signTransaction.ts';
 
 <ApiPlayground
@@ -72,13 +73,4 @@ TrezorConnect.rippleSignTransaction(
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

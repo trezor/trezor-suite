@@ -6,6 +6,7 @@ import {
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signTransaction from '../../../data/methods/cardano/signTransaction.ts';
 
 <ApiPlayground
@@ -638,13 +639,4 @@ Example:
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

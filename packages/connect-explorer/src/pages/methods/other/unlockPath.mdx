@@ -5,6 +5,7 @@ import { UnlockPathParams } from '@trezor/connect/src/types/api/unlockPath';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[{ title: 'Advanced schema', method: 'unlockPath', schema: UnlockPathParams }]}
@@ -49,13 +50,4 @@ const result = await TrezorConnect.unlockPath(params);
 
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />
