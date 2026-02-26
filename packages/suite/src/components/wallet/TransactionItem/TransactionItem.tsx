@@ -72,7 +72,7 @@ export const TransactionItem = memo(
 
         const dispatch = useDispatch();
         const { anchorRef, shouldHighlight } = useAnchor(
-            `${AccountTransactionBaseAnchor}/${transaction.txid}`,
+            isActionDisabled ? undefined : `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
         const { type } = transaction;

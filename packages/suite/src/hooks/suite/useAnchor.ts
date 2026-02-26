@@ -6,13 +6,13 @@ import { useSelector } from 'src/hooks/suite';
 
 const OFFSET = 30;
 
-export const useAnchor = (anchorId: string) => {
+export const useAnchor = (anchorId: string | undefined) => {
     const scrollRef = useContext(ScrollContext);
     const anchorRef = useRef<HTMLDivElement>(null);
     const anchor = useSelector(state => state.router.anchor);
 
     useEffect(() => {
-        if (anchorId === anchor && anchorRef.current) {
+        if (anchorId && anchorId === anchor && anchorRef.current) {
             const scrollContainer = scrollRef?.current;
             if (!scrollContainer) return;
 
@@ -34,6 +34,6 @@ export const useAnchor = (anchorId: string) => {
 
     return {
         anchorRef,
-        shouldHighlight: anchorId === anchor,
+        shouldHighlight: anchorId !== undefined && anchorId === anchor,
     };
 };
