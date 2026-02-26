@@ -8,7 +8,6 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build",
         "storybook:generate": "sb-rn-get-stories",
         "storybook:web": "storybook dev -p 6006",

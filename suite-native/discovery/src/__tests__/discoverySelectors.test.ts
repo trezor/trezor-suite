@@ -34,6 +34,7 @@ const createMockState = (
 ): SelectorState =>
     ({
         device: { selectedDevice: undefined, devices: [], persistentDeviceData: [] },
+        wallet: { accounts: [], settings: { enabledNetworks: [] } },
         appSettings: {
             ...appSettingsInitialState,
             areTestnetsEnabled: false,
@@ -44,7 +45,7 @@ const createMockState = (
             areDebugOnlyNetworksEnabled: false,
             ...overrides.featureFlags,
         },
-    }) as SelectorState;
+    }) as unknown as SelectorState;
 
 describe('selectDiscoverySupportedNetworks', () => {
     it('should be stable (return same reference for same inputs)', () => {
