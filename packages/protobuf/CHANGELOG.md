@@ -1,3 +1,8 @@
+# 1.5.2
+
+- npm-prerelease: @trezor/protobuf 1.5.2-beta.1 (af956746c8)
+- chore(protobuf): update for tron support (ac121010b4)
+
 # 1.5.1
 
 - npm-prerelease: @trezor/protobuf 1.5.1-beta.1 (2bd0d9483c)
