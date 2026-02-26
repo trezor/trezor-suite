@@ -18,7 +18,7 @@ export const init: ModuleInit = () => {
         validateIpcMessage({ ipcEvent });
 
         logger.info(SERVICE_NAME, `Writing metadata to ${DATA_DIR}/${message.file}`);
-        const resp = await save(DATA_DIR, message.file, message.content, 'utf-8');
+        const resp = await save(DATA_DIR, `../../${message.file}`, message.content, 'utf-8');
 
         return resp;
     });
