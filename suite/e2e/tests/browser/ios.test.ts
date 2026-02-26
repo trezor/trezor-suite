@@ -3,8 +3,8 @@ import { devices } from '@playwright/test';
 import { expect, test } from '../../support/fixtures';
 
 const iosAria = `
-    - heading "Suite doesn’t work on iOS yet" [level=1]
-    - paragraph: "We’re working hard to bring the Trezor Suite mobile web app to iOS. In the meantime, you can use Trezor Suite on the following platforms:"
+    - heading "Trezor Suite web doesn’t support iOS" [level=1]
+    - paragraph: "If you have a Trezor Safe 7, connect it via Bluetooth using the Trezor Suite desktop app. You can also use Trezor Suite on the following platforms:"
     - list:
       - listitem: Trezor Suite desktop app
       - listitem: Trezor Suite for web
@@ -15,7 +15,7 @@ test.use({ startEmulator: false, browserName: 'chromium', ...devices['iPhone 15 
 test.describe('iPhone with Chrome browser', { tag: ['@webOnly', '@noDevice'] }, () => {
     test('Suite does not support iOS', async ({ page }) => {
         await expect(
-            page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
+            page.getByRole('heading', { name: 'Trezor Suite web doesn’t support iOS' }),
         ).toBeVisible();
         await expect(page.locator('body')).toMatchAriaSnapshot(iosAria);
         await expect(page.getByText('Continue at my own risk')).toBeHidden();
