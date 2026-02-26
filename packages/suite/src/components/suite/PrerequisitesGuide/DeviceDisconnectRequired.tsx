@@ -4,7 +4,6 @@ import { TroubleshootingTips } from 'src/components/suite/troubleshooting/Troubl
 
 export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips
-        initiallyIsOpen={true}
         intent="warning"
         items={[
             {

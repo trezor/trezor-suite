@@ -33,7 +33,6 @@ export const DeviceBootloader = () => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
             items={tips}
-            initiallyIsOpen
             intent="warning"
         />
     );
