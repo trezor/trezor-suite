@@ -10,8 +10,10 @@ import {
     selectFirmwareRevisionCheckError,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
+    selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
+    selectIsDeviceThpLocked,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectIsUnacquiredDevice,
@@ -29,7 +31,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { ThpRootState } from '@suite-common/thp';
+import { ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     AccountsRootState,
     DiscoveryRootState,
@@ -104,6 +106,12 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
 
     return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isDiscoveredDeviceAccountless;
 };
+
+export const selectIsDeviceConnectedAndThpUnlocked = createMemoizedSelector(
+    [selectIsDeviceConnected, selectIsDeviceThpLocked, selectThpAutoconnectStep],
+    (isDeviceConnected, isDeviceThpLocked, thpAutoconnectStep) =>
+        isDeviceConnected && !isDeviceThpLocked && thpAutoconnectStep === null,
+);
 
 export const selectDeviceError = (
     state: DeviceRootState & AccountsRootState & DiscoveryRootState,

@@ -13,18 +13,23 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../bluetooth" },
         { "path": "../device" },
+        { "path": "../device-mutex" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
+        { "path": "../services" },
+        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }

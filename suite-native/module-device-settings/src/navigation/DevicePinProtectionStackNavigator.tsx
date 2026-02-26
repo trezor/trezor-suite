@@ -4,9 +4,12 @@ import { A } from '@mobily/ts-belt';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectDeviceButtonRequestsCodes, selectIsDeviceConnected } from '@suite-common/device';
-import { usePinAction } from '@suite-native/device';
-import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
+import { selectDeviceButtonRequestsCodes } from '@suite-common/device';
+import {
+    DeviceConnectionGuardScreen,
+    useDeviceConnectionGuard,
+    usePinAction,
+} from '@suite-native/device-authorization';
 import {
     DevicePinProtectionStackParamList,
     DevicePinProtectionStackRoutes,
@@ -44,7 +47,8 @@ export const DevicePinProtectionStackNavigator = () => {
     const { type } = route.params;
     usePinAction({ type, onSuccess: navigation.goBack });
 
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
+
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
     const lastButtonRequestCode = A.last(buttonRequestCodes);
 
@@ -57,7 +61,7 @@ export const DevicePinProtectionStackNavigator = () => {
     // At the same time we need just one available so that navigation.goBack() works as expected.
     return (
         <DevicePinProtectionStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <DevicePinProtectionStack.Screen
                     name={DevicePinProtectionStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreen}
