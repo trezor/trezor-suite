@@ -1,6 +1,6 @@
 import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
-import { AssertWeak } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import {
@@ -29,8 +29,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         const { payload } = this;
 
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(CardanoComposeTransactionParamsSchema, payload);
+        Assert(CardanoComposeTransactionParamsSchema, payload);
 
         this.params = payload;
     }

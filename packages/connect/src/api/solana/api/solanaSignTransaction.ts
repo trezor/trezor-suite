@@ -28,7 +28,7 @@ import {
 
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { PROTO } from '../../../constants';
@@ -62,8 +62,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         const { payload } = this;
 
         // validate bundle type
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(SolanaSignTransactionSchema, payload);
+        Assert(SolanaSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 2);
 
