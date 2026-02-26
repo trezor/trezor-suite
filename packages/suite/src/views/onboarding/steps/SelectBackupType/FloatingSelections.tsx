@@ -71,16 +71,6 @@ type FloatingSelectionsProps = {
     defaultType: BackupType;
 };
 
-const DividerWrapper = styled.div`
-    margin-top: ${spacingsPx.xs};
-    margin-bottom: ${spacingsPx.xs};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        margin-top: ${spacingsPx.xxs};
-        margin-bottom: ${spacingsPx.xxs};
-    }
-`;
-
 const LegacyWarning = () => (
     <Banner
         intent="info"
@@ -128,9 +118,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                         onSelect={onSelect}
                         selected={selected}
                     />
-                    <DividerWrapper>
-                        <Divider margin={{ top: spacings.zero, bottom: spacings.zero }} />
-                    </DividerWrapper>
+                    <Divider margin={{ top: spacings.xs, bottom: spacings.xs }} />
                 </InnerScrollableWrapper>
                 {isShamirBackupDefault ? (
                     <div ref={legacyOptionsRef}>

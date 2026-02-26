@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, H2, Paragraph, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import { Button, Divider, H2, Paragraph, variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -27,20 +27,6 @@ const Buttons = styled.div`
     }
 `;
 
-// @TODO refactor to Divider
-const Separator = styled.div<{ $elevation: Elevation }>`
-    background: ${mapElevationToBorder};
-    height: 1px;
-    margin: 30px 0;
-    width: 80%;
-    min-width: 320px;
-    max-width: 800px;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        width: 90%;
-    }
-`;
-
 const ErrorMessage = styled.span`
     text-align: center;
     max-width: 600px;
@@ -53,17 +39,14 @@ type ErrorProps = {
     error: string;
 };
 
-export const Error = ({ error }: ErrorProps) => {
-    const { elevation } = useElevation();
-
-    return (
+export const Error = ({ error }: ErrorProps) => (
         <Wrapper>
             <H2>Error occurred</H2>
             <Paragraph margin={{ bottom: 8 }} align="center">
                 It appears something is broken.
             </Paragraph>
             <ErrorMessage>{error}</ErrorMessage>
-            <Separator $elevation={elevation} />
+            <Divider width="80%" margin={{ vertical: 32 }} />
             <Buttons>
                 <Button
                     iconLeft="repeat"
@@ -92,4 +75,3 @@ export const Error = ({ error }: ErrorProps) => {
             </Buttons>
         </Wrapper>
     );
-};
