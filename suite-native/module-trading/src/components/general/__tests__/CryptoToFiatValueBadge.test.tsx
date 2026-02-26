@@ -1,7 +1,10 @@
 import { act, renderWithStoreProvider } from '@suite-native/test-utils';
 import { btcAsset, ethAsset, mockWalletFiatRatesAndSettings } from '@suite-native/trading-fixtures';
 
-import { CryptoToFiatValueBadge, CryptoToFiatValueBadgeProps } from '../CryptoToFiatValueBadge';
+import {
+    CryptoToFiatValueBadge,
+    type CryptoToFiatValueBadgeProps,
+} from '../CryptoToFiatValueBadge';
 
 jest.mock('@suite-common/fiat-services', () => ({
     ...jest.requireActual('@suite-common/fiat-services'),

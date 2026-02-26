@@ -1,11 +1,11 @@
-import { TradingTradeType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import type { TradingTradeType } from '@suite-common/trading';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     getInitializedTradingStateWithQuotes,
     mockWalletFiatRatesAndSettings,
 } from '@suite-native/trading-fixtures';
 
-import { ProviderListItem, ProviderListItemProps } from '../ProviderListItem';
+import { ProviderListItem, type ProviderListItemProps } from '../ProviderListItem';
 
 describe('ProviderListItem', () => {
     const renderProviderListItem = (

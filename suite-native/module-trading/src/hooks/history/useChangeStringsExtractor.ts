@@ -1,12 +1,12 @@
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TradingTradeType, useTradingUtils } from '@suite-common/trading';
-import { NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TradingTradeType, useTradingUtils } from '@suite-common/trading';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
+import { type TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
 
 const TOKEN_DECIMALS_LENGTH = 16;
 

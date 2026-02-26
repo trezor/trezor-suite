@@ -1,4 +1,4 @@
-import { TradingTradeType } from '@suite-common/trading';
+import type { TradingTradeType } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';

@@ -1,11 +1,11 @@
 import type { CryptoId } from 'invity-api';
 
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     SellFromAccountTradePreviewCard,
-    SellFromAccountTradePreviewCardProps,
+    type SellFromAccountTradePreviewCardProps,
 } from '../SellFromAccountTradePreviewCard';
 
 describe('SellFromAccountTradePreviewCard', () => {

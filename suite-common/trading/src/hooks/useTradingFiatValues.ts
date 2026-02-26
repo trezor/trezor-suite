@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -16,7 +16,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import { TradingRootState } from '../reducers/tradingCommonReducer';
