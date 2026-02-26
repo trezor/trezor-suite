@@ -941,12 +941,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const newVersion = getFirmwareOrBootloaderVersionArray(feat); // guaranteed to be FW mode here
         // This should never happen, it's indicative of a transport-level bug, so log to Sentry via console.error
         if (feat.device_id !== oldId) {
-            // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
-            this.transport.enumerate().then(res => {
-                const descriptors = res.success ? res.payload : undefined;
+            // during wipe device, the same device (same path) changes id. This also ignores rare transport-level errors of mismatched response
+            if (feat.initialized === this.features?.initialized) {
                 const oldDevice = this.toMessageObject();
-                console.error('getFeatures response mismatched', oldDevice, feat, descriptors);
-            });
+                // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
+                this.transport.enumerate().then(res => {
+                    const descriptors = res.success ? res.payload : undefined;
+                    console.error('getFeatures device id mismatch', oldDevice, feat, descriptors);
+                });
+            }
 
             return;
         }
