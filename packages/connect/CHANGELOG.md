@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.7.2-beta.1
+# 9.7.2
 
 We have added support for Tron network in Connect APIs - `tronGetAddress`, `tronSignTransaction`. Available for firmware 2.10.1 and later.
 
