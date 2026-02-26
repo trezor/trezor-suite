@@ -68,6 +68,9 @@ export const isAccountDiscoverable = ({ accountType }: Account) =>
 export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) =>
     networkType === 'ethereum' && accountType === 'ledger';
 
+export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
+    getNetwork(networkSymbol).networkType === 'ethereum';
+
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
     isEvmLedger(networkType, accountType) ? 1 : 0;
 
@@ -1252,4 +1255,31 @@ export const accumulateAccountCountBySymbolAndType = (
     acc[id] = (acc[id] || 0) + 1;
 
     return acc;
+};
+
+export const getAvailableAccountTypes = (
+    networkSymbol: NetworkSymbol,
+    options: {
+        isCoinjoinVisible?: boolean;
+        isDebug?: boolean;
+    } = { isCoinjoinVisible: false, isDebug: false },
+): NetworkAccount[] => {
+    const { isCoinjoinVisible, isDebug } = options;
+    const network = getNetwork(networkSymbol);
+
+    const defaultAccount: NetworkAccount = {
+        bip43Path: network.bip43Path,
+        accountType: 'normal',
+    };
+    const otherAccounts = Object.values(network.accountTypes)
+        /**
+         * Filter out coinjoin account type if it is not visible.
+         * Visibility of coinjoin account type depends on coinjoin feature config in message system.
+         * By default it is visible publicly, but it can be remotely hidden under debug menu.
+         */
+        .filter(({ backendType }) => backendType !== 'coinjoin' || isCoinjoinVisible)
+        .filter(({ isDebugOnlyAccountType }) => !isDebugOnlyAccountType || isDebug);
+
+    // the default account is expected to be the first one
+    return [defaultAccount, ...otherAccounts];
 };
