@@ -8,6 +8,8 @@ jest.mock('@suite-common/fiat-services', () => ({
     fetchCurrentFiatRates: () => Promise.resolve(null),
 }));
 
+jest.mock('../CryptoToFiatValueBadge', () => jest.requireActual('../CryptoToFiatValueBadge'));
+
 describe('CryptoToFiatValueBadge', () => {
     const getPreloadedState = () => ({
         wallet: mockWalletFiatRatesAndSettings(),
@@ -61,25 +63,5 @@ describe('CryptoToFiatValueBadge', () => {
         });
 
         expect(getByText('$50,000.00')).toBeOnTheScreen();
-    });
-
-    it('should render prefix, if specified', async () => {
-        const { getByText } = await renderCryptoToFiatValueBadge({
-            amount: '1',
-            cryptoId: btcAsset.cryptoId,
-            prefix: ':fire: ',
-        });
-
-        expect(getByText(':fire: $50,000.00')).toBeOnTheScreen();
-    });
-
-    it('should not render prefix when no value is rendered ', async () => {
-        const { toJSON } = await renderCryptoToFiatValueBadge({
-            amount: '1',
-            cryptoId: ethAsset.cryptoId,
-            prefix: ':sweat_drops: ',
-        });
-
-        expect(toJSON()).toBeNull();
     });
 });

@@ -51,7 +51,6 @@ export const TradeDetailAmountStack = ({
             <CryptoToFiatValueBadge
                 amount={amountValue}
                 cryptoId={currency as CryptoId}
-                prefix="≈ "
                 color="textSubdued"
                 textAlign="right"
             />

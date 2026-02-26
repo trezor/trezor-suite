@@ -22,7 +22,6 @@ export const ProviderListItemValueRow = <T extends TradingTradeType>({
                 <CryptoToFiatValueBadge
                     amount={toValue}
                     cryptoId={toCurrency}
-                    prefix="≈ "
                     color="textSubdued"
                 />
             )}
