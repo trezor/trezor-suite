@@ -1,3 +1,7 @@
+# 1.5.1
+
+- feat(connect): add support for discovery of Tron in Suite (6672c8823d)
+
 # 1.5.0
 
 - feat(suite-native): address order (d1b9ae23cc)
