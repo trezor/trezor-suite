@@ -18,7 +18,7 @@ import { FormatterConfig } from '../types';
 
 export type BaseCurrencyAmountFormatterDataContext<T> = {
     [K in keyof T]: T[K];
-};
+} & { skipShortFormat?: boolean };
 
 // `currency` param in intl.formatNumber works only wit 3 letter currencies
 const BITCOIN_SATS_PLACEHOLDER = 'sat';
@@ -128,8 +128,7 @@ const formatStandard = ({
         return `${value}${FIAT_AMOUNT_CURRENCY_NBSP}${currency}`;
     }
 
-    const {skipShortFormat} = (dataContext as { skipShortFormat?: boolean });
-    if (useShortFiatFormat && !skipShortFormat) {
+    if (useShortFiatFormat && !dataContext.skipShortFormat) {
         const shortFormatted = formatShortFiat({ intl, currency, value, dataContext });
         if (shortFormatted !== null) {
             return shortFormatted;
