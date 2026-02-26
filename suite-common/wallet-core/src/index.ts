@@ -16,6 +16,7 @@ export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
 export * from './device/preparePushNotificationMiddleware';
 export * from './device/publicKeyActions';
+export * from './device/entropyCheckThunks';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
