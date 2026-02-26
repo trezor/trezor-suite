@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -12,6 +12,8 @@ import { PinActionType } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
+
+import { useDeviceConnectionGuard } from './useDeviceConnectionGuard';
 
 type ActionConfig = {
     remove: boolean | undefined;
@@ -44,7 +46,8 @@ type PinActionProps = {
 };
 
 export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
+
     const device = useSelector(selectSelectedDevice);
     const navigation = useNavigation();
     const { showToast } = useToast();
@@ -131,10 +134,10 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            if (isDeviceConnected) handlePinAction();
+            if (!isDeviceConnectionGuardVisible) handlePinAction();
 
             // handlePinAction is excluded as it depends on device object that could unintentionally trigger the useEffect
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [isDeviceConnected]),
+        }, [isDeviceConnectionGuardVisible]),
     );
 };

@@ -6,7 +6,6 @@ export * from './hooks/useDeviceAuthenticityCheck';
 export * from './hooks/useDeviceCompromisedNotification';
 export * from './hooks/useDetectDeviceError';
 export * from './hooks/useRetryFwAuthenticityChecks';
-export * from './hooks/usePinAction';
 export * from './hooks/useRenderDeviceDangerBanner';
 export * from './hooks/useCoinLabel';
 export * from './components/ConnectDeviceAnimation';
