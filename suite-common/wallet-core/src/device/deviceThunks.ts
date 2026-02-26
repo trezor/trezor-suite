@@ -3,7 +3,6 @@ import {
     DEVICE_MODULE_PREFIX,
     PORTFOLIO_TRACKER_DEVICE_ID,
     deviceActions,
-    getIsIgnoredEntropyCheckError,
     portfolioTrackerDevice,
     selectDeviceById,
     selectDevices,
@@ -39,8 +38,6 @@ import TrezorConnect, {
     DEVICE,
     Device,
 } from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
@@ -522,52 +519,6 @@ export const wipeDeviceThunk = createThunk(
             dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
 
             return rejectWithValue(result.error.message);
-        }
-    },
-);
-
-type FailEntropyCheckParams = {
-    device: AcquiredDevice;
-    error: SerializedError;
-};
-
-const failEntropyCheckThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
-    ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
-        const contextData = {
-            model: device?.features?.internal_model,
-            revision: device?.features?.revision,
-            version: getFirmwareVersion(device),
-            vendor: device?.features?.fw_vendor,
-        };
-        extra.services.reportSecurityCheck({
-            level: 'error',
-            checkType: 'Entropy',
-            contextData,
-            payload: error,
-        });
-
-        if (!getIsIgnoredEntropyCheckError(error.message)) {
-            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
-        }
-    },
-);
-
-type ProcessEntropyCheckResultThunkParams = {
-    device: AcquiredDevice;
-    result: Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
-};
-
-export const processEntropyCheckResultThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
-    ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
-        if (result.success) {
-            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }));
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
-            if (result.error.code === 'Failure_EntropyCheck') {
-                dispatch(failEntropyCheckThunk({ device, error: result.error }));
-            }
         }
     },
 );
