@@ -8,13 +8,11 @@ import { useTradingFiatValues } from '../../hooks/general/useTradingFiatValues';
 export type CryptoToFiatValueBadgeProps = {
     amount: string | undefined;
     cryptoId: CryptoId | undefined;
-    prefix?: string;
 } & TextProps;
 
 export const CryptoToFiatValueBadge = ({
     amount,
     cryptoId,
-    prefix,
     ...textProps
 }: CryptoToFiatValueBadgeProps) => {
     const baseCurrencyAmount = useTradingFiatValues(amount, cryptoId)?.baseCurrencyAmount;
@@ -26,7 +24,6 @@ export const CryptoToFiatValueBadge = ({
 
     return (
         <Text variant="body-sm" {...textProps}>
-            {prefix}
             <BaseCurrencyAmountFormatter value={baseCurrencyAmount} />
         </Text>
     );

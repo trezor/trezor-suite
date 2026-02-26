@@ -7,11 +7,6 @@ import {
 
 import { ProviderListItem, ProviderListItemProps } from '../ProviderListItem';
 
-jest.mock('@suite-common/fiat-services', () => ({
-    ...jest.requireActual('@suite-common/fiat-services'),
-    fetchCurrentFiatRates: () => Promise.resolve(null),
-}));
-
 describe('ProviderListItem', () => {
     const renderProviderListItem = (
         quote: TradingTradeType,
@@ -52,8 +47,8 @@ describe('ProviderListItem', () => {
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
-        // estimated rate in base currency
-        expect(getByText(/≈[ \n]+\$[0-9.]+$/)).toBeOnTheScreen();
+        // estimated rate in base currency (component is mocked)
+        expect(getByText(/^0.001[0-9]+-bitcoin$/)).toBeOnTheScreen();
         expect(getByText('Centralized exchange')).toBeOnTheScreen();
     });
 

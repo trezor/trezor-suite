@@ -1,26 +1,7 @@
-import type { CryptoId } from 'invity-api';
-
-import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { btcAsset } from '@suite-native/trading-fixtures';
 
 import { TradeDetailAmountStack } from '../TradeDetailAmountStack';
-
-jest.mock('../../../general/CryptoToFiatValueBadge', () => ({
-    CryptoToFiatValueBadge: ({
-        prefix,
-        amount,
-        cryptoId,
-    }: {
-        prefix?: string;
-        amount?: string;
-        cryptoId?: CryptoId;
-    }) => (
-        <MockText>
-            {prefix}-{amount}-{cryptoId}
-        </MockText>
-    ),
-}));
 
 describe('TradeDetailAmountStack', () => {
     it('should render fiat amount without crypto icon and fiat badge', () => {
@@ -48,6 +29,6 @@ describe('TradeDetailAmountStack', () => {
         );
 
         expect(getByText('0.5 BTC')).toBeOnTheScreen();
-        expect(getByText(`≈ -0.5-${btcAsset.cryptoId}`)).toBeOnTheScreen();
+        expect(getByText(`0.5-${btcAsset.cryptoId}`)).toBeOnTheScreen();
     });
 });
