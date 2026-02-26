@@ -44,15 +44,17 @@ type SuiteSyncBannerProps = {
     deviceStaticSessionId: StaticSessionId;
 };
 
+type SuiteSyncBannerContentProps = {
+    config: BannerConfig;
+    isDeviceConnected: boolean;
+    onClick: () => void | Promise<void>;
+};
+
 const SuiteSyncBannerContent = ({
     config,
     isDeviceConnected,
     onClick,
-}: {
-    config: BannerConfig;
-    isDeviceConnected: boolean;
-    onClick: () => void | Promise<void>;
-}) => (
+}: SuiteSyncBannerContentProps) => (
     <Banner
         icon
         intent="info"
@@ -90,7 +92,11 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
     );
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    if (!hasSuiteSyncError || !suiteSyncInteraction || !isBannerInteraction(suiteSyncInteraction)) {
+    if (
+        !hasSuiteSyncError ||
+        suiteSyncInteraction === null ||
+        !isBannerInteraction(suiteSyncInteraction)
+    ) {
         return null;
     }
 
