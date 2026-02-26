@@ -4,7 +4,7 @@ import {
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
 } from '@suite-common/trading';
-import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { NetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 

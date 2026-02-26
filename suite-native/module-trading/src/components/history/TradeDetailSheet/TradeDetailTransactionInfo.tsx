@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { CombinedLabelingState } from '@suite-native/labeling';

@@ -1,6 +1,6 @@
 import {
-    TradingProviderInfo,
-    TradingTradeType,
+    type TradingProviderInfo,
+    type TradingTradeType,
     isBuyTrade,
     isSellFiatTrade,
 } from '@suite-common/trading';

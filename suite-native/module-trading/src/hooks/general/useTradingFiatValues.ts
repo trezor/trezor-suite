@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import {
     cryptoIdToSymbol,
     useTradingFiatValues as useCommonTradingFiatValues,
 } from '@suite-common/trading';
 import {
-    WalletSettingsRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectIsAmountInSats,
 } from '@suite-common/wallet-core';
