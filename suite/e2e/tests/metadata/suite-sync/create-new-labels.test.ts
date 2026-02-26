@@ -100,10 +100,12 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
                 .toHaveText(expectedWallet.label);
             await dashboardPage.deviceSwitchingCloseButton.click();
-            // TODO: we want to add this to different test
+            // TODO: we want to add this to different test - probably multi-wallet test, but we are not sure about how the design is supposed to look
             // await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(expectedWallet.label);
             await page.pause();
         });
+
+        // TODO: we want to expand this section to also verify every possible place (receive modal, tx history, coin control, buy sell swap) where wallet label is displayed, same thing with outpul labels as well.
 
         await test.step('Change address label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
