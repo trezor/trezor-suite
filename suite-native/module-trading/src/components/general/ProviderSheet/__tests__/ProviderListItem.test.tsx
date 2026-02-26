@@ -1,16 +1,24 @@
 import { TradingTradeType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import {
+    getInitializedTradingStateWithQuotes,
+    mockWalletFiatRatesAndSettings,
+} from '@suite-native/trading-fixtures';
 
 import { ProviderListItem, ProviderListItemProps } from '../ProviderListItem';
+
+jest.mock('@suite-common/fiat-services', () => ({
+    ...jest.requireActual('@suite-common/fiat-services'),
+    fetchCurrentFiatRates: () => Promise.resolve(null),
+}));
 
 describe('ProviderListItem', () => {
     const renderProviderListItem = (
         quote: TradingTradeType,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedState = {},
         props?: Partial<ProviderListItemProps<TradingTradeType>>,
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ProviderListItem
                 isSelected={false}
                 onPress={jest.fn()}
@@ -18,79 +26,88 @@ describe('ProviderListItem', () => {
                 tradingType="buy"
                 {...props}
             />,
-            { preloadedState },
+            {
+                preloadedState: {
+                    ...overrides,
+                    wallet: {
+                        ...mockWalletFiatRatesAndSettings(),
+                        ...overrides?.wallet,
+                    },
+                },
+            },
         );
 
-    it('should render provider information correctly', async () => {
+    it('should render provider information correctly', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.buy.quotes[0];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
-        expect(queryByText('Mercuryo')).toBeTruthy();
+        expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render trading information with formatted strings', async () => {
+    it('should render trading information with formatted strings', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.buy.quotes[0];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
-        expect(queryByText('Rate')).toBeTruthy();
-        expect(queryByText('You get')).toBeTruthy();
+        // estimated rate in base currency
+        expect(getByText(/≈[ \n]+\$[0-9.]+$/)).toBeOnTheScreen();
+        expect(getByText('Centralized exchange')).toBeOnTheScreen();
     });
 
-    it('should render KYC information when provider has KYC policy', async () => {
+    it('should render KYC information when provider has KYC policy', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.exchange.quotes[2];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
         });
 
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
     });
 
-    it('should render anonymous information for DEX providers', async () => {
+    it('should render anonymous information for DEX providers', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.exchange.quotes[3];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
         });
 
-        expect(queryByText('Anonymous')).toBeTruthy();
-        expect(queryByText('Decentralized exchange')).toBeTruthy();
+        expect(getByText('Anonymous')).toBeOnTheScreen();
+        expect(getByText('Decentralized exchange')).toBeOnTheScreen();
     });
 
-    it('should not render when quote has no orderId', async () => {
+    it('should not render when quote has no orderId', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const baseQuote = preloadedState.wallet.trading.buy.quotes[0];
         const { orderId, ...quoteWithoutOrderId } = baseQuote;
         const quote = quoteWithoutOrderId as TradingTradeType;
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
+        const { queryByText } = renderProviderListItem(quote, preloadedState, {});
 
         expect(queryByText('TestProvider')).toBeNull();
     });
 
-    it('should render KYC warning for buy quote', async () => {
+    it('should render KYC warning for buy quote', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.buy.quotes[0];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
     });
 
-    it('should render KYC warning for sell quote', async () => {
+    it('should render KYC warning for sell quote', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
         const quote = preloadedState.wallet.trading.sell.quotes[0];
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'sell',
         });
 
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
     });
 });
