@@ -16,7 +16,7 @@ import {
     changeCoinVisibility,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { prepareNewAccountPayload } from '@suite-common/wallet-utils';
+import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -145,21 +145,10 @@ export const AddAccountModal = ({
             return undefined;
         }
 
-        const defaultAccount: NetworkAccount = {
-            bip43Path: selectedNetwork.bip43Path,
-            accountType: 'normal',
-        };
-        const otherAccounts = Object.values(selectedNetwork.accountTypes)
-            /**
-             * Filter out coinjoin account type if it is not visible.
-             * Visibility of coinjoin account type depends on coinjoin feature config in message system.
-             * By default it is visible publicly, but it can be remotely hidden under debug menu.
-             */
-            .filter(({ backendType }) => backendType !== 'coinjoin' || isCoinjoinVisible)
-            .filter(({ isDebugOnlyAccountType }) => !isDebugOnlyAccountType || isDebug);
-
-        // the default account is expected to be the first one
-        return [defaultAccount, ...otherAccounts];
+        return getAvailableAccountTypes(selectedNetwork.symbol, {
+            isCoinjoinVisible,
+            isDebug,
+        });
     }, [isCoinjoinVisible, isDebug, isSelectedNetworkEnabled, selectedNetwork]);
 
     const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
