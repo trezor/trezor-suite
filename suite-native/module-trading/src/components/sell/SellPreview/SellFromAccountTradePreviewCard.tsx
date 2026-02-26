@@ -7,14 +7,18 @@ import { Translation } from '@suite-native/intl';
 import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
+import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
+
 export type SellFromAccountTradePreviewCardProps = {
     cryptoId?: CryptoId;
     fromStringValue?: string;
+    fromValue?: string;
 };
 
 export const SellFromAccountTradePreviewCard = ({
     cryptoId,
     fromStringValue,
+    fromValue,
 }: SellFromAccountTradePreviewCardProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
 
@@ -34,6 +38,15 @@ export const SellFromAccountTradePreviewCard = ({
                 ) : null
             }
             title={<Translation id="moduleTrading.tradingSellPreviewScreen.fromAccount" />}
-        />
+        >
+            {!!fromValue && (
+                <CryptoToFiatValueBadge
+                    amount={fromValue}
+                    cryptoId={cryptoId}
+                    color="textSubdued"
+                    textAlign="right"
+                />
+            )}
+        </TradeSideCard>
     );
 };

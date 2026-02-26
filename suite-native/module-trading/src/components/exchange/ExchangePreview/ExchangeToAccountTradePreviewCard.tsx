@@ -8,14 +8,18 @@ import { AccountLabel } from '@suite-native/labeling';
 import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
 
+import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
+
 export type ExchangeToAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
     toStringValue: string | undefined;
+    toValue?: string;
 };
 
 export const ExchangeToAccountTradePreviewCard = ({
     quote,
     toStringValue,
+    toValue,
 }: ExchangeToAccountTradePreviewCardProps) => {
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
@@ -35,6 +39,15 @@ export const ExchangeToAccountTradePreviewCard = ({
                 )
             }
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />}
-        />
+        >
+            {!!toValue && (
+                <CryptoToFiatValueBadge
+                    amount={toValue}
+                    cryptoId={quote.receive}
+                    color="textSubdued"
+                    textAlign="right"
+                />
+            )}
+        </TradeSideCard>
     );
 };
