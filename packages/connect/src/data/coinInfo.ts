@@ -153,7 +153,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             shortcut,
             // cooldown not used
             curveName: coin.curve_name,
-            // decred not used
             forceBip143: coin.force_bip143,
             // forkid in Network
             // github not used
