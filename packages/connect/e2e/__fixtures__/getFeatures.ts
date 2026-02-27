@@ -83,7 +83,31 @@ const tests = [
             display_rotation: 'North',
             experimental_features: expect.any(Boolean),
         },
-        legacyResults: [],
+        legacyResults: [
+            {
+                rules: ['<2.4.2'], // legacy firmware has different API surface (e.g. fw_vendor not present before 2.5.1)
+                success: true,
+                payload: {
+                    capabilities: expect.arrayContaining([
+                        'Capability_Bitcoin',
+                        'Capability_Bitcoin_like',
+                        'Capability_Cardano',
+                        'Capability_Crypto',
+                        'Capability_Ethereum',
+                        'Capability_Monero',
+                        'Capability_Ripple',
+                        'Capability_Stellar',
+                        'Capability_Tezos',
+                        'Capability_U2F',
+                        'Capability_Shamir',
+                        'Capability_ShamirGroups',
+                        'Capability_PassphraseEntry',
+                    ]),
+                    session_id: expect.any(String),
+                    passphrase_always_on_device: false,
+                },
+            },
+        ],
     },
     {
         description: 'T1B1 features',
@@ -139,7 +163,36 @@ const tests = [
             experimental_features: expect.any(Boolean),
             backup_type: 'Bip39',
         },
-        legacyResults: [],
+        legacyResults: [
+            {
+                rules: ['<1.10.3'], // legacy firmware has different API surface
+                success: true,
+                payload: {
+                    capabilities: expect.arrayContaining([
+                        'Capability_Bitcoin',
+                        'Capability_Bitcoin_like',
+                        'Capability_Crypto',
+                        'Capability_Ethereum',
+                        'Capability_Stellar',
+                        'Capability_U2F',
+                    ]),
+                },
+            },
+            {
+                rules: ['<1.8.3'], // 1.8.3 added Lisk capability (now removed)
+                success: true,
+                payload: {
+                    capabilities: expect.arrayContaining([
+                        'Capability_Bitcoin',
+                        'Capability_Bitcoin_like',
+                        'Capability_Crypto',
+                        'Capability_Ethereum',
+                        'Capability_Stellar',
+                        'Capability_U2F',
+                    ]),
+                },
+            },
+        ],
     },
 ];
 
