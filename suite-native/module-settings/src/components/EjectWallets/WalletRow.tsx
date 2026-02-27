@@ -5,6 +5,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { WalletLabel } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { WalletRememberModeIconButton } from './WalletRememberModeIconButton';
@@ -39,7 +40,12 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>
             <HStack spacing="sp12" alignItems="center">
                 <Icon name={device.useEmptyPassphrase ? 'wallet' : 'password'} size="mediumLarge" />
-                <Text variant="body-sm-strong">{walletNameLabel}</Text>
+                <Text variant="body-sm-strong">
+                    <WalletLabel
+                        deviceStaticSessionId={device.state?.staticSessionId}
+                        fallbackLabel={walletNameLabel}
+                    />
+                </Text>
             </HStack>
             {showToggleButton ? (
                 <WalletRememberModeIconButton device={device} />
