@@ -1,5 +1,3 @@
-import * as url from 'url';
-
 import { trezorLogo } from '@suite-common/suite-constants';
 import { HttpServer, allowReferers } from '@trezor/node-utils';
 import { xssFilters } from '@trezor/utils';
@@ -80,7 +78,7 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/oauth', [
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = new URL(request.url, 'http://127.0.0.1');
             if (search) {
                 // send data back to main window
                 httpReceiver.emit('oauth/response', { search });
@@ -103,9 +101,9 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/buy-redirect', [
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
-            const { query } = url.parse(request.url, true);
-            if (query && query.p) {
-                httpReceiver.emit('buy/redirect', query.p.toString());
+            const p = new URL(request.url, 'http://127.0.0.1').searchParams.get('p');
+            if (p) {
+                httpReceiver.emit('buy/redirect', p);
             }
 
             const template = applyTemplate();
@@ -155,9 +153,9 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/sell-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
-            if (query && query.p) {
-                httpReceiver.emit('sell/redirect', query.p.toString());
+            const p = new URL(request.url, 'http://127.0.0.1').searchParams.get('p');
+            if (p) {
+                httpReceiver.emit('sell/redirect', p);
             }
 
             const template = applyTemplate();
@@ -169,9 +167,9 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/exchange-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
-            if (query && query.p) {
-                httpReceiver.emit('exchange/redirect', query.p.toString());
+            const p = new URL(request.url, 'http://127.0.0.1').searchParams.get('p');
+            if (p) {
+                httpReceiver.emit('exchange/redirect', p);
             }
 
             const template = applyTemplate();

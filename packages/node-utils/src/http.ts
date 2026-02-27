@@ -1,7 +1,6 @@
 import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
 import * as net from 'net';
-import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
 import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
@@ -406,39 +405,46 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
-        const { protocol, hostname, pathname, query } = url.parse(request.url, true);
-
-        if (query) {
-            for (const key in query) {
-                if (Object.prototype.hasOwnProperty.call(query, key) && query[key] !== undefined) {
-                    const allParamsOfSameKey = [query[key]].flat();
-                    let isParamInvalid = false;
-
-                    query[key] = allParamsOfSameKey.map(singleParam => {
-                        const decoded = this.getSafeDecodedURI(singleParam);
-                        const sanitized = sanitizeUrl(decoded);
-                        if (sanitized !== decoded) isParamInvalid = true;
-
-                        return sanitized;
-                    });
-
-                    if (isParamInvalid) {
-                        response.statusCode = 403;
-
-                        return response.end();
-                    }
-                }
-            }
-        }
-        request.url = url.format({ protocol, hostname, pathname, query });
-
-        if (!pathname) {
+        let parsedUrl: URL;
+        try {
+            parsedUrl = new URL(request.url, 'http://127.0.0.1');
+        } catch {
             const msg = `url ${request.url} could not be parsed`;
             this.emitter.emit('server/error', msg);
             this.logger.warn(msg);
 
             return;
         }
+
+        const { pathname, searchParams } = parsedUrl;
+
+        for (const key of [...new Set(searchParams.keys())]) {
+            const allParamsOfSameKey = searchParams.getAll(key);
+            let isParamInvalid = false;
+            let hasChanges = false;
+
+            const sanitizedValues = allParamsOfSameKey.map(singleParam => {
+                const decoded = this.getSafeDecodedURI(singleParam);
+                const sanitized = sanitizeUrl(decoded);
+                if (sanitized !== decoded) isParamInvalid = true;
+                if (sanitized !== singleParam) hasChanges = true;
+
+                return sanitized;
+            });
+
+            if (isParamInvalid) {
+                response.statusCode = 403;
+
+                return response.end();
+            }
+
+            if (hasChanges) {
+                searchParams.delete(key);
+                sanitizedValues.forEach(v => searchParams.append(key, v));
+            }
+        }
+
+        request.url = parsedUrl.pathname + parsedUrl.search;
         this.logger.info(`Handling request for ${request.method} ${pathname}`);
 
         const route = this.findBestMatchingRoute(pathname, request.method);
