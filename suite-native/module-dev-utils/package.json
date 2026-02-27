@@ -15,6 +15,7 @@
         "@react-navigation/native-stack": "7.9.0",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics-redux": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
