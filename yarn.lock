@@ -14520,6 +14520,7 @@ __metadata:
   dependencies:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/device-utils": "workspace:*"

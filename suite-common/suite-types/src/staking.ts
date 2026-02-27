@@ -1,5 +1,3 @@
-import { Account } from '@suite-common/wallet-types';
-
 export enum EarnFlow {
     Stake = 'stake',
     Yield = 'yield',
@@ -11,16 +9,10 @@ export enum EarnProvider {
     YieldXyz = 'yield-xyz',
 }
 
-export type EarnAccountRef = {
-    descriptor: Account['descriptor'];
-    symbol: Account['symbol'];
-    deviceStaticSessionId: Account['deviceState'];
-};
-
-export const createEarnAccountRef = (
-    account: Pick<Account, 'descriptor' | 'symbol' | 'deviceState'>,
-): EarnAccountRef => ({
-    descriptor: account.descriptor,
-    symbol: account.symbol,
-    deviceStaticSessionId: account.deviceState,
-});
+export type EarnAnalyticsStep =
+    | 'staking-dashboard'
+    | 'stake-in-a-nutshell-modal'
+    | 'funds-maintained-modal'
+    | 'stake-form-modal'
+    | 'entry-period-stake-modal'
+    | 'earn-dashboard';
