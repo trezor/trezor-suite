@@ -1,3 +1,4 @@
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
@@ -19,26 +20,38 @@ export type AllLabelsForAccount = {
     outputLabels: SuiteSyncOutput[];
 };
 
-export const selectAllLabelsForAccount = (
-    state: SuiteSyncDataRootState,
-    { walletDescriptor, accountDescriptor, networkSymbol }: SelectAllLabelsForAccountParams,
-): AllLabelsForAccount => ({
-    accountLabel: selectSuiteSyncAccountLabel(
-        state,
-        walletDescriptor,
-        accountDescriptor,
-        networkSymbol,
-    ),
-    addressLabels: selectSuiteSyncAccountAddressesByAccount(
-        state,
-        walletDescriptor,
-        accountDescriptor,
-        networkSymbol,
-    ),
-    outputLabels: selectSuiteSyncOutputLabelsByAccount(
-        state,
-        walletDescriptor,
-        accountDescriptor,
-        networkSymbol,
-    ),
-});
+const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
+
+export const selectAllLabelsForAccount = createMemoizedSelector(
+    [
+        (
+            state,
+            { walletDescriptor, accountDescriptor, networkSymbol }: SelectAllLabelsForAccountParams,
+        ) => selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+        (
+            state,
+            { walletDescriptor, accountDescriptor, networkSymbol }: SelectAllLabelsForAccountParams,
+        ) =>
+            selectSuiteSyncAccountAddressesByAccount(
+                state,
+                walletDescriptor,
+                accountDescriptor,
+                networkSymbol,
+            ),
+        (
+            state,
+            { walletDescriptor, accountDescriptor, networkSymbol }: SelectAllLabelsForAccountParams,
+        ) =>
+            selectSuiteSyncOutputLabelsByAccount(
+                state,
+                walletDescriptor,
+                accountDescriptor,
+                networkSymbol,
+            ),
+    ],
+    (accountLabel, addressLabels, outputLabels): AllLabelsForAccount => ({
+        accountLabel,
+        addressLabels,
+        outputLabels,
+    }),
+);
