@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
@@ -8,6 +6,7 @@ import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
+import { ConnectEmitter } from '../types/emitter';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;
@@ -40,7 +39,7 @@ type TrezorConnectDynamicParams = {
  *
  */
 export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
-    public readonly eventEmitter = new EventEmitter();
+    public readonly eventEmitter = new ConnectEmitter();
 
     private currentTarget: ImplType;
     private readonly implementations: Record<ImplType, ConnectImpl>;

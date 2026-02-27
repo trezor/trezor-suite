@@ -1,5 +1,5 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TypedEmitter, createDeferredManager, deepEqual } from '@trezor/utils';
+import { createDeferredManager, deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';
 import { initCoreState } from './core';
@@ -22,10 +22,10 @@ import {
 import { factory } from './factory';
 import type { ConnectSettings } from './types';
 import type { UpdateConnectSettings } from './types/api/updateConnectSettings';
-import { ConnectEvents } from './types/emitter';
+import { ConnectEmitter } from './types/emitter';
 import { initLog } from './utils/debug';
 
-export const eventEmitter = new TypedEmitter<ConnectEvents>();
+const eventEmitter = new ConnectEmitter();
 const _log = initLog('@trezor/connect');
 
 let _settings = parseConnectSettings();

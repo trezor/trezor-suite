@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import { createErrorMessage } from '@trezor/connect/src/events';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
@@ -7,6 +5,7 @@ import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory
 import type { ConnectSettings, ConnectSettingsMobile } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
+import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     DEEPLINK_VERSION,
@@ -15,7 +14,7 @@ import {
 import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
-    public eventEmitter = new EventEmitter();
+    public eventEmitter = new ConnectEmitter();
     private _settings: ConnectSettings;
     private messagePromises: Record<number, Deferred<any>> = {};
     private messageID = 0;

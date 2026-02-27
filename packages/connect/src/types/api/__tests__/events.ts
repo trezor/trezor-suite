@@ -1,6 +1,4 @@
 import {
-    AccountInfo,
-    Address,
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
@@ -185,7 +183,7 @@ export const events = (api: TrezorConnect) => {
     api.on(UI_REQUEST.REQUEST_BUTTON, () => {});
     api.on(UI_REQUEST.REQUEST_BUTTON, _payload => {});
 
-    api.on<AccountInfo | null>(UI_REQUEST.BUNDLE_PROGRESS, event => {
+    api.on(UI_REQUEST.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         if (event.response?.empty === false) {
@@ -193,7 +191,7 @@ export const events = (api: TrezorConnect) => {
         }
     });
 
-    api.on<Address>(UI_REQUEST.BUNDLE_PROGRESS, event => {
+    api.on(UI_REQUEST.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         event.response.serializedPath.toLowerCase();
