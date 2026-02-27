@@ -192,7 +192,6 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                     dgb: 'no-support',
                     nmc: 'no-support',
                     vtc: 'no-support',
-                    eos: 'no-support',
                     maid: 'no-capability',
                     omni: 'no-capability',
                     usdt: 'no-capability',

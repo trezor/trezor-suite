@@ -71,7 +71,6 @@ const tests = [
                 'Capability_ShamirGroups',
                 'Capability_PassphraseEntry',
                 // 'Capability_NEM', // discontinued starting T3B1
-                // 'Capability_EOS', // discontinued starting T3B1
             ]),
             backup_type: 'Bip39',
             sd_card_present: expect.any(Boolean),
@@ -97,7 +96,6 @@ const tests = [
                         'Capability_Binance',
                         'Capability_Cardano',
                         'Capability_Crypto',
-                        'Capability_EOS',
                         'Capability_Ethereum',
                         'Capability_Lisk',
                         'Capability_Monero',

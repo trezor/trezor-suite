@@ -239,7 +239,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     ada: 'no-support',
                     bnb: 'no-support',
                     dsol: 'no-support',
-                    eos: 'no-support',
                     sol: 'no-support',
                     tada: 'no-support',
                     txrp: 'no-support',

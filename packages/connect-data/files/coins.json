@@ -2563,23 +2563,6 @@
         {
             "blockchain_link": null,
             "curve": "secp256k1",
-            "decimals": 4,
-            "is_testnet": false,
-            "name": "EOS",
-            "shortcut": "EOS",
-            "slip44": 194,
-            "support": {
-                "T1B1": false,
-                "T2B1": false,
-                "T2T1": "2.1.1",
-                "T3B1": false,
-                "T3T1": false,
-                "T3W1": false
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
             "decimals": 8,
             "is_testnet": false,
             "name": "MaidSafeCoin",
