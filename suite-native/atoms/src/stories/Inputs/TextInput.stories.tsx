@@ -3,6 +3,7 @@ import { useArgs } from 'storybook/preview-api';
 
 import { Input as InputComponent, InputProps } from '../../Input/Input';
 import { InputWrapper } from '../../Input/InputWrapper';
+import { SURFACE_ELEVATIONS } from '../../types';
 
 type TextInputArgs = InputProps & { wrapperLabel: string; hint: string; error: string };
 
@@ -39,6 +40,8 @@ export const TextInput: TextInputStory = {
         wrapperLabel: 'Wrapper label',
         hint: 'This is a hint: always define only label or placeholder, never both',
         label: 'Label',
+        editable: true,
+        keepPlaceholderOnFocus: false,
     },
     argTypes: {
         label: {
@@ -50,11 +53,21 @@ export const TextInput: TextInputStory = {
         value: {
             control: { type: 'text' },
         },
+        editable: {
+            control: { type: 'boolean' },
+        },
         placeholder: {
             control: { type: 'text' },
         },
         error: {
             control: { type: 'text' },
+        },
+        elevation: {
+            control: { type: 'select' },
+            options: SURFACE_ELEVATIONS,
+        },
+        keepPlaceholderOnFocus: {
+            control: { type: 'boolean' },
         },
     },
 };
