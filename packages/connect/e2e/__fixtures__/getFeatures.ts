@@ -58,7 +58,6 @@ const tests = [
             capabilities: expect.arrayContaining([
                 'Capability_Bitcoin',
                 'Capability_Bitcoin_like',
-                'Capability_Binance',
                 'Capability_Cardano',
                 'Capability_Crypto',
                 'Capability_Ethereum',

@@ -26,13 +26,6 @@ export const config: Config = {
             ],
         },
         {
-            coin: ['bnb'],
-            min: { T1B1: '1.9.0', T2T1: '2.3.0' },
-            comment: [
-                'There were protobuf backwards incompatible changes with introduction of 1.9.0/2.3.0 firmwares',
-            ],
-        },
-        {
             coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],

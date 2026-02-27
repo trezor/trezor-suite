@@ -236,7 +236,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                 },
                 unavailableCapabilities: {
                     ada: 'no-support',
-                    bnb: 'no-support',
                     dsol: 'no-support',
                     sol: 'no-support',
                     tada: 'no-support',

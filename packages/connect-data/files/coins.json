@@ -2527,23 +2527,6 @@
             }
         },
         {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 8,
-            "is_testnet": false,
-            "name": "Binance Chain",
-            "shortcut": "BNB",
-            "slip44": 714,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.1.5",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
             "blockchain_link": { "type": "solana", "url": ["https://dsol1.trezor.io"] },
             "curve": "ed25519",
             "decimals": 9,

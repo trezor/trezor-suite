@@ -55,7 +55,6 @@ describe('utils/deviceFeaturesUtils', () => {
         expect(parseCapabilities(featT2T1 as Features)).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
-            'Capability_Binance',
             'Capability_Cardano',
             'Capability_Crypto',
             'Capability_Ethereum',
@@ -76,7 +75,6 @@ describe('utils/deviceFeaturesUtils', () => {
         ).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
-            'Capability_Binance',
             'Capability_Cardano',
             'Capability_Crypto',
             'Capability_Ethereum',
@@ -142,7 +140,6 @@ describe('utils/deviceFeaturesUtils', () => {
                 tada: 'no-support',
                 arb: 'update-required',
                 base: 'update-required',
-                bnb: 'no-support',
                 bsc: 'update-required',
                 crw: 'update-required',
                 maid: 'no-capability',
@@ -292,14 +289,13 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, ', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T2T1: '2.4.4' } },
-                { shortcut: 'BNB', type: 'misc', support: { T2T1: '2.3.3' } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T2T1: false } },
             ];
             const customFeatures = {
                 major_version: 2,
                 minor_version: 3,
                 patch_version: 3,
-                capabilities: ['Capability_Bitcoin', 'Capability_Ethereum', 'Capability_Binance'],
+                capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
                 internal_model: DeviceModelInternal.T2T1,
             } as unknown as Features;
 
@@ -322,7 +318,6 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, does not include bsc: no-support', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T1B1: '1.1.3' } },
-                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
             ];
             const customFeatures = {
@@ -337,7 +332,6 @@ describe('utils/deviceFeaturesUtils', () => {
 
             expect(result).toEqual({
                 eth: 'no-support',
-                bnb: 'no-support',
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 evolu: 'no-support',
@@ -352,7 +346,6 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, includes no-support because none is supported', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T1B1: false } },
-                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
             ];
             const customFeatures = {
@@ -367,7 +360,6 @@ describe('utils/deviceFeaturesUtils', () => {
 
             expect(result).toEqual({
                 eth: 'no-support',
-                bnb: 'no-support',
                 bsc: 'no-support',
                 chunkify: 'no-support',
                 evmApproval: 'no-support',

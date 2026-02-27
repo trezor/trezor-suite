@@ -17,7 +17,6 @@ const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
 const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_Bitcoin',
     'Capability_Bitcoin_like',
-    'Capability_Binance',
     'Capability_Cardano',
     'Capability_Crypto',
     'Capability_Ethereum',
@@ -85,9 +84,6 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         // misc
         if (info.shortcut === 'TRX' && info.type === 'misc') {
             return !capabilities.includes('Capability_Tron');
-        }
-        if (info.shortcut === 'BNB' && info.type === 'misc') {
-            return !capabilities.includes('Capability_Binance');
         }
         if (info.shortcut === 'ADA' || info.shortcut === 'tADA') {
             return !capabilities.includes('Capability_Cardano');

@@ -103,7 +103,6 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                     capabilities: [
                         'Capability_Bitcoin',
                         'Capability_Bitcoin_like',
-                        'Capability_Binance',
                         'Capability_Cardano',
                         'Capability_Crypto',
                         'Capability_Ethereum',
