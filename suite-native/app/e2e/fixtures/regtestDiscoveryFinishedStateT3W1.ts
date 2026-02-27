@@ -375,15 +375,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     soc: 100,
                     firmware_corrupted: null,
                 },
-                unavailableCapabilities: {
-                    btg: 'no-support',
-                    tbtg: 'no-support',
-                    dash: 'no-support',
-                    tdash: 'no-support',
-                    dgb: 'no-support',
-                    nmc: 'no-support',
-                    vtc: 'no-support',
-                },
+                unavailableCapabilities: {},
                 availableTranslations: {},
                 authenticityChecks: {
                     firmwareRevision: {

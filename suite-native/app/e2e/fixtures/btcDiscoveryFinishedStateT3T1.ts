@@ -184,13 +184,6 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                     soc: null,
                 },
                 unavailableCapabilities: {
-                    btg: 'no-support',
-                    tbtg: 'no-support',
-                    dash: 'no-support',
-                    tdash: 'no-support',
-                    dgb: 'no-support',
-                    nmc: 'no-support',
-                    vtc: 'no-support',
                     slip24: 'update-required',
                     evolu: 'update-required',
                 },

@@ -86,9 +86,6 @@ const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction):
         if (specific.type === 'zcash' && specific.versionGroupId && refTx.version >= 3) {
             refTx.version_group_id = specific.versionGroupId;
         }
-        if (specific.type === 'dash' && srcTx.type && srcTx.version >= 3) {
-            refTx.version |= srcTx.type << 16;
-        }
     }
 
     return refTx;
