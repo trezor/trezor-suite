@@ -21,7 +21,6 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_Binance',
     'Capability_Cardano',
     'Capability_Crypto',
-    'Capability_EOS',
     'Capability_Ethereum',
     'Capability_Monero',
     'Capability_NEM',
