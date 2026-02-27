@@ -1,14 +1,13 @@
-import EventEmitter from 'events';
-
 // NOTE: @trezor/connect part is intentionally not imported from the index
 import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
+import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
-const eventEmitter = new EventEmitter();
+const eventEmitter = new ConnectEmitter();
 let _channel: any;
 
 const dispose = () => {
@@ -36,6 +35,7 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
 
     _channel.port.onMessage.addListener((message: any) => {
         if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
+            // @ts-expect-error
             eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
         }
     });

@@ -121,11 +121,6 @@ export type DeviceEvent =
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 
-export type DeviceEventListenerFn = (
-    type: typeof DEVICE_EVENT,
-    cb: (event: DeviceEventMessage) => void,
-) => void;
-
 export const createDeviceMessage: MessageFactoryFn<typeof DEVICE_EVENT, DeviceEvent> = (
     type,
     payload,

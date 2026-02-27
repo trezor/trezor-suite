@@ -299,16 +299,6 @@ export type UiEvent =
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
 
-export type ProgressEventListenerFn = <R>(
-    type: typeof UI_REQUEST.BUNDLE_PROGRESS,
-    cb: (event: BundleProgress<R>['payload']) => void,
-) => void;
-
-export type UiEventListenerFn = (
-    type: typeof UI_EVENT,
-    cb: (event: UiEventMessage) => void,
-) => void;
-
 export const createUiMessage: MessageFactoryFn<typeof UI_EVENT, UiEvent> = (type, payload) =>
     ({
         event: UI_EVENT,

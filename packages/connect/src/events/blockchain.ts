@@ -81,11 +81,6 @@ export type BlockchainEvent =
 
 export type BlockchainEventMessage = BlockchainEvent & { event: typeof BLOCKCHAIN_EVENT };
 
-export type BlockchainEventListenerFn = (
-    type: typeof BLOCKCHAIN_EVENT,
-    cb: (event: BlockchainEventMessage) => void,
-) => void;
-
 export const createBlockchainMessage: MessageFactoryFn<typeof BLOCKCHAIN_EVENT, BlockchainEvent> = (
     type,
     payload,

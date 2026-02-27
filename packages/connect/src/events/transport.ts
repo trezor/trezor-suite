@@ -49,11 +49,6 @@ export interface TransportGetInfo {
 
 export type TransportEventMessage = TransportEvent & { event: typeof TRANSPORT_EVENT };
 
-export type TransportEventListenerFn = (
-    type: typeof TRANSPORT_EVENT,
-    cb: (event: TransportEventMessage) => void,
-) => void;
-
 export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, TransportEvent> = (
     type,
     payload,

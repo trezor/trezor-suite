@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
 
@@ -23,10 +21,11 @@ import {
 import { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
+import { ConnectEmitter } from '../types/emitter';
 import { Log, initLog } from '../utils/debug';
 
 export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
-    public eventEmitter = new EventEmitter();
+    public eventEmitter = new ConnectEmitter();
     public _settings: ConnectSettings;
 
     private _coreManager?: any;

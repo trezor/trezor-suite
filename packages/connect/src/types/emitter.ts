@@ -1,25 +1,17 @@
-import {
-    BLOCKCHAIN_EVENT,
-    BlockchainEvent,
-    BlockchainEventMessage,
-    DEVICE_EVENT,
-    DeviceEvent,
-    DeviceEventMessage,
-    PopupEvent,
-    PopupEventMessage,
-    TRANSPORT_EVENT,
-    TransportEvent,
-    TransportEventMessage,
-    UI_EVENT,
-    UiEvent,
-    UiEventMessage,
-} from '../events';
+import { TypedEmitter } from '@trezor/utils';
+
+import type { UnionToIntersection } from './utils';
+import { BLOCKCHAIN_EVENT, BlockchainEvent, BlockchainEventMessage } from '../events/blockchain';
+import { DEVICE_EVENT, DeviceEvent, DeviceEventMessage } from '../events/device';
+import { PopupEvent, PopupEventMessage } from '../events/popup';
+import { TRANSPORT_EVENT, TransportEvent, TransportEventMessage } from '../events/transport';
+import { UI_EVENT, UiEvent, UiEventMessage } from '../events/ui-request';
 
 type EventPayloadMap<T extends { type: string; payload?: any }> = {
     [E in T as E['type']]: E extends { payload: infer P } ? P : undefined;
 };
 
-export type ConnectEvents = {
+type ConnectEventMap = {
     [DEVICE_EVENT]: DeviceEventMessage;
     [TRANSPORT_EVENT]: TransportEventMessage;
     [BLOCKCHAIN_EVENT]: BlockchainEventMessage;
@@ -29,3 +21,18 @@ export type ConnectEvents = {
     EventPayloadMap<BlockchainEvent> &
     EventPayloadMap<UiEvent> &
     EventPayloadMap<PopupEvent>;
+
+export type ConnectEvents = keyof ConnectEventMap;
+
+export type ConnectEventCallbacks = UnionToIntersection<
+    {
+        [K in ConnectEvents]: (
+            type: K,
+            cb: ConnectEventMap[K] extends undefined
+                ? () => void
+                : (event: ConnectEventMap[K]) => void,
+        ) => void;
+    }[ConnectEvents]
+>;
+
+export class ConnectEmitter extends TypedEmitter<ConnectEventMap> {}

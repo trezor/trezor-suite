@@ -1,14 +1,13 @@
-import type { EventEmitter } from 'events';
-
 import { UI_REQUEST } from './events';
 import type { CallMethod, CallMethodKeys } from './events/call';
 import type { TrezorConnect } from './types';
 import type { InitType } from './types/api/init';
+import type { ConnectEmitter } from './types/emitter';
 
 export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>> {
     init: InitType<SettingsType>;
     call: CallMethod;
-    eventEmitter: EventEmitter;
+    eventEmitter: ConnectEmitter;
     updateConnectSettings: TrezorConnect['updateConnectSettings'];
     uiResponse: TrezorConnect['uiResponse'];
     cancel: TrezorConnect['cancel'];
@@ -142,21 +141,11 @@ export const factory = <
         init,
         updateConnectSettings,
 
-        on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
-            eventEmitter.on(type, fn);
-        },
+        on: eventEmitter.on.bind(eventEmitter),
 
-        off: (type, fn) => {
-            eventEmitter.removeListener(type, fn);
-        },
+        off: eventEmitter.removeListener.bind(eventEmitter),
 
-        removeAllListeners: type => {
-            if (typeof type === 'string') {
-                eventEmitter.removeAllListeners(type);
-            } else {
-                eventEmitter.removeAllListeners();
-            }
-        },
+        removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
 
         uiResponse,
 

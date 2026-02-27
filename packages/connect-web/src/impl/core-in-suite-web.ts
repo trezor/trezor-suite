@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import {
     CORE_CALL,
     CallMethodAnyResponse,
@@ -19,7 +17,6 @@ import { PopupManager } from '../popup';
  * This implementation is directly used here in connect-web, but it is also extended in connect-webextension.
  */
 export class CoreInSuiteWeb implements ConnectImpl {
-    public eventEmitter = new EventEmitter();
     private _popupManager?: PopupManager;
 
     protected logger: Log;

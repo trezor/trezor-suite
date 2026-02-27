@@ -1,3 +1,3 @@
-import type { EventListenerType } from './off';
+import type { ConnectEvents } from '../emitter';
 
-export declare function removeAllListeners(type?: EventListenerType): void;
+export declare const removeAllListeners: (type?: ConnectEvents) => void;
