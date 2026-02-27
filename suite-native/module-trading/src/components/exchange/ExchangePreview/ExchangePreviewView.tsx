@@ -10,7 +10,6 @@ import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
 export type ExchangePreviewViewProps = {
@@ -21,8 +20,6 @@ export type ExchangePreviewViewProps = {
 
 export const ExchangePreviewView = memo(
     ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
-        const { fromStringValue, toStringValue, fromValue, toValue } =
-            useChangeStringsExtractor(quote);
         const isTxnError = !!txnErrorString;
         const isFusionPlus = quote?.exchange === '1inchfusionplus';
 
@@ -42,16 +39,8 @@ export const ExchangePreviewView = memo(
                         <InlineAlertBox variant="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
-                <ExchangeFromAccountTradePreviewCard
-                    quote={quote}
-                    fromStringValue={fromStringValue}
-                    fromValue={fromValue}
-                />
-                <ExchangeToAccountTradePreviewCard
-                    quote={quote}
-                    toStringValue={toStringValue}
-                    toValue={toValue}
-                />
+                <ExchangeFromAccountTradePreviewCard quote={quote} />
+                <ExchangeToAccountTradePreviewCard quote={quote} />
                 <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
                 {isFusionPlus && <ExchangeFusionPlusInfo />}
             </VStack>

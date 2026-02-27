@@ -11,7 +11,6 @@ import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
 import { SellFeePickerCard } from './SellFeePickerCard';
 import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
 import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
 export type SellPreviewViewProps = {
     quote: SellFiatTrade | undefined;
@@ -21,7 +20,6 @@ export type SellPreviewViewProps = {
 export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
 
-    const { fromStringValue, toStringValue, fromValue } = useChangeStringsExtractor(quote);
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
         quote?.bankAccounts?.[0].bankAccount,
     );
@@ -42,12 +40,8 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
                     <InlineAlertBox variant="critical" title={txnErrorString} />
                 </Animated.View>
             )}
-            <SellFromAccountTradePreviewCard
-                cryptoId={quote?.cryptoCurrency}
-                fromStringValue={fromStringValue}
-                fromValue={fromValue}
-            />
-            <SellToFiatTradePreviewCard quote={quote} toStringValue={toStringValue} />
+            <SellFromAccountTradePreviewCard quote={quote} />
+            <SellToFiatTradePreviewCard quote={quote} />
             <SellFeePickerCard quote={quote} isTxnError={isTxnError} />
             {showBankAccountPicker && (
                 <SellBankAccountPicker

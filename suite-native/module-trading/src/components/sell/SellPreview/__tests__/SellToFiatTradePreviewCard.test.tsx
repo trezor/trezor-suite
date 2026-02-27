@@ -14,10 +14,9 @@ describe('SellToFiatTradePreviewCard', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
 
-        return renderWithStoreProviderAsync(
-            <SellToFiatTradePreviewCard toStringValue="90.17" {...props} />,
-            { preloadedState },
-        );
+        return renderWithStoreProviderAsync(<SellToFiatTradePreviewCard {...props} />, {
+            preloadedState,
+        });
     };
 
     it('should render nothing when there is no quote', async () => {
@@ -51,17 +50,16 @@ describe('SellToFiatTradePreviewCard', () => {
 
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
-        expect(getByText('+90.17')).toBeOnTheScreen();
+        expect(getByText('+$90.17')).toBeOnTheScreen();
     });
 
     it('should render bank transfer payment method', async () => {
         const { getByText } = await renderSellToFiatTradePreviewCard({
             quote: sellQuotes[1], // This quote has bankTransfer payment method
-            toStringValue: '100.00', // Override the default toStringValue
         });
 
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
-        expect(getByText('+100.00')).toBeOnTheScreen();
+        expect(getByText('+$100.00')).toBeOnTheScreen();
     });
 });

@@ -17,10 +17,9 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = receiveAccountKey;
 
-        return renderWithStoreProvider(
-            <ExchangeToAccountTradePreviewCard toStringValue="100" {...props} />,
-            { preloadedState },
-        );
+        return renderWithStoreProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
+            preloadedState,
+        });
     };
 
     it('should render nothing when there is no quote', () => {
@@ -44,7 +43,8 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         });
 
         expect(getByText('Account')).toBeOnTheScreen();
-        expect(getByText('+100')).toBeOnTheScreen();
+        expect(getByText('+0.00083554 BTC')).toBeOnTheScreen();
+        expect(getByText(`0.00083554-${exchangeQuotes[0].receive}`)).toBeOnTheScreen();
     });
 
     // Todo: https://github.com/trezor/trezor-suite/issues/24906
@@ -54,14 +54,5 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         });
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
-    });
-
-    it('should render value in fiat when toValue is provided', () => {
-        const { getByText } = renderExchangeToAccountTradePreviewCard({
-            quote: exchangeQuotes[0],
-            toValue: '1',
-        });
-
-        expect(getByText(`1-${exchangeQuotes[0].receive}`)).toBeOnTheScreen();
     });
 });

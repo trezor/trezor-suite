@@ -3,18 +3,17 @@ import type { SellFiatTrade } from 'invity-api';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { TradeFiatSideCard } from '../../general/TradeInfo/TradeFiatSideCard';
 
 export type SellToFiatTradePreviewCardProps = {
     quote?: SellFiatTrade;
-    toStringValue: string | undefined;
 };
 
-export const SellToFiatTradePreviewCard = ({
-    quote,
-    toStringValue,
-}: SellToFiatTradePreviewCardProps) => {
-    if (!quote?.fiatCurrency || !quote.paymentMethod) {
+export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCardProps) => {
+    const { toStringValue } = useChangeStringsExtractor(quote);
+
+    if (!quote || !quote.paymentMethod || !quote.fiatCurrency || !toStringValue) {
         return null;
     }
 
