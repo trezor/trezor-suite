@@ -17,6 +17,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -46,6 +47,7 @@ export const WalletCreationScreen = () => {
     const { walletBackupType } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showToast } = useToast();
 
     const isEntropyCheckEnabled = useSelector((state: MessageSystemRootState) =>
@@ -75,12 +77,25 @@ export const WalletCreationScreen = () => {
                 return;
             }
 
-            // handle entropy check failure, otherwise continue with the flow
+            // handle entropy check failure
             if (isEntropyCheckEnabled && code === 'Failure_EntropyCheck') {
-                navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+                return navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
             }
+            // canceled on device -> cancel in suite
+            else if (code === 'Failure_ActionCancelled' || code === 'Method_Interrupted') {
+                return navigateToInitialScreen();
+            }
+
+            console.error(`Unknown definitive code: '${code}'`);
         }
-    }, [dispatch, walletBackupType, navigation, isEntropyCheckEnabled, showToast]);
+    }, [
+        dispatch,
+        walletBackupType,
+        navigation,
+        navigateToInitialScreen,
+        isEntropyCheckEnabled,
+        showToast,
+    ]);
 
     useEffect(() => {
         handleCreateAndBackupWallet();
