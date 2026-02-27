@@ -40,6 +40,13 @@ isSupersetOf.shim();
 symmetricDifference.shim();
 union.shim();
 
+// Promise.try is an ES2025 feature not yet supported by Hermes, required by @evolu/common.
+if (typeof Promise.try !== 'function') {
+    Promise.try = function (callbackfn, ...args) {
+        return new Promise(resolve => resolve(callbackfn(...args)));
+    };
+}
+
 global.process = {
     ...require('process'),
     // necessary to prevent overriding env variables
