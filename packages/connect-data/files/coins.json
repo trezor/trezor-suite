@@ -2544,40 +2544,6 @@
             }
         },
         {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 8,
-            "is_testnet": false,
-            "name": "MaidSafeCoin",
-            "shortcut": "MAID",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 2,
-            "is_testnet": false,
-            "name": "Omni",
-            "shortcut": "OMNI",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
             "blockchain_link": {
                 "type": "solana",
                 "url": [
@@ -2631,23 +2597,6 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 2,
-            "is_testnet": false,
-            "name": "Tether",
-            "shortcut": "USDT",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"

@@ -383,9 +383,6 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     dgb: 'no-support',
                     nmc: 'no-support',
                     vtc: 'no-support',
-                    maid: 'no-capability',
-                    omni: 'no-capability',
-                    usdt: 'no-capability',
                 },
                 availableTranslations: {},
                 authenticityChecks: {
