@@ -20,7 +20,12 @@ import type {
 // eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
 import { ExtendedMessageDescriptor } from '@suite/intl';
 import { CountryCode } from '@suite-common/geolocation';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    Network,
+    NetworkConfig,
+    NetworkDisplaySymbol,
+    NetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -47,17 +52,34 @@ export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
-export type TradingAssetOption = {
-    isNativeToken: boolean;
+export type TradingAssetOptionNativeToken = {
+    isNativeToken: true;
     id: CryptoId;
-    name: string;
-    coingeckoId: string;
-    symbol: string | NetworkSymbol;
-    displaySymbol: string;
-    contractAddress: string | null;
-    networkName: string;
+    name: NetworkConfig['name'];
+    coingeckoId: NetworkConfig['coingeckoId'];
+    symbol: NetworkSymbol;
+    displaySymbol: NetworkDisplaySymbol;
+    contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
+    networkName: NetworkConfig['name'];
     networkSymbol: NetworkSymbol;
 };
+
+export type TradingAssetOptionWithContractAddress = {
+    isNativeToken: false;
+    id: CryptoId;
+    name: string;
+    coingeckoId: NetworkConfig['coingeckoId'];
+    symbol: string;
+    displaySymbol: string;
+    contractAddress: string;
+    networkName: NetworkConfig['name'];
+    networkSymbol: NetworkSymbol;
+};
+
+export type TradingAssetOption =
+    | TradingAssetOptionNativeToken
+    | TradingAssetOptionWithContractAddress;
+
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
 export type TradingTradeMapProps = {
