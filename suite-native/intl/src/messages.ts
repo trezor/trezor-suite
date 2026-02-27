@@ -173,6 +173,9 @@ export const messages = {
             description:
                 'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
             button: 'Allow',
+            connectDescription:
+                'Connect Trezor and allow Suite Sync to view and edit your labels, wallet names, and account names.',
+            connectButton: 'Connect & allow',
         },
         suiteSyncFirmwareUpdateAlert: {
             title: 'Firmware update required',

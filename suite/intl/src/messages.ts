@@ -3142,6 +3142,10 @@ export const messages = defineMessages({
         defaultMessage: 'Allow',
         id: 'TR_SUITE_SYNC_GET_KEYS',
     },
+    TR_SUITE_SYNC_CONNECT_AND_GET_KEYS: {
+        defaultMessage: 'Connect & allow',
+        id: 'TR_SUITE_SYNC_CONNECT_AND_GET_KEYS',
+    },
     TR_SUITE_SYNC_FIRMWARE_UPDATE: {
         defaultMessage: 'Update',
         id: 'TR_SUITE_SYNC_FIRMWARE_UPDATE',
@@ -3159,6 +3163,11 @@ export const messages = defineMessages({
         defaultMessage:
             'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
         id: 'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
+    },
+    TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER: {
+        defaultMessage:
+            'Connect Trezor and allow Suite Sync to view and edit your labels, wallet names, and account names.',
+        id: 'TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER',
     },
     TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION: {
         defaultMessage:
