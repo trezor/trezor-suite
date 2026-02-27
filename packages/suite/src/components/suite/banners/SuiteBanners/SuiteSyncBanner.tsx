@@ -7,7 +7,7 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { Banner, Tooltip } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -40,6 +40,24 @@ const bannerConfigs: Record<SuiteSyncBannerInteraction, BannerConfig> = {
 const isBannerInteraction = (interaction: string): interaction is SuiteSyncBannerInteraction =>
     interaction in bannerConfigs;
 
+const getBannerConfig = ({
+    interaction,
+    isDeviceConnected,
+}: {
+    interaction: SuiteSyncBannerInteraction;
+    isDeviceConnected: boolean;
+}): BannerConfig => {
+    if (interaction === 'keys-needed' && !isDeviceConnected) {
+        return {
+            testId: '@notification/suite-sync-keys',
+            buttonLabel: 'TR_SUITE_SYNC_CONNECT_AND_GET_KEYS',
+            description: 'TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER',
+        };
+    }
+
+    return bannerConfigs[interaction];
+};
+
 type SuiteSyncBannerProps = {
     deviceStaticSessionId: StaticSessionId;
 };
@@ -57,21 +75,11 @@ const SuiteSyncBannerContent = ({
         icon
         intent="info"
         rightContent={
-            <Tooltip
-                content={
-                    !isDeviceConnected ? (
-                        <Translation id="TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP" />
-                    ) : undefined
-                }
-            >
-                <Banner.Button
-                    isDisabled={!isDeviceConnected}
-                    onClick={onClick}
-                    data-testid={`${config.testId}/button`}
-                >
+            isDeviceConnected && (
+                <Banner.Button onClick={onClick} data-testid={`${config.testId}/button`}>
                     <Translation id={config.buttonLabel} />
                 </Banner.Button>
-            </Tooltip>
+            )
         }
         data-testid={config.testId}
         description={<Translation id={config.description} />}
@@ -94,7 +102,10 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
         return null;
     }
 
-    const config = bannerConfigs[suiteSyncInteraction];
+    const config = getBannerConfig({
+        interaction: suiteSyncInteraction,
+        isDeviceConnected,
+    });
 
     const handlers: Record<SuiteSyncBannerInteraction, () => void | Promise<void>> = {
         'keys-needed': async () => {

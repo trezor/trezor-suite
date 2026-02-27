@@ -53,8 +53,24 @@ export const SuiteSyncKeysAlert = () => {
         <AnimatedFullAlertBox
             variant="info"
             title={<Translation id="moduleHome.suiteSyncAlert.title" />}
-            description={<Translation id="moduleHome.suiteSyncAlert.description" />}
-            primaryButtonLabel={<Translation id="moduleHome.suiteSyncAlert.button" />}
+            description={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.description'
+                            : 'moduleHome.suiteSyncAlert.connectDescription'
+                    }
+                />
+            }
+            primaryButtonLabel={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.button'
+                            : 'moduleHome.suiteSyncAlert.connectButton'
+                    }
+                />
+            }
             onPressPrimaryButton={allowSuiteSyncForWallet}
             marginHorizontal="sp16"
         />
