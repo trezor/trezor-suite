@@ -13,8 +13,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRoot
 
 export const selectWalletById = (
     state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor,
-): WalletData | null => state.suiteSyncData.wallets[walletDescriptor] ?? null;
+    walletDescriptor: WalletDescriptor | null,
+): WalletData | null =>
+    walletDescriptor !== null ? (state.suiteSyncData.wallets[walletDescriptor] ?? null) : null;
 
 export const selectAllAccountsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
@@ -30,7 +31,7 @@ export const selectAllAccountsForWallet = createMemoizedSelector(
 export const selectAllAddressesForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
     wallet => {
-        if (!wallet) {
+        if (wallet === null) {
             return returnStableArrayIfEmpty<SuiteSyncAddress>();
         }
 
@@ -41,7 +42,7 @@ export const selectAllAddressesForWallet = createMemoizedSelector(
 export const selectAllOutputsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
     wallet => {
-        if (!wallet) {
+        if (wallet === null) {
             return returnStableArrayIfEmpty<SuiteSyncOutput>();
         }
 
