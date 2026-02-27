@@ -56,7 +56,6 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     {currentVersion ? ` ${currentVersion}` : ''}
                 </Text>
             </Column>
-            <Icon name="arrowRight" size={16} />
         </>
     );
 
@@ -81,6 +80,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 ) : (
                     <CurrentVersion />
                 ))}
+            {currentVersion && <Icon name="arrowRight" size={16} />}
             <Column alignItems="center" gap={spacings.xxs}>
                 <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
