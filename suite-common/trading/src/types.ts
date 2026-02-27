@@ -52,28 +52,27 @@ export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
-export type TradingAssetOptionNativeToken = {
-    isNativeToken: true;
+type TradingAssetOptionBase = {
     id: CryptoId;
-    name: NetworkConfig['name'];
-    coingeckoId: NetworkConfig['coingeckoId'];
-    symbol: NetworkSymbol;
-    displaySymbol: NetworkDisplaySymbol;
-    contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
+    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
     networkName: NetworkConfig['name'];
     networkSymbol: NetworkSymbol;
 };
 
-export type TradingAssetOptionWithContractAddress = {
+export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
+    isNativeToken: true;
+    name: NetworkConfig['name'];
+    symbol: NetworkSymbol;
+    displaySymbol: NetworkDisplaySymbol;
+    contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
+};
+
+export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
     isNativeToken: false;
-    id: CryptoId;
     name: string;
-    coingeckoId: NetworkConfig['coingeckoId'];
     symbol: string;
     displaySymbol: string;
     contractAddress: string;
-    networkName: NetworkConfig['name'];
-    networkSymbol: NetworkSymbol;
 };
 
 export type TradingAssetOption =

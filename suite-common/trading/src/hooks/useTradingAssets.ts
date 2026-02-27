@@ -75,11 +75,6 @@ export function createAssetOption({
         network && (!contractAddress || isCryptoIdForNativeToken(cryptoId)),
     );
 
-    // Unsupported network
-    if (!network && isNativeToken) {
-        return null;
-    }
-
     if (isNativeToken) {
         const networkConfig = network as NetworkConfigWithoutTestnets;
 
