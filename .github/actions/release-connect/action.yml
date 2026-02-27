@@ -97,7 +97,7 @@ runs:
       env:
         FULL_URL: ${{ inputs.connectPopupUrl || format('https://{0}/{1}', inputs.serverHostname, inputs.serverPath) }}
       run: |
-        yarn workspace @trezor/webextension-mv3-sw-ts build
+        NODE_ENV=production yarn workspace @trezor/webextension-mv3-sw-ts build
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
         ./packages/connect-examples/webextension/scripts/check-webextension-bundle-size.sh

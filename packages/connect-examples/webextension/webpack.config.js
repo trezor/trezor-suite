@@ -49,6 +49,6 @@ module.exports = {
             patterns: [{ from: 'src/manifest.json', to: 'manifest.json' }],
         }),
     ],
-    mode: 'development',
-    devtool: 'inline-source-map',
+    mode: process.env.NODE_ENV || 'development',
+    devtool: process.env.NODE_ENV === 'production' ? undefined : 'inline-source-map',
 };

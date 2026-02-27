@@ -5,12 +5,12 @@ set -e
 echo "trezor-connect webextension bundle size check"
 
 # Configuration parameters
-# Baseline: 196 KB (measured on 2026-02-19, compressed)
-# MAX_KB: 216 KB (110% of baseline = max allowed growth)
+# Baseline: 24 KB (measured on 2026-03-02, prod, compressed)
+# MAX_KB: 29 KB (110% of baseline = max allowed growth)
 # To update baseline after legitimate changes: measure new compressed size and update both values
 
-BASELINE_KB=196
-MAX_KB=${MAX_KB:-216}
+BASELINE_KB=24
+MAX_KB=${MAX_KB:-29}
 
 # Get script directory and build folder
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
