@@ -1,6 +1,10 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-common/trading';
+import {
+    exchangeThunks,
+    selectTradingProviderMetadata,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -26,6 +30,21 @@ import { PROTO } from '@trezor/connect';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 const mockReport = jest.fn();
+type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
+
+const createPrefetchDexQuoteApprovalThunkMock = (
+    arg: Parameters<PrefetchDexQuoteApprovalThunk>[0],
+): ReturnType<PrefetchDexQuoteApprovalThunk> => {
+    const result = Promise.resolve(undefined) as unknown as ReturnType<
+        ReturnType<PrefetchDexQuoteApprovalThunk>
+    >;
+    result.abort = jest.fn();
+    result.requestId = 'mock-request-id';
+    result.arg = arg;
+    result.unwrap = () => Promise.resolve(undefined);
+
+    return () => result;
+};
 
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -61,8 +80,13 @@ describe('useExchangeForm', () => {
     };
 
     beforeEach(() => {
+        jest.restoreAllMocks();
         jest.clearAllMocks();
         store = getInitializedStore();
+
+        jest.spyOn(exchangeThunks, 'prefetchDexQuoteApprovalThunk').mockImplementation(
+            createPrefetchDexQuoteApprovalThunkMock,
+        );
     });
 
     describe('on quotes change', () => {
@@ -252,6 +276,69 @@ describe('useExchangeForm', () => {
                     }),
                 );
             });
+        });
+    });
+
+    describe('dex quote approval prefetch', () => {
+        const dexQuoteWithDexTx = {
+            ...exchangeQuotes[3],
+            dexTx: {
+                from: '0x0000000000000000000000000000000000000000',
+                to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+                data: '0x095ea7b3000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee570000000000000000000000000000000000000000000000000000000005f5e100',
+                value: '0x0',
+            },
+        } as ExchangeTrade;
+
+        it('should confirm dex quote once selected in form', async () => {
+            renderUseExchangeForm();
+
+            await act(async () => {
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(
+                    tradingExchangeActions.setReceiveAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                await Promise.resolve();
+            });
+
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledTimes(1);
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    trade: expect.objectContaining({ quoteId: dexQuoteWithDexTx.quoteId }),
+                }),
+            );
+        });
+
+        it('should not confirm the same dex quote repeatedly', async () => {
+            renderUseExchangeForm();
+
+            await act(async () => {
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(
+                    tradingExchangeActions.setReceiveAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                await Promise.resolve();
+                store.dispatch(
+                    tradingExchangeActions.saveQuotes([{ ...dexQuoteWithDexTx, rate: 0.0000089 }]),
+                );
+                await Promise.resolve();
+            });
+
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledTimes(1);
         });
     });
 
