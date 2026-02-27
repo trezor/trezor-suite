@@ -240,6 +240,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                     </Row>
                                 )}
                                 onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                                closeMenuOnScroll={false}
                             />
                         </ElevationUp>
                     </Card>
