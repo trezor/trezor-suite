@@ -2,6 +2,7 @@ import {
     fromLegacyMetadataToSearchAccountLabels,
     selectLabelingDataForAccount,
 } from '@suite/metadata';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     fromSuiteSyncToSearchAccountLabels,
     selectAllLabelsForAccount,
@@ -12,21 +13,24 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { AppState } from 'src/types/suite';
 
-export const selectAccountLabelsForSearch = (state: AppState, account: Account) => {
-    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
 
-    if (isSuiteSyncEnabled) {
-        const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
-        const allLabels = selectAllLabelsForAccount(state, {
-            walletDescriptor,
-            accountDescriptor: account.descriptor,
-            networkSymbol: account.symbol,
-        });
+export const selectAccountLabelsForSearch = createMemoizedSelector(
+    [
+        selectIsSuiteSyncEnabled,
+        (state: AppState, account: Account) =>
+            selectAllLabelsForAccount(state, {
+                walletDescriptor: parseDeviceStaticSessionId(account.deviceState).walletDescriptor,
+                accountDescriptor: account.descriptor,
+                networkSymbol: account.symbol,
+            }),
+        (state: AppState, account: Account) => selectLabelingDataForAccount(state, account.key),
+    ],
+    (isSuiteSyncEnabled, allLabels, accountMetadata) => {
+        if (isSuiteSyncEnabled) {
+            return fromSuiteSyncToSearchAccountLabels(allLabels);
+        }
 
-        return fromSuiteSyncToSearchAccountLabels(allLabels);
-    }
-
-    const accountMetadata = selectLabelingDataForAccount(state, account.key);
-
-    return fromLegacyMetadataToSearchAccountLabels(accountMetadata);
-};
+        return fromLegacyMetadataToSearchAccountLabels(accountMetadata);
+    },
+);
