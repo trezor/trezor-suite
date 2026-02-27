@@ -11,7 +11,7 @@ const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
-export const InvityApi = () => {
+export const TradeApi = () => {
     const debug = useSelector(state => state.suite.settings.debug);
     const dispatch = useDispatch();
 
