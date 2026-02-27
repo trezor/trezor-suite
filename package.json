@@ -76,7 +76,6 @@
         "format:all": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./scripts/update-submodules.sh",
-        "update-coins": "./scripts/update-coins.sh",
         "update-models": "./scripts/update-models.sh",
         "update-protobuf": "./scripts/update-protobuf.sh",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
