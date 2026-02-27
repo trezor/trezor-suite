@@ -9,8 +9,6 @@ import { BigNumber } from '@trezor/utils';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
@@ -18,8 +16,6 @@ import { WithdrawalInputs } from './WithdrawalInputs';
 import { EarnAvailableBalance } from '../../EarnSupplyModal/SupplyForm/EarnAvailableBalance';
 
 export const WithdrawalForm = () => {
-    const selectedAccount = useSelector(selectSelectedAccount);
-
     const {
         account,
         formState: { errors },
@@ -40,7 +36,7 @@ export const WithdrawalForm = () => {
         autocompoundBalance = '0',
         canClaim = false,
         claimableAmount = '0',
-    } = getStakingDataForNetwork(selectedAccount) ?? {};
+    } = getStakingDataForNetwork(account) ?? {};
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);

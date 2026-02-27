@@ -1,10 +1,5 @@
-import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import {
-    EarnFlow,
-    EarnProvider,
-    createEarnAccountRef,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -15,7 +10,6 @@ import { spacings } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 interface NewProviderCardProps {
@@ -23,7 +17,6 @@ interface NewProviderCardProps {
 }
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
-    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
@@ -41,18 +34,10 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.UpdateProvider,
                     provider: EarnProvider.Everstake,
-                    account: createEarnAccountRef(account),
+                    account,
+                    analyticsStep: 'staking-dashboard',
                 }),
             );
-
-            analytics.report({
-                type: events.stakingUpdateProviderEvent.name,
-                payload: {
-                    action: 'continue',
-                    step: 'staking-dashboard',
-                    networkSymbol: account?.symbol,
-                },
-            });
         }
     };
 

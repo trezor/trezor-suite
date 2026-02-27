@@ -5,10 +5,13 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
-import { EarnInANutshellModal, EarnProviderConsentModal } from 'src/components/earn';
-import { EarnClaimModal } from 'src/components/earn/modals/EarnClaimModal/EarnClaimModal';
-import { EarnSupplyModal } from 'src/components/earn/modals/EarnSupplyModal/EarnSupplyModal';
-import { EarnWithdrawalModal } from 'src/components/earn/modals/EarnWithdrawalModal/EarnWithdrawalModal';
+import {
+    EarnClaimModal,
+    EarnInANutshellModal,
+    EarnProviderConsentModal,
+    EarnSupplyModal,
+    EarnWithdrawalModal,
+} from 'src/components/earn';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
@@ -143,38 +146,12 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinModal />;
         case 'earn-in-a-nutshell':
-            return (
-                <EarnInANutshellModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    provider={payload.provider}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
+            return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
-            return (
-                <EarnProviderConsentModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    provider={payload.provider}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
+            return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
         case 'supply':
         case 'stake':
-            return (
-                <EarnSupplyModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
+            return <EarnSupplyModal {...payload} onCancel={onCancel} />;
         case 'withdraw':
         case 'unstake':
             return <EarnWithdrawalModal onCancel={onCancel} account={payload.account} />;

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { createEarnAccountRef } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
@@ -30,6 +29,7 @@ export const ClaimCard = () => {
 
     const { canClaim = false, claimableAmount = '0' } =
         getStakingDataForNetwork(selectedAccount) ?? {};
+    const isClaimButtonDisabled = isClaimingDisabled || !selectedAccount;
 
     // Show success message when claim tx confirmation is complete.
     const prevIsClaimPending = useRef(false);
@@ -55,11 +55,11 @@ export const ClaimCard = () => {
     }, [dispatch, isClaimPending, selectedAccount?.symbol, selectedAccount?.key]);
 
     const openClaimModal = () => {
-        if (!isClaimingDisabled) {
+        if (!isClaimButtonDisabled) {
             dispatch(
                 openModal({
                     type: 'claim',
-                    account: selectedAccount ? createEarnAccountRef(selectedAccount) : undefined,
+                    account: selectedAccount,
                 }),
             );
 
@@ -119,8 +119,8 @@ export const ClaimCard = () => {
                 <Tooltip content={claimingMessageContent}>
                     <Button
                         onClick={openClaimModal}
-                        isDisabled={isClaimingDisabled}
-                        iconLeft={isClaimingDisabled ? 'info' : undefined}
+                        isDisabled={isClaimButtonDisabled}
+                        iconLeft={isClaimButtonDisabled ? 'info' : undefined}
                         data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />

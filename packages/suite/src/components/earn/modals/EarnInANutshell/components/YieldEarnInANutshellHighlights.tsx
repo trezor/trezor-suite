@@ -1,22 +1,25 @@
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import {
+    NetworkSymbol,
+    StakingNetworkType,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
 import { EarnInANutshellHighlight, EarnInANutshellHighlights } from './EarnInANutshellHighlights';
 
 interface YieldEarnInANutshellHighlightsProps {
-    networkType: NetworkType;
-    displaySymbol: string;
+    networkType: StakingNetworkType;
+    networkSymbol: NetworkSymbol;
     unstakingPeriod?: number;
 }
 
 export const YieldEarnInANutshellHighlights = ({
     networkType,
-    displaySymbol,
+    networkSymbol,
     unstakingPeriod,
 }: YieldEarnInANutshellHighlightsProps) => {
-    if (!isStakingNetworkType(networkType)) return null;
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
 
     const highlights: EarnInANutshellHighlight[] = (() => {
         switch (networkType) {
@@ -27,7 +30,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -36,7 +39,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -57,7 +60,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -66,7 +69,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -87,7 +90,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -96,7 +99,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -105,7 +108,7 @@ export const YieldEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },

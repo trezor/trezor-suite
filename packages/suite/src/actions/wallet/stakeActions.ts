@@ -10,6 +10,7 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import {
+    Account,
     ComposeActionContext,
     PrecomposedTransactionFinal,
     StakeFormState,
@@ -59,31 +60,32 @@ export const composeTransaction =
     };
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getState: GetState) => {
-    const { serializedTx, precomposedForm } = getState().wallet.stake;
-    dispatch(stakeActions.requestSignTransaction());
-    dispatch(stakeActions.requestPushTransaction());
-    // if transaction is not signed yet interrupt signing in TrezorConnect
-    if (!serializedTx) {
-        TrezorConnect.cancel('tx-cancelled');
+export const cancelSignTx =
+    (isSuccessTx?: boolean, account?: Account) => (dispatch: Dispatch, getState: GetState) => {
+        const { serializedTx, precomposedForm } = getState().wallet.stake;
+        dispatch(stakeActions.requestSignTransaction());
+        dispatch(stakeActions.requestPushTransaction());
+        // if transaction is not signed yet interrupt signing in TrezorConnect
+        if (!serializedTx) {
+            TrezorConnect.cancel('tx-cancelled');
 
-        return;
-    }
-    // otherwise just close modal and open stake modal
-    dispatch(modalActions.onCancel());
-
-    const { stakeType } = precomposedForm ?? {};
-    if (stakeType && !isSuccessTx) {
-        switch (stakeType) {
-            case 'stake':
-                dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
-                break;
-
-            default:
-                dispatch(openModal({ type: stakeType }));
+            return;
         }
-    }
-};
+        // otherwise just close modal and open stake modal
+        dispatch(modalActions.onCancel());
+
+        const { stakeType } = precomposedForm ?? {};
+        if (account && stakeType && !isSuccessTx) {
+            switch (stakeType) {
+                case 'stake':
+                    dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
+                    break;
+
+                default:
+                    dispatch(openModal({ type: stakeType, account }));
+            }
+        }
+    };
 
 // private, called from signTransaction only
 const pushTransaction =
@@ -211,7 +213,7 @@ const pushTransaction =
             );
         }
 
-        dispatch(cancelSignTx(sentTx.success));
+        dispatch(cancelSignTx(sentTx.success, account));
 
         // resolve sign process
         return sentTx;
@@ -273,11 +275,11 @@ export const signTransaction =
             if (stakeType) {
                 switch (stakeType) {
                     case 'stake':
-                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
+                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
                         break;
 
                     default:
-                        dispatch(openModal({ type: stakeType }));
+                        dispatch(openModal({ type: stakeType, account }));
                 }
             }
 

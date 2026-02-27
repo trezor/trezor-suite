@@ -1,12 +1,12 @@
 import { ReactNode, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { NetworkType } from '@suite-common/wallet-config';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 interface EarnProviderConsentModalLayoutProps {
     heading: ReactNode;
@@ -15,6 +15,7 @@ interface EarnProviderConsentModalLayoutProps {
     consentText: ReactNode;
     onConfirm: () => void;
     onCancel: () => void;
+    networkType: NetworkType;
     children?: ReactNode;
 }
 
@@ -25,12 +26,12 @@ export const EarnProviderConsentModalLayout = ({
     consentText,
     onConfirm,
     onCancel,
+    networkType,
     children,
 }: EarnProviderConsentModalLayoutProps) => {
     const [hasAgreed, setHasAgreed] = useState(false);
-    const account = useSelector(selectSelectedAccount);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
-    const isCardanoNetworkType = account?.networkType === 'cardano';
+    const isCardanoNetworkType = networkType === 'cardano';
 
     const isDrepValid = useMemo(() => {
         if (!isCardanoNetworkType || selectedVotingDelegation.type !== 'another_drep') {

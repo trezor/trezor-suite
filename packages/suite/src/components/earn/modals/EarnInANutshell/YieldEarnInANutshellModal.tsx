@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
@@ -12,51 +13,44 @@ import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWith
 import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
 import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
 import { YieldEarnInANutshellHighlights } from './components/YieldEarnInANutshellHighlights';
-import { useEarnInANutshellActions } from './hooks/useEarnInANutshellActions';
-import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
+import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
 interface YieldEarnInANutshellModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
     yieldId?: string;
     tokenContractAddress?: string;
 }
 
 export const YieldEarnInANutshellModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
     yieldId,
     tokenContractAddress,
 }: YieldEarnInANutshellModalProps) => {
-    const { handleContinue, onCancelClick } = useEarnInANutshellActions({
+    const { handleContinue, onCancelClick, unstakingPeriod } = useEarnInANutshell({
         flow: EarnFlow.Yield,
         provider,
         onCancel,
-        accountRef,
+        account,
         yieldId,
         tokenContractAddress,
     });
-    const data = useEarnInANutshellData();
 
-    if (!data) return null;
-
-    const { account: selectedAccount, displaySymbol, unstakingPeriod } = data;
-
-    if (!selectedAccount || !displaySymbol) return null;
-    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
+    if (!isStakingNetworkType(account.networkType)) return null;
 
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE" />,
-            content: <EarnSupplyingInfo flow={EarnFlow.Yield} />,
+            content: <EarnSupplyingInfo account={account} flow={EarnFlow.Yield} />,
         },
         {
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
-            content: <EarnWithdrawingInfo flow={EarnFlow.Yield} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            content: <EarnWithdrawingInfo account={account} flow={EarnFlow.Yield} />,
         },
     ];
 
@@ -67,8 +61,8 @@ export const YieldEarnInANutshellModal = ({
             onContinue={handleContinue}
         >
             <YieldEarnInANutshellHighlights
-                networkType={selectedAccount.networkType}
-                displaySymbol={displaySymbol}
+                networkType={account.networkType}
+                networkSymbol={account.symbol}
                 unstakingPeriod={unstakingPeriod}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />

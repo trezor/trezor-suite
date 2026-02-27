@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
@@ -12,19 +12,18 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SupplyForm } from './SupplyForm/SupplyForm';
 
-type EarnYieldSupplyModalLoadedProps = {
+type YieldEarnSupplyModalProps = {
     onCancel?: () => void;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
     tokenContractAddress?: string;
 };
 
-export const EarnYieldSupplyModalLoaded = ({
+export const YieldEarnSupplyModal = ({
     onCancel,
-    selectedAccount,
+    account,
     tokenContractAddress,
-}: EarnYieldSupplyModalLoadedProps) => {
+}: YieldEarnSupplyModalProps) => {
     const analytics = useAnalytics();
-    const { account } = selectedAccount;
     const normalizedTokenContractAddress = tokenContractAddress
         ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
         : undefined;

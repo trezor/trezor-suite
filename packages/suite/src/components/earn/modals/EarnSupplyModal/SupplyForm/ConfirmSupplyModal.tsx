@@ -2,22 +2,19 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { EarnFlow, createEarnAccountRef } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
-import {
-    HELP_CENTER_ADA_STAKING,
-    HELP_CENTER_ETH_STAKING,
-    HELP_CENTER_SOL_STAKING,
-} from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
+
+import { getStakingHelpCenterLink } from '../../../utils/getStakingHelpCenterLink';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
@@ -26,6 +23,7 @@ const getStakeEnteringMessage = (networkType?: NetworkType) => {
 };
 
 type ConfirmSupplyModalProps = {
+    account: Account;
     isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
@@ -33,6 +31,7 @@ type ConfirmSupplyModalProps = {
 };
 
 export const ConfirmSupplyModal = ({
+    account,
     isLoading,
     onConfirm,
     onCancel,
@@ -41,8 +40,7 @@ export const ConfirmSupplyModal = ({
     const analytics = useAnalytics();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
-    const account = useSelector(selectSelectedAccount);
-    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
+    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account.symbol));
 
     const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
 
@@ -54,7 +52,7 @@ export const ConfirmSupplyModal = ({
             openModal({
                 type: 'supply',
                 flow,
-                account: account ? createEarnAccountRef(account) : undefined,
+                account,
             }),
         );
 
@@ -63,7 +61,7 @@ export const ConfirmSupplyModal = ({
             payload: {
                 action: 'cancel',
                 step: 'entry-period-stake-modal',
-                networkSymbol: account?.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -76,25 +74,15 @@ export const ConfirmSupplyModal = ({
             payload: {
                 action: 'continue',
                 step: 'entry-period-stake-modal',
-                networkSymbol: account?.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
 
-    const learnMoreLink = useMemo(() => {
-        switch (account?.networkType) {
-            case 'ethereum':
-                return HELP_CENTER_ETH_STAKING;
-            case 'solana':
-                return HELP_CENTER_SOL_STAKING;
-            case 'cardano':
-                return HELP_CENTER_ADA_STAKING;
-            default:
-                return undefined;
-        }
-    }, [account]);
-
-    if (!account) return null;
+    const learnMoreLink = useMemo(
+        () => getStakingHelpCenterLink(account.networkType),
+        [account.networkType],
+    );
 
     return (
         <Modal
@@ -122,11 +110,11 @@ export const ConfirmSupplyModal = ({
                     icon="clock"
                     description={
                         <Translation
-                            id={getStakeEnteringMessage(account?.networkType)}
+                            id={getStakeEnteringMessage(account.networkType)}
                             values={{
                                 networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                                 count:
-                                    account?.networkType === 'ethereum'
+                                    account.networkType === 'ethereum'
                                         ? daysToAddToPool
                                         : SOLANA_EPOCH_DAYS,
                             }}

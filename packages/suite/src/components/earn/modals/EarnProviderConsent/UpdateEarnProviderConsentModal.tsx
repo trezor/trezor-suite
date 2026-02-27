@@ -1,44 +1,40 @@
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-
-import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { Account } from '@suite-common/wallet-types';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { getEarnProviderName } from './utils/earnProviderConsentUtils';
 import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
+import { getEarnProviderName } from '../../utils/getEarnProviderName';
 
 interface UpdateEarnProviderConsentModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
     yieldId?: string;
     tokenContractAddress?: string;
 }
 
 export const UpdateEarnProviderConsentModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
     yieldId,
     tokenContractAddress,
 }: UpdateEarnProviderConsentModalProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
     const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
         includeVotingDelegation: true,
-        accountRef,
+        account,
+        networkSymbol: account.symbol,
         yieldId,
         tokenContractAddress,
     });
 
-    if (!selectedAccount) return null;
-
-    const displaySymbol = getNetworkDisplaySymbol(selectedAccount.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (
@@ -49,7 +45,7 @@ export const UpdateEarnProviderConsentModal = ({
             }
             banners={
                 <StakingProviderConsentBanners
-                    networkType={selectedAccount.networkType}
+                    networkType={account.networkType}
                     displaySymbol={displaySymbol}
                 />
             }
@@ -61,8 +57,9 @@ export const UpdateEarnProviderConsentModal = ({
             }
             onConfirm={proceedToSupply}
             onCancel={onCancelClick}
+            networkType={account.networkType}
         >
-            <VotingDelegations />
+            <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>
     );
 };

@@ -1,31 +1,17 @@
-import { useEffect } from 'react';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { Account } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 
-import { EarnAccountRef, EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetwork } from '@suite-common/wallet-config';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-
-import { EarnStakingSupplyModalLoaded } from './EarnStakingSupplyModalLoaded';
-import { EarnYieldSupplyModalLoaded } from './EarnYieldSupplyModalLoaded';
-import { useEarnModalAccount } from '../common/useEarnModalAccount';
+import { StakingEarnSupplyModal } from './StakingEarnSupplyModal';
+import { YieldEarnSupplyModal } from './YieldEarnSupplyModal';
 
 type EarnSupplyModalProps = {
     onCancel?: () => void;
     flow: EarnFlow;
-    account?: EarnAccountRef;
+    account: Account;
     yieldId?: string;
     tokenContractAddress?: string;
 };
-
-const createLoadedSelectedAccount = (account: Account): SelectedAccountLoaded => ({
-    status: 'loaded',
-    account,
-    network: getNetwork(account.symbol),
-    params: {
-        symbol: account.symbol,
-        accountIndex: account.index,
-        accountType: account.accountType,
-    },
-});
 
 export const EarnSupplyModal = ({
     onCancel,
@@ -35,38 +21,19 @@ export const EarnSupplyModal = ({
     yieldId: _yieldId,
     tokenContractAddress,
 }: EarnSupplyModalProps) => {
-    const selectedAccount = useEarnModalAccount({
-        account,
-        shouldSyncSelectedAccount: true,
-    });
-
-    useEffect(() => {
-        if (!selectedAccount) {
-            onCancel?.();
-        }
-    }, [selectedAccount, onCancel]);
-
-    if (!selectedAccount) {
-        return null;
+    switch (flow) {
+        case EarnFlow.Yield:
+            return (
+                <YieldEarnSupplyModal
+                    onCancel={onCancel}
+                    account={account}
+                    tokenContractAddress={tokenContractAddress}
+                />
+            );
+        case EarnFlow.Stake:
+        case EarnFlow.UpdateProvider:
+            return <StakingEarnSupplyModal onCancel={onCancel} account={account} flow={flow} />;
+        default:
+            return exhaustive(flow);
     }
-
-    const loadedSelectedAccount = createLoadedSelectedAccount(selectedAccount);
-
-    if (flow === EarnFlow.Yield) {
-        return (
-            <EarnYieldSupplyModalLoaded
-                onCancel={onCancel}
-                selectedAccount={loadedSelectedAccount}
-                tokenContractAddress={tokenContractAddress}
-            />
-        );
-    }
-
-    return (
-        <EarnStakingSupplyModalLoaded
-            onCancel={onCancel}
-            selectedAccount={loadedSelectedAccount}
-            flow={flow}
-        />
-    );
 };

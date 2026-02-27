@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -19,10 +18,9 @@ type SupplyButtonProps = {
 export const SupplyButton = ({ flow }: SupplyButtonProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const selectedAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
     const {
+        account,
+        network,
         onSubmit,
         handleSubmit,
         formState: { errors, isSubmitting },
@@ -32,17 +30,13 @@ export const SupplyButton = ({ flow }: SupplyButtonProps) => {
         isStakingDisabled: isCardanoStakingDisabled,
     } = useSupplyFormContext();
     const analytics = useAnalytics();
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
-        selectedAccount.network.symbol,
-    );
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const areFeesLoading = useSelector(state =>
-        selectAreFeesLoading(state, selectedAccount.network.symbol),
-    );
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
     const isDeviceConnected = device?.connected && device?.available;
 
-    const isCardano = selectedAccount.account.networkType === 'cardano';
+    const isCardano = account.networkType === 'cardano';
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -74,7 +68,7 @@ export const SupplyButton = ({ flow }: SupplyButtonProps) => {
                 action: 'continue',
                 step: 'stake-form-modal',
                 currency,
-                networkSymbol: selectedAccount.account.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };

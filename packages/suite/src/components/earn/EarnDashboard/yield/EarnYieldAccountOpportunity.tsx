@@ -1,10 +1,6 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import {
-    EarnFlow,
-    EarnProvider,
-    createEarnAccountRef,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
     toTokenCryptoId,
@@ -102,7 +98,8 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
                 provider: EarnProvider.YieldXyz,
-                account: createEarnAccountRef(opportunity.account),
+                account: opportunity.account,
+                analyticsStep: 'earn-dashboard',
                 yieldId: opportunity.vault.id,
                 tokenContractAddress: opportunity.vault.token.address ?? undefined,
             }),

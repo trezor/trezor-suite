@@ -4,10 +4,10 @@ import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 
-import { EarnSupplyingInfo } from 'src/components/earn';
 import { useSelector } from 'src/hooks/suite';
 
 import { EstimatedGains } from './EstimatedGains';
+import { EarnSupplyingInfo } from '../../EarnInANutshell/components/EarnSupplyingInfo';
 
 type SupplyInfoCardsProps = {
     account: Account;
@@ -20,7 +20,7 @@ export const SupplyInfoCards = ({ account, flow }: SupplyInfoCardsProps) => {
     const cards = [
         {
             heading: <Translation id="TR_STAKING_ONCE_YOU_CONFIRM" />,
-            content: <EarnSupplyingInfo isExpanded flow={flow} />,
+            content: <EarnSupplyingInfo account={account} isExpanded flow={flow} />,
             defaultIsOpen: true,
             isVisible: true,
         },

@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
@@ -12,54 +14,50 @@ import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWith
 import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
 import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
 import { StakingEarnInANutshellHighlights } from './components/StakingEarnInANutshellHighlights';
-import { useEarnInANutshellActions } from './hooks/useEarnInANutshellActions';
-import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
+import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
 interface StakingEarnInANutshellModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
     yieldId?: string;
     tokenContractAddress?: string;
 }
 
 export const StakingEarnInANutshellModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
     yieldId,
     tokenContractAddress,
 }: StakingEarnInANutshellModalProps) => {
-    const { handleContinue, onCancelClick } = useEarnInANutshellActions({
+    const { handleContinue, onCancelClick, unstakingPeriod } = useEarnInANutshell({
         flow: EarnFlow.Stake,
         provider,
         onCancel,
-        accountRef,
+        account,
         yieldId,
         tokenContractAddress,
     });
 
-    const data = useEarnInANutshellData();
-
-    if (!data || (data.account && !isStakingNetworkType(data.account.networkType))) {
+    if (!isStakingNetworkType(account.networkType)) {
         return null;
     }
 
-    const { account: selectedAccount, displaySymbol, unstakingPeriod } = data;
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
-    if (!selectedAccount || !displaySymbol) return null;
-    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
+    if (!displaySymbol) return null;
 
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE" />,
-            content: <EarnSupplyingInfo flow={EarnFlow.Stake} />,
+            content: <EarnSupplyingInfo account={account} flow={EarnFlow.Stake} />,
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
-            content: <EarnWithdrawingInfo flow={EarnFlow.Stake} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            content: <EarnWithdrawingInfo account={account} flow={EarnFlow.Stake} />,
         },
     ];
 
@@ -70,7 +68,7 @@ export const StakingEarnInANutshellModal = ({
             onContinue={handleContinue}
         >
             <StakingEarnInANutshellHighlights
-                networkType={selectedAccount.networkType}
+                networkType={account.networkType}
                 displaySymbol={displaySymbol}
                 unstakingPeriod={unstakingPeriod}
             />

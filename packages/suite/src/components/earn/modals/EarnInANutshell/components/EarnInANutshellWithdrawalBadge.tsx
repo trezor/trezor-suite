@@ -1,17 +1,14 @@
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { StakingNetworkType } from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
 interface EarnInANutshellWithdrawalBadgeProps {
-    networkType: NetworkType;
+    networkType: StakingNetworkType;
 }
 
 export const EarnInANutshellWithdrawalBadge = ({
     networkType,
 }: EarnInANutshellWithdrawalBadgeProps) => {
-    if (!isStakingNetworkType(networkType)) return null;
-
     switch (networkType) {
         case 'cardano':
             return <Translation id="TR_TX_FEE" />;

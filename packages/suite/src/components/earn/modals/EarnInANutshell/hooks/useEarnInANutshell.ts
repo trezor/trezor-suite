@@ -1,31 +1,43 @@
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-interface UseEarnInANutshellActionsProps {
+interface UseEarnInANutshellProps {
     flow: EarnFlow;
     provider: EarnProvider;
     onCancel: () => void;
-    accountRef?: EarnAccountRef;
+    account: Account;
     yieldId?: string;
     tokenContractAddress?: string;
 }
 
-export const useEarnInANutshellActions = ({
+export const useEarnInANutshell = ({
     flow,
     provider,
     onCancel,
-    accountRef,
+    account,
     yieldId,
     tokenContractAddress,
-}: UseEarnInANutshellActionsProps) => {
+}: UseEarnInANutshellProps) => {
+    const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
+        selectValidatorsQueueData(state, account.symbol),
+    );
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+
+    const unstakingPeriod = getUnstakingPeriodInDays({
+        networkType: account.networkType,
+        validatorWithdrawTime,
+        validatorExitTime,
+    });
+
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const selectedAccount = useSelector(selectSelectedAccount);
 
     const handleContinue = () => {
         onCancel();
@@ -34,7 +46,7 @@ export const useEarnInANutshellActions = ({
                 type: 'earn-provider-consent',
                 flow,
                 provider,
-                account: accountRef,
+                account,
                 yieldId,
                 tokenContractAddress,
             }),
@@ -45,7 +57,7 @@ export const useEarnInANutshellActions = ({
             payload: {
                 action: 'continue',
                 step: 'stake-in-a-nutshell-modal',
-                networkSymbol: selectedAccount?.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -58,12 +70,14 @@ export const useEarnInANutshellActions = ({
             payload: {
                 action: 'cancel',
                 step: 'stake-in-a-nutshell-modal',
-                networkSymbol: selectedAccount?.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
 
     return {
+        unstakingPeriod,
+        apy,
         handleContinue,
         onCancelClick,
     };
