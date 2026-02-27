@@ -8,9 +8,10 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     TradingPaymentMethodListProps,
 } from '@suite-common/trading';
-import { Modal, Row } from '@trezor/components';
+import { Modal, Row, Text } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
@@ -36,7 +37,7 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
 
     return (
         <Modal
-            width={400}
+            width={480}
             onCancel={onClose}
             heading={heading ? <Translation id={heading} /> : undefined}
         >
@@ -51,6 +52,17 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
                             <PaymentMethodIcon paymentMethod={item.value} />
                             {item.label}
                         </Row>
+                        {item.receiveAmount && item.symbol && (
+                            <Row>
+                                <Text typographyStyle="body-sm">
+                                    {'≈ '}
+                                    <FormattedCryptoAmount
+                                        value={item.receiveAmount}
+                                        symbol={item.symbol}
+                                    />
+                                </Text>
+                            </Row>
+                        )}
                     </CardList.Item>
                 ))}
             </CardList>

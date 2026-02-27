@@ -53,6 +53,46 @@ type NetworkAndContractAddress = {
     contractAddress: string | undefined;
 };
 
+type TradingGetFormStateSellProps = {
+    activeSection: TradingSellType;
+    trade: SellFiatTrade;
+};
+
+type TradingGetFormStateExchangeProps = {
+    activeSection: TradingExchangeType;
+    trade: ExchangeTrade;
+};
+
+type TradingGetFormStateProps = {
+    providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
+    isSlip24Active?: boolean;
+    sendAccountKey: AccountKey | undefined;
+    receiveAccountKey?: AccountKey | undefined;
+} & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
+
+export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
+    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
+    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
+    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
+};
+
+export const isFinalStatus = (
+    tradingType: TradingType,
+    tradeStatus: TradingTradeStatusType | undefined,
+) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
+
+export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
+    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
+    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
+
+export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
+    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isExchangeProvider = (provider: TradingProviderInfo) =>
+    provider && 'kycPolicyType' in provider;
+
 export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps => {
     const parts = cryptoId.split(CRYPTO_PLATFORM_SEPARATOR);
 
@@ -233,29 +273,34 @@ export const addIdsToQuotes = <T extends TradingType>(
 export const getNetworkDecimalsWithFallback = (
     symbol: NetworkSymbol | undefined,
     fallback = getNetwork('btc').decimals,
-) => (symbol ? (getNetwork(symbol)?.decimals ?? fallback) : fallback);
+): number => (symbol ? (getNetwork(symbol).decimals ?? fallback) : fallback);
 
-export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
-    quotes: TradingTradeMapProps[T][],
-) => {
-    const newPaymentMethods: TradingPaymentMethodListProps[] = [];
+export const getTradingPaymentMethods = (
+    quotes: BuyTrade[] | SellFiatTrade[],
+): TradingPaymentMethodListProps[] => {
+    const uniqueMethods = new Map<string, TradingPaymentMethodListProps>();
 
     quotes.forEach(quote => {
-        const { paymentMethod, paymentMethodName } = quote;
-
-        const shouldAddToPaymentMethods =
-            paymentMethod !== undefined &&
-            newPaymentMethods.every(item => item.value !== paymentMethod);
-
-        if (shouldAddToPaymentMethods) {
-            newPaymentMethods.push({
-                value: paymentMethod,
-                label: paymentMethodName ?? paymentMethod,
-            });
-        }
+        if (!quote.paymentMethod) return;
+        const amount = isBuyTrade(quote) ? quote.receiveStringAmount : quote.fiatStringAmount;
+        uniqueMethods.set(quote.paymentMethod, {
+            value: quote.paymentMethod,
+            label: quote.paymentMethodName ?? quote.paymentMethod,
+            receiveAmount: amount,
+            symbol: isBuyTrade(quote)
+                ? cryptoIdToSymbol(quote.receiveCurrency)
+                : (quote as SellFiatTrade).fiatCurrency,
+        });
     });
 
-    return newPaymentMethods;
+    const sortedMethods = Array.from(uniqueMethods.values()).sort((a, b) => {
+        const aAmount = new BigNumber(a.receiveAmount || '0');
+        const bAmount = new BigNumber(b.receiveAmount || '0');
+
+        return bAmount.minus(aAmount).toNumber();
+    });
+
+    return sortedMethods;
 };
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
@@ -291,46 +336,6 @@ export const getBestRatedQuote = <T extends TradingType>(
 
     return bestRatedQuotes[0];
 };
-
-export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
-    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
-    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
-    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-};
-
-export const isFinalStatus = (
-    tradingType: TradingType,
-    tradeStatus: TradingTradeStatusType | undefined,
-) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
-
-export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
-    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
-    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
-
-export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
-    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isExchangeProvider = (provider: TradingProviderInfo) =>
-    provider && 'kycPolicyType' in provider;
-
-type TradingGetFormStateSellProps = {
-    activeSection: TradingSellType;
-    trade: SellFiatTrade;
-};
-
-type TradingGetFormStateExchangeProps = {
-    activeSection: TradingExchangeType;
-    trade: ExchangeTrade;
-};
-
-type TradingGetFormStateProps = {
-    providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
-    isSlip24Active?: boolean;
-    sendAccountKey: AccountKey | undefined;
-    receiveAccountKey?: AccountKey | undefined;
-} & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
 
 export const getTradingFormState = ({
     activeSection,

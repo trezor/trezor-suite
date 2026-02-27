@@ -129,7 +129,7 @@ export const handleBuyRequestThunk = createThunk<
         );
         // without errors
         const quotesSuccess = tradingGetSuccessQuotes<TradingBuyType>(quotesDefault);
-        const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingBuyType>(quotesSuccess);
+        const paymentMethodsFromQuotes = getTradingPaymentMethods(quotesSuccess);
 
         const symbol =
             selectTradingCoinSymbolByCryptoId(getState(), requestData.receiveCurrency) ??
