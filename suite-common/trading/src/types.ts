@@ -93,6 +93,8 @@ export type TradingPaymentMethodProps = BuyCryptoPaymentMethod | '';
 export type TradingPaymentMethodListProps = {
     value: TradingPaymentMethodProps;
     label: string;
+    receiveAmount?: string;
+    symbol?: string;
 };
 
 type TradingCommonTransaction = {

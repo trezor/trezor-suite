@@ -137,7 +137,7 @@ export const handleSellRequestThunk = createThunk<
         // without errors
         const successQuotes = tradingGetSuccessQuotes<TradingSellType>(quotesDefault);
 
-        const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingSellType>(successQuotes);
+        const paymentMethodsFromQuotes = getTradingPaymentMethods(successQuotes);
 
         dispatch(tradingSellActions.saveQuotes(successQuotes));
         dispatch(tradingSellActions.saveQuoteRequest(requestData));

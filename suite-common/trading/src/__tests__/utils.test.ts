@@ -2,6 +2,7 @@ import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'in
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account, AccountKey } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
@@ -169,12 +170,12 @@ describe('isCryptoIdForNativeToken', () => {
 });
 
 describe('getTradingPaymentMethods', () => {
-    it('should get payment methods from quotes', () => {
-        const paymentMethods = getTradingPaymentMethods([
-            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
-            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
-        ]);
+    const paymentMethods = getTradingPaymentMethods([
+        ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+        BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
+    ]);
 
+    it('should get payment methods from quotes', () => {
         const findApplePay = paymentMethods.find(
             paymentMethod =>
                 paymentMethod.value === 'applePay' && paymentMethod.label === 'Apple Pay',
@@ -182,6 +183,15 @@ describe('getTradingPaymentMethods', () => {
 
         expect(paymentMethods.length).toBe(2);
         expect(findApplePay).toBeDefined();
+    });
+
+    it('should sort payment methods by receive amount in descending order', () => {
+        const amounts = paymentMethods.map(method => new BigNumber(method.receiveAmount || '0'));
+        const sortedAmounts = [...amounts].sort((a, b) => b.minus(a).toNumber());
+
+        expect(amounts.map(amount => amount.toString())).toEqual(
+            sortedAmounts.map(amount => amount.toString()),
+        );
     });
 });
 
