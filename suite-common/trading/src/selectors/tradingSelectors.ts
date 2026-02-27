@@ -284,6 +284,9 @@ export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotesRequest;
 
+export const selectTradingExchangeQuotes = (state: TradingRootState) =>
+    state.wallet.trading.exchange.quotes;
+
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
 

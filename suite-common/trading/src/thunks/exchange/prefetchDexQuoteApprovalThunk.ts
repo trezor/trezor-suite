@@ -1,7 +1,7 @@
-import { type ExchangeTrade } from 'invity-api';
+import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Account } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -25,9 +25,7 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
                 return undefined;
             }
 
-            dispatch(
-                tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade.quoteId),
-            );
+            dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade.quoteId));
 
             const { address: fromAddress } = getUnusedAddressFromAccount(account);
 
@@ -66,9 +64,7 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
                 selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId(getState());
 
             if (currentLoadingQuoteId === trade?.quoteId) {
-                dispatch(
-                    tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(undefined),
-                );
+                dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(undefined));
             }
         }
     },

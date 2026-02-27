@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    type TradingRootState,
     exchangeThunks,
     getApprovalStatus,
     parseCryptoId,
