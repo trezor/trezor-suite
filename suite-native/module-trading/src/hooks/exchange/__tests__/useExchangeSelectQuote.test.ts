@@ -33,6 +33,9 @@ jest.mock('@suite-common/trading', () => ({
             type: 'selectQuoteThunkMock',
             payload,
         }),
+        prefetchDexQuoteApprovalThunk: () => () => ({
+            unwrap: () => Promise.resolve(undefined),
+        }),
     },
     tokenSupportsIncreasingAllowance: (contractAddress?: string) =>
         mockTokenSupportsIncreasingAllowance(contractAddress),
