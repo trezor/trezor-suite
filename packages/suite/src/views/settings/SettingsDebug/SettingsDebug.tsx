@@ -11,6 +11,7 @@ import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { AnalyticsLogging } from './AnalyticsLogging';
 import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { ClearDevicePersistentData } from './ClearDevicePersistentData';
 import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
@@ -67,6 +68,7 @@ export const SettingsDebug = () => {
                 <DeviceAuthenticity />
                 <Devkit />
                 <CheckFirmwareAuthenticity />
+                <ClearDevicePersistentData />
             </SettingsSection>
             <SettingsSection title="Testing">
                 <ThrowTestingError />

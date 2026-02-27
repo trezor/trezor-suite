@@ -94,6 +94,8 @@ const forgetDevicePersistentData = createAction(
     (payload: { deviceId: AcquiredDevice['id'] }) => ({ payload }),
 );
 
+const clearDevicePersistentData = createAction(`${DEVICE_MODULE_PREFIX}/clearDevicePersistentData`);
+
 const addButtonRequest = createAction(
     `${DEVICE_MODULE_PREFIX}/addButtonRequest`,
     (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
@@ -183,6 +185,7 @@ export const deviceActions = {
     setTemporaryRememberedDevice,
     forgetDevice,
     forgetDevicePersistentData,
+    clearDevicePersistentData,
     addButtonRequest,
     requestDeviceReconnect,
     selectDevice,
