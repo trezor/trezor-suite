@@ -90,7 +90,17 @@ const config = {
             if (moduleName === '@evolu/react-native/expo-sqlite') {
                 return {
                     filePath: require.resolve(
-                        rootNodeModulesPath + `/@evolu/react-native/dist/exports/expo-sqlite.js`,
+                        rootNodeModulesPath +
+                            `/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === '@evolu/react-native') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/react-native/dist/src/index.js`,
                     ),
                     type: 'sourceFile',
                 };
