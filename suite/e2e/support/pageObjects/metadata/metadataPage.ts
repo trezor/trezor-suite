@@ -81,10 +81,11 @@ export class MetadataPage {
 
     @step()
     async confirmSuiteSyncSetup() {
+        await this.device.expectToContainOnDisplay('Sync');
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
         // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(2_000);
     }
 
     @step()

@@ -64,12 +64,11 @@ const expectedWalletTwoLabel = {
     label: 'Evolu wallet #2',
 };
 
-test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, metadataPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-        await metadataPage.setupQuotaManager();
         await metadataPage.enableSuiteSync();
     });
 
