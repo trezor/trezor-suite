@@ -1,0 +1,36 @@
+name: "[Check] Test Health"
+
+# Runs every 15 minutes during daytime hours (Central European Time).
+# GitHub Actions uses UTC; the schedule below covers 4:00–21:59 UTC, which
+# maps to 6:00–23:59 CEST (UTC+2, summer) and 5:00–22:59 CET (UTC+1, winter),
+# ensuring the 6 am–10 pm CET window is always covered.
+on:
+  schedule:
+    - cron: "*/15 4-21 * * *"
+  # Allow manual runs and easy one-off debugging.
+  workflow_dispatch:
+
+jobs:
+  check-test-health:
+    name: Check test health & manage quarantine
+    runs-on: ubuntu-latest
+    # Only run in the canonical repository, not forks.
+    if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Uses the version from .nvmrc (Node 24+, which natively strips TypeScript types).
+          node-version-file: ".nvmrc"
+
+      - name: Check test health and manage quarantine
+        env:
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
+          E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK: ${{ secrets.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK }}
+        run: |
+          node --experimental-strip-types scripts/ci/quarantineBot/index.ts

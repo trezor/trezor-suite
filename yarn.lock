@@ -15656,7 +15656,9 @@ __metadata:
   resolution: "@trezor/scripts@workspace:scripts"
   dependencies:
     "@babel/cli": "npm:7.28.6"
+    "@currents/playwright": "npm:^1.19.0"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@playwright/test": "npm:^1.57.0"
     "@trezor/eslint": "workspace:*"
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^5.6.2"
