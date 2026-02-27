@@ -7,6 +7,7 @@ export * from './guide';
 export * from './messageSystem';
 export * from './modal';
 export * from './route';
+export * from './staking';
 export * from './walletBackupType';
 export * from './sign';
 export * from './thp';

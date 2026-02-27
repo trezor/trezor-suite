@@ -1,16 +1,11 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
+import type { EarnAnalyticsStep } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<'continue' | 'cancel'>;
-    step: AttributeDef<
-        | 'staking-dashboard'
-        | 'stake-in-a-nutshell-modal'
-        | 'funds-maintained-modal'
-        | 'stake-form-modal'
-        | 'entry-period-stake-modal'
-    >;
+    step: AttributeDef<EarnAnalyticsStep>;
     networkSymbol?: AttributeDef<string>;
     currency?: AttributeDef<'crypto' | 'fiat'>;
     votingDelegation?: AttributeDef<'everstake' | 'another_drep'>;
