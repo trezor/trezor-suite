@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { NetworkType } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     VotingDelegationOption,
@@ -11,7 +12,6 @@ import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Column, Input, Radio, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const VOTING_OPTIONS: {
     key: VotingDelegationOption['type'];
@@ -22,26 +22,33 @@ const VOTING_OPTIONS: {
 ];
 
 export interface VotingDelegationsOptionsProps {
+    networkType: NetworkType;
     initialValue?: VotingDelegationOption;
     hasTitle?: boolean;
+    resetOnMount?: boolean;
 }
 
 export const VotingDelegationsOptions = ({
+    networkType,
     initialValue = DEFAULT_VOTING_OPTION,
     hasTitle = false,
+    resetOnMount = true,
 }: VotingDelegationsOptionsProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const account = useSelector(selectSelectedAccount);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
     const [hasError, setHasError] = useState<boolean>(false);
 
     // reset voting delegation option on modal open
     useEffect(() => {
-        dispatch(stakeActions.setVotingDelegationOption(initialValue));
-    }, [dispatch, initialValue]);
+        if (!resetOnMount) {
+            return;
+        }
 
-    if (!account || account.networkType !== 'cardano') return null;
+        dispatch(stakeActions.setVotingDelegationOption(initialValue));
+    }, [dispatch, initialValue, resetOnMount]);
+
+    if (networkType !== 'cardano') return null;
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
         setHasError(false);

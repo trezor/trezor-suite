@@ -96,7 +96,12 @@ export const StakeChangeDelegateModalLoaded = ({
                     <Card>
                         <Column gap={20} hasDivider>
                             <CurrentDelegate account={account} />
-                            <VotingDelegationsOptions initialValue={drepIdOptionValue} hasTitle />
+                            <VotingDelegationsOptions
+                                networkType={account.networkType}
+                                initialValue={drepIdOptionValue}
+                                hasTitle
+                                resetOnMount
+                            />
 
                             <Fees
                                 feeInfo={feeInfo}

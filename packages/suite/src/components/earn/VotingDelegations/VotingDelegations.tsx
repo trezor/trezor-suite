@@ -2,18 +2,21 @@ import React from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { VotingDelegationsOptions } from './VotingDelegationsOptions';
 
-export const VotingDelegations = () => {
-    const account = useSelector(selectSelectedAccount);
+type VotingDelegationsProps = {
+    account: Account;
+};
+
+export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
-    if (!account || account.networkType !== 'cardano' || !selectedVotingDelegation) return null;
+    if (account.networkType !== 'cardano' || !selectedVotingDelegation) return null;
 
     return (
         <Card>
@@ -41,7 +44,7 @@ export const VotingDelegations = () => {
                 paddingType="none"
                 hasDivider={false}
             >
-                <VotingDelegationsOptions />
+                <VotingDelegationsOptions networkType={account.networkType} resetOnMount />
             </CollapsibleBox>
         </Card>
     );

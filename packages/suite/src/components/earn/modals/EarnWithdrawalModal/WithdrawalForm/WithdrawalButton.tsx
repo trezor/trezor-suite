@@ -1,7 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -14,22 +13,13 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 export const WithdrawalButton = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const selectedAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
+    const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
+        useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
-        selectedAccount.network.symbol,
+        network.symbol,
     );
-
-    const {
-        isComposing,
-        formState: { isSubmitting, errors },
-        handleSubmit,
-        watch,
-        signTx,
-        currency,
-    } = useWithdrawalFormContext();
     const analytics = useAnalytics();
+    const { isSubmitting, errors } = formState;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
@@ -39,9 +29,7 @@ export const WithdrawalButton = () => {
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const areFeesLoading = useSelector(state =>
-        selectAreFeesLoading(state, selectedAccount.network.symbol),
-    );
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
     const onWithdrawalClick = () => {
         if (!isDeviceConnected) {
@@ -61,7 +49,7 @@ export const WithdrawalButton = () => {
                 action: 'continue',
                 step: 'unstake-form-modal',
                 currency,
-                networkSymbol: selectedAccount.account.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };

@@ -1,15 +1,10 @@
 import { useMemo } from 'react';
 
-import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import {
-    EarnFlow,
-    EarnProvider,
-    createEarnAccountRef,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
@@ -38,13 +33,11 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
 export const EmptyStakingCard = () => {
-    const analytics = useAnalytics();
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
@@ -52,6 +45,7 @@ export const EmptyStakingCard = () => {
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isStartStakingDisabled = isStakingDisabled || !account;
 
     const isCardano = account?.networkType === 'cardano';
 
@@ -142,24 +136,16 @@ export const EmptyStakingCard = () => {
     );
 
     const openEarnInANutshellModal = () => {
-        if (!isStakingDisabled) {
+        if (!isStartStakingDisabled) {
             dispatch(
                 openModal({
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.Stake,
                     provider: EarnProvider.Everstake,
-                    account: account ? createEarnAccountRef(account) : undefined,
+                    account,
+                    analyticsStep: 'staking-dashboard',
                 }),
             );
-
-            analytics.report({
-                type: events.stakingStakeEvent.name,
-                payload: {
-                    action: 'continue',
-                    step: 'staking-dashboard',
-                    networkSymbol: account?.symbol,
-                },
-            });
         }
     };
 
@@ -223,8 +209,8 @@ export const EmptyStakingCard = () => {
                         <Tooltip content={stakingMessageContent}>
                             <Button
                                 onClick={openEarnInANutshellModal}
-                                isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                isDisabled={isStartStakingDisabled}
+                                iconLeft={isStartStakingDisabled ? 'info' : undefined}
                                 data-testid="@wallet/staking/empty-card/start-staking-button"
                                 size="large"
                             >

@@ -9,7 +9,7 @@ import {
 import { Account, TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getApyPercent, getApyRate } from '../../utils/earnApyUtils';
+import { getApyPercent, getApyRate } from '../../../utils/earnApyUtils';
 import {
     compareYieldRowsByAvailableBalanceDesc,
     compareYieldRowsBySuppliedAmountDesc,

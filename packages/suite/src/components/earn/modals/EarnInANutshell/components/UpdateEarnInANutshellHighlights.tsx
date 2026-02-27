@@ -1,24 +1,27 @@
-import { ReactNode } from 'react';
-
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import {
+    NetworkSymbol,
+    StakingNetworkType,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
+
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { EarnInANutshellHighlight, EarnInANutshellHighlights } from './EarnInANutshellHighlights';
 
 interface UpdateEarnInANutshellHighlightsProps {
-    networkType: NetworkType;
-    displaySymbol: string;
-    apy: string | ReactNode;
+    networkType: StakingNetworkType;
+    networkSymbol: NetworkSymbol;
+    apy: number | null;
 }
 
 export const UpdateEarnInANutshellHighlights = ({
     networkType,
-    displaySymbol,
+    networkSymbol,
     apy,
 }: UpdateEarnInANutshellHighlightsProps) => {
-    if (!isStakingNetworkType(networkType)) return null;
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
 
     const highlights: EarnInANutshellHighlight[] = [
         {
@@ -26,7 +29,7 @@ export const UpdateEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_APY_WITH_EVERSTAKE"
-                    values={{ apy, networkDisplaySymbol: displaySymbol }}
+                    values={{ apy: formatApyValue(apy), networkDisplaySymbol }}
                 />
             ),
         },
@@ -35,7 +38,7 @@ export const UpdateEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol }}
                 />
             ),
         },
@@ -44,7 +47,7 @@ export const UpdateEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol }}
                 />
             ),
         },

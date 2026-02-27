@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
-import { EarnFlow, createEarnAccountRef } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -170,7 +170,7 @@ export const StakingCard = ({
                 openModal({
                     type: 'supply',
                     flow: EarnFlow.Stake,
-                    account: createEarnAccountRef(account),
+                    account,
                 }),
             );
 
@@ -187,7 +187,7 @@ export const StakingCard = ({
 
     const openClaimModal = () => {
         if (canClaimRewards) {
-            dispatch(openModal({ type: 'claim', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'claim', account }));
 
             analytics.report({
                 type: events.stakingClaimEvent.name,
@@ -202,7 +202,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
-            dispatch(openModal({ type: 'withdraw', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'withdraw', account }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,

@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -14,20 +14,19 @@ import { SupplyButton } from './SupplyForm/SupplyButton';
 import { SupplyForm } from './SupplyForm/SupplyForm';
 import { SupplyInfoCards } from './SupplyInfoCards/SupplyInfoCards';
 
-type EarnStakingSupplyModalLoadedProps = {
+type StakingEarnSupplyModalProps = {
     onCancel?: () => void;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
     flow: EarnFlow;
 };
 
-export const EarnStakingSupplyModalLoaded = ({
+export const StakingEarnSupplyModal = ({
     onCancel,
-    selectedAccount,
+    account,
     flow,
-}: EarnStakingSupplyModalLoadedProps) => {
-    const { account } = selectedAccount;
+}: StakingEarnSupplyModalProps) => {
     const analytics = useAnalytics();
-    const supplyContextValues = useSupplyForm({ selectedAccount });
+    const supplyContextValues = useSupplyForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));

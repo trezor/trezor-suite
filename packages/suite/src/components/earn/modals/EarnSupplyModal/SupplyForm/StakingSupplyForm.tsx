@@ -37,6 +37,7 @@ export const StakingSupplyForm = ({ flow }: StakingSupplyFormProps) => {
         <FormProvider {...methods}>
             {isConfirmModalOpen && (
                 <ConfirmSupplyModal
+                    account={account}
                     isLoading={isLoading}
                     onConfirm={signTx}
                     onCancel={closeConfirmModal}

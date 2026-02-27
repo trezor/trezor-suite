@@ -8,13 +8,14 @@ import {
     getStakingContractAddress,
     simulateUnstake,
 } from '@suite-common/staking';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -48,18 +49,16 @@ export const WithdrawalFormContext = createContext<WithdrawalContextValues | nul
 WithdrawalFormContext.displayName = 'WithdrawalFormContext';
 
 type UseWithdrawalFormProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const useWithdrawalForm = ({
-    selectedAccount,
-}: UseWithdrawalFormProps): WithdrawalContextValues => {
+export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
 
-    const { account, network } = selectedAccount;
+    const network = getNetwork(account.symbol);
     const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

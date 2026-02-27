@@ -1,52 +1,48 @@
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { getEarnProviderName } from './utils/earnProviderConsentUtils';
 import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
+import { getEarnProviderName } from '../../utils/getEarnProviderName';
 
 interface YieldEarnProviderConsentModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
     yieldId?: string;
     tokenContractAddress?: string;
 }
 
 export const YieldEarnProviderConsentModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
     yieldId,
     tokenContractAddress,
 }: YieldEarnProviderConsentModalProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
+    const normalizedTokenContractAddress = tokenContractAddress
+        ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
+        : undefined;
 
-    const normalizedTokenContractAddress =
-        selectedAccount && tokenContractAddress
-            ? getContractAddressForNetworkSymbol(selectedAccount.symbol, tokenContractAddress)
-            : undefined;
-
-    const tokenSymbolFromAccount = selectedAccount?.tokens?.find(
+    const tokenSymbolFromAccount = account.tokens?.find(
         token =>
             normalizedTokenContractAddress !== undefined &&
             token.contract !== undefined &&
-            getContractAddressForNetworkSymbol(selectedAccount.symbol, token.contract) ===
+            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
                 normalizedTokenContractAddress,
     )?.symbol;
 
-    const tokenCryptoId =
-        selectedAccount && normalizedTokenContractAddress
-            ? toTokenCryptoId(selectedAccount.symbol, normalizedTokenContractAddress)
-            : undefined;
+    const tokenCryptoId = normalizedTokenContractAddress
+        ? toTokenCryptoId(account.symbol, normalizedTokenContractAddress)
+        : undefined;
 
     const tokenSymbolFromTrading = useSelector(state =>
         selectTradingCoinSymbolByCryptoId(state, tokenCryptoId),
@@ -54,14 +50,12 @@ export const YieldEarnProviderConsentModal = ({
     const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
-        accountRef,
+        account,
+        networkSymbol: account.symbol,
         yieldId,
         tokenContractAddress,
     });
-
-    if (!selectedAccount) return null;
-
-    const displaySymbol = getNetworkDisplaySymbol(selectedAccount.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
     const providerName = getEarnProviderName(provider);
 
@@ -76,7 +70,7 @@ export const YieldEarnProviderConsentModal = ({
             }
             banners={
                 <YieldProviderConsentBanners
-                    networkType={selectedAccount.networkType}
+                    networkType={account.networkType}
                     displaySymbol={displaySymbol}
                     providerName={providerName}
                 />
@@ -89,8 +83,9 @@ export const YieldEarnProviderConsentModal = ({
             }
             onConfirm={proceedToSupply}
             onCancel={onCancelClick}
+            networkType={account.networkType}
         >
-            <VotingDelegations />
+            <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>
     );
 };

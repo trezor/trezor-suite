@@ -1,49 +1,35 @@
-import { useEffect } from 'react';
-
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { StakingEarnProviderConsentModal } from './StakingEarnProviderConsentModal';
 import { UpdateEarnProviderConsentModal } from './UpdateEarnProviderConsentModal';
 import { YieldEarnProviderConsentModal } from './YieldEarnProviderConsentModal';
-import { useEarnModalAccount } from '../common/useEarnModalAccount';
 
 interface EarnProviderConsentModalProps {
     flow: EarnFlow;
     provider: EarnProvider;
-    onCancel: () => void;
-    account?: EarnAccountRef;
+    account: Account;
     yieldId?: string;
     tokenContractAddress?: string;
+    onCancel: () => void;
 }
 
 export const EarnProviderConsentModal = ({
     flow,
     provider,
-    onCancel,
     account,
     yieldId,
     tokenContractAddress,
+    onCancel,
 }: EarnProviderConsentModalProps) => {
-    const selectedAccount = useEarnModalAccount({ account, shouldSyncSelectedAccount: true });
-
-    useEffect(() => {
-        if (!selectedAccount) {
-            onCancel();
-        }
-    }, [selectedAccount, onCancel]);
-
-    if (!selectedAccount) {
-        return null;
-    }
-
     switch (flow) {
         case EarnFlow.Stake:
             return (
                 <StakingEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
                     yieldId={yieldId}
                     tokenContractAddress={tokenContractAddress}
                 />
@@ -51,9 +37,9 @@ export const EarnProviderConsentModal = ({
         case EarnFlow.Yield:
             return (
                 <YieldEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
                     yieldId={yieldId}
                     tokenContractAddress={tokenContractAddress}
                 />
@@ -61,9 +47,9 @@ export const EarnProviderConsentModal = ({
         case EarnFlow.UpdateProvider:
             return (
                 <UpdateEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
                     yieldId={yieldId}
                     tokenContractAddress={tokenContractAddress}
                 />

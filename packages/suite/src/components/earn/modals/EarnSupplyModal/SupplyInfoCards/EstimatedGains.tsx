@@ -4,11 +4,6 @@ import { Translation } from '@suite/intl';
 import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
-import {
-    HELP_CENTER_ADA_STAKING,
-    HELP_CENTER_ETH_STAKING,
-    HELP_CENTER_SOL_STAKING,
-} from '@trezor/urls';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -16,6 +11,8 @@ import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
+
+import { getStakingHelpCenterLink } from '../../../utils/getStakingHelpCenterLink';
 
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useSupplyFormContext();
@@ -54,18 +51,10 @@ export const EstimatedGains = () => {
         },
     ];
 
-    const learnMoreLink = useMemo(() => {
-        switch (account?.networkType) {
-            case 'ethereum':
-                return HELP_CENTER_ETH_STAKING;
-            case 'solana':
-                return HELP_CENTER_SOL_STAKING;
-            case 'cardano':
-                return HELP_CENTER_ADA_STAKING;
-            default:
-                return undefined;
-        }
-    }, [account]);
+    const learnMoreLink = useMemo(
+        () => getStakingHelpCenterLink(account.networkType),
+        [account.networkType],
+    );
 
     return (
         <Column gap={20}>
