@@ -47,7 +47,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Bitcoin_like',
             'Capability_Crypto',
             'Capability_Ethereum',
-            'Capability_NEM',
             'Capability_Stellar',
             'Capability_U2F',
         ]);
@@ -61,7 +60,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Crypto',
             'Capability_Ethereum',
             'Capability_Monero',
-            'Capability_NEM',
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',
@@ -83,7 +81,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Crypto',
             'Capability_Ethereum',
             'Capability_Monero',
-            'Capability_NEM',
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',

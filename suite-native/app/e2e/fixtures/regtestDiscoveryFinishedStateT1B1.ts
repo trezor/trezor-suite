@@ -208,7 +208,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                         'Capability_Bitcoin_like',
                         'Capability_Crypto',
                         'Capability_Ethereum',
-                        'Capability_NEM',
                         'Capability_Stellar',
                         'Capability_U2F',
                     ],
