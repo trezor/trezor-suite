@@ -7,7 +7,11 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, EthereumSignTransaction } from '@trezor/connect';
+import type {
+    CallMethodKeys,
+    EthereumSignTransaction,
+    EthereumSignTypedData,
+} from '@trezor/connect';
 import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
@@ -55,43 +59,53 @@ const preCallHook = async <M extends CallMethodKeys>({
     source,
 }: PreCallHookParams<M>) => {
     try {
-        // Prepare selected account
-        if (method === 'ethereumSignTransaction' && txSigningPrecomposed) {
+        // Parse common parameters (path, chainId) from payload
+        let path: Bip43Path;
+        let chainId = 1;
+        if (method === 'ethereumSignTransaction') {
             const typedPayload = payload as any as EthereumSignTransaction;
-            const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetworkByEvmChainId(typedPayload.transaction.chainId || 1) || {
-                // Placeholder for chains not supported in Suite
-                networkType: 'ethereum',
-                symbol: 'eth',
-                name: 'Chain ID: ' + typedPayload.transaction.chainId,
-                isHidden: true,
-            };
-            // Try to find matching account
-            let selectedAccount = !network.isHidden
-                ? selectAccountForNetworkSymbolAndPath(getState(), network.symbol, path)
-                : null;
-            if (!selectedAccount) {
-                // Create a new placeholder account
-                const createdAccount = await dispatch(createPlaceholderAccount(network, path));
-                temporaryAccounts.push(createdAccount.payload);
-                selectedAccount = createdAccount.payload;
+            path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
+            chainId = typedPayload.transaction.chainId || 1;
+
+            if (txSigningPrecomposed) {
+                dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
             }
-            if (!selectedAccount) {
-                throw new Error('Selected account is missing'); // Should not happen
-            }
-            dispatch(
-                connectPopupActions.setSelectedAccountKey({
-                    selectedAccountKey: selectedAccount.key,
-                }),
-            );
-            dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
+        } else if (method === 'ethereumSignTypedData') {
+            const typedPayload = payload as any as EthereumSignTypedData<any>;
+            path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
+            chainId = Number(typedPayload.data.domain.chainId) || 1;
+        } else {
+            return;
         }
 
-        if (
-            (method === 'ethereumSignTransaction' || method === 'ethereumSignTypedData') &&
-            source.type !== 'desktop-ws' &&
-            source.type !== 'web'
-        ) {
+        // Prepare selected account
+        const network = getNetworkByEvmChainId(chainId) || {
+            // Placeholder for chains not supported in Suite
+            networkType: 'ethereum',
+            symbol: 'eth',
+            name: 'Chain ID: ' + chainId,
+            isHidden: true,
+        };
+        // Try to find matching account
+        let selectedAccount = !network.isHidden
+            ? selectAccountForNetworkSymbolAndPath(getState(), network.symbol, path)
+            : null;
+        if (!selectedAccount) {
+            // Create a new placeholder account
+            const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+            temporaryAccounts.push(createdAccount.payload);
+            selectedAccount = createdAccount.payload;
+        }
+        if (!selectedAccount) {
+            throw new Error('Selected account is missing'); // Should not happen
+        }
+        dispatch(
+            connectPopupActions.setSelectedAccountKey({
+                selectedAccountKey: selectedAccount.key,
+            }),
+        );
+
+        if (source.type !== 'desktop-ws' && source.type !== 'web') {
             // Display simulation
             const device = selectSelectedDevice(getState());
             if (!device) throw new Error('No device selected');
