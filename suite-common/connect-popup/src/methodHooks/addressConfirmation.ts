@@ -13,7 +13,6 @@ const methodsAddress = [
     'solanaGetAddress',
     'tezosGetAddress',
     'tronGetAddress',
-    'eosGetAddress',
     'stellarGetAddress',
     'moneroGetAddress',
 ];
@@ -23,7 +22,6 @@ const methodsPublicKey = [
     'cardanoGetPublicKey',
     'solanaGetPublicKey',
     'tezosGetPublicKey',
-    'eosGetPublicKey',
 ];
 const methods = [...methodsAddress, ...methodsPublicKey];
 
