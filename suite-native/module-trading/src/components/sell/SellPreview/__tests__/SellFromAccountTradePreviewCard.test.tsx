@@ -1,7 +1,5 @@
-import type { CryptoId } from 'invity-api';
-
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import {
     SellFromAccountTradePreviewCard,
@@ -18,10 +16,9 @@ describe('SellFromAccountTradePreviewCard', () => {
         };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
 
-        return renderWithStoreProvider(
-            <SellFromAccountTradePreviewCard fromStringValue="0.0233" {...props} />,
-            { preloadedState },
-        );
+        return renderWithStoreProvider(<SellFromAccountTradePreviewCard {...props} />, {
+            preloadedState,
+        });
     };
 
     it('should render nothing when there is no quote', () => {
@@ -32,7 +29,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderSellFromAccountTradePreviewCard(
-            { cryptoId: 'bitcoin' as CryptoId },
+            { quote: sellQuotes[0] },
             'unknown-account-key',
         );
 
@@ -40,21 +37,11 @@ describe('SellFromAccountTradePreviewCard', () => {
     });
 
     it('should render TradeSideCard otherwise', () => {
-        const { getByText } = renderSellFromAccountTradePreviewCard({
-            cryptoId: 'bitcoin' as CryptoId,
-        });
+        const { getByText } = renderSellFromAccountTradePreviewCard({ quote: sellQuotes[0] });
 
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
-        expect(getByText('-0.0233')).toBeOnTheScreen();
-    });
-
-    it('should render value in fiat when fromValue is provided', () => {
-        const { getByText } = renderSellFromAccountTradePreviewCard({
-            cryptoId: 'bitcoin' as CryptoId,
-            fromValue: '1',
-        });
-
-        expect(getByText('1-bitcoin')).toBeOnTheScreen();
+        expect(getByText('-0.0233 ETH')).toBeOnTheScreen();
+        expect(getByText('0.0233-ethereum')).toBeOnTheScreen();
     });
 });

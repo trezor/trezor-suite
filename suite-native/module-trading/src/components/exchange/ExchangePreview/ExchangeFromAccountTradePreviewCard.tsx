@@ -8,20 +8,18 @@ import { AccountLabel } from '@suite-native/labeling';
 import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
+import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
 
 export type ExchangeFromAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
-    fromStringValue: string | undefined;
-    fromValue?: string;
 };
 
 export const ExchangeFromAccountTradePreviewCard = ({
     quote,
-    fromStringValue,
-    fromValue,
 }: ExchangeFromAccountTradePreviewCardProps) => {
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { fromStringValue, fromValue } = useChangeStringsExtractor(quote);
 
     if (!quote?.send || !fromAccount) {
         return null;

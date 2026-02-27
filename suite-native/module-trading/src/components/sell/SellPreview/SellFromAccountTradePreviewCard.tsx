@@ -1,26 +1,25 @@
 import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
+import type { SellFiatTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
+import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
 
 export type SellFromAccountTradePreviewCardProps = {
-    cryptoId?: CryptoId;
-    fromStringValue?: string;
-    fromValue?: string;
+    quote?: SellFiatTrade;
 };
 
 export const SellFromAccountTradePreviewCard = ({
-    cryptoId,
-    fromStringValue,
-    fromValue,
+    quote,
 }: SellFromAccountTradePreviewCardProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
+    const { fromStringValue, fromValue } = useChangeStringsExtractor(quote);
+    const cryptoId = quote?.cryptoCurrency;
 
     if (!cryptoId || !fromAccount) {
         return null;
