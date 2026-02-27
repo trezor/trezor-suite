@@ -11,7 +11,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRoot
 export const selectSuiteSyncAccountLabel = createMemoizedSelector(
     [
         (state: SuiteSyncDataRootState, walletDescriptor: WalletDescriptor | null) =>
-            walletDescriptor ? selectAllAccountsForWallet(state, walletDescriptor) : [],
+            selectAllAccountsForWallet(state, walletDescriptor),
         (
             _state: SuiteSyncDataRootState,
             _walletDescriptor: WalletDescriptor | null,
