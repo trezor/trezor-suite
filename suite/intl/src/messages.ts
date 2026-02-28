@@ -5094,6 +5094,15 @@ export const messages = defineMessages({
         defaultMessage:
             'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
     },
+    TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_TITLE: {
+        id: 'TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_TITLE',
+        defaultMessage: 'Short fiat amounts',
+    },
+    TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_DESCRIPTION',
+        defaultMessage:
+            'Show large fiat values in short form (e.g. 21.35K CZK instead of 21,350 CZK). Values under 1,000 are unchanged.',
+    },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
         defaultMessage: 'SLIP-24 (clear signing)',

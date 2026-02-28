@@ -19,7 +19,8 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
-    | 'suite-sync';
+    | 'suite-sync'
+    | 'short-fiat-format';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -91,5 +92,9 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 services.suiteSync.turnOffSuiteSync();
             }
         },
+    },
+    'short-fiat-format': {
+        title: { id: 'TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_TITLE' },
+        description: { id: 'TR_EXPERIMENTAL_SHORT_FIAT_FORMAT_DESCRIPTION' },
     },
 };

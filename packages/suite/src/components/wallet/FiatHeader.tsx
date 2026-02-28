@@ -5,8 +5,10 @@ import { AmountUnit, BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 
 import { BigAmountValue } from './BigAmountValue';
+import { useSelector } from '../../hooks/suite';
 import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
 
 type UseFiatAmountProps = {
@@ -45,6 +47,7 @@ const FiatHeaderContent = ({
 }: FiatHeaderProps) => {
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const useShortFiatFormat = useSelector(selectHasExperimentalFeature('short-fiat-format'));
 
     const formattedAmount = BaseCurrencyAmountFormatter({
         value: fiatAmount ?? BASE_CURRENCY_ZERO,
@@ -53,11 +56,20 @@ const FiatHeaderContent = ({
 
     const formattedFiatAmount = formattedAmount?.props.children;
 
+    const fullFormattedFiatAmount =
+        useShortFiatFormat && formattedFiatAmount
+            ? BaseCurrencyAmountFormatter.format(fiatAmount ?? BASE_CURRENCY_ZERO, {
+                  currency: localCurrency,
+                  skipShortFormat: true,
+              })
+            : null;
+
     return (
         <BigAmountValue
             formattedStringAmount={formattedFiatAmount}
             data-testid={dataTestId}
             size={size}
+            tooltipContent={fullFormattedFiatAmount}
         />
     );
 };
