@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import { ReactNode, useCallback, useId, useMemo, useRef } from 'react';
 import ReactSelect, {
     ControlProps,
     OptionProps,
@@ -67,6 +67,7 @@ export const Select = ({
     ...rest
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
+    const autoInstanceId = useId();
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError } = formCellProps;
@@ -154,6 +155,7 @@ export const Select = ({
                 unstyled
                 styles={createSharedMenuStyles<OptionType>()}
                 components={memoizedComponents}
+                instanceId={autoInstanceId}
                 {...reactSelectProps}
             />
         </FormCell>
