@@ -2,7 +2,12 @@
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-web.svg)](https://www.npmjs.org/package/@trezor/connect-web)
 
-This package is bundled into web implementations. User interface is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`. To try it out, use [@trezor/connect-explorer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer) hosted [here](https://connect.trezor.io/9/).
+This package is bundled into web implementations. There are two primary runtime modes:
+
+- **Suite Desktop WebSocket**: when Trezor Suite Desktop is running, Connect talks to it over a localhost WebSocket and UI is handled inside Suite.
+- **Suite Web popup**: otherwise, user interaction is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`.
+
+To try it out, use [@trezor/connect-explorer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer) hosted [here](https://connect.trezor.io/9/).
 
 Contains minimum of code required to:
 

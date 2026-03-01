@@ -16,9 +16,17 @@ const dispose = () => {
     return Promise.resolve(undefined);
 };
 
-const cancel = () => {
+const cancel = (error?: string) => {
     if (_channel) {
-        _channel.clear();
+        _channel.postMessage(
+            {
+                type: POPUP.CLOSED,
+                payload: error ? { error } : {},
+            },
+            { usePromise: false },
+        );
+
+        return Promise.resolve(_channel.clear());
     }
 };
 
