@@ -48,4 +48,4 @@ jobs:
           branch: "chore/native/bump-version-to-${{ env.NEW_VERSION }}"
           base: "develop"
           delete-branch: true
-          labels: mobile, ci
+          labels: mobile, ci, no-project

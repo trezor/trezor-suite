@@ -1,7 +1,7 @@
 {
     "name": "@suite-native/app",
     "version": "1.0.0",
-    "suiteNativeVersion": "26.2.1",
+    "suiteNativeVersion": "26.3.1",
     "main": "index.js",
     "scripts": {
         "depcheck": "yarn g:depcheck",
