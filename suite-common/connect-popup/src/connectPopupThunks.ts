@@ -89,8 +89,13 @@ export const connectPopupCallThunkInner = createThunk<
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
+                // Create the deferred BEFORE dispatching requestPermissions.
+                // Otherwise the modal can render and the user can click "confirm"
+                // (dispatching approvePermissions) before the deferred exists,
+                // causing the thunk to hang forever on a second, unresolved deferred.
+                const permissionDeferred = getPermissionDeferred(true);
                 dispatch(connectPopupActions.requestPermissions());
-                await getPermissionDeferred(true).promise;
+                await permissionDeferred.promise;
             }
 
             let device = selectSelectedDevice(getState());
@@ -373,6 +378,23 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
         TrezorConnect.cancel(error);
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
-        dispatch(connectPopupActions.finishCall());
+
+        const cancelError = TypedError('Method_Interrupted');
+        // Show the cancellation error modal immediately so the user sees
+        // feedback in the Suite popup ("Request was canceled by the user").
+        dispatch(connectPopupActions.setError(serializeError(cancelError)));
+
+        // Resolve the popup-call deferred directly so the cancel response
+        // reaches the caller immediately.  Without this, the response
+        // depends on TrezorConnect.cancel() propagating through the
+        // internal core, interrupting the device, and eventually causing
+        // the catch block in connectPopupCallThunkInner to resolve the
+        // deferred — which may not happen reliably (e.g. the device
+        // interrupt doesn't complete, or the Suite popup tab closes
+        // before RESPONSE_EVENT is sent).
+        getPopupCallDeferred().resolve({
+            success: false,
+            error: serializeError(cancelError),
+        });
     },
 );

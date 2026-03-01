@@ -107,6 +107,7 @@ runs:
       shell: bash
       env:
         NODE_ENV: "production"
+        __SUITE_WEB_URL__: https://${{ inputs.serverHostname }}/suite-web/${{ needs.extract-branch.outputs.branch }}/web
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 

@@ -229,6 +229,21 @@ export abstract class AbstractMessageChannel<
         );
     }
 
+    /**
+     * Clear any pending outgoing messages so that the next send is not
+     * blocked behind queued work.  Override in subclasses that serialise
+     * outgoing messages (e.g. via a send chain) to ensure urgent messages
+     * such as cancel/close are delivered without delay.
+     */
+    clearPendingSends(): void {
+        // No-op by default.
+    }
+
+    abortHandshake(reason?: string) {
+        this.handshakeFinished?.reject(new Error(reason ?? 'Handshake aborted'));
+        this.handshakeFinished = undefined;
+    }
+
     clear() {
         this.handshakeFinished = undefined;
     }

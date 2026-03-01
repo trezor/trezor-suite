@@ -30,6 +30,7 @@ const initProxyChannel = () => {
         type: string;
         method: keyof typeof TrezorConnect;
         settings: ConnectDynamicSettings;
+        error?: string;
     }>({
         name: 'trezor-connect-proxy',
         channel: {
@@ -45,6 +46,15 @@ const initProxyChannel = () => {
     channel.init();
     channel.on('message', message => {
         const { id, payload, type } = message;
+
+        // Handle cancel/close before the payload guard — cancel messages
+        // may carry no meaningful payload.
+        if (type === POPUP.CLOSED) {
+            TrezorConnect.cancel(payload?.error);
+
+            return;
+        }
+
         if (!payload) return;
         const { method, settings } = payload;
 
@@ -55,14 +65,33 @@ const initProxyChannel = () => {
         }
 
         // Core is loaded in popup and initialized every time, so we send the settings from here.
-        impl.init({ env: 'webextension', ...proxySettings }).then(() => {
-            (TrezorConnect as any)[method](payload).then((response: any) => {
-                channel.postMessage({
-                    ...response,
-                    id,
-                });
+        impl.init({ env: 'webextension', ...proxySettings })
+            .then(() =>
+                (TrezorConnect as any)[method](payload).then((response: any) => {
+                    // Response must use usePromise: false so the original
+                    // message `id` from the proxy is preserved.  The default
+                    // (usePromise: true) would overwrite `id` with the SW's
+                    // own counter, which can desynchronize from the proxy's
+                    // counter and leave the proxy's call() promise unresolved.
+                    channel.postMessage(
+                        {
+                            ...response,
+                            id,
+                        },
+                        { usePromise: false },
+                    );
+                }),
+            )
+            .catch((error: any) => {
+                channel.postMessage(
+                    {
+                        success: false,
+                        payload: { error: error?.message ?? String(error) },
+                        id,
+                    },
+                    { usePromise: false },
+                );
             });
-        });
     });
 };
 
