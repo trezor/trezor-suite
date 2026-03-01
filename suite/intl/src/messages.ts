@@ -6300,6 +6300,19 @@ export const messages = defineMessages({
         defaultMessage: 'Labels not synced',
         id: 'TR_LABELING_NOT_SYNCED',
     },
+    TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS: {
+        defaultMessage: 'Synced through Trezor servers (default)',
+        id: 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS',
+    },
+    TR_LABELING_SERVERS_DESCRIPTION: {
+        defaultMessage:
+            'Your labels are synced through Trezor servers. You can connect to your own server for more privacy and control.',
+        id: 'TR_LABELING_SERVERS_DESCRIPTION',
+    },
+    TR_LABELING_SERVERS_CHANGE: {
+        defaultMessage: 'Change',
+        id: 'TR_LABELING_SERVERS_CHANGE',
+    },
     TR_TO_MAKE_YOUR_LABELS_PERSISTENT: {
         defaultMessage:
             'To make your labels consistent and available on different devices, connect to a cloud storage provider.',
