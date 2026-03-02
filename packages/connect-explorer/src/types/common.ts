@@ -1,7 +1,3 @@
-import type { KnownDevice, UnknownDevice, UnreadableDevice } from '@trezor/connect-web';
-
-export type TrezorConnectDevice = KnownDevice | UnknownDevice | UnreadableDevice;
-
 export interface FieldData {
     value: string;
     label: string;
