@@ -333,9 +333,10 @@ export const TokenRow = ({
                                     },
                                     isDisabled: token.balance === '0',
                                     isHidden:
-                                        tokenStatusType === TokenManagementAction.HIDE
+                                        account.networkType === 'tron' ||
+                                        (tokenStatusType === TokenManagementAction.HIDE
                                             ? !isBelowTablet
-                                            : true,
+                                            : true),
                                 },
                                 {
                                     label: <Translation id="TR_NAV_RECEIVE" />,
@@ -456,32 +457,34 @@ export const TokenRow = ({
                                 </Button>
                             ) : (
                                 <ButtonGroup intent="neutral" priority="secondary">
-                                    <Tooltip content={<Translation id="TR_NAV_SEND" />}>
-                                        <IconButton
-                                            isDisabled={token.balance === '0'}
-                                            key="token-send"
-                                            icon="arrowUp"
-                                            onClick={() => {
-                                                dispatch(
-                                                    setSendFormPrefill({
-                                                        contractAddress: token.contract,
-                                                    }),
-                                                );
-                                                dispatch(
-                                                    sendFormActions.removeDraft({
-                                                        accountKey: account.key,
-                                                    }),
-                                                );
-                                                goToWithAnalytics('wallet-send', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            }}
-                                        />
-                                    </Tooltip>
+                                    {account.networkType !== 'tron' ? (
+                                        <Tooltip content={<Translation id="TR_NAV_SEND" />}>
+                                            <IconButton
+                                                isDisabled={token.balance === '0'}
+                                                key="token-send"
+                                                icon="arrowUp"
+                                                onClick={() => {
+                                                    dispatch(
+                                                        setSendFormPrefill({
+                                                            contractAddress: token.contract,
+                                                        }),
+                                                    );
+                                                    dispatch(
+                                                        sendFormActions.removeDraft({
+                                                            accountKey: account.key,
+                                                        }),
+                                                    );
+                                                    goToWithAnalytics('wallet-send', {
+                                                        params: {
+                                                            symbol: account.symbol,
+                                                            accountIndex: account.index,
+                                                            accountType: account.accountType,
+                                                        },
+                                                    });
+                                                }}
+                                            />
+                                        </Tooltip>
+                                    ) : null}
                                     <Tooltip
                                         content={
                                             <Translation

@@ -84,4 +84,8 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             }
         },
     },
+    'tron-view-only': {
+        title: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY' },
+        description: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION' },
+    },
 };

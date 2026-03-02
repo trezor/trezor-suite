@@ -24,19 +24,22 @@ export const networkSymbolCollection = networksCollection.map(n => n.symbol);
 interface GetMainnetsProps {
     debug?: boolean;
     useExperimentalNetworks?: boolean;
+    includeTron?: boolean;
     allNetworks?: Network[];
 }
 
 export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
+    includeTron = false,
     allNetworks = networksCollection,
 }: GetMainnetsProps = {}) =>
     allNetworks.filter(
         n =>
             !n.testnet &&
             (!n.isDebugOnlyNetwork || debug) &&
-            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks) &&
+            (n.symbol !== 'trx' || includeTron),
     );
 
 interface GetTestnetsProps {
