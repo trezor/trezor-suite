@@ -113,8 +113,7 @@ export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
         verifyMethodValues.hex = method.params.hex;
     }
 
-    const verifyMethod = getState().method;
-    verifyMethod?.fields.forEach((f: any) => {
+    method.fields.forEach((f: any) => {
         if (verifyMethodValues[f.name]) {
             dispatch(onFieldChange(f, verifyMethodValues[f.name]));
         }
