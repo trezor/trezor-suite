@@ -24,9 +24,7 @@ export const ErrorMessage = styled(ConfirmationMessage)`
 `;
 
 export const Settings = () => {
-    const connectOptions = useSelector(state => ({
-        coreMode: state?.connect?.options?.coreMode,
-    }));
+    const coreMode = useSelector(state => state?.connect?.options?.coreMode);
 
     const initError = useSelector(state => state.connect?.initError);
     const isInitSuccess = useSelector(state => state.connect?.isInitSuccess || false);
@@ -42,7 +40,7 @@ export const Settings = () => {
             name: 'coreMode',
             type: 'select' as const,
             key: 'coreMode',
-            value: connectOptions?.coreMode || 'auto',
+            value: coreMode || 'auto',
             data: [
                 { value: 'auto', label: 'Auto' },
                 { value: 'deeplink', label: 'Deeplink (mobile)' },
