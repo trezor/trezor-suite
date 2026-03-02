@@ -16511,6 +16511,7 @@ __metadata:
     "@suite/router-config": "workspace:*"
     "@suite/settings": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft

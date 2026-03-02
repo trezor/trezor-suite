@@ -27,11 +27,12 @@ import {
 } from '@suite-common/message-system';
 import {
     type PersistentDeviceDataState,
+    persistentDeviceDataActions,
     preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { type AcquiredDevice } from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { type AcquiredDevice, type PersistentDeviceData } from '@suite-common/suite-types';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
@@ -39,6 +40,7 @@ import * as walletCore from '@suite-common/wallet-core';
 import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wallet-core';
 import type { Discovery } from '@suite-common/wallet-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 
@@ -98,6 +100,7 @@ type FixtureState = {
     router?: RouterStateOverrides;
     thp?: Partial<ThpState>;
     discovery?: Discovery;
+    persistentDeviceData?: Partial<PersistentDeviceDataState>;
 };
 
 type FixtureStep = {
@@ -155,6 +158,35 @@ const disconnectedDevice = mockSuiteDevice({
     discovered: false, // selectShouldRediscover will return true
     state: { staticSessionId: 'device@selected:1' },
 });
+
+// Device supporting Device Authenticity Check, unlike the default T2T1.
+const trezorSafeDevice = mockSuiteDevice(
+    {
+        path,
+        connected: true,
+        available: true,
+        discovered: false, // selectShouldRediscover will return true
+        state: { staticSessionId: 'device@selected:1' },
+    },
+    { internal_model: DeviceModelInternal.T3T1 },
+);
+
+if (!isDeviceAcquired(trezorSafeDevice)) {
+    throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
+}
+
+// Persistent data must match the device model, otherwise device invariability check fails.
+const getPersistentDataWithManualCheckSuccess = (device: AcquiredDevice): PersistentDeviceData => ({
+    ...defaultDevicePersistentData,
+    device_id: device.features.device_id,
+    internal_model: device.features.internal_model,
+    manualCheckResult: { success: true },
+});
+
+// By default, the device has passed Manual Device Check, and T2T1 doesn't support Device Authenticity Check,
+// so the interactive device checks don't block discovery.
+const persistentDataWithManualCheckSuccess =
+    getPersistentDataWithManualCheckSuccess(selectedDevice);
 
 const createObserveSelectedDeviceFulfilledAction = (payload: {
     isDeviceChanged: boolean;
@@ -314,6 +346,72 @@ const fixtures: Fixture[] = [
             },
         ],
     },
+    {
+        description:
+            'does not start discovery while Manual Device Check is pending, until it succeeds',
+        state: {
+            router: { app: 'dashboard' },
+            persistentDeviceData: {
+                devices: [
+                    { ...persistentDataWithManualCheckSuccess, manualCheckResult: undefined },
+                ],
+            },
+        },
+        steps: [
+            {
+                action: deviceActions.selectDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: persistentDeviceDataActions.setManualDeviceCheckSuccess({
+                    deviceId: selectedDevice.id,
+                }),
+                expectedCallCount: 1,
+            },
+        ],
+    },
+    {
+        description:
+            'does not start discovery while Device Authenticity Check is pending, until it succeeds',
+        state: {
+            router: { app: 'dashboard' },
+            persistentDeviceData: {
+                devices: [getPersistentDataWithManualCheckSuccess(trezorSafeDevice)],
+            },
+        },
+        steps: [
+            {
+                action: deviceActions.selectDevice(trezorSafeDevice),
+                expectedCallCount: 0,
+            },
+            // Manual Device Check is now one of the two steps; discovery shall start after both steps are done.
+            {
+                action: persistentDeviceDataActions.setManualDeviceCheckSuccess({
+                    deviceId: selectedDevice.id,
+                }),
+                expectedCallCount: 0,
+            },
+            {
+                action: persistentDeviceDataActions.setDeviceAuthenticityResult({
+                    deviceId: trezorSafeDevice.id,
+                    result: { valid: false, error: 'some-error' },
+                }),
+                expectedCallCount: 0,
+            },
+            {
+                action: persistentDeviceDataActions.setDeviceAuthenticityResult({
+                    deviceId: trezorSafeDevice.id,
+                    result: {
+                        valid: true,
+                        optigaResult: { valid: true, rootPubKey: 'root-pub-key' },
+                        tropicResult: null,
+                        mcuResult: null,
+                    },
+                }),
+                expectedCallCount: 1,
+            },
+        ],
+    },
 ];
 
 const getInitialState = (state: FixtureState = {}): State => ({
@@ -333,7 +431,11 @@ const getInitialState = (state: FixtureState = {}): State => ({
         ...state.thp,
     },
     wallet: { discovery: { ...discoveryInitialState, ...state.discovery } },
-    persistentDeviceData: persistentDeviceDataReducer(undefined, { type: 'foo' }),
+    persistentDeviceData: {
+        ...persistentDeviceDataReducer(undefined, { type: 'foo' }),
+        devices: [persistentDataWithManualCheckSuccess],
+        ...state.persistentDeviceData,
+    },
 });
 
 const initStore = (state?: FixtureState) =>

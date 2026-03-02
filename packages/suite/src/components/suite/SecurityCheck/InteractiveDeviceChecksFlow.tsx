@@ -24,6 +24,7 @@ import { ManualDeviceCheck } from './ManualDeviceCheck';
  */
 export const useInteractiveDeviceChecksFlowState = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
+    // `selectDeviceNeedsInteractiveDeviceChecks` is not used, because we need granular information about MDC | DAC.
     const shouldDoManualDeviceCheck = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceNeedsManualCheck(state, selectedDevice),
     );

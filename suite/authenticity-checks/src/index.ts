@@ -13,5 +13,6 @@ export {
 export {
     selectShouldCheckDeviceAuthenticity,
     selectShouldRouterAppSkipInteractiveDeviceChecks,
+    selectDeviceNeedsInteractiveDeviceChecks,
 } from './interactiveAuthenticityChecksSelectors';
 export type { AuthenticityChecksRootState } from './types';
