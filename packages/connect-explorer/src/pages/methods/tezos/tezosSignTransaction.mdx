@@ -3,6 +3,7 @@ import { TezosSignTransaction } from '@trezor/connect/src/types/api/tezos';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signTransaction from '../../../data/methods/tezos/signTransaction.ts';
 
 <ApiPlayground
@@ -247,13 +248,4 @@ TrezorConnect.tezosSignTransaction({
 
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

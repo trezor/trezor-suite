@@ -3,6 +3,7 @@ import { CardanoComposeTransactionParamsSchema } from '@trezor/connect/src/types
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[
@@ -112,13 +113,4 @@ PrecomposedTransactionNonFinalCardano
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

@@ -3,6 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import getAccountInfo from '../../../data/methods/bitcoin/getAccountInfo';
 
 <ApiPlayground
@@ -233,13 +234,4 @@ TrezorConnect.getAccountInfo({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

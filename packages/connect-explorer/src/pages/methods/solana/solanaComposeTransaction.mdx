@@ -3,6 +3,7 @@ import { SolanaComposeTransaction } from '@trezor/connect/src/types/api/solana';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[
@@ -83,13 +84,4 @@ TrezorConnect.solanaComposeTransaction({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

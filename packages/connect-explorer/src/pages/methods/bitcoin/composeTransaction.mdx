@@ -3,6 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import composeTransaction from '../../../data/methods/bitcoin/composeTransaction';
 
 <ApiPlayground options={[{ title: 'composeTransaction', legacyConfig: composeTransaction[0] }]} />
@@ -132,16 +133,7 @@ TrezorConnect.composeTransaction({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />
 
 ### Precompose example
 

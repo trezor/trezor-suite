@@ -2,6 +2,7 @@ import { Callout } from 'nextra/components';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground options={[{ title: 'No payload', method: 'showDeviceTutorial' }]} />
 
@@ -42,13 +43,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

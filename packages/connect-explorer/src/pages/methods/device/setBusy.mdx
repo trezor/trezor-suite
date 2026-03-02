@@ -5,6 +5,7 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground options={[{ title: 'Advanced schema', method: 'setBusy', schema: PROTO.SetBusy }]} />
 
@@ -47,13 +48,4 @@ const result = await TrezorConnect.setBusy(params);
 
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

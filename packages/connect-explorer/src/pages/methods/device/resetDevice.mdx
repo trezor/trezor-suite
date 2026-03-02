@@ -5,6 +5,7 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import resetDevice from '../../../data/methods/management/resetDevice.ts';
 
 <ApiPlayground
@@ -66,13 +67,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

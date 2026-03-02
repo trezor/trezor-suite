@@ -5,6 +5,7 @@ import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import getAddress from '../../../data/methods/bitcoin/getAddress.ts';
 
 <ApiPlayground
@@ -118,13 +119,4 @@ Result with bundle of addresses
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

@@ -4,6 +4,7 @@ import { AuthorizeCoinjoin } from '@trezor/connect/src/types/api/authorizeCoinjo
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 
 <ApiPlayground
     options={[{ title: 'Advanced schema', method: 'authorizeCoinjoin', schema: AuthorizeCoinjoin }]}
@@ -66,13 +67,4 @@ Success type
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

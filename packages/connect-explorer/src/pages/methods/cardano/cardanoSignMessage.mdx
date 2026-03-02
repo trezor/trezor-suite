@@ -3,6 +3,7 @@ import { CardanoSignMessage } from '@trezor/connect/src/types/api/cardano';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import signMessage from '../../../data/methods/cardano/signMessage.ts';
 
 <ApiPlayground
@@ -108,13 +109,4 @@ TrezorConnect.cardanoSignMessage({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

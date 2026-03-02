@@ -5,6 +5,7 @@ import { ChangeLanguage } from '@trezor/connect/src/types/api/changeLanguage';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import changeLanguage from '../../../data/methods/management/changeLanguage.ts';
 
 <ApiPlayground
@@ -56,13 +57,4 @@ const result = await TrezorConnect.changeLanguage(params);
 
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

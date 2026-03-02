@@ -3,6 +3,7 @@ import { CardanoGetNativeScriptHash } from '@trezor/connect/src/types/api/cardan
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import { ResultError } from '../../../components/ResultError';
 import getNativeScriptHash from '../../../data/methods/cardano/getNativeScriptHash.ts';
 
 <ApiPlayground
@@ -132,13 +133,4 @@ TrezorConnect.cardanoGetAddress({
 }
 ```
 
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
+<ResultError />

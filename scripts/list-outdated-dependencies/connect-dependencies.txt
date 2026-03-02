@@ -76,6 +76,7 @@ remark-gemoji
 remark-gfm
 scroll-into-view-if-needed
 semver
+shiki
 socks-proxy-agent
 stream-browserify
 swr
