@@ -144,7 +144,7 @@
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
         "@types/file-saver": "^2.0.6",
-        "@types/invity-api": "^1.1.13",
+        "@types/invity-api": "^1.1.14",
         "@types/pako": "^2.0.4",
         "@types/pdfmake": "^0.2.11",
         "@types/react": "19.1.6",

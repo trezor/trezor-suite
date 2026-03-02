@@ -40,6 +40,6 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.2",
-        "@types/invity-api": "^1.1.13"
+        "@types/invity-api": "^1.1.14"
     }
 }

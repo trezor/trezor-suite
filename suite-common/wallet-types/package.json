@@ -18,7 +18,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
-        "@types/invity-api": "^1.1.13",
+        "@types/invity-api": "^1.1.14",
         "react": "19.1.0"
     }
 }
