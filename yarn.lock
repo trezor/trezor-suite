@@ -10975,6 +10975,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/feedback@workspace:suite-common/feedback"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -12501,6 +12502,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/experimental-features@workspace:suite-native/experimental-features"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/feedback": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
