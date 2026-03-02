@@ -4,6 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { Address } from '../../../types/params';
 import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -92,16 +93,11 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         };
     }
 
-    async _call({
-        address_n,
-        show_display,
-        network_type,
-        account,
-        minor,
-        payment_id,
-        chunkify,
-    }: Params) {
-        const cmd = this.device.getCommands();
+    async _call(
+        device: Device,
+        { address_n, show_display, network_type, account, minor, payment_id, chunkify }: Params,
+    ) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('MoneroGetAddress', 'MoneroAddress', {
             address_n,
             show_display,
@@ -122,7 +118,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: Address[] = [];
 
         for (let i = 0; i < this.params.length; i++) {
@@ -130,7 +126,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
-                const silent = await this._call({
+                const silent = await this._call(device, {
                     ...batch,
                     show_display: false,
                 });
@@ -143,7 +139,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
                 }
             }
 
-            const response = await this._call(batch);
+            const response = await this._call(device, batch);
             responses.push({
                 address: response.address,
                 path: batch.address_n,

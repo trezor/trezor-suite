@@ -3,6 +3,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST } from '../events';
 import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
 
@@ -37,13 +38,13 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         };
     }
 
-    run() {
+    run(device: Device) {
         const { language, binary } = this.params;
 
         if (binary) {
-            return this.device.changeLanguage({ binary });
+            return device.changeLanguage({ binary });
         } else {
-            return this.device.changeLanguage({ language });
+            return device.changeLanguage({ language });
         }
     }
 }

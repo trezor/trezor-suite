@@ -4,6 +4,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
@@ -51,9 +52,9 @@ export default class CipherKeyValue extends AbstractMethod<
         return 'Cipher key value';
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: PROTO.CipheredKeyValue[] = [];
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const response = await cmd.typedCall(
                 'CipherKeyValue',

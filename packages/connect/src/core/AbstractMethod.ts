@@ -101,8 +101,9 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     public responseID: number;
 
-    // @ts-expect-error: strictPropertyInitialization
-    public device: Device;
+    /** Set by core for infrastructure tracking (pending calls, device override detection). */
+    public devicePath?: string;
+
     // @ts-expect-error: strictPropertyInitialization
     protected params: Params;
 
@@ -201,12 +202,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     public setDevice(device: Device) {
-        this.device = device;
+        this.devicePath = device.getUniquePath();
     }
 
-    public checkFirmwareRange() {
-        const { device } = this;
-
+    public checkFirmwareRange(device: Device) {
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
         if (!device.features || device.isBootloader()) return;
 
@@ -263,12 +262,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return Promise.resolve(undefined);
     }
 
-    public checkDeviceCapability() {
+    public checkDeviceCapability(device: Device) {
         const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
-            capability => this.device.features.capabilities.includes(capability),
+            capability => device.features.capabilities.includes(capability),
         );
         if (!deviceHasAllRequiredCapabilities) {
-            if (this.device.firmwareType === 'bitcoin-only') {
+            if (device.firmwareType === 'bitcoin-only') {
                 throw ERRORS.TypedError(
                     'Device_MissingCapabilityBtcOnly',
                     `Trezor has Bitcoin-only firmware installed, which does not support this operation. Please install Universal firmware through Trezor Suite.`,
@@ -281,7 +280,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public abstract run(): Promise<MethodReturnType<Name>>;
+    public abstract run(device?: Device): Promise<MethodReturnType<Name>>;
 
     public dispose() {}
 }

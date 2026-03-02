@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import {
     StellarSignTransaction as StellarSignTransactionSchema,
     StellarTransaction,
@@ -61,12 +62,15 @@ export default class StellarSignTransaction extends AbstractMethod<
         return 'Sign Stellar transaction';
     }
 
-    _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        return this.device.atLeast(StellarSignTransactionFeatures[feature]);
+    _isFeatureSupported(device: Device, feature: keyof typeof StellarSignTransactionFeatures) {
+        return device.atLeast(StellarSignTransactionFeatures[feature]);
     }
 
-    _ensureFeatureIsSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        if (!this._isFeatureSupported(feature)) {
+    _ensureFeatureIsSupported(
+        device: Device,
+        feature: keyof typeof StellarSignTransactionFeatures,
+    ) {
+        if (!this._isFeatureSupported(device, feature)) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 `Feature ${feature} not supported by device firmware`,
@@ -74,28 +78,28 @@ export default class StellarSignTransaction extends AbstractMethod<
         }
     }
 
-    _ensureFirmwareSupportsParams() {
+    _ensureFirmwareSupportsParams(device: Device) {
         const { params } = this;
         if (
             params.transaction.operations &&
             params.transaction.operations.find(o => o.type === 'manageBuyOffer')
         ) {
-            this._ensureFeatureIsSupported('manageBuyOffer');
+            this._ensureFeatureIsSupported(device, 'manageBuyOffer');
         }
 
         if (
             params.transaction.operations &&
             params.transaction.operations.find(o => o.type === 'pathPaymentStrictSend')
         ) {
-            this._ensureFeatureIsSupported('pathPaymentStrictSend');
+            this._ensureFeatureIsSupported(device, 'pathPaymentStrictSend');
         }
     }
 
-    async run() {
-        this._ensureFirmwareSupportsParams();
+    async run(device: Device) {
+        this._ensureFirmwareSupportsParams(device);
 
         const response = await helper.stellarSignTx(
-            this.device.getCommands().typedCall,
+            device.getCommands().typedCall,
             this.params.path,
             this.params.networkPassphrase,
             this.params.transaction,

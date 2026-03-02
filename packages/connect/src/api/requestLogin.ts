@@ -4,6 +4,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { getFirmwareRange } from './common/paramsValidator';
 import { DataManager } from '../data/DataManager';
 import type { ConnectSettings } from '../types';
@@ -51,8 +52,8 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         return 'Login';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const { message } = await cmd.typedCall('SignIdentity', 'SignedIdentity', this.params);
 
         return {

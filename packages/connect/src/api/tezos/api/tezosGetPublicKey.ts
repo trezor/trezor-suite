@@ -10,6 +10,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
@@ -72,9 +73,9 @@ export default class TezosGetPublicKey extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             const { message } = await cmd.typedCall('TezosGetPublicKey', 'TezosPublicKey', batch);

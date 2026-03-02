@@ -10,6 +10,7 @@ import { Assert, Type } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
@@ -240,12 +241,15 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return 'Sign Cardano transaction';
     }
 
-    _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
-        return this.device.atLeast(CardanoSignTransactionFeatures[feature]);
+    _isFeatureSupported(device: Device, feature: keyof typeof CardanoSignTransactionFeatures) {
+        return device.atLeast(CardanoSignTransactionFeatures[feature]);
     }
 
-    _ensureFeatureIsSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
-        if (!this._isFeatureSupported(feature)) {
+    _ensureFeatureIsSupported(
+        device: Device,
+        feature: keyof typeof CardanoSignTransactionFeatures,
+    ) {
+        if (!this._isFeatureSupported(device, feature)) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 `Feature ${feature} not supported by device firmware`,
@@ -253,7 +257,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
     }
 
-    _ensureFirmwareSupportsParams() {
+    _ensureFirmwareSupportsParams(device: Device) {
         const { params } = this;
 
         params.certificatesWithPoolOwnersAndRelays.forEach(({ certificate }) => {
@@ -262,17 +266,17 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY ||
                 certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION
             ) {
-                this._ensureFeatureIsSupported('Conway');
+                this._ensureFeatureIsSupported(device, 'Conway');
             }
         });
 
         if (params.tagCborSets) {
-            this._ensureFeatureIsSupported('Conway');
+            this._ensureFeatureIsSupported(device, 'Conway');
         }
     }
 
-    async _sign_tx(): Promise<CardanoSignedTxData> {
-        const { typedCall } = this.device.getCommands();
+    async _sign_tx(device: Device): Promise<CardanoSignedTxData> {
+        const { typedCall } = device.getCommands();
 
         const hasAuxiliaryData = !!this.params.auxiliaryData;
 
@@ -417,10 +421,10 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return { hash: txBodyHashMessage.tx_hash, witnesses, auxiliaryDataSupplement };
     }
 
-    async run() {
-        this._ensureFirmwareSupportsParams();
+    async run(device: Device) {
+        this._ensureFirmwareSupportsParams(device);
 
-        const result = await this._sign_tx();
+        const result = await this._sign_tx(device);
 
         if (!this.params.unsignedTx) return result;
 

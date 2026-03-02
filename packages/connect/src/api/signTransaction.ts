@@ -25,6 +25,7 @@ import {
 } from './bitcoin';
 import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -246,9 +247,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
     }
 
-    private async fetchAddresses(blockchain: Blockchain) {
+    private async fetchAddresses(device: Device, blockchain: Blockchain) {
         const {
-            device,
             params: { inputs, coinInfo },
         } = this;
 
@@ -267,7 +267,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return account.addresses;
     }
 
-    private async fetchRefTxs(useLegacySignProcess: boolean) {
+    private async fetchRefTxs(device: Device, useLegacySignProcess: boolean) {
         const {
             params: { inputs, outputs, options, coinInfo, identity, addresses },
         } = this;
@@ -302,7 +302,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                   .then(parseTransactionHexes(coinInfo.network))
                   .then(async rawOrigTxs => {
                       // if sender account addresses not provided, fetch account info from the blockbook
-                      const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
+                      const accountAddresses =
+                          addresses ?? (await this.fetchAddresses(device, blockchain));
                       if (!accountAddresses) return [];
 
                       return transformOrigTransactions(
@@ -316,11 +317,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return refTxs.concat(origTxs);
     }
 
-    async run() {
-        const { device, params } = this;
+    async run(device: Device) {
+        const { params } = this;
         const { inputs, outputs, coinInfo } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
-        const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
+        const refTxs = params.refTxs ?? (await this.fetchRefTxs(device, useLegacySignProcess));
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {

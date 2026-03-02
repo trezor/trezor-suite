@@ -10,6 +10,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfo } from '../../../types';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
@@ -77,9 +78,9 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
 
         for (let i = 0; i < this.params.length; i++) {
             const { address_n, show_display } = this.params[i];

@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UnlockPathParams } from '../types/api/unlockPath';
@@ -28,8 +29,8 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
         };
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const { message } = await cmd.unlockPath(this.params);
 
         return {

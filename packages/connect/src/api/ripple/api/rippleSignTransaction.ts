@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { RippleSignTransaction as RippleSignTransactionSchema } from '../../../types/api/ripple';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -54,8 +55,8 @@ export default class RippleSignTransaction extends AbstractMethod<
         return 'Sign Ripple transaction';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const { message } = await cmd.typedCall('RippleSignTx', 'RippleSignedTx', this.params);
 
         return {

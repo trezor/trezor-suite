@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
@@ -30,8 +31,8 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
         return 'Cancel Coinjoin Authorization';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         if (!this.preauthorized) {
             if (!(await cmd.preauthorize(false))) {

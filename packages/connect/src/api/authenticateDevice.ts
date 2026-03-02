@@ -9,6 +9,7 @@ import {
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
@@ -41,10 +42,10 @@ export default class AuthenticateDevice extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const challenge = getRandomChallenge();
 
-        const { message } = await this.device
+        const { message } = await device
             .getCommands()
             .typedCall('AuthenticateDevice', 'AuthenticityProof', {
                 challenge: challenge.toString('hex'),
@@ -54,7 +55,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
             data: prepareDeviceAuthenticityData({ payload: challenge }),
-            deviceModel: this.device.features.internal_model,
+            deviceModel: device.features.internal_model,
             allowDebugKeys: this.params.allowDebugKeys,
             config,
             blacklistConfig,
@@ -74,7 +75,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         const getTropicResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
             const { tropic_signature: signature, tropic_certificates: certificates } = message;
             const isAvailable = signature !== undefined && certificates.length > 0;
-            const isRequired = !this.device.unavailableCapabilities['tropicDeviceAuthentication'];
+            const isRequired = !device.unavailableCapabilities['tropicDeviceAuthentication'];
             if (isAvailable) {
                 return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
             }

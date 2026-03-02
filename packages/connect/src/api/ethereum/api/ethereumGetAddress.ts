@@ -11,6 +11,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
 import { Bundle } from '../../../types';
@@ -123,8 +124,8 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         };
     }
 
-    private async _call(params: Params) {
-        const response = await this.device.getCommands().ethereumGetAddress(params);
+    private async _call(device: Device, params: Params) {
+        const response = await device.getCommands().ethereumGetAddress(params);
 
         return {
             path: params.address_n,
@@ -134,7 +135,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
@@ -143,7 +144,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
-                const silent = await this._call({
+                const silent = await this._call(device, {
                     ...batch,
                     show_display: false,
                 });
@@ -160,7 +161,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 }
             }
 
-            const response = await this._call({
+            const response = await this._call(device, {
                 ...batch,
             });
             responses.push(response);

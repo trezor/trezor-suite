@@ -4,6 +4,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
     constructor(message: { id?: number; payload: Payload<'setBrightness'> }) {
@@ -25,8 +26,8 @@ export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO
         };
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('SetBrightness', 'Success', this.params);
 
         return response.message;

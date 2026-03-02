@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import {
     CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
     CardanoNativeScript,
@@ -84,8 +85,8 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         };
     }
 
-    async run() {
-        const { message } = await this.device
+    async run(device: Device) {
+        const { message } = await device
             .getCommands()
             .typedCall('CardanoGetNativeScriptHash', 'CardanoNativeScriptHash', {
                 script: this.params.script,

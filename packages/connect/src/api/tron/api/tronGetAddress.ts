@@ -8,6 +8,7 @@ import {
     MethodReturnType,
     Payload,
 } from '../../../core/AbstractMethod';
+import type { Device } from '../../../device/Device';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
@@ -90,8 +91,8 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
         };
     }
 
-    async _call({ address_n, show_display, chunkify }: Params) {
-        const cmd = this.device.getCommands();
+    async _call(device: Device, { address_n, show_display, chunkify }: Params) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('TronGetAddress', 'TronAddress', {
             address_n,
             show_display,
@@ -101,7 +102,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
         return response.message;
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
@@ -109,7 +110,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
-                const silent = await this._call({
+                const silent = await this._call(device, {
                     ...batch,
                     show_display: false,
                 });
@@ -123,7 +124,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
                 }
             }
 
-            const message = await this._call(batch);
+            const message = await this._call(device, batch);
             responses.push({
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),

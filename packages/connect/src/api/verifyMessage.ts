@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../constants';
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
@@ -52,10 +53,10 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         return getLabel('Verify #NETWORK message', coinInfo);
     }
 
-    async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+    async run(device: Device) {
+        validateModelOneMessageSize(device, this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('VerifyMessage', 'Success', this.params);
 
         return response.message;

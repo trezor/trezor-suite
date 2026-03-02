@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 
 export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.TelemetryGet> {
     constructor(message: { id?: number; payload: Payload<'telemetryGet'> }) {
@@ -22,8 +23,8 @@ export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.T
         };
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         const response = await cmd.typedCall('TelemetryGet', 'Telemetry', this.params);
 

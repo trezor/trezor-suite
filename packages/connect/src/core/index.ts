@@ -73,7 +73,7 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
 const inner = async (context: CoreContext, method: AbstractMethod<any>, device: Device) => {
     const { uiPromises, sendCoreMessage } = context;
 
-    const firmwareException = method.checkFirmwareRange();
+    const firmwareException = method.checkFirmwareRange(device);
     if (firmwareException) {
         // return error if not using popup
         return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
@@ -86,7 +86,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
     }
 
-    method.checkDeviceCapability();
+    method.checkDeviceCapability(device);
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
@@ -132,7 +132,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
     // run method
     try {
-        const response = await method.run();
+        const response = await method.run(device);
 
         return createResponseMessage(method.responseID, true, response, device);
     } catch (error) {
@@ -260,10 +260,7 @@ const onCallDevice = async (
 
     // find pending calls to this device
     const previousCall = callMethods.filter(
-        call =>
-            call &&
-            call !== method &&
-            call.device?.getUniquePath() === method.device.getUniquePath(),
+        call => call && call !== method && call.devicePath === device.getUniquePath(),
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method

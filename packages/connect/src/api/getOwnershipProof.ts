@@ -4,6 +4,7 @@ import { Assert } from '@trezor/schema-utils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { Bundle } from '../types';
 import { GetOwnershipProof as GetOwnershipProofSchema } from '../types/api/getOwnershipProof';
@@ -61,9 +62,9 @@ export default class GetOwnershipProof extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             if (this.preauthorized) {

@@ -1,6 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 
 export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce> {
     constructor(message: { id?: number; payload: Payload<'getNonce'> }) {
@@ -16,8 +17,8 @@ export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce>
 
     override init() {}
 
-    override async run() {
-        const cmd = this.device.getCommands();
+    override async run(device: Device) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('GetNonce', 'Nonce');
 
         return response.message;

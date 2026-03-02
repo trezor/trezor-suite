@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { TezosSignTransaction as TezosSignTransactionSchema } from '../../../types/api/tezos';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -42,8 +43,8 @@ export default class TezosSignTransaction extends AbstractMethod<
         return 'Sign Tezos transaction';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('TezosSignTx', 'TezosSignedTx', this.params);
 
         return response.message;

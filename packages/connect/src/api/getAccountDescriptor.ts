@@ -10,6 +10,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { Bundle, type CoinInfo, type DerivationPath } from '../types';
 import {
@@ -112,7 +113,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    checkFirmwareRange() {
+    checkFirmwareRange(device: Device) {
         // check each batch and return error with invalid bundle indexes
         // find invalid ranges
         const invalid = [];
@@ -123,7 +124,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = super.checkFirmwareRange();
+            const exception = super.checkFirmwareRange(device);
             if (exception) {
                 invalid.push({
                     index: i,
@@ -140,7 +141,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         return undefined;
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (
@@ -166,7 +167,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             if (this.disposed) break;
 
             try {
-                const { descriptor, address_n, legacyXpub } = await this.device
+                const { descriptor, address_n, legacyXpub } = await device
                     .getCommands()
                     .getAccountDescriptor(
                         request.coinInfo,

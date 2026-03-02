@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '../types/api/authorizeCoinjoin';
@@ -37,8 +38,8 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
         };
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         if (this.preauthorized) {
             if (await cmd.preauthorize(false)) {

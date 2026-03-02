@@ -4,6 +4,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
@@ -39,15 +40,15 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         };
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         // https://github.com/trezor/trezor-firmware/pull/5015
         // homescreen bytes are streamed in smaller data chunks
         const homescreenBytes = this.params.homescreen
             ? Buffer.from(this.params.homescreen, 'hex')
             : undefined;
-        if (this.device.atLeast('2.9.0') && homescreenBytes) {
+        if (device.atLeast('2.9.0') && homescreenBytes) {
             // cannot use both. Failure: Mutually exclusive settings
             this.params.homescreen = undefined;
             this.params.homescreen_length = homescreenBytes.length;

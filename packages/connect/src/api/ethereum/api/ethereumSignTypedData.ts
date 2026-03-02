@@ -8,6 +8,7 @@ import { Assert, Type } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { EthereumNetworkInfo } from '../../../types';
 import {
     EthereumSignTypedData as EthereumSignTypedDataParams,
@@ -156,10 +157,10 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
         const { address_n, definitions } = this.params;
-        if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
+        if (device.features.internal_model === DeviceModelInternal.T1B1) {
             Assert(
                 Type.Object({
                     domain_separator_hash: Type.String(),
@@ -273,7 +274,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 }
                 if (memberData === null || memberData === undefined) {
                     // Cancel the request so the device isn't left hanging
-                    this.device.getCurrentSession().cancelCall();
+                    device.getCurrentSession().cancelCall();
                     throw ERRORS.TypedError(
                         'Runtime',
                         `Value from member path ${member_path} is missing in the data object`,

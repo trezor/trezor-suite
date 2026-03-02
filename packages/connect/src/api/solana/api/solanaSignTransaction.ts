@@ -34,6 +34,7 @@ import { BigNumber } from '@trezor/utils';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -245,8 +246,8 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         }
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         if (this.params.serialize) {
             const tx = await createTransactionShimFromHex(this.params.serialized_tx);

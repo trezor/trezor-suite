@@ -3,6 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 
 export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
     get requiredPermissions(): MethodPermission[] {
@@ -11,8 +12,8 @@ export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
 
     init() {}
 
-    run() {
-        const state = this.device.getState();
+    run(device: Device) {
+        const state = device.getState();
         if (!state?.staticSessionId) {
             throw ERRORS.TypedError('Runtime', 'Device state not set');
         }

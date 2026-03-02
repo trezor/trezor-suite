@@ -9,6 +9,7 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import {
     TransactionComposer,
@@ -193,16 +194,16 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         });
     }
 
-    async run(): Promise<SignedTransaction | PrecomposedResult[]> {
+    async run(device: Device): Promise<SignedTransaction | PrecomposedResult[]> {
         if (this.params.account && this.params.feeLevels) {
             return this.precompose(this.params.account, this.params.feeLevels);
         }
 
         // discover accounts and wait for user action
-        const { account, utxo } = await this.selectAccount();
+        const { account, utxo } = await this.selectAccount(device);
 
         // wait for fee selection
-        const response = await this.selectFee(account, utxo);
+        const response = await this.selectFee(device, account, utxo);
         // check for interruption
         if (!this.discovery) {
             throw ERRORS.TypedError(
@@ -213,16 +214,16 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         if (typeof response === 'string') {
             // back to account selection
-            return this.run();
+            return this.run(device);
         }
 
         return response;
     }
 
-    async selectAccount() {
+    async selectAccount(device: Device) {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain();
-        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
+        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, device);
 
         if (this.discovery && this.discovery.completed) {
             const { discovery } = this;
@@ -250,7 +251,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             new Discovery({
                 blockchain,
                 getDescriptor: path =>
-                    this.device.getCommands().getAccountDescriptor(this.params.coinInfo, path),
+                    device.getCommands().getAccountDescriptor(this.params.coinInfo, path),
             });
         this.discovery = discovery;
 
@@ -308,7 +309,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         };
     }
 
-    async selectFee(account: DiscoveryAccount, utxos: AccountUtxo[]) {
+    async selectFee(device: Device, account: DiscoveryAccount, utxos: AccountUtxo[]) {
         const { coinInfo, outputs, sortingStrategy } = this.params;
 
         // get backend instance (it should be initialized before)
@@ -345,13 +346,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         );
 
         // wait for user action
-        return this._selectFeeUiResponse(composer);
+        return this._selectFeeUiResponse(device, composer);
     }
 
     async _selectFeeUiResponse(
+        device: Device,
         composer: TransactionComposer,
     ): Promise<SignedTransaction | 'change-account'> {
-        const resp = await this.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.device).promise;
+        const resp = await this.createUiPromise(UI_RESPONSE.RECEIVE_FEE, device).promise;
         switch (resp.payload.type) {
             case 'compose-custom':
                 // recompose custom fee level with requested value
@@ -364,18 +366,18 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 );
 
                 // wait for user action
-                return this._selectFeeUiResponse(composer);
+                return this._selectFeeUiResponse(device, composer);
 
             case 'send':
-                return this._sign(composer.composed[resp.payload.value]);
+                return this._sign(device, composer.composed[resp.payload.value]);
 
             default:
                 return 'change-account';
         }
     }
 
-    async _sign(tx: ComposeResult) {
-        const { device, params } = this;
+    async _sign(device: Device, tx: ComposeResult) {
+        const { params } = this;
 
         if (tx.type !== 'final')
             throw ERRORS.TypedError('Runtime', 'ComposeTransaction: Trying to sign unfinished tx');

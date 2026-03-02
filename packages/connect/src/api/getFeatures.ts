@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetFeatures.js
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST } from '../events';
 
 export default class GetFeatures extends AbstractMethod<'getFeatures'> {
@@ -25,11 +26,11 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
         // Configuration already set in constructor
     }
 
-    checkFirmwareRange() {
+    checkFirmwareRange(_device: Device) {
         return undefined;
     }
 
-    run() {
-        return Promise.resolve(this.device.features);
+    run(device: Device) {
+        return Promise.resolve(device.features);
     }
 }

@@ -6,6 +6,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import {
     EthereumNetworkInfoDefinitionValues,
     EthereumSignTransaction as EthereumSignTransactionSchema,
@@ -227,14 +228,14 @@ export default class EthereumSignTransaction extends AbstractMethod<
         }
     }
 
-    async run() {
+    async run(device: Device) {
         const { type, tx, definitions, chunkify } = this.params;
 
         const isLegacy = type === 'legacy';
 
         const signature = isLegacy
             ? await helper.ethereumSignTx(
-                  this.device.getCommands().typedCall,
+                  device.getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,
@@ -249,7 +250,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.payment_req,
               )
             : await helper.ethereumSignTxEIP1559(
-                  this.device.getCommands().typedCall,
+                  device.getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,

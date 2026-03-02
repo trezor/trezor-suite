@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import {
     EthereumNetworkInfo,
@@ -75,10 +76,10 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         }
     }
 
-    async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+    async run(device: Device) {
+        validateModelOneMessageSize(device, this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         const { address_n, message } = this.params;
 
         const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {

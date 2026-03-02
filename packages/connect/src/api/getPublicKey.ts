@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, createUiMessage } from '../events';
 import type { BitcoinNetworkInfo } from '../types';
 import { Bundle } from '../types';
@@ -88,9 +89,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const { coinInfo, unlockPath, ...batch } = this.params[i];
             // if coinInfo is not provided, use fallback (see above in init method)

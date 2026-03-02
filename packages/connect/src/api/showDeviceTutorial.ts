@@ -1,6 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
@@ -25,8 +26,8 @@ export default class ShowDeviceTutorial extends AbstractMethod<
         return 'Show device tutorial';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         const response = await cmd.typedCall('ShowDeviceTutorial', 'Success');
 

@@ -6,6 +6,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import type { MoneroExportedKeyImage, MoneroKeyImageSyncResult } from '../../../types/api/monero';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -126,8 +127,8 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         return 'Export Monero key images for spent output tracking';
     }
 
-    async run(): Promise<MoneroKeyImageSyncResult> {
-        const cmd = this.device.getCommands();
+    async run(device: Device): Promise<MoneroKeyImageSyncResult> {
+        const cmd = device.getCommands();
 
         // Compute hash of all tdis for verification
         const tdHashes: Uint8Array[] = [];

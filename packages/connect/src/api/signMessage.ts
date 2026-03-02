@@ -4,6 +4,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import type { BitcoinNetworkInfo } from '../types';
 import { SignMessage as SignMessageSchema } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
@@ -71,10 +72,10 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         }
     }
 
-    async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+    async run(device: Device) {
+        validateModelOneMessageSize(device, this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = device.getCommands();
         const { message } = await cmd.typedCall('SignMessage', 'MessageSignature', this.params);
         // convert signature to base64
         const signatureBuffer = Buffer.from(message.signature, 'hex');

@@ -16,6 +16,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
+import { Device } from '../device/Device';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { checkXPubWithHashes } from './firmware';
@@ -182,8 +183,8 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
     }
 
-    async run() {
-        const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins);
+    async run(device: Device) {
+        const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins, device);
 
         unsupported.forEach(
             ({ account: { path: bip43, ...rest }, error, coinInfo, skip, offset }) => {
@@ -194,12 +195,17 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
 
         const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
-        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
+        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(
+            cardanoAccounts,
+            device,
+        );
         const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
-        const counts = await Promise.all(accounts.map(account => this.discoverAccount(account)));
+        const counts = await Promise.all(
+            accounts.map(account => this.discoverAccount(account, device)),
+        );
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
         const failed = counts.filter(acc => acc.error).length;
         const empty = counts.length - failed;
@@ -207,9 +213,9 @@ export default class DiscoverAccounts extends AbstractMethod<
         return { empty, nonempty, failed };
     }
 
-    private filterUnsupportedAccounts(accounts: Request[]) {
-        const version = this.device.getVersion();
-        const model = this.device.features?.internal_model;
+    private filterUnsupportedAccounts(accounts: Request[], device: Device) {
+        const version = device.getVersion();
+        const model = device.features?.internal_model;
 
         if (!version || !model) return [[], accounts] as const;
 
@@ -233,7 +239,7 @@ export default class DiscoverAccounts extends AbstractMethod<
     }
 
     /** This should have zero overhead thanks to descriptor caching */
-    private async filterCardanoDerivations(accounts: CardanoRequest[]) {
+    private async filterCardanoDerivations(accounts: CardanoRequest[], device: Device) {
         const legacyRequest = accounts.find(a => a.account.type === 'legacy');
         const ledgerRequest = accounts.find(a => a.account.type === 'ledger');
         const filterableRequest = legacyRequest ?? ledgerRequest;
@@ -245,6 +251,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 filterableRequest.account.path,
                 CARDANO_DERIVATIONS[derivation],
                 0,
+                device,
             ).then(({ descriptor }) => descriptor);
 
         // normal descriptor or undefined when no legacy/ledger was requested as in that case it's useless
@@ -278,6 +285,7 @@ export default class DiscoverAccounts extends AbstractMethod<
         bip43PathTemplate: string,
         derivationType: CardanoDerivation | undefined,
         index: number,
+        device: Device,
     ) {
         const path = substituteBip43Path(bip43PathTemplate, index);
 
@@ -288,7 +296,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 // on derivation path (plus type in case of Cardano). When there's a case where
                 // we expect two different descriptors from the same path, this must be reworked.
                 const address_n = validatePath(path, 3);
-                const descriptor = await this.device
+                const descriptor = await device
                     .getCommands()
                     .getAccountDescriptor(coinInfo, address_n, derivationType);
                 this.descriptorCache[key] = descriptor;
@@ -296,8 +304,8 @@ export default class DiscoverAccounts extends AbstractMethod<
                 // Perform continuous entropy check for standard wallet, if data are available
                 const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
                 const { legacyXpub: xpub } = descriptor; // only Bitcoin-like accounts have it, and only those are checked for now
-                const isPassphraseEnabled = this.device.features?.passphrase_protection;
-                const alwaysPassphrase = this.device.features?.passphrase_always_on_device; // if this feature is on, then useEmptyPassphrase is not reliable
+                const isPassphraseEnabled = device.features?.passphrase_protection;
+                const alwaysPassphrase = device.features?.passphrase_always_on_device; // if this feature is on, then useEmptyPassphrase is not reliable
                 const isStandardWallet =
                     !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
                 if (xpub && knownXPubHashes && isStandardWallet) {
@@ -315,7 +323,10 @@ export default class DiscoverAccounts extends AbstractMethod<
         return { path, ...descriptorRest };
     }
 
-    private async discoverAccount(request: Request): Promise<{ nonempty: number; error?: string }> {
+    private async discoverAccount(
+        request: Request,
+        device: Device,
+    ): Promise<{ nonempty: number; error?: string }> {
         const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
@@ -334,12 +345,18 @@ export default class DiscoverAccounts extends AbstractMethod<
             return { nonempty: 0, error };
         }
 
-        let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
+        let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index, device);
         descPromise.catch(() => {});
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
-                descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
+                descPromise = this.getDescriptor(
+                    coinInfo,
+                    bip43,
+                    derivation,
+                    offset + index + 1,
+                    device,
+                );
                 descPromise.catch(() => {});
 
                 const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });

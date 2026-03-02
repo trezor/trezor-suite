@@ -12,6 +12,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
+import type { Device } from '../device/Device';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { type BitcoinNetworkInfo, Bundle } from '../types';
 import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
@@ -125,16 +126,11 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
               };
     }
 
-    async _call({
-        address_n,
-        show_display,
-        multisig,
-        script_type,
-        coinInfo,
-        unlockPath,
-        chunkify,
-    }: Params) {
-        const cmd = this.device.getCommands();
+    async _call(
+        device: Device,
+        { address_n, show_display, multisig, script_type, coinInfo, unlockPath, chunkify }: Params,
+    ) {
+        const cmd = device.getCommands();
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }
@@ -152,7 +148,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         };
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
@@ -160,7 +156,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
-                const silent = await this._call({
+                const silent = await this._call(device, {
                     ...batch,
                     show_display: false,
                 });
@@ -173,7 +169,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 }
             }
 
-            const response = await this._call(batch);
+            const response = await this._call(device, batch);
             responses.push(response);
 
             if (this.hasBundle) {

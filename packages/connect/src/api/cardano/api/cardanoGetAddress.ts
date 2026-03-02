@@ -11,6 +11,7 @@ import {
     Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
@@ -107,15 +108,18 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
               };
     }
 
-    async _call({
-        address_parameters,
-        protocol_magic,
-        network_id,
-        derivation_type,
-        show_display,
-        chunkify,
-    }: Params) {
-        const cmd = this.device.getCommands();
+    async _call(
+        device: Device,
+        {
+            address_parameters,
+            protocol_magic,
+            network_id,
+            derivation_type,
+            show_display,
+            chunkify,
+        }: Params,
+    ) {
+        const cmd = device.getCommands();
         const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', {
             address_parameters,
             protocol_magic,
@@ -128,7 +132,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         return response.message;
     }
 
-    async run() {
+    async run(device: Device) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
@@ -141,7 +145,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
-                const silent = await this._call({
+                const silent = await this._call(device, {
                     ...batch,
                     show_display: false,
                 });
@@ -154,7 +158,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 }
             }
 
-            const response = await this._call(batch);
+            const response = await this._call(device, batch);
 
             responses.push({
                 addressParameters: addressParametersFromProto(batch.address_parameters),

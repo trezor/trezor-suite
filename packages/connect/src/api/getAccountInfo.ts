@@ -16,6 +16,7 @@ import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
 import { Discovery } from './common/Discovery';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import type { Device } from '../device/Device';
 import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -165,9 +166,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    checkFirmwareRange() {
+    checkFirmwareRange(device: Device) {
         if (this.params.length === 1) {
-            return super.checkFirmwareRange();
+            return super.checkFirmwareRange(device);
         }
         // for trusted mode check each batch and return error with invalid bundle indexes
         // find invalid ranges
@@ -179,7 +180,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = super.checkFirmwareRange();
+            const exception = super.checkFirmwareRange(device);
             if (exception) {
                 invalid.push({
                     index: i,
@@ -194,16 +195,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         }
     }
 
-    async run() {
+    async run(device: Device) {
         // address_n and descriptor are not set. use discovery
         if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return this.discover(this.params[0]);
+            return this.discover(device, this.params[0]);
         }
 
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
-            if (!this.hasBundle || this.device?.getCurrentSession().isDisposed()) return;
+            if (!this.hasBundle || device?.getCurrentSession().isDisposed()) return;
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
@@ -227,7 +228,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // get descriptor from device
             if (address_n && typeof descriptor !== 'string') {
                 try {
-                    const accountDescriptor = await this.device
+                    const accountDescriptor = await device
                         .getCommands()
                         .getAccountDescriptor(request.coinInfo, address_n, request.derivationType);
                     if (accountDescriptor) {
@@ -320,15 +321,15 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return this.hasBundle ? responses : responses[0]!;
     }
 
-    async discover(request: Request) {
+    async discover(device: Device, request: Request) {
         const { coinInfo, identity, defaultAccountType, derivationType } = request;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
-        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
+        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, device);
 
         const discovery = new Discovery({
             blockchain,
             getDescriptor: path =>
-                this.device.getCommands().getAccountDescriptor(coinInfo, path, derivationType),
+                device.getCommands().getAccountDescriptor(coinInfo, path, derivationType),
         });
 
         discovery.on('progress', accounts => {

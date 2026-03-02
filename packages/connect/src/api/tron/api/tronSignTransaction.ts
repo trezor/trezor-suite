@@ -2,6 +2,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { Device } from '../../../device/Device';
 import {
     TronContractsParameters,
     TronContractsTypes,
@@ -53,8 +54,8 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         return 'Sign Tron transaction';
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run(device: Device) {
+        const cmd = device.getCommands();
 
         await cmd.typedCall('TronSignTx', 'TronContractRequest', this.params.tx);
 

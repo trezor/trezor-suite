@@ -7,6 +7,7 @@ import { getRandomInt } from '@trezor/utils';
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { PROTO } from '../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
@@ -58,8 +59,8 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#simple-resetdevice-workflow
-    private async resetDeviceWorkflow() {
-        const cmd = this.device.getCommands();
+    private async resetDeviceWorkflow(device: Device) {
+        const cmd = device.getCommands();
         const entropy = generateEntropy(32).toString('hex');
 
         // ResetDevice > EntropyRequest > EntropyAck > Success (old fw)
@@ -68,8 +69,8 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-    private async entropyCheckWorkflow(): Promise<XPubsPerBip43Path> {
-        const cmd = this.device.getCommands();
+    private async entropyCheckWorkflow(device: Device): Promise<XPubsPerBip43Path> {
+        const cmd = device.getCommands();
         const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
         const parsedPaths = paths.map(path => ({ path, address_n: validatePath(path) }));
 
@@ -122,7 +123,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             });
 
             if (res.error) {
-                await this.device.getCurrentSession().cancelCall();
+                await device.getCurrentSession().cancelCall();
                 throw ERRORS.TypedError('Failure_EntropyCheck', res.error);
             }
 
@@ -141,20 +142,22 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         return finalXPubs;
     }
 
-    async run() {
-        if (this.params.entropy_check && this.device.unavailableCapabilities['entropyCheck']) {
+    async run(device: Device) {
+        if (this.params.entropy_check && device.unavailableCapabilities['entropyCheck']) {
             // entropy check requested but not supported by the firmware
             this.params.entropy_check = false;
         }
 
         if (this.params.entropy_check) {
-            const xpubs = await this.entropyCheckWorkflow();
+            const xpubs = await this.entropyCheckWorkflow(device);
             const xpubHashes = calculateXPubHashes(xpubs);
 
             return { message: 'Success', xpubHashes };
+        } else {
+            await this.resetDeviceWorkflow(device);
         }
 
-        await this.resetDeviceWorkflow();
+        await this.resetDeviceWorkflow(device);
 
         return { message: 'Success' };
     }

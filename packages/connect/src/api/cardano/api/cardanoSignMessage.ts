@@ -6,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import { CARDANO, PROTO } from '../../../constants';
 import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import type { Device } from '../../../device/Device';
 import {
     CardanoMessageHeaders,
     CardanoSignMessage as CardanoSignMessageSchema,
@@ -71,8 +72,8 @@ export default class CardanoSignMessage extends AbstractMethod<
         };
     }
 
-    async run(): Promise<CardanoSignedMessage> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
+    async run(device: Device): Promise<CardanoSignedMessage> {
+        const { typedCall } = device.getCommands();
         const payloadSize = hexStringByteLength(this.params.payload);
 
         let response = await typedCall(
