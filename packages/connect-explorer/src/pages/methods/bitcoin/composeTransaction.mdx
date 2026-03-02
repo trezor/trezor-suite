@@ -26,7 +26,9 @@ export const PrecomposeSchema = Type.Object({
     baseFee: Type.Optional(Type.Number()),
     floorBaseFee: Type.Optional(Type.Boolean()),
     sequence: Type.Optional(Type.Number()),
-    skipPermutation: Type.Optional(Type.Boolean()),
+    sortingStrategy: Type.Optional(
+        Type.Union([Type.Literal('bip69'), Type.Literal('none'), Type.Literal('random')]),
+    ),
 });
 
 export const paramDescriptions = {
@@ -42,7 +44,7 @@ export const paramDescriptions = {
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
     floorBaseFee:
         'decide whenever baseFee should be floored to the nearest baseFee unit, prevents from fee overpricing. used in DOGE',
-    skipPermutation: 'do not sort calculated inputs/outputs (usage: RBF transactions)',
+    sortingStrategy: 'strategy for sorting inputs/outputs: bip69, none, random',
 };
 
 # Compose transaction
