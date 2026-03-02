@@ -29,7 +29,7 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-describe('Suite Sync [@androidOnly @T3T1]', () => {
+describe('Suite Sync [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ version: '2-main', seed: MNEMONIC });

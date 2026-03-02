@@ -27,7 +27,7 @@ const preloadedState = preparePreloadedReduxState(
 
 const LONG_RUNNING_TEST_TIMEOUT = 5 * 60 * 1000; // [ms]
 
-describe('Device onboarding [@androidOnly @T3T1]', () => {
+describe('Device onboarding [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });

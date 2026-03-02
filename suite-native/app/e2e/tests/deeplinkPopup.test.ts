@@ -2,17 +2,14 @@ import { expect as jestExpect } from '@jest/globals';
 import { exec } from 'child_process';
 
 import TrezorConnect from '@trezor/connect-mobile';
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
-import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
 import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { DeepLinkServer } from '../support/deepLinkServer';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
-import { getModelFromEnv, waitForVisible } from '../support/utils';
+import { waitForVisible } from '../support/utils';
 
 const deepLinkServer = new DeepLinkServer();
 
@@ -33,10 +30,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === Model.T3W1
-        ? btcDiscoveryFinishedStateT3W1
-        : btcDiscoveryFinishedStateT3T1,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    btcDiscoveryFinishedStateT3T1,
     deviceAutoEjectState,
 );
 
