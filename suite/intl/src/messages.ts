@@ -5122,6 +5122,15 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
         defaultMessage: 'Suite Sync',
     },
+    TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
+        id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
+        defaultMessage: 'Tron View-Only (Beta)',
+    },
+    TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
+        defaultMessage:
+            'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
+    },
     TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
         defaultMessage:

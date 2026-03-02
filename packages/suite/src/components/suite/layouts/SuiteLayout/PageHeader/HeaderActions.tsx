@@ -22,6 +22,7 @@ export const HeaderActions = () => {
     const isTradingAvailable = !['coinjoin'].includes(accountType);
     const isAccountLoading = selectedAccount.status === 'loading';
     const isDeviceConnected = device?.connected && device?.available;
+    const isSendVisible = selectedAccount.account?.networkType !== 'tron';
 
     return (
         <Row gap={12} alignItems="center">
@@ -39,16 +40,18 @@ export const HeaderActions = () => {
                     intent={isDeviceConnected ? 'brand' : 'neutral'}
                     priority={isDeviceConnected ? 'primary' : 'secondary'}
                 >
-                    <HeaderActionButton
-                        key="wallet-send"
-                        icon="arrowUp"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-send', { preserveParams: true });
-                        }}
-                        data-testid="@wallet/menu/wallet-send"
-                    >
-                        <Translation id="TR_NAV_SEND" />
-                    </HeaderActionButton>
+                    {isSendVisible ? (
+                        <HeaderActionButton
+                            key="wallet-send"
+                            icon="arrowUp"
+                            onClick={() => {
+                                goToWithAnalytics('wallet-send', { preserveParams: true });
+                            }}
+                            data-testid="@wallet/menu/wallet-send"
+                        >
+                            <Translation id="TR_NAV_SEND" />
+                        </HeaderActionButton>
+                    ) : null}
 
                     <HeaderActionButton
                         key="wallet-receive"

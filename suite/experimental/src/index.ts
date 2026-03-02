@@ -11,7 +11,8 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
-    | 'suite-sync';
+    | 'suite-sync'
+    | 'tron-view-only';
 
 /**
  * Maps Experimental feature to its generic product name TranslationKey.
@@ -24,4 +25,5 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'password-manager': 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
     'testnet-networks': 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
     slip24: 'TR_EXPERIMENTAL_SLIP24',
+    'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
 };
