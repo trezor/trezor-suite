@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { deactivateStellarTokenThunk } from '@suite-common/wallet-core';
@@ -88,87 +87,83 @@ export const DeactivationFeeScreen = () => {
 
     return (
         <Form form={form}>
-            <BottomSheetModalProvider>
-                <ConfirmOnTrezorWrapper
-                    isManualControlEnabled
-                    controlRef={confirmOnTrezorRef}
-                    closeActionType="back"
-                    closeAction={handleCancel}
-                    defaultHeader={
-                        <ScreenHeader
-                            title={
-                                <Translation id="moduleStellarToken.screenTitle.deactivateToken" />
-                            }
-                            closeActionType="back"
-                        />
-                    }
-                >
-                    <Box flex={1} justifyContent="space-between">
-                        <VStack spacing="sp16">
-                            <TokenInfoCard
-                                tokenName={tokenName}
-                                issuerDomain={issuerDomain}
-                                iconContractAddress={iconContractAddress}
-                                onPress={openTokenDetail}
-                            />
-
-                            {/* Warning Info */}
-                            <Card>
-                                <HStack alignItems="center" spacing="sp12">
-                                    <Icon name="info" color="iconSubdued" />
-                                    <Box flex={1}>
-                                        <Text variant="body-md">
-                                            <Translation
-                                                id="moduleStellarToken.deactivationFee.warningText"
-                                                values={{
-                                                    reserve: formatNetworkAmount(
-                                                        BASE_INFO.BASE_RESERVE.toString(),
-                                                        account.symbol,
-                                                        true,
-                                                    ),
-                                                }}
-                                            />
-                                        </Text>
-                                    </Box>
-                                </HStack>
-                            </Card>
-
-                            <FeeOptionsSection
-                                accountKey={accountKey}
-                                feeLevels={feeLevels}
-                                symbol={account.symbol}
-                                areFeesLoading={areFeesLoading}
-                                selectedFeeLevel={selectedFeeLevel}
-                                onSelectedFeeLevel={handleFeeLevelChange}
-                                onCustomFeeSet={handleCustomFeeSet}
-                                formDraft={formDraft}
-                            />
-                        </VStack>
-
-                        {/* Footer Button */}
-                        <Box paddingBottom="sp16">
-                            <Button
-                                onPress={handleReviewAndSign}
-                                isLoading={isSubmitting}
-                                isDisabled={isSubmitting || !isSubmittable}
-                                testID="@stellar-token/review-and-sign-button"
-                            >
-                                <Translation id="moduleStellarToken.networkFee.reviewAndSign" />
-                            </Button>
-                        </Box>
-                    </Box>
-
-                    <TokenDetailBottomSheet
-                        bottomSheetRef={tokenDetailRef}
-                        tokenName={tokenName}
-                        assetCode={assetCode}
-                        issuerDomain={issuerDomain}
-                        issuerAddress={issuerAddress}
-                        iconContractAddress={iconContractAddress}
-                        onClose={closeTokenDetail}
+            <ConfirmOnTrezorWrapper
+                isManualControlEnabled
+                controlRef={confirmOnTrezorRef}
+                closeActionType="back"
+                closeAction={handleCancel}
+                defaultHeader={
+                    <ScreenHeader
+                        title={<Translation id="moduleStellarToken.screenTitle.deactivateToken" />}
+                        closeActionType="back"
                     />
-                </ConfirmOnTrezorWrapper>
-            </BottomSheetModalProvider>
+                }
+            >
+                <Box flex={1} justifyContent="space-between">
+                    <VStack spacing="sp16">
+                        <TokenInfoCard
+                            tokenName={tokenName}
+                            issuerDomain={issuerDomain}
+                            iconContractAddress={iconContractAddress}
+                            onPress={openTokenDetail}
+                        />
+
+                        {/* Warning Info */}
+                        <Card>
+                            <HStack alignItems="center" spacing="sp12">
+                                <Icon name="info" color="iconSubdued" />
+                                <Box flex={1}>
+                                    <Text variant="body-md">
+                                        <Translation
+                                            id="moduleStellarToken.deactivationFee.warningText"
+                                            values={{
+                                                reserve: formatNetworkAmount(
+                                                    BASE_INFO.BASE_RESERVE.toString(),
+                                                    account.symbol,
+                                                    true,
+                                                ),
+                                            }}
+                                        />
+                                    </Text>
+                                </Box>
+                            </HStack>
+                        </Card>
+
+                        <FeeOptionsSection
+                            accountKey={accountKey}
+                            feeLevels={feeLevels}
+                            symbol={account.symbol}
+                            areFeesLoading={areFeesLoading}
+                            selectedFeeLevel={selectedFeeLevel}
+                            onSelectedFeeLevel={handleFeeLevelChange}
+                            onCustomFeeSet={handleCustomFeeSet}
+                            formDraft={formDraft}
+                        />
+                    </VStack>
+
+                    {/* Footer Button */}
+                    <Box paddingBottom="sp16">
+                        <Button
+                            onPress={handleReviewAndSign}
+                            isLoading={isSubmitting}
+                            isDisabled={isSubmitting || !isSubmittable}
+                            testID="@stellar-token/review-and-sign-button"
+                        >
+                            <Translation id="moduleStellarToken.networkFee.reviewAndSign" />
+                        </Button>
+                    </Box>
+                </Box>
+
+                <TokenDetailBottomSheet
+                    bottomSheetRef={tokenDetailRef}
+                    tokenName={tokenName}
+                    assetCode={assetCode}
+                    issuerDomain={issuerDomain}
+                    issuerAddress={issuerAddress}
+                    iconContractAddress={iconContractAddress}
+                    onClose={closeTokenDetail}
+                />
+            </ConfirmOnTrezorWrapper>
         </Form>
     );
 };

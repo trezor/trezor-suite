@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
 import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
@@ -132,43 +131,40 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     return (
         <Form form={form}>
-            {/*// BottomSheetModalProvider must be inside FormProvider to keep context available for sheets rendered via portal*/}
-            <BottomSheetModalProvider>
-                <VStack spacing="sp32" flex={1}>
-                    {!!selectedFeeLevelTransaction && (
-                        <RecipientsSummary
+            <VStack spacing="sp32" flex={1}>
+                {!!selectedFeeLevelTransaction && (
+                    <RecipientsSummary
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                        selectedFeeLevel={selectedFeeLevelTransaction}
+                    />
+                )}
+                <VStack flex={1} justifyContent="space-between" spacing="sp24">
+                    <FeesContent
+                        selectedFeeLevel={selectedFeeLevel}
+                        feeLevels={feeLevels}
+                        symbol={symbol}
+                        networkType={account.networkType}
+                        accountKey={accountKey}
+                        areFeesLoading={areFeesLoading}
+                        onSelectedFeeLevel={handleFeeLevelChange}
+                        onCustomFeeSet={handleCustomFeeSet}
+                        formDraft={formDraft}
+                    />
+                    {!!totalAmount && !!fee && (
+                        <FeesFooter
                             accountKey={accountKey}
+                            isSubmittable={isSubmittable}
+                            onSubmit={handleNavigateToReviewScreen}
+                            totalAmount={totalAmount}
+                            fee={fee}
+                            symbol={symbol}
                             tokenContract={tokenContract}
-                            selectedFeeLevel={selectedFeeLevelTransaction}
+                            withSubmitButton={true}
                         />
                     )}
-                    <VStack flex={1} justifyContent="space-between" spacing="sp24">
-                        <FeesContent
-                            selectedFeeLevel={selectedFeeLevel}
-                            feeLevels={feeLevels}
-                            symbol={symbol}
-                            networkType={account.networkType}
-                            accountKey={accountKey}
-                            areFeesLoading={areFeesLoading}
-                            onSelectedFeeLevel={handleFeeLevelChange}
-                            onCustomFeeSet={handleCustomFeeSet}
-                            formDraft={formDraft}
-                        />
-                        {!!totalAmount && !!fee && (
-                            <FeesFooter
-                                accountKey={accountKey}
-                                isSubmittable={isSubmittable}
-                                onSubmit={handleNavigateToReviewScreen}
-                                totalAmount={totalAmount}
-                                fee={fee}
-                                symbol={symbol}
-                                tokenContract={tokenContract}
-                                withSubmitButton={true}
-                            />
-                        )}
-                    </VStack>
                 </VStack>
-            </BottomSheetModalProvider>
+            </VStack>
         </Form>
     );
 };
