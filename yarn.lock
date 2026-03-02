@@ -11284,6 +11284,7 @@ __metadata:
   dependencies:
     "@everstake/wallet-sdk-ethereum": "npm:1.0.5"
     "@suite-common/staking-solana-types": "workspace:*"
+    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11644,6 +11645,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/wallet-api@workspace:*, @suite-common/wallet-api@workspace:^, @suite-common/wallet-api@workspace:suite-common/wallet-api":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/wallet-api@workspace:suite-common/wallet-api"
+  dependencies:
+    orval: "npm:8.2.0"
+    prettier: "npm:3.8.1"
+    zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:^, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
@@ -11684,6 +11695,7 @@ __metadata:
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11698,8 +11710,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-    orval: "npm:8.2.0"
-    prettier: "npm:3.8.1"
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.71.1"
     react-redux: "npm:^9.2.0"
@@ -16037,6 +16047,7 @@ __metadata:
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
     "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-api": "workspace:^"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

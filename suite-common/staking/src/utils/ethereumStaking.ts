@@ -5,6 +5,7 @@ import {
 } from '@everstake/wallet-sdk-ethereum';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
+import { EthereumValidatorsQueue } from '@suite-common/wallet-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     DAYS_TO_ADD_TO_POOL_DEFAULT,
@@ -14,12 +15,7 @@ import {
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
-import {
-    PrecomposedLevels,
-    StakeType,
-    ValidatorsQueue,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { PrecomposedLevels, StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getEthereumEstimateFeeParams,
     isPending,
@@ -548,8 +544,7 @@ export const getStakeTxGasLimit = async ({
 
 export const getDaysToAddToPool = (
     stakeTxs: WalletAccountTransaction[],
-    // TODO: use generated type
-    validatorsQueue?: ValidatorsQueue,
+    validatorsQueue?: EthereumValidatorsQueue,
 ) => {
     if (
         validatorsQueue?.validatorAddingDelay === undefined ||
@@ -573,8 +568,7 @@ export const getDaysToAddToPool = (
 
 export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
-    // TODO: use generated type
-    validatorsQueue?: ValidatorsQueue,
+    validatorsQueue?: EthereumValidatorsQueue,
 ) => {
     if (validatorsQueue?.validatorWithdrawTime === undefined) {
         return undefined;
@@ -593,8 +587,7 @@ export const getDaysToUnstake = (
     return daysToWait <= 0 ? 1 : daysToWait;
 };
 
-// TODO: use generated type
-export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => {
+export const getDaysToAddToPoolInitial = (validatorsQueue?: EthereumValidatorsQueue) => {
     if (
         validatorsQueue?.validatorAddingDelay === undefined ||
         validatorsQueue?.validatorActivationTime === undefined

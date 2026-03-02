@@ -2,12 +2,22 @@ import { ZodError } from 'zod';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import {
+    CardanoStatsResponse,
+    EthereumValidatorsQueue,
+    PoolStatsResponse,
+    SolanaDashboardResponse,
+    SolanaStakeAccountRewardsResponse,
+    SolanaStakeRewardsByAccount,
+    SolanaTotalStakeRewardsByAccount,
+    SolanaTotalStakeRewardsResponse,
+    ValidatorsQueueResponse,
+} from '@suite-common/wallet-api';
 import { NetworkConfig } from '@suite-common/wallet-config';
 import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
-    EverstakeDataParams,
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
     EverstakeStakingInfo,
@@ -16,18 +26,6 @@ import { isTestnet, requestUrl } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { CardanoStatsResponse } from './api/schemas/everstake-ada-stats';
-import { PoolStatsResponse, ValidatorsQueueResponse } from './api/schemas/everstake-eth-b2c';
-import { SolanaDashboardResponse } from './api/schemas/everstake-sol-dashboard';
-import {
-    SolanaStakeAccountRewardsResponse,
-    SolanaTotalStakeRewardsResponse,
-} from './api/schemas/everstake-sol-rewards';
-import {
-    EthereumValidatorsQueue,
-    SolanaStakeRewardsByAccount,
-    SolanaTotalStakeRewardsByAccount,
-} from './api/types';
 import {
     EVERSTAKE_API_KEY,
     EVERSTAKE_ENDPOINT_PREFIX,

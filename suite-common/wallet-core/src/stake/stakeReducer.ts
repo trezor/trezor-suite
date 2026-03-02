@@ -1,4 +1,9 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    EthereumValidatorsQueue,
+    SolanaStakeRewardsByAccount,
+    SolanaTotalStakeRewardsByAccount,
+} from '@suite-common/wallet-api';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     EverstakeStakingInfo,
@@ -8,11 +13,6 @@ import {
 } from '@suite-common/wallet-types';
 import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
-import {
-    EthereumValidatorsQueue,
-    SolanaStakeRewardsByAccount,
-    SolanaTotalStakeRewardsByAccount,
-} from './api/types';
 import { VotingDelegationOption, stakeActions } from './stakeActions';
 import {
     fetchEverstakeData,

@@ -46,24 +46,6 @@ export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
     Record<Extract<NetworkSymbol, 'sol' | 'dsol' | 'ada'>, string>
 >;
 
-export type EverstakeDataParams = {
-    symbol: NetworkSymbol;
-    endpointType: EverstakeEndpointType;
-    timestamp?: number;
-};
-
-export interface ValidatorsQueue {
-    validatorsEnteringNum?: number;
-    validatorsExitingNum?: number;
-    validatorsTotalCount?: number;
-    validatorsPerEpoch?: number;
-    validatorActivationTime?: number;
-    validatorExitTime?: number;
-    validatorWithdrawTime?: number;
-    validatorAddingDelay?: number;
-    updatedAt?: number;
-}
-
 export interface AmountLimitsString {
     currency: string;
     minCrypto?: string;

@@ -33,7 +33,7 @@ async function fetchSpec(
     return await response.text();
 }
 
-export const OPENAPI_DIR = resolve(process.cwd(), './src/stake/api/openapi');
+export const OPENAPI_DIR = resolve(process.cwd(), './src/stake/openapi');
 
 export const OPENAPI_SPECS = [
     {

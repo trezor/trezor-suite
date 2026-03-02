@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import {
-    SolanaStakeAccountReward,
-    fetchEverstakeRewards,
-    selectStakingRewardsHistory,
-} from '@suite-common/wallet-core';
+import { SolanaStakeAccountReward } from '@suite-common/wallet-api';
+import { fetchEverstakeRewards, selectStakingRewardsHistory } from '@suite-common/wallet-core';
 import { EverstakeRewardsEndpointType } from '@suite-common/wallet-types';
 import { useDebounce } from '@trezor/react-utils';
 
