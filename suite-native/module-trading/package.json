@@ -90,6 +90,6 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
-        "@types/invity-api": "^1.1.13"
+        "@types/invity-api": "^1.1.14"
     }
 }
