@@ -4,7 +4,10 @@ import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
+import {
+    selectEnforceQuotaManager,
+    selectHasDeviceAllowance,
+} from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import {
     SuiteSync,
@@ -105,6 +108,7 @@ export const createSuiteSyncCompositionRoot = (
             selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
         defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
+        getEnforceQuotaManager: toGetter(deps.getState, selectEnforceQuotaManager),
     });
 
     const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({

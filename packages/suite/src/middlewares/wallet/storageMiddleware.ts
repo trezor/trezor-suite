@@ -205,7 +205,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
                     suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
-                )
+                    suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
+                )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncQuotaManager());
             }

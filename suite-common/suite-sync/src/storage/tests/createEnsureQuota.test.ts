@@ -45,6 +45,7 @@ describe(createEnsureQuota.name, () => {
             hasAllowance: null,
             defaultRelayUrl: DEFAULT_RELAY_URL,
             getRelayUrl: () => DEFAULT_RELAY_URL,
+            getEnforceQuotaManager: () => false,
             getDeviceForStaticSessionId: () => getDevice(),
         });
 
@@ -73,6 +74,7 @@ describe(createEnsureQuota.name, () => {
             hasAllowance,
             defaultRelayUrl: DEFAULT_RELAY_URL,
             getRelayUrl: () => relayUrl,
+            getEnforceQuotaManager: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -80,6 +82,24 @@ describe(createEnsureQuota.name, () => {
 
         expect(result).toEqual(ok(undefined));
         expect(deps.dispatch).not.toHaveBeenCalled();
+    });
+
+    it('dispatches when enforceQuotaManager is set with custom relay URL', async () => {
+        const device = mockSuiteDevice();
+
+        const deps = createMockDeps<EnsureQuotaDeps>({
+            dispatch: () => Promise.resolve({ success: true }),
+            hasAllowance: () => false,
+            defaultRelayUrl: DEFAULT_RELAY_URL,
+            getRelayUrl: () => 'wss://custom-relay.example.com',
+            getEnforceQuotaManager: () => true,
+            getDeviceForStaticSessionId: () => device,
+        });
+
+        const result = await createEnsureQuota(deps)(DEFAULT_PARAMS);
+
+        expect(result).toEqual(ok(undefined));
+        expect(deps.dispatch).toHaveBeenCalled();
     });
 
     it('returns WriteModeRequiredForAllocation error when allocation fails with that error', async () => {
@@ -94,6 +114,7 @@ describe(createEnsureQuota.name, () => {
             hasAllowance: () => false,
             defaultRelayUrl: DEFAULT_RELAY_URL,
             getRelayUrl: () => DEFAULT_RELAY_URL,
+            getEnforceQuotaManager: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -115,6 +136,7 @@ describe(createEnsureQuota.name, () => {
             hasAllowance: () => false,
             defaultRelayUrl: DEFAULT_RELAY_URL,
             getRelayUrl: () => DEFAULT_RELAY_URL,
+            getEnforceQuotaManager: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 

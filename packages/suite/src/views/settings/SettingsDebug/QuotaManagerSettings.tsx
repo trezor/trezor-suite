@@ -1,13 +1,15 @@
 import { useState } from 'react';
 
 import {
+    enforceQuotaManagerUpdated,
     eraseFetchedDataDebug,
+    selectEnforceQuotaManager,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Column, Input } from '@trezor/components';
+import { Button, Checkbox, Column, Input } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SettingsSection } from 'src/components/settings/SettingsSection';
@@ -19,6 +21,7 @@ export const QuotaManagerSettings = () => {
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
+    const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
     const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
@@ -38,6 +41,13 @@ export const QuotaManagerSettings = () => {
     };
 
     const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+
+    const onToggleEnforceQuotaManager = () =>
+        dispatch(
+            enforceQuotaManagerUpdated({
+                enforce: !enforceQuotaManager,
+            }),
+        );
 
     return (
         <SettingsSection title="Quota Manager">
@@ -101,6 +111,16 @@ export const QuotaManagerSettings = () => {
                             ))
                         )}
                     </Column>
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn title="Enforce Quota Manager for custom relay" />
+                <ActionColumn>
+                    <Checkbox
+                        data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
+                        isChecked={enforceQuotaManager}
+                        onClick={onToggleEnforceQuotaManager}
+                    />
                 </ActionColumn>
             </SectionItem>
             <SectionItem>

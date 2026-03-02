@@ -516,6 +516,7 @@ export const saveSuiteSyncQuotaManager = () => (_dispatch: Dispatch, getState: G
         'suiteSyncQuotaManager',
         {
             baseUrl: suiteSyncQuotaManager.baseUrl,
+            enforceQuotaManager: suiteSyncQuotaManager.enforceQuotaManager,
             registeredDevices: suiteSyncQuotaManager.registeredDevices,
             ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
         },

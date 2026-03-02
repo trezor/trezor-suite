@@ -22,6 +22,7 @@ export {
     suiteSyncQuotaManagerActions,
     eraseFetchedData as eraseFetchedDataDebug,
     noQuotaLeftWarningDismissed,
+    enforceQuotaManagerUpdated,
 } from './quotaManagerActions';
 
 /**
@@ -37,6 +38,7 @@ export {
     selectLeftDeviceQuota,
     selectDeviceDismissedNoQuotaLeftWarning,
     selectShouldDisplayOutOfQuotaAlert,
+    selectEnforceQuotaManager,
 } from './quotaManagerSelectors';
 export type { WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 
