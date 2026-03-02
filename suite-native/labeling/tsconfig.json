@@ -7,6 +7,12 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {

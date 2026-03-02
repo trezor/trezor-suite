@@ -5,12 +5,11 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
 import type { StaticSessionId } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
+import { useSuiteSyncErrorHandler } from '../hooks/useSuiteSyncLabelErrorHandler';
 import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
@@ -30,7 +29,7 @@ export const TransactionOutputLabelEditable = ({
 }: TransactionOutputLabelEditableProps) => {
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isTokenTxTargetId = isTokenTargetId(txTargetId);
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
@@ -53,22 +52,7 @@ export const TransactionOutputLabelEditable = ({
         });
 
         if (!result.success) {
-            const { type } = result.error;
-            switch (type) {
-                case 'SuiteSyncUnavailableOnDeviceError':
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                case 'SuiteSyncUpdateError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
-
-                    return;
-                case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
-                    return;
-                default:
-                    return exhaustive(type);
-            }
+            handleSuiteSyncError(result.error);
         }
     };
 
