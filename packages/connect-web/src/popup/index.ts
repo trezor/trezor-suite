@@ -4,6 +4,7 @@ import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/event
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect-common/src/data/version';
 import {
     AbstractMessageChannel,
@@ -327,8 +328,8 @@ export class PopupManager {
         // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
         // it was interrupted so we safely fake it.
         this.channel.resolveMessagePromises({
-            code: 'Method_Interrupted',
-            error: POPUP.CLOSED,
+            success: false,
+            error: TypedError('Method_Interrupted'),
         });
     }
 }
