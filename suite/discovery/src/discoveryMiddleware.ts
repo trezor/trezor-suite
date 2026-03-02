@@ -2,12 +2,14 @@ import { type UnknownAction } from 'redux';
 
 import {
     type AuthenticityChecksRootState,
+    selectDeviceNeedsInteractiveDeviceChecks,
     selectShouldDisplayDeviceCompromised,
 } from '@suite/authenticity-checks';
 import { type LocksRootState } from '@suite/locks';
 import { type RouterRootState, routerAppChanged } from '@suite/router';
 import { connectPopupCallInnerThunk } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
@@ -48,8 +50,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         : { isDeviceBecomingAcquired: false, isDeviceBecomingConnected: false };
 
     /*
-         The following conditions always block discovery:
-        */
+     The following conditions always block discovery:
+    */
 
     // 1. Discovery should only start on certain apps
     if (!selectShouldRouterAppStartDiscovery(getState())) return action;
@@ -61,15 +63,18 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     // 3. Discovery must be blocked while the compromised device warning is shown.
     if (selectShouldDisplayDeviceCompromised(getState())) return action;
 
-    // 4. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
+    // 4. Discovery is delayed while interactive device checks are pending.
+    if (selectDeviceNeedsInteractiveDeviceChecks(getState(), device)) return action;
+
+    // 5. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
     //    *after* device acquisition, and also needs device interaction to complete (would block discovery).
     const isTHPAutoconnectModal = selectThpAutoconnectStep(getState()) === 'AutoconnectInfo';
     const isTHPAutoconnectFinished = thpActions.finishAutoconnectFlow.match(action);
     if (isTHPAutoconnectModal) return action;
 
     /*
-         Start discovery only on the following actions:
-        */
+     Start discovery only on the following actions:
+    */
     if (
         isDeviceBecomingAcquired ||
         isDeviceBecomingConnected ||
@@ -80,9 +85,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         deviceActions.selectDevice.match(action) ||
         changeNetworks.match(action) ||
         accountsActions.updateAccount.match(action) || // empty account can become nonempty
-        accountsActions.changeAccountVisibility.match(action)
+        accountsActions.changeAccountVisibility.match(action) ||
+        // interactive device checks are finished
+        persistentDeviceDataActions.setManualDeviceCheckSuccess.match(action) ||
+        persistentDeviceDataActions.setDeviceAuthenticityResult.match(action)
     ) {
-        // 5. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
+        // 6. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
         // so it won't be called on every action, because the selector is expensive and not viable for memoization.
         const shouldRediscover = selectShouldRediscover(getState(), device);
         if (!shouldRediscover) return action;

@@ -4,7 +4,10 @@ import {
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
 import { getIsDeviceAuthenticityCheckSupportedAndEnabled } from '@suite-common/device-authenticity';
-import { selectDeviceAuthenticityByDeviceId } from '@suite-common/persistent-device-data';
+import {
+    selectDeviceAuthenticityByDeviceId,
+    selectDeviceNeedsManualCheck,
+} from '@suite-common/persistent-device-data';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 
@@ -46,3 +49,13 @@ export const selectShouldCheckDeviceAuthenticity = (
 
 export const selectShouldRouterAppSkipInteractiveDeviceChecks = (state: RouterRootState): boolean =>
     SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS[selectRouterApp(state)];
+
+/**
+ * Whether MDC or DAC are supported, enabled, but still unfinished for the device.
+ */
+export const selectDeviceNeedsInteractiveDeviceChecks = (
+    state: AuthenticityChecksRootState,
+    device: TrezorDevice | undefined,
+): boolean =>
+    selectDeviceNeedsManualCheck(state, device) ||
+    selectShouldCheckDeviceAuthenticity(state, device);
