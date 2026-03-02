@@ -238,9 +238,7 @@ const SubmitButton = ({ onClick, text, isLoading }: SubmitButtonProps) => (
 
 export const Method = () => {
     const theme = useTheme();
-    const { method } = useSelector(state => ({
-        method: state.method,
-    }));
+    const method = useSelector(state => state.method);
     const actions = useActions({
         onSubmit: methodActions.onSubmit,
         onCancelCall: methodActions.onCancelCall,

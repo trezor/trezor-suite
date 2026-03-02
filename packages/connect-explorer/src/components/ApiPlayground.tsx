@@ -85,9 +85,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const { elevation } = useElevation();
 
     const [selectedOption, setSelectedOption] = useState(0);
-    const { method } = useSelector(state => ({
-        method: state.method,
-    }));
+    const method = useSelector(state => state.method);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,
