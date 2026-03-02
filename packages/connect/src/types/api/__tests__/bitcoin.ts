@@ -482,16 +482,6 @@ export const pushTransaction = async (api: TrezorConnect) => {
 };
 
 export const composeTransaction = async (api: TrezorConnect) => {
-    // Method with mixed params and mixed responses
-
-    const compose = await api.composeTransaction({
-        outputs: [],
-        coin: 'btc',
-    });
-    if (compose.success) {
-        compose.payload.serializedTx.toLowerCase();
-    }
-
     const precompose = await api.composeTransaction({
         outputs: [],
         account: {

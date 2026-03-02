@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { UserContextPayload } from '@suite-common/suite-types';
-import TrezorConnect, { UI_RESPONSE, UiResponseFee } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { DeferredResponse, createDeferred } from '@trezor/utils';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -35,30 +35,6 @@ export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispa
         type: UI_RESPONSE.RECEIVE_CONFIRMATION,
         payload: confirmation,
     });
-
-    dispatch(onCancel());
-};
-export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Dispatch) => {
-    if (accountIndex === null) {
-        TrezorConnect.cancel();
-    } else {
-        TrezorConnect.uiResponse({
-            type: UI_RESPONSE.RECEIVE_ACCOUNT,
-            payload: accountIndex,
-        });
-    }
-
-    dispatch(onCancel());
-};
-export const onReceiveFee = (payload: UiResponseFee['payload'] | null) => (dispatch: Dispatch) => {
-    if (payload === null) {
-        TrezorConnect.cancel();
-    } else {
-        TrezorConnect.uiResponse({
-            type: UI_RESPONSE.RECEIVE_FEE,
-            payload,
-        });
-    }
 
     dispatch(onCancel());
 };

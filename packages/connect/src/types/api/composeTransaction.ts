@@ -34,24 +34,6 @@ type SortingStrategyPropsWithBackCompatibility =
           sortingStrategy?: TransactionInputOutputSortingStrategy;
       };
 
-export type ComposeParams = {
-    outputs: ComposeOutput[];
-    coin: string;
-    identity?: string;
-    account?: undefined;
-    feeLevels?: undefined;
-    push?: boolean;
-    sequence?: number;
-    baseFee?: number;
-    floorBaseFee?: boolean;
-} & SortingStrategyPropsWithBackCompatibility;
-
-export type SignedTransaction = {
-    signatures: string[];
-    serializedTx: string;
-    txid?: string;
-};
-
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
@@ -107,10 +89,6 @@ export type PrecomposedResult =
     | PrecomposeResultError
     | PrecomposeResultNonFinal
     | PrecomposeResultFinal;
-
-export declare function composeTransaction(
-    params: Params<ComposeParams>,
-): Response<SignedTransaction>;
 
 export declare function composeTransaction(
     params: Params<PrecomposeParams>,

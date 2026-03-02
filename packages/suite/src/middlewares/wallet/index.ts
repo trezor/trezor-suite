@@ -1,6 +1,5 @@
 import type { MiddlewareAPI } from 'redux';
 
-import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
@@ -35,7 +34,6 @@ export const getWalletMiddlewares = (
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
-    prepareConnectPopupMiddleware(getExtra),
     prepareWalletConnectMiddleware(getExtra),
     prepareSuiteSyncMiddleware(getExtra),
 ];

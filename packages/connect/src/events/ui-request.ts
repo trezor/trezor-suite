@@ -6,10 +6,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
-import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
-import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
-import type { SelectFeeLevel } from '../types/fees';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';
@@ -44,10 +41,6 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
-    SELECT_ACCOUNT: 'ui-select_account',
-    SELECT_FEE: 'ui-select_fee',
-    UPDATE_CUSTOM_FEE: 'ui-update_custom_fee',
-    INSUFFICIENT_FUNDS: 'ui-insufficient_funds',
     REQUEST_BUTTON: 'ui-button',
     REQUEST_WORD: 'ui-request_word',
 
@@ -58,10 +51,6 @@ export const UI_REQUEST = {
 export type UiRequestWithoutPayload =
     | {
           type: typeof UI_REQUEST.TRANSPORT;
-          payload?: typeof undefined;
-      }
-    | {
-          type: typeof UI_REQUEST.INSUFFICIENT_FUNDS;
           payload?: typeof undefined;
       }
     | {
@@ -204,34 +193,6 @@ export interface FirmwareException {
     payload: Device;
 }
 
-export interface UiRequestSelectAccount {
-    type: typeof UI_REQUEST.SELECT_ACCOUNT;
-    payload: {
-        type: 'start' | 'progress' | 'end';
-        coinInfo: CoinInfo;
-        accountTypes?: DiscoveryAccountType[];
-        defaultAccountType?: DiscoveryAccountType;
-        accounts?: DiscoveryAccount[];
-        preventEmpty?: boolean;
-    };
-}
-
-export interface UiRequestSelectFee {
-    type: typeof UI_REQUEST.SELECT_FEE;
-    payload: {
-        coinInfo: BitcoinNetworkInfo;
-        feeLevels: SelectFeeLevel[];
-    };
-}
-
-export interface UpdateCustomFee {
-    type: typeof UI_REQUEST.UPDATE_CUSTOM_FEE;
-    payload: {
-        coinInfo: BitcoinNetworkInfo;
-        feeLevels: SelectFeeLevel[];
-    };
-}
-
 export interface BundleProgress<R> {
     type: typeof UI_REQUEST.BUNDLE_PROGRESS;
     payload: {
@@ -284,10 +245,7 @@ export type UiEvent =
     | UiRequestButton
     | UiRequestConfirmation
     | UiRequestUnexpectedDeviceMode
-    | UiRequestSelectAccount
-    | UiRequestSelectFee
     | UiRequestThpPairing
-    | UpdateCustomFee
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareProgressUnexpectedDelay

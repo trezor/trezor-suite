@@ -14,8 +14,6 @@ export const UI_RESPONSE = {
     RECEIVE_PIN: 'ui-receive_pin',
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
     RECEIVE_THP_PAIRING_TAG: 'ui-receive_thp_pairing_tag',
-    RECEIVE_ACCOUNT: 'ui-receive_account',
-    RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
 } as const;
 
@@ -58,35 +56,12 @@ export interface UiResponseThpPairingTag {
               selectedMethod: ThpPairingMethod | keyof typeof ThpPairingMethod;
           };
 }
-export interface UiResponseAccount {
-    type: typeof UI_RESPONSE.RECEIVE_ACCOUNT;
-    payload: number;
-}
-
-export interface UiResponseFee {
-    type: typeof UI_RESPONSE.RECEIVE_FEE;
-    payload:
-        | {
-              type: 'compose-custom';
-              value: string;
-          }
-        | {
-              type: 'change-account';
-          }
-        | {
-              type: 'send';
-              value: string;
-          };
-}
-
 export type UiResponseEvent =
     | UiResponseConfirmation
     | UiResponsePin
     | UiResponseWord
     | UiResponsePassphrase
     | UiResponseThpPairingTag
-    | UiResponseAccount
-    | UiResponseFee
     | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
