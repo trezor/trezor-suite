@@ -13448,7 +13448,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send@workspace:suite-native/module-send"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"

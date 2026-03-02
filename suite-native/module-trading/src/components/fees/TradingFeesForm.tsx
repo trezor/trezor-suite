@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
@@ -61,33 +60,30 @@ export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormPr
 
     return (
         <Form form={form}>
-            {/*// BottomSheetModalProvider must be inside FormProvider to keep context available for sheets rendered via portal*/}
-            <BottomSheetModalProvider>
-                <VStack flex={1} justifyContent="space-between" spacing="sp24">
-                    <FeesContent
-                        selectedFeeLevel={selectedFeeLevel}
-                        feeLevels={feeLevels}
-                        symbol={symbol}
+            <VStack flex={1} justifyContent="space-between" spacing="sp24">
+                <FeesContent
+                    selectedFeeLevel={selectedFeeLevel}
+                    feeLevels={feeLevels}
+                    symbol={symbol}
+                    accountKey={accountKey}
+                    areFeesLoading={areFeesLoading}
+                    onSelectedFeeLevel={handleFeeLevelChange}
+                    onCustomFeeSet={handleCustomFeeSet}
+                    formDraft={formDraft}
+                    networkType={account.networkType}
+                />
+                {!!totalAmount && !!fee && (
+                    <FeesFooter
                         accountKey={accountKey}
-                        areFeesLoading={areFeesLoading}
-                        onSelectedFeeLevel={handleFeeLevelChange}
-                        onCustomFeeSet={handleCustomFeeSet}
-                        formDraft={formDraft}
-                        networkType={account.networkType}
+                        isSubmittable={isSubmittable}
+                        totalAmount={totalAmount}
+                        fee={fee}
+                        symbol={symbol}
+                        tokenContract={tokenContract}
+                        withSubmitButton={false}
                     />
-                    {!!totalAmount && !!fee && (
-                        <FeesFooter
-                            accountKey={accountKey}
-                            isSubmittable={isSubmittable}
-                            totalAmount={totalAmount}
-                            fee={fee}
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            withSubmitButton={false}
-                        />
-                    )}
-                </VStack>
-            </BottomSheetModalProvider>
+                )}
+            </VStack>
         </Form>
     );
 };
