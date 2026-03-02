@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     TradingCountryCode,
-    type TradingCountrySubdivisionOption,
     type TradingPaymentMethodListProps,
     enabledTradingCurrencies,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     regional,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -28,6 +28,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 export const useTradingSellFormDefaultValues = (
     accountKey: AccountKey,
     sellInfoCountry: TradingCountryCode | undefined,
+    sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {
     const { cryptoId } = useTradingFormAccount('sell');
     const { isTorEnabled } = useSelector(selectTorState);
@@ -37,13 +38,13 @@ export const useTradingSellFormDefaultValues = (
         cryptoId,
     });
     const country = !isTorEnabled ? sellInfoCountry : regional.UNKNOWN_COUNTRY;
+    const countrySubdivision = !isTorEnabled ? sellInfoCountrySubdivision : undefined;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
 
-    /**
-     * TODO: https://github.com/trezor/trezor-trade-api/issues/502
-     * Implement default subdivision when it's implemented in the backend
-     * */
-    const defaultSubdivision: TradingCountrySubdivisionOption | undefined = undefined;
+    const defaultSubdivision = useMemo(
+        () => getDefaultCountrySubdivision(countrySubdivision),
+        [countrySubdivision],
+    );
 
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 

@@ -137,7 +137,11 @@ export const useTradingSellForm = ({
         defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
-    } = useTradingSellFormDefaultValues(accountKey, sellInfo?.country);
+    } = useTradingSellFormDefaultValues(
+        accountKey,
+        sellInfo?.country,
+        sellInfo?.countrySubdivision,
+    );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {

@@ -11,6 +11,7 @@ export interface SellInfo {
     supportedFiatCurrencies: string[];
     supportedCryptoCurrencies: CryptoId[];
     country: TradingCountryCode;
+    countrySubdivision?: string;
 }
 
 export type TradingSellState = {
