@@ -548,6 +548,7 @@ export const getStakeTxGasLimit = async ({
 
 export const getDaysToAddToPool = (
     stakeTxs: WalletAccountTransaction[],
+    // TODO: use generated type
     validatorsQueue?: ValidatorsQueue,
 ) => {
     if (
@@ -572,6 +573,7 @@ export const getDaysToAddToPool = (
 
 export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
+    // TODO: use generated type
     validatorsQueue?: ValidatorsQueue,
 ) => {
     if (validatorsQueue?.validatorWithdrawTime === undefined) {
@@ -591,6 +593,7 @@ export const getDaysToUnstake = (
     return daysToWait <= 0 ? 1 : daysToWait;
 };
 
+// TODO: use generated type
 export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => {
     if (
         validatorsQueue?.validatorAddingDelay === undefined ||

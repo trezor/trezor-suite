@@ -14,3 +14,39 @@ export const httpRequest = async (url: string, type = 'text'): Promise<any> => {
     }
     throw new Error(`${url} ${response.statusText}`);
 };
+
+interface RequestUrlParams<
+    Base extends string,
+    Pathname extends string,
+    SearchParams extends Record<string, string>,
+> {
+    base: Base;
+    pathname?: Pathname;
+    searchParams?: SearchParams;
+}
+
+export function requestUrl<
+    Base extends string,
+    Pathname extends string,
+    SearchParams extends Record<string, string>,
+>({
+    base,
+    pathname,
+    searchParams,
+}: RequestUrlParams<
+    Base,
+    Pathname,
+    SearchParams
+>): `${Base}${Pathname extends string ? `/${Pathname}` : ``}` {
+    const url = new URL(base);
+
+    if (pathname) {
+        url.pathname = `${url.pathname}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
+    }
+
+    if (searchParams) {
+        url.search = new URLSearchParams(searchParams).toString();
+    }
+
+    return url.toString() as `${Base}${Pathname extends string ? `/${Pathname}` : ``}`;
+}

@@ -174,6 +174,7 @@ describe('getStakeTxGasLimit', () => {
 type GetDaysArgs = {
     unstakeTxs: WalletAccountTransaction[];
     stakeTxs: WalletAccountTransaction[];
+    // TODO: use generated type
     validatorsQueue?: ValidatorsQueue;
 };
 describe('getDaysToAddToPool', () => {
