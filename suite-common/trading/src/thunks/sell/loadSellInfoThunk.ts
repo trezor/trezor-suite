@@ -41,6 +41,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
             supportedFiatCurrencies: [...new Set(supportedFiatCurrencies)],
             supportedCryptoCurrencies: [...new Set(supportedCryptoCurrencies)],
             country: sellList.country as TradingCountryCode,
+            countrySubdivision: sellList.subdivision,
         });
     },
 );
