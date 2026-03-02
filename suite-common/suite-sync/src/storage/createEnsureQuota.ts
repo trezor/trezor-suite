@@ -21,6 +21,7 @@ export type EnsureQuotaDeps = {
     hasAllowance: GetDeviceHasAllowance;
     defaultRelayUrl: string;
     getRelayUrl: () => string;
+    getEnforceQuotaManager: () => boolean;
 } & GetDeviceForStaticSessionIdDep;
 
 export type EnsureQuotaParams = {
@@ -49,8 +50,10 @@ export const createEnsureQuota =
             return ok();
         }
 
-        // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored.
-        const isQuotaManagerEnabled = deps.getRelayUrl() === deps.defaultRelayUrl;
+        // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored,
+        // unless enforceQuotaManager is set (used for e2e tests with a local relay).
+        const isQuotaManagerEnabled =
+            deps.getRelayUrl() === deps.defaultRelayUrl || deps.getEnforceQuotaManager();
 
         if (
             deps.hasAllowance({ walletDescriptor, deviceId: device.id }) ||

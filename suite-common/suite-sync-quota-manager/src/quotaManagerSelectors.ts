@@ -44,6 +44,9 @@ export const selectDeviceDismissedNoQuotaLeftWarning = (
     state.suiteSyncQuotaManager.registeredDevices.find(d => d.deviceId === deviceId)
         ?.dismissedNoQuotaLeftWarning;
 
+export const selectEnforceQuotaManager = (state: WithSuiteSyncQuotaManagerState) =>
+    state.suiteSyncQuotaManager.enforceQuotaManager;
+
 export const selectHasDeviceAllowance = (
     state: WithSuiteSyncQuotaManagerState,
     deviceId: string,

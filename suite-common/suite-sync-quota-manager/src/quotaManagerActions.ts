@@ -50,6 +50,11 @@ export const noQuotaLeftWarningDismissed = createAction(
     }),
 );
 
+export const enforceQuotaManagerUpdated = createAction(
+    `${QUOTA_MANAGER_PREFIX}/enforceQuotaManagerUpdated`,
+    (payload: { enforce: boolean }) => ({ payload }),
+);
+
 export const suiteSyncQuotaManagerActions = {
     updateQuotaManagerBaseUrl,
     quotaManagerFetchError,
@@ -57,4 +62,5 @@ export const suiteSyncQuotaManagerActions = {
     quotaManagerOwnerFetched,
     eraseFetchedData,
     noQuotaLeftWarningDismissed,
+    enforceQuotaManagerUpdated,
 };
