@@ -1,3 +1,4 @@
+import { CardanoPoolStats, EthereumPoolStats, SolanaStakingInfo } from '@suite-common/wallet-api';
 import { Timestamp } from '@suite-common/wallet-types';
 
 import type { StakeState } from '../stakeReducer';
@@ -43,14 +44,14 @@ export const fetchEverstakeDataFulfilled = [
             },
         },
         actionPayload: { symbol: 'eth', endpointType: 'poolStats' },
-        payload: { ethApy: 5, nextRewardPayout: 3 },
+        payload: { ethApy: 5, nextRewardPayout: 3 } satisfies EthereumPoolStats,
         result: {
             eth: {
                 poolStats: {
                     error: false,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: expect.any(Number) as Timestamp,
-                    data: { ethApy: 5, nextRewardPayout: 3 },
+                    data: { ethApy: 5, nextRewardPayout: 3 } satisfies EthereumPoolStats,
                 },
             },
         },
@@ -67,7 +68,7 @@ export const fetchEverstakeDataRejected = [
                         error: false,
                         isLoading: true,
                         lastSuccessfulFetchTimestamp: 123456 as Timestamp,
-                        data: { ethApy: 1, nextRewardPayout: 0 },
+                        data: { ethApy: 1, nextRewardPayout: 0 } satisfies EthereumPoolStats,
                     },
                 },
             },
@@ -129,14 +130,14 @@ export const fetchEverstakeStakingInfoFulfilled = [
             },
         },
         actionPayload: { symbol: 'sol', endpointType: 'stakingInfo' },
-        payload: { apy: 7.5 },
+        payload: { apy: 7.5 } satisfies SolanaStakingInfo,
         result: {
             sol: {
                 stakingInfo: {
                     error: false,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: expect.any(Number) as Timestamp,
-                    data: { apy: 7.5 },
+                    data: { apy: 7.5 } satisfies SolanaStakingInfo,
                 },
             },
         },
@@ -168,7 +169,7 @@ export const fetchEverstakeStakingInfoFulfilled = [
                     saturation: 16.53,
                     id: 'poolid2',
                 },
-            ],
+            ] satisfies CardanoPoolStats[],
         },
         result: {
             ada: {
@@ -188,7 +189,7 @@ export const fetchEverstakeStakingInfoFulfilled = [
                                 saturation: 16.53,
                                 id: 'poolid2',
                             },
-                        ],
+                        ] satisfies CardanoPoolStats[],
                     },
                 },
             },
@@ -206,7 +207,7 @@ export const fetchEverstakeStakingInfoRejected = [
                         error: false,
                         isLoading: true,
                         lastSuccessfulFetchTimestamp: 1111 as Timestamp,
-                        data: { apy: 3 },
+                        data: { apy: 3 } satisfies SolanaStakingInfo,
                     },
                 },
             },

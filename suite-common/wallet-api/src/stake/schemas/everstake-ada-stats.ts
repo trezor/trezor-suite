@@ -5,10 +5,9 @@ import * as z from 'zod';
  * Base URL: https://stats.everstake.one
  * Endpoint: GET /blockchain/summary?limit=1000&offset=0&partner=Trezor
  */
-
 export const CardanoValidatorStatsItem = z.object({
-    apr: z.object({ value: z.string() }),
-    apy: z.object({ value: z.string() }),
+    apr: z.object({ value: z.coerce.number() }),
+    apy: z.object({ value: z.coerce.number() }),
     blockchain_name: z.string(),
     date: z.string(),
     delegators_number: z.number(),

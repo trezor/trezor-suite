@@ -7,6 +7,7 @@ import {
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import { EstimatedFee } from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { CardanoPoolStats } from '@suite-common/wallet-api';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
@@ -18,7 +19,6 @@ import { VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wa
 import {
     Account,
     CardanoAction,
-    CardanoPoolInfo,
     ComposeActionContext,
     ExternalOutput,
     PrecomposedTransaction,
@@ -91,7 +91,7 @@ const calculateTransaction = (
 export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
-    cardanoPools: CardanoPoolInfo[],
+    cardanoPools: CardanoPoolStats[],
     votingDelegation?: VotingDelegationOption,
 ) => {
     if (!account || account.networkType !== 'cardano') return;
@@ -182,7 +182,7 @@ export const prepareTxPlan = async (
 const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
-    cardanoPools: CardanoPoolInfo[],
+    cardanoPools: CardanoPoolStats[],
     votingDelegation?: VotingDelegationOption,
 ) => {
     const { stakeType } = formValues;

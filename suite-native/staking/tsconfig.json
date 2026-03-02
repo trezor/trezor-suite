@@ -10,6 +10,9 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/wallet-api"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

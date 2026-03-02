@@ -11,3 +11,14 @@ export type EthereumValidatorsQueue = {
     validatorAddingDelay: ValidatorsQueueResponse['validator_adding_delay'];
     updatedAt: ValidatorsQueueResponse['updated_at'];
 };
+
+export type EthereumPoolStats = {
+    /**
+     * @example 3.08
+     */
+    ethApy: number;
+    /**
+     * Number of days to next reward payout
+     */
+    nextRewardPayout: number;
+};

@@ -3,12 +3,15 @@ import { ZodError } from 'zod';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    CardanoPoolsStats,
     CardanoStatsResponse,
+    EthereumPoolStats,
     EthereumValidatorsQueue,
     PoolStatsResponse,
     SolanaDashboardResponse,
     SolanaStakeAccountRewardsResponse,
     SolanaStakeRewardsByAccount,
+    SolanaStakingInfo,
     SolanaTotalStakeRewardsByAccount,
     SolanaTotalStakeRewardsResponse,
     ValidatorsQueueResponse,
@@ -20,7 +23,6 @@ import {
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
-    EverstakeStakingInfo,
 } from '@suite-common/wallet-types';
 import { isTestnet, requestUrl } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
@@ -36,12 +38,77 @@ import { selectEverstakeData } from './stakeSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
-export type EverstakeResultData =
-    | EthereumValidatorsQueue
-    | { ethApy: number; nextRewardPayout: number };
+interface FetchEthereumStakingDataParams {
+    timestamp?: number;
+}
+
+export async function fetchEthereumValidatorsQueue(
+    params?: FetchEthereumStakingDataParams,
+): Promise<EthereumValidatorsQueue> {
+    const response = await fetch(
+        requestUrl({
+            base: EVERSTAKE_ENDPOINT_PREFIX['eth'],
+            pathname: EVERSTAKE_ENDPOINT_TYPES[EverstakeEndpointType.ValidatorsQueue],
+            searchParams: params?.timestamp
+                ? {
+                      timestamp: params.timestamp.toString(),
+                  }
+                : undefined,
+        }),
+    );
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    const data = await response.json();
+    const parsedData = ValidatorsQueueResponse.parse(data);
+
+    return {
+        validatorActivationTime: parsedData.validator_activation_time,
+        validatorExitTime: parsedData.validator_exit_time,
+        validatorWithdrawTime: parsedData.validator_withdraw_time,
+        validatorAddingDelay: parsedData.validator_adding_delay,
+        updatedAt: parsedData.updated_at,
+    } satisfies EthereumValidatorsQueue;
+}
+
+async function fetchEthereumPoolStats(): Promise<EthereumPoolStats> {
+    const response = await fetch(
+        requestUrl({
+            base: EVERSTAKE_ENDPOINT_PREFIX['eth'],
+            pathname: EVERSTAKE_ENDPOINT_TYPES[EverstakeEndpointType.PoolStats],
+        }),
+    );
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    const data = await response.json();
+    const { apr, next_reward_payout_in = 0 } = PoolStatsResponse.parse(data);
+
+    return {
+        ethApy: Number(new BigNumber(apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN)),
+        nextRewardPayout: Math.ceil(next_reward_payout_in / 60 / 60 / 24),
+    } satisfies EthereumPoolStats;
+}
+
+export function fetchEthereumStakingData(
+    endpointType: EverstakeEndpointType,
+): Promise<EthereumValidatorsQueue | EthereumPoolStats> {
+    switch (endpointType) {
+        case EverstakeEndpointType.ValidatorsQueue:
+            return fetchEthereumValidatorsQueue();
+        case EverstakeEndpointType.PoolStats:
+            return fetchEthereumPoolStats();
+        default:
+            throw new Error('Invalid endpoint type');
+    }
+}
 
 export const fetchEverstakeData = createThunk<
-    EverstakeResultData,
+    EthereumValidatorsQueue | EthereumPoolStats,
     {
         symbol: Extract<NetworkConfig['symbol'], 'eth'>;
         endpointType: EverstakeEndpointType;
@@ -55,37 +122,9 @@ export const fetchEverstakeData = createThunk<
             throw new Error('Only Ethereum is supported for this endpoint');
         }
 
-        const response = await fetch(
-            requestUrl({
-                base: EVERSTAKE_ENDPOINT_PREFIX[symbol],
-                pathname: EVERSTAKE_ENDPOINT_TYPES[endpointType],
-            }),
-        );
+        const data = await fetchEthereumStakingData(endpointType);
 
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-
-        const data = await response.json();
-
-        if (endpointType === EverstakeEndpointType.PoolStats) {
-            const { apr, next_reward_payout_in = 0 } = PoolStatsResponse.parse(data);
-
-            return fulfillWithValue({
-                ethApy: Number(new BigNumber(apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN)),
-                nextRewardPayout: Math.ceil(next_reward_payout_in / 60 / 60 / 24),
-            });
-        }
-
-        const parsedData = ValidatorsQueueResponse.parse(data);
-
-        return fulfillWithValue({
-            validatorActivationTime: parsedData.validator_activation_time,
-            validatorExitTime: parsedData.validator_exit_time,
-            validatorWithdrawTime: parsedData.validator_withdraw_time,
-            validatorAddingDelay: parsedData.validator_adding_delay,
-            updatedAt: parsedData.updated_at,
-        } satisfies EthereumValidatorsQueue);
+        return fulfillWithValue(data);
     } catch (error) {
         if (error instanceof ZodError) {
             console.error(error);
@@ -117,7 +156,7 @@ const getStakingInfoEndpointParams = (
 };
 
 export const fetchEverstakeStakingInfo = createThunk<
-    EverstakeStakingInfo,
+    SolanaStakingInfo | CardanoPoolsStats,
     {
         symbol: Extract<NetworkConfig['symbol'], 'sol' | 'ada'>;
         endpointType: EverstakeAssetEndpointType;
@@ -151,18 +190,18 @@ export const fetchEverstakeStakingInfo = createThunk<
 
                 return fulfillWithValue({
                     pools: pools.map(pool => ({
-                        apy: Number(pool.apy.value),
-                        saturation: Number(pool.saturation) * 100,
+                        apy: pool.apy.value,
+                        saturation: pool.saturation * 100,
                         id: pool.validator_address,
                     })),
-                });
+                } satisfies CardanoPoolsStats);
             }
 
             const { blockchain } = SolanaDashboardResponse.parse(assetData);
 
             return fulfillWithValue({
-                apy: Number(blockchain.apr),
-            });
+                apy: blockchain.apr,
+            } satisfies SolanaStakingInfo);
         } catch (error) {
             if (error instanceof ZodError) {
                 console.error(error);

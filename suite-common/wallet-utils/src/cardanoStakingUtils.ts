@@ -1,5 +1,6 @@
 import { bech32 } from 'bech32';
 
+import { CardanoPoolStats } from '@suite-common/wallet-api';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
@@ -9,7 +10,6 @@ import {
 } from '@suite-common/wallet-constants';
 import {
     Account,
-    CardanoPoolInfo,
     StakeType,
     SupportedCardanoNetworkSymbols,
     WalletAccountTransaction,
@@ -58,7 +58,7 @@ const getAccountPoolId = (account?: Account) => {
 
 export const isCardanoStakedWithEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolInfo[],
+    cardanoStakingPools: CardanoPoolStats[],
 ) => {
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
@@ -70,7 +70,7 @@ export const isCardanoStakedWithEverstake = (
 
 export const isCardanoStakedOutsideEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolInfo[],
+    cardanoStakingPools: CardanoPoolStats[],
 ) => {
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
@@ -94,7 +94,7 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
-export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
+export const selectBestCardanoPool = (pools?: CardanoPoolStats[]) => {
     if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
 
     // sort from highest saturation to lowest

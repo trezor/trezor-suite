@@ -1,16 +1,13 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
+    CardanoPoolsStats,
     EthereumValidatorsQueue,
     SolanaStakeRewardsByAccount,
+    SolanaStakingInfo,
     SolanaTotalStakeRewardsByAccount,
 } from '@suite-common/wallet-api';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    EverstakeStakingInfo,
-    PrecomposedTransactionFinal,
-    StakeFormState,
-    Timestamp,
-} from '@suite-common/wallet-types';
+import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
 import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
 import { VotingDelegationOption, stakeActions } from './stakeActions';
@@ -40,7 +37,7 @@ export interface StakeState {
                 nextRewardPayout: number;
             }>;
             validatorsQueue?: ApiRequest<EthereumValidatorsQueue>;
-            stakingInfo?: ApiRequest<EverstakeStakingInfo>;
+            stakingInfo?: ApiRequest<SolanaStakingInfo | CardanoPoolsStats>;
             stakingRewards?: ApiRequest<{
                 rewardsHistory: SolanaStakeRewardsByAccount;
                 totalRewards: SolanaTotalStakeRewardsByAccount;
@@ -128,7 +125,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: false,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
-                    // @ts-expect-error - TODO: we would have to refactor the whole reducer. The current structure doesn't make much sense, only speficic symbols have specific data type, it doesn't apply that all symbols can have all data types.
+                    // @ts-expect-error - TODO: we would have to refactor the whole reducer. The current structure allows having specific data type under each symbol. It could be narrowed to specific symbols only making it more typesafe.
                     data: action.payload,
                 };
             }

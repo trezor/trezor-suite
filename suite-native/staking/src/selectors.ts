@@ -195,11 +195,17 @@ export const selectAPYBySymbol = (state: NativeStakingRootState, symbol: Staking
 
     switch (symbol) {
         case 'eth':
-            return data.eth?.poolStats?.data.ethApy;
-        case 'sol':
-            return data.sol?.stakingInfo?.data.apy;
+            return data.eth?.poolStats?.data?.ethApy ?? null;
+        case 'sol': {
+            const stakingInfoData = data.sol?.stakingInfo?.data;
+
+            return stakingInfoData && 'apy' in stakingInfoData ? stakingInfoData.apy : null;
+        }
         case 'ada': {
-            const pools = data.ada?.stakingInfo?.data.pools;
+            const stakingInfoData = data.ada?.stakingInfo?.data;
+
+            const pools =
+                stakingInfoData && 'pools' in stakingInfoData ? stakingInfoData.pools : null;
 
             if (!pools || pools.length === 0) {
                 return null;

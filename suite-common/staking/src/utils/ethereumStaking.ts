@@ -544,9 +544,10 @@ export const getStakeTxGasLimit = async ({
 
 export const getDaysToAddToPool = (
     stakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthereumValidatorsQueue,
+    validatorsQueue?: EthereumValidatorsQueue | null,
 ) => {
     if (
+        !validatorsQueue ||
         validatorsQueue?.validatorAddingDelay === undefined ||
         validatorsQueue?.validatorActivationTime === undefined
     ) {
@@ -568,9 +569,9 @@ export const getDaysToAddToPool = (
 
 export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthereumValidatorsQueue,
+    validatorsQueue?: EthereumValidatorsQueue | null,
 ) => {
-    if (validatorsQueue?.validatorWithdrawTime === undefined) {
+    if (typeof validatorsQueue?.validatorWithdrawTime !== 'number') {
         return undefined;
     }
 
@@ -587,8 +588,9 @@ export const getDaysToUnstake = (
     return daysToWait <= 0 ? 1 : daysToWait;
 };
 
-export const getDaysToAddToPoolInitial = (validatorsQueue?: EthereumValidatorsQueue) => {
+export const getDaysToAddToPoolInitial = (validatorsQueue?: EthereumValidatorsQueue | null) => {
     if (
+        !validatorsQueue ||
         validatorsQueue?.validatorAddingDelay === undefined ||
         validatorsQueue?.validatorActivationTime === undefined
     ) {
