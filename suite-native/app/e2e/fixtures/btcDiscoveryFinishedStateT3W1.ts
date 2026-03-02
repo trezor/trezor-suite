@@ -8,7 +8,7 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
     wallet: {
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 symbol: 'btc',
                 index: 0,
                 accountType: 'segwit',
@@ -24,7 +24,7 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                     total: 0,
                     unconfirmed: 0,
                 },
-                key: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
+                key: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 formattedBalance: '0',
                 tokens: [],
                 addresses: {
@@ -215,7 +215,6 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                 remember: true,
                 temporaryRemember: false,
                 available: true,
-                instance: 1,
                 walletNumber: 1,
                 discovered: true,
             } as unknown as TrezorDevice,

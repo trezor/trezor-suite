@@ -116,16 +116,13 @@ export const openApp = async ({
 };
 
 const getFwVersion = (model: Model, version: string | undefined) => {
-    if (model === Model.T3W1) {
-        return '2-main'; // At this time only this firmware works with T3W1
-    } else {
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const defaultLatestVersion = model === Model.T1B1 ? '1-latest' : '2-latest';
 
-        return (
-            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
-            '2-latest'
-        );
-    }
+    return (
+        (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+        defaultLatestVersion
+    );
 };
 
 export const prepareTrezorEmulator = async ({
