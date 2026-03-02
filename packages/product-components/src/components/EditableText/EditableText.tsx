@@ -34,7 +34,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedEditableTextFrameProps)
 export type EditableTextProps = AllowedFrameProps & {
     children?: ReactNode;
     onSubmit?: (value: string) => Promise<boolean>;
-    onEdit?: () => Promise<any>;
+    onEdit?: () => Promise<boolean>;
     onCancel?: () => void;
     isLoading?: boolean;
     isDisabled?: boolean;
@@ -263,7 +263,11 @@ export const EditableText = ({
     }, [onCancel, isDirty]);
 
     const handleEdit = useCallback(async () => {
-        await onEdit?.();
+        const shouldStartEditing = await onEdit?.();
+
+        if (shouldStartEditing === false) {
+            return;
+        }
 
         setIsEditable(true);
         focus();

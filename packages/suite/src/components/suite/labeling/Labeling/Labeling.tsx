@@ -13,8 +13,8 @@ import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
 
 import {
+    openEnableSuiteSyncModalAndWaitThunk,
     selectDesktopSuiteSyncInteraction,
-    updateShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -59,9 +59,9 @@ export const Labeling = ({
         selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
-    const handleEdit = useCallback(async () => {
+    const handleEdit = useCallback(async (): Promise<boolean> => {
         if (isSuiteSyncEnabled && suiteSyncInteraction === null) {
-            return;
+            return true;
         }
 
         // When clicking on inline input edit, ensure that everything needed is already ready.
@@ -88,13 +88,14 @@ export const Labeling = ({
                         });
                     }
 
-                    return;
+                    return result.success;
                 } else {
-                    dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
-                }
+                    const result = await dispatch(
+                        openEnableSuiteSyncModalAndWaitThunk(deviceStaticSessionId),
+                    );
 
-                // user can decide if they want to enable suite sync or not, so we do not set editing state yet
-                return;
+                    return isFulfilled(result) ? result.payload : false;
+                }
             } else {
                 return await dispatch(
                     metadataLabelingActions.init(
@@ -106,6 +107,8 @@ export const Labeling = ({
                 );
             }
         }
+
+        return true;
     }, [
         isSuiteSyncEnabled,
         suiteSync,

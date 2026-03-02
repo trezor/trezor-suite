@@ -11,11 +11,13 @@ import { useSuiteServices } from '../../../../support/SuiteServicesProvider';
 type SuiteSyncTurnOnAndFwUpgradeModalProps = {
     deviceStaticSessionId: StaticSessionId;
     onClose: () => void;
+    onSuccess: () => void;
 };
 
 export const SuiteSyncTurnOnModal = ({
     deviceStaticSessionId,
     onClose,
+    onSuccess,
 }: SuiteSyncTurnOnAndFwUpgradeModalProps) => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
@@ -56,6 +58,8 @@ export const SuiteSyncTurnOnModal = ({
                     return exhaustive(type);
             }
         }
+
+        onSuccess();
     };
 
     return (

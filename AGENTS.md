@@ -35,3 +35,40 @@ After any code changes, run formatting on changed files before finishing:
 - **Windows**: Use Git Bash instead of cmd/PowerShell; consider WSL for better performance
 - **Testing**: Some tests may time out in CI environments without network access
 - **Hardware wallets**: Use trezor/trezor-user-env emulator for development
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | Command | Port | Notes |
+|---------|---------|------|-------|
+| Suite Web | `yarn suite:dev` | 8000 | Primary app; see `skills/development-commands.md` for all commands |
+| trezor-user-env | `sudo docker compose -f docker/docker-compose.suite-ci-e2e.yml up -d trezor-user-env-unix` | 9001 (WS), 9002 (dashboard) | Trezor device emulator; requires Docker |
+
+### Trezor emulator setup
+
+After starting the `trezor-user-env` container, you must start an emulator and bridge via its WebSocket API before Suite can detect a device. The sequence is:
+
+1. Start the container (see table above)
+2. Wait for port 9002 to respond with HTTP 200
+3. Send WebSocket commands to `ws://127.0.0.1:9001/`:
+   - `{ type: 'bridge-stop' }` — stop any existing bridge
+   - `{ type: 'emulator-stop' }` — stop any running emulator
+   - `{ type: 'emulator-start', model: 'T2T1', version: '2-latest', wipe: true }` — start a Model T emulator
+   - `{ type: 'emulator-setup', mnemonic: 'all all all all all all all all all all all all', pin: '', passphrase_protection: false, label: 'My Trevor', needs_backup: false }` — configure the emulator with a test seed
+   - `{ type: 'bridge-start', version: 'node-bridge' }` — start the bridge on port 21325
+4. Suite at `localhost:8000` will auto-detect the emulated device through the bridge
+5. The emulator firmware hash check warning is expected — dismiss it to proceed
+
+The `@trezor/trezor-user-env-link` package wraps these WebSocket calls; E2E tests use `TrezorUserEnvLink` from that package. See `packages/trezor-user-env-link/src/api.ts` for the full API.
+
+### Caveats
+
+- **Node version**: Requires Node.js 24 (see `.nvmrc` for exact version). Use `nvm use` before running commands.
+- **Essential build required**: Before starting `yarn suite:dev`, you must run `yarn build:essential` once. This builds `@trezor/suite-data`, `@trezor/transport-bridge`, and message-system config (~20s).
+- **Webpack initial compile**: First `yarn suite:dev` webpack compile takes ~60s. Subsequent HMR is fast. Use `yarn suite:dev:vite` for faster cold starts.
+- **Unit tests**: `yarn workspace @trezor/utils test:unit` is a quick smoke test (~3s). Full suite via `yarn test:unit` takes much longer.
+- **Lint**: `yarn g:eslint --max-warnings 0 --flag v10_config_lookup_from_file --concurrency auto <files>` for targeted linting. Full repo lint via `yarn lint:js`.
+- **Hardware wallet features**: Cannot be tested without a Trezor device or the `trezor-user-env` Docker emulator. The app still loads and navigates without one.
+- **Pre-commit hook**: Runs ESLint on staged `.js/.jsx/.ts/.tsx` files. Can be skipped with `export TREZOR_PRE_COMMIT_ESLINT_SKIP=true`.
+- **Docker in cloud VM**: Docker must be configured with `fuse-overlayfs` storage driver and `iptables-legacy` for nested container support. See the initial setup session for details.

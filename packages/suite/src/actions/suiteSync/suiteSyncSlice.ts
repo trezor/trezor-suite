@@ -1,9 +1,10 @@
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { AnyAction, createSliceWithExtraDeps, createThunk } from '@suite-common/redux-utils';
 import {
     SuiteSyncInteraction,
     SuiteSyncState,
     WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
+    selectIsSuiteSyncEnabled,
     selectSuiteSyncInteraction,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
@@ -19,6 +20,13 @@ import { STORAGE } from '../suite/constants';
 export type DesktopSuiteSyncState = SuiteSyncState & {
     showEnableSuiteSyncModal: StaticSessionId | null;
 };
+
+type EnableSuiteSyncModalWaitResult = boolean;
+
+const enableSuiteSyncModalWaiters = new Map<
+    StaticSessionId,
+    (result: EnableSuiteSyncModalWaitResult) => void
+>();
 
 export const initialSuiteSyncDesktopState: DesktopSuiteSyncState = {
     ...commonInitialState,
@@ -88,3 +96,42 @@ export const selectDesktopSuiteSyncInteraction = (
 };
 
 export const { updateShowEnableSuiteSyncModal } = suiteSyncSlice.actions;
+
+export const openEnableSuiteSyncModalAndWaitThunk = createThunk<
+    EnableSuiteSyncModalWaitResult,
+    StaticSessionId,
+    void
+>(
+    '@suite/suiteSync/openEnableSuiteSyncModalAndWaitThunk',
+    async (deviceStaticSessionId, { dispatch }) => {
+        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
+
+        return await new Promise<EnableSuiteSyncModalWaitResult>(resolve => {
+            const existingWaiter = enableSuiteSyncModalWaiters.get(deviceStaticSessionId);
+            if (existingWaiter !== undefined) {
+                existingWaiter(false);
+            }
+
+            enableSuiteSyncModalWaiters.set(deviceStaticSessionId, resolve);
+        });
+    },
+);
+
+export const closeEnableSuiteSyncModalAndResolveThunk = createThunk<void, StaticSessionId, void>(
+    '@suite/suiteSync/closeEnableSuiteSyncModalAndResolveThunk',
+    (deviceStaticSessionId, { dispatch, getState }) => {
+        const state = getState() as DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState;
+        const suiteSyncInteraction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
+        const shouldStartEditing =
+            selectIsSuiteSyncEnabled(state) &&
+            (suiteSyncInteraction === null || suiteSyncInteraction === 'keys-needed');
+
+        const waiter = enableSuiteSyncModalWaiters.get(deviceStaticSessionId);
+        if (waiter !== undefined) {
+            waiter(shouldStartEditing);
+            enableSuiteSyncModalWaiters.delete(deviceStaticSessionId);
+        }
+
+        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
+    },
+);

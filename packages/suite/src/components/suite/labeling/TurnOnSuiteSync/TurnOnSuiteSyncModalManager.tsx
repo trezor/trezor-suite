@@ -1,6 +1,7 @@
 import { exhaustive } from '@trezor/type-utils';
 
 import {
+    closeEnableSuiteSyncModalAndResolveThunk,
     selectDesktopSuiteSyncInteraction,
     selectShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
@@ -9,7 +10,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SuiteSyncFirmwareUpgradeNeededModal } from './SuiteSyncFirmwareUpgradeNeededModal';
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
 import { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
-import { updateShowEnableSuiteSyncModal } from '../../../../actions/suiteSync/suiteSyncSlice';
 
 export const TurnOnSuiteSyncModalManager = () => {
     const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export const TurnOnSuiteSyncModalManager = () => {
     }
 
     const onClose = () => {
-        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
+        dispatch(closeEnableSuiteSyncModalAndResolveThunk(deviceStaticSessionId));
     };
 
     switch (suiteSyncInteraction) {
@@ -37,6 +37,7 @@ export const TurnOnSuiteSyncModalManager = () => {
             return (
                 <SuiteSyncTurnOnModal
                     onClose={onClose}
+                    onSuccess={onClose}
                     deviceStaticSessionId={deviceStaticSessionId}
                 />
             );
