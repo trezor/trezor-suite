@@ -1,10 +1,10 @@
 import type { TSchema } from '@sinclair/typebox';
 
 import type TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { DEVICE } from '@trezor/connect-web';
+import TrezorConnect from '@trezor/connect-web';
 import type { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 
-import type { Field, TrezorConnectDevice } from './common';
+import type { Field } from './common';
 
 // Method action constants
 export const SET_METHOD = 'method_set';
@@ -19,7 +19,6 @@ export const SET_MANUAL_MODE = 'method_set_manual_mode';
 export const SET_METHOD_PROCESSING = 'method_set_processing';
 
 // TrezorConnect action constants
-export const ON_SELECT_DEVICE = 'action__on_select_device';
 export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
 export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
 export const ON_HANDSHAKE_CONFIRMED = 'action__on_handshake_confirmed';
@@ -44,10 +43,6 @@ export type ConnectOptions = Partial<
 >;
 
 export type TrezorConnectAction =
-    | { type: typeof ON_SELECT_DEVICE; path: string }
-    | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
-    | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
-    | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
     | { type: typeof ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
     | { type: typeof ON_HANDSHAKE_CONFIRMED }
     | { type: typeof ON_INIT_ERROR; payload: string }

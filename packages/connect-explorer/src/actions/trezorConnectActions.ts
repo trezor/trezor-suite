@@ -9,15 +9,7 @@ import {
     ON_CHANGE_CONNECT_OPTIONS,
     ON_HANDSHAKE_CONFIRMED,
     ON_INIT_ERROR,
-    ON_SELECT_DEVICE,
 } from '../types/actions';
-
-export function onSelectDevice(path: string) {
-    return {
-        type: ON_SELECT_DEVICE,
-        path,
-    };
-}
 
 export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     type: ON_CHANGE_CONNECT_OPTION,
