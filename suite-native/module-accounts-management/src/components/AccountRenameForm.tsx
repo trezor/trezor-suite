@@ -16,10 +16,9 @@ import {
     CombinedLabelingState,
     selectAccountLabel,
     selectIsLabellingAllowed,
+    useSuiteSyncErrorHandler,
 } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
-import { exhaustive } from '@trezor/type-utils';
 
 type AccountRenameFormProps = {
     accountKey: AccountKey;
@@ -30,7 +29,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const { translate } = useTranslate();
     const dispatch = useDispatch();
     const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -74,23 +73,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
             });
 
             if (!result.success) {
-                const { type } = result.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceCancelled':
-                    case 'DeviceError':
-                    case 'SuiteSyncUpdateError':
-                        showToast({ variant: 'error', icon: 'warning', message: type });
-
-                        return;
-                    case 'WriteModeRequiredForAllocation':
-                        // Do nothing, this is expected control flow error when we want allocate on-demand.
-                        return;
-
-                    default:
-                        return exhaustive(type);
-                }
+                return handleSuiteSyncError(result.error);
             }
         } else {
             dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));

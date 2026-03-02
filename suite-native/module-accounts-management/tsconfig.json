@@ -49,11 +49,9 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../services" },
-        { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }
