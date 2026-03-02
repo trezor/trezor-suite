@@ -22,18 +22,6 @@ export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'paym
 
 export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
 
-type SortingStrategyPropsWithBackCompatibility =
-    | {
-          /** @deprecated  use sortingStrategy=none instead */
-          skipPermutation?: boolean;
-          sortingStrategy?: undefined;
-      }
-    | {
-          /** @deprecated  use sortingStrategy=none instead */
-          skipPermutation?: undefined;
-          sortingStrategy?: TransactionInputOutputSortingStrategy;
-      };
-
 export type ComposeParams = {
     outputs: ComposeOutput[];
     coin: string;
@@ -44,7 +32,8 @@ export type ComposeParams = {
     sequence?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
-} & SortingStrategyPropsWithBackCompatibility;
+    sortingStrategy?: TransactionInputOutputSortingStrategy;
+};
 
 export type SignedTransaction = {
     signatures: string[];
@@ -69,7 +58,8 @@ export type PrecomposeParams = {
     baseFee?: number;
     floorBaseFee?: boolean;
     sequence?: number;
-} & SortingStrategyPropsWithBackCompatibility;
+    sortingStrategy?: TransactionInputOutputSortingStrategy;
+};
 
 // @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
 export type ComposedInputs = AccountUtxo & ComposeInputBase;
