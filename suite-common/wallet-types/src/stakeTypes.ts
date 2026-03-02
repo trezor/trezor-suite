@@ -25,7 +25,7 @@ export enum EverstakeEndpointType {
 export const EVERSTAKE_ENDPOINT_TYPES = {
     [EverstakeEndpointType.PoolStats]: 'stats',
     [EverstakeEndpointType.ValidatorsQueue]: 'validators/queue',
-};
+} as const satisfies Record<EverstakeEndpointType, string>;
 
 export enum EverstakeAssetEndpointType {
     StakingInfo = 'stakingInfo',
@@ -41,7 +41,10 @@ export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
         dsol: 'chain',
         ada: 'blockchain/summary',
     },
-};
+} as const satisfies Record<
+    EverstakeAssetEndpointType,
+    Record<Extract<NetworkSymbol, 'sol' | 'dsol' | 'ada'>, string>
+>;
 
 export type EverstakeDataParams = {
     symbol: NetworkSymbol;
@@ -83,48 +86,12 @@ export interface BaseStakeContextValues {
     changeFeeLevel: (level: FeeLevel['label']) => void;
 }
 
-export type StakeAccountRewards = {
-    height: number;
-    epoch: number;
-    validator: string;
-    authority: string;
-    stake_account: string;
-    amount: string;
-    currency: string;
-    time: string;
-};
-
-export type StakeRewardsByAccount = {
-    [address: string]: StakeAccountRewards[];
-};
-
-export type TotalStakeRewardsByAccount = {
-    [address: string]: string;
-};
-
 export interface EverstakeStakingInfo {
     apy?: number;
     pools?: CardanoPoolInfo[];
 }
 
 export type ChangeDelegateFormState = StakeFormState;
-
-export interface CardanoValidatorStats {
-    apr: { value: string };
-    apy: { value: string };
-    blockchain_name: string;
-    date: string;
-    delegators_number: number;
-    fee: string;
-    precision: number;
-    price: number;
-    saturation: number;
-    stake: string;
-    token: string;
-    total_stake_usd: number;
-    validator_address: string;
-    validator_name: string;
-}
 
 // TODO: is this still needed?
 export interface ComposeActionContext {

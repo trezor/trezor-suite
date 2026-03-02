@@ -68,7 +68,7 @@ export const selectPoolStatsApyData = (
         return apy;
     }
 
-    return data?.[symbol]?.poolStats?.data.ethApy || null;
+    return data[symbol]?.poolStats?.data?.ethApy || null;
 };
 
 export const selectCardanoPoolsInfo = (state: StakeRootState) =>

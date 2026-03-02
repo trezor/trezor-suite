@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchEverstakeRewards, selectStakingRewardsHistory } from '@suite-common/wallet-core';
-import { EverstakeRewardsEndpointType, StakeAccountRewards } from '@suite-common/wallet-types';
+import {
+    SolanaStakeAccountReward,
+    fetchEverstakeRewards,
+    selectStakingRewardsHistory,
+} from '@suite-common/wallet-core';
+import { EverstakeRewardsEndpointType } from '@suite-common/wallet-types';
 import { useDebounce } from '@trezor/react-utils';
 
 import { Account } from 'src/types/wallet';
@@ -24,7 +28,7 @@ export const useSolanaRewards = (account: Account) => {
     const startPage = 1;
 
     const [currentPage, setSelectedPage] = useState(startPage);
-    const [slicedRewards, setSlicedRewards] = useState<StakeAccountRewards[]>([]);
+    const [slicedRewards, setSlicedRewards] = useState<SolanaStakeAccountReward[]>([]);
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stopIndex = startIndex + itemsPerPage;

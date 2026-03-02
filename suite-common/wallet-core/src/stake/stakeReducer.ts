@@ -4,13 +4,15 @@ import {
     EverstakeStakingInfo,
     PrecomposedTransactionFinal,
     StakeFormState,
-    StakeRewardsByAccount,
     Timestamp,
-    TotalStakeRewardsByAccount,
-    ValidatorsQueue,
 } from '@suite-common/wallet-types';
 import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
+import {
+    EthereumValidatorsQueue,
+    SolanaStakeRewardsByAccount,
+    SolanaTotalStakeRewardsByAccount,
+} from './api/types';
 import { VotingDelegationOption, stakeActions } from './stakeActions';
 import {
     fetchEverstakeData,
@@ -19,6 +21,13 @@ import {
 } from './stakeThunks';
 import { SerializedTx } from '../send/sendFormTypes';
 
+type ApiRequest<T> = {
+    error: boolean | string;
+    isLoading: boolean;
+    lastSuccessfulFetchTimestamp: Timestamp;
+    data: T | null;
+};
+
 export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: StakeFormState;
@@ -26,37 +35,16 @@ export interface StakeState {
     votingDelegation: VotingDelegationOption;
     data: {
         [key in NetworkSymbol]?: {
-            poolStats?: {
-                error: boolean | string;
-                isLoading: boolean;
-                lastSuccessfulFetchTimestamp: Timestamp;
-                data: {
-                    ethApy?: number;
-                    nextRewardPayout?: number;
-                    isPoolStatsLoading?: boolean;
-                };
-            };
-            validatorsQueue?: {
-                error: boolean | string;
-                isLoading: boolean;
-                lastSuccessfulFetchTimestamp: Timestamp;
-                data: ValidatorsQueue;
-            };
-            stakingInfo?: {
-                error: boolean | string;
-                isLoading: boolean;
-                lastSuccessfulFetchTimestamp: Timestamp;
-                data: EverstakeStakingInfo;
-            };
-            stakingRewards?: {
-                error: boolean | string;
-                isLoading: boolean;
-                lastSuccessfulFetchTimestamp: Timestamp;
-                data: {
-                    rewardsHistory?: StakeRewardsByAccount;
-                    totalRewards?: TotalStakeRewardsByAccount;
-                };
-            };
+            poolStats?: ApiRequest<{
+                ethApy: number;
+                nextRewardPayout: number;
+            }>;
+            validatorsQueue?: ApiRequest<EthereumValidatorsQueue>;
+            stakingInfo?: ApiRequest<EverstakeStakingInfo>;
+            stakingRewards?: ApiRequest<{
+                rewardsHistory: SolanaStakeRewardsByAccount;
+                totalRewards: SolanaTotalStakeRewardsByAccount;
+            }>;
         };
     };
 }
@@ -119,7 +107,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: false,
                     isLoading: true,
                     lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                    data: {},
+                    data: null,
                 };
             } else {
                 state.data[symbol][endpointType].isLoading = true;
@@ -140,6 +128,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: false,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    // @ts-expect-error - TODO: we would have to refactor the whole reducer. The current structure doesn't make much sense, only speficic symbols have specific data type, it doesn't apply that all symbols can have all data types.
                     data: action.payload,
                 };
             }
@@ -158,7 +147,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: true,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                    data: {},
+                    data: null,
                 };
             }
         })
@@ -180,7 +169,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                         error: false,
                         isLoading: true,
                         lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
+                        data: null,
                     },
                 };
             } else {
@@ -220,7 +209,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: true,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                    data: {},
+                    data: null,
                 };
             }
         })
@@ -240,7 +229,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                         error: false,
                         isLoading: true,
                         lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
+                        data: null,
                     },
                 };
             }
@@ -278,7 +267,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: true,
                     isLoading: false,
                     lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                    data: {},
+                    data: null,
                 };
             }
         });

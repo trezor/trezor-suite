@@ -6,16 +6,16 @@ import {
 
 import { VotingDelegationOption } from './stakeActions';
 
-export const EVERSTAKE_ENDPOINT_PREFIX: Record<
-    SupportedEthereumNetworkSymbol | SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols,
-    string
-> = {
+export const EVERSTAKE_ENDPOINT_PREFIX = {
     eth: 'https://eth-api-b2c.everstake.one/api/v1',
     thod: 'https://eth-api-b2c-stage.everstake.one/api/v1',
     sol: 'https://dashboard-api.everstake.one',
     dsol: 'https://dashboard-api.everstake.one',
     ada: 'https://stats.everstake.one',
-};
+} as const satisfies Record<
+    SupportedEthereumNetworkSymbol | SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols,
+    string
+>;
 
 export const EVERSTAKE_REWARDS_SOLANA_ENPOINT =
     'https://stake-sync-api.everstake.one/v1/solana/rewards';
