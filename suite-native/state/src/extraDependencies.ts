@@ -83,7 +83,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            lazyLoad: false,
             transportReconnect: false,
             debug: false,
             env: 'react-native',

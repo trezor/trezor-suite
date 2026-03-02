@@ -156,7 +156,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         if (!this._settings.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
-        this._settings.lazyLoad = true;
 
         // defaults for connect-web
         if (!this._settings.transports?.length) {
