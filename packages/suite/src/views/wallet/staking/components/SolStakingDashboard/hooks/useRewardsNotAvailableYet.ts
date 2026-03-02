@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { SolanaStakeAccountReward } from '@suite-common/wallet-core';
+import { SolanaStakeAccountReward } from '@suite-common/wallet-api';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { isInt } from '@trezor/utils';
 

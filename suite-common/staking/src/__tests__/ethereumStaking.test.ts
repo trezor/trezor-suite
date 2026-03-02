@@ -1,4 +1,5 @@
-import { ValidatorsQueue, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { EthereumValidatorsQueue } from '@suite-common/wallet-api';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { AccountInfo, InternalTransfer, OkWithDevice } from '@trezor/connect';
 import {
     BlockchainEstimatedFee,
@@ -174,8 +175,7 @@ describe('getStakeTxGasLimit', () => {
 type GetDaysArgs = {
     unstakeTxs: WalletAccountTransaction[];
     stakeTxs: WalletAccountTransaction[];
-    // TODO: use generated type
-    validatorsQueue?: ValidatorsQueue;
+    validatorsQueue?: EthereumValidatorsQueue;
 };
 describe('getDaysToAddToPool', () => {
     getDaysToAddToPoolFixture.forEach(test => {
