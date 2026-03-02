@@ -771,7 +771,7 @@
   "TR_DEVICE_AUTHENTICITY_SUCCESS": "Vérification du de l'appareil réussie",
   "TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION": "Votre {deviceName} est prêt à être utilisé.",
   "TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT": "La vérification de l'authenticité de votre appareil a échoué.",
-  "TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT": "Échec du contrôle de sécurité (entropie de vérification).",
+  "TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT": "Échec du contrôle de sécurité (vérif. d'entropie).",
   "TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT": "Votre Trezor a rejeté l’installation du firmware.",
   "TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT": "Le délai de vérification du hachage du firmware de votre appareil a expiré.",
   "TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT": "La vérification du hachage du firmware de votre appareil a échoué.",

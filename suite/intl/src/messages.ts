@@ -707,7 +707,7 @@ export const messages = defineMessages({
         id: 'TR_SELL_DETAIL_ERROR_TITLE',
     },
     TR_SELL_DETAIL_ERROR_TEXT: {
-        defaultMessage: 'Unfortunately, your transaction was rejected or has failed.',
+        defaultMessage: 'Your transaction was rejected or failed.',
         id: 'TR_SELL_DETAIL_ERROR_TEXT',
     },
     TR_SELL_DETAIL_ERROR_BUTTON: {
@@ -755,7 +755,7 @@ export const messages = defineMessages({
     TR_TRADING_TERMS_NO_PROVIDER: {
         id: 'TR_TRADING_TERMS_NO_PROVIDER',
         defaultMessage:
-            'This service is provided by provider and governed by their Terms & Conditions. Trezor isn’t involved.',
+            'This service is provided by the provider and governed by their Terms & Conditions. Trezor isn’t involved.',
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
@@ -1030,11 +1030,11 @@ export const messages = defineMessages({
         id: 'TR_HOW_TRADING_WORKS',
     },
     TR_HOW_TRADING_COMPARES_PROVIDERS: {
-        defaultMessage: 'Trezor compares trusted exchange providers to find the best offer',
+        defaultMessage: 'Trezor compares trusted providers to find the best offer',
         id: 'TR_HOW_TRADING_COMPARES_PROVIDERS',
     },
     TR_HOW_TRADING_LOCATION_OFFERS: {
-        defaultMessage: 'Providers use your location only to show relevant offers',
+        defaultMessage: 'Providers only use your location to show relevant offers',
         id: 'TR_HOW_TRADING_LOCATION_OFFERS',
     },
     TR_HOW_TRADING_PRIVACY_KYC: {
@@ -1042,7 +1042,7 @@ export const messages = defineMessages({
         id: 'TR_HOW_TRADING_PRIVACY_KYC',
     },
     TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT: {
-        defaultMessage: 'You share it only with the exchange if you complete the trade.',
+        defaultMessage: 'You share it only with the provider if you complete the trade.',
         id: 'TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT',
     },
     TR_HOW_TRADING_TERMS_OF_USE: {
@@ -2251,12 +2251,11 @@ export const messages = defineMessages({
         defaultMessage: '7d change',
     },
     TR_FAILED_BACKUP: {
-        defaultMessage: 'Wallet backup has failed. Wipe your Trezor and start the setup again.',
+        defaultMessage: 'Wallet backup failed. Wipe your Trezor and start the setup again.',
         id: 'TR_FAILED_BACKUP',
     },
     TR_RECEIVE_ADDRESS_FAILED_BACKUP: {
-        defaultMessage:
-            "Wallet backup has failed. Sending funds to this wallet isn't safe or secure.",
+        defaultMessage: "Wallet backup failed. Sending funds to this wallet isn't safe or secure.",
         id: 'TR_RECEIVE_ADDRESS_FAILED_BACKUP',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
@@ -2743,7 +2742,7 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION',
     },
     TR_GENERIC_ERROR_TITLE: {
-        defaultMessage: 'Oops! Something went wrong!',
+        defaultMessage: 'Something went wrong',
         description: 'Generic error message title',
         id: 'TR_GENERIC_ERROR_TITLE',
     },
@@ -6091,7 +6090,7 @@ export const messages = defineMessages({
     },
     TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING: {
         id: 'TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING',
-        defaultMessage: "This device isn't compatible with Suite Sync",
+        defaultMessage: "This Trezor isn't compatible with Suite Sync",
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
@@ -6304,7 +6303,7 @@ export const messages = defineMessages({
     TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
-            "Your wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
+            "Your wallet backup failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
     },
     TR_FEEDBACK_ANALYTICS_ITEM_OS: {
         id: 'TR_FEEDBACK_ANALYTICS_ITEM_OS',
@@ -7274,11 +7273,11 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
-        defaultMessage: 'Security check (entropy verification) has failed.',
+        defaultMessage: 'The security check (entropy verification) failed.',
     },
     TR_DEVICE_COMPROMISED_INVALID_ID_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_INVALID_ID_TEXT',
-        defaultMessage: 'Security check (ID validity check) has failed.',
+        defaultMessage: 'The security check (ID validity check) failed.',
     },
     TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
@@ -7286,11 +7285,11 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
-        defaultMessage: 'Your device firmware hash check has failed.',
+        defaultMessage: 'Your device firmware hash check failed.',
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT',
-        defaultMessage: 'Your device firmware hash check has timed out.',
+        defaultMessage: 'Your device firmware hash check timed out.',
     },
     TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
@@ -7506,8 +7505,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
-        defaultMessage:
-            'Your device firmware hash check has failed. Your Trezor might be counterfeit.',
+        defaultMessage: 'Your device firmware hash check failed. Your Trezor might be counterfeit.',
     },
     TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG: {
         id: 'TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG',
@@ -7522,7 +7520,7 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN',
         defaultMessage:
-            'Verification has failed multiple times. Your Trezor device might not be genuine.',
+            'Verification failed multiple times. Your Trezor device might not be genuine.',
     },
     TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_HEADING: {
         id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_HEADING',

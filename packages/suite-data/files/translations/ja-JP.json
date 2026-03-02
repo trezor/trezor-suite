@@ -1732,7 +1732,7 @@
   "TR_SELL_CONFIRM_ON_TREZOR_SEND": "Trezor で確認して送信",
   "TR_SELL_CONFIRM_SEND_STEP": "確認して送信",
   "TR_SELL_DETAIL_ERROR_BUTTON": "売却に戻る",
-  "TR_SELL_DETAIL_ERROR_TEXT": "残念ながら、トランザクションが拒否されたか、失敗しました。",
+  "TR_SELL_DETAIL_ERROR_TEXT": "残念ながら、取引が拒否されたか、失敗しました。",
   "TR_SELL_DETAIL_ERROR_TITLE": "トランザクションに失敗しました",
   "TR_SELL_DETAIL_PROCESSING_TEXT": "レートは固定されており、表示通りのレートで売却できます。売却が処理されると、{providerName} からお客様のアカウントに資金が送信されます。入金状況はアカウントでご確認いただけます。",
   "TR_SELL_DETAIL_SENDING_TRANSACTION": "トランザクションを送信中",
