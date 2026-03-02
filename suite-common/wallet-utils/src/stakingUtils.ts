@@ -185,8 +185,8 @@ export const getStakingDataForNetwork = (
 
 interface GetUnstakingPeriodInDays {
     networkType?: NetworkType;
-    validatorWithdrawTime?: number; // in seconds
-    validatorExitTime?: number; // in seconds
+    validatorWithdrawTime?: number | null; // in seconds
+    validatorExitTime?: number | null; // in seconds
 }
 
 export const getUnstakingPeriodInDays = ({
@@ -202,7 +202,7 @@ export const getUnstakingPeriodInDays = ({
         return CARDANO_EPOCH_DAYS;
     }
 
-    if (validatorWithdrawTime === undefined || validatorExitTime === undefined) {
+    if (typeof validatorWithdrawTime !== 'number' || typeof validatorExitTime !== 'number') {
         return UNSTAKING_ETH_PERIOD;
     }
 

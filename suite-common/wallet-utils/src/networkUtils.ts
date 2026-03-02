@@ -26,8 +26,8 @@ interface RequestUrlParams<
 }
 
 export function requestUrl<
-    Base extends string,
-    Pathname extends string,
+    const Base extends string,
+    const Pathname extends string,
     SearchParams extends Record<string, string>,
 >({
     base,

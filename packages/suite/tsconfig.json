@@ -124,6 +124,9 @@
             "path": "../../suite-common/validators"
         },
         {
+            "path": "../../suite-common/wallet-api"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

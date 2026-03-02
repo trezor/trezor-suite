@@ -4,7 +4,6 @@ import type { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { Account } from './account';
-import { CardanoPoolInfo } from './cardanoStaking';
 import { StakeFormState } from './stakeForm';
 import { ExcludedUtxos, FeeInfo, PrecomposedLevels } from './transaction';
 
@@ -66,11 +65,6 @@ export interface BaseStakeContextValues {
     selectedFee: FeeLevel['label'];
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
-}
-
-export interface EverstakeStakingInfo {
-    apy?: number;
-    pools?: CardanoPoolInfo[];
 }
 
 export type ChangeDelegateFormState = StakeFormState;

@@ -5,7 +5,6 @@ import * as z from 'zod';
  * Base URL: https://dashboard-api.everstake.one
  * Endpoint: GET /chain?name=solana
  */
-
 export const SolanaBlockchainInfo = z.object({
     apr: z.number().describe('Annual percentage rate in decimal form'),
 });
