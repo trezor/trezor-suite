@@ -106,8 +106,8 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
         hasAllowance: ({ walletDescriptor, deviceId }) =>
             selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
-        defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
-        getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
+        getIsDefaultRelayUrlSet: () =>
+            selectSuiteSyncRelayUrl(deps.getState()) === DEFAULT_SUITE_SYNC_RELAY_URL,
         getEnforceQuotaManager: toGetter(deps.getState, selectEnforceQuotaManager),
     });
 
