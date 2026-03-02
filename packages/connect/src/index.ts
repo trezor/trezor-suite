@@ -102,13 +102,12 @@ const init = async (settings: Partial<ConnectSettings>) => {
 
     initSettings(settings);
 
-    if (!_settings.lazyLoad) {
-        await coreManager.getOrInit(_settings, onCoreEvent);
-    }
+    await coreManager.getOrInit(_settings, onCoreEvent);
 };
 
 const initCore = () => {
-    initSettings({ lazyLoad: false });
+    // todo: only to keep manifest validation during 'lazyload' call, will be reworked
+    initSettings({});
 
     return coreManager.getOrInit(_settings, onCoreEvent);
 };

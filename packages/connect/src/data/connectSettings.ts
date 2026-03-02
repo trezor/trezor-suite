@@ -21,7 +21,6 @@ const initialSettings: ConnectSettings = {
     transports: undefined,
     pendingTransportEvent: true,
     env: 'node',
-    lazyLoad: false,
     timestamp: new Date().getTime(),
     sharedLogger: true,
     transportReconnect: true,
@@ -99,10 +98,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
-    }
-
-    if (typeof input.lazyLoad === 'boolean') {
-        settings.lazyLoad = input.lazyLoad;
     }
 
     if (typeof input.pendingTransportEvent === 'boolean') {

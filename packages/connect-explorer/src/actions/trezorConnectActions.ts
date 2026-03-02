@@ -49,7 +49,6 @@ export const init =
             coreMode,
             transportReconnect: true,
             debug: true,
-            lazyLoad: true,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/connect-explorer',

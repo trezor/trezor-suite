@@ -38,7 +38,7 @@ describe('Core', () => {
 
     it('calling getOrInit multiple times synchronously', async () => {
         const coreManager = initCoreState();
-        const settings = getSettings({ lazyLoad: true });
+        const settings = getSettings();
         const [c1, c2] = await Promise.all([
             coreManager.getOrInit(settings, jest.fn()),
             coreManager.getOrInit(settings, jest.fn()),
