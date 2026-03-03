@@ -1,4 +1,4 @@
-import { FlagSize } from './types';
+import { FlagSize, FlagType, isFlagType } from './types';
 
 export const mapSizeToOutlineWidth = (size: FlagSize): number => {
     const outlineWidthMap: Record<FlagSize, number> = {
@@ -24,4 +24,16 @@ export const mapSizeToBorderRadius = (size: FlagSize): number => {
     };
 
     return borderRadiusMap[size];
+};
+
+export const getCountryFlag = (countryCode: string): FlagType | undefined => {
+    if (['unknown', 'XX', 'T1'].includes(countryCode)) {
+        return 'UNKNOWN';
+    }
+
+    if (isFlagType(countryCode)) {
+        return countryCode;
+    }
+
+    return undefined;
 };

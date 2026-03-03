@@ -996,6 +996,10 @@ export const messages = defineMessages({
         defaultMessage: 'Not selected',
         id: 'TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED',
     },
+    TR_TRADING_COUNTRY_WORLD: {
+        defaultMessage: 'Worldwide',
+        id: 'TR_TRADING_COUNTRY_WORLD',
+    },
     TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS: {
         defaultMessage: 'To see available offers, choose your state of residence.',
         id: 'TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS',

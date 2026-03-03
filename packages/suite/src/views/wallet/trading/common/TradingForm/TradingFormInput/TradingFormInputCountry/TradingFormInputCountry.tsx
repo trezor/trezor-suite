@@ -3,10 +3,11 @@ import { Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
-import { GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { Flag, GhostContainer, Icon, Row, Text, getCountryFlag } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useGetCountryName } from 'src/hooks/wallet/trading/useGetCountryName';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
     TradingBuySellFormProps,
@@ -26,18 +27,24 @@ export const TradingFormInputCountry = ({
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { control, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
+    const getCountryName = useGetCountryName();
 
     const countryValue = useWatch({
         control: control as Control<TradingBuySellFormProps>,
         name: TRADING_FORM_COUNTRY_SELECT,
     });
 
+    const countryCode = countryValue?.value ?? defaultCountry?.value ?? '';
+    const countryFlag = getCountryFlag(countryCode);
+    const countryName = getCountryName(countryValue ?? defaultCountry);
+
     return (
         <>
             {renderInput && (
                 <FakeSelect
-                    value={countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
+                    value={countryName}
                     placeholder={label ? translationString(label) : undefined}
+                    leftContent={countryFlag && <Flag country={countryFlag} size={24} />}
                     onClick={() => setIsModalOpen(true)}
                     data-testid="@trading/form/country-select"
                 />
@@ -52,12 +59,13 @@ export const TradingFormInputCountry = ({
                         <Text typographyStyle="body-md" align="start">
                             {label && <Translation id={label} />}
                         </Text>
-                        <Row gap={16}>
+                        <Row gap={4}>
+                            {countryFlag && <Flag country={countryFlag} size={24} />}
                             <Text
                                 typographyStyle="body-md"
                                 data-testid="@trading/form/country-select/value"
                             >
-                                {countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
+                                {countryName}
                             </Text>
                             <Icon
                                 name="caretRight"
