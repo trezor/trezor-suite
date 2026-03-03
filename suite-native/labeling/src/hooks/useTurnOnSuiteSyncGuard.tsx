@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
     RootStackParamList,
@@ -16,10 +16,13 @@ import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
+import { suiteSyncErrorMessageMap } from '../suiteSyncErrorMessages';
+
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
+    const { translate } = useTranslate();
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
@@ -68,7 +71,11 @@ export const useTurnOnSuiteSyncGuard = () => {
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
+                    showToast({
+                        variant: 'error',
+                        icon: 'warning',
+                        message: translate(suiteSyncErrorMessageMap[type]),
+                    });
 
                     return;
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':

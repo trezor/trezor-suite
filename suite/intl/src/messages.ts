@@ -10448,6 +10448,22 @@ export const messages = defineMessages({
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW',
         defaultMessage: 'Not now',
     },
+    TR_SUITE_SYNC_ERROR_DEVICE_CANCELLED: {
+        id: 'TR_SUITE_SYNC_ERROR_DEVICE_CANCELLED',
+        defaultMessage: 'Activation was cancelled on the device.',
+    },
+    TR_SUITE_SYNC_ERROR_DEVICE_ERROR: {
+        id: 'TR_SUITE_SYNC_ERROR_DEVICE_ERROR',
+        defaultMessage: 'Device communication failed.',
+    },
+    TR_SUITE_SYNC_ERROR_UPDATE_FAILED: {
+        id: 'TR_SUITE_SYNC_ERROR_UPDATE_FAILED',
+        defaultMessage: 'Failed to update data.',
+    },
+    TR_SUITE_SYNC_ERROR_UNAVAILABLE: {
+        id: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
+        defaultMessage: 'Suite Sync unavailable on this device.',
+    },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',
         defaultMessage: 'Switch to legacy labeling?',

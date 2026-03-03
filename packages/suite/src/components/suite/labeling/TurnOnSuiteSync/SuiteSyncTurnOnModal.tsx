@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
@@ -7,6 +7,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from '../../../../hooks/suite';
 import { useSuiteServices } from '../../../../support/SuiteServicesProvider';
+import { suiteSyncErrorTranslationKeyMap } from '../suiteSyncErrorTranslationKeyMap';
 
 type SuiteSyncTurnOnAndFwUpgradeModalProps = {
     deviceStaticSessionId: StaticSessionId;
@@ -19,6 +20,7 @@ export const SuiteSyncTurnOnModal = ({
 }: SuiteSyncTurnOnAndFwUpgradeModalProps) => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
+    const { translationString } = useTranslation();
 
     const device = useSelector(state =>
         selectDeviceByStaticSessionId(state, deviceStaticSessionId),
@@ -49,7 +51,12 @@ export const SuiteSyncTurnOnModal = ({
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
-                    dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: translationString(suiteSyncErrorTranslationKeyMap[type]),
+                        }),
+                    );
 
                     return;
                 default:
