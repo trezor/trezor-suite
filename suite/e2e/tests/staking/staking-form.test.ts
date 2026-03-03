@@ -122,7 +122,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await expect
                         .soft(stakingSection.withdrawalWarning)
                         .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
-                            values: { amount: '0.03', networkDisplaySymbol: 'ETH' },
+                            values: { amount: '0.005', networkDisplaySymbol: 'ETH' },
                         });
                     const expectedMax = new BigNumber(ethereumStakingBalance!)
                         .minus(WITHDRAWAL_BUFFER)
