@@ -1,4 +1,5 @@
 import {
+    BuyProviderInfo,
     BuyTrade,
     BuyTradeFinalStatus,
     CryptoId,
@@ -476,3 +477,6 @@ export const getTradingPrefilledFromAccountData = (
         key,
     };
 };
+
+export const isBuyProviderInfo = (provider: TradingProviderInfo): provider is BuyProviderInfo =>
+    'brandName' in provider;

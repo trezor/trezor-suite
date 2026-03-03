@@ -1,11 +1,9 @@
 import {
-    BuyProviderInfo,
     BuyTrade,
     CryptoId,
     ExchangeProviderInfo,
     FiatCurrencyCode,
     SellFiatTrade,
-    SellProviderInfo,
 } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite/intl';
@@ -15,6 +13,7 @@ import type {
     TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingPaymentMethodType,
+    TradingProviderInfo,
     TradingSelectAssetOptionGroupProps,
     TradingSellInfoSelector,
     TradingSellType,
@@ -114,7 +113,7 @@ export interface TradingGetAmountLabelsReturnProps {
 
 export type TradingGetProvidersInfoProps =
     | {
-          [name: string]: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+          [name: string]: TradingProviderInfo;
       }
     | undefined;
 
