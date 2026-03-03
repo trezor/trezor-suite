@@ -1,7 +1,5 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
-
 import { ExtendedMessageDescriptor } from '@suite/intl';
-import { type TradingType } from '@suite-common/trading';
+import type { TradingTradeType, TradingType } from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -213,7 +211,7 @@ export const getTradeTypeByRoute = (
 };
 
 interface GetTradeProviderProps {
-    trade: BuyTrade | ExchangeTrade | SellFiatTrade | undefined;
+    trade: TradingTradeType | undefined;
     providerInfo: TradingGetProvidersInfoProps;
 }
 

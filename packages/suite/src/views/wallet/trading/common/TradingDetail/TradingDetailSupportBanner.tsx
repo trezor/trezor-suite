@@ -1,16 +1,11 @@
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
 import { Translation } from '@suite/intl';
+import { type TradingProviderInfo, isBuyProviderInfo } from '@suite-common/trading';
 import { Banner, Link, Paragraph } from '@trezor/components';
 
 type TradingDetailSupportBannerProps = {
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    provider?: TradingProviderInfo;
     orderId?: string;
 };
-
-const isBuyProviderInfo = (
-    provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo,
-): provider is BuyProviderInfo => 'brandName' in provider;
 
 export const TradingDetailSupportBanner = ({
     provider,
