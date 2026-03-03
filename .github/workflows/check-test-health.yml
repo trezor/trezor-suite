@@ -1,14 +1,26 @@
 name: "[Check] Test Health"
 
-# Runs every 15 minutes during daytime hours (Central European Time).
-# GitHub Actions uses UTC; the schedule below covers 4:00–21:59 UTC, which
-# maps to 6:00–23:59 CEST (UTC+2, summer) and 5:00–22:59 CET (UTC+1, winter),
-# ensuring the 6 am–10 pm CET window is always covered.
+# run only if there are changes in suite or related libs paths - equal settings as PR e2e test job
 on:
-  schedule:
-    - cron: "*/15 4-21 * * *"
-  # Allow manual runs and easy one-off debugging.
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+      - "packages/connect*/**"
+      - "packages/react-native-usb/**"
+      # ignore unrelated github workflows config files
+      - ".github/workflows/connect*"
+      - ".github/workflows/suite-native*"
+      - ".github/workflows/build-desktop*"
+      - ".github/workflows/release*"
+      - ".github/workflows/template*"
+      - "**.md"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   check-test-health:
