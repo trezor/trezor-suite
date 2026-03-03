@@ -193,14 +193,20 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return getLabel('Sign #NETWORK transaction', coinInfo);
     }
 
-    async payloadToPrecomposed() {
+    payloadToPrecomposed() {
         try {
             const { inputs, outputs, coinInfo } = this.params;
-            const refTxs = this.params.refTxs ?? (await this.fetchRefTxs(false));
+            const { refTxs } = this.params;
             const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
                 } else {
+                    if (!refTxs) {
+                        throw ERRORS.TypedError(
+                            'Runtime',
+                            'refTxs are required for precomposed transaction info when input amount is not provided',
+                        );
+                    }
                     const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
                     const refOutput =
                         refTx?.outputs?.[input.prev_index] ??
@@ -222,7 +228,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
             const feePerByte = fee.dividedBy(bytes);
 
-            return {
+            return Promise.resolve({
                 type: 'final' as const,
                 inputs,
                 outputs,
@@ -231,12 +237,12 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 fee: fee.toString(),
                 feePerByte: feePerByte.toString(),
                 bytes,
-            };
+            });
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
 
-            return undefined;
+            return Promise.resolve(undefined);
         }
     }
 
