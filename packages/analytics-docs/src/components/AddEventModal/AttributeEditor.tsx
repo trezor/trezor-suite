@@ -12,15 +12,15 @@ import {
     Textarea,
     Tooltip,
 } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 import {
     AttributeKeyTypePreview,
     AttributeTypeReferenceTooltipContent,
 } from './AttributeTypeReference';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
-import { isValidAttributeType } from './constants';
-import { getChangelogErrorMessage } from '../../utils/eventFileUtils';
 import type { EventFormAttribute } from '../../utils/eventFileUtils';
+import { getChangelogErrorMessage } from '../../utils/eventFileUtils';
 
 export const AttributeEditor = ({
     attr,
@@ -62,6 +62,7 @@ export const AttributeEditor = ({
                             placement="top"
                             tooltipMaxWidth={360}
                             appendTo={document.body}
+                            zIndex={zIndices.windowControls}
                         >
                             <Icon name="question" size={16} priority="secondary" cursor="help" />
                         </Tooltip>
@@ -81,10 +82,6 @@ export const AttributeEditor = ({
                             value={attr.runtimeType}
                             onChange={e => onChange({ ...attr, runtimeType: e.target.value })}
                             placeholder="string, number, 'a' | 'b', string[]"
-                            hasError={
-                                attr.runtimeType.trim() !== '' &&
-                                !isValidAttributeType(attr.runtimeType)
-                            }
                         />
                     </Column>
 

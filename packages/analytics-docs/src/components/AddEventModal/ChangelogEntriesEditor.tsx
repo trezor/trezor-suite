@@ -30,7 +30,7 @@ export const ChangelogEntriesEditor = ({
                         next[idx] = { ...next[idx], version: e.target.value };
                         onChange(next);
                     }}
-                    placeholder="26.2.0 nebo ?"
+                    placeholder="`26.2.0` or `?`"
                     hasError={entry.version.trim() !== '' && !isValidAppVersion(entry.version)}
                     width={100}
                 />
@@ -42,7 +42,7 @@ export const ChangelogEntriesEditor = ({
                         next[idx] = { ...next[idx], notes: e.target.value };
                         onChange(next);
                     }}
-                    placeholder="např. added"
+                    placeholder="Example: added"
                     flex="1"
                 />
                 <IconButton
@@ -65,6 +65,7 @@ export const ChangelogEntriesEditor = ({
             intent="neutral"
             priority="secondary"
             iconLeft="plus"
+            margin={{ top: 12 }}
             onClick={() => onChange([...entries, defaultChangelogEntry()])}
         >
             Add changelog entry
