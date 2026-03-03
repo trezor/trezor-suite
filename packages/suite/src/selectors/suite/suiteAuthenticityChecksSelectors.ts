@@ -17,7 +17,7 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { AppState } from 'src/types/suite';
 
 import {
-    selectIsDebugModeActive,
+    selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
@@ -97,36 +97,41 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
 };
 
 export const selectIsDeviceIdCheckEnabledAndFailed = (state: AppState) => {
-    const isDebugMode = selectIsDebugModeActive(state);
+    const areDeviceMetaChecksEnabled = selectAreDeviceMetaChecksEnabled(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.idCheck);
     const isDeviceIdValid = selectIsDeviceIdCheckSuccess(state);
 
-    return !isDebugMode && !isDisabledByMessageSystem && !isDeviceIdValid;
+    return areDeviceMetaChecksEnabled && !isDisabledByMessageSystem && !isDeviceIdValid;
 };
 
 export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AppState) => {
-    const isDebugMode = selectIsDebugModeActive(state);
+    const areDeviceMetaChecksEnabled = selectAreDeviceMetaChecksEnabled(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.invariabilityCheck);
     const isDeviceInvariabilityCheckSuccess = selectIsDeviceInvariabilityCheckSuccess(state);
 
-    return !isDebugMode && !isDisabledByMessageSystem && !isDeviceInvariabilityCheckSuccess;
+    return (
+        areDeviceMetaChecksEnabled &&
+        !isDisabledByMessageSystem &&
+        !isDeviceInvariabilityCheckSuccess
+    );
 };
 
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
-    const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);
-    const isDeviceInvariabilityCheckFailed = selectIsDeviceInvariabilityEnabledAndFailed(state);
-
-    const isFirmwareCheckEnabledAndFailed =
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
-    const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
-
     // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
     const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);
+    // Entropy check is not dismissable
+    if (isEntropyCheckEnabledAndFailed) return true;
+
+    // All following checks are dismissable
+    const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
+    if (isFirmwareAuthenticityCheckDismissed) return false;
+
+    const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);
+    const isDeviceInvariabilityCheckFailed = selectIsDeviceInvariabilityEnabledAndFailed(state);
+    const isFirmwareCheckEnabledAndFailed =
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
 
     return (
-        isDeviceIdCheckFailed ||
-        isDeviceInvariabilityCheckFailed ||
-        (!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
-        isEntropyCheckEnabledAndFailed
+        isDeviceIdCheckFailed || isDeviceInvariabilityCheckFailed || isFirmwareCheckEnabledAndFailed
     );
 };

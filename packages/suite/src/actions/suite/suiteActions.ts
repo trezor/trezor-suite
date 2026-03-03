@@ -46,6 +46,7 @@ export type SuiteAction =
     | { type: typeof SUITE.TOGGLE_FIRMWARE_REVISION_CHECK; payload: boolean }
     | { type: typeof SUITE.TOGGLE_FIRMWARE_HASH_CHECK; payload: boolean }
     | { type: typeof SUITE.TOGGLE_ENTROPY_CHECK; payload: boolean }
+    | { type: typeof SUITE.TOGGLE_DEVICE_META_CHECKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
@@ -321,6 +322,7 @@ export const toggleFirmwareAuthenticityChecks = (enable: boolean) => (dispatch: 
     const firmwareAuthenticityChecks = [
         SUITE.TOGGLE_FIRMWARE_REVISION_CHECK,
         SUITE.TOGGLE_FIRMWARE_HASH_CHECK,
+        SUITE.TOGGLE_DEVICE_META_CHECKS,
     ] as const;
 
     firmwareAuthenticityChecks.forEach(type => {

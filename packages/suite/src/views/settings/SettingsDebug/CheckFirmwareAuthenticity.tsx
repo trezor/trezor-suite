@@ -4,6 +4,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
+    selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
@@ -14,6 +15,7 @@ export const CheckFirmwareAuthenticity = () => {
     const isEntropyCheckEnabled = useSelector(selectIsEntropyCheckEnabled);
     const isFirmwareHashCheckEnabled = useSelector(selectIsFirmwareHashCheckEnabled);
     const isFirmwareRevisionCheckEnabled = useSelector(selectIsFirmwareRevisionCheckEnabled);
+    const areDeviceMetaChecksEnabled = useSelector(selectAreDeviceMetaChecksEnabled);
 
     const toggleEntropyCheck = (isChecked: boolean) =>
         dispatch({
@@ -28,6 +30,11 @@ export const CheckFirmwareAuthenticity = () => {
     const toggleFirmwareRevisionCheck = (isChecked: boolean) =>
         dispatch({
             type: SUITE.TOGGLE_FIRMWARE_REVISION_CHECK,
+            payload: isChecked,
+        });
+    const toggleDeviceMetaChecks = (isChecked: boolean) =>
+        dispatch({
+            type: SUITE.TOGGLE_DEVICE_META_CHECKS,
             payload: isChecked,
         });
 
@@ -63,6 +70,18 @@ export const CheckFirmwareAuthenticity = () => {
                     <Switch
                         onChange={toggleFirmwareRevisionCheck}
                         isChecked={isFirmwareRevisionCheckEnabled}
+                    />
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn
+                    title="Perform device meta checks regularly"
+                    description="Carry out ID check & invariabilitiy check every time you authorize Trezor device."
+                />
+                <ActionColumn>
+                    <Switch
+                        onChange={toggleDeviceMetaChecks}
+                        isChecked={areDeviceMetaChecksEnabled}
                     />
                 </ActionColumn>
             </SectionItem>

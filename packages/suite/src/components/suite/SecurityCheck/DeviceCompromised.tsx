@@ -43,7 +43,7 @@ const DeviceCompromisedContent = () => {
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
-    // this check is only a precaution, not expected to be seen often
+    // this check is only a precaution, not expected to be seen often. This one cannot be dismissed (need id to register dismissal)
     if (!isValidId) {
         return (
             <SecurityCheckFail
@@ -58,7 +58,7 @@ const DeviceCompromisedContent = () => {
     if (!isDeviceInvariabilityCheckSuccess) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthenticityCheckSupportButton />}
+                ctaSection={<FwAuthencityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}
