@@ -17,3 +17,16 @@ export const calculateXPubHashes = (xpubs: Record<string, string>): XPubHashesPe
 
     return hashes;
 };
+
+type CheckXPubWithHashesParams = {
+    xpub: string;
+    path: string;
+    knownXPubHashes: XPubHashesPerBip43Path;
+};
+export const checkXPubWithHashes = ({
+    xpub,
+    path,
+    knownXPubHashes,
+}: CheckXPubWithHashesParams): boolean =>
+    knownXPubHashes[path] === undefined || // nothing to compare, consider as valid
+    knownXPubHashes[path] === calculateXPubHash(xpub); // must match a known hash with this path

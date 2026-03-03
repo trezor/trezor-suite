@@ -5,6 +5,7 @@ import {
     deviceActions,
     selectDeviceByStaticSessionId,
     selectDevices,
+    selectEntropyCheckResultByDeviceId,
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
@@ -519,6 +520,8 @@ export const runDiscoveryThunk = createThunk(
                 ),
             );
 
+            // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
+            const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
             const result = await TrezorConnect.discoverAccounts({
                 device: {
                     instance,
@@ -526,6 +529,7 @@ export const runDiscoveryThunk = createThunk(
                     useEmptyPassphrase: !isAddingHiddenWallet,
                 },
                 coins: accountsParam,
+                entropyCheckResult,
             });
 
             TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
@@ -767,9 +771,12 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
+        // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
+        const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
         const result = await TrezorConnect.discoverAccounts({
             device: updatedDevice,
             coins: accountsParam,
+            entropyCheckResult,
         });
 
         TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
