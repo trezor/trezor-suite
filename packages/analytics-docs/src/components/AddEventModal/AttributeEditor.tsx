@@ -1,11 +1,12 @@
 import {
+    Button,
     Card,
     Checkbox,
-    Collapsible,
+    CollapsibleBox,
     Column,
     Icon,
-    IconButton,
     Input,
+    Paragraph,
     Row,
     Text,
     Textarea,
@@ -32,52 +33,49 @@ export const AttributeEditor = ({
     onRemove: () => void;
     canRemove: boolean;
 }) => (
-    <Card paddingType="small">
-        <Column gap={8}>
-            <Row justifyContent="space-between" alignItems="center">
-                <Text typographyStyle="label">Attribute</Text>
-                {canRemove && (
-                    <IconButton
-                        icon="trash"
-                        size="small"
-                        intent="neutral"
-                        onClick={onRemove}
-                        aria-label="Remove"
-                    />
-                )}
+    <CollapsibleBox
+        heading={
+            <Row justifyContent="space-between" gap={8} alignItems="center">
+                <Row gap={8}>
+                    {(attr.key.trim() !== '' || attr.runtimeType.trim() !== '') && (
+                        <AttributeKeyTypePreview
+                            keyName={attr.key.trim() || 'key'}
+                            isOptional={attr.isOptional}
+                            typeStr={attr.runtimeType.trim() || 'string'}
+                        />
+                    )}
+                </Row>
             </Row>
-            <Row gap={12} alignItems="flex-start" flexWrap="nowrap">
-                <div style={{ flex: '1 1 0', minWidth: 0 }}>
+        }
+        paddingType="small"
+    >
+        <Card paddingType="small">
+            <Column gap={8}>
+                <Row gap={12}>
+                    <Paragraph typographyStyle="body-xs" width={200}>
+                        Name *
+                    </Paragraph>
+                    <Row gap={4} alignItems="center">
+                        <Text typographyStyle="body-xs">Type *</Text>
+                        <Tooltip
+                            content={<AttributeTypeReferenceTooltipContent />}
+                            placement="top"
+                            tooltipMaxWidth={360}
+                            appendTo={document.body}
+                        >
+                            <Icon name="question" size={16} priority="secondary" cursor="help" />
+                        </Tooltip>
+                    </Row>
+                </Row>
+                <Row gap={12} alignItems="center" flexWrap="nowrap">
                     <Input
                         size="small"
-                        labelLeft="Attribute key"
                         value={attr.key}
                         onChange={e => onChange({ ...attr, key: e.target.value })}
-                        placeholder="např. discoveryId"
+                        placeholder="Example: networkName"
+                        width={200}
                     />
-                </div>
-                <div style={{ flex: '0 0 auto', alignSelf: 'center' }}>
-                    <Checkbox
-                        isChecked={attr.isOptional}
-                        onClick={() => onChange({ ...attr, isOptional: !attr.isOptional })}
-                    >
-                        Is optional
-                    </Checkbox>
-                </div>
-                <div style={{ flex: '1 1 0', minWidth: 0 }}>
-                    <Column gap={4}>
-                        <Row gap={4} alignItems="center">
-                            <Text typographyStyle="label">Type</Text>
-                            <Tooltip
-                                content={<AttributeTypeReferenceTooltipContent />}
-                                placement="top"
-                                tooltipMaxWidth={360}
-                                appendTo={document.body}
-                                zIndex={110}
-                            >
-                                <Icon name="question" size="small" />
-                            </Tooltip>
-                        </Row>
+                    <Column gap={8}>
                         <Input
                             size="small"
                             value={attr.runtimeType}
@@ -88,40 +86,52 @@ export const AttributeEditor = ({
                                 !isValidAttributeType(attr.runtimeType)
                             }
                         />
-                        {(attr.key.trim() !== '' || attr.runtimeType.trim() !== '') && (
-                            <AttributeKeyTypePreview
-                                keyName={attr.key.trim() || 'key'}
-                                isOptional={attr.isOptional}
-                                typeStr={attr.runtimeType.trim() || 'string'}
-                            />
-                        )}
                     </Column>
-                </div>
-            </Row>
-            <Collapsible defaultIsOpen={false}>
-                <Collapsible.Toggle>
-                    <Text typographyStyle="label">Popis atributu (volitelné)</Text>
-                </Collapsible.Toggle>
-                <Collapsible.Content>
+
+                    <Checkbox
+                        isChecked={attr.isOptional}
+                        onClick={() => onChange({ ...attr, isOptional: !attr.isOptional })}
+                    >
+                        optional
+                    </Checkbox>
+                </Row>
+
+                <CollapsibleBox
+                    heading="Attribute changelog *"
+                    paddingType="small"
+                    margin={{ top: 16 }}
+                >
+                    <ChangelogEntriesEditor
+                        entries={attr.changelog}
+                        onChange={changelog => onChange({ ...attr, changelog })}
+                        errorType={
+                            attr.key.trim() !== ''
+                                ? (getChangelogErrorMessage(attr.changelog) ?? undefined)
+                                : undefined
+                        }
+                    />
+                </CollapsibleBox>
+                <CollapsibleBox heading="Description" paddingType="small">
                     <Textarea
-                        labelLeft="Description"
                         value={attr.description}
                         onChange={e => onChange({ ...attr, description: e.target.value })}
                         placeholder="Popis atributu"
                         rows={2}
                     />
-                </Collapsible.Content>
-            </Collapsible>
-            <ChangelogEntriesEditor
-                label="Attribute changelog"
-                entries={attr.changelog}
-                onChange={changelog => onChange({ ...attr, changelog })}
-                errorType={
-                    attr.key.trim() !== ''
-                        ? (getChangelogErrorMessage(attr.changelog) ?? undefined)
-                        : undefined
-                }
-            />
-        </Column>
-    </Card>
+                </CollapsibleBox>
+                {canRemove && (
+                    <Button
+                        iconLeft="trash"
+                        size="small"
+                        intent="critical"
+                        priority="secondary"
+                        onClick={onRemove}
+                        aria-label="Remove"
+                    >
+                        Delete attribute
+                    </Button>
+                )}
+            </Column>
+        </Card>
+    </CollapsibleBox>
 );

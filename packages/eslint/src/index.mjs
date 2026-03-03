@@ -33,7 +33,6 @@ export const eslint = [
             '**/public/*',
             '**/ci/',
             '**/.expo/*',
-            'eslint-local-rules/*',
             '**/.cache/*',
             '**/playwright-report/*',
             '**/suite-data/files/favicon.js',

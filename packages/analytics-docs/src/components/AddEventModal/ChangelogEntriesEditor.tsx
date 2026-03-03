@@ -1,4 +1,4 @@
-import { Button, Column, IconButton, Input, Row, Text } from '@trezor/components';
+import { Button, Column, IconButton, Input, Paragraph, Row, Text } from '@trezor/components';
 
 import { CHANGELOG_ERROR_MESSAGES, defaultChangelogEntry } from './constants';
 import type { EventFormChangelogEntry } from '../../utils/eventFileUtils';
@@ -7,21 +7,23 @@ import { isValidAppVersion } from '../../utils/eventFileUtils';
 export const ChangelogEntriesEditor = ({
     entries,
     onChange,
-    label,
     errorType,
 }: {
     entries: EventFormChangelogEntry[];
     onChange: (entries: EventFormChangelogEntry[]) => void;
-    label: string;
     errorType?: 'no_entry' | 'invalid_version' | 'empty_notes' | null;
 }) => (
     <Column gap={8}>
-        <Text typographyStyle="label">{label}</Text>
+        <Row gap={8}>
+            <Paragraph typographyStyle="body-sm" width={100}>
+                Version
+            </Paragraph>
+            <Text typographyStyle="body-sm">Notes</Text>
+        </Row>
         {entries.map((entry, idx) => (
-            <Row key={idx} gap={8} alignItems="flex-start">
+            <Row key={idx} gap={8} alignItems="center">
                 <Input
                     size="small"
-                    labelLeft="Version"
                     value={entry.version}
                     onChange={e => {
                         const next = [...entries];
@@ -30,10 +32,10 @@ export const ChangelogEntriesEditor = ({
                     }}
                     placeholder="26.2.0 nebo ?"
                     hasError={entry.version.trim() !== '' && !isValidAppVersion(entry.version)}
+                    width={100}
                 />
                 <Input
                     size="small"
-                    labelLeft="Notes"
                     value={entry.notes}
                     onChange={e => {
                         const next = [...entries];
@@ -41,18 +43,20 @@ export const ChangelogEntriesEditor = ({
                         onChange(next);
                     }}
                     placeholder="např. added"
+                    flex="1"
                 />
                 <IconButton
                     icon="trash"
-                    size="small"
+                    size="medium"
                     intent="neutral"
                     onClick={() => onChange(entries.filter((_, i) => i !== idx))}
                     aria-label="Remove entry"
+                    priority="secondary"
                 />
             </Row>
         ))}
         {errorType && (
-            <Text typographyStyle="hint" intent="critical">
+            <Text typographyStyle="body-sm" intent="critical">
                 {CHANGELOG_ERROR_MESSAGES[errorType]}
             </Text>
         )}

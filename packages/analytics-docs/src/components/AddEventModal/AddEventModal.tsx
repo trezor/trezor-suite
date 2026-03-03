@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { ANALYTICS_ALLOWED_DOMAINS, validateAnalyticsEventName } from '@suite-common/analytics';
 import {
+    Badge,
     Banner,
     Button,
     Card,
-    Collapsible,
+    CollapsibleBox,
     Column,
     H4,
     Input,
+    Link,
     Modal,
     Paragraph,
     Row,
@@ -86,10 +89,26 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
         a => a.key.trim() === '' || isValidAttributeType(a.runtimeType),
     );
     const allChangelogsValid = eventChangelogValid && attributesChangelogsValid;
-    const generatedCode = formState.eventName.trim() ? generateEventFileContent(formState) : '';
-    const enumSnippet = formState.eventName.trim()
-        ? getEnumAdditionSnippet(formState.eventName.trim())
+    const eventNameTrimmed = formState.eventName.trim();
+    const eventNameValidationError = eventNameTrimmed
+        ? validateAnalyticsEventName(eventNameTrimmed)
+        : null;
+    const eventNameValid = !eventNameTrimmed || !eventNameValidationError;
+    const generatedCode = eventNameTrimmed ? generateEventFileContent(formState) : '';
+    const enumSnippet = eventNameTrimmed ? getEnumAdditionSnippet(eventNameTrimmed) : '';
+
+    const domainFromEventName = formState.eventName.includes('/')
+        ? formState.eventName.split('/')[0]
+        : formState.eventName.trim();
+    const eventPartFromEventName = formState.eventName.includes('/')
+        ? formState.eventName.split('/').slice(1).join('/')
         : '';
+    const domainOptions = ANALYTICS_ALLOWED_DOMAINS.map(d => ({ value: d, label: d }));
+    const domainSelectValue =
+        domainFromEventName &&
+        (ANALYTICS_ALLOWED_DOMAINS as readonly string[]).includes(domainFromEventName)
+            ? (domainOptions.find(o => o.value === domainFromEventName) ?? domainOptions[0])
+            : domainOptions[0];
 
     const handleCopyCode = useCallback(async () => {
         if (!generatedCode) return;
@@ -112,6 +131,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             onClick={handleGenerate}
                             isDisabled={
                                 !formState.eventName.trim() ||
+                                !eventNameValid ||
                                 !formState.descriptionTrigger.trim() ||
                                 !allChangelogsValid ||
                                 !attributesTypesValid
@@ -126,18 +146,9 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                     {!showResult ? (
                         <>
                             <Row gap={16} alignItems="flex-start">
-                                <Input
-                                    size="small"
-                                    labelLeft="Event name"
-                                    value={formState.eventName}
-                                    onChange={e =>
-                                        setFormState(s => ({ ...s, eventName: e.target.value }))
-                                    }
-                                    placeholder="např. connect-popup/init nebo coin_discovery"
-                                />
                                 <Select
                                     size="small"
-                                    labelLeft="Platform"
+                                    labelLeft="Platform *"
                                     options={platformOptions}
                                     value={
                                         platformOptions.find(p => p.value === formState.platform) ??
@@ -148,11 +159,62 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     }
                                     menuPortalTarget={document.body}
                                     menuPortalZIndex={101}
+                                    flex="1"
+                                />
+                                <Select
+                                    size="small"
+                                    labelLeft="Domain *"
+                                    options={domainOptions}
+                                    value={domainSelectValue}
+                                    onChange={opt =>
+                                        opt &&
+                                        setFormState(s => ({
+                                            ...s,
+                                            eventName:
+                                                opt.value +
+                                                (eventPartFromEventName
+                                                    ? `/${eventPartFromEventName}`
+                                                    : ''),
+                                        }))
+                                    }
+                                    menuPortalTarget={document.body}
+                                    menuPortalZIndex={101}
+                                    flex="1"
+                                />
+                                <Input
+                                    size="small"
+                                    labelLeft="Event name *"
+                                    value={eventPartFromEventName}
+                                    onChange={e => {
+                                        const newPart = e.target.value;
+                                        const domain =
+                                            domainFromEventName &&
+                                            (
+                                                ANALYTICS_ALLOWED_DOMAINS as readonly string[]
+                                            ).includes(domainFromEventName)
+                                                ? domainFromEventName
+                                                : ANALYTICS_ALLOWED_DOMAINS[0];
+                                        setFormState(s => ({
+                                            ...s,
+                                            eventName: newPart ? `${domain}/${newPart}` : domain,
+                                        }));
+                                    }}
+                                    placeholder="Example: `tokens-status` (kebab-case)"
                                 />
                             </Row>
+                            {eventNameValidationError && eventNameTrimmed && (
+                                <Text typographyStyle="body-sm" color="textAlertRed">
+                                    {eventNameValidationError.messageId === 'invalidFormat' &&
+                                        "Event musí být ve tvaru 'domain/event' (např. settings/app-log-exported)."}
+                                    {eventNameValidationError.messageId === 'invalidDomain' &&
+                                        `Neplatná doména '${eventNameValidationError.data?.domain}'. Použij jednu z: ${ANALYTICS_ALLOWED_DOMAINS.join(', ')}.`}
+                                    {eventNameValidationError.messageId === 'notKebabCase' &&
+                                        'Část za lomítkem musí být kebab-case (např. app-log-exported).'}
+                                </Text>
+                            )}
                             <Column gap={8}>
                                 <Textarea
-                                    labelLeft="Trigger (kdy se event odešle?)"
+                                    labelLeft="Trigger description *"
                                     value={formState.descriptionTrigger}
                                     onChange={e =>
                                         setFormState(s => ({
@@ -164,96 +226,100 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     rows={2}
                                 />
                             </Column>
-                            <Collapsible defaultIsOpen={false}>
-                                <Collapsible.Toggle>
-                                    <Text typographyStyle="label">Zobrazit další</Text>
-                                </Collapsible.Toggle>
-                                <Collapsible.Content>
-                                    <Column gap={8}>
-                                        <Textarea
-                                            labelLeft="Description (volitelné)"
-                                            value={formState.description}
-                                            onChange={e =>
+
+                            <CollapsibleBox
+                                heading={
+                                    <Row gap={4}>
+                                        <Text>Attributes</Text>
+                                        <Badge intent="info">{formState.attributes.length}</Badge>
+                                    </Row>
+                                }
+                                paddingType="small"
+                            >
+                                <Column gap={8}>
+                                    {formState.attributes.map((attr, idx) => (
+                                        <AttributeEditor
+                                            key={idx}
+                                            attr={attr}
+                                            onChange={a => {
+                                                const next = [...formState.attributes];
+                                                next[idx] = a;
+                                                setFormState(s => ({ ...s, attributes: next }));
+                                            }}
+                                            onRemove={() =>
                                                 setFormState(s => ({
                                                     ...s,
-                                                    description: e.target.value,
+                                                    attributes: s.attributes.filter(
+                                                        (_, i) => i !== idx,
+                                                    ),
                                                 }))
                                             }
-                                            placeholder="Další popis"
-                                            rows={2}
+                                            canRemove
                                         />
-                                        <Textarea
-                                            labelLeft="Possible improvements (volitelné)"
-                                            value={formState.possibleImprovements}
-                                            onChange={e =>
-                                                setFormState(s => ({
-                                                    ...s,
-                                                    possibleImprovements: e.target.value,
-                                                }))
-                                            }
-                                            placeholder="Budoucí vylepšení nebo poznámky"
-                                            rows={2}
-                                        />
-                                    </Column>
-                                </Collapsible.Content>
-                            </Collapsible>
-                            <ChangelogEntriesEditor
-                                label="Event changelog"
-                                entries={formState.changelog}
-                                onChange={changelog => setFormState(s => ({ ...s, changelog }))}
-                                errorType={eventChangelogError ?? undefined}
-                            />
-                            <Column gap={8}>
-                                <H4>Attributes</H4>
-                                {formState.attributes.length === 0 && (
-                                    <Text typographyStyle="hint">
-                                        Event can have no attributes (e.g. accounts/active-staking).
-                                    </Text>
-                                )}
-                                {formState.attributes.map((attr, idx) => (
-                                    <AttributeEditor
-                                        key={idx}
-                                        attr={attr}
-                                        onChange={a => {
-                                            const next = [...formState.attributes];
-                                            next[idx] = a;
-                                            setFormState(s => ({ ...s, attributes: next }));
-                                        }}
-                                        onRemove={() =>
+                                    ))}
+                                    <Button
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        iconLeft="plus"
+                                        margin={{ top: 8 }}
+                                        onClick={() =>
                                             setFormState(s => ({
                                                 ...s,
-                                                attributes: s.attributes.filter(
-                                                    (_, i) => i !== idx,
-                                                ),
+                                                attributes: [...s.attributes, defaultAttribute()],
                                             }))
                                         }
-                                        canRemove
+                                    >
+                                        Add attribute
+                                    </Button>
+                                </Column>
+                            </CollapsibleBox>
+
+                            <CollapsibleBox heading="Event changelog *" paddingType="small">
+                                <ChangelogEntriesEditor
+                                    entries={formState.changelog}
+                                    onChange={changelog => setFormState(s => ({ ...s, changelog }))}
+                                    errorType={eventChangelogError ?? undefined}
+                                />
+                            </CollapsibleBox>
+
+                            <CollapsibleBox heading="Other fields" paddingType="small">
+                                <Column gap={8}>
+                                    <Textarea
+                                        labelLeft="Description"
+                                        value={formState.description}
+                                        onChange={e =>
+                                            setFormState(s => ({
+                                                ...s,
+                                                description: e.target.value,
+                                            }))
+                                        }
+                                        rows={2}
                                     />
-                                ))}
-                                <Button
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    iconLeft="plus"
-                                    onClick={() =>
-                                        setFormState(s => ({
-                                            ...s,
-                                            attributes: [...s.attributes, defaultAttribute()],
-                                        }))
-                                    }
-                                >
-                                    Add attribute
-                                </Button>
-                            </Column>
+                                    <Textarea
+                                        labelLeft="Possible improvements"
+                                        value={formState.possibleImprovements}
+                                        onChange={e =>
+                                            setFormState(s => ({
+                                                ...s,
+                                                possibleImprovements: e.target.value,
+                                            }))
+                                        }
+                                        rows={2}
+                                    />
+                                </Column>
+                            </CollapsibleBox>
                         </>
                     ) : (
                         <Column gap={16}>
                             <H4>Where to put the file</H4>
                             <Card paddingType="normal">
                                 <Column gap={8}>
-                                    <Text typographyStyle="label">File path (from repo root)</Text>
+                                    <Text typographyStyle="body-xs">
+                                        File path (from repo root)
+                                    </Text>
                                     <Row alignItems="center" gap={8}>
-                                        <Text isMonospaced typographyStyle="highlight">
+                                        <Text isMonospaced typographyStyle="body-md-strong">
                                             {filePath}
                                         </Text>
                                         <Button
@@ -271,12 +337,12 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                         </Button>
                                     </Row>
                                     {isEditing ? (
-                                        <Text typographyStyle="hint">
+                                        <Text typographyStyle="body-sm">
                                             Replace the existing file at this path with the
                                             generated content below.
                                         </Text>
                                     ) : (
-                                        <Text typographyStyle="hint">
+                                        <Text typographyStyle="body-sm">
                                             Create a new file at this path. Add the event to the
                                             package&apos;s{' '}
                                             <Text isMonospaced>src/events/index.ts</Text> export
@@ -289,8 +355,8 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             {!isEditing && (
                                 <Card paddingType="normal">
                                     <Column gap={8}>
-                                        <Text typographyStyle="label">Add to EventType enum</Text>
-                                        <Text typographyStyle="hint">
+                                        <Text typographyStyle="body-md">Add to EventType enum</Text>
+                                        <Text typographyStyle="body-sm">
                                             In <Text isMonospaced>{constantsFilePath}</Text>, add:
                                         </Text>
                                         <div
@@ -323,7 +389,9 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             <Card paddingType="normal">
                                 <Column gap={8}>
                                     <Row justifyContent="space-between" alignItems="center">
-                                        <Text typographyStyle="label">Generated file content</Text>
+                                        <Text typographyStyle="body-xs">
+                                            Generated file content
+                                        </Text>
                                         <Button
                                             size="small"
                                             intent="neutral"
@@ -344,7 +412,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                             whiteSpace: 'pre',
                                         }}
                                     >
-                                        <Paragraph isMonospaced typographyStyle="label">
+                                        <Paragraph isMonospaced typographyStyle="body-xs">
                                             {generatedCode}
                                         </Paragraph>
                                     </div>
@@ -352,19 +420,19 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             </Card>
                         </Column>
                     )}
+                    <Paragraph typographyStyle="body-sm">* mandatory fields</Paragraph>
                     <Banner
                         intent="info"
                         icon
                         description={
                             <>
                                 You can also add or edit events manually. See the{' '}
-                                <a
+                                <Link
                                     href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
                                     target="_blank"
-                                    rel="noopener noreferrer"
                                 >
                                     analytics README
-                                </a>{' '}
+                                </Link>{' '}
                                 for the step-by-step guide.
                             </>
                         }
