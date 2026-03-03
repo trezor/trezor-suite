@@ -75,6 +75,7 @@ export const CompactCardWithIconLayout = ({
     isDisabled = false,
     variant = 'normal',
     borderColor = 'borderElevation1',
+    testID,
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
@@ -105,7 +106,7 @@ export const CompactCardWithIconLayout = ({
 
     return (
         <GestureDetector gesture={tap}>
-            <View collapsable={false}>
+            <View collapsable={false} testID={testID}>
                 <AnimatedCard
                     noPadding
                     borderColor={borderColor ?? undefined}
