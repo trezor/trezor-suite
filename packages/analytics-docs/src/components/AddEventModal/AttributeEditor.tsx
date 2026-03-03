@@ -1,10 +1,10 @@
 import {
-    Button,
     Card,
     Checkbox,
     CollapsibleBox,
     Column,
     Icon,
+    IconButton,
     Input,
     Paragraph,
     Row,
@@ -34,6 +34,7 @@ export const AttributeEditor = ({
     canRemove: boolean;
 }) => (
     <CollapsibleBox
+        margin={{ bottom: 8 }}
         heading={
             <Row justifyContent="space-between" gap={8} alignItems="center">
                 <Row gap={8}>
@@ -89,8 +90,39 @@ export const AttributeEditor = ({
                         isChecked={attr.isOptional}
                         onClick={() => onChange({ ...attr, isOptional: !attr.isOptional })}
                     >
-                        optional
+                        <Row gap={4} alignItems="center">
+                            <Text>optional</Text>
+                            <Tooltip
+                                content="Attribute can be undefined"
+                                appendTo={document.body}
+                                zIndex={zIndices.windowControls}
+                            >
+                                <Icon
+                                    name="question"
+                                    size={16}
+                                    priority="secondary"
+                                    cursor="help"
+                                />
+                            </Tooltip>
+                        </Row>
                     </Checkbox>
+                    {canRemove && (
+                        <Row flex="1" justifyContent="flex-end">
+                            <Tooltip
+                                content="Delete attribute"
+                                appendTo={document.body}
+                                zIndex={zIndices.windowControls}
+                            >
+                                <IconButton
+                                    icon="trash"
+                                    size="small"
+                                    intent="critical"
+                                    priority="secondary"
+                                    onClick={onRemove}
+                                />
+                            </Tooltip>
+                        </Row>
+                    )}
                 </Row>
 
                 <CollapsibleBox
@@ -112,22 +144,10 @@ export const AttributeEditor = ({
                     <Textarea
                         value={attr.description}
                         onChange={e => onChange({ ...attr, description: e.target.value })}
-                        placeholder="Popis atributu"
+                        placeholder="Attribute description"
                         rows={2}
                     />
                 </CollapsibleBox>
-                {canRemove && (
-                    <Button
-                        iconLeft="trash"
-                        size="small"
-                        intent="critical"
-                        priority="secondary"
-                        onClick={onRemove}
-                        aria-label="Remove"
-                    >
-                        Delete attribute
-                    </Button>
-                )}
             </Column>
         </Card>
     </CollapsibleBox>

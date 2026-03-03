@@ -22,7 +22,7 @@ import {
 
 import { AttributeEditor } from './AttributeEditor';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
-import { defaultAttribute, isValidAttributeType, platformOptions } from './constants';
+import { defaultAttribute, platformOptions } from './constants';
 import type { EventDoc } from '../../types';
 import {
     type EventFormState,
@@ -85,9 +85,6 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
             (a.changelog.length > 0 &&
                 a.changelog.some(e => isValidAppVersion(e.version) && e.notes.trim() !== '')),
     );
-    const attributesTypesValid = formState.attributes.every(
-        a => a.key.trim() === '' || isValidAttributeType(a.runtimeType),
-    );
     const allChangelogsValid = eventChangelogValid && attributesChangelogsValid;
     const eventNameTrimmed = formState.eventName.trim();
     const eventNameValidationError = eventNameTrimmed
@@ -132,8 +129,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                 !formState.eventName.trim() ||
                                 !eventNameValid ||
                                 !formState.descriptionTrigger.trim() ||
-                                !allChangelogsValid ||
-                                !attributesTypesValid
+                                !allChangelogsValid
                             }
                         >
                             Generate file content
@@ -226,11 +222,11 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                 />
                             </Column>
 
-                            <Row gap={8}>
-                                <Text>Attributes</Text>
-                                <Badge intent="info">{formState.attributes.length}</Badge>
-                            </Row>
                             <Column gap={8}>
+                                <Row gap={8}>
+                                    <Text>Attributes</Text>
+                                    <Badge intent="info">{formState.attributes.length}</Badge>
+                                </Row>
                                 {formState.attributes.map((attr, idx) => (
                                     <AttributeEditor
                                         key={idx}
@@ -256,7 +252,6 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     intent="neutral"
                                     priority="secondary"
                                     iconLeft="plus"
-                                    margin={{ top: 8 }}
                                     onClick={() =>
                                         setFormState(s => ({
                                             ...s,
@@ -267,7 +262,6 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     Add attribute
                                 </Button>
                             </Column>
-
                             <CollapsibleBox heading="Event changelog *" paddingType="small">
                                 <ChangelogEntriesEditor
                                     entries={formState.changelog}
