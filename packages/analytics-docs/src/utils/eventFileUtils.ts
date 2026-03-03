@@ -1,4 +1,11 @@
 /**
+ * Escapes a string for safe inclusion in a single-quoted TypeScript/JavaScript string literal.
+ * Escapes backslashes first, then single quotes.
+ */
+const escapeForSingleQuotedString = (value: string): string =>
+    value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+/**
  * Converts event name (e.g. "connect-popup/init") to the variable/file base name (e.g. "connectPopupInitEvent").
  */
 export const eventNameToFileBaseName = (eventName: string): string => {
@@ -34,7 +41,7 @@ const PLATFORM_TO_PACKAGE_DIR: Record<string, string> = {
 export const getEnumAdditionSnippet = (eventName: string): string => {
     const key = eventNameToEnumKey(eventName);
 
-    return `    ${key} = '${eventName}',`;
+    return `    ${key} = '${escapeForSingleQuotedString(eventName)}',`;
 };
 
 /**
@@ -205,7 +212,7 @@ export const generateEventFileContent = (state: EventFormState): string => {
         .filter(e => e.version.trim())
         .map(
             e =>
-                `    { version: '${e.version.replace(/'/g, "\\'")}', notes: '${e.notes.replace(/'/g, "\\'")}' },`,
+                `    { version: '${escapeForSingleQuotedString(e.version)}', notes: '${escapeForSingleQuotedString(e.notes)}' },`,
         )
         .join('\n');
     const changelogBlock =
@@ -214,13 +221,13 @@ export const generateEventFileContent = (state: EventFormState): string => {
             : "changelog: [{ version: '?', notes: 'added' }],";
 
     const eventDesc = state.descriptionTrigger
-        ? `descriptionTrigger: '${state.descriptionTrigger.replace(/'/g, "\\'")}',`
+        ? `descriptionTrigger: '${escapeForSingleQuotedString(state.descriptionTrigger)}',`
         : "descriptionTrigger: '',";
     const descriptionLine = state.description.trim()
-        ? `\n    description: '${state.description.trim().replace(/'/g, "\\'")}',`
+        ? `\n    description: '${escapeForSingleQuotedString(state.description.trim())}',`
         : '';
     const possibleImprovementsLine = state.possibleImprovements.trim()
-        ? `\n    possibleImprovements: '${state.possibleImprovements.trim().replace(/'/g, "\\'")}',`
+        ? `\n    possibleImprovements: '${escapeForSingleQuotedString(state.possibleImprovements.trim())}',`
         : '';
 
     const attributesBlock = hasAttributes
@@ -232,7 +239,7 @@ export const generateEventFileContent = (state: EventFormState): string => {
                       .filter(e => e.version.trim())
                       .map(
                           e =>
-                              `            { version: '${e.version.replace(/'/g, "\\'")}', notes: '${e.notes.replace(/'/g, "\\'")}' },`,
+                              `            { version: '${escapeForSingleQuotedString(e.version)}', notes: '${escapeForSingleQuotedString(e.notes)}' },`,
                       )
                       .join('\n');
                   const attrChangelogBlock =
@@ -240,7 +247,7 @@ export const generateEventFileContent = (state: EventFormState): string => {
                           ? `changelog: [\n${attrChangelog}\n            ],`
                           : "changelog: [{ version: '?', notes: 'added' }],";
                   const attrDesc = attr.description.trim()
-                      ? `\n        description: '${attr.description.trim().replace(/'/g, "\\'")}',`
+                      ? `\n        description: '${escapeForSingleQuotedString(attr.description.trim())}',`
                       : '';
 
                   return `        ${key}: {\n        ${attrChangelogBlock}${attrDesc}\n        },`;
