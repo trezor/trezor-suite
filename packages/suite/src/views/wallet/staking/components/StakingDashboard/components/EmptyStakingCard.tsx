@@ -190,11 +190,7 @@ export const EmptyStakingCard = () => {
                             {stakingFeatures.map(feature => (
                                 <Row key={feature.id} gap={spacings.md} alignItems="flex-start">
                                     <Column>
-                                        <IconCircle
-                                            name={feature.icon}
-                                            variant="primary"
-                                            size={44}
-                                        />
+                                        <IconCircle name={feature.icon} intent="brand" size={40} />
                                     </Column>
                                     <Column gap={spacings.xxs}>
                                         <H4>{feature.title}</H4>

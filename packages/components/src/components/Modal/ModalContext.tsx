@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
 
-import { ModalVariant } from './types';
+import { ModalIntent } from './types';
 
 export const ModalContext = createContext<{
-    variant?: ModalVariant;
-}>({ variant: undefined });
+    intent?: ModalIntent;
+}>({ intent: undefined });
 
 export const useModalContext = () => {
     const context = useContext(ModalContext);

@@ -66,7 +66,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
         <ConnectModalBackdrop onClick={close} canSwitchDevice>
             <Modal.ModalBase
                 onCancel={close}
-                variant="primary"
+                intent="brand"
                 heading={
                     <Translation
                         id="TR_SELECT_ACCOUNT"

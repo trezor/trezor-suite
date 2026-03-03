@@ -142,7 +142,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             onCancel={toggleShowHints}
-            variant="info"
+            intent="info"
         >
             <TroubleshootingTipsList items={cableItem} />
         </Modal>

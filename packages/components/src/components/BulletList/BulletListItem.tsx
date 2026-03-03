@@ -188,9 +188,7 @@ export const BulletListItem = ({
                     <IconCircle
                         name="check"
                         size={mapSizeToDimension({ $size: bulletSize })}
-                        hasBorder={false}
-                        variant="primary"
-                        paddingType="small"
+                        intent="brand"
                     />
                 ) : (
                     <Bullet

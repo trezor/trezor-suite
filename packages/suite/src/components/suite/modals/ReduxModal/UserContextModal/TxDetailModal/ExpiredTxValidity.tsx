@@ -15,7 +15,7 @@ export const ExpiredTxValidity = ({ symbol }: ExpiredTxValidityProps) => {
         <Card fillType="flat">
             <Column gap={spacings.xs}>
                 <Box margin={{ bottom: spacings.md }}>
-                    <IconCircle name="warning" size={110} variant="destructive" />
+                    <IconCircle name="warning" size={112} intent="critical" />
                 </Box>
 
                 <Text typographyStyle="headline-sm">

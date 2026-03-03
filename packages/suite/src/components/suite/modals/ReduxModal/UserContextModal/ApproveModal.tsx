@@ -218,7 +218,7 @@ export const ApproveModal = ({
     return (
         <Modal
             onCancel={() => onClose()}
-            variant="primary"
+            intent="brand"
             width={600}
             heading={
                 <Translation

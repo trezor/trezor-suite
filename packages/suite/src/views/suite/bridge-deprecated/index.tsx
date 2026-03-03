@@ -35,7 +35,7 @@ export const BridgeDeprecated = () => {
                 </>
             }
             width={600}
-            variant="warning"
+            intent="warning"
             iconName="warning"
             onCancel={onClose}
             isBackdropCancelable

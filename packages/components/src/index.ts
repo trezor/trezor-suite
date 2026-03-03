@@ -84,7 +84,7 @@ export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/
 export {
     IconCircle,
     type IconCircleProps,
-    type IconCircleVariant,
+    type IconCircleIntent,
 } from './components/IconCircle/IconCircle';
 export { InfoSegments, type InfoSegmentsProps } from './components/InfoSegments/InfoSegments';
 export { InfoItem, type InfoItemProps } from './components/InfoItem/InfoItem';

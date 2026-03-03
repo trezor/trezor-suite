@@ -212,9 +212,8 @@ const NftsRow = ({
                                     <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link href={getNftExplorerUrl(explorer, nft, id)}>
                                             <Text textWrap="nowrap">{NftName}</Text>
@@ -244,9 +243,8 @@ const NftsRow = ({
                                     <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link
                                             href={getNftExplorerUrl(explorer, nft, value?.id || '')}

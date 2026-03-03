@@ -110,7 +110,7 @@ export interface TileProps {
 export const Tile = ({ description, iconName, title }: TileProps) => (
     <Container>
         <Image>
-            <IconCircle name={iconName} size={72} />
+            <IconCircle name={iconName} size={96} />
         </Image>
         <Title>{title}</Title>
         <Description>{description}</Description>

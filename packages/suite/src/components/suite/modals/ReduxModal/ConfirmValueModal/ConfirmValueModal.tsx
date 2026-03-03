@@ -256,12 +256,7 @@ export const ConfirmValueModal = ({
                     {isAddress && (
                         <Card>
                             <Row gap={spacings.lg}>
-                                <IconCircle
-                                    hasBorder={false}
-                                    variant="info"
-                                    size={32}
-                                    name="warningFilled"
-                                />
+                                <IconCircle intent="info" size={32} name="warningFilled" />
                                 <H3>
                                     <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
                                 </H3>

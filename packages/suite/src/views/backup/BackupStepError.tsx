@@ -4,7 +4,7 @@ import { H3, Modal } from '@trezor/components';
 export const BackupStepError = ({ onCancel }: { onCancel: () => void }) => (
     <Modal
         onCancel={onCancel}
-        variant="warning"
+        intent="warning"
         iconName="warning"
         data-testid="@backup"
         bottomContent={

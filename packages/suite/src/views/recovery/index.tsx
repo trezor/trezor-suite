@@ -251,12 +251,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         return undefined;
     };
 
-    const getVariant = () => {
+    const getIntent = () => {
         if (recovery.status === 'in-progress') {
             return 'info';
         }
 
-        return hasError ? 'warning' : 'primary';
+        return hasError ? 'warning' : 'brand';
     };
 
     const getWidth = () => {
@@ -309,7 +309,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 }
                 onBackClick={hasBackClick ? handleBackClick : undefined}
                 onCancel={handleClose}
-                variant={getVariant()}
+                intent={getIntent()}
                 iconName={getIconName()}
                 width={getWidth()}
             >

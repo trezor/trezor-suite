@@ -6,7 +6,7 @@ type DatabaseUpgradeModalProps = {
 };
 
 export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => (
-    <Modal iconName="database" variant="warning">
+    <Modal iconName="database" intent="warning">
         <H3>
             <Translation
                 id={

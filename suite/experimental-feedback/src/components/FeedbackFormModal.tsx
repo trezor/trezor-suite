@@ -49,7 +49,7 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackForm
                 </>
             }
             onCancel={onDismiss}
-            variant="primary"
+            intent="brand"
         >
             <Card>
                 <Column gap={16} alignItems="start">

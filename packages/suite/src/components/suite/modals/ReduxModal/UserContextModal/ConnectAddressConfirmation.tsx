@@ -73,7 +73,7 @@ export const ConnectAddressConfirmation = () => {
                 isConfirmed={!isLoading}
             />
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 bottomContent={
                     <>
                         {!popupCall.exported && (

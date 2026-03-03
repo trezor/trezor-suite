@@ -1,14 +1,15 @@
-import { UISize, UIVariant } from '../../config/types';
+import { UIIntent } from '../../config/types';
 
-export const iconCircleVariants = [
-    'primary',
-    'warning',
-    'destructive',
+export const iconCircleIntents = [
+    'brand',
+    'neutral',
     'info',
-    'tertiary',
-] as const;
+    'warning',
+    'critical',
+    'accentViolet',
+    'accentOrange',
+] as const satisfies UIIntent[];
+export type IconCircleIntent = Extract<UIIntent, (typeof iconCircleIntents)[number]>;
 
-export type IconCircleVariant = Extract<UIVariant, (typeof iconCircleVariants)[number]>;
-
-export const iconCirclePaddingTypes = ['small', 'medium', 'large'] as const;
-export type IconCirclePaddingType = Extract<UISize, (typeof iconCirclePaddingTypes)[number]>;
+export const iconCircleSizes = [16, 24, 32, 40, 96, 112] as const;
+export type IconCircleSize = (typeof iconCircleSizes)[number];

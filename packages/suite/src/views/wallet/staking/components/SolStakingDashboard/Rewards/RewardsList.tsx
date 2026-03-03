@@ -79,12 +79,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                 </Text>
                                 <Card paddingType="none">
                                     <Row gap={32} padding={{ vertical: 16, horizontal: 24 }}>
-                                        <IconCircle
-                                            name="piggyBank"
-                                            variant="tertiary"
-                                            size={42}
-                                            hasBorder={false}
-                                        />
+                                        <IconCircle name="piggyBank" intent="neutral" size={40} />
                                         <Column flex="1" gap={4}>
                                             <Text typographyStyle="body-md">
                                                 <Translation id="TR_REWARD" />

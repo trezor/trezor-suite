@@ -32,13 +32,7 @@ export const TradingReceiveAccountNonSuiteOption = () => {
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <IconCircle
-                    name="arrowSquareOut"
-                    size={24}
-                    paddingType="small"
-                    hasBorder={false}
-                    variant="tertiary"
-                />
+                <IconCircle name="arrowSquareOut" size={24} intent="neutral" />
                 <Translation
                     id="TR_EXCHANGE_USE_NON_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}

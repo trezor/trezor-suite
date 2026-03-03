@@ -48,7 +48,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
         <Modal
             onCancel={onCancel}
             iconName="warning"
-            variant="warning"
+            intent="warning"
             bottomContent={
                 <>
                     <Modal.Button onClick={onCopyAddress}>

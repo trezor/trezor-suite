@@ -76,7 +76,7 @@ export const TradingFormFeesDisclaimer = () => {
                             <List.Item
                                 key={item.textId}
                                 bulletComponent={
-                                    <IconCircle name={item.icon} size={40} variant="primary" />
+                                    <IconCircle name={item.icon} size={40} intent="brand" />
                                 }
                             >
                                 <Text typographyStyle="body-md-strong" color="textDefault">

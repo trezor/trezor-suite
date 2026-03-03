@@ -11,6 +11,6 @@ export const NoTokens = ({ title, isNft }: NoTokensProps) => (
     <AccountExceptionLayout
         title={title}
         iconName={isNft ? 'pictureFrame' : 'coins'}
-        iconVariant="tertiary"
+        iconVariant="neutral"
     />
 );

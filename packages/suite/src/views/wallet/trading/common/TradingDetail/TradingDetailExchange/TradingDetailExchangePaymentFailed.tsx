@@ -27,7 +27,7 @@ export const TradingDetailExchangePaymentFailed = ({
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="x" variant="destructive" size={100} />
+            <IconCircle name="x" intent="critical" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_EXCHANGE_DETAIL_ERROR_TITLE" />

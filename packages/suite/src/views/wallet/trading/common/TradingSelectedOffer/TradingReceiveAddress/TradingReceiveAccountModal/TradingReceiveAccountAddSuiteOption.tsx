@@ -54,13 +54,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <IconCircle
-                    name="plus"
-                    size={24}
-                    variant="tertiary"
-                    paddingType="small"
-                    hasBorder={false}
-                />
+                <IconCircle name="plus" size={24} intent="neutral" />
                 <Translation
                     id="TR_EXCHANGE_CREATE_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}

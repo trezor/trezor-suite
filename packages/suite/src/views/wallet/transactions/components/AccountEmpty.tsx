@@ -66,7 +66,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 )
             }
             iconName="arrowsLeftRight"
-            iconVariant="tertiary"
+            iconVariant="neutral"
             actions={[
                 {
                     'data-testid': '@accounts/empty-account/receive',

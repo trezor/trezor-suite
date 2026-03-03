@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
-import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { ProgressLabelState } from './types';
@@ -29,18 +28,16 @@ const mapProgressStateToBackground = ({
 
 const getProgressStateIcon = (progressState: ProgressLabelState) => {
     const props = {
-        paddingType: 'small' as IconCirclePaddingType,
-        size: 28,
-        hasBorder: false,
-    };
+        size: 32,
+    } as const;
 
     switch (progressState) {
         case 'active':
-            return <IconCircle {...props} name="spinner" variant="warning" />;
+            return <IconCircle {...props} name="spinner" intent="warning" />;
         case 'done':
-            return <IconCircle {...props} name="check" variant="primary" />;
+            return <IconCircle {...props} name="check" intent="brand" />;
         default:
-            return <IconCircle {...props} name="dotOutlineFilled" variant="tertiary" />;
+            return <IconCircle {...props} name="dotOutlineFilled" intent="neutral" />;
     }
 };
 

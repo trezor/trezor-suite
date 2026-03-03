@@ -39,7 +39,7 @@ export const BackupStep1Initial = ({
     return (
         <Modal
             onCancel={onCancel}
-            variant="primary"
+            intent="brand"
             data-testid="@backup"
             heading={<Translation id="TR_CREATE_BACKUP" />}
             description={<BackupStepDescription />}

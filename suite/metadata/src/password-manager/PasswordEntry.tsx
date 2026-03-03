@@ -104,7 +104,7 @@ export const PasswordEntry = ({
         <>
             {confirmRemove != null && (
                 <Modal
-                    variant="destructive"
+                    intent="critical"
                     iconName="trash"
                     bottomContent={
                         <>

@@ -29,6 +29,22 @@ import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';
 export const onboardingCardVariants = ['primary', 'warning', 'destructive', 'info'] as const;
 export type OnboardingCardVariant = Extract<UIVariant, (typeof onboardingCardVariants)[number]>;
 
+const mapVariantToIconCircleIntent = (variant: OnboardingCardVariant) => {
+    if (variant === 'destructive') {
+        return 'critical' as const;
+    }
+
+    if (variant === 'warning') {
+        return 'warning' as const;
+    }
+
+    if (variant === 'info') {
+        return 'info' as const;
+    }
+
+    return 'brand' as const;
+};
+
 export type OnboardingCardProps = {
     heading?: ReactNode;
     description?: ReactNode;
@@ -132,7 +148,11 @@ export const OnboardingCard = ({
                         position={{ type: 'absolute', top: 0 }}
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
                     >
-                        <IconCircle name={iconName} size={96} variant={variant} />
+                        <IconCircle
+                            name={iconName}
+                            size={96}
+                            intent={mapVariantToIconCircleIntent(variant)}
+                        />
                     </Box>
                 )}
                 {outerActions && <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>}

@@ -11,7 +11,7 @@ import {
     IconCircleProps,
     allowedIconCircleFrameProps,
 } from './IconCircle';
-import { iconCirclePaddingTypes, iconCircleVariants } from './types';
+import { iconCircleIntents, iconCircleSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof IconCircleComponent> = {
@@ -22,35 +22,23 @@ export default meta;
 export const IconCircle: StoryObj<typeof meta> = {
     render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
     args: {
-        variant: 'primary',
+        intent: 'brand',
         name: 'butterfly',
-        paddingType: 'large',
-        size: 60,
-        hasBorder: true,
+        size: 40,
         ...getFramePropsStory(allowedIconCircleFrameProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: iconCircleVariants,
+            options: iconCircleIntents,
         },
         size: {
             control: {
-                type: 'number',
-            },
-        },
-        paddingType: {
-            control: {
                 type: 'select',
             },
-            options: iconCirclePaddingTypes,
-        },
-        hasBorder: {
-            control: {
-                type: 'boolean',
-            },
+            options: iconCircleSizes,
         },
         name: {
             control: {

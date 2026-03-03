@@ -46,7 +46,7 @@ export const ConnectSelectDeviceModal = () => {
     return (
         <ConnectModalBackdrop>
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 width={400}
                 onCancel={onCancel}
                 heading={
@@ -144,7 +144,7 @@ export const ConnectErrorModal = () => {
     return (
         <ConnectModalBackdrop>
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 bottomContent={
                     <>
                         {isNoTransportError && (

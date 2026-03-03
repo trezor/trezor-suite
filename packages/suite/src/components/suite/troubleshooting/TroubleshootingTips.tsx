@@ -67,7 +67,7 @@ export const TroubleshootingTips = ({
                     <Modal
                         heading={toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
                         onCancel={onCancel}
-                        variant="info"
+                        intent="info"
                         bottomContent={<TroubleshootingTipsFooter />}
                         data-testid="@onboarding/troubleshooting-tips/modal"
                     >

@@ -25,12 +25,7 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
             timestamp={<TransactionTimestamp transaction={transactions[0]} />}
             heading={<Translation id="TR_COINJOIN_TRANSACTION_BATCH" />}
             icon={
-                <IconCircle
-                    name="shuffle"
-                    variant={isPending ? 'warning' : 'tertiary'}
-                    size={42}
-                    hasBorder={false}
-                />
+                <IconCircle name="shuffle" intent={isPending ? 'warning' : 'neutral'} size={40} />
             }
         >
             {transactions.map(transaction => {

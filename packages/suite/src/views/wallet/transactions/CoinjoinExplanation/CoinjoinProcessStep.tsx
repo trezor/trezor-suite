@@ -104,7 +104,7 @@ export const CoinjoinProcessStep = ({
 }: CoinjoinProcessStepProps) => (
     <Container>
         <Image>
-            <IconCircle name={iconName} size={80} />
+            <IconCircle name={iconName} size={96} />
         </Image>
         <StepNumber typographyStyle="body-sm">
             <Translation id="TR_STEP" values={{ number }} />

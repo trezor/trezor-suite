@@ -146,7 +146,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     return (
         <Modal
             onCancel={() => onClose()}
-            variant="primary"
+            intent="brand"
             width={600}
             heading={
                 <Translation

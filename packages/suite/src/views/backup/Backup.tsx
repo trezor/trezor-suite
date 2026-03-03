@@ -63,7 +63,7 @@ export const Backup = ({
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
                 iconName={device.features.unfinished_backup ? 'warning' : 'check'}
-                variant={device.features.unfinished_backup ? 'warning' : 'primary'}
+                intent={device.features.unfinished_backup ? 'warning' : 'brand'}
                 bottomContent={
                     <Modal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
                         <Translation id="TR_CLOSE" />

@@ -11,7 +11,7 @@ interface StakingFeatureProps {
 
 export const StakingFeature = ({ icon, title, description }: StakingFeatureProps) => (
     <section>
-        <IconCircle name={icon} variant="primary" size={80} />
+        <IconCircle name={icon} intent="brand" size={96} />
         <H3 margin={{ top: spacings.md }}>{title}</H3>
         <Paragraph intent="neutral" priority="secondary">
             {description}

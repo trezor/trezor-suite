@@ -54,7 +54,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
         <FormProvider {...methods}>
             <Modal
                 onCancel={handleClose}
-                variant="primary"
+                intent="brand"
                 width={600}
                 heading={
                     <Translation
