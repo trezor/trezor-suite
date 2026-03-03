@@ -15501,6 +15501,7 @@ __metadata:
   resolution: "@trezor/eslint@workspace:packages/eslint"
   dependencies:
     "@eslint/js": "npm:^9.39.2"
+    "@suite-common/analytics": "workspace:*"
     eslint: "npm:^9.39.2"
     eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.32.0"

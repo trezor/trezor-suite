@@ -323,7 +323,47 @@ export const rules = {
             schema: [],
         },
         create(context) {
-            const { validateAnalyticsEventName } = require('@suite-common/analytics');
+            const ALLOWED_DOMAINS = new Set([
+                'accounts',
+                'app',
+                'coin',
+                'dashboard',
+                'device',
+                'firmware',
+                'guide',
+                'menu',
+                'passphrase',
+                'promo',
+                'receive',
+                'send',
+                'settings',
+                'staking',
+                'trading',
+                'transaction',
+                'wallet-connect',
+            ]);
+            const KEBAB_CASE_SEGMENT = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+            function validateEventName(
+                value: string,
+            ): { messageId: string; data?: Record<string, string> } | null {
+                if (!value.includes('/')) {
+                    return { messageId: 'invalidFormat' };
+                }
+                const parts = value.split('/');
+                const domain = parts[0];
+                const eventSegments = parts.slice(1);
+                if (!ALLOWED_DOMAINS.has(domain)) {
+                    return { messageId: 'invalidDomain', data: { domain } };
+                }
+                for (const segment of eventSegments) {
+                    if (!KEBAB_CASE_SEGMENT.test(segment)) {
+                        return { messageId: 'notKebabCase', data: { eventPart: value } };
+                    }
+                }
+
+                return null;
+            }
 
             return {
                 TSEnumDeclaration(node: Rule.Node) {
@@ -338,7 +378,7 @@ export const rules = {
                     }
 
                     for (const member of enumNode.members ?? []) {
-                        const {initializer} = member;
+                        const { initializer } = member;
                         if (
                             initializer?.type !== 'Literal' ||
                             typeof initializer.value !== 'string'
@@ -346,7 +386,7 @@ export const rules = {
                             continue;
                         }
 
-                        const error = validateAnalyticsEventName(initializer.value);
+                        const error = validateEventName(initializer.value);
                         if (error) {
                             context.report({
                                 node: initializer,
