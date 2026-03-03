@@ -5,4 +5,4 @@ require('ts-node').register({
     },
 });
 
-module.exports = require('./rules').default;
+module.exports = require('./rules').rules;
