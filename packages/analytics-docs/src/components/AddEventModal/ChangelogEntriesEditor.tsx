@@ -14,12 +14,14 @@ export const ChangelogEntriesEditor = ({
     errorType?: 'no_entry' | 'invalid_version' | 'empty_notes' | null;
 }) => (
     <Column gap={8}>
-        <Row gap={8}>
-            <Paragraph typographyStyle="body-sm" width={100}>
-                Version
-            </Paragraph>
-            <Text typographyStyle="body-sm">Notes</Text>
-        </Row>
+        {entries.length > 0 && (
+            <Row gap={8}>
+                <Paragraph typographyStyle="body-sm" width={100}>
+                    Version
+                </Paragraph>
+                <Text typographyStyle="body-sm">Notes</Text>
+            </Row>
+        )}
         {entries.map((entry, idx) => (
             <Row key={idx} gap={8} alignItems="center">
                 <Input
