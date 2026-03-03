@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Column, Row, Text } from '@trezor/components';
+import { Table } from '@trezor/components';
 
 import { ATTRIBUTE_TYPE_REFERENCE_ITEMS } from './constants';
 
@@ -87,12 +87,22 @@ export const AttributeKeyTypePreview = ({
 );
 
 export const AttributeTypeReferenceTooltipContent = () => (
-    <Column gap={4}>
-        {ATTRIBUTE_TYPE_REFERENCE_ITEMS.map(({ type, description }) => (
-            <Row key={type} alignItems="center">
-                <SyntaxHighlightedType typeStr={type} />
-                <Text typographyStyle="body-sm">: {description}</Text>
-            </Row>
-        ))}
-    </Column>
+    <Table typographyStyle="body-sm" hasBorders={false} isRowHighlightedOnHover={false}>
+        <Table.Header>
+            <Table.Row>
+                <Table.Cell>Type</Table.Cell>
+                <Table.Cell>Description</Table.Cell>
+            </Table.Row>
+        </Table.Header>
+        <Table.Body>
+            {ATTRIBUTE_TYPE_REFERENCE_ITEMS.map(({ type, description }) => (
+                <Table.Row key={type} verticalAlign="top">
+                    <Table.Cell>
+                        <SyntaxHighlightedType typeStr={type} />
+                    </Table.Cell>
+                    <Table.Cell>{description}</Table.Cell>
+                </Table.Row>
+            ))}
+        </Table.Body>
+    </Table>
 );

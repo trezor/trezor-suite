@@ -17,20 +17,19 @@ export const defaultAttribute = (): EventFormAttribute => ({
     changelog: [defaultChangelogEntry()],
 });
 
-/** Valid type: identifiers, unions, arrays, optional ?; allows single and double-quoted strings; rejects empty. */
-export const ATTRIBUTE_TYPE_REGEX = /^[\w\s[\]()|'"?.<>,\\-]+$/;
+/** Valid type: identifiers, unions, arrays, index signatures { [k: string]: T }; allows single and double-quoted strings; rejects empty. */
+export const ATTRIBUTE_TYPE_REGEX = /^[\w\s[\](){}|'"?.<>,\\:;-]+$/;
 
 export const isValidAttributeType = (value: string): boolean =>
     value.trim() !== '' && ATTRIBUTE_TYPE_REGEX.test(value.trim());
 
 export const ATTRIBUTE_TYPE_REFERENCE_ITEMS: { type: string; description: string }[] = [
-    { type: 'string', description: 'String' },
-    { type: 'number', description: 'Number' },
-    { type: 'boolean', description: 'Boolean' },
-    { type: 'string?', description: 'Optional string' },
-    { type: "'a' | 'b'", description: 'Union literals' },
-    { type: 'string | number', description: 'Union types' },
-    { type: 'string[]', description: 'Array' },
+    { type: 'string', description: 'Text, e.g. networkName, deviceModel' },
+    { type: 'number', description: 'Integer or decimal, e.g. 0, 42, 1.5' },
+    { type: 'boolean', description: 'true or false' },
+    { type: "'sent' | 'received'", description: 'Fixed set of string values (union literals)' },
+    { type: 'string | number', description: 'Either string or number' },
+    { type: 'string[]', description: 'List of strings, e.g. ["a", "b"]' },
 ];
 
 export const CHANGELOG_ERROR_MESSAGES: Record<
