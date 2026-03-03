@@ -392,7 +392,8 @@ export const App = ({ theme }: AppProps) => {
                                         isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                         eventCards={eventCards}
                                         hasEventCards={filteredEvents.length > 0}
-                                        generatedAt={generatedAt}onContentReady={handleContentReady}
+                                        generatedAt={generatedAt}
+                                        onContentReady={handleContentReady}
                                     />
                                 </ContentContainer>
                             </ContentArea>
@@ -408,7 +409,8 @@ export const App = ({ theme }: AppProps) => {
                                     isAnalyticsDataLoading={isAnalyticsDataLoading}
                                     isAnalyticsDataGenerated={isAnalyticsDataGenerated}
                                     eventCards={eventCards}
-                                    hasEventCards={filteredEvents.length > 0}generatedAt={generatedAt}
+                                    hasEventCards={filteredEvents.length > 0}
+                                    generatedAt={generatedAt}
                                     onContentReady={handleContentReady}
                                 />
                             </ContentContainer>
