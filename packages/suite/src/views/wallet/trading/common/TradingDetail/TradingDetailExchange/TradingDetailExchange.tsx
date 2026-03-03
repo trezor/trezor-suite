@@ -69,8 +69,6 @@ export const TradingDetailExchange = () => {
     const exchange = trade?.data?.exchange;
     const provider =
         info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
-    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
-    const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         sendAmount: trade?.data?.sendStringAmount ?? '',
@@ -131,7 +129,7 @@ export const TradingDetailExchange = () => {
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
-                        supportUrl={supportUrl}
+                        supportUrl={provider?.supportUrl}
                     />
                 );
             default:

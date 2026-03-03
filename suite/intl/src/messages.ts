@@ -858,6 +858,10 @@ export const messages = defineMessages({
         defaultMessage: 'Trade ID',
         id: 'TR_TRADE_ID',
     },
+    TR_TRADING_PROCESSING_STATUS: {
+        defaultMessage: '<link>Check your order status</link> on the {providerName}’s website.',
+        id: 'TR_TRADING_PROCESSING_STATUS',
+    },
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: 'Need help? Reach out to <link>{providerName}’s support</link>.',
         id: 'TR_TRADING_PROCESSING_SUPPORT',
