@@ -7,8 +7,8 @@ export { EarnProviderConsentModal } from './modals/EarnProviderConsent/EarnProvi
 export { StakingEarnProviderConsentModal } from './modals/EarnProviderConsent/StakingEarnProviderConsentModal';
 export { YieldEarnProviderConsentModal } from './modals/EarnProviderConsent/YieldEarnProviderConsentModal';
 export { UpdateEarnProviderConsentModal } from './modals/EarnProviderConsent/UpdateEarnProviderConsentModal';
-export { EarnSupplyModal } from './modals/EarnSupplyModal/EarnSupplyModal';
-export { EarnWithdrawalModal } from './modals/EarnWithdrawalModal/EarnWithdrawalModal';
+export { StakeModal } from './modals/StakeModal/StakeModal';
+export { UnstakeModal } from './modals/UnstakeModal/UnstakeModal';
 export { EarnDashboard } from './EarnDashboard/EarnDashboard';
 
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';

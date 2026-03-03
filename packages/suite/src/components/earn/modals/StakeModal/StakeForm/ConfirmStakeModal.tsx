@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
@@ -22,21 +22,21 @@ const getStakeEnteringMessage = (networkType?: NetworkType) => {
     return 'TR_STAKE_ACTIVATION_COULD_TAKE';
 };
 
-type ConfirmSupplyModalProps = {
+type ConfirmStakeModalProps = {
     account: Account;
     isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
-    flow: EarnFlow;
+    flow: StakeModalFlow;
 };
 
-export const ConfirmSupplyModal = ({
+export const ConfirmStakeModal = ({
     account,
     isLoading,
     onConfirm,
     onCancel,
     flow,
-}: ConfirmSupplyModalProps) => {
+}: ConfirmStakeModalProps) => {
     const analytics = useAnalytics();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
@@ -50,7 +50,7 @@ export const ConfirmSupplyModal = ({
         onCancel();
         dispatch(
             openModal({
-                type: 'supply',
+                type: 'stake',
                 flow,
                 account,
             }),

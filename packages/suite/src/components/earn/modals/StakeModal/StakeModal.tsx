@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -10,21 +10,17 @@ import { SupplyFormContext, useSupplyForm } from 'src/hooks/earn/useSupplyForm';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { SupplyButton } from './SupplyForm/SupplyButton';
-import { SupplyForm } from './SupplyForm/SupplyForm';
-import { SupplyInfoCards } from './SupplyInfoCards/SupplyInfoCards';
+import { StakeButton } from './StakeForm/StakeButton';
+import { StakeForm } from './StakeForm/StakeForm';
+import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 
-type StakingEarnSupplyModalProps = {
+type StakeModalProps = {
     onCancel?: () => void;
     account: Account;
-    flow: EarnFlow;
+    flow: StakeModalFlow;
 };
 
-export const StakingEarnSupplyModal = ({
-    onCancel,
-    account,
-    flow,
-}: StakingEarnSupplyModalProps) => {
+export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
     const analytics = useAnalytics();
     const supplyContextValues = useSupplyForm({ account });
     const { isBelowTablet } = useLayoutSize();
@@ -62,11 +58,11 @@ export const StakingEarnSupplyModal = ({
                     />
                 }
                 onCancel={onCancelClick}
-                bottomContent={<SupplyButton flow={flow} />}
+                bottomContent={<StakeButton flow={flow} />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={32}>
-                    <SupplyForm flow={flow} account={account} />
-                    <SupplyInfoCards account={account} flow={flow} />
+                    <StakeForm flow={flow} />
+                    <StakeInfoCards account={account} flow={flow} />
                 </Grid>
             </Modal>
         </SupplyFormContext.Provider>

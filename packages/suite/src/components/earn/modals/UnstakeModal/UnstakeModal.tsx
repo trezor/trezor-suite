@@ -9,16 +9,16 @@ import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWith
 import { useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { WithdrawalButton } from './WithdrawalForm/WithdrawalButton';
-import { WithdrawalForm } from './WithdrawalForm/WithdrawalForm';
+import { UnstakeButton } from './UnstakeForm/UnstakeButton';
+import { UnstakeForm } from './UnstakeForm/UnstakeForm';
 import { EarnWithdrawingInfo } from '../EarnInANutshell/components/EarnWithdrawingInfo';
 
-type EarnWithdrawalModalProps = {
+type UnstakeModalProps = {
     onCancel?: () => void;
     account: Account;
 };
 
-export const EarnWithdrawalModal = ({ onCancel, account }: EarnWithdrawalModalProps) => {
+export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
     const analytics = useAnalytics();
     const withdrawalContextValues = useWithdrawalForm({ account });
     const { isBelowTablet } = useLayoutSize();
@@ -54,10 +54,10 @@ export const EarnWithdrawalModal = ({ onCancel, account }: EarnWithdrawalModalPr
                     )
                 }
                 onCancel={onCancelClick}
-                bottomContent={<WithdrawalButton />}
+                bottomContent={<UnstakeButton />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={32}>
-                    <WithdrawalForm />
+                    <UnstakeForm />
                     <Column gap={20}>
                         <CollapsibleBox
                             heading={

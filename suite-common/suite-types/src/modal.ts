@@ -5,7 +5,7 @@ import { UI_REQUEST } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
-import { EarnAnalyticsStep, EarnFlow, EarnProvider } from './staking';
+import { EarnAnalyticsStep, EarnFlow, EarnProvider, type StakeModalFlow } from './staking';
 
 export type UserContextPayload =
     | {
@@ -139,21 +139,8 @@ export type UserContextPayload =
           tokenContractAddress?: string;
       }
     | {
-          type: 'supply';
-          flow: EarnFlow;
-          account: Account;
-          yieldId?: string;
-          tokenContractAddress?: string;
-      }
-    | {
           type: 'stake';
-          flow: EarnFlow;
-          account: Account;
-          yieldId?: string;
-          tokenContractAddress?: string;
-      }
-    | {
-          type: 'withdraw';
+          flow: StakeModalFlow;
           account: Account;
       }
     | {

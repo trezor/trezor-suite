@@ -16,6 +16,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { type YieldAccountOpportunity } from './types';
+import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
@@ -102,6 +103,22 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 analyticsStep: 'earn-dashboard',
                 yieldId: opportunity.vault.id,
                 tokenContractAddress: opportunity.vault.token.address ?? undefined,
+            }),
+        );
+    };
+
+    const navigateToYieldWithdraw = () => {
+        if (!opportunity.account) {
+            return;
+        }
+
+        dispatch(
+            goto('earn-withdraw', {
+                params: getEarnRouteParams({
+                    account: opportunity.account,
+                    yieldId: opportunity.vault.id,
+                    contractAddress: opportunity.vault.token.address ?? undefined,
+                }),
             }),
         );
     };
@@ -203,7 +220,12 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             <Button size="small" onClick={openYieldSupplyFlow}>
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
                             </Button>
-                            <Button size="small" intent="brand" priority="secondary">
+                            <Button
+                                size="small"
+                                intent="brand"
+                                priority="secondary"
+                                onClick={navigateToYieldWithdraw}
+                            >
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
                             </Button>
                         </>

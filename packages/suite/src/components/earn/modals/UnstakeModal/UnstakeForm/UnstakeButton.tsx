@@ -10,7 +10,7 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
-export const WithdrawalButton = () => {
+export const UnstakeButton = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =

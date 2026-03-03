@@ -13,6 +13,20 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: Earn,
         })),
     ),
+    'earn-supply': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/supply/index').then(
+            ({ EarnSupply }) => ({
+                default: EarnSupply,
+            }),
+        ),
+    ),
+    'earn-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/withdraw/index').then(
+            ({ EarnWithdraw }) => ({
+                default: EarnWithdraw,
+            }),
+        ),
+    ),
     'suite-connect-popup': lazy(() =>
         import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
             ({ ConnectPopup }) => ({ default: ConnectPopup }),

@@ -12,10 +12,10 @@ import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
-import { WithdrawalInputs } from './WithdrawalInputs';
-import { EarnAvailableBalance } from '../../EarnSupplyModal/SupplyForm/EarnAvailableBalance';
+import { UnstakeInputs } from './UnstakeInputs';
+import { EarnAvailableBalance } from '../../StakeModal/StakeForm/EarnAvailableBalance';
 
-export const WithdrawalForm = () => {
+export const UnstakeForm = () => {
     const {
         account,
         formState: { errors },
@@ -77,7 +77,7 @@ export const WithdrawalForm = () => {
                             />
 
                             <Column gap={20}>
-                                <WithdrawalInputs />
+                                <UnstakeInputs />
                                 {showError && (
                                     <Banner intent="critical" description={inputError?.message} />
                                 )}

@@ -15,6 +15,7 @@ type RouteParamsTypes = {
     accountIndex: number;
     accountType: NonNullable<AccountType>;
     cancelable: boolean;
+    yieldId: string;
     contractAddress?: string;
 };
 

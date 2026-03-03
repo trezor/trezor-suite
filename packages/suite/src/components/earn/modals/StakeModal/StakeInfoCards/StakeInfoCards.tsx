@@ -9,12 +9,12 @@ import { useSelector } from 'src/hooks/suite';
 import { EstimatedGains } from './EstimatedGains';
 import { EarnSupplyingInfo } from '../../EarnInANutshell/components/EarnSupplyingInfo';
 
-type SupplyInfoCardsProps = {
+type StakeInfoCardsProps = {
     account: Account;
     flow: EarnFlow;
 };
 
-export const SupplyInfoCards = ({ account, flow }: SupplyInfoCardsProps) => {
+export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const cards = [
