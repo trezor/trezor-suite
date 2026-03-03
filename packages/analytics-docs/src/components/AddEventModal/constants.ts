@@ -24,20 +24,20 @@ export const isValidAttributeType = (value: string): boolean =>
     value.trim() !== '' && ATTRIBUTE_TYPE_REGEX.test(value.trim());
 
 export const ATTRIBUTE_TYPE_REFERENCE_ITEMS: { type: string; description: string }[] = [
-    { type: 'string', description: 'Řetězec' },
-    { type: 'number', description: 'Číslo' },
-    { type: 'boolean', description: 'Pravda/nepravda' },
-    { type: 'string?', description: 'Volitelný řetězec (optional)' },
-    { type: "'a' | 'b'", description: 'Union literálů' },
-    { type: 'string | number', description: 'Union typů' },
-    { type: 'string[]', description: 'Pole (array)' },
+    { type: 'string', description: 'String' },
+    { type: 'number', description: 'Number' },
+    { type: 'boolean', description: 'Boolean' },
+    { type: 'string?', description: 'Optional string' },
+    { type: "'a' | 'b'", description: 'Union literals' },
+    { type: 'string | number', description: 'Union types' },
+    { type: 'string[]', description: 'Array' },
 ];
 
 export const CHANGELOG_ERROR_MESSAGES: Record<
     'no_entry' | 'invalid_version' | 'empty_notes',
     string
 > = {
-    no_entry: 'Alespoň jeden záznam je povinný.',
-    invalid_version: 'Verze musí být ve tvaru x.y.z nebo ?.',
-    empty_notes: 'Notes jsou povinné u záznamu s platnou verzí.',
+    no_entry: 'At least one entry is required.',
+    invalid_version: 'Version has to be in form x.y.z or ?.',
+    empty_notes: 'Notes are required for an entry with a valid version.',
 };

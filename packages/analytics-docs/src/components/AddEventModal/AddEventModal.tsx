@@ -120,8 +120,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
     const modalContent = (
         <Modal.Backdrop zIndex={100} onClick={undefined} alignment={{ x: 'center', y: 'center' }}>
             <Modal.ModalBase
-                heading="Add or edit analytics event"
-                description="Fill in the event details. You can load an existing event to edit it."
+                heading={`${initialEvent === null ? 'Add' : 'Edit'} analytics event`}
                 onCancel={onClose}
                 onBackClick={showResult ? () => setShowResult(false) : undefined}
                 width={760}
@@ -205,11 +204,11 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             {eventNameValidationError && eventNameTrimmed && (
                                 <Text typographyStyle="body-sm" color="textAlertRed">
                                     {eventNameValidationError.messageId === 'invalidFormat' &&
-                                        "Event musí být ve tvaru 'domain/event' (např. settings/app-log-exported)."}
+                                        "Event has to be in form 'domain/event' (Example: settings/app-log-exported)."}
                                     {eventNameValidationError.messageId === 'invalidDomain' &&
-                                        `Neplatná doména '${eventNameValidationError.data?.domain}'. Použij jednu z: ${ANALYTICS_ALLOWED_DOMAINS.join(', ')}.`}
+                                        `Invalid domain '${eventNameValidationError.data?.domain}'. Use one of these: ${ANALYTICS_ALLOWED_DOMAINS.join(', ')}.`}
                                     {eventNameValidationError.messageId === 'notKebabCase' &&
-                                        'Část za lomítkem musí být kebab-case (např. app-log-exported).'}
+                                        'Name must be in kebab-case (example: app-log-exported).'}
                                 </Text>
                             )}
                             <Column gap={8}>
@@ -222,58 +221,52 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                             descriptionTrigger: e.target.value,
                                         }))
                                     }
-                                    placeholder="např. User confirms THP connection"
+                                    placeholder="Example: User confirms THP connection"
                                     rows={2}
                                 />
                             </Column>
 
-                            <CollapsibleBox
-                                heading={
-                                    <Row gap={4}>
-                                        <Text>Attributes</Text>
-                                        <Badge intent="info">{formState.attributes.length}</Badge>
-                                    </Row>
-                                }
-                                paddingType="small"
-                            >
-                                <Column gap={8}>
-                                    {formState.attributes.map((attr, idx) => (
-                                        <AttributeEditor
-                                            key={idx}
-                                            attr={attr}
-                                            onChange={a => {
-                                                const next = [...formState.attributes];
-                                                next[idx] = a;
-                                                setFormState(s => ({ ...s, attributes: next }));
-                                            }}
-                                            onRemove={() =>
-                                                setFormState(s => ({
-                                                    ...s,
-                                                    attributes: s.attributes.filter(
-                                                        (_, i) => i !== idx,
-                                                    ),
-                                                }))
-                                            }
-                                            canRemove
-                                        />
-                                    ))}
-                                    <Button
-                                        size="small"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        iconLeft="plus"
-                                        margin={{ top: 8 }}
-                                        onClick={() =>
+                            <Row gap={8}>
+                                <Text>Attributes</Text>
+                                <Badge intent="info">{formState.attributes.length}</Badge>
+                            </Row>
+                            <Column gap={8}>
+                                {formState.attributes.map((attr, idx) => (
+                                    <AttributeEditor
+                                        key={idx}
+                                        attr={attr}
+                                        onChange={a => {
+                                            const next = [...formState.attributes];
+                                            next[idx] = a;
+                                            setFormState(s => ({ ...s, attributes: next }));
+                                        }}
+                                        onRemove={() =>
                                             setFormState(s => ({
                                                 ...s,
-                                                attributes: [...s.attributes, defaultAttribute()],
+                                                attributes: s.attributes.filter(
+                                                    (_, i) => i !== idx,
+                                                ),
                                             }))
                                         }
-                                    >
-                                        Add attribute
-                                    </Button>
-                                </Column>
-                            </CollapsibleBox>
+                                        canRemove
+                                    />
+                                ))}
+                                <Button
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    iconLeft="plus"
+                                    margin={{ top: 8 }}
+                                    onClick={() =>
+                                        setFormState(s => ({
+                                            ...s,
+                                            attributes: [...s.attributes, defaultAttribute()],
+                                        }))
+                                    }
+                                >
+                                    Add attribute
+                                </Button>
+                            </Column>
 
                             <CollapsibleBox heading="Event changelog *" paddingType="small">
                                 <ChangelogEntriesEditor

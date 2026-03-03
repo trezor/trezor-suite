@@ -4,6 +4,18 @@ import { Column, Row, Text } from '@trezor/components';
 
 import { ATTRIBUTE_TYPE_REFERENCE_ITEMS } from './constants';
 
+const MONO_STYLE = { fontFamily: 'monospace', whiteSpace: 'pre' } as const;
+const SYNTAX_COLORS = {
+    stringLiteral: '#6A8759',
+    typeKeyword: '#CC7832',
+    number: '#6897BB',
+} as const;
+
+/** Monospace + pre wrapper for type syntax. Optional color for highlighting. */
+const Mono = ({ color, children }: { color?: string; children: ReactNode }) => (
+    <span style={{ ...MONO_STYLE, ...(color && { color }) }}>{children}</span>
+);
+
 /** Same syntax highlighting as in EventCard AttributesTableRow. */
 export const SyntaxHighlightedType = ({ typeStr }: { typeStr: string }) => {
     const re =
@@ -18,9 +30,9 @@ export const SyntaxHighlightedType = ({ typeStr }: { typeStr: string }) => {
         }
         if (token.startsWith("'") || token.startsWith('"')) {
             parts.push(
-                <span key={match.index} style={{ color: '#6A8759' }}>
+                <Mono key={match.index} color={SYNTAX_COLORS.stringLiteral}>
                     {token}
-                </span>,
+                </Mono>,
             );
         } else if (
             [
@@ -38,15 +50,15 @@ export const SyntaxHighlightedType = ({ typeStr }: { typeStr: string }) => {
             ].includes(token)
         ) {
             parts.push(
-                <span key={match.index} style={{ color: '#CC7832' }}>
+                <Mono key={match.index} color={SYNTAX_COLORS.typeKeyword}>
                     {token}
-                </span>,
+                </Mono>,
             );
         } else if (/^\d/.test(token)) {
             parts.push(
-                <span key={match.index} style={{ color: '#6897BB' }}>
+                <Mono key={match.index} color={SYNTAX_COLORS.number}>
                     {token}
-                </span>,
+                </Mono>,
             );
         } else {
             parts.push(token);
@@ -55,7 +67,7 @@ export const SyntaxHighlightedType = ({ typeStr }: { typeStr: string }) => {
     }
     if (lastIndex < typeStr.length) parts.push(typeStr.slice(lastIndex));
 
-    return <span style={{ fontFamily: 'monospace', whiteSpace: 'pre' }}>{parts}</span>;
+    return <Mono>{parts}</Mono>;
 };
 
 /** Preview line: key(?): type with syntax-highlighted type, all monospace. */
@@ -68,18 +80,18 @@ export const AttributeKeyTypePreview = ({
     isOptional: boolean;
     typeStr: string;
 }) => (
-    <span style={{ fontFamily: 'monospace', whiteSpace: 'pre' }}>
+    <Mono>
         {keyName || 'key'}
         {isOptional ? '?' : ''}: <SyntaxHighlightedType typeStr={typeStr} />
-    </span>
+    </Mono>
 );
 
 export const AttributeTypeReferenceTooltipContent = () => (
     <Column gap={4}>
         {ATTRIBUTE_TYPE_REFERENCE_ITEMS.map(({ type, description }) => (
-            <Row key={type} gap={8} alignItems="center">
+            <Row key={type} alignItems="center">
                 <SyntaxHighlightedType typeStr={type} />
-                <Text typographyStyle="hint">— {description}</Text>
+                <Text typographyStyle="body-sm">: {description}</Text>
             </Row>
         ))}
     </Column>
