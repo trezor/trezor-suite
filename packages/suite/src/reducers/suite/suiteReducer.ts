@@ -100,6 +100,7 @@ export interface SuiteSettings {
         entropy: boolean;
         firmwareRevision: boolean;
         firmwareHash: boolean;
+        deviceMeta: boolean;
     };
     addressDisplayType: AddressDisplayOptions;
     experimental?: ExperimentalFeature[];
@@ -190,6 +191,7 @@ const initialState: SuiteState = {
             entropy: true,
             firmwareRevision: true,
             firmwareHash: true,
+            deviceMeta: true,
         },
         debug: {
             invityServerEnvironment: undefined,
@@ -246,6 +248,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.settings = {
                     ...draft.settings,
                     ...action.payload.suiteSettings?.settings,
+                    enabledSecurityChecks: {
+                        ...draft.settings.enabledSecurityChecks,
+                        ...action.payload.suiteSettings?.settings.enabledSecurityChecks,
+                    },
                 };
                 break;
             case STORAGE.ERROR:
@@ -390,6 +396,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
                 draft.settings.enabledSecurityChecks.firmwareRevision = action.payload;
+                break;
+            case SUITE.TOGGLE_DEVICE_META_CHECKS:
+                draft.settings.enabledSecurityChecks.deviceMeta = action.payload;
                 break;
             case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
                 draft.settings.enabledSecurityChecks.firmwareHash = action.payload;

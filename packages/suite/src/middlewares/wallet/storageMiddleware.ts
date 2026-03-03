@@ -330,6 +330,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
+                case SUITE.TOGGLE_DEVICE_META_CHECKS:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case SUITE.SET_IS_COINS_FILTER_VISIBLE:
