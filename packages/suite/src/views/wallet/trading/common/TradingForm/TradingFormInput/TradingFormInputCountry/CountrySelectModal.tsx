@@ -7,10 +7,11 @@ import {
     TradingCountryOption,
     useCountryFilteredData,
 } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { Column, Flag, Input, Modal, Paragraph, Row, getCountryFlag } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useGetCountryName } from 'src/hooks/wallet/trading/useGetCountryName';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
@@ -23,6 +24,7 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
     const { translationString } = useTranslation();
     const { setValue, clearQuotesAndParams } = useTradingFormContext<TradingTradeBuySellType>();
     const { filteredData, setFilterValue, filterValue } = useCountryFilteredData();
+    const getCountryName = useGetCountryName();
 
     const selectCountry = (country: TradingCountryOption) => {
         const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
@@ -31,11 +33,6 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
         clearQuotesAndParams();
         onClose();
     };
-
-    const getCountryFlag = (country: TradingCountryOption) =>
-        country.value === 'unknown' || country.value === 'XX' || country.value === 'T1'
-            ? 'UNKNOWN'
-            : country.value;
 
     return (
         <Modal
@@ -54,18 +51,23 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
                 />
                 {filteredData.length > 0 && (
                     <CardList>
-                        {filteredData.map(country => (
-                            <CardList.Item
-                                key={country.value}
-                                onClick={() => selectCountry(country)}
-                                data-testid={`@trading/form/country-select/option/${country.value}`}
-                            >
-                                <Row gap={16}>
-                                    <Flag country={getCountryFlag(country)} size={24} />
-                                    {country.name}
-                                </Row>
-                            </CardList.Item>
-                        ))}
+                        {filteredData.map(country => {
+                            const countryFlag = getCountryFlag(country.value);
+                            const countryName = getCountryName(country, true);
+
+                            return (
+                                <CardList.Item
+                                    key={country.value}
+                                    onClick={() => selectCountry(country)}
+                                    data-testid={`@trading/form/country-select/option/${country.value}`}
+                                >
+                                    <Row gap={12}>
+                                        {countryFlag && <Flag country={countryFlag} size={24} />}
+                                        {countryName}
+                                    </Row>
+                                </CardList.Item>
+                            );
+                        })}
                     </CardList>
                 )}
                 {!filteredData.length && (

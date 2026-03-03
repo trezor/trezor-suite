@@ -13,6 +13,7 @@ export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbo
 export * from './components/animations/LottieAnimation';
 export { recolorLottieAnimation } from './components/animations/recolorLottieAnimation';
 export * from './components/Flag/Flag';
+export { getCountryFlag } from './components/Flag/utils';
 export { Badge, type BadgeProps, type BadgeSize, type BadgeIntent } from './components/Badge/Badge';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
