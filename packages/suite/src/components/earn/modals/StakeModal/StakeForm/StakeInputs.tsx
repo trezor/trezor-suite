@@ -25,7 +25,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FormPercentButtonValue } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
-export const SupplyInputs = () => {
+export const StakeInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);

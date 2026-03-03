@@ -7,6 +7,13 @@
 export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
+export const earnParams = [
+    'symbol',
+    'accountIndex',
+    'accountType',
+    'yieldId',
+    'contractAddress',
+] as const;
 
 export const routes = [
     {
@@ -27,6 +34,18 @@ export const routes = [
         name: 'suite-earn',
         pattern: '/earn',
         app: 'earn',
+    },
+    {
+        name: 'earn-supply',
+        pattern: '/earn/supply',
+        app: 'earn',
+        params: earnParams,
+    },
+    {
+        name: 'earn-withdraw',
+        pattern: '/earn/withdraw',
+        app: 'earn',
+        params: earnParams,
     },
     {
         name: 'suite-version',

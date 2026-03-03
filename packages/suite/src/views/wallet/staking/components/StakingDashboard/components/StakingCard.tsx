@@ -168,7 +168,7 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(
                 openModal({
-                    type: 'supply',
+                    type: 'stake',
                     flow: EarnFlow.Stake,
                     account,
                 }),
@@ -202,7 +202,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
-            dispatch(openModal({ type: 'withdraw', account }));
+            dispatch(openModal({ type: 'unstake', account }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,

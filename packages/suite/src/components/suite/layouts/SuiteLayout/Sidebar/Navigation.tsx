@@ -62,7 +62,7 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
                               nameId: 'TR_EARN',
                               icon: 'piggyBank',
                               goToRoute: 'suite-earn',
-                              routes: ['suite-earn'],
+                              routes: ['suite-earn', 'earn-supply', 'earn-withdraw'],
                           } as NavigationItemProps,
                       ]
                     : []),

@@ -4,6 +4,8 @@ export enum EarnFlow {
     UpdateProvider = 'update-provider',
 }
 
+export type StakeModalFlow = EarnFlow.Stake | EarnFlow.UpdateProvider;
+
 export enum EarnProvider {
     Everstake = 'everstake',
     YieldXyz = 'yield-xyz',

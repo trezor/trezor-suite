@@ -1,13 +1,16 @@
 import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
-import { yup } from '@suite-common/validators';
-import { NetworkSymbol, getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
-import {
-    WalletParams as CommonWalletParams,
-    GlobalSendReceiveType,
-} from '@suite-common/wallet-types';
+import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { type RouterAppWithParams } from 'src/constants/suite/routes';
+import {
+    DashboardParams,
+    EarnParams,
+    decodeEarnRouteParams,
+    parseDashboardParams,
+    parseEarnParams,
+    validateAccountRouteParams,
+} from 'src/utils/suite/routerParams';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
 export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
@@ -84,22 +87,35 @@ const parseHash = (hash: HashString) => hash.replace(/^#/, '').split('/').filter
 
 const validateWalletParams = (hash: HashString): CommonWalletParams => {
     const [symbol, index, rawAccountType] = parseHash(hash);
-    if (!index) return;
 
-    const network = getNetworkOptional(symbol);
-    if (!network) return;
+    return validateAccountRouteParams({
+        symbol,
+        index,
+        rawAccountType,
+    });
+};
 
-    const accountType = rawAccountType || 'normal';
-    if (!isAccountOfNetwork(network, accountType)) return;
+const validateEarnParams = (hash: HashString) => {
+    const [symbol, index, rawAccountType, rawYieldId, rawContractAddress] = parseHash(hash);
 
-    const accountIndex = parseInt(index, 10);
-    if (Number.isNaN(accountIndex)) return;
+    const accountRouteParams = validateAccountRouteParams({
+        symbol,
+        index,
+        rawAccountType,
+    });
+    const decodedEarnRouteParams = decodeEarnRouteParams({
+        rawYieldId,
+        rawContractAddress,
+    });
 
-    return {
-        symbol: network.symbol,
-        accountIndex,
-        accountType,
-    };
+    if (!accountRouteParams || !decodedEarnRouteParams) {
+        return;
+    }
+
+    return parseEarnParams({
+        ...accountRouteParams,
+        ...decodedEarnRouteParams,
+    });
 };
 
 const parseParamValue = <T>(value: string, defaultValue?: T) => {
@@ -136,21 +152,6 @@ const validateModalAppParams = (hash: HashString, params?: Route['params']): Mod
     } as ModalAppParams;
 };
 
-const dashboardParamsSchema = yup.object({
-    networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
-    modal: yup.mixed<NonNullable<GlobalSendReceiveType>>().oneOf(['send', 'receive']).required(),
-});
-
-export type DashboardParams = yup.InferType<typeof dashboardParamsSchema>;
-
-export function parseDashboardParams(params: unknown): DashboardParams | undefined {
-    try {
-        return dashboardParamsSchema.validateSync(params, { abortEarly: false, strict: true });
-    } catch {
-        return undefined;
-    }
-}
-
 const validateDashboardParams = (hash: HashString): DashboardParams | undefined => {
     const [modal, networkSymbol] = parseHash(hash);
 
@@ -173,6 +174,8 @@ const getAppParams = (route: Route, hash: HashString = '') => {
     switch (route.app) {
         case 'dashboard':
             return validateDashboardParams(hash);
+        case 'earn':
+            return validateEarnParams(hash);
         case 'wallet':
             return validateWalletParams(hash);
         default:
@@ -201,7 +204,8 @@ export const resolveEffectiveBackgroundRouteName = (
 
 export type WalletParams = CommonWalletParams;
 export type RouteParams = {
-    [K in keyof (WalletParams & ModalAppParams & DashboardParams)]?: (WalletParams &
+    [K in keyof (WalletParams & EarnParams & ModalAppParams & DashboardParams)]?: (WalletParams &
+        EarnParams &
         ModalAppParams &
         DashboardParams)[K];
 };

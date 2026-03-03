@@ -5,6 +5,8 @@ import { PageName } from '@suite-common/suite-types';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
+import { EarnSupply } from 'src/views/earn/supply';
+import { EarnWithdraw } from 'src/views/earn/withdraw';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
@@ -39,6 +41,8 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
+    'earn-supply': EarnSupply,
+    'earn-withdraw': EarnWithdraw,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 

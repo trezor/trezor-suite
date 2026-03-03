@@ -11,11 +11,11 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
-type SupplyButtonProps = {
+type StakeButtonProps = {
     flow: EarnFlow;
 };
 
-export const SupplyButton = ({ flow }: SupplyButtonProps) => {
+export const StakeButton = ({ flow }: StakeButtonProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const {

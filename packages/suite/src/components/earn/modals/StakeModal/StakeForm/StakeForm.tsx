@@ -1,22 +1,22 @@
 import { FormProvider } from 'react-hook-form';
 
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 
 import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
-import { ConfirmSupplyModal } from './ConfirmSupplyModal';
+import { ConfirmStakeModal } from './ConfirmStakeModal';
 import { EarnAvailableBalance } from './EarnAvailableBalance';
+import { StakeInputs } from './StakeInputs';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
-import { SupplyInputs } from './SupplyInputs';
 
-type StakingSupplyFormProps = {
-    flow: EarnFlow;
+type StakeFormProps = {
+    flow: StakeModalFlow;
 };
 
-export const StakingSupplyForm = ({ flow }: StakingSupplyFormProps) => {
+export const StakeForm = ({ flow }: StakeFormProps) => {
     const {
         account,
         isConfirmModalOpen,
@@ -36,7 +36,7 @@ export const StakingSupplyForm = ({ flow }: StakingSupplyFormProps) => {
     return (
         <FormProvider {...methods}>
             {isConfirmModalOpen && (
-                <ConfirmSupplyModal
+                <ConfirmStakeModal
                     account={account}
                     isLoading={isLoading}
                     onConfirm={signTx}
@@ -51,7 +51,7 @@ export const StakingSupplyForm = ({ flow }: StakingSupplyFormProps) => {
                 ) : (
                     <>
                         <EarnAvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
-                        <SupplyInputs />
+                        <StakeInputs />
                     </>
                 )}
 

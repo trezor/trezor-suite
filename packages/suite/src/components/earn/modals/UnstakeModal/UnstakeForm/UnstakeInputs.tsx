@@ -20,7 +20,7 @@ import {
     validateMin,
 } from 'src/utils/suite/validation';
 
-export const WithdrawalInputs = () => {
+export const UnstakeInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
 

@@ -9,8 +9,8 @@ import {
     EarnClaimModal,
     EarnInANutshellModal,
     EarnProviderConsentModal,
-    EarnSupplyModal,
-    EarnWithdrawalModal,
+    StakeModal,
+    UnstakeModal,
 } from 'src/components/earn';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
@@ -149,12 +149,10 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
             return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
-        case 'supply':
         case 'stake':
-            return <EarnSupplyModal {...payload} onCancel={onCancel} />;
-        case 'withdraw':
+            return <StakeModal {...payload} onCancel={onCancel} />;
         case 'unstake':
-            return <EarnWithdrawalModal onCancel={onCancel} account={payload.account} />;
+            return <UnstakeModal onCancel={onCancel} account={payload.account} />;
         case 'claim':
             return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
         case 'change-delegate':

@@ -6,11 +6,15 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
+
+import { getEarnRouteParams } from '../../../utils/getEarnRouteParams';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
@@ -51,15 +55,35 @@ export const useEarnProviderConsentActions = ({
 
     const proceedToSupply = () => {
         onCancel();
-        dispatch(
-            openModal({
-                type: 'supply',
-                flow,
-                account,
-                yieldId,
-                tokenContractAddress,
-            }),
-        );
+
+        switch (flow) {
+            case EarnFlow.Yield:
+                if (yieldId) {
+                    dispatch(
+                        goto('earn-supply', {
+                            params: getEarnRouteParams({
+                                account,
+                                yieldId,
+                                contractAddress: tokenContractAddress,
+                            }),
+                        }),
+                    );
+                }
+                break;
+            case EarnFlow.Stake:
+            case EarnFlow.UpdateProvider:
+                dispatch(
+                    openModal({
+                        type: 'stake',
+                        flow,
+                        account,
+                    }),
+                );
+                break;
+            default:
+                exhaustive(flow);
+        }
+
         report('continue');
     };
 

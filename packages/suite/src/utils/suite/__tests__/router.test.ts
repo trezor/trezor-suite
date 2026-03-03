@@ -44,6 +44,23 @@ describe('router', () => {
             // @ts-expect-error: invalid params
             expect(test('unknown-route')).toEqual('/');
             expect(test('wallet-index')).toEqual('/accounts');
+            expect(
+                test('earn-supply', {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                    yieldId: 'vault-1',
+                    contractAddress: '0xabc',
+                }),
+            ).toEqual('/earn/supply#/eth/0/normal/vault-1/0xabc');
+            expect(
+                test('earn-withdraw', {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                    yieldId: 'vault-1',
+                }),
+            ).toEqual('/earn/withdraw#/eth/0/normal/vault-1');
             // tests below with intentionally mixed # params
             expect(
                 test('wallet-index', {
@@ -167,6 +184,51 @@ describe('router', () => {
                 app: 'unknown',
                 params: undefined,
                 route: undefined,
+            });
+
+            expect(
+                getAppWithParams({
+                    pathname: '/earn/supply',
+                    hash: '#/eth/0/normal/vault-1/0xabc',
+                }),
+            ).toEqual({
+                app: 'earn',
+                params: {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                    yieldId: 'vault-1',
+                    contractAddress: '0xabc',
+                },
+                route: getRoute('earn-supply'),
+            });
+
+            expect(
+                getAppWithParams({
+                    pathname: '/earn/withdraw',
+                    hash: '#/eth/0/normal/vault-1',
+                }),
+            ).toEqual({
+                app: 'earn',
+                params: {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                    yieldId: 'vault-1',
+                    contractAddress: undefined,
+                },
+                route: getRoute('earn-withdraw'),
+            });
+
+            expect(
+                getAppWithParams({
+                    pathname: '/earn/supply',
+                    hash: '#/eth/0/normal',
+                }),
+            ).toEqual({
+                app: 'earn',
+                params: undefined,
+                route: getRoute('earn-supply'),
             });
         });
     });
