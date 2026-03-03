@@ -579,12 +579,13 @@ export default defineConfig({
         ENABLE_REDUX_LOGGER: true,
     },
     optimizeDeps: {
-        include: ['@trezor/connect', '@trezor/suite', 'buffer'],
+        include: ['@trezor/suite', 'buffer'],
         exclude: [
             // Exclude WebAssembly modules
             '@trezor/crypto-utils',
             '@trezor/utxo-lib',
-            // Exclude transport to prevent pre-bundling issues with bridge URL construction
+            // Exclude connect and transport to prevent pre-bundling issues with bridge URL construction and exports
+            '@trezor/connect',
             '@trezor/transport',
         ],
     },
