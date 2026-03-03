@@ -105,6 +105,12 @@ export const messages = {
             primaryButtonTitle: 'Update',
             secondaryButtonTitle: 'Not now',
         },
+        errors: {
+            deviceCancelled: 'Activation was cancelled on the device.',
+            deviceError: 'Device communication failed.',
+            suiteSyncUpdateError: 'Failed to update data.',
+            suiteSyncUnavailable: 'Suite Sync unavailable on this device.',
+        },
     },
     moduleHome: {
         graphIgnoredNetworks:

@@ -1,4 +1,4 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { SuiteSyncStorage, SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
@@ -32,3 +32,7 @@ export type EnsureWalletSuiteSyncOn = (
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
+
+export type SuiteSyncUserFacingErrorType =
+    | Exclude<EnsureWalletSuiteSyncOnErrors['type'], 'WriteModeRequiredForAllocation'>
+    | SuiteSyncUpdateError['type'];

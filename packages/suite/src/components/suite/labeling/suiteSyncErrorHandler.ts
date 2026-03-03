@@ -1,9 +1,11 @@
+import { messages } from '@suite/intl';
 import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
+import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
 import { Dispatch } from '../../../types/suite';
 
@@ -30,7 +32,12 @@ export const suiteSyncErrorHandler = ({
         case 'DeviceCancelled':
         case 'DeviceError':
         case 'SuiteSyncUpdateError':
-            dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: messages[suiteSyncErrorTranslationKeyMap[type]].defaultMessage,
+                }),
+            );
 
             return;
 

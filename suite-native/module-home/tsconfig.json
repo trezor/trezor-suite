@@ -39,6 +39,7 @@
         { "path": "../firmware" },
         { "path": "../graph" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../services" },
