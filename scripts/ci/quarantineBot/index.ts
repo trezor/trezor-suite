@@ -5,9 +5,9 @@
  * Periodically:
  * 1. Enumerates recently-active tests via the Tests Explorer, then fetches the latest
  *    LAST_N_EXECUTIONS individual results per test via the Test Results API and quarantines
- *    any test with ≥80% failure rate in that window.
+ *    any test with ≥60% failure rate in that window.
  * 2. For already-quarantined tests, checks their latest LAST_N_EXECUTIONS results and
- *    unquarantines any that now have ≤20% failure rate.
+ *    unquarantines any that now have 0% failure rate.
  *
  * Projects monitored:
  *   Web E2E: Og0NOQ
@@ -20,8 +20,8 @@ const AUTO_QUARANTINE_PREFIX = '[auto-quarantine]';
 /**
  * Heuristic thresholds
  */
-const QUARANTINE_FAILURE_RATE = 0.8; // quarantine if ≥80% fails in the last N executions
-const UNQUARANTINE_FAILURE_RATE = 0.2; // unquarantine if ≤20% fails (i.e., ≥80% passes)
+const QUARANTINE_FAILURE_RATE = 0.6; // quarantine if ≥60% fails in the last N executions
+const UNQUARANTINE_FAILURE_RATE = 0; // unquarantine if test becomes perfectly stable (0% failures in the last N executions)
 const LAST_N_EXECUTIONS = 5; // number of individual executions to evaluate
 const EXPLORER_LOOKBACK_DAYS = 1; // window used by Tests Explorer to discover active tests
 // Pre-filter: skip only tests that are nearly perfect (>98% pass rate) in the explorer window.
