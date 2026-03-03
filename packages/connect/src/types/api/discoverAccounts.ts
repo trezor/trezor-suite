@@ -2,6 +2,7 @@ import type { BlockchainLinkParams } from '@trezor/blockchain-link';
 
 import { PROTO } from '../../constants';
 import type { AccountInfo } from '../account';
+import type { EntropyCheckResult } from '../device';
 import type { Params, Response } from '../params';
 
 export const ACCOUNT_TYPES = [
@@ -83,6 +84,7 @@ type CoinParam<T extends AccountTypeKey['symbol'] = AccountTypeKey['symbol']> = 
 
 type DiscoverAccountsParams = {
     coins: CoinParam[];
+    entropyCheckResult?: EntropyCheckResult;
 };
 
 type ProgressBaseType = AccountTypeKey & { index: number; path: string; backendType?: string };

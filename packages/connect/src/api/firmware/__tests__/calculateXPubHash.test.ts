@@ -1,4 +1,4 @@
-import { calculateXPubHash, calculateXPubHashes } from '../calculateXPubHash';
+import { calculateXPubHash, calculateXPubHashes, checkXPubWithHashes } from '../calculateXPubHash';
 
 // all seed standard wallet
 const xpubs = {
@@ -23,5 +23,39 @@ describe(calculateXPubHash.name, () => {
 describe(calculateXPubHashes.name, () => {
     it('hashes xpubs keyed by BIP43 path', () => {
         expect(calculateXPubHashes(xpubs)).toEqual(expectedHashes);
+    });
+});
+
+describe(checkXPubWithHashes.name, () => {
+    const knownXPubHashes = expectedHashes;
+
+    it('returns true when hash matches for a known path', () => {
+        expect(
+            checkXPubWithHashes({
+                xpub: xpubs["m/84'/0'/0'"],
+                path: "m/84'/0'/0'",
+                knownXPubHashes,
+            }),
+        ).toBe(true);
+    });
+
+    it('returns false when hash does not match for a known path', () => {
+        expect(
+            checkXPubWithHashes({
+                xpub: 'something else',
+                path: "m/44'/60'/0'",
+                knownXPubHashes,
+            }),
+        ).toBe(false);
+    });
+
+    it('returns true when path is not present in known hashes', () => {
+        expect(
+            checkXPubWithHashes({
+                xpub: xpubs["m/84'/0'/0'"],
+                path: "m/49'/0'/0'",
+                knownXPubHashes,
+            }),
+        ).toBe(true);
     });
 });

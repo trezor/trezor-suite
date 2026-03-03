@@ -63,6 +63,11 @@ export const selectPersistentDeviceDataById = createMemoizedSelector(
         persistentDeviceData.find(data => data.device_id === deviceId),
 );
 
+export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
+    [selectPersistentDeviceDataById],
+    persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult,
+);
+
 // Use in tests only! See deviceReducer for the property definition.
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
     state.device.simulatedEntropyCheckFail;
