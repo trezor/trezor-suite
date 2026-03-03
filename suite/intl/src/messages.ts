@@ -3189,7 +3189,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER: {
         defaultMessage:
-            'Connect Trezor and allow Suite Sync to view and edit your labels, wallet names, and account names.',
+            'Connect your Trezor and allow Suite Sync to view and edit your labels, wallet names, and account names.',
         id: 'TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER',
     },
     TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION: {
@@ -4378,7 +4378,7 @@ export const messages = defineMessages({
     },
     TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
-        defaultMessage: 'Connect your device to add new accounts.',
+        defaultMessage: 'Connect your Trezor to add new accounts.',
     },
     TR_FORGET_DEVICE_HEADING: {
         id: 'TR_FORGET_DEVICE_HEADING',
@@ -5302,7 +5302,7 @@ export const messages = defineMessages({
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
-        defaultMessage: 'Your device was wiped and no longer holds any private keys.',
+        defaultMessage: 'Your Trezor was wiped and no longer holds any private keys.',
     },
     TR_CHANGE_HOMESCREEN: {
         id: 'TR_CHANGE_HOMESCREEN',
@@ -7050,20 +7050,20 @@ export const messages = defineMessages({
     },
     TR_GUIDE_SUPPORT_CONSENT_TITLE: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_TITLE',
-        defaultMessage: 'Help us help you, privately',
+        defaultMessage: 'Get faster support',
     },
     TR_GUIDE_SUPPORT_CONSENT_TOGGLE: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_TOGGLE',
-        defaultMessage: 'Temporarily share system info',
+        defaultMessage: 'Share one-time system details',
     },
     TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION',
         defaultMessage:
-            'Send a one-time snapshot of your system info (firmware, Suite version, and device type) so our team can skip these questions and jump straight to a solution.',
+            'Securely share your firmware version, Trezor Suite version, and hardware wallet model with Trezor Support so we can resolve your issue faster.',
     },
     TR_GUIDE_SUPPORT_CONSENT_BUTTON: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_BUTTON',
-        defaultMessage: 'Contact support',
+        defaultMessage: 'Contact Trezor Support',
     },
     TR_GUIDE_FORUM: {
         id: 'TR_GUIDE_FORUM',
@@ -7290,7 +7290,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
-        defaultMessage: 'Your device manipulates its model or color.',
+        defaultMessage: 'Your Trezor’s model or color appears to have been manipulated.',
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
@@ -8976,7 +8976,7 @@ export const messages = defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            'Your current provider is reducing its ADA rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your funds and past rewards stay safe.',
+            "You're now earning significantly less ADA rewards. Switch to Everstake for up to {apy}% APY. Your funds and past rewards are safe.",
     },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
@@ -10797,16 +10797,15 @@ export const messages = defineMessages({
     },
     TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING: {
         id: 'TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING',
-        defaultMessage: 'Please rate your {feature} experience',
+        defaultMessage: 'Rate your {feature} experience',
     },
     TR_EXPERIMENTAL_FEEDBACK_CARD_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_FEEDBACK_CARD_DESCRIPTION',
-        defaultMessage:
-            'It takes just a few seconds. Your feedback helps us improve Suite Sync for you and others. ',
+        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
     },
     TR_EXPERIMENTAL_FEEDBACK_MODAL_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_FEEDBACK_MODAL_DESCRIPTION',
-        defaultMessage: 'Your feedback helps improve-tell us what you think.',
+        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
     },
     TR_EXPERIMENTAL_FEEDBACK_MODAL_SUBMIT: {
         id: 'TR_EXPERIMENTAL_FEEDBACK_MODAL_SUBMIT',
@@ -10814,6 +10813,6 @@ export const messages = defineMessages({
     },
     TR_EXPERIMENTAL_FEEDBACK_CARD_RATE_BUTTON: {
         id: 'TR_EXPERIMENTAL_FEEDBACK_CARD_RATE_BUTTON',
-        defaultMessage: 'Sure thing',
+        defaultMessage: 'Share feedback',
     },
 } as const);
