@@ -55,10 +55,7 @@ export const TradingDetailSellPaymentSuccessful = ({
                                 provider={provider}
                                 trade={trade}
                             />
-                            <TradingDetailSupportBanner
-                                provider={provider}
-                                orderId={trade.orderId}
-                            />
+                            <TradingDetailSupportBanner provider={provider} trade={trade} />
                         </Column>
                     </Card>
                 )}

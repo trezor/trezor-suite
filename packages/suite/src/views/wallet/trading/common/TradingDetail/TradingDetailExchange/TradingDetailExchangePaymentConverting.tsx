@@ -54,7 +54,7 @@ export const TradingDetailExchangePaymentConverting = ({
                             txId={trade.receiveTxHash}
                         />
                     )}
-                    <TradingDetailSupportBanner provider={provider} orderId={trade.orderId} />
+                    <TradingDetailSupportBanner provider={provider} trade={trade} />
                 </Column>
             </Card>
         </TradingDetailStep>

@@ -45,7 +45,7 @@ export const TradingDetailBuyPaymentFailed = ({
                             trade={trade}
                         />
                     )}
-                    <TradingDetailSupportBanner provider={provider} orderId={trade.paymentId} />
+                    <TradingDetailSupportBanner provider={provider} trade={trade} />
                 </Column>
             </Card>
         </Column>

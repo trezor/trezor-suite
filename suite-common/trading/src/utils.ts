@@ -480,3 +480,13 @@ export const getTradingPrefilledFromAccountData = (
 
 export const isBuyProviderInfo = (provider: TradingProviderInfo): provider is BuyProviderInfo =>
     'brandName' in provider;
+
+export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTradeType) => {
+    const tradeStatusUrl = trade?.statusUrl;
+
+    if (tradeStatusUrl === null) {
+        return undefined;
+    }
+
+    return tradeStatusUrl || provider?.statusUrl;
+};

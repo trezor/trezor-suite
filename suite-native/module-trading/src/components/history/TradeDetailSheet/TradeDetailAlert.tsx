@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import type { BuyTrade } from 'invity-api';
-
 import {
     TradingRootState,
     TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionSell,
     TradingType,
+    getStatusUrl,
     selectTradingProviderByNameAndTradeType,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
@@ -123,16 +122,10 @@ export const TradeDetailAlert = ({
 
     const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
 
-    const supportUrlTemplate = providerInfo?.statusUrl || providerInfo?.supportUrl;
-    let supportUrl: string | undefined;
-    if (tradeType === 'buy') {
-        supportUrl = supportUrlTemplate?.replace(
-            '{{originalPaymentId}}',
-            (trade?.data as BuyTrade)?.paymentId || '',
-        );
-    } else {
-        supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
-    }
+    // todo: separate status url and support url just like on web and desktop
+    const supportUrl = providerInfo?.supportUrl;
+    const statusOrSupportUrl =
+        alertType === 'kyc' ? supportUrl : getStatusUrl(providerInfo, trade?.data) || supportUrl;
 
     const navigateToBrowser = () => {
         if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
@@ -153,8 +146,8 @@ export const TradeDetailAlert = ({
         handleButtonPress = () => navigateToBrowser();
     }
 
-    if (supportUrl) {
-        handleButtonPress = () => openLink(supportUrl);
+    if (statusOrSupportUrl) {
+        handleButtonPress = () => openLink(statusOrSupportUrl);
     }
 
     const buttonLabel = handleButtonPress ? translate(buttonKey) : undefined;
