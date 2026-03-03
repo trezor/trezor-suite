@@ -34,7 +34,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            <IconCircle name="warning" size={90} variant="warning" />
+            <IconCircle name="warning" size={96} intent="warning" />
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>

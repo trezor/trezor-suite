@@ -115,12 +115,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                         }}
                                     >
                                         <Row gap={12}>
-                                            <IconCircle
-                                                name="plus"
-                                                size={40}
-                                                variant="tertiary"
-                                                hasBorder={false}
-                                            />
+                                            <IconCircle name="plus" size={40} intent="neutral" />
                                             <Translation id="TR_ADD_ACCOUNT" />
                                         </Row>
                                     </CardList.Item>

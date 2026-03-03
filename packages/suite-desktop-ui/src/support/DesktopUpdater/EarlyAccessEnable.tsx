@@ -33,7 +33,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     return enabled ? (
         <Modal
             iconName="starFour"
-            variant="info"
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
@@ -63,7 +63,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     ) : (
         <Modal
             iconName="starFour"
-            variant="info"
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>

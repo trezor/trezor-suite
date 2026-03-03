@@ -20,7 +20,7 @@ export const PinMismatchModal = () => {
                 </Modal.Button>
             }
             iconName="password"
-            variant="warning"
+            intent="warning"
             width={600}
         >
             <H3>

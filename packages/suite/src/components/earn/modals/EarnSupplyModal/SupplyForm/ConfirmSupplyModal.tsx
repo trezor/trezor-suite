@@ -89,7 +89,7 @@ export const ConfirmSupplyModal = ({
             heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
             onCancel={handleOnCancel}
             width={600}
-            variant="warning"
+            intent="warning"
             bottomContent={
                 <>
                     <Modal.Button

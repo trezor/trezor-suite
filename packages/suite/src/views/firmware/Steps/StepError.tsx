@@ -16,7 +16,7 @@ export const StepError = ({ onClose, error }: StepErrorProps) => (
             </Modal.Button>
         }
         iconName="warning"
-        variant="destructive"
+        intent="critical"
     >
         <H3>
             <Translation id="TR_FW_INSTALLATION_FAILED" />

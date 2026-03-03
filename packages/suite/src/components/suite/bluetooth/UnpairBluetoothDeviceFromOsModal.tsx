@@ -53,7 +53,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
     return (
         <Modal
             onCancel={onCancel}
-            variant="primary"
+            intent="brand"
             bottomContent={
                 <>
                     <Modal.Button

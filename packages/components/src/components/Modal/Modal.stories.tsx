@@ -3,7 +3,7 @@ import { JSX } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
-import { modalVariants, modalWidths } from './types';
+import { modalIntents, modalWidths } from './types';
 import {
     Modal as ModalComponent,
     ModalProps,
@@ -47,7 +47,7 @@ export default meta;
 
 export const Modal: StoryObj<ModalProps> = {
     args: {
-        variant: 'primary',
+        intent: 'brand',
         iconName: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
@@ -61,11 +61,11 @@ export const Modal: StoryObj<ModalProps> = {
         ...getFramePropsStory(allowedModalFrameProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: [...modalVariants, undefined],
+            options: [...modalIntents, undefined],
         },
         width: {
             control: {

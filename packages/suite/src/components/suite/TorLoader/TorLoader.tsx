@@ -102,7 +102,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
 
     return (
         <Modal
-            variant="info"
+            intent="info"
             iconName="torBrowser"
             width={600}
             bottomContent={

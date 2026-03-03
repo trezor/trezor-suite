@@ -18,7 +18,7 @@ export const DatabaseCorruptedModal = () => {
     return (
         <Modal
             iconName="database"
-            variant="destructive"
+            intent="critical"
             bottomContent={
                 <Modal.Button onClick={handleClick} isLoading={isLoading} intent="brand">
                     <Translation id="TR_CLEAR_STORAGE" />

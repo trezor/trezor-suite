@@ -26,7 +26,7 @@ export const ExternalStakingProviderCard = ({
         <DashboardSection data-testid="@wallet/staking/outside-staking-card">
             <Card paddingType="large">
                 <Row alignItems="start" gap={16}>
-                    <IconCircle name="puzzlePiece" variant="primary" size={44} />
+                    <IconCircle name="puzzlePiece" intent="brand" size={40} />
                     <Column gap={4}>
                         <H3>
                             <Translation id="TR_OUTSIDE_STAKING_CARD_TITLE" />

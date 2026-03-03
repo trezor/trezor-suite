@@ -33,7 +33,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
         <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
-            variant="warning"
+            intent="warning"
             width={600}
             bottomContent={
                 <>

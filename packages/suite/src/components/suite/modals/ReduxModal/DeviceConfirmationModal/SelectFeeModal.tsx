@@ -156,7 +156,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
             <Modal.ModalBase
                 onCancel={onClose}
                 onBackClick={onChangeAccount}
-                variant="primary"
+                intent="brand"
                 heading={<Translation id="TR_SELECT_FEE" />}
                 description={
                     <>

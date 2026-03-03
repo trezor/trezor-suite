@@ -20,7 +20,7 @@ export const BackupStep3Finished = ({
     return (
         <Modal
             onCancel={continueEnabled ? onCancel : undefined}
-            variant="primary"
+            intent="brand"
             data-testid="@backup"
             heading={<Translation id="TR_BACKUP_CREATED" />}
             description={<BackupStepDescription />}

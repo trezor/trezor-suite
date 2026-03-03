@@ -24,13 +24,20 @@ export const ConnectAppIcon = ({
     const proxyImageQuery = useProxyImage(src);
 
     if (!proxyImageQuery.isSuccess) {
+        let iconCircleSize: 24 | 32 | 40;
+        if (size <= 22) {
+            iconCircleSize = 24;
+        } else if (size <= 36) {
+            iconCircleSize = 32;
+        } else {
+            iconCircleSize = 40;
+        }
+
         return (
             <IconCircle
                 name={type === 'walletConnect' ? 'walletConnect' : 'plugs'}
-                size={size}
-                paddingType={size > spacings.xxl ? 'large' : 'small'}
-                variant="tertiary"
-                hasBorder={false}
+                size={iconCircleSize}
+                intent="neutral"
             />
         );
     }

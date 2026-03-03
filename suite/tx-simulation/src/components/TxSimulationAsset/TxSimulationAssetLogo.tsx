@@ -17,6 +17,7 @@ export function TxSimulationAssetLogo({
     size = 32,
 }: TxSimulationAssetLogoProps) {
     const coinSymbol = asset?.symbol?.toLowerCase();
+    const iconCircleSize = size === 20 ? 24 : size;
 
     if (assetType === 'NATIVE' && coinSymbol && isCoinSymbol(coinSymbol)) {
         return <CoinLogo symbol={coinSymbol} size={size} />;
@@ -34,5 +35,5 @@ export function TxSimulationAssetLogo({
         );
     }
 
-    return <IconCircle name="coins" size={size} variant="tertiary" hasBorder={false} />;
+    return <IconCircle name="coins" size={iconCircleSize} intent="neutral" />;
 }

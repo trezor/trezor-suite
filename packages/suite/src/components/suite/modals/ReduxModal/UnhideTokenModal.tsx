@@ -46,7 +46,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
         <Modal
             onCancel={onCancel}
             iconName="warning"
-            variant="warning"
+            intent="warning"
             bottomContent={
                 <>
                     <Modal.Button onClick={onUnhide}>

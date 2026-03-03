@@ -16,7 +16,7 @@ import { ModalBackdrop } from './ModalBackdrop';
 import { ModalButton } from './ModalButton';
 import { ModalContext } from './ModalContext';
 import { ModalProvider } from './ModalProvider';
-import { ModalAlignment, ModalVariant, ModalWidth } from './types';
+import { ModalAlignment, ModalIntent, ModalWidth } from './types';
 import { FrameProps, FramePropsKeys, Padding } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
@@ -50,7 +50,7 @@ const ScrollContainer = styled.div`
 `;
 
 type ModalProps = AllowedFrameProps & {
-    variant?: ModalVariant;
+    intent?: ModalIntent;
     children?: ReactNode;
     heading?: ReactNode;
     description?: ReactNode;
@@ -68,7 +68,7 @@ type ModalProps = AllowedFrameProps & {
 
 const InnerModalBase = ({
     children,
-    variant,
+    intent = 'brand',
     width = 680,
     heading,
     description,
@@ -159,7 +159,7 @@ const InnerModalBase = ({
                                             top: isIconPushedTop ? negativeSpacings.md : 0,
                                         }}
                                     >
-                                        <IconCircle name={iconName} size={110} variant={variant} />
+                                        <IconCircle name={iconName} size={112} intent={intent} />
                                     </Box>
                                 )}
                                 <ElevationUp>{children}</ElevationUp>
@@ -187,7 +187,7 @@ const InnerModalBase = ({
 };
 const ModalBase = (props: ModalProps) => (
     <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
-        <ModalContext.Provider value={{ variant: props.variant }}>
+        <ModalContext.Provider value={{ intent: props.intent }}>
             <InnerModalBase {...props} />
         </ModalContext.Provider>
     </ElevationContext>

@@ -106,7 +106,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             onCancel={handleCancel}
             heading={<Translation id={headingTranslation} />}
             description={<Translation id="TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION" />}
-            variant="destructive"
+            intent="critical"
             width={600}
         >
             <Column gap={16}>

@@ -21,7 +21,7 @@ export const TradingDetailExchangePaymentKYC = ({
     supportUrl,
 }: TradingDetailExchangePaymentKYCProps) => (
     <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-        <IconCircle name="warning" variant="warning" size={100} />
+        <IconCircle name="warning" intent="warning" size={96} />
         <Column>
             <H3 data-testid="@trading/transaction/detail/status">
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />

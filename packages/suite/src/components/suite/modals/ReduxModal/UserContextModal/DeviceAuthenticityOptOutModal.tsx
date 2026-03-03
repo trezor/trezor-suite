@@ -40,7 +40,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
                     </Modal.Button>
                 </>
             }
-            variant="warning"
+            intent="warning"
         >
             <H3>
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE" />

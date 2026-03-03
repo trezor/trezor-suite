@@ -26,7 +26,7 @@ export const TradingDetailExchangePaymentSuccessful = ({
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="check" size={100} />
+            <IconCircle name="check" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TITLE" />

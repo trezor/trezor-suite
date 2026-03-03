@@ -85,7 +85,7 @@ export const TradingDetailFeedback = ({
 
     const Success = (
         <Row gap={20} margin={{ vertical: 8 }}>
-            <IconCircle name="check" size={64} />
+            <IconCircle name="check" size={40} />
             <Column gap={8}>
                 <H3>
                     <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE" />

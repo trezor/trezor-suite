@@ -20,7 +20,7 @@ export const MoreRoundsNeededModal = () => {
             }
             width={600}
             iconName="arrowsIn"
-            variant="info"
+            intent="info"
         >
             <Column gap={spacings.xs}>
                 <H3>

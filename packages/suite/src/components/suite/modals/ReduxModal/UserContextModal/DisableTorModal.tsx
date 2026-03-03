@@ -42,7 +42,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     ) : (
         <Modal
             onCancel={onCancel}
-            variant={onionBackends.length ? 'warning' : 'primary'}
+            intent={onionBackends.length ? 'warning' : 'brand'}
             width={600}
             iconName={onionBackends.length ? undefined : 'torBrowser'}
             heading={

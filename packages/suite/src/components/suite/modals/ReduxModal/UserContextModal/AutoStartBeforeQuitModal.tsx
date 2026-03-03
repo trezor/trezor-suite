@@ -42,7 +42,7 @@ export const AutoStartBeforeQuitModal = () => {
     return (
         <Modal
             data-testid="@auto-start-before-quit"
-            variant="primary"
+            intent="brand"
             onCancel={() => handleQuit()}
             heading={<Translation id="TR_RUN_IN_BACKGROUND_TITLE" />}
             bottomContent={

@@ -1,13 +1,14 @@
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { BulletListDirection, BulletListItemState, BulletSize } from './types';
+import { IconCircleSize } from '../IconCircle/types';
 
 type sizeMapArgs = {
     $size: BulletSize;
 };
 
-export const mapSizeToDimension = ({ $size }: sizeMapArgs) => {
-    const sizeMap: Record<BulletSize, number> = {
+export const mapSizeToDimension = ({ $size }: sizeMapArgs): IconCircleSize => {
+    const sizeMap: Record<BulletSize, IconCircleSize> = {
         small: 16,
         medium: 24,
         large: 32,

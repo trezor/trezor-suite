@@ -56,7 +56,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
         <FormProvider {...methods}>
             <Modal
                 onCancel={handleClose}
-                variant="primary"
+                intent="brand"
                 width={600}
                 heading={
                     <Translation

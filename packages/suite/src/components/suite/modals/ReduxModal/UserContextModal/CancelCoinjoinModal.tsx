@@ -23,7 +23,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
     return (
         <Modal
             onCancel={onClose}
-            variant="warning"
+            intent="warning"
             iconName="arrowsIn"
             width={600}
             bottomContent={

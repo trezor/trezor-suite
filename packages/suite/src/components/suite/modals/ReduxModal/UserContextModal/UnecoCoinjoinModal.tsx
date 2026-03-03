@@ -45,7 +45,7 @@ export const UnecoCoinjoinModal = () => {
                 </>
             }
             width={600}
-            variant="warning"
+            intent="warning"
             iconName="arrowsIn"
         >
             <Column gap={spacings.xs}>

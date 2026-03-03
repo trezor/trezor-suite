@@ -13,6 +13,6 @@ export const RewardsEmpty = () => (
             />
         }
         iconName="arrowLineDown"
-        iconVariant="tertiary"
+        iconVariant="neutral"
     />
 );

@@ -121,13 +121,7 @@ const ViaBluetoothCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_BLUETOOTH" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="bluetooth"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" name="bluetooth" size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -202,13 +196,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_CABLE" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="cableUsbC"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" name="cableUsbC" size={32} />
                     </Row>
                 </Column>
             </H3>

@@ -56,18 +56,21 @@ const Container = styled.div<
             $borderColor ? theme[$borderColor] : mapElevationToBorder({ theme, $elevation })};
     transition: background 0.3s ease;
 
-    ${({ $borderWidth }) =>
-        $borderWidth &&
-        (typeof $borderWidth === 'object'
-            ? css`
-                  border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
-                      ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
-                      ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
-                      ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
-              `
-            : css`
-                  border-width: ${getValueWithUnit($borderWidth)};
-              `)}
+    ${({ $borderWidth }) => {
+        if ($borderWidth == null || $borderWidth === 0) return null;
+        if (typeof $borderWidth === 'object') {
+            return css`
+                border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
+                    ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
+                    ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
+                    ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
+            `;
+        }
+
+        return css`
+            border-width: ${getValueWithUnit($borderWidth)};
+        `;
+    }}
 
     ${({ $backgroundColor, theme }) =>
         $backgroundColor &&

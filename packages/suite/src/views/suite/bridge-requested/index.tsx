@@ -52,7 +52,7 @@ export const BridgeRequested = () => {
     if (confirmGoToWallet) {
         return (
             <Modal
-                variant="warning"
+                intent="warning"
                 width={600}
                 heading={<Translation id="TR_TREZOR_CONNECT" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
@@ -82,7 +82,7 @@ export const BridgeRequested = () => {
     return (
         <Modal
             iconName="appWindow"
-            variant="info"
+            intent="info"
             width={600}
             bottomContent={
                 <>

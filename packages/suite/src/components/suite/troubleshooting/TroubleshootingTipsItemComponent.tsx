@@ -9,13 +9,7 @@ type TroubleshootingTipsItemProps = {
 export const TroubleshootingTipsItemComponent = ({ item }: TroubleshootingTipsItemProps) => (
     <List.Item
         bulletComponent={
-            <IconCircle
-                variant="info"
-                hasBorder={false}
-                paddingType="medium"
-                name={item.icon ?? 'dotOutlineFilled'}
-                size={40}
-            />
+            <IconCircle intent="info" name={item.icon ?? 'dotOutlineFilled'} size={40} />
         }
     >
         <Column>
