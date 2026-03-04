@@ -226,6 +226,88 @@ export const createEmptyFormState = (): EventFormState => ({
     attributes: [],
 });
 
+export type EventContextForAIOptions = {
+    formState: EventFormState;
+    isEditing: boolean;
+    filePath: string;
+    constantsFilePath: string;
+    eventsIndexPath: string;
+};
+
+/**
+ * Builds a plain-text context describing the analytics event for AI consumption.
+ * Use with "Copy context for AI" to paste into an AI chat so it can add or edit the event in code.
+ */
+export const getEventContextForAI = ({
+    formState,
+    isEditing,
+    filePath,
+    constantsFilePath,
+    eventsIndexPath,
+}: EventContextForAIOptions): string => {
+    const lines: string[] = [
+        '# Analytics event context (Trezor Suite)',
+        '',
+        `**Task:** ${isEditing ? 'Edit' : 'Add'} this analytics event in the Trezor Suite monorepo.`,
+        '',
+        '## Event identity',
+        `- **Platform:** ${formState.platform} (desktop | mobile | shared)`,
+        `- **Event name:** \`${formState.eventName}\` (format: domain/event-name in kebab-case)`,
+        '',
+        '## Descriptions',
+        `- **Trigger description (when the event fires):** ${formState.descriptionTrigger || '(empty)'}`,
+        `- **Description:** ${formState.description?.trim() || '(empty)'}`,
+        `- **Possible improvements:** ${formState.possibleImprovements?.trim() || '(empty)'}`,
+        '',
+        '## Event changelog',
+    ];
+    if (formState.changelog.length === 0) {
+        lines.push('- (no entries)');
+    } else {
+        formState.changelog.forEach(e => {
+            if (e.version.trim() || e.notes.trim()) {
+                lines.push(`- Version \`${e.version || '?'}\`: ${e.notes || '(no notes)'}`);
+            }
+        });
+    }
+    lines.push('', '## Attributes');
+    if (formState.attributes.length === 0) {
+        lines.push('- (none)');
+    } else {
+        formState.attributes.forEach(attr => {
+            if (attr.key.trim()) {
+                lines.push(
+                    `- **${attr.key}** (optional: ${attr.isOptional}, runtimeType: \`${attr.runtimeType || 'unknown'}\`): ${attr.description || '(no description)'}`,
+                );
+                if (attr.changelog.some(e => e.version.trim() || e.notes.trim())) {
+                    attr.changelog.forEach(e => {
+                        if (e.version.trim() || e.notes.trim()) {
+                            lines.push(
+                                `  - Changelog: \`${e.version}\` — ${e.notes || '(no notes)'}`,
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+    lines.push(
+        '',
+        '## File locations (from repo root)',
+        `- Event file: \`${filePath}\``,
+        `- Constants (EventType enum): \`${constantsFilePath}\``,
+        `- Events index (exports): \`${eventsIndexPath}\``,
+        '',
+        '## Implementation notes',
+        '- Add a new value to the `EventType` enum in the constants file.',
+        '- Create or update the event definition file; use `EventDef<Attributes, EventType.EnumKey>` and include changelog/attributes as in existing events.',
+        '- Export the event from the events index.',
+        '- See existing events in the same platform folder for structure and types from `@suite-common/analytics`.',
+    );
+
+    return lines.join('\n');
+};
+
 /**
  * Converts double-quoted string literals in a type string to single-quoted for generated output.
  */
