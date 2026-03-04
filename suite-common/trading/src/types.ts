@@ -186,13 +186,17 @@ export type TradingBuyFormProps = {
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
-export interface OTCLink {
+export type OtcProviderType = {
     name: string;
     url: string;
+};
+
+export type OTCLink = OtcProviderType & {
     allowedCountries: string[];
-}
+};
 
 export type TradingOTC = {
+    country: CountryCode;
     minFiatLimits: Record<FiatCurrencyCode, number>;
     links: OTCLink[];
 };

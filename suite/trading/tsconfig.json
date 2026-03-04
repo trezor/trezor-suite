@@ -9,7 +9,12 @@
     "include": ["src/**/*", "styled.d.ts"],
     "references": [
         { "path": "../../suite-common/icons" },
+        { "path": "../../suite-common/trading" },
+        { "path": "../intl" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/product-components"
+        },
         { "path": "../../packages/theme" }
     ]
 }

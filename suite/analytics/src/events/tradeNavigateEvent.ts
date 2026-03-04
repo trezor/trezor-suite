@@ -4,7 +4,7 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;
-    type: AttributeDef<'exchange' | 'buy' | 'sell' | 'buy/sell'>;
+    type: AttributeDef<'exchange' | 'buy' | 'sell' | 'buy/sell' | 'concierge'>;
     from: AttributeDef<
         | 'dashboard/header'
         | 'dashboard/assets'

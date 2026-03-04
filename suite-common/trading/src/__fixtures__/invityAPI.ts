@@ -172,6 +172,7 @@ const sellWatchTrade: WatchSellTradeResponse = {
 const otc: TradingOTC = {
     links: [],
     minFiatLimits: {} as TradingOTC['minFiatLimits'],
+    country: 'CZ',
 };
 
 const createTradeSignatureRequest: CreateTradeSignatureRequest = {
