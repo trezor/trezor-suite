@@ -296,6 +296,7 @@ export const getTradingPaymentMethods = (
 
     quotes.forEach(quote => {
         if (!quote.paymentMethod) return;
+        if (uniqueMethods.has(quote.paymentMethod)) return;
         const amount = isBuyTrade(quote) ? quote.receiveStringAmount : quote.fiatStringAmount;
         uniqueMethods.set(quote.paymentMethod, {
             value: quote.paymentMethod,
