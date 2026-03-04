@@ -4,9 +4,9 @@
  *
  * Periodically:
  * 1. Enumerates recently-active tests via the Tests Explorer, then fetches the latest
- *    LAST_N_EXECUTIONS individual results per test via the Test Results API and quarantines
+ *    QUARANTINE_LAST_N_EXECUTIONS individual results per test via the Test Results API and quarantines
  *    any test with ≥60% failure rate in that window.
- * 2. For already-quarantined tests, checks their latest LAST_N_EXECUTIONS results and
+ * 2. For already-quarantined tests, checks their latest UNQUARANTINE_LAST_N_EXECUTIONS results and
  *    unquarantines any that now have 0% failure rate.
  *
  * Projects monitored:
@@ -21,13 +21,14 @@ const AUTO_QUARANTINE_PREFIX = '[auto-quarantine]';
  * Heuristic thresholds
  */
 const QUARANTINE_FAILURE_RATE = 0.6; // quarantine if ≥60% fails in the last N executions
+const QUARANTINE_LAST_N_EXECUTIONS = 5; // number of individual executions to evaluate
 const UNQUARANTINE_FAILURE_RATE = 0; // unquarantine if test becomes perfectly stable (0% failures in the last N executions)
-const LAST_N_EXECUTIONS = 5; // number of individual executions to evaluate
+const UNQUARANTINE_LAST_N_EXECUTIONS = 25; // number of individual executions to evaluate
 const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to discover active tests
 // Pre-filter: skip only tests that are nearly perfect (>98% pass rate) in the explorer window.
 // Any test with ≥2% failure rate in the aggregate metrics is worth inspecting individually.
 // The exact quarantine decision is still made on the precise last-N execution results.
-const PRE_FILTER_RATE = 0.02; // inspect anything that isn't close to 100% passing
+const PRE_FILTER_FAILURE_RATE = 0.02; // inspect anything that isn't close to 100% passing
 
 const PROJECTS: Array<{ id: string; label: string }> = [
     { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
@@ -188,7 +189,7 @@ async function currentsRequest<T>(
  */
 async function getLastNResults(
     signature: string,
-    n = LAST_N_EXECUTIONS,
+    n = QUARANTINE_LAST_N_EXECUTIONS,
 ): Promise<TestResultItem[]> {
     const dateEnd = new Date();
     const dateStart = new Date(dateEnd.getTime() - EXPLORER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
@@ -400,14 +401,14 @@ async function quarantineFailingTests(
     const candidateTests = activeTests.filter(
         t =>
             t.signature &&
-            t.metrics.executions >= LAST_N_EXECUTIONS &&
-            t.metrics.failureRate >= PRE_FILTER_RATE,
+            t.metrics.executions >= QUARANTINE_LAST_N_EXECUTIONS &&
+            t.metrics.failureRate >= PRE_FILTER_FAILURE_RATE,
     );
 
     console.log(
         `  Found ${activeTests.length} active test(s) in the last ${EXPLORER_LOOKBACK_DAYS} days. ` +
-            `${candidateTests.length} candidate(s) have ≥${Math.round(PRE_FILTER_RATE * 100)}% failure rate in the explorer window. ` +
-            `Fetching last ${LAST_N_EXECUTIONS} individual results for each candidate...`,
+            `${candidateTests.length} candidate(s) have ≥${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate in the explorer window. ` +
+            `Fetching last ${QUARANTINE_LAST_N_EXECUTIONS} individual results for each candidate...`,
     );
 
     let newQuarantineCount = 0;
@@ -424,9 +425,9 @@ async function quarantineFailingTests(
 
         const results = await getLastNResults(test.signature);
 
-        if (results.length < LAST_N_EXECUTIONS) {
+        if (results.length < QUARANTINE_LAST_N_EXECUTIONS) {
             console.log(
-                `  ↳ Skipping "${test.title.slice(0, 80)}" — only ${results.length}/${LAST_N_EXECUTIONS} executions found.`,
+                `  ↳ Skipping "${test.title.slice(0, 80)}" — only ${results.length}/${QUARANTINE_LAST_N_EXECUTIONS} executions found.`,
             );
             continue;
         }
@@ -501,11 +502,11 @@ async function unquarantinePassingTests(
             continue;
         }
 
-        const results = await getLastNResults(test.signature);
+        const results = await getLastNResults(test.signature, UNQUARANTINE_LAST_N_EXECUTIONS);
 
-        if (results.length < LAST_N_EXECUTIONS) {
+        if (results.length < UNQUARANTINE_LAST_N_EXECUTIONS) {
             console.log(
-                `  ↳ "${testTitle.slice(0, 80)}" — only ${results.length}/${LAST_N_EXECUTIONS} executions found, keeping quarantine.`,
+                `  ↳ "${testTitle.slice(0, 80)}" — only ${results.length}/${UNQUARANTINE_LAST_N_EXECUTIONS} executions found, keeping quarantine.`,
             );
             continue;
         }
@@ -604,8 +605,8 @@ async function main(): Promise<void> {
     console.log(`Timestamp: ${new Date().toISOString()}`);
     console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
     console.log(
-        `Thresholds: quarantine ≥${QUARANTINE_FAILURE_RATE * 100}% failures, unquarantine ≤${UNQUARANTINE_FAILURE_RATE * 100}% failures, ` +
-            `evaluated over last ${LAST_N_EXECUTIONS} individual executions (using Test Results API)`,
+        `Thresholds: quarantine ≥${QUARANTINE_FAILURE_RATE * 100}% failures over last ${QUARANTINE_LAST_N_EXECUTIONS} executions, ` +
+            `unquarantine ≤${UNQUARANTINE_FAILURE_RATE * 100}% failures over last ${UNQUARANTINE_LAST_N_EXECUTIONS} executions (using Test Results API)`,
     );
     console.log('');
 
