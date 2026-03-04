@@ -123,7 +123,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                 width={760}
                 bottomContent={
                     !showResult ? (
-                        <Button
+                        <Modal.Button
                             onClick={handleGenerate}
                             isDisabled={
                                 !formState.eventName.trim() ||
@@ -133,7 +133,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                             }
                         >
                             Generate file content
-                        </Button>
+                        </Modal.Button>
                     ) : null
                 }
             >
