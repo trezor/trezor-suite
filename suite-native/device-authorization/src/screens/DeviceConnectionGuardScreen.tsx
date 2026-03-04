@@ -38,6 +38,13 @@ export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardS
     );
 };
 
-export const DeviceConnectionGuardScreenWithCancel = () => (
-    <DeviceConnectionGuardScreen onCancel={TrezorConnect.cancel} />
-);
+export const DeviceConnectionGuardScreenWithCancel = () => {
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
+    const onCancel = () => {
+        TrezorConnect.cancel();
+        navigateToInitialScreen();
+    };
+
+    return <DeviceConnectionGuardScreen onCancel={onCancel} />;
+};
