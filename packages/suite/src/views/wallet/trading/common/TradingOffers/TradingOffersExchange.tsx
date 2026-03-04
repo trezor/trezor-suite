@@ -63,13 +63,11 @@ export const TradingOffersExchange = () => {
     return (
         <>
             <TradingUtilsTorWarning tradingType="exchange" noOffer={false} />
-
-            {(showAll ||
-                exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX) && (
+            {(showAll || exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX) && (
                 <TradingOffersExchangeQuotesByTypeSection
-                    quotes={fixed}
-                    heading="TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING"
-                    tooltip="TR_TRADING_FIX_RATE_DESCRIPTION"
+                    quotes={dex}
+                    heading="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING"
+                    tooltip="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP"
                 />
             )}
             {(showAll ||
@@ -80,11 +78,12 @@ export const TradingOffersExchange = () => {
                     tooltip="TR_TRADING_FLOATING_RATE_DESCRIPTION"
                 />
             )}
-            {(showAll || exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX) && (
+            {(showAll ||
+                exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX) && (
                 <TradingOffersExchangeQuotesByTypeSection
-                    quotes={dex}
-                    heading="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING"
-                    tooltip="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP"
+                    quotes={fixed}
+                    heading="TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING"
+                    tooltip="TR_TRADING_FIX_RATE_DESCRIPTION"
                 />
             )}
         </>
