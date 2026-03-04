@@ -37,8 +37,8 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const { onCancelHandler } = useOnboardingCancelButtonContext();
 
     return (
-        <Column gap={60}>
-            <Column gap={48}>
+        <Column gap={40}>
+            <Column gap={32}>
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />
                     <Row gap={12}>

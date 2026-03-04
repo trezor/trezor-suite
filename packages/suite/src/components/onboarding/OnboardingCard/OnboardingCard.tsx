@@ -11,7 +11,6 @@ import {
     IconCircle,
     IconName,
     Modal,
-    Padding,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -20,8 +19,6 @@ import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
-
-import { useLayoutSize } from 'src/hooks/suite';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
 import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';
@@ -40,7 +37,6 @@ export type OnboardingCardProps = {
     devicePrompt?: ReactNode;
     isActionAbortable?: boolean;
     children?: ReactNode;
-    padding?: Padding;
     variant?: OnboardingCardVariant;
     'data-testid'?: string;
 };
@@ -56,16 +52,12 @@ export const OnboardingCard = ({
     isConfirmedOnDevice = false,
     devicePrompt,
     children,
-    padding,
     variant = 'primary',
     'data-testid': dataTestId,
 }: OnboardingCardProps) => {
     const intl = useIntl();
     const deviceModelInternal = device?.features?.internal_model;
     const isBackDropVisible = !!deviceModelInternal && isConfirmedOnDevice;
-    const { isBelowTablet } = useLayoutSize();
-
-    const defaultPadding = isBelowTablet ? 40 : 80;
 
     return (
         <>
@@ -102,11 +94,7 @@ export const OnboardingCard = ({
                     paddingType="none"
                     data-testid={dataTestId}
                 >
-                    <Column
-                        gap={48}
-                        padding={padding ?? defaultPadding}
-                        margin={iconName ? { top: 40 } : undefined}
-                    >
+                    <Column gap={48} padding={60} margin={iconName ? { top: 40 } : undefined}>
                         {(heading || description) && (
                             <Column gap={16} alignItems="center" width="100%">
                                 {heading && <H2 align="center">{heading}</H2>}
