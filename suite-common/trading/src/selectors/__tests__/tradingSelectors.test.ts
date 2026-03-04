@@ -25,6 +25,7 @@ import {
     TradingRootStateWithDeviceAndAccounts,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
+    selectOtcProvidersByCountry,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
@@ -58,6 +59,7 @@ import {
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
+    selectTradingOtc,
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
@@ -1533,6 +1535,24 @@ describe('tradingSelectors', () => {
             const result = selectTradingProviderMetadata(state);
 
             expect(result).toBeUndefined();
+        });
+    });
+    describe('selectTradingOtc', () => {
+        it('should return otc from state', () => {
+            state.wallet.trading.otc = invityAPIFixtures.otc;
+
+            const result = selectTradingOtc(state);
+
+            expect(result).toEqual(invityAPIFixtures.otc);
+        });
+    });
+    describe('selectOtcProvidersByCountry', () => {
+        it('should return otc providers by country', () => {
+            state.wallet.trading.otc = invityAPIFixtures.otc;
+
+            const result = selectOtcProvidersByCountry(state, 'CZ');
+
+            expect(result).toEqual(invityAPIFixtures.otc.links);
         });
     });
 });

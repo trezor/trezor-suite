@@ -224,6 +224,44 @@ export const messages = defineMessages({
         defaultMessage: 'View and track your {type} in trade history.',
         id: 'TR_TRADING_HEADER_DESCRIPTION',
     },
+    TR_TRADING_CONCIERGE_TITLE: {
+        defaultMessage: 'Large trades, made simple',
+        id: 'TR_TRADING_CONCIERGE_TITLE',
+    },
+    TR_TRADING_CONCIERGE_DESCRIPTION: {
+        defaultMessage:
+            'Get private, competitive pricing for trades over 50,000 EUR, handled by a dedicated specialist.',
+        id: 'TR_TRADING_CONCIERGE_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_PRICING_TITLE: {
+        defaultMessage: 'Competitive pricing',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_PRICING_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_PRICING_DESCRIPTION: {
+        defaultMessage: 'Avoid slippage and get a tailored quote for your trade.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_PRICING_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_TITLE: {
+        defaultMessage: 'Dedicated specialist',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_DESCRIPTION: {
+        defaultMessage: 'One expert handles your trade and answers all your questions.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_TITLE: {
+        defaultMessage: 'Expedited execution and settlement',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION: {
+        defaultMessage:
+            'Lock in your price instantly. Funds typically arrive the next business day.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_COUNTRY_OF_RESIDENCE: {
+        defaultMessage: 'Country of residence',
+        id: 'TR_TRADING_CONCIERGE_COUNTRY_OF_RESIDENCE',
+    },
     TR_TRADING_DETAIL_PROCESSING: {
         defaultMessage: '{providerName} is processing your {type}',
         id: 'TR_TRADING_DETAIL_PROCESSING',
@@ -1200,25 +1238,33 @@ export const messages = defineMessages({
     },
     TR_TRADING_OTC_INFO_BUY: {
         defaultMessage:
-            'For purchases over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
+            'For buys over {minimumFiat} {fiatSymbol}, use Concierge for competitive, private, and secure trades.',
         id: 'TR_TRADING_OTC_INFO_BUY',
     },
     TR_TRADING_OTC_INFO_SELL: {
         defaultMessage:
-            'For sales over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
+            'For buys over {minimumFiat} {fiatSymbol}, use Concierge for competitive, private, and secure trades.',
         id: 'TR_TRADING_OTC_INFO_SELL',
     },
     TR_TRADING_OTC_LINK_BUY: {
-        defaultMessage: 'Buy with {providerName}',
+        defaultMessage: 'Buy with Concierge',
         id: 'TR_TRADING_OTC_LINK_BUY',
     },
     TR_TRADING_OTC_LINK_SELL: {
-        defaultMessage: 'Sell with {providerName}',
+        defaultMessage: 'Sell with Concierge',
         id: 'TR_TRADING_OTC_LINK_SELL',
     },
     TR_TRADING_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_TRADING_PROVIDER',
+    },
+    TR_TRADING_PROVIDERS: {
+        defaultMessage: 'Providers',
+        id: 'TR_TRADING_PROVIDERS',
+    },
+    TR_TRADING_NO_PROVIDERS_AVAILABLE: {
+        defaultMessage: 'No providers available for this country.',
+        id: 'TR_TRADING_NO_PROVIDERS_AVAILABLE',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
         defaultMessage: 'Account not found',
@@ -5379,6 +5425,10 @@ export const messages = defineMessages({
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign & verify messages',
+    },
+    TR_NAV_CONCIERGE: {
+        id: 'TR_NAV_CONCIERGE',
+        defaultMessage: 'Concierge',
     },
     TR_BALANCE: {
         id: 'TR_BALANCE',

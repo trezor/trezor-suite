@@ -12,8 +12,12 @@
     },
     "dependencies": {
         "@suite-common/icons": "workspace:*",
+        "@suite-common/trading": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "react": "19.1.0",
         "styled-components": "^6.3.9"
     }
 }

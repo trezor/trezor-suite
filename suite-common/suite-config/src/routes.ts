@@ -221,6 +221,12 @@ export const routes = [
         app: 'wallet',
     },
     {
+        name: 'wallet-trading-concierge',
+        pattern: '/accounts/coinmarket/concierge',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-trading-buy-offers',
         pattern: '/accounts/coinmarket/buy/offers',
         app: 'wallet',

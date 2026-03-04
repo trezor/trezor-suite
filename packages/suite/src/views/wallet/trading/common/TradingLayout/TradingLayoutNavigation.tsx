@@ -33,6 +33,11 @@ const navigationItems: NavigationItem[] = [
         icon: 'arrowsLeftRight',
         translationId: 'TR_TRADING_SWAP',
     },
+    {
+        id: 'wallet-trading-concierge',
+        icon: 'handshake',
+        translationId: 'TR_NAV_CONCIERGE',
+    },
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
@@ -66,6 +71,15 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     payload: {
                         action: 'navigate',
                         type: 'exchange',
+                        from: 'buy/sell',
+                    },
+                });
+            case 'wallet-trading-concierge':
+                return analytics.report({
+                    type: events.tradeNavigateEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        type: 'concierge',
                         from: 'buy/sell',
                     },
                 });

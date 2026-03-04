@@ -14734,8 +14734,12 @@ __metadata:
   resolution: "@suite/trading@workspace:suite/trading"
   dependencies:
     "@suite-common/icons": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
+    react: "npm:19.1.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
