@@ -65,6 +65,10 @@ jobs:
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
 
+      - name: Check suite-desktop core bundle size
+        if: matrix.os == 'ubuntu-latest'
+        run: bash packages/suite-desktop-core/scripts/check-build-size.sh
+
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@v4
         with:
