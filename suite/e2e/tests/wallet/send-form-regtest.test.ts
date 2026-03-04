@@ -5,7 +5,6 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.use({
         deviceSetup: {
-            needs_backup: true,
             mnemonic: 'mnemonic_all',
         },
     });
@@ -61,8 +60,10 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('switch display units to satoshis, fill a form in satoshis and send', async ({
         page,
+        walletPage,
         tradingPage,
     }) => {
+        await expect(walletPage.sendFormHeader).toBeVisible();
         await page.getByTestId('amount-unit-switch/regtest').click();
 
         await tradingPage.sendAmountInput.fill('300');
