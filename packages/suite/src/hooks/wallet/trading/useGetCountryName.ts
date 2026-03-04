@@ -8,7 +8,7 @@ export const useGetCountryName = () => {
 
     const getCountryName = useCallback(
         (country: TradingCountryOption, fullName = false) => {
-            if ([regional.UNKNOWN_COUNTRY, 'XX', 'T1'].includes(country.value)) {
+            if (regional.isWorldwideRegion(country.value)) {
                 return translationString('TR_TRADING_COUNTRY_WORLD');
             }
 

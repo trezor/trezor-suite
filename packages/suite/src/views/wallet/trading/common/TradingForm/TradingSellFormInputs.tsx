@@ -2,13 +2,13 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
-import { isCountrySubdivisionRequired } from '@suite-common/geolocation';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
     TradingSellType,
+    isCountrySubdivisionRequired,
     selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';

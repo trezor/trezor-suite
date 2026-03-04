@@ -26,7 +26,11 @@ export const mapSizeToBorderRadius = (size: FlagSize): number => {
     return borderRadiusMap[size];
 };
 
-export const getCountryFlag = (countryCode: string): FlagType | undefined => {
+export const getCountryFlag = (countryCode?: string): FlagType | undefined => {
+    if (!countryCode) {
+        return undefined;
+    }
+
     if (['unknown', 'XX', 'T1'].includes(countryCode)) {
         return 'UNKNOWN';
     }

@@ -31,3 +31,4 @@ export * from './utils/buy/buyUtils';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/sell/sellUtils';
 export * from './utils/signature/signatureUtils';
+export * from './utils/countryUtils';

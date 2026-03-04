@@ -1,4 +1,5 @@
-import { usSubdivisions } from '../../countries';
+import { usSubdivisions } from '@suite-common/geolocation';
+
 import {
     getCountrySubdivisionByCode,
     getCountrySubdivisions,

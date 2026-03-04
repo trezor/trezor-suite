@@ -8,8 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest",
-        "test-unit:watch": "yarn g:jest -o --watch"
+        "test:unit": "yarn g:jest --passWithNoTests",
+        "test-unit:watch": "yarn g:jest -o --watch --passWithNoTests"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",

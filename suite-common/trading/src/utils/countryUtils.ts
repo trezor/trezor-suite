@@ -4,7 +4,7 @@ import {
     CountrySubdivision,
     countries,
     subdivisionsByCountry,
-} from '../countries';
+} from '@suite-common/geolocation';
 
 export const isCountryCode = (countryCode: string): countryCode is CountryCode =>
     countryCode in countries || countryCode === 'XX' || countryCode === 'T1';

@@ -64,6 +64,10 @@ class Regional {
 
         return this.countriesOptionsMap.get(this.UNKNOWN_COUNTRY)!;
     }
+
+    isWorldwideRegion(country: string): boolean {
+        return [this.UNKNOWN_COUNTRY, 'XX', 'T1'].includes(country);
+    }
 }
 
 export const regional = new Regional(() => true);

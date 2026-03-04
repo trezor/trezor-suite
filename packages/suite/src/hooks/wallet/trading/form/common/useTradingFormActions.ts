@@ -4,7 +4,6 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -15,6 +14,7 @@ import {
     TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
+    isCountrySubdivisionEmpty,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {

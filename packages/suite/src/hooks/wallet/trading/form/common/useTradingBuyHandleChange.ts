@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
-import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TradingBuyFormProps,
     buyThunks,
     getTradingPaymentMethods,
+    isCountrySubdivisionEmpty,
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';

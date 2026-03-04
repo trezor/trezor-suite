@@ -3,10 +3,10 @@ import { useEffect, useMemo } from 'react';
 import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
+    isCountrySubdivisionEmpty,
     isSendingEvmNativeToken,
     tradingExchangeActions,
     tradingSellActions,

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { getCountrySubdivisions, isCountryCode } from '@suite-common/geolocation';
 import { normalizeForSearch } from '@suite-common/suite-utils';
 
 import type { TradingCountrySubdivisionOption } from '../types';
 import { useListDataFilter } from './useListDataFilter';
+import { getCountrySubdivisions, isCountryCode } from '../utils/countryUtils';
 
 const toSubdivisionOptions = (
     subdivisions: ReadonlyArray<{ code: string; name: string }>,
