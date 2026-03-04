@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
-import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
+import {
+    DeviceConnectionGuardScreenWithCancel,
+    useDeviceConnectionGuard,
+} from '@suite-native/device-authorization';
 import {
     DeviceNameStackParamList,
     DeviceNameStackRoutes,
@@ -17,22 +17,20 @@ import { DeviceNameScreen } from '../screens/DeviceNameScreen';
 const DeviceNameStack = createNativeStackNavigator<DeviceNameStackParamList>();
 
 export const DeviceNameStackNavigator = () => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
 
     return (
         <DeviceNameStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <DeviceNameStack.Screen
                     name={DeviceNameStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreen}
+                    component={DeviceConnectionGuardScreenWithCancel}
                 />
             )}
-            {isDeviceConnected && (
-                <DeviceNameStack.Screen
-                    name={DeviceNameStackRoutes.DeviceName}
-                    component={DeviceNameScreen}
-                />
-            )}
+            <DeviceNameStack.Screen
+                name={DeviceNameStackRoutes.DeviceName}
+                component={DeviceNameScreen}
+            />
             <DeviceNameStack.Screen
                 name={DeviceNameStackRoutes.ContinueOnTrezor}
                 component={ContinueOnTrezorScreen}
