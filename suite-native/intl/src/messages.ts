@@ -1869,6 +1869,12 @@ export const messages = {
         },
         accountDetail: {
             accountLabelBadge: 'Run on {accountLabel}',
+            stablecoinYield: {
+                infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
+                vault: 'Vault',
+                apy: 'Annual percentage yield',
+                supplied: 'Supplied',
+            },
         },
         emptyState: {
             title: 'No assets',
