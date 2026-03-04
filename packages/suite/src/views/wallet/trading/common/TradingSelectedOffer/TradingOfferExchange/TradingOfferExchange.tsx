@@ -107,6 +107,8 @@ export const TradingOfferExchange = ({
                 isLoading={isFormLoading || disabled}
                 isDisabled={!device?.connected || disabled}
                 onClick={() => handleClick(() => onConfirmAndSendClick())}
+                size="large"
+                width="100%"
             >
                 <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
             </Button>
