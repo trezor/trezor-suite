@@ -8,14 +8,27 @@ import { DerivationPath, ProtoWithDerivationPath } from '../../params';
 
 // signMessage
 
-export type SignMessage = Static<typeof SignMessage>;
-export const SignMessage = Type.Object({
-    path: DerivationPath,
+const SignMessageCommon = {
     coin: Type.Optional(Type.String()),
     message: Type.String(),
     hex: Type.Optional(Type.Boolean()),
     no_script_type: Type.Optional(Type.Boolean()),
+};
+
+const SignMessageWithPath = Type.Object({
+    path: DerivationPath,
+    address: Type.Optional(Type.String()),
+    ...SignMessageCommon,
 });
+
+const SignMessageWithAddress = Type.Object({
+    path: Type.Optional(DerivationPath),
+    address: Type.String(),
+    ...SignMessageCommon,
+});
+
+export type SignMessage = Static<typeof SignMessage>;
+export const SignMessage = Type.Union([SignMessageWithPath, SignMessageWithAddress]);
 
 // signTransaction
 

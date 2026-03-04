@@ -156,6 +156,24 @@ export const signVerifyMessage = async (api: TrezorConnect) => {
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
+    // ethereumSignMessage with address instead of path
+    const signByAddress = await api.ethereumSignMessage({
+        address: '0x1234567890abcdef',
+        message: 'foo',
+    });
+    if (signByAddress.success) {
+        const { payload } = signByAddress;
+        payload.address.toLowerCase();
+        payload.signature.toLowerCase();
+    }
+
+    // ethereumSignMessage with both path and address
+    api.ethereumSignMessage({ path: 'm/44', address: '0xabc', message: 'foo' });
+
+    // @ts-expect-error missing both "path" and "address"
+    api.ethereumSignMessage({ message: 'foo' });
+
     const verify = await api.ethereumVerifyMessage({
         address: 'a',
         signature: 'a',

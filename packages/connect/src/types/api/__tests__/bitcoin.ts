@@ -660,6 +660,25 @@ export const signMessage = async (api: TrezorConnect) => {
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
+    // signMessage with address instead of path
+    const signByAddress = await api.signMessage({
+        address: 'bc1qexample',
+        coin: 'btc',
+        message: 'foo',
+    });
+    if (signByAddress.success) {
+        const { payload } = signByAddress;
+        payload.address.toLowerCase();
+        payload.signature.toLowerCase();
+    }
+
+    // signMessage with both path and address
+    api.signMessage({ path: 'm/44', address: 'bc1qexample', coin: 'btc', message: 'foo' });
+
+    // @ts-expect-error missing both "path" and "address"
+    api.signMessage({ coin: 'btc', message: 'foo' });
+
     const verify = await api.verifyMessage({
         address: 'a',
         signature: 'a',

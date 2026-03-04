@@ -37,6 +37,25 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         // validate incoming parameters
         Assert(EthereumSignMessageSchema, payload);
 
+        if (!payload.path) {
+            if (!payload.address) {
+                throw new Error(
+                    "ethereumSignMessage: either 'path' or 'address' parameter is required",
+                );
+            }
+
+            // Address-only call: set up minimal state for getMethodInfo().
+            // The preCallHook will resolve address to path, and init() will run again
+            // with the resolved path on the actual device call.
+            this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
+            this.params = {
+                address_n: [],
+                message: '',
+            };
+
+            return;
+        }
+
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);

@@ -25,6 +25,29 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         // validate incoming parameters
         Assert(SignMessageSchema, payload);
 
+        if (!payload.path) {
+            if (!payload.address) {
+                throw new Error("signMessage: either 'path' or 'address' parameter is required");
+            }
+
+            // Address-only call: set up minimal state for getMethodInfo().
+            // The preCallHook will resolve address to path, and init() will run again
+            // with the resolved path on the actual device call.
+            if (payload.coin) {
+                this.coinInfo = getBitcoinNetwork(payload.coin);
+            }
+            this.firmwareRange = getFirmwareRange(this.name, this.coinInfo, this.firmwareRange);
+            this.params = {
+                address_n: [],
+                message: '',
+                coin_name: this.coinInfo?.name,
+                script_type: 'SPENDADDRESS',
+                no_script_type: payload.no_script_type,
+            };
+
+            return;
+        }
+
         const path = validatePath(payload.path);
         if (payload.coin) {
             this.coinInfo = getBitcoinNetwork(payload.coin);

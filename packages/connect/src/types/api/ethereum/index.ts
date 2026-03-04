@@ -5,12 +5,28 @@ import { DerivationPath } from '../../params';
 
 // ethereumSignMessage
 
-export type EthereumSignMessage = Static<typeof EthereumSignMessage>;
-export const EthereumSignMessage = Type.Object({
-    path: DerivationPath,
+const EthereumSignMessageCommon = {
     message: Type.String(),
     hex: Type.Optional(Type.Boolean()),
+};
+
+const EthereumSignMessageWithPath = Type.Object({
+    path: DerivationPath,
+    address: Type.Optional(Type.String()),
+    ...EthereumSignMessageCommon,
 });
+
+const EthereumSignMessageWithAddress = Type.Object({
+    path: Type.Optional(DerivationPath),
+    address: Type.String(),
+    ...EthereumSignMessageCommon,
+});
+
+export type EthereumSignMessage = Static<typeof EthereumSignMessage>;
+export const EthereumSignMessage = Type.Union([
+    EthereumSignMessageWithPath,
+    EthereumSignMessageWithAddress,
+]);
 
 // ethereumSignTransaction
 

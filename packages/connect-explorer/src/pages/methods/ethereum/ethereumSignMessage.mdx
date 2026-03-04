@@ -17,7 +17,9 @@ import signMessage from '../../../data/methods/ethereum/signMessage.ts';
 />
 
 export const paramDescriptions = {
-    path: 'minimum length is `3`. [read more](/details/path)',
+    path: 'minimum length is `3`. [read more](/details/path). Either `path` or `address` must be provided.',
+    address:
+        'Ethereum address to sign with. When provided instead of `path`, the address is resolved to a derivation path using discovered accounts in Suite. Requires Suite as the connect-popup host.',
     message: 'message to sign in plain text',
     hex: 'convert message from hex',
 };
@@ -25,6 +27,8 @@ export const paramDescriptions = {
 ## Ethereum: sign message
 
 Asks device to sign a message using the private key derived by given BIP32 path.
+
+You can provide either a `path` (BIP32 derivation path) or an `address`. When using `address`, the Suite connect-popup resolves it to the corresponding derivation path from discovered accounts.
 
 ```javascript
 const result = await TrezorConnect.ethereumSignMessage(params);
@@ -41,8 +45,15 @@ const result = await TrezorConnect.ethereumSignMessage(params);
 ### Example
 
 ```javascript
+// Using path
 TrezorConnect.ethereumSignMessage({
     path: "m/44'/60'/0'",
+    message: 'example message',
+});
+
+// Using address (requires Suite as connect-popup host)
+TrezorConnect.ethereumSignMessage({
+    address: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
     message: 'example message',
 });
 ```

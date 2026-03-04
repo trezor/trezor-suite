@@ -4,12 +4,16 @@ import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { requestLoginHooks } from './requestLogin';
+import { signMessageHooks } from './signMessage';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { PostCallHookParams, PreCallHookParams } from './types';
 
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
     await bitcoinSignTransaction.preCallHook(params);
     await solanaSignTransaction.preCallHook(params);
+
+    const signMessagePayload = signMessageHooks.preCallHook(params);
+    if (signMessagePayload) return signMessagePayload;
 
     const ethereumPayload = await ethereumSignTransaction.preCallHook(params);
     if (ethereumPayload) return ethereumPayload;
