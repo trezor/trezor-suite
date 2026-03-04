@@ -2102,7 +2102,6 @@
   "TR_SUITE_META_DESCRIPTION": "New desktop & browser app for Trezor hardware wallets. Trezor Suite brings significant improvements across our three key pillars of usability, security, and privacy.",
   "TR_SUITE_STORAGE": "Reset app to default",
   "TR_SUITE_SYNC_CONNECT_AND_GET_KEYS": "Connect & allow",
-  "TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP": "Connect your Trezor to continue.",
   "TR_SUITE_SYNC_FIRMWARE_UPDATE": "Update",
   "TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER": "Firmware update required. Update firmware on your Trezor to use Suite Sync.",
   "TR_SUITE_SYNC_GET_KEYS": "Allow",
