@@ -12484,6 +12484,7 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/tokens": "workspace:*"

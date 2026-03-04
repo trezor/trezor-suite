@@ -27,6 +27,7 @@
         { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../passphrase" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
