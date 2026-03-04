@@ -145,7 +145,10 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
-    async ({ precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { precomposedTransaction, selectedAccount, device, paymentRequests },
+        { rejectWithValue },
+    ) => {
         const { symbol, accountType } = selectedAccount;
 
         if (selectedAccount.networkType !== 'cardano')
@@ -153,6 +156,8 @@ export const signCardanoSendFormTransactionThunk = createThunk<
                 error: 'sign-transaction-failed',
                 message: 'Account network type is not Cardano.',
             });
+
+        const payment_req = paymentRequests?.[0] ?? undefined;
 
         // todo: add chunkify once we allow it for Cardano
         const response = await TrezorConnect.cardanoSignTransaction({
@@ -173,6 +178,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             fee: precomposedTransaction.fee,
             ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),
+            payment_req,
         });
 
         if (!response.success) {
