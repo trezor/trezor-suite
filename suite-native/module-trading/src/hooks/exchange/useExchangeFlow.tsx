@@ -10,6 +10,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
+import { TxKeyPath } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -26,7 +27,7 @@ export type TradingExchangeConfirmTradeProps = {
 
 export type TradingExchangeSignAndSendTransactionProps = {
     nextStep: () => void;
-    onError: (error: TradingSendRejectedProps) => void;
+    onError: (error: TradingSendRejectedProps<TxKeyPath>) => void;
 };
 
 export const useExchangeFlow = () => {

@@ -17,8 +17,6 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
-import { ExtendedMessageDescriptor } from '@suite/intl';
 import { CountryCode } from '@suite-common/geolocation';
 import {
     Network,
@@ -262,10 +260,10 @@ export type MinimalExchangeFormProps = {
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
-export type TradingSendRejectedProps = {
+export type TradingSendRejectedProps<TranslationKey extends string = string> = {
     type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout';
     error: {
-        id: ExtendedMessageDescriptor['id'];
+        id: TranslationKey;
         values?: Record<string, PrimitiveType>;
     };
 };

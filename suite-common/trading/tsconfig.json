@@ -13,7 +13,6 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
-        { "path": "../../suite/intl" },
         {
             "path": "../../packages/address-validator"
         },
