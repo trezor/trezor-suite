@@ -67,7 +67,10 @@ jobs:
 
       - name: Check suite-desktop core bundle size
         if: matrix.os == 'ubuntu-latest'
-        run: bash packages/suite-desktop-core/scripts/check-build-size.sh
+        # Baseline: 7000 KB (estimated 2026-03-04 from CI logs, prod, compressed, includes source maps)
+        # MAX_KB: 7700 KB (110% of baseline = max allowed growth)
+        # To update baseline after legitimate changes: measure new compressed size and update both values
+        run: bash scripts/ci/check-bundle-size.sh "suite-desktop core" "packages/suite-desktop/dist" 7000 7700
 
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@v4
