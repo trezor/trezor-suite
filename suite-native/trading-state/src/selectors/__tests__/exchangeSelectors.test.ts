@@ -173,52 +173,8 @@ describe('exchangeSelectors', () => {
             );
         });
 
-        describe('debug-only networks', () => {
-            beforeEach(() => {
-                // Add Tron which is a debug-only network
-                state.wallet.trading.exchange.exchangeInfo!.buyCryptoIds = [
-                    'ethereum',
-                    'bitcoin',
-                    'tron',
-                ] as CryptoId[];
-                state.wallet.trading.info.coins = {
-                    ...state.wallet.trading.info.coins,
-                    tron: {
-                        symbol: 'trx',
-                        name: 'Tron',
-                        coingeckoId: 'tron',
-                        services: {
-                            buy: true,
-                            sell: true,
-                            exchange: true,
-                        },
-                    },
-                };
-            });
-
-            it('should filter out debug-only networks when flag is disabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = false;
-
-                const result = selectExchangeBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                ]);
-                expect(result).not.toContainEqual(expect.objectContaining({ cryptoId: 'tron' }));
-            });
-
-            it('should include debug-only networks when flag is enabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = true;
-
-                const result = selectExchangeBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                    expect.objectContaining({ cryptoId: 'tron', symbol: 'TRX' }),
-                ]);
-            });
+        describe.skip('debug-only networks', () => {
+            // There are currently no debug only networks. Skipping
         });
     });
 
