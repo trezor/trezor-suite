@@ -29,6 +29,8 @@ const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to discover a
 // Any test with ≥2% failure rate in the aggregate metrics is worth inspecting individually.
 // The exact quarantine decision is still made on the precise last-N execution results.
 const PRE_FILTER_FAILURE_RATE = 0.02; // inspect anything that isn't close to 100% passing
+const TEST_RESULTS_PAGE_SIZE = 10; // default page size of the test-results API endpoint
+const DEVELOP_BRANCH = 'develop';
 
 const PROJECTS: Array<{ id: string; label: string }> = [
     { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
@@ -184,27 +186,77 @@ async function currentsRequest<T>(
 }
 
 /**
- * Fetch the latest N individual execution results for a specific test signature
- * via the Test Results API. Results are returned newest-first.
+ * Async generator that yields pages of completed (non-pending) test results
+ * for the given signature, newest-first, via cursor-based pagination.
+ * Pending results are stripped — they represent incomplete runs and would
+ * skew failure-rate calculations.
+ */
+async function* paginateTestResults(signature: string): AsyncGenerator<TestResultItem[]> {
+    const dateEnd = new Date();
+    const dateStart = new Date(dateEnd.getTime() - EXPLORER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
+    const baseParams = [
+        `date_start=${dateStart.toISOString()}`,
+        `date_end=${dateEnd.toISOString()}`,
+        `limit=${TEST_RESULTS_PAGE_SIZE}`,
+    ];
+    let cursor: string | undefined;
+
+    do {
+        const queryParts = [...baseParams, ...(cursor ? [`starting_after=${cursor}`] : [])];
+        const response = await currentsRequest<TestResultsResponse>(
+            `/test-results/${signature}?${queryParts.join('&')}`,
+        );
+        yield response.data.filter(r => r.status !== 'pending');
+        cursor = response.has_more ? response.data.at(-1)?.cursor : undefined;
+    } while (cursor);
+}
+
+/**
+ * Fetch the latest N completed execution results for a specific test signature.
+ * Results are returned newest-first.
  */
 async function getLastNResults(
     signature: string,
-    n = QUARANTINE_LAST_N_EXECUTIONS,
+    numberOfResults: number,
 ): Promise<TestResultItem[]> {
-    const dateEnd = new Date();
-    const dateStart = new Date(dateEnd.getTime() - EXPLORER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
+    const results: TestResultItem[] = [];
+    for await (const page of paginateTestResults(signature)) {
+        results.push(...page);
+        if (results.length >= numberOfResults) {
+            break;
+        }
+    }
 
-    const queryString = [
-        `date_start=${dateStart.toISOString()}`,
-        `date_end=${dateEnd.toISOString()}`,
-        `limit=${n}`,
-    ].join('&');
+    return results.slice(0, numberOfResults);
+}
 
-    const response = await currentsRequest<TestResultsResponse>(
-        `/test-results/${signature}?${queryString}`,
-    );
+/**
+ * Fetch completed results and pick the first `n` that come from distinct branches.
+ * Results are processed newest-first. Multiple results from `develop` are always
+ * allowed; every other branch contributes at most one result to the selection.
+ */
+async function getLastNResultsFromDistinctBranches(
+    signature: string,
+    numberOfResults = QUARANTINE_LAST_N_EXECUTIONS,
+): Promise<TestResultItem[]> {
+    const uniqueBranchesSet = new Set<string>();
+    const picked: TestResultItem[] = [];
 
-    return response.data;
+    for await (const page of paginateTestResults(signature)) {
+        for (const result of page) {
+            const { branch } = result.commit;
+            const branchNotIncludedYet = !uniqueBranchesSet.has(branch);
+            if (branch === DEVELOP_BRANCH || branchNotIncludedYet) {
+                uniqueBranchesSet.add(branch);
+                picked.push(result);
+                if (picked.length >= numberOfResults) {
+                    return picked;
+                }
+            }
+        }
+    }
+
+    return picked;
 }
 
 /**
@@ -237,9 +289,10 @@ async function getActiveTests(projectId: string): Promise<TestExplorerItem[]> {
 
     const items: TestExplorerItem[] = [];
     let page = 0;
+    let response: TestsExplorerResponse;
     const limit = 25;
 
-    while (true) {
+    do {
         const queryString = [
             `date_start=${toDateString(dateStart)}`,
             `date_end=${toDateString(dateEnd)}`,
@@ -249,15 +302,13 @@ async function getActiveTests(projectId: string): Promise<TestExplorerItem[]> {
             `limit=${limit}`,
         ].join('&');
 
-        const response = await currentsRequest<TestsExplorerResponse>(
+        response = await currentsRequest<TestsExplorerResponse>(
             `/tests/${projectId}?${queryString}`,
         );
 
         items.push(...response.data.list);
-
-        if (!response.data.nextPage) break;
         page++;
-    }
+    } while (response.data.nextPage);
 
     return items;
 }
@@ -423,7 +474,7 @@ async function quarantineFailingTests(
             continue;
         }
 
-        const results = await getLastNResults(test.signature);
+        const results = await getLastNResultsFromDistinctBranches(test.signature);
 
         if (results.length < QUARANTINE_LAST_N_EXECUTIONS) {
             console.log(
