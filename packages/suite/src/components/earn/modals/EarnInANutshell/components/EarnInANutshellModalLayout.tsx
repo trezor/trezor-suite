@@ -1,19 +1,22 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { Modal } from '@trezor/components';
 
-interface EarnInANutshellModalLayoutProps {
+type EarnInANutshellModalLayoutProps = {
     heading: ReactNode;
     onCancel: () => void;
-    onContinue: () => void;
+    actionType?: EarnModalAction;
+    onAction: () => void;
     children: ReactNode;
-}
+};
 
 export const EarnInANutshellModalLayout = ({
     heading,
     onCancel,
-    onContinue,
+    actionType = 'continue',
+    onAction,
     children,
 }: EarnInANutshellModalLayoutProps) => (
     <Modal
@@ -21,8 +24,8 @@ export const EarnInANutshellModalLayout = ({
         width={400}
         onCancel={onCancel}
         bottomContent={
-            <Modal.Button onClick={onContinue} data-testid="@modal/staking/continue-button">
-                <Translation id="TR_CONTINUE" />
+            <Modal.Button onClick={onAction} data-testid="@modal/staking/continue-button">
+                <Translation id={actionType === 'close' ? 'TR_GOT_IT' : 'TR_CONTINUE'} />
             </Modal.Button>
         }
     >

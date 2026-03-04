@@ -9330,6 +9330,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_ENTER_THE_STAKING_POOL',
         defaultMessage: 'Enter staking pool',
     },
+    TR_EARN_HOW_IT_WORKS: {
+        id: 'TR_EARN_HOW_IT_WORKS',
+        defaultMessage: 'How it works?',
+    },
     TR_EARN_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_EARN_STAKE_WAIT_FOR_ACTIVATION',
         defaultMessage: 'Time it takes to stake your {networkDisplaySymbol}',

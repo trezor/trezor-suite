@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
@@ -57,7 +57,7 @@ export const ConfirmStakeModal = ({
         );
 
         analytics.report({
-            type: earnFlowToEventTypeMap[flow],
+            type: earnFlowToEventTypeMap[EarnFlow.Stake],
             payload: {
                 action: 'cancel',
                 step: 'entry-period-stake-modal',
@@ -70,7 +70,7 @@ export const ConfirmStakeModal = ({
         onConfirm();
 
         analytics.report({
-            type: earnFlowToEventTypeMap[flow],
+            type: earnFlowToEventTypeMap[EarnFlow.Stake],
             payload: {
                 action: 'continue',
                 step: 'entry-period-stake-modal',

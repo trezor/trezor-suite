@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider, EarnYieldContext } from '@suite-common/suite-types/src/staking';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -17,17 +17,16 @@ interface YieldEarnProviderConsentModalProps {
     account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
 }
 
 export const YieldEarnProviderConsentModal = ({
     account,
     onCancel,
     provider,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
+    const tokenContractAddress = yieldContext?.tokenContractAddress;
     const normalizedTokenContractAddress = tokenContractAddress
         ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
         : undefined;
@@ -52,8 +51,7 @@ export const YieldEarnProviderConsentModal = ({
         onCancel,
         account,
         networkSymbol: account.symbol,
-        yieldId,
-        tokenContractAddress,
+        yieldContext,
     });
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;

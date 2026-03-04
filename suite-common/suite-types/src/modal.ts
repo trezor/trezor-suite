@@ -5,7 +5,14 @@ import { UI_REQUEST } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
-import { EarnAnalyticsStep, EarnFlow, EarnProvider, type StakeModalFlow } from './staking';
+import {
+    EarnAnalyticsStep,
+    EarnFlow,
+    EarnModalAction,
+    EarnProvider,
+    EarnYieldContext,
+    type StakeModalFlow,
+} from './staking';
 
 export type UserContextPayload =
     | {
@@ -131,12 +138,24 @@ export type UserContextPayload =
       }
     | {
           type: 'earn-in-a-nutshell';
-          flow: EarnFlow;
+          flow: EarnFlow.Stake | EarnFlow.UpdateProvider;
           provider: EarnProvider;
           account: Account;
-          analyticsStep: EarnAnalyticsStep;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          analyticsStep: Extract<EarnAnalyticsStep, 'staking-dashboard'>;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
+      }
+    | {
+          type: 'earn-in-a-nutshell';
+          flow: EarnFlow.Yield;
+          provider: EarnProvider;
+          account: Account;
+          analyticsStep: Extract<
+              EarnAnalyticsStep,
+              'earn-dashboard' | 'yield-supply' | 'yield-withdraw'
+          >;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
       }
     | {
           type: 'stake';
@@ -156,8 +175,7 @@ export type UserContextPayload =
           flow: EarnFlow;
           provider: EarnProvider;
           account: Account;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          yieldContext?: EarnYieldContext;
       }
     | {
           type: 'change-delegate';

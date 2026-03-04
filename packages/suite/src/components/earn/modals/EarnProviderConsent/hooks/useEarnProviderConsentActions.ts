@@ -1,4 +1,4 @@
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnModalAction, EarnYieldContext } from '@suite-common/suite-types/src/staking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
@@ -22,8 +22,7 @@ interface UseEarnProviderConsentActionsProps {
     includeVotingDelegation?: boolean;
     account: Account;
     networkSymbol?: NetworkSymbol;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
 }
 
 export const useEarnProviderConsentActions = ({
@@ -32,14 +31,13 @@ export const useEarnProviderConsentActions = ({
     includeVotingDelegation = false,
     account,
     networkSymbol,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
-    const report = (action: 'continue' | 'cancel') => {
+    const report = (action: EarnModalAction) => {
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
@@ -58,13 +56,13 @@ export const useEarnProviderConsentActions = ({
 
         switch (flow) {
             case EarnFlow.Yield:
-                if (yieldId) {
+                if (yieldContext) {
                     dispatch(
                         goto('earn-supply', {
                             params: getEarnRouteParams({
                                 account,
-                                yieldId,
-                                contractAddress: tokenContractAddress,
+                                yieldId: yieldContext.id,
+                                contractAddress: yieldContext.tokenContractAddress,
                             }),
                         }),
                     );
