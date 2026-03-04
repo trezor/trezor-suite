@@ -4,15 +4,19 @@
  *
  * Target project: Experimental Playground (iBEsWE)
  *
- * Required env vars:
+ * Run via the Currents playwright wrapper CLI so Currents configuration is
+ * picked up from currents.config.ts rather than embedded in this file:
+ *
+ *   pwc --config seed/playwright.config.ts
+ *
+ * Required env vars (read by currents.config.ts):
  *   CURRENTS_RECORD_KEY   – your Currents record key
  *
- * Optional env vars (see fake-tests.spec.ts for the full list):
+ * Optional env vars:
  *   CURRENTS_CI_BUILD_ID  – custom build ID (defaults to seed-<timestamp>)
  *   CURRENTS_TAG          – comma-separated tags to attach to the run
  */
 
-import { currentsReporter } from '@currents/playwright';
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
@@ -21,13 +25,5 @@ export default defineConfig({
     fullyParallel: true,
     workers: 4,
     retries: 0,
-    reporter: [
-        ['list'],
-        currentsReporter({
-            ciBuildId: process.env.CURRENTS_CI_BUILD_ID ?? `seed-${Date.now()}`,
-            recordKey: process.env.CURRENTS_RECORD_KEY!,
-            projectId: 'iBEsWE', // Experimental Playground project ID
-            tag: process.env.CURRENTS_TAG?.split(',').filter(Boolean) ?? ['seed'],
-        }),
-    ],
+    reporter: [['list']],
 });

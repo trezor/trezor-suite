@@ -23,7 +23,7 @@ const AUTO_QUARANTINE_PREFIX = '[auto-quarantine]';
 const QUARANTINE_FAILURE_RATE = 0.6; // quarantine if ≥60% fails in the last N executions
 const UNQUARANTINE_FAILURE_RATE = 0; // unquarantine if test becomes perfectly stable (0% failures in the last N executions)
 const LAST_N_EXECUTIONS = 5; // number of individual executions to evaluate
-const EXPLORER_LOOKBACK_DAYS = 1; // window used by Tests Explorer to discover active tests
+const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to discover active tests
 // Pre-filter: skip only tests that are nearly perfect (>98% pass rate) in the explorer window.
 // Any test with ≥2% failure rate in the aggregate metrics is worth inspecting individually.
 // The exact quarantine decision is still made on the precise last-N execution results.
@@ -32,6 +32,7 @@ const PRE_FILTER_RATE = 0.02; // inspect anything that isn't close to 100% passi
 const PROJECTS: Array<{ id: string; label: string }> = [
     { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
     { id: '4ytF0E', label: 'Trezor Suite (desktop)' },
+    //{ id: 'iBEsWE', label: 'Experimental Playground' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -272,13 +273,44 @@ async function getAutoQuarantineActions(projectId: string): Promise<Action[]> {
 }
 
 /**
- * Extract the test title from an action's matcher conditions.
+ * Normalise a test's title path into individual parts.
+ *
+ * The Currents explorer returns `titlePath` as an array when populated, but
+ * often omits it entirely and instead concatenates all parts (spec, describe
+ * blocks, test name) into the bare `title` field separated by ' > '.
+ * Splitting on that separator gives the same individual strings that the UI
+ * produces when you enter path parts manually.
  */
-function extractTitleFromAction(action: Action): string | undefined {
-    const conds = action.matcher?.cond ?? [];
-    const titleCond = conds.find(c => c.type === 'title' && c.op === 'eq');
+function normalizeTitlePath(test: TestExplorerItem): string[] {
+    const raw = test.titlePath && test.titlePath.length > 0 ? test.titlePath : [test.title];
 
-    return typeof titleCond?.value === 'string' ? titleCond.value : undefined;
+    return raw.flatMap(part => part.split(' > '));
+}
+
+/**
+ * Stable lookup key for a test, used to key internal maps and sets.
+ *
+ * Uses JSON.stringify of the normalised titlePath array so the key is
+ * unambiguous and consistent with what we store in the action matcher.
+ */
+function getTestKey(test: TestExplorerItem): string {
+    return JSON.stringify(normalizeTitlePath(test));
+}
+
+/**
+ * Extract the lookup key from an action's matcher conditions.
+ * Expects `type: 'titlePath'` with an array value → JSON.stringify of that array.
+ */
+function extractKeyFromAction(action: Action): string | undefined {
+    const conds = action.matcher?.cond ?? [];
+    const titlePathCond = conds.find(
+        c =>
+            c.type === 'titlePath' &&
+            (c.op === 'incAll' || c.op === 'eq') &&
+            Array.isArray(c.value),
+    );
+
+    return titlePathCond ? JSON.stringify(titlePathCond.value) : undefined;
 }
 
 /**
@@ -291,11 +323,16 @@ function createQuarantineAction(
 ): Promise<Action> {
     const failurePercent = Math.round(stats.failureRate * 100);
     const name = `${AUTO_QUARANTINE_PREFIX} ${test.title.slice(0, 80)}`;
+
+    // Use the normalised titlePath (individual spec / describe / test-name parts)
+    // rather than the raw title, which Currents often returns as a single ' > '-joined string.
+    const titlePath = normalizeTitlePath(test);
+
     const description =
         `Automatically quarantined by test-health-check workflow.\n` +
         `Reason: ${failurePercent}% failure rate (${stats.failures}/${stats.executions} latest executions).\n` +
         `Spec: ${test.spec}\n` +
-        `Full title: ${test.title}`;
+        `Full title path: ${titlePath.join(' > ')}`;
 
     const body = {
         name,
@@ -303,7 +340,7 @@ function createQuarantineAction(
         action: [{ op: 'quarantine' }],
         matcher: {
             op: 'AND',
-            cond: [{ type: 'title', op: 'eq', value: test.title }],
+            cond: [{ type: 'titlePath', op: 'incAll', value: titlePath }],
         },
     };
 
@@ -356,8 +393,8 @@ async function quarantineFailingTests(
 ): Promise<void> {
     console.log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
-    const alreadyQuarantinedTitles = new Set(
-        existingActions.map(a => extractTitleFromAction(a)).filter(Boolean) as string[],
+    const alreadyQuarantinedKeys = new Set(
+        existingActions.map(a => extractKeyFromAction(a)).filter(Boolean) as string[],
     );
 
     const candidateTests = activeTests.filter(
@@ -380,7 +417,7 @@ async function quarantineFailingTests(
             continue;
         }
 
-        if (alreadyQuarantinedTitles.has(test.title)) {
+        if (alreadyQuarantinedKeys.has(getTestKey(test))) {
             console.log(`  ↳ Already quarantined: "${test.title.slice(0, 80)}"`);
             continue;
         }
@@ -442,17 +479,20 @@ async function unquarantinePassingTests(
 
     console.log(`  Found ${existingActions.length} auto-quarantined test(s).`);
 
-    const testsByTitle = new Map(activeTests.map(t => [t.title, t]));
+    const testsByKey = new Map(activeTests.map(t => [getTestKey(t), t]));
 
     for (const action of existingActions) {
-        const testTitle = extractTitleFromAction(action);
-        if (!testTitle) {
+        const testKey = extractKeyFromAction(action);
+        if (!testKey) {
             console.warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
             continue;
         }
 
+        // Human-readable label for logs/Slack: the key is always JSON.stringify of the titlePath array.
+        const testTitle = (JSON.parse(testKey) as string[]).join(' > ');
+
         // Look up the test signature from the pre-fetched explorer results.
-        const test = testsByTitle.get(testTitle);
+        const test = testsByKey.get(testKey);
 
         if (!test?.signature) {
             console.log(
@@ -501,10 +541,65 @@ async function unquarantinePassingTests(
 }
 
 // ---------------------------------------------------------------------------
+// Wipe mode
+// ---------------------------------------------------------------------------
+
+async function wipeAllAutoQuarantineActions(): Promise<void> {
+    console.log('=== Wipe Auto-Quarantine Actions ===');
+    console.log(`Timestamp: ${new Date().toISOString()}`);
+    console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    console.log('');
+
+    let hasError = false;
+
+    for (const project of PROJECTS) {
+        try {
+            console.log(`\n── [${project.label}] Fetching auto-quarantine actions ──`);
+            const actions = await getAutoQuarantineActions(project.id);
+
+            if (actions.length === 0) {
+                console.log('  ✓ No auto-quarantine actions found.');
+                continue;
+            }
+
+            console.log(`  Found ${actions.length} auto-quarantine action(s). Deleting...`);
+
+            for (const action of actions) {
+                const testKey = extractKeyFromAction(action);
+                const testTitle = testKey
+                    ? (JSON.parse(testKey) as string[]).join(' > ')
+                    : action.name;
+                console.log(`  ↳ Deleting: "${testTitle.slice(0, 80)}"`);
+                await deleteAction(action.actionId);
+            }
+
+            console.log(`  ✓ Deleted ${actions.length} action(s) for [${project.label}].`);
+        } catch (err) {
+            console.error(`\n[ERROR] Failed wiping project ${project.label} (${project.id}):`, err);
+            hasError = true;
+        }
+    }
+
+    console.log('\n=== Done ===');
+
+    if (hasError) {
+        process.exit(1);
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
+    const args = process.argv.slice(2);
+
+    if (args.includes('--wipeAutoQuarantine')) {
+        await wipeAllAutoQuarantineActions();
+
+        return;
+    }
+
     console.log('=== Currents Test Health Check ===');
     console.log(`Timestamp: ${new Date().toISOString()}`);
     console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
