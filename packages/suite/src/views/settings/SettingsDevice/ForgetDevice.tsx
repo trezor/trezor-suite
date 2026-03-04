@@ -21,7 +21,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     }
 
     const isBluetoothDevice = selectedDevice.features?.capabilities.includes('Capability_BLE');
-    const isBluetoothConnectedDevice = selectedDevice?.bluetoothProps?.id !== undefined;
+    const isBluetoothConnectedDevice = selectedDevice?.descriptor.apiType === 'bluetooth';
 
     const handleConfirmClick = async () => {
         const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);

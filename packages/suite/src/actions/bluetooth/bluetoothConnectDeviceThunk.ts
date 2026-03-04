@@ -67,7 +67,10 @@ export const bluetoothConnectDeviceThunk = createThunk<
         // wait for device handshake in @trezor/connect
         await new Promise<void>(resolve => {
             const closeViewAfterConnection = (device: Device) => {
-                if (device.bluetoothProps?.id !== deviceId) {
+                if (
+                    device.descriptor.apiType !== 'bluetooth' ||
+                    device.descriptor.id !== deviceId
+                ) {
                     return;
                 }
 

@@ -114,8 +114,8 @@ describe('bluetoothReducer', () => {
             },
         });
 
-        const trezorDevice: Pick<TrezorDevice, 'bluetoothProps'> = {
-            bluetoothProps: { id: asBluetoothDeviceId('A') },
+        const trezorDevice: Pick<TrezorDevice, 'descriptor'> = {
+            descriptor: { apiType: 'bluetooth', id: 'A' },
         };
 
         store.dispatch(deviceActions.deviceDisconnect(trezorDevice as TrezorDevice));
@@ -136,8 +136,8 @@ describe('bluetoothReducer', () => {
             },
         });
 
-        const trezorDevice: Pick<Device, 'bluetoothProps'> = {
-            bluetoothProps: { id: asBluetoothDeviceId('A') },
+        const trezorDevice: Pick<Device, 'descriptor'> = {
+            descriptor: { apiType: 'bluetooth', id: 'A' },
         };
 
         store.dispatch(

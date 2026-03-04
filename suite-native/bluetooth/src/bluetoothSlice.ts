@@ -40,7 +40,8 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         const commonReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extra);
         builder
             .addCase(UI_REQUEST.FIRMWARE_DISCONNECT, (_, action: FirmwareDisconnect) => {
-                const deviceId = action.payload.device.bluetoothProps?.id;
+                const { descriptor } = action.payload.device;
+                const deviceId = descriptor.apiType === 'bluetooth' ? descriptor.id : undefined;
                 if (deviceId) {
                     bluetoothManager.disconnectDevice({ deviceId });
                 }

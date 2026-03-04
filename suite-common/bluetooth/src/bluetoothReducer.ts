@@ -108,11 +108,11 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(bluetoothActions.scanStatusAction, (state, { payload: { status } }) => {
                 state.scanStatus = status;
             })
-            .addCase(deviceActions.deviceDisconnect, (state, { payload: { bluetoothProps } }) => {
-                if (bluetoothProps !== undefined) {
+            .addCase(deviceActions.deviceDisconnect, (state, { payload: { descriptor } }) => {
+                if (descriptor.apiType === 'bluetooth' && descriptor.id !== undefined) {
                     if (state.nearbyDevices !== null) {
                         state.nearbyDevices = state.nearbyDevices.filter(
-                            it => it.id !== bluetoothProps.id,
+                            it => it.id !== descriptor.id,
                         );
                     }
                 }
@@ -136,26 +136,26 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     state,
                     {
                         payload: {
-                            device: { bluetoothProps, id: deviceId },
+                            device: { descriptor, id: deviceId },
                         },
                     }: { payload: DeviceConnectActionPayload },
                 ) => {
-                    if (bluetoothProps === undefined) {
+                    if (descriptor.apiType !== 'bluetooth' || !descriptor.id) {
                         return;
                     }
 
-                    const device = state.nearbyDevices?.find(it => it.id === bluetoothProps.id);
+                    const device = state.nearbyDevices?.find(it => it.id === descriptor.id);
 
                     if (device !== undefined) {
                         // Once the device is fully connected, we save it to the list of known devices,
                         // so next time user opens suite, we can automatically connect to it.
                         const foundKnownDevice = state.knownDevices.find(
-                            it => it.id === bluetoothProps.id,
+                            it => it.id === descriptor.id,
                         );
                         if (foundKnownDevice === undefined) {
                             state.knownDevices.push({ ...device, deviceId });
                         } else {
-                            delete state.autoConnectPolicy[bluetoothProps.id];
+                            delete state.autoConnectPolicy[descriptor.id as BluetoothDeviceId];
                             // update deviceId in case it was missing
                             if (deviceId && foundKnownDevice.deviceId !== deviceId) {
                                 foundKnownDevice.deviceId = deviceId;
@@ -167,7 +167,10 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addMatcher(
                 action => action.type === deviceActions.deviceDisconnect.type,
                 (state, { payload }: ReturnType<typeof deviceActions.deviceDisconnect>) => {
-                    const id = payload.bluetoothProps?.id;
+                    const id =
+                        payload.descriptor.apiType === 'bluetooth' && payload.descriptor.id
+                            ? (payload.descriptor.id as BluetoothDeviceId)
+                            : undefined;
                     const affectedDevice = id && state.knownDevices.find(it => it.id === id);
                     if (
                         affectedDevice &&
@@ -189,7 +192,10 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     }: ReturnType<typeof deviceActions.devicePushNotification>,
                 ) => {
                     if (type === TrezorPushNotificationType.DISCONNECT) {
-                        const id = device.bluetoothProps?.id;
+                        const id =
+                            device.descriptor.apiType === 'bluetooth' && device.descriptor.id
+                                ? (device.descriptor.id as BluetoothDeviceId)
+                                : undefined;
                         const affectedDevice = id && state.knownDevices.find(it => it.id === id);
                         if (affectedDevice) {
                             state.autoConnectPolicy[id] = {

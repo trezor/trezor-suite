@@ -14,7 +14,7 @@ export const bluetoothOnDeviceConnectedThunk = createThunk<void, Device, void>(
         // device is re-connected over USB, but the same device is already connected over BT
         // -> disconnect the BT connection
         if (
-            !device.bluetoothProps &&
+            device.descriptor.apiType !== 'bluetooth' &&
             (knownDevice?.connectionStatus.type === 'connected' ||
                 knownDevice?.connectionStatus.type === 'connecting')
         ) {

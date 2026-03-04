@@ -22,7 +22,7 @@ import {
     getStatus,
     isDeviceAcquired,
 } from '@suite-common/suite-utils';
-import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
+import { Device, DeviceState, StaticSessionId, asBluetoothDeviceId } from '@trezor/connect';
 import {
     DeviceModelInternal,
     FirmwareVersionString,
@@ -258,9 +258,10 @@ export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSel
     },
 );
 
-export const selectDeviceBluetoothId = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.bluetoothProps?.id,
+export const selectDeviceBluetoothId = createMemoizedSelector([selectSelectedDevice], device =>
+    device?.descriptor?.apiType === 'bluetooth' && device.descriptor.id
+        ? asBluetoothDeviceId(device.descriptor.id)
+        : undefined,
 );
 
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
