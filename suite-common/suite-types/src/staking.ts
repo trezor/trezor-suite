@@ -11,10 +11,21 @@ export enum EarnProvider {
     YieldXyz = 'yield-xyz',
 }
 
+export type EarnYieldContext = {
+    id: string;
+    tokenContractAddress?: string;
+};
+
+export type EarnModalAction = 'continue' | 'cancel' | 'close';
+
 export type EarnAnalyticsStep =
-    | 'staking-dashboard'
-    | 'stake-in-a-nutshell-modal'
+    | 'claim-form-modal'
+    | 'earn-dashboard'
+    | 'entry-period-stake-modal'
     | 'funds-maintained-modal'
     | 'stake-form-modal'
-    | 'entry-period-stake-modal'
-    | 'earn-dashboard';
+    | 'stake-in-a-nutshell-modal'
+    | 'staking-dashboard'
+    | 'yield-supply'
+    | 'yield-withdraw'
+    | 'unstake-form-modal';

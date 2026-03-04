@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 
@@ -12,7 +12,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
 type StakeButtonProps = {
-    flow: EarnFlow;
+    flow: StakeModalFlow;
 };
 
 export const StakeButton = ({ flow }: StakeButtonProps) => {

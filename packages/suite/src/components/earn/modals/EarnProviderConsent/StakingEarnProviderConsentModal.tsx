@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider, EarnYieldContext } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
@@ -13,24 +13,21 @@ interface StakingEarnProviderConsentModalProps {
     account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
 }
 
 export const StakingEarnProviderConsentModal = ({
     account,
     onCancel,
     provider,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
 }: StakingEarnProviderConsentModalProps) => {
     const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Stake,
         onCancel,
         account,
         networkSymbol: account.symbol,
-        yieldId,
-        tokenContractAddress,
+        yieldContext,
     });
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);

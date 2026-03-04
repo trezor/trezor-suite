@@ -101,8 +101,10 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 provider: EarnProvider.YieldXyz,
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
-                yieldId: opportunity.vault.id,
-                tokenContractAddress: opportunity.vault.token.address ?? undefined,
+                yieldContext: {
+                    id: opportunity.vault.id,
+                    tokenContractAddress: opportunity.vault.token.address ?? undefined,
+                },
             }),
         );
     };
