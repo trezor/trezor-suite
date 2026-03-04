@@ -70,6 +70,7 @@ export type CardanoSignTransactionParams = {
     unsignedTx?: { body: string; hash: string };
     testnet?: boolean;
     chunkify?: boolean;
+    payment_req?: PROTO.PaymentRequest;
 };
 
 export default class CardanoSignTransaction extends AbstractMethod<
@@ -232,6 +233,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
             chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
+            payment_req: payload.payment_req,
         };
     }
 
@@ -299,6 +301,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             include_network_id: this.params.includeNetworkId,
             chunkify: this.params.chunkify,
             tag_cbor_sets: this.params.tagCborSets,
+            payment_req: this.params.payment_req,
         };
 
         // init

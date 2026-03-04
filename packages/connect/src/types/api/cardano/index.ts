@@ -267,6 +267,7 @@ export const CardanoSignTransaction = Type.Object({
     includeNetworkId: Type.Optional(Type.Boolean()),
     chunkify: Type.Optional(Type.Boolean()),
     tagCborSets: Type.Optional(Type.Boolean()),
+    payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 
 export type CardanoSignTransactionExtended = Static<typeof CardanoSignTransactionExtended>;
