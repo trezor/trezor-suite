@@ -27,6 +27,7 @@ import { bannerFlagsInitialState } from '@suite-native/banner-flags';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { deviceOnboardingSliceInitialState } from '@suite-native/device-onboarding';
+import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { nativeFirmwareInitialState } from '@suite-native/firmware';
 import { graphInitialState } from '@suite-native/graph';
@@ -61,6 +62,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     messageSystem: messageSystemInitialState,
     nativeFirmware: nativeFirmwareInitialState,
     notifications: createNotificationsReducer<TxKeyPath>().initialState,
+    pendingCoinVisibility: pendingCoinVisibilitySlice.getInitialState(),
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
     thp: initialThpState,
