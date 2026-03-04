@@ -2,8 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectDeviceModel, selectIsDeviceConnected } from '@suite-common/device';
-import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
+import { selectDeviceModel } from '@suite-common/device';
+import {
+    DeviceConnectionGuardScreenWithCancel,
+    useDeviceConnectionGuard,
+} from '@suite-native/device-authorization';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
@@ -24,9 +27,9 @@ const checkBackupUnsupportedDeviceModels: DeviceModelInternal[] = [DeviceModelIn
 const DeviceCheckBackupStack = createNativeStackNavigator<DeviceCheckBackupStackParamList>();
 
 export const DeviceCheckBackupStackNavigator = () => {
-    const deviceModel = useSelector(selectDeviceModel);
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
 
+    const deviceModel = useSelector(selectDeviceModel);
     const isUnsupportedDeviceModel =
         deviceModel && checkBackupUnsupportedDeviceModels.includes(deviceModel);
 
@@ -39,18 +42,16 @@ export const DeviceCheckBackupStackNavigator = () => {
                     initialParams={{ deviceModel: models[deviceModel].name }}
                 />
             )}
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <DeviceCheckBackupStack.Screen
                     name={DeviceCheckBackupStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreen}
+                    component={DeviceConnectionGuardScreenWithCancel}
                 />
             )}
-            {isDeviceConnected && (
-                <DeviceCheckBackupStack.Screen
-                    name={DeviceCheckBackupStackRoutes.CheckBackupTutorial}
-                    component={DeviceCheckBackupTutorialScreen}
-                />
-            )}
+            <DeviceCheckBackupStack.Screen
+                name={DeviceCheckBackupStackRoutes.CheckBackupTutorial}
+                component={DeviceCheckBackupTutorialScreen}
+            />
             <DeviceCheckBackupStack.Screen
                 name={DeviceCheckBackupStackRoutes.CheckBackup}
                 component={DeviceCheckBackupScreen}
