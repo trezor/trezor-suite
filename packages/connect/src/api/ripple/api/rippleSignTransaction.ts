@@ -47,6 +47,7 @@ export default class RippleSignTransaction extends AbstractMethod<
                 destination: transaction.payment.destination,
                 destination_tag: transaction.payment.destinationTag,
             },
+            payment_req: payload.payment_req,
             chunkify: typeof chunkify === 'boolean' ? chunkify : false,
         };
     }

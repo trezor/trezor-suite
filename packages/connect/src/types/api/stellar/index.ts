@@ -227,6 +227,7 @@ export const StellarSignTransaction = Type.Object({
     path: DerivationPath,
     networkPassphrase: Type.String(),
     transaction: StellarTransaction,
+    payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 
 export type StellarSignedTx = Static<typeof StellarSignedTx>;

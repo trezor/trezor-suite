@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { PROTO } from '../../../constants';
 import { PublicKey } from '../../params';
 
 // solanaGetPublicKey
@@ -36,6 +37,7 @@ export const SolanaSignTransaction = Type.Object({
     path: Type.Union([Type.String(), Type.Array(Type.Number())]),
     serializedTx: Type.String(),
     additionalInfo: Type.Optional(SolanaTxAdditionalInfo),
+    payment_req: Type.Optional(PROTO.PaymentRequest),
     serialize: Type.Optional(Type.Boolean()),
     chunkify: Type.Optional(Type.Boolean()),
 });
