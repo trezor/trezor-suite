@@ -6,6 +6,7 @@ import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-commo
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import {
+    Box,
     Button,
     Card,
     Column,
@@ -347,9 +348,11 @@ export const SecurityCheck = () => {
 
     if (isAuthenticityCheckStep) {
         return (
-            <DeviceAuthenticityStep
-                goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
-            />
+            <Box padding={{ top: 40 }}>
+                <DeviceAuthenticityStep
+                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
+                />
+            </Box>
         );
     }
 
