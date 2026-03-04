@@ -8,7 +8,6 @@
         { "path": "../test-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
-        { "path": "../../suite/intl" },
         { "path": "../../packages/connect" }
     ]
 }

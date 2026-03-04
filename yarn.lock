@@ -11523,7 +11523,6 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite/intl": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
@@ -11570,7 +11569,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@suite/intl": "workspace:*"
     "@testing-library/react": "npm:^16.3.2"
     "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
