@@ -320,7 +320,10 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        { rejectWithValue },
+    ) => {
         if (precomposedTransaction.feeLimit == null)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -382,6 +385,8 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         }
 
+        const payment_req = paymentRequests?.[0] ?? undefined;
+
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
                 path: device.path,
@@ -391,6 +396,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             path: selectedAccount.path,
             serializedTx: transaction.payload.serializedTx,
+            payment_req,
             serialize: true,
             additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
                 ? {
