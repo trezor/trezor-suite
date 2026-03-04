@@ -5,6 +5,8 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
+const CARDANO_BLOCKFROST_URL = 'https://ada3.trezor.io/';
+
 export class CoinsTab {
     readonly networkButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
@@ -55,5 +57,13 @@ export class CoinsTab {
         await this.coinBackendSelectorOption(backend).click();
         await this.coinAddressInput.fill(backendUrl);
         await this.coinAdvanceSettingSaveButton.click();
+    }
+
+    // To compare stability between our Cardano BE servers and official ones
+    // We will use official for month to collect data. Remove afterwards.
+    @step()
+    async temporarilySetOfficialCardanoBackend() {
+        await this.openNetworkAdvanceSettings('ada');
+        await this.changeBackend('blockfrost', CARDANO_BLOCKFROST_URL);
     }
 }

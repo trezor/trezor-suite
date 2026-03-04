@@ -27,7 +27,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             }),
         },
         async ({ page, dashboardPage, settingsPage, walletPage }) => {
-            const accountTypes = [
+            const accountTypes: { coin: NetworkSymbol; accounts: { type: string }[] }[] = [
                 {
                     coin: 'btc',
                     accounts: [
@@ -52,35 +52,24 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             });
             await dashboardPage.navigateTo();
 
-            const chevrons = await walletPage.accountChevron.all();
-            for (const chevron of chevrons) {
-                await chevron.click();
-            }
+            await walletPage.expandAllAccountsInMenu();
 
             for (const { coin, accounts } of accountTypes) {
                 for (const { type } of accounts) {
                     await test.step(`Add and verify ${type} account for ${coin}`, async () => {
-                        const numberOfAccountsBefore = await page
-                            .getByTestId(`@account-menu/${type}/group`)
-                            .locator(
-                                ':scope > *:not([data-testid="@account-menu/account-item-skeleton"])',
-                            )
-                            .count();
+                        const numberOfAccountsBefore =
+                            await walletPage.getAccountsInTypeGroupCount(type);
 
-                        await page.getByTestId('@account-menu/add-account').click();
-                        await expect(page.getByTestId('@modal')).toBeVisible();
-                        await page.getByTestId(`@settings/wallet/network/${coin}`).click();
-                        await page.getByTestId('@add-account-type/select/input').click();
+                        await walletPage.addAccountButton.click();
+                        await expect(settingsPage.modal).toBeVisible();
+                        await settingsPage.coinsTab.networkButton(coin).click();
+                        await walletPage.addAccountTypeSelectInput.click();
                         await page.waitForTimeout(500);
-                        await page.getByTestId(`@add-account-type/select/option/${type}`).click();
-                        await page.getByTestId('@add-account').click();
+                        await walletPage.addAccountTypeSelectOption(type).click();
+                        await walletPage.addAccountConfirmButton.click();
 
-                        const numberOfAccountsAfter = await page
-                            .getByTestId(`@account-menu/${type}/group`)
-                            .locator(
-                                ':scope > *:not([data-testid="@account-menu/account-item-skeleton"])',
-                            )
-                            .count();
+                        const numberOfAccountsAfter =
+                            await walletPage.getAccountsInTypeGroupCount(type);
 
                         expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
                     });
@@ -99,7 +88,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             }),
         },
         async ({ page, dashboardPage, settingsPage, walletPage, analytics }) => {
-            const coins = [
+            const coins: { symbol: NetworkSymbol; path: string }[] = [
                 { symbol: 'ada', path: `m/1852'/1815'/1'` },
                 { symbol: 'eth', path: `m/44'/60'/0'/0/1` },
             ];
@@ -107,6 +96,9 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             await settingsPage.navigateTo('coins');
             for (const coin of coins) {
                 await settingsPage.coinsTab.enableNetwork(coin.symbol as NetworkSymbol);
+                if (coin.symbol === 'ada') {
+                    await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
+                }
             }
 
             await dashboardPage.dashboardMenuButton.click();
@@ -114,25 +106,21 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             await page.discoveryShouldFinish();
 
             analytics.interceptAnalytics();
-            await page.getByTestId(`@account-menu/filter-accounts`).click();
+            await walletPage.filterAccountsButton.click();
             for (const coin of coins) {
                 await test.step(`Add and verify ${coin.symbol} account`, async () => {
                     analytics.requests = [];
-                    await page.getByTestId(`@account-menu/filter/${coin.symbol}`).click();
-                    const numberOfAccountsBefore = await page
-                        .getByTestId('@account-menu/normal/group')
-                        .locator(`> [data-testid^="@account-menu/${coin.symbol}/normal/"]`)
-                        .count();
+                    await walletPage.walletFilter(coin.symbol).click();
+                    const numberOfAccountsBefore =
+                        await walletPage.getAccountsForCoinInTypeGroupCount('normal', coin.symbol);
 
-                    await page.getByTestId('@account-menu/add-account').click();
-                    await expect(page.getByTestId('@modal')).toBeVisible();
-                    await page.getByTestId(`@settings/wallet/network/${coin.symbol}`).click();
-                    await page.getByTestId('@add-account').click();
+                    await walletPage.addAccountButton.click();
+                    await expect(settingsPage.modal).toBeVisible();
+                    await settingsPage.coinsTab.networkButton(coin.symbol).click();
+                    await walletPage.addAccountConfirmButton.click();
 
-                    const numberOfAccountsAfter = await page
-                        .getByTestId('@account-menu/normal/group')
-                        .locator(`> [data-testid^="@account-menu/${coin.symbol}/normal/"]`)
-                        .count();
+                    const numberOfAccountsAfter =
+                        await walletPage.getAccountsForCoinInTypeGroupCount('normal', coin.symbol);
                     expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
 
                     const newAccountEvent = analytics.findAnalyticsEventByType<

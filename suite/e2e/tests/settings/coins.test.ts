@@ -68,6 +68,9 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.navigateTo('coins');
                 for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
                     await settingsPage.coinsTab.enableNetwork(network);
+                    if (network === 'ada') {
+                        await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
+                    }
                 }
             });
 

@@ -266,6 +266,9 @@ export class SettingsPage {
         await this.navigateTo('coins');
         for (const network of options.enableNetworks) {
             await this.coinsTab.enableNetwork(network);
+            if (network === 'ada') {
+                await this.coinsTab.temporarilySetOfficialCardanoBackend();
+            }
         }
 
         for (const network of options.disableNetworks ?? []) {

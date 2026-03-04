@@ -49,7 +49,13 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                     <Divider margin={{ top: spacings.xxl, bottom: spacings.xxl }} />
                     <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {props.actions?.map(action => (
-                            <Button size="large" minWidth={160} {...action} key={action.key} />
+                            <Button
+                                size="large"
+                                minWidth={160}
+                                {...action}
+                                key={action.key}
+                                data-testid={action['data-testid']}
+                            />
                         ))}
                     </Row>
                 </>

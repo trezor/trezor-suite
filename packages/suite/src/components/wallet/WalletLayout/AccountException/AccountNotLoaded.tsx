@@ -26,6 +26,7 @@ export const AccountNotLoaded = () => {
             actions={[
                 {
                     key: '1',
+                    'data-testid': '@accounts/account-not-loaded/retry-button',
                     iconLeft: 'repeat',
                     isLoading: isLocked(),
                     onClick: handleClick,
