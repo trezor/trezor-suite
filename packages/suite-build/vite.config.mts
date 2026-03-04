@@ -285,7 +285,7 @@ const faviconPlugin = (): Plugin => {
                                 inlineDynamicImports: true,
                             },
                         },
-                        minify: false,
+                        minify: true,
                         target: 'es2020',
                         write: true,
                     },
