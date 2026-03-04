@@ -45,6 +45,15 @@ export const getEnumAdditionSnippet = (eventName: string): string => {
 };
 
 /**
+ * Returns enum context snippet for display (shows how the new line fits inside EventType enum).
+ */
+export const getEnumContextSnippet = (eventName: string): string => {
+    const enumLine = getEnumAdditionSnippet(eventName);
+
+    return `export enum EventType {\n    ...\n${enumLine}\n    ...\n}`;
+};
+
+/**
  * Returns the relative path (from repo root) where the event file should live.
  */
 export const getEventFilePath = (platform: string, eventName: string): string => {
@@ -61,6 +70,50 @@ export const getConstantsFilePath = (platform: string): string => {
     const dir = PLATFORM_TO_PACKAGE_DIR[platform] ?? 'suite-common/analytics';
 
     return `${dir}/src/constants.ts`;
+};
+
+/**
+ * Returns the relative path (from repo root) to the analytics events index for the given platform.
+ */
+export const getEventsIndexPath = (platform: string): string => {
+    const dir = PLATFORM_TO_PACKAGE_DIR[platform] ?? 'suite-common/analytics';
+
+    return `${dir}/src/events/index.ts`;
+};
+
+/**
+ * Returns the export line to add to events/index.ts (e.g. "export { sendRawTransactionEvent } from './sendRawTransactionEvent';").
+ */
+export const getEventsIndexExportSnippet = (eventName: string): string => {
+    const baseName = eventNameToFileBaseName(eventName);
+
+    return `export { ${baseName} } from './${baseName}';`;
+};
+
+const PLATFORM_USAGE_IMPORTS: Record<string, { events: string; useAnalytics: string }> = {
+    desktop: { events: '@suite/analytics', useAnalytics: 'src/support/useAnalytics' },
+    mobile: { events: '@suite-native/analytics', useAnalytics: '@suite-native/services' },
+    shared: { events: '@suite/analytics', useAnalytics: 'src/support/useAnalytics' },
+};
+
+/**
+ * Returns example usage snippet: import, useAnalytics, and analytics.report(...).
+ */
+export const getUsageExampleSnippet = (platform: string, eventName: string): string => {
+    const baseName = eventNameToFileBaseName(eventName);
+    const imports = PLATFORM_USAGE_IMPORTS[platform] ?? PLATFORM_USAGE_IMPORTS.shared;
+
+    return `import { events } from '${imports.events}';
+import { useAnalytics } from '${imports.useAnalytics}';
+
+// inside component:
+const analytics = useAnalytics();
+analytics.report({
+    type: events.${baseName}.name,
+    payload: {
+        // your attributes
+    },
+});`;
 };
 
 /** AppVersion: either "x.y.z" (e.g. 26.2.0) or "?" */

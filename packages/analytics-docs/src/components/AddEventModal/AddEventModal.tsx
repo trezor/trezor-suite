@@ -9,7 +9,6 @@ import {
     Card,
     CollapsibleBox,
     Column,
-    H4,
     Input,
     Link,
     Modal,
@@ -22,6 +21,7 @@ import {
 
 import { AttributeEditor } from './AttributeEditor';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
+import { CopyButton } from './CopyButton';
 import { defaultAttribute, platformOptions } from './constants';
 import type { EventDoc } from '../../types';
 import {
@@ -32,7 +32,11 @@ import {
     getChangelogErrorMessage,
     getConstantsFilePath,
     getEnumAdditionSnippet,
+    getEnumContextSnippet,
     getEventFilePath,
+    getEventsIndexExportSnippet,
+    getEventsIndexPath,
+    getUsageExampleSnippet,
     isValidAppVersion,
 } from '../../utils/eventFileUtils';
 
@@ -46,7 +50,6 @@ type AddEventModalProps = {
 export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalProps) => {
     const [formState, setFormState] = useState<EventFormState>(createEmptyFormState);
     const [showResult, setShowResult] = useState(false);
-    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -76,6 +79,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
         ? getEventFilePath(formState.platform, formState.eventName.trim())
         : '';
     const constantsFilePath = getConstantsFilePath(formState.platform);
+    const eventsIndexPath = getEventsIndexPath(formState.platform);
     const isEditing = !!initialEvent;
     const eventChangelogError = getChangelogErrorMessage(formState.changelog);
     const eventChangelogValid = !eventChangelogError;
@@ -93,6 +97,14 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
     const eventNameValid = !eventNameTrimmed || !eventNameValidationError;
     const generatedCode = eventNameTrimmed ? generateEventFileContent(formState) : '';
     const enumSnippet = eventNameTrimmed ? getEnumAdditionSnippet(eventNameTrimmed) : '';
+    const enumContextSnippet = eventNameTrimmed ? getEnumContextSnippet(eventNameTrimmed) : '';
+    const eventsIndexExportSnippet = eventNameTrimmed
+        ? getEventsIndexExportSnippet(eventNameTrimmed)
+        : '';
+    const usageExampleSnippet =
+        eventNameTrimmed && formState.platform
+            ? getUsageExampleSnippet(formState.platform, eventNameTrimmed)
+            : '';
 
     const domainFromEventName = formState.eventName.includes('/')
         ? formState.eventName.split('/')[0]
@@ -106,13 +118,6 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
         (ANALYTICS_ALLOWED_DOMAINS as readonly string[]).includes(domainFromEventName)
             ? (domainOptions.find(o => o.value === domainFromEventName) ?? domainOptions[0])
             : domainOptions[0];
-
-    const handleCopyCode = useCallback(async () => {
-        if (!generatedCode) return;
-        await navigator.clipboard.writeText(generatedCode);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    }, [generatedCode]);
 
     const modalContent = (
         <Modal.Backdrop zIndex={100} onClick={undefined} alignment={{ x: 'center', y: 'center' }}>
@@ -296,134 +301,166 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     />
                                 </Column>
                             </CollapsibleBox>
+                            <Paragraph typographyStyle="body-sm">* mandatory fields</Paragraph>
+                            <Banner
+                                intent="info"
+                                icon
+                                description={
+                                    <>
+                                        You can also add or edit events manually. See the{' '}
+                                        <Link
+                                            href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
+                                            target="_blank"
+                                        >
+                                            analytics README
+                                        </Link>{' '}
+                                        for the step-by-step guide.
+                                    </>
+                                }
+                            />
                         </>
                     ) : (
                         <Column gap={16}>
-                            <H4>Where to put the file</H4>
+                            {/* 1. Add to EventType enum */}
+                            {!isEditing && (
+                                <Card paddingType="normal">
+                                    <Column gap={8}>
+                                        <Text typographyStyle="body-md">
+                                            1. Add to EventType enum
+                                        </Text>
+                                        <Text typographyStyle="body-sm">
+                                            In <Text isMonospaced>{constantsFilePath}</Text>, add
+                                            your entry inside the enum, e.g.:
+                                        </Text>
+                                        <Row justifyContent="flex-end">
+                                            <CopyButton
+                                                textToCopy={enumSnippet}
+                                                copyLabel="Copy enum line"
+                                            />
+                                        </Row>
+                                        <Card paddingType="normal">
+                                            <div
+                                                style={{
+                                                    fontFamily: 'monospace',
+                                                    fontSize: 13,
+                                                    whiteSpace: 'pre',
+                                                }}
+                                            >
+                                                {enumContextSnippet}
+                                            </div>
+                                        </Card>
+                                    </Column>
+                                </Card>
+                            )}
+
+                            {/* 2. Create new file */}
                             <Card paddingType="normal">
                                 <Column gap={8}>
-                                    <Text typographyStyle="body-xs">
-                                        File path (from repo root)
+                                    <Text typographyStyle="body-md">
+                                        {isEditing ? 'File path' : '2. Create new file'}
                                     </Text>
-                                    <Row alignItems="center" gap={8}>
+                                    <Row alignItems="center" justifyContent="space-between" gap={8}>
                                         <Text isMonospaced typographyStyle="body-md-strong">
                                             {filePath}
                                         </Text>
-                                        <Button
-                                            size="small"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            iconLeft="copy"
-                                            onClick={async () => {
-                                                if (filePath) {
-                                                    await navigator.clipboard.writeText(filePath);
-                                                }
-                                            }}
-                                        >
-                                            Copy path
-                                        </Button>
+                                        <CopyButton textToCopy={filePath} copyLabel="Copy path" />
                                     </Row>
-                                    {isEditing ? (
+                                    {isEditing && (
                                         <Text typographyStyle="body-sm">
-                                            Replace the existing file at this path with the
-                                            generated content below.
-                                        </Text>
-                                    ) : (
-                                        <Text typographyStyle="body-sm">
-                                            Create a new file at this path. Add the event to the
-                                            package&apos;s{' '}
-                                            <Text isMonospaced>src/events/index.ts</Text> export
-                                            list.
+                                            Replace the existing file with the generated content
+                                            below.
                                         </Text>
                                     )}
                                 </Column>
                             </Card>
 
-                            {!isEditing && (
-                                <Card paddingType="normal">
-                                    <Column gap={8}>
-                                        <Text typographyStyle="body-md">Add to EventType enum</Text>
-                                        <Text typographyStyle="body-sm">
-                                            In <Text isMonospaced>{constantsFilePath}</Text>, add:
-                                        </Text>
+                            {/* 3. Generated file content */}
+                            <Card paddingType="normal">
+                                <Column gap={8}>
+                                    <Text typographyStyle="body-md">
+                                        {isEditing
+                                            ? 'Generated file content'
+                                            : '3. Put this content in the file'}
+                                    </Text>
+                                    <Row justifyContent="flex-end" alignItems="center">
+                                        <CopyButton
+                                            textToCopy={generatedCode}
+                                            copyLabel="Copy code"
+                                        />
+                                    </Row>
+                                    <Card paddingType="normal">
                                         <div
                                             style={{
-                                                padding: 12,
-                                                background:
-                                                    'var(--color-backgroundSurfaceElevation1)',
-                                                fontFamily: 'monospace',
-                                                fontSize: 13,
-                                                borderRadius: 12,
+                                                overflow: 'auto',
+                                                maxHeight: 360,
+                                                whiteSpace: 'pre',
                                             }}
                                         >
-                                            {enumSnippet}
+                                            <Paragraph isMonospaced typographyStyle="body-xs">
+                                                {generatedCode}
+                                            </Paragraph>
                                         </div>
-                                        <Button
-                                            size="small"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            iconLeft="copy"
-                                            onClick={async () => {
-                                                await navigator.clipboard.writeText(enumSnippet);
-                                            }}
-                                        >
-                                            Copy enum line
-                                        </Button>
+                                    </Card>
+                                </Column>
+                            </Card>
+
+                            {/* 4. Add to index */}
+                            {!isEditing && eventsIndexExportSnippet && (
+                                <Card paddingType="normal">
+                                    <Column gap={8}>
+                                        <Text typographyStyle="body-md">4. Add to index</Text>
+                                        <Text typographyStyle="body-sm">
+                                            In <Text isMonospaced>{eventsIndexPath}</Text>, add:
+                                        </Text>
+                                        <Row justifyContent="flex-end">
+                                            <CopyButton
+                                                textToCopy={eventsIndexExportSnippet}
+                                                copyLabel="Copy export line"
+                                            />
+                                        </Row>
+                                        <Card paddingType="normal">
+                                            <Text isMonospaced typographyStyle="body-xs">
+                                                {eventsIndexExportSnippet}
+                                            </Text>
+                                        </Card>
                                     </Column>
                                 </Card>
                             )}
 
-                            <Card paddingType="normal">
-                                <Column gap={8}>
-                                    <Row justifyContent="space-between" alignItems="center">
-                                        <Text typographyStyle="body-xs">
-                                            Generated file content
+                            {/* 5. Ready to use */}
+                            {!isEditing && usageExampleSnippet && (
+                                <Card paddingType="normal">
+                                    <Column gap={8}>
+                                        <Text typographyStyle="body-md">5. Ready to use</Text>
+                                        <Text typographyStyle="body-sm">
+                                            Example with <Text isMonospaced>analytics.report</Text>,{' '}
+                                            <Text isMonospaced>useAnalytics</Text> and imports:
                                         </Text>
-                                        <Button
-                                            size="small"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            iconLeft={copied ? 'check' : 'copy'}
-                                            onClick={handleCopyCode}
-                                        >
-                                            {copied ? 'Copied!' : 'Copy code'}
-                                        </Button>
-                                    </Row>
-                                    <div
-                                        style={{
-                                            padding: 12,
-                                            background: 'var(--color-backgroundSurfaceElevation1)',
-                                            overflow: 'auto',
-                                            maxHeight: 360,
-                                            borderRadius: 12,
-                                            whiteSpace: 'pre',
-                                        }}
-                                    >
-                                        <Paragraph isMonospaced typographyStyle="body-xs">
-                                            {generatedCode}
-                                        </Paragraph>
-                                    </div>
-                                </Column>
-                            </Card>
+                                        <Row justifyContent="flex-end">
+                                            <CopyButton
+                                                textToCopy={usageExampleSnippet}
+                                                copyLabel="Copy example"
+                                            />
+                                        </Row>
+                                        <Card paddingType="normal">
+                                            <div
+                                                style={{
+                                                    fontFamily: 'monospace',
+                                                    fontSize: 13,
+                                                    overflow: 'auto',
+                                                    whiteSpace: 'pre',
+                                                }}
+                                            >
+                                                <Text isMonospaced typographyStyle="body-xs">
+                                                    {usageExampleSnippet}
+                                                </Text>
+                                            </div>
+                                        </Card>
+                                    </Column>
+                                </Card>
+                            )}
                         </Column>
                     )}
-                    <Paragraph typographyStyle="body-sm">* mandatory fields</Paragraph>
-                    <Banner
-                        intent="info"
-                        icon
-                        description={
-                            <>
-                                You can also add or edit events manually. See the{' '}
-                                <Link
-                                    href="https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md"
-                                    target="_blank"
-                                >
-                                    analytics README
-                                </Link>{' '}
-                                for the step-by-step guide.
-                            </>
-                        }
-                    />
                 </Column>
             </Modal.ModalBase>
         </Modal.Backdrop>
