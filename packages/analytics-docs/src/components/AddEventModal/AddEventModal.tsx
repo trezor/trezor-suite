@@ -433,8 +433,7 @@ export const AddEventModal = ({ isOpen, onClose, initialEvent }: AddEventModalPr
                                     <Column gap={8}>
                                         <Text typographyStyle="body-md">5. Ready to use</Text>
                                         <Text typographyStyle="body-sm">
-                                            Example with <Text isMonospaced>analytics.report</Text>,{' '}
-                                            <Text isMonospaced>useAnalytics</Text> and imports:
+                                            Example inside your component:
                                         </Text>
                                         <Row justifyContent="flex-end">
                                             <CopyButton
