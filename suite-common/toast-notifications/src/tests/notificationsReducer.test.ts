@@ -1,10 +1,12 @@
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { notificationsActions } from '../notificationsActions';
-import { notificationsReducer } from '../notificationsReducer';
+import { createNotificationsReducer } from '../notificationsReducer';
 import { selectNotifications } from '../notificationsSelectors';
 import { removeAccountEventsThunk, removeTransactionEventsThunk } from '../notificationsThunks';
 import { NotificationsRootState, NotificationsState } from '../types';
+
+const { reducer: notificationsReducer } = createNotificationsReducer();
 
 interface InitStoreArgs {
     preloadedState?: NotificationsRootState;

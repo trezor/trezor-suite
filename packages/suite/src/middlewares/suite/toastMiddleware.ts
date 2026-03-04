@@ -1,5 +1,6 @@
+import { TranslationKey } from '@suite/intl';
 import { createMiddleware } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
 
 import { dismissToast, showToast } from 'src/components/suite';
 
@@ -9,7 +10,7 @@ export const toastMiddleware = createMiddleware((action, { next }) => {
     }
 
     if (notificationsActions.addToast.match(action)) {
-        showToast(action.payload);
+        showToast(action.payload as NotificationEntry<TranslationKey>);
     }
 
     return next(action);

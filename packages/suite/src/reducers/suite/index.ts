@@ -1,10 +1,11 @@
 import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
+import { TranslationKey } from '@suite/intl';
 import { metadataReducer } from '@suite/metadata';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { notificationsReducer } from '@suite-common/toast-notifications';
+import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
@@ -31,7 +32,7 @@ export default {
     modal,
     device,
     logs: logsSlice.reducer,
-    notifications: notificationsReducer,
+    notifications: createNotificationsReducer<TranslationKey>().reducer,
     window,
     analytics,
     metadata: metadataReducer,

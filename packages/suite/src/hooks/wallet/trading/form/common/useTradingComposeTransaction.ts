@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -142,7 +142,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (!composed) return;
 
-        if (composed.type === 'error' && composed.errorMessage) {
+        if (composed.type === 'error' && isTranslationKey(composed.errorMessage?.id)) {
             setError(TRADING_FORM_OUTPUT_AMOUNT, {
                 type: COMPOSE_ERROR_TYPES.COMPOSE,
                 message: translationString(composed.errorMessage.id, composed.errorMessage.values),
