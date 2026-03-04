@@ -2,7 +2,6 @@ import { DeviceMetadata } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import {
     AuthenticateDeviceResult,
-    BluetoothDeviceId,
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
@@ -102,7 +101,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         lastConnectedVia: 'bluetooth' | 'usb' | null;
         lastEntropyCheckResult?: EntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
-        bluetoothId?: BluetoothDeviceId;
+        descriptor?: AcquiredDevice['descriptor'];
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };
 

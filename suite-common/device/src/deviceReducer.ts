@@ -10,7 +10,7 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice, asBluetoothDeviceId } from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice } from '@trezor/connect';
 import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { Err } from '@trezor/type-utils';
@@ -587,10 +587,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         label: device.features.label,
         initialized: device.features.initialized,
         thp: device.thp,
-        bluetoothId:
-            device.descriptor.apiType === 'bluetooth' && device.descriptor.id
-                ? asBluetoothDeviceId(device.descriptor.id)
-                : undefined,
+        descriptor: device.descriptor.apiType === 'bluetooth' ? device.descriptor : undefined,
         lastConnectedVia: device.descriptor.apiType === 'bluetooth' ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     } as const;

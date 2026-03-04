@@ -49,7 +49,7 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
             {
                 ...defaultDevicePersistentData,
                 device_id: DEV1.id!,
-                bluetoothId: asBluetoothDeviceId('bt-id-1'),
+                descriptor: { apiType: 'bluetooth', id: 'bt-id-1' } as const,
                 thp: DEV1.thp,
             },
             {
@@ -60,7 +60,7 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
             {
                 ...defaultDevicePersistentData,
                 device_id: DEV3.id!,
-                bluetoothId: asBluetoothDeviceId('bt-id-3'),
+                descriptor: { apiType: 'bluetooth', id: 'bt-id-3' } as const,
             },
         ],
     },
