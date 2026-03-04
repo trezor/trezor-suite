@@ -34,6 +34,7 @@ import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHist
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
+import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
 
 type TransactionListHeaderProps = {
@@ -167,6 +168,12 @@ export const TransactionListHeader = memo(
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                     />
+                    {tokenContract && (
+                        <StablecoinYieldTokenOverview
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
+                    )}
                     {hasAccountTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             {isReceiveButtonDisplayed && (
