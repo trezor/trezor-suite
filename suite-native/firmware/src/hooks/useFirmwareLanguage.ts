@@ -30,8 +30,6 @@ export const useFirmwareLanguage = () => {
 
     const changeFirmwareLanguage = useCallback(
         async (language: Locale) => {
-            navigation.navigate(DeviceSettingsStackRoutes.FirmwareLanguageStack);
-
             const result = await requestPrioritizedDeviceAccess(() =>
                 TrezorConnect.changeLanguage({ language }),
             );

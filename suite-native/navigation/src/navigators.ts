@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 import { RequireAllOrNone } from 'type-fest';
 
-import { BackupType } from '@suite-common/suite-types';
+import { BackupType, Locale } from '@suite-common/suite-types';
 import { TradingType } from '@suite-common/trading';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -243,7 +243,9 @@ export type DeviceSettingsStackParamList = {
         closeActionType: CloseActionType;
     };
     [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
+    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: {
+        language: Locale;
+    };
     [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectGuard]: undefined;

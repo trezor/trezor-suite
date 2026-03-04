@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
     selectDeviceLanguage,
     selectIsDeviceLanguageConfigurable,
@@ -10,15 +12,23 @@ import { Locale } from '@suite-common/suite-types';
 import { Badge, Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import {
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 
-import { useFirmwareLanguage } from '../hooks/useFirmwareLanguage';
+type NavigationProps = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceFirmware
+>;
 
 const BetaBadge = () => (
     <Badge label={<Translation id="firmware.languageCard.betaBadge" />} variant="blue" />
 );
 
 export const FirmwareLanguageCard = () => {
-    const { changeFirmwareLanguage } = useFirmwareLanguage();
+    const navigation = useNavigation<NavigationProps>();
 
     const isDeviceLanguageConfigurable = useSelector(selectIsDeviceLanguageConfigurable);
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
@@ -37,7 +47,7 @@ export const FirmwareLanguageCard = () => {
 
     const changeFirmwareLanguageIfDifferent = (language: Locale) => {
         if (language !== deviceLanguage) {
-            changeFirmwareLanguage(language);
+            navigation.navigate(DeviceSettingsStackRoutes.FirmwareLanguageStack, { language });
         }
     };
 
