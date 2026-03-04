@@ -216,7 +216,7 @@ function computeStats(results: TestResultItem[]): {
     failureRate: number;
 } {
     const executions = results.length;
-    const failures = results.filter(r => r.status === 'failed').length;
+    const failures = results.filter(r => r.status === 'failed' || r.status === 'skipped').length;
     const passes = results.filter(r => r.status === 'passed').length;
     const failureRate = executions > 0 ? failures / executions : 0;
 
