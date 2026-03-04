@@ -71,6 +71,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             address_n: path,
             serialized_tx: payload.serializedTx,
             additional_info: transformAdditionalInfo(payload.additionalInfo),
+            payment_req: payload.payment_req,
             serialize: !!payload.serialize,
         };
     }

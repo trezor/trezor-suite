@@ -217,10 +217,12 @@ export const stellarSignTx = async (
     address_n: number[],
     networkPassphrase: string,
     tx: StellarTransaction,
+    payment_req?: PROTO.PaymentRequest,
 ) => {
     const message = transformSignMessage(tx);
     message.address_n = address_n;
     message.network_passphrase = networkPassphrase;
+    message.payment_req = payment_req;
 
     const operations: StellarOperationMessage[] = [];
     tx.operations.forEach(op => {

@@ -3,6 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
+import type { PROTO } from '../../../constants';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
@@ -16,6 +17,7 @@ type Params = {
     path: number[];
     networkPassphrase: string;
     transaction: StellarTransaction;
+    payment_req?: PROTO.PaymentRequest;
 };
 
 const StellarSignTransactionFeatures = Object.freeze({
@@ -53,6 +55,7 @@ export default class StellarSignTransaction extends AbstractMethod<
             path,
             networkPassphrase: payload.networkPassphrase,
             transaction,
+            payment_req: payload.payment_req,
         };
     }
 
@@ -98,6 +101,7 @@ export default class StellarSignTransaction extends AbstractMethod<
             this.params.path,
             this.params.networkPassphrase,
             this.params.transaction,
+            this.params.payment_req,
         );
 
         return {

@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { PROTO } from '../../../constants';
 import { DerivationPath } from '../../params';
 
 export type RipplePayment = Static<typeof RipplePayment>;
@@ -23,6 +24,7 @@ export type RippleSignTransaction = Static<typeof RippleSignTransaction>;
 export const RippleSignTransaction = Type.Object({
     path: DerivationPath,
     transaction: RippleTransaction,
+    payment_req: Type.Optional(PROTO.PaymentRequest),
     chunkify: Type.Optional(Type.Boolean()),
 });
 
