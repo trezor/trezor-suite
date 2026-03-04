@@ -169,6 +169,11 @@ const basicFixtures = [
     },
 ];
 
+const bytesHex =
+    '851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100';
+const bytesEncoded =
+    '3a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100';
+
 // note: difference in bool encoding. if type === bool && field = optional && not message of only one field, bool is encoded as ""
 const advancedFixtures = [
     {
@@ -208,6 +213,22 @@ describe('basic concepts', () => {
                     const decoded = decode(Message, encoded);
                     expect(decoded).toEqual(f.params);
                 });
+            });
+        });
+
+        describe('bytes field accepts Buffer and Uint8Array', () => {
+            const Message = Messages.lookupType('messages.Bytes');
+
+            test('encoding with Buffer produces same output as hex string', () => {
+                const encoded = encode(Message, { field: Buffer.from(bytesHex, 'hex') });
+                expect(encoded.toString('hex')).toEqual(bytesEncoded);
+            });
+
+            test('encoding with Uint8Array produces same output as hex string', () => {
+                const encoded = encode(Message, {
+                    field: new Uint8Array(Buffer.from(bytesHex, 'hex')),
+                });
+                expect(encoded.toString('hex')).toEqual(bytesEncoded);
             });
         });
     });

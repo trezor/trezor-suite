@@ -11,9 +11,19 @@ const transform = (fieldType: string, value: any) => {
         // for example MultisigRedeemScriptType might have field signatures ['', '', ''] (check in TrezorConnect signTransactionMultisig test fixtures).
         // trezor needs to receive such field as signatures: [b'', b'', b'']. If we transfer this to empty buffer with protobufjs, this will be decoded by
         // trezor as signatures: [] (empty array)
-        if (typeof value === 'string' && !value) return value;
+        if (typeof value === 'string' && !value) {
+            return value;
+        }
 
-        // normal flow
+        // already binary: pass through (Buffer.from(buffer, 'hex') would misinterpret)
+        if (Buffer.isBuffer(value)) {
+            return value;
+        }
+
+        if (value instanceof Uint8Array) {
+            return Buffer.from(value);
+        }
+
         return Buffer.from(value, 'hex');
     }
     if (typeof value === 'number' && !Number.isSafeInteger(value)) {
