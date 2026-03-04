@@ -235,6 +235,7 @@ deviceConnectionMiddleware.startListening({
         if (
             selectIsFirmwareInstallationRunning(getState()) ||
             checkIsActiveRouteAnyOf([
+                DeviceSettingsStackRoutes.DeviceNameStack,
                 DeviceSettingsStackRoutes.DevicePinProtectionStack,
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
             ])
