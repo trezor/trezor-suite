@@ -1,12 +1,12 @@
 import { type CSSProperties } from 'react';
 
-// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
-import { TranslationKey } from '@suite/intl';
 import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FormStateTradingExchange } from '@suite-common/wallet-types';
 import { DEVICE, TokenInfo } from '@trezor/connect';
+
+export type UnknownTranslationKey = string;
 
 export type NotificationId = number;
 
@@ -80,7 +80,7 @@ export type ErrorToastPayload = {
     error: string;
 };
 
-export type ToastPayload = (
+export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownTranslationKey> = (
     | {
           type: 'acquire-error';
           error: string;
@@ -205,16 +205,24 @@ export interface CommonNotificationPayload {
     error?: string;
 }
 
-export type ToastNotification = { context: 'toast' } & CommonNotificationPayload & ToastPayload;
+export type ToastNotification<
+    TranslationKey extends UnknownTranslationKey = UnknownTranslationKey,
+> = {
+    context: 'toast';
+} & CommonNotificationPayload &
+    ToastPayload<TranslationKey>;
 export type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
-export type NotificationEntry = ToastNotification | EventNotification;
+export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
+    | ToastNotification<TranslationKey>
+    | EventNotification;
 
-export type NotificationsState = NotificationEntry[];
+export type NotificationsState<TranslationKey extends string = UnknownTranslationKey> =
+    NotificationEntry<TranslationKey>[];
 
-export type NotificationsRootState = {
-    notifications: NotificationsState;
+export type NotificationsRootState<TranslationKey extends string = UnknownTranslationKey> = {
+    notifications: NotificationsState<TranslationKey>;
 };
 
 export type TransactionNotification = (
