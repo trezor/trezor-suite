@@ -24,7 +24,7 @@ const orphanedCredential = createCredential({ credential: '4' });
 
 const DEV1 = mockSuiteDevice({
     id: 'device-id-1',
-    bluetoothProps: { id: asBluetoothDeviceId('bt-id-1') },
+    descriptor: { apiType: 'bluetooth', id: 'bt-id-1' },
     thp: createDeviceThp({
         credentials: [credential1A, credential1B, credential1C],
     }),
@@ -37,7 +37,7 @@ const DEV2 = mockSuiteDevice({
 
 const DEV3 = mockSuiteDevice({
     id: 'device-id-3',
-    bluetoothProps: { id: asBluetoothDeviceId('bt-id-3') },
+    descriptor: { apiType: 'bluetooth', id: 'bt-id-3' },
     thp: createDeviceThp({ credentials: [] }),
 });
 
@@ -49,7 +49,7 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
             {
                 ...defaultDevicePersistentData,
                 device_id: DEV1.id!,
-                bluetoothProps: DEV1.bluetoothProps,
+                bluetoothId: asBluetoothDeviceId('bt-id-1'),
                 thp: DEV1.thp,
             },
             {
@@ -60,7 +60,7 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
             {
                 ...defaultDevicePersistentData,
                 device_id: DEV3.id!,
-                bluetoothProps: DEV3.bluetoothProps,
+                bluetoothId: asBluetoothDeviceId('bt-id-3'),
             },
         ],
     },
@@ -68,7 +68,7 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
     bluetooth: {
         ...prepareInitialState<BluetoothDeviceCommon>(),
         knownDevices: [
-            createBluetoothDeviceCommon({ id: DEV1.bluetoothProps!.id }),
+            createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-1') }),
             createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-4') }),
         ],
     },

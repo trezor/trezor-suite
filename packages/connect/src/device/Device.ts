@@ -60,7 +60,6 @@ import {
     FirmwareType,
     KnownDevice,
     UnavailableCapabilities,
-    asBluetoothDeviceId,
 } from '../types';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
@@ -1115,13 +1114,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { apiType, id } = descriptor;
         const base = { path, name, descriptor: { apiType, id } };
 
-        const bluetoothProps =
-            this.descriptor.id && this.descriptor.apiType === 'bluetooth'
-                ? {
-                      id: asBluetoothDeviceId(this.descriptor.id),
-                  }
-                : undefined;
-
         if (this.unreadableError) {
             return {
                 ...base,
@@ -1140,7 +1132,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 label: 'Unacquired device',
                 name: this.name,
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
-                bluetoothProps,
                 thp: this.getDeviceThp(),
                 status: this.busy ? this.busy : undefined,
             };
@@ -1165,7 +1156,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
-            bluetoothProps,
             thp: this.getDeviceThp(),
         };
     }

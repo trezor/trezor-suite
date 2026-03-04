@@ -10,7 +10,7 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice } from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice, asBluetoothDeviceId } from '@trezor/connect';
 import { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { Err } from '@trezor/type-utils';
@@ -212,7 +212,11 @@ const connectDevice = (
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // new connection is over bluetooth, existing one is usb. prioritize usb.
-            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+            if (
+                d.descriptor.apiType !== 'bluetooth' &&
+                d.connected &&
+                device.descriptor.apiType === 'bluetooth'
+            ) {
                 return merge(d, { connected: true, available: true });
             }
 
@@ -282,7 +286,11 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // new connection is over bluetooth, existing one is usb. prioritize usb.
-            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+            if (
+                d.descriptor.apiType !== 'bluetooth' &&
+                d.connected &&
+                device.descriptor.apiType === 'bluetooth'
+            ) {
                 return d;
             }
             if (d.state && isDeviceUnlocked) {
@@ -579,8 +587,11 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         label: device.features.label,
         initialized: device.features.initialized,
         thp: device.thp,
-        bluetoothProps: device.bluetoothProps,
-        lastConnectedVia: device.bluetoothProps ? 'bluetooth' : 'usb',
+        bluetoothId:
+            device.descriptor.apiType === 'bluetooth' && device.descriptor.id
+                ? asBluetoothDeviceId(device.descriptor.id)
+                : undefined,
+        lastConnectedVia: device.descriptor.apiType === 'bluetooth' ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     } as const;
     const initialPersistentData = {

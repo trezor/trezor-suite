@@ -35,7 +35,8 @@ export const DeviceStatusTextThp = ({ device, forceConnectionInfo }: DeviceStatu
         isDeviceOrUiLocked &&
         allDevices.some(
             dev =>
-                dev.bluetoothProps?.id === bluetoothDevice?.id &&
+                dev.descriptor.apiType === 'bluetooth' &&
+                dev.descriptor.id === bluetoothDevice?.id &&
                 dev.type === 'unacquired' &&
                 dev.thp?.properties !== undefined,
         );

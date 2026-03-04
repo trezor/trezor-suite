@@ -18,7 +18,6 @@ export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => 
     authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
     // instead persisted on `persistentDeviceData` as part of the effort to unlink device from wallet
     thp: undefined,
-    bluetoothProps: undefined,
 });
 
 /**

@@ -11,9 +11,10 @@ const buttonRequest =
     (action: Action): Action => {
         if (
             action.type === UI_REQUEST.FIRMWARE_DISCONNECT &&
-            action.payload.device.bluetoothProps
+            action.payload.device.descriptor.apiType === 'bluetooth' &&
+            action.payload.device.descriptor.id
         ) {
-            const { id } = action.payload.device.bluetoothProps;
+            const { id } = action.payload.device.descriptor;
             bluetoothIpc
                 .disconnectDevice(id)
                 .then(() => bluetoothIpc.startScan()) // restart scanning

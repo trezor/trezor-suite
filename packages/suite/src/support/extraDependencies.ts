@@ -294,7 +294,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
                 if (persistentDeviceData) {
                     return {
                         ...device,
-                        bluetoothProps: persistentDeviceData.bluetoothProps,
                         thp: persistentDeviceData.thp,
                     };
                 } else {
