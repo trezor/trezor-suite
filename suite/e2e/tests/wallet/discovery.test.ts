@@ -32,6 +32,9 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await settingsPage.navigateTo('coins');
             for (const symbol of coinsToActivate) {
                 await settingsPage.coinsTab.enableNetwork(symbol);
+                if (symbol === 'ada') {
+                    await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
+                }
             }
         });
 

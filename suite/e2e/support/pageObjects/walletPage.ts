@@ -53,9 +53,16 @@ export class WalletPage {
     readonly topPanelBalanceWithSymbol: Locator;
     readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
+    readonly addAccountConfirmButton: Locator;
+    readonly findMyAccountButton: Locator;
+    readonly filterAccountsButton: Locator;
+    readonly addAccountTypeSelectInput: Locator;
+    readonly addAccountTypeSelectOption = (type: string) =>
+        this.page.getByTestId(`@add-account-type/select/option/${type}`);
     readonly copyToCliboardToast: Locator;
     readonly verifyAddressErrorToast: Locator;
     readonly accountNotLoaded: Locator;
+    readonly retryLoadingAccount: Locator;
     readonly emptyAccount: Locator;
     readonly buyButton: Locator;
     readonly sellButton: Locator;
@@ -107,7 +114,14 @@ export class WalletPage {
         this.verifyAddressErrorToast = this.page.getByTestId('@toast/verify-address-error');
         this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
+        this.addAccountConfirmButton = this.page.getByTestId('@add-account');
+        this.findMyAccountButton = this.page.getByTestId('@find-account');
+        this.filterAccountsButton = this.page.getByTestId('@account-menu/filter-accounts');
+        this.addAccountTypeSelectInput = this.page.getByTestId('@add-account-type/select/input');
         this.accountNotLoaded = this.page.getByTestId('@accounts/account-not-loaded');
+        this.retryLoadingAccount = this.page.getByTestId(
+            '@accounts/account-not-loaded/retry-button',
+        );
         this.emptyAccount = this.page.getByTestId('@accounts/empty-account');
         this.buyButton = this.page.getByTestId('@accounts/empty-account/buy');
         this.sellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
@@ -172,6 +186,22 @@ export class WalletPage {
     async getAccountsCount(symbol: NetworkSymbol) {
         return await this.page
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
+            .count();
+    }
+
+    @step()
+    getAccountsInTypeGroupCount(type: string) {
+        return this.page
+            .getByTestId(`@account-menu/${type}/group`)
+            .locator(':scope > *:not([data-testid="@account-menu/account-item-skeleton"])')
+            .count();
+    }
+
+    @step()
+    getAccountsForCoinInTypeGroupCount(type: string, symbol: NetworkSymbol) {
+        return this.page
+            .getByTestId(`@account-menu/${type}/group`)
+            .locator(`> [data-testid^="@account-menu/${symbol}/${type}/"]`)
             .count();
     }
 
