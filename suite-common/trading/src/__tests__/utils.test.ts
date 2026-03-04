@@ -175,9 +175,13 @@ describe('isCryptoIdForNativeToken', () => {
 });
 
 describe('getTradingPaymentMethods', () => {
+    const duplicateApplePayQuoteWithWorseAmount = {
+        ...BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
+        receiveStringAmount: '0.00000001',
+    };
     const paymentMethods = getTradingPaymentMethods([
         ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
-        BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
+        duplicateApplePayQuoteWithWorseAmount, // duplicate applePay
     ]);
 
     it('should get payment methods from quotes', () => {
@@ -196,6 +200,14 @@ describe('getTradingPaymentMethods', () => {
 
         expect(amounts.map(amount => amount.toString())).toEqual(
             sortedAmounts.map(amount => amount.toString()),
+        );
+    });
+
+    it('should keep first quote amount for duplicate payment method', () => {
+        const applePayMethod = paymentMethods.find(method => method.value === 'applePay');
+
+        expect(applePayMethod?.receiveAmount).toBe(
+            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1].receiveStringAmount,
         );
     });
 });
