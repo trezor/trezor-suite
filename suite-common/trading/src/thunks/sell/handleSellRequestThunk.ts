@@ -1,6 +1,5 @@
 import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { hasCountrySubdivisions, isCountryCode } from '@suite-common/geolocation';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -18,6 +17,7 @@ import {
     getTradingPaymentMethods,
     tradingGetSuccessQuotes,
 } from '../../utils';
+import { hasCountrySubdivisions, isCountryCode } from '../../utils/countryUtils';
 import { sellUtils } from '../../utils/sell/sellUtils';
 
 type GetQuotesRequest = {

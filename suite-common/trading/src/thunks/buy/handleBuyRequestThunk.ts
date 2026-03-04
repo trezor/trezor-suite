@@ -1,6 +1,5 @@
 import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
-import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -22,6 +21,7 @@ import {
     tradingGetSuccessQuotes,
 } from '../../utils';
 import { buyUtils } from '../../utils/buy/buyUtils';
+import { isCountrySubdivisionEmpty } from '../../utils/countryUtils';
 
 type GetQuotesRequest = {
     requestData: BuyTradeQuoteRequest;

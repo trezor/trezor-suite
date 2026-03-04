@@ -5,7 +5,6 @@ import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
-import { isCountrySubdivisionEmpty } from '@suite-common/geolocation';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -17,6 +16,7 @@ import {
     type TradingBuyType,
     buyThunks,
     getTradingQuotesByPaymentMethod,
+    isCountrySubdivisionEmpty,
     selectTradingBuy,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,

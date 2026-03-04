@@ -2,7 +2,6 @@ import { Control, useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { isCountrySubdivisionRequired } from '@suite-common/geolocation';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -12,6 +11,7 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingTradeBuySellType,
+    isCountrySubdivisionRequired,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';

@@ -34,9 +34,9 @@ export const TradingFormInputCountry = ({
         name: TRADING_FORM_COUNTRY_SELECT,
     });
 
-    const countryCode = countryValue?.value ?? defaultCountry?.value ?? '';
-    const countryFlag = getCountryFlag(countryCode);
-    const countryName = getCountryName(countryValue ?? defaultCountry);
+    const country = countryValue ?? defaultCountry;
+    const countryFlag = getCountryFlag(country?.value);
+    const countryName = getCountryName(country);
 
     return (
         <>

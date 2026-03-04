@@ -11,7 +11,6 @@ import {
 } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getCountrySubdivisionByCode } from '@suite-common/geolocation';
 import {
     type Network,
     type NetworkSymbol,
@@ -49,6 +48,7 @@ import {
     TradingTradeType,
     TradingType,
 } from './types';
+import { getCountrySubdivisionByCode } from './utils/countryUtils';
 
 type NetworkAndContractAddress = {
     network: Network | undefined;

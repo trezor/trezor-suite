@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
-import { isCountrySubdivisionRequired } from '@suite-common/geolocation';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TradingBuyType,
+    isCountrySubdivisionRequired,
     selectTradingBuySupportedCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
