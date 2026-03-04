@@ -535,6 +535,7 @@ export const signTransactionThunk = createThunk<
                     precomposedTransaction,
                     device,
                     selectedAccount,
+                    paymentRequests,
                 }),
             );
         } else {
