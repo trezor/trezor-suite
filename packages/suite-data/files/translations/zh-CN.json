@@ -2102,7 +2102,6 @@
   "TR_SUITE_META_DESCRIPTION": "用于 Trezor 硬件钱包的全新桌面版和浏览器应用程序。Trezor Suite 在可用性、安全性和私密性三大支柱方面都有重大改进。",
   "TR_SUITE_STORAGE": "将应用程序重置为默认设置",
   "TR_SUITE_SYNC_CONNECT_AND_GET_KEYS": "连接并允许",
-  "TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP": "请连接您的 Trezor 设备以继续操作。",
   "TR_SUITE_SYNC_FIRMWARE_UPDATE": "更新",
   "TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER": "需要固件更新。请更新您的 Trezor 设备固件以使用 Suite Sync 功能。",
   "TR_SUITE_SYNC_GET_KEYS": "允许",

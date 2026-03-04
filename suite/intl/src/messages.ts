@@ -3178,10 +3178,6 @@ export const messages = defineMessages({
             'Firmware update required. Update firmware on your Trezor to use Suite Sync.',
         id: 'TR_SUITE_SYNC_FIRMWARE_UPDATE_NEEDED_BANNER',
     },
-    TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP: {
-        defaultMessage: 'Connect your Trezor to continue.',
-        id: 'TR_SUITE_SYNC_CONNECT_DEVICE_TOOLTIP',
-    },
     TR_SUITE_SYNC_KEYS_NEEDED_BANNER: {
         defaultMessage:
             'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
