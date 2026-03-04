@@ -230,7 +230,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, extra, rejectWithValue },
     ) => {
         const {
@@ -268,6 +268,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     sequence: selectedAccount.misc.sequence,
                     payment,
                 },
+                payment_req: paymentRequests?.[0] ?? undefined,
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             });
             if (response.success) {
@@ -347,6 +348,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     },
                     operations: [operation],
                 },
+                payment_req: paymentRequests?.[0] ?? undefined,
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             };
             response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
