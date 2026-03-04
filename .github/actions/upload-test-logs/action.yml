@@ -1,6 +1,9 @@
-name: "Extract and Upload Trezor-user-env Logs"
-description: "Extracts logs from Trezor-user-env and Regtest, then uploads them as artifacts"
+name: "Extract and Upload test environment Logs"
+description: "Extracts logs from Trezor-user-env, Regtest, Relay server, and then uploads them as artifacts"
 inputs:
+  target:
+    description: "Target environment for which logs are being extracted (e.g., desktop, web)"
+    required: true
   test-group:
     description: "Test group name for log file naming"
     required: true
@@ -8,20 +11,20 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Extract Trezor-user-env and Regtest logs
+    - name: Extract logs from test environment
       shell: bash
       run: |
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
-        docker logs docker-electrum-regtest-1 > electrum-regtest.txt || true
-        docker logs docker-quota-db-1 > quota-db.log || true
-        docker logs docker-suite-sync-1 > suite-sync.log || true
+        docker logs docker-electrum-regtest-1 > electrum-regtest.txt 2>&1 || true
+        docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
+        docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
-    - name: Upload Trezor-user-env and Regtest logs
+    - name: Upload logs of testing environment
       uses: actions/upload-artifact@v4
       with:
-        name: emulator-logs-${{ github.job }}-${{ inputs.test-group }}
+        name: test-env-logs-${{ github.job }}-${{ inputs.target }}-${{ inputs.test-group }}
         path: |
           trezor-user-env-debugging.log
           tenv-emulator-bridge-debugging.log

@@ -222,6 +222,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs
         with:
+          target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
 
       - name: Docker Compose Down
