@@ -117,6 +117,51 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
     );
 
     test(
+        'call cancelled from calling application',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect: Call cancelled via TrezorConnect.cancel() from the calling app',
+            }),
+        },
+        async ({ page }) => {
+            await gotoConnectExplorer(page, 'bitcoin/getAddress');
+
+            // expand method tester
+            await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
+            const [suite] = await Promise.all([
+                page.waitForEvent('popup', { timeout: 30_000 }),
+                page.getByTestId('@submit-button').click(),
+            ]);
+            const connectPermissionsModal = new ConnectPermissionsModal(suite);
+            await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
+                timeout: 15_000,
+            });
+            await connectPermissionsModal.confirmButton.click();
+
+            await expect(connectPermissionsModal.loadingHeader).toHaveText(
+                'Export Bitcoin address',
+            );
+
+            // Switch back to connect-explorer and click the cancel "x" button
+            // that appears next to the submit button while a call is in progress.
+            await page.bringToFront();
+            const cancelButton = page.getByTestId('@cancel-button');
+            await cancelButton.click();
+
+            const response = page.getByTestId('@response');
+            await expect(response).toHaveText(/success: false/);
+            await expect(response).toHaveText(/Method_Interrupted/);
+
+            // The popup (suite window) should show a cancellation message.
+            await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
+                timeout: 15_000,
+            });
+        },
+    );
+
+    test(
         'closing popup window returns Method_Interrupted error',
         {
             annotation: createTestAnnotation({

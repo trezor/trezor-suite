@@ -335,6 +335,7 @@ export const Method = () => {
                                         icon="x"
                                         intent="neutral"
                                         priority="secondary"
+                                        data-testid="@cancel-button"
                                         onClick={() => actions.onCancelCall()}
                                     />
                                 )}
