@@ -1,0 +1,110 @@
+name: "Post quarantine list"
+description: "Posts the current list of quarantined E2E tests to the pull request description"
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  currents_api_key:
+    description: "Currents API key used to fetch quarantine actions"
+    required: true
+  project_name:
+    description: "Project name to filter results to a single project (e.g. 'web', 'desktop'). Omit to list all projects."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch quarantined tests
+      shell: bash
+      env:
+        CURRENTS_API_KEY: ${{ inputs.currents_api_key }}
+      run: |
+        PROJECT_ARG=""
+        if [ -n "${{ inputs.project_name }}" ]; then
+          PROJECT_ARG="--project ${{ inputs.project_name }}"
+        fi
+        node --experimental-strip-types \
+          "${{ github.workspace }}/scripts/ci/quarantineBot/index.ts" \
+          --list $PROJECT_ARG > "${{ runner.temp }}/quarantine.json"
+
+    - name: Update PR description with quarantine list
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const fs = require('fs');
+          const raw = fs.readFileSync('${{ runner.temp }}/quarantine.json', 'utf8');
+          const report = JSON.parse(raw);
+
+          const projectName = '${{ inputs.project_name }}';
+          const suffix = projectName ? `:${projectName}` : '';
+          const START_MARKER = `<!-- QUARANTINE-LIST${suffix}:START -->`;
+          const END_MARKER   = `<!-- QUARANTINE-LIST${suffix}:END -->`;
+
+          // Build the markdown section
+          const lines = [];
+          lines.push('## 🔒 Quarantined E2E Tests');
+          lines.push('');
+
+          let totalTests = 0;
+          for (const project of report) {
+            totalTests += project.tests.length;
+            const summary = `${project.projectLabel} — ${project.tests.length} test(s)`;
+            if (project.tests.length === 0) {
+              lines.push(`<details><summary>${summary}</summary>`);
+              lines.push('');
+              lines.push('_No quarantined tests_ ✅');
+              lines.push('');
+              lines.push('</details>');
+            } else {
+              lines.push(`<details><summary>${summary}</summary>`);
+              lines.push('');
+              lines.push('| Test | Type |');
+              lines.push('|------|------|');
+              for (const t of project.tests) {
+                const type = t.isAutoQuarantine ? '🤖 auto' : '🙋 manual';
+                const name = t.name.replace(/\|/g, '\\|');
+                lines.push(`| ${name} | ${type} |`);
+              }
+              lines.push('');
+              lines.push('</details>');
+            }
+            lines.push('');
+          }
+
+          lines.push(`_Updated: ${new Date().toISOString()} • ${totalTests} test(s) total_`);
+
+          const newSection =
+            START_MARKER + '\n' + lines.join('\n') + '\n' + END_MARKER;
+
+          // Fetch current PR description
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          const existingBody = pr.data.body || '';
+
+          let newBody;
+          if (existingBody.includes(START_MARKER) && existingBody.includes(END_MARKER)) {
+            // Replace the existing section in-place
+            const before = existingBody.slice(0, existingBody.indexOf(START_MARKER));
+            const after  = existingBody.slice(existingBody.indexOf(END_MARKER) + END_MARKER.length);
+            newBody = before + newSection + after;
+          } else {
+            // Append the section for the first time, separated by a blank line
+            const separator = existingBody.endsWith('\n\n') ? '' :
+                              existingBody.endsWith('\n')   ? '\n' : '\n\n';
+            newBody = existingBody + separator + newSection;
+          }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body: newBody,
+          });
+
+          console.log(`Quarantine list updated (${totalTests} test(s) across ${report.length} project(s)).`);

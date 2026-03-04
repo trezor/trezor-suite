@@ -101,7 +101,7 @@ jobs:
           nodeEnv: "development"
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
 
-  post-currents-link:
+  post-currents-pr-info:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && needs.check-previous-runs.outputs.skip_tests != 'true'
     runs-on: ubuntu-latest
     needs:
@@ -111,6 +111,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
@@ -123,6 +127,12 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "web"
           currents-project-id: "Og0NOQ"
+      - name: Post quarantine list
+        uses: ./.github/actions/post-quarantine-list
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          currents_api_key: ${{ secrets.CURRENTS_API_KEY }}
+          project_name: "web"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'

@@ -32,10 +32,10 @@ const PRE_FILTER_FAILURE_RATE = 0.02; // inspect anything that isn't close to 10
 const TEST_RESULTS_PAGE_SIZE = 10; // default page size of the test-results API endpoint
 const DEVELOP_BRANCH = 'develop';
 
-const PROJECTS: Array<{ id: string; label: string }> = [
-    { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
-    { id: '4ytF0E', label: 'Trezor Suite (desktop)' },
-    //{ id: 'iBEsWE', label: 'Experimental Playground' },
+const PROJECTS: Array<{ id: string; name: string; label: string }> = [
+    { id: 'Og0NOQ', name: 'web', label: 'Trezor Suite (web)' },
+    { id: '4ytF0E', name: 'desktop', label: 'Trezor Suite (desktop)' },
+    //{ id: 'iBEsWE', name: 'playground', label: 'Experimental Playground' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -325,6 +325,15 @@ async function getAutoQuarantineActions(projectId: string): Promise<Action[]> {
 }
 
 /**
+ * Fetch ALL quarantine actions for a project (both manual and auto-quarantined).
+ */
+async function getAllQuarantineActions(projectId: string): Promise<Action[]> {
+    const response = await currentsRequest<ActionsListResponse>(`/actions?projectId=${projectId}`);
+
+    return response.data.filter(a => a.action.some(r => r.op === 'quarantine'));
+}
+
+/**
  * Normalise a test's title path into individual parts.
  *
  * The Currents explorer returns `titlePath` as an array when populated, but
@@ -593,6 +602,96 @@ async function unquarantinePassingTests(
 }
 
 // ---------------------------------------------------------------------------
+// List mode
+// ---------------------------------------------------------------------------
+
+interface QuarantinedTestEntry {
+    name: string;
+    spec?: string;
+    isAutoQuarantine: boolean;
+}
+
+interface ProjectQuarantineReport {
+    projectId: string;
+    projectLabel: string;
+    tests: QuarantinedTestEntry[];
+}
+
+/**
+ * List all quarantined tests for every project and write a JSON report to stdout.
+ *
+ * Human-readable progress messages are written to stderr so that stdout contains
+ * only the JSON output, making it easy to capture with shell redirection:
+ *   node ... --list > quarantine.json
+ *   node ... --list --project web > quarantine-web.json
+ */
+async function listAllQuarantinedTests(projectNameFilter?: string): Promise<void> {
+    const projects = projectNameFilter
+        ? PROJECTS.filter(p => p.name === projectNameFilter)
+        : PROJECTS;
+
+    if (projectNameFilter && projects.length === 0) {
+        process.stderr.write(
+            `[ERROR] No project found with name "${projectNameFilter}". Known names: ${PROJECTS.map(p => p.name).join(', ')}\n`,
+        );
+        process.exit(1);
+    }
+
+    process.stderr.write(`=== Currents Quarantine List ===\n`);
+    process.stderr.write(`Timestamp: ${new Date().toISOString()}\n`);
+    process.stderr.write(`Projects: ${projects.map(p => `${p.label} (${p.id})`).join(', ')}\n\n`);
+
+    const report: ProjectQuarantineReport[] = [];
+    let hasError = false;
+
+    for (const project of projects) {
+        try {
+            const actions = await getAllQuarantineActions(project.id);
+
+            const tests: QuarantinedTestEntry[] = actions.map(action => {
+                const testKey = extractKeyFromAction(action);
+                const name = testKey ? (JSON.parse(testKey) as string[]).join(' > ') : action.name;
+
+                // Try to extract spec from a dedicated spec condition in the matcher.
+                const specCond = action.matcher?.cond?.find(c => c.type === 'spec');
+                const spec =
+                    specCond && typeof specCond.value === 'string' ? specCond.value : undefined;
+
+                return {
+                    name,
+                    spec,
+                    isAutoQuarantine: action.name.startsWith(AUTO_QUARANTINE_PREFIX),
+                };
+            });
+
+            report.push({
+                projectId: project.id,
+                projectLabel: project.label,
+                tests,
+            });
+
+            process.stderr.write(`[${project.label}] ${tests.length} quarantined test(s)\n`);
+            for (const t of tests) {
+                const tag = t.isAutoQuarantine ? ' [auto]' : ' [manual]';
+                process.stderr.write(`  - ${t.name}${tag}\n`);
+            }
+        } catch (err) {
+            process.stderr.write(
+                `[ERROR] Failed fetching quarantine actions for ${project.label}: ${err}\n`,
+            );
+            hasError = true;
+        }
+    }
+
+    // Emit the machine-readable JSON on stdout.
+    console.log(JSON.stringify(report, null, 2));
+
+    if (hasError) {
+        process.exit(1);
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Wipe mode
 // ---------------------------------------------------------------------------
 
@@ -645,6 +744,45 @@ async function wipeAllAutoQuarantineActions(): Promise<void> {
 
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
+
+    if (args.includes('--help') || args.includes('-h')) {
+        console.log(
+            [
+                'Usage: node index.ts [options]',
+                '',
+                'Options:',
+                '  (no args)                  Run the test health check: quarantine newly failing tests and',
+                '                             unquarantine tests that have recovered.',
+                '',
+                '  --list                     List all currently quarantined tests for every monitored project.',
+                '                             Outputs a JSON report to stdout; progress messages go to stderr.',
+                '                             Combine with --project to narrow to a single project.',
+                '',
+                '  --list --project <name>    Same as --list but limited to the specified project.',
+                `                             Known project names: ${PROJECTS.map(p => p.name).join(', ')}.`,
+                '',
+                '  --wipeAutoQuarantine       Delete ALL auto-quarantine actions (those created by this bot)',
+                '                             across every monitored project. Use with caution.',
+                '',
+                '  --help, -h                 Show this help message and exit.',
+                '',
+                'Environment variables:',
+                '  CURRENTS_API_KEY                          (required) API key for the Currents.dev API.',
+                '  E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK     (optional) Slack incoming-webhook URL for',
+                '                                            quarantine/unquarantine notifications.',
+            ].join('\n'),
+        );
+
+        return;
+    }
+
+    if (args.includes('--list')) {
+        const projectFlagIndex = args.indexOf('--project');
+        const projectNameFilter = projectFlagIndex !== -1 ? args[projectFlagIndex + 1] : undefined;
+        await listAllQuarantinedTests(projectNameFilter);
+
+        return;
+    }
 
     if (args.includes('--wipeAutoQuarantine')) {
         await wipeAllAutoQuarantineActions();
