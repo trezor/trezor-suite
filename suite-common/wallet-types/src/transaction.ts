@@ -1,5 +1,3 @@
-// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
-import { TranslationKey } from '@suite/intl';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
@@ -18,25 +16,52 @@ import {
     StaticSessionId,
     TokenInfo,
 } from '@trezor/connect';
-import { Branded, RequiredKey } from '@trezor/type-utils';
+import { Branded, ObjectValues, RequiredKey } from '@trezor/type-utils';
 
 import { Account, AccountDescriptor } from './account';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
+
+export const COMMON_PRECOMPOSE_ERRORS = {
+    AMOUNT_NOT_ENOUGH_CURRENCY_FEE: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+    AMOUNT_IS_NOT_ENOUGH: 'AMOUNT_IS_NOT_ENOUGH',
+    AMOUNT_IS_TOO_LOW: 'AMOUNT_IS_TOO_LOW',
+    AMOUNT_IS_LESS_THAN_RESERVE: 'AMOUNT_IS_LESS_THAN_RESERVE',
+    REMAINING_BALANCE_LESS_THAN_RENT: 'REMAINING_BALANCE_LESS_THAN_RENT',
+    AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT:
+        'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+} as const satisfies Record<string, string>;
+
+/**
+ * @trezor/suite (packages/suite) errors
+ */
+export const SUITE_PRECOMPOSE_ERRORS = {
+    ...COMMON_PRECOMPOSE_ERRORS,
+    TR_NOT_ENOUGH_SELECTED: 'TR_NOT_ENOUGH_SELECTED',
+    TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
+    TR_GENERIC_ERROR_TITLE: 'TR_GENERIC_ERROR_TITLE',
+} as const satisfies Record<string, string>;
+
+export type SuitePrecomposeError = ObjectValues<typeof SUITE_PRECOMPOSE_ERRORS>;
+
+/**
+ * @suite-native/* errors
+ */
+export const SUITE_NATIVE_PRECOMPOSE_ERRORS = {
+    ...COMMON_PRECOMPOSE_ERRORS,
+    TR_STAKE_NOT_ENOUGH_FUNDS: 'TR_STAKE_NOT_ENOUGH_FUNDS',
+} as const satisfies Record<string, string>;
+
+export type SuiteNativePrecomposeError = ObjectValues<typeof SUITE_NATIVE_PRECOMPOSE_ERRORS>;
+
+export type PrecomposeError = SuiteNativePrecomposeError | SuitePrecomposeError;
 
 // extend errors from @trezor/connect + @trezor/utxo-lib with errors from sendForm actions
 type PrecomposedTransactionErrorExtended =
     | PrecomposedTransactionConnectResponseError
     | {
           type: 'error';
-          error:
-              | 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
-              | 'AMOUNT_IS_NOT_ENOUGH'
-              | 'AMOUNT_IS_TOO_LOW'
-              | 'AMOUNT_IS_LESS_THAN_RESERVE'
-              | 'TR_STAKE_NOT_ENOUGH_FUNDS'
-              | 'REMAINING_BALANCE_LESS_THAN_RENT'
-              | 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT';
+          error: PrecomposeError;
       };
 
 export type PrecomposedTransactionCardanoNonFinal =
@@ -105,7 +130,7 @@ export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { add
 
 type ComposeError = {
     errorMessage?: {
-        id: TranslationKey;
+        id: PrecomposeError;
         values?: Record<string, string>;
     };
 };
@@ -187,7 +212,9 @@ export type GeneralPrecomposedTransactionFinal = Extract<
 >;
 
 export type PrecomposedLevels = Record<string, PrecomposedTransaction>;
+
 export type PrecomposedLevelsCardano = Record<string, PrecomposedTransactionCardano>;
+
 export type GeneralPrecomposedLevels = PrecomposedLevels | PrecomposedLevelsCardano;
 
 export interface RbfTransactionParamsBitcoin {

@@ -1,7 +1,7 @@
 import { ComponentType, JSX } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,11 +15,13 @@ import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
 import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
+type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
+
 export type NotificationRendererProps<
-    T extends NotificationEntry['type'] = NotificationEntry['type'],
+    T extends LocalizedNotificationEntry['type'] = LocalizedNotificationEntry['type'],
 > = {
     render: ComponentType<{ onCancel?: () => void } & NotificationViewProps>;
-    notification: Extract<NotificationEntry, { type: T }>;
+    notification: Extract<LocalizedNotificationEntry, { type: T }>;
 };
 
 type RenderConfig = {

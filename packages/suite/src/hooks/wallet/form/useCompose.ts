@@ -3,7 +3,7 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -123,7 +123,7 @@ export const useCompose = <TFieldValues extends FormState>({
             const values = getValues();
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
-                if (!errorMessage) {
+                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
@@ -176,8 +176,12 @@ export const useCompose = <TFieldValues extends FormState>({
                     ...composedLevels,
                     custom: prevLevel,
                 } as
-                    | (PrecomposedLevels & { custom: PrecomposedTransaction })
-                    | (PrecomposedLevelsCardano & { custom: PrecomposedTransactionCardano });
+                    | (PrecomposedLevels & {
+                          custom: PrecomposedTransaction;
+                      })
+                    | (PrecomposedLevelsCardano & {
+                          custom: PrecomposedTransactionCardano;
+                      });
                 setComposedLevels(levels);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];

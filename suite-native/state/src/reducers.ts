@@ -14,7 +14,7 @@ import {
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
-import { notificationsReducer } from '@suite-common/toast-notifications';
+import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
     feesReducer,
@@ -40,7 +40,7 @@ import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
-import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
+import { TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     MMKVStorageDep,
@@ -350,7 +350,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             logs: logsSlice.reducer,
             messageSystem: messageSystemPersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
-            notifications: notificationsReducer,
+            notifications: createNotificationsReducer<TxKeyPath>().reducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

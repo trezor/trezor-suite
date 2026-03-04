@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     ComposeActionContext,
@@ -107,7 +107,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
-                if (!errorMessage) {
+                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
@@ -159,7 +159,9 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 const levels = {
                     ...composedLevels,
                     custom: prevLevel,
-                } as PrecomposedLevels & { custom: PrecomposedTransaction };
+                } as PrecomposedLevels & {
+                    custom: PrecomposedTransaction;
+                };
                 setComposedLevels(levels);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];

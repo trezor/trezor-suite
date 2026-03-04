@@ -1,3 +1,4 @@
+import { TranslationKey } from '@suite/intl';
 import { NotificationEntry } from '@suite-common/toast-notifications';
 import { intermediaryTheme } from '@trezor/components';
 
@@ -39,8 +40,8 @@ export const filterNonActivityNotifications = (notifications: AppState['notifica
     notifications.filter(notification => notification.type !== 'coin-scheme-protocol');
 
 export const getSeenAndUnseenNotifications = (notifications: AppState['notifications']) => {
-    const seen: Array<NotificationEntry> = [];
-    const unseen: Array<NotificationEntry> = [];
+    const seen: Array<NotificationEntry<TranslationKey>> = [];
+    const unseen: Array<NotificationEntry<TranslationKey>> = [];
 
     // loop over all notifications and check which of them there were seen or not
     filterNonActivityNotifications(notifications).forEach(notification => {

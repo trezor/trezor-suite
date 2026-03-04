@@ -1,7 +1,8 @@
+import { TranslationKey } from '@suite/intl';
 import {
     NotificationEntry,
+    createNotificationsReducer,
     notificationsActions,
-    notificationsReducer,
 } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
@@ -12,6 +13,7 @@ import protocolMiddleware from '../protocolMiddleware';
 
 const middlewares = [protocolMiddleware];
 
+const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
 type ProtocolState = ReturnType<typeof protocolReducer>;
 type NotificationsState = ReturnType<typeof notificationsReducer>;
 
@@ -38,7 +40,7 @@ const initStore = (state: State) => {
 
         store.getState().protocol = protocolReducer(protocol, action);
         store.getState().notifications = notificationsReducer(
-            notifications as NotificationEntry[],
+            notifications as NotificationEntry<TranslationKey>[],
             action,
         );
 
