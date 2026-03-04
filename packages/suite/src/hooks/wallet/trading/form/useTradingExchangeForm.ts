@@ -5,7 +5,7 @@ import { useDebounce } from 'react-use';
 import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 
 import { events } from '@suite/analytics';
-import { useTranslation } from '@suite/intl';
+import { TranslationKey, useTranslation } from '@suite/intl';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -453,7 +453,7 @@ export const useTradingExchangeForm = ({
 
             return true;
         } catch (e) {
-            const errorTyped = e as TradingSendRejectedProps;
+            const errorTyped = e as TradingSendRejectedProps<TranslationKey>;
 
             if (errorTyped.type !== 'sign-transaction-timeout') {
                 dispatch(

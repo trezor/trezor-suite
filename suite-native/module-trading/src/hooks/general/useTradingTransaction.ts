@@ -31,6 +31,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
+import { TxKeyPath } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import { TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
@@ -45,7 +46,7 @@ import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } f
 
 export type TradingTransactionSignAndSendProps = {
     nextStep: () => void;
-    onError: (error: TradingSendRejectedProps) => void;
+    onError: (error: TradingSendRejectedProps<TxKeyPath>) => void;
 };
 
 export type TradingTransactionComposeProps = {
@@ -313,7 +314,7 @@ export const useTradingTransaction = ({
 
                 return true;
             } catch (e) {
-                onError(e as TradingSendRejectedProps);
+                onError(e as TradingSendRejectedProps<TxKeyPath>);
 
                 return false;
             }
