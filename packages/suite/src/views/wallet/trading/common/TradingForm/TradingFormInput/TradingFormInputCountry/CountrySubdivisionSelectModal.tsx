@@ -42,11 +42,11 @@ export const CountrySubdivisionSelectModal = ({
             height="85vh"
             width={400}
         >
-            <Column gap={12}>
+            <Column gap={12} height="100%">
                 <Input
                     value={filterValue}
                     onChange={event => setFilterValue(event.target.value)}
-                    placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
+                    placeholder={translationString('TR_SEARCH_COUNTRY_SUBDIVISION_PLACEHOLDER')}
                 />
                 {filteredData.length > 0 && (
                     <CardList>
@@ -62,7 +62,7 @@ export const CountrySubdivisionSelectModal = ({
                     </CardList>
                 )}
                 {!filteredData.length && (
-                    <Column justifyContent="center">
+                    <Column justifyContent="center" flex="0.75">
                         <Paragraph align="center">
                             <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_FOUND" />
                         </Paragraph>
