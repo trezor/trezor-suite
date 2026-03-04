@@ -166,6 +166,7 @@ const getTestState = ({
         isDeviceAuthenticityCheckEnabled: false,
         isFirmwareRevisionCheckEnabled: false,
         isFirmwareHashCheckEnabled: false,
+        areDeviceMetaChecksEnabled: false,
         areTestnetsEnabled: false,
         shouldShowAutoEjectAlert: false,
         hasAutoEjectAlertBeenDisplayed: false,

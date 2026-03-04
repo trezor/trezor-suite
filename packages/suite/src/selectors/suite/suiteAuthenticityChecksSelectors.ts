@@ -129,7 +129,7 @@ export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean =
     // Entropy check is not dismissable
     if (isEntropyCheckEnabledAndFailed) return true;
 
-    // All following checks are dismissable
+    // All the following checks are dismissable together by a shared mechanism
     const device = selectSelectedDevice(state);
     const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(
         state,
