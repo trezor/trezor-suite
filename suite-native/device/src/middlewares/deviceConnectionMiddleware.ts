@@ -238,6 +238,7 @@ deviceConnectionMiddleware.startListening({
                 DeviceSettingsStackRoutes.DeviceNameStack,
                 DeviceSettingsStackRoutes.FirmwareUpdateStack,
                 DeviceSettingsStackRoutes.DevicePinProtectionStack,
+                DeviceSettingsStackRoutes.DeviceCheckBackupStack,
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
             ])
         ) {
