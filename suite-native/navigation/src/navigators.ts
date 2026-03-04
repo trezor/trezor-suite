@@ -63,6 +63,8 @@ export type DeviceSuspicionCause =
     | 'packaging';
 
 export type DeviceCompromisedModalFailedCheck =
+    | 'device-id'
+    | 'device-invariability'
     | 'device-authenticity'
     | 'entropy'
     | 'firmware-authenticity';

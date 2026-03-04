@@ -4,6 +4,8 @@ import { type RootStackParamList, type RootStackRoutes } from '@suite-native/nav
 import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
+import { DeviceIdCheckFailModalContent } from '../components/DeviceIdCheckFailModalContent';
+import { DeviceInvariabilityCheckFailModalContent } from '../components/DeviceInvariabilityCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
 import { FirmwareAuthenticityCheckFailModalContent } from '../components/FirmwareAuthenticityCheckFailModalContent';
 import { useCloseDeviceCompromisedScreen } from '../components/useCloseDeviceCompromisedScreen';
@@ -13,6 +15,7 @@ import { useCloseDeviceCompromisedScreen } from '../components/useCloseDeviceCom
  * - entropy check failure
  * - FW authenticity check failure
  * - device authenticity check failure
+ * - device meta checks failure (id, invariability)
  */
 export const DeviceCompromisedModalScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>>();
@@ -27,6 +30,10 @@ export const DeviceCompromisedModalScreen = () => {
     }
 
     switch (failedCheck) {
+        case 'device-id':
+            return <DeviceIdCheckFailModalContent />;
+        case 'device-invariability':
+            return <DeviceInvariabilityCheckFailModalContent />;
         case 'device-authenticity':
             return <DeviceAuthenticityCheckFailModalContent />;
         case 'entropy':
