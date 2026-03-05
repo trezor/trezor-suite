@@ -194,11 +194,17 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         });
     }
 
-    async run(device: Device): Promise<SignedTransaction | PrecomposedResult[]> {
+    async run(device?: Device): Promise<SignedTransaction | PrecomposedResult[]> {
         if (this.params.account && this.params.feeLevels) {
             return this.precompose(this.params.account, this.params.feeLevels);
         }
 
+        if (!device) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'ComposeTransaction: device is required for interactive composition',
+            );
+        }
         // discover accounts and wait for user action
         const { account, utxo } = await this.selectAccount(device);
 
