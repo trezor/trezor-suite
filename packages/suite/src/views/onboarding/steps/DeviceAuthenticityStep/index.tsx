@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
-import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/device';
+import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
 
@@ -23,7 +23,9 @@ type DeviceAuthenticityProps = {
 
 export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectSelectedDevice);
-    const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
+    const selectedDeviceAuthenticity = useSelector(state =>
+        selectDeviceAuthenticityByDeviceId(state, device?.id),
+    );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);

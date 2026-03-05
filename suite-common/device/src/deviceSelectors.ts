@@ -20,7 +20,6 @@ import {
     getIsThpDevice,
     getSortedDevicesWithoutInstances,
     getStatus,
-    isDeviceAcquired,
 } from '@suite-common/suite-utils';
 import { Device, DeviceState, StaticSessionId, asBluetoothDeviceId } from '@trezor/connect';
 import {
@@ -44,7 +43,6 @@ import {
     deviceInvariabilityCheck,
     rawDataToDeviceInvariabilityCheckDTO,
 } from './services/deviceInvariabilityCheck';
-import { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -333,25 +331,23 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-export const selectSelectedPersistentDeviceData = createMemoizedSelector(
-    [selectSelectedDevice, selectPersistentDeviceData],
-    (device, persistentDeviceData) => persistentDeviceData.find(d => d.device_id === device?.id),
-);
-
 export const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.deviceAuthenticity;
 
-export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
-    [selectSelectedDevice, selectDeviceAuthenticity],
-    (device, deviceAuthenticity) => (device?.id ? deviceAuthenticity?.[device.id] : undefined),
+export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
+    [(_state, deviceId: TrezorDevice['id']) => deviceId, selectDeviceAuthenticity],
+    (deviceId, deviceAuthenticity) => (deviceId ? deviceAuthenticity?.[deviceId] : undefined),
 );
 
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
-    [selectSelectedDevice, state => state.device.dismissedSecurityChecks?.firmwareAuthenticity],
-    (device, dismissedChecks) => !!(device?.id && dismissedChecks?.includes(device.id)),
+    [
+        (_state, deviceId: TrezorDevice['id']) => deviceId,
+        state => state.device.dismissedSecurityChecks?.firmwareAuthenticity,
+    ],
+    (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
 );
 
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
-    [selectSelectedPersistentDeviceData],
+    [selectPersistentDeviceDataById],
     persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult?.success === false,
 );
 
@@ -365,20 +361,12 @@ export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
     },
 );
 
-export const selectIsDeviceIdCheckSuccess = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => getIsDeviceIdValid(device) === true,
-);
-
 export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
-    [selectSelectedDevice, selectSelectedPersistentDeviceData],
+    [
+        (_state, device) => device,
+        (state, device) => selectPersistentDeviceDataById(state, device?.id),
+    ],
     (device, previousData) => {
-        // just a failsafe in case memoization returned wrong results
-        if (device && previousData && device.id !== previousData.device_id) {
-            console.error('Device invariability check ID mismatch');
-
-            return true;
-        }
         const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
 
         return deviceInvariabilityCheck(dto).success;
@@ -635,34 +623,6 @@ export const selectIsSameOrNewDevice = createMemoizedSelector(
 export const selectDeviceFirmwareRevision = createMemoizedSelector([selectSelectedDevice], device =>
     getFirmwareRevision(device),
 );
-
-/**
- * Get firmware revision check error, or null if check was successful / skipped.
- */
-export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareRevision;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    return checkResult.error;
-};
-
-/**
- * Get firmware hash check error, or null if check was successful / skipped.
- */
-export const selectFirmwareHashCheckError = (state: DeviceRootState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareHash;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    return checkResult.error;
-};
 
 export const selectIsDevicePinLocked = createMemoizedSelector(
     [selectSelectedDevice],

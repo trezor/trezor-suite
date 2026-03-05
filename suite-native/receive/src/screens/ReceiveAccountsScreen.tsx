@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackParamList,
@@ -26,7 +26,7 @@ export const ReceiveAccountsScreen = () => {
     const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
