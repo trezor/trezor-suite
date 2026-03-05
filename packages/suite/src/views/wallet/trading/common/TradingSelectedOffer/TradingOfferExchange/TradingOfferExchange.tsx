@@ -8,7 +8,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { Button, Column, H2 } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -76,6 +76,9 @@ export const TradingOfferExchange = ({
 
     return (
         <Column gap={spacings.lg}>
+            <H2 typographyStyle="headline-sm">
+                <Translation id="TR_SELL_CONFIRM_SEND_STEP" />
+            </H2>
             <TradingInfoItem
                 key={amountLabels.sendLabel}
                 account={sendAccount}
