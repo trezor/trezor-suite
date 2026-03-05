@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
@@ -21,7 +22,10 @@ export const createTurnOnSuiteSync =
 
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: true }));
 
-        if (deviceStaticSessionId !== undefined) {
+        if (
+            deviceStaticSessionId !== undefined &&
+            deviceStaticSessionId !== PORTFOLIO_TRACKER_DEVICE_STATE
+        ) {
             const result = await deps.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
