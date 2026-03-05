@@ -1,22 +1,42 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { config } from './data/config';
 import { TRANSPORT } from './events';
 import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';
+import { UpdateConnectSettings } from './types/api/updateConnectSettings';
 
-const impl = new CoreInModule();
-
-const disableWebUSB = () => {
-    impl.handleCoreMessage({ type: TRANSPORT.DISABLE_WEBUSB });
-};
-
-const requestWebUSBDevice = async () => {
-    try {
-        await window.navigator.usb.requestDevice({ filters: config.webusb });
-        impl.handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
-    } catch {
-        // empty
+class CoreInModuleWeb extends CoreInModule {
+    protected get defaultTransports() {
+        return ['BridgeTransport' as const, 'WebUsbTransport' as const];
     }
-};
+
+    updateProxy(proxy: UpdateConnectSettings['proxy']) {
+        if (proxy !== undefined) {
+            throw ERRORS.TypedError(
+                'Method_InvalidPackage',
+                'proxy setting is not supported in web environment',
+            );
+        }
+
+        return Promise.resolve();
+    }
+
+    disableWebUSB() {
+        this.handleCoreMessage({ type: TRANSPORT.DISABLE_WEBUSB });
+    }
+
+    async requestWebUSBDevice() {
+        try {
+            await window.navigator.usb.requestDevice({ filters: config.webusb });
+            this.handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
+        } catch {
+            // empty
+        }
+    }
+}
+
+const impl = new CoreInModuleWeb();
 
 // Exported to enable using directly
 const TrezorConnect = factory(
@@ -30,8 +50,8 @@ const TrezorConnect = factory(
         dispose: impl.dispose.bind(impl),
     },
     {
-        disableWebUSB,
-        requestWebUSBDevice,
+        disableWebUSB: impl.disableWebUSB.bind(impl),
+        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
     },
 );
 

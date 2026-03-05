@@ -25,7 +25,7 @@ import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 import { initLog } from '../utils/debug';
 
-export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
+export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
     public readonly eventEmitter = new ConnectEmitter();
 
     private settings;
@@ -35,9 +35,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
-    protected get defaultTransports(): ConnectSettingsTransport[] {
-        return ['BridgeTransport', 'WebUsbTransport'];
-    }
+    protected abstract get defaultTransports(): ConnectSettingsTransport[];
 
     public constructor() {
         this.settings = parseConnectSettings();
@@ -59,8 +57,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     // handle message received from Core
     private onCoreEvent(rawMessage: CoreEventMessage) {
-        this.log.debug('handleMessage', rawMessage.type);
-
         const message = cloneObject(rawMessage);
 
         const { event, type, payload } = message;
@@ -124,16 +120,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
 
-    protected updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        if (proxy !== undefined) {
-            throw ERRORS.TypedError(
-                'Method_InvalidPackage',
-                'proxy setting is not supported in web environment',
-            );
-        }
-
-        return Promise.resolve();
-    }
+    protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
         const { proxy, transports: newTransports } = params;
@@ -156,6 +143,9 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     public async call(params: CallMethodPayload) {
         try {
+            if (!this.settings.manifest) {
+                throw ERRORS.TypedError('Init_ManifestMissing');
+            }
             const { promiseId, promise } = this.messagePromises.create();
             const payload = cloneObject<any>(params);
             this.handleCoreMessage({ type: CORE_CALL, id: promiseId, payload });
