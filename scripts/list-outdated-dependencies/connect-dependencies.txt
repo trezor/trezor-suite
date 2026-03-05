@@ -1,4 +1,8 @@
 @blockaid/client
+@bufbuild/buf
+@bufbuild/protobuf
+@bufbuild/protoc-gen-es
+@bufbuild/protoplugin
 @codemirror/state
 @hbsnow/rehype-sectionize
 @headlessui/react
