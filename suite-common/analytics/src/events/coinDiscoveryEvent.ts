@@ -17,35 +17,59 @@ type Attributes = {
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
     name: EventType.CoinDiscovery,
     descriptionTrigger: 'Coin discovery - when wallet is discovered',
-    changelog: [{ version: '26.2.0', notes: 'added' }],
+    changelog: [
+        { version: '26.3.1', notes: 'added on desktop' },
+        { version: '26.2.3', notes: 'added on mobile' },
+    ],
 
     attributes: {
         discoveryId: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Discovery id (device.path)',
         },
         symbol: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Coin symbol',
         },
         numberOfAccounts: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Number of accounts',
         },
         numberOfNonZeroAccounts: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Number of non zero accounts',
         },
         tokenAddresses: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Token addresses',
         },
         tokenSymbols: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Token symbols',
         },
         numberOfStakedAccounts: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.1', notes: 'added on desktop' },
+                { version: '26.2.3', notes: 'added on mobile' },
+            ],
             description: 'Number of staked accounts',
         },
     },
