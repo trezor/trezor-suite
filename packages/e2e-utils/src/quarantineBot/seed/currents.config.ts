@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies, import/no-default-export */
+/* eslint-disable import/no-default-export */
 /**
  * Currents configuration for the seed seeder, consumed by the `pwc` CLI.
  *
