@@ -1,4 +1,4 @@
-import { DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
+import { CancelablePromise, DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
 
 import {
     RetrieveDelegatedIdentityKeyFromDeviceDeps,
@@ -13,7 +13,7 @@ const device123: RetrieveDelegatedIdentityKeyParams['device'] = {
 
 const connectSimple: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'] = {
     evoluGetDelegatedIdentityKey: device =>
-        Promise.resolve({
+        CancelablePromise.resolve({
             device: device as DeviceIdentity,
             success: true,
             payload: { private_key: 'delegated-key-123' },

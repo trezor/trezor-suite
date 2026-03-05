@@ -2,7 +2,9 @@
  * Update Connect settings such as proxy and transports configuration.
  */
 
-import type { Response } from '../params';
+import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import type { Err, Ok } from '@trezor/type-utils';
+
 import type { ConnectSettingsTransport, Proxy } from '../settings';
 
 export type UpdateConnectSettings = {
@@ -12,4 +14,4 @@ export type UpdateConnectSettings = {
 
 export declare function updateConnectSettings(
     params: UpdateConnectSettings,
-): Response<{ message: 'success' }>;
+): Promise<Ok<{ message: 'success' }> | Err<SerializedError>>;

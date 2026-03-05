@@ -18,3 +18,25 @@ export type MessageFactoryFn<Group, Event> = UnionToIntersection<
               ) => { event: Group; type: Event['type']; payload: undefined }
         : never
 >;
+
+export type CancelablePromise<T> = Promise<T> & {
+    cancel: (reason?: string) => void;
+    setAbortSignal: (signal: AbortSignal) => void;
+};
+
+export const CancelablePromise = {
+    resolve: <T>(value: T): CancelablePromise<T> => {
+        const promise = Promise.resolve(value) as CancelablePromise<T>;
+        promise.cancel = () => {};
+        promise.setAbortSignal = () => {};
+
+        return promise;
+    },
+    reject: <T = never>(reason?: string): CancelablePromise<T> => {
+        const promise = Promise.reject(reason) as CancelablePromise<T>;
+        promise.cancel = () => {};
+        promise.setAbortSignal = () => {};
+
+        return promise;
+    },
+};

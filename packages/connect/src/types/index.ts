@@ -6,6 +6,7 @@ export * from './fees';
 export * from './firmware';
 export * from './params';
 export * from './settings';
+export { CancelablePromise } from './utils';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano';

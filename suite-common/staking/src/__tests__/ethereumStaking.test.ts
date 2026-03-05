@@ -1,5 +1,10 @@
 import { ValidatorsQueue, WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { AccountInfo, InternalTransfer, OkWithDevice } from '@trezor/connect';
+import TrezorConnect, {
+    AccountInfo,
+    CancelablePromise,
+    InternalTransfer,
+    OkWithDevice,
+} from '@trezor/connect';
 import {
     BlockchainEstimatedFee,
     BlockchainEstimatedFeeLevel,
@@ -66,12 +71,12 @@ const mockTrezorConnect = (test: Record<string, any>) => {
     if (!accountInfo && !estimatedFee) return null;
     if (accountInfo) {
         jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(() =>
-            Promise.resolve(accountInfo as AccountInfoResult),
+            CancelablePromise.resolve(accountInfo as AccountInfoResult),
         );
     }
     if (estimatedFee) {
         jest.spyOn(TrezorConnect, 'blockchainEstimateFee').mockImplementation(() =>
-            Promise.resolve(estimatedFee as EstimateFeeResult),
+            CancelablePromise.resolve(estimatedFee as EstimateFeeResult),
         );
     }
 };
@@ -264,7 +269,9 @@ describe('simulateUnstake', () => {
     simulateUnstakeFixture.forEach(test => {
         it(test.description, async () => {
             jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
-                Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
+                CancelablePromise.resolve(
+                    test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult,
+                ),
             );
             const result = await simulateUnstake(test.args as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);

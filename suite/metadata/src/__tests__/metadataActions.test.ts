@@ -4,7 +4,7 @@ import path from 'path';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { CancelablePromise } from '@trezor/connect';
 
 import * as fixtures from '../__fixtures__/metadataActions';
 import * as metadataActions from '../metadataActions';
@@ -18,7 +18,7 @@ const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
 
 jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
-    Promise.resolve({
+    CancelablePromise.resolve({
         success: true,
         payload: {
             value: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
