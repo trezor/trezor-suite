@@ -30,6 +30,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
     }
 
     run() {
-        return Promise.resolve(this.device.features);
+        return Promise.resolve(this.getDevice().features);
     }
 }

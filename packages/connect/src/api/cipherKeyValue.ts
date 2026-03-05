@@ -53,7 +53,7 @@ export default class CipherKeyValue extends AbstractMethod<
 
     async run() {
         const responses: PROTO.CipheredKeyValue[] = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const response = await cmd.typedCall(
                 'CipherKeyValue',

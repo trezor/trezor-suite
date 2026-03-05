@@ -76,9 +76,9 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
     }
 
     async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { address_n, message } = this.params;
 
         const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {

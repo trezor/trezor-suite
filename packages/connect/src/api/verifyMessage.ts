@@ -53,9 +53,9 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
     }
 
     async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('VerifyMessage', 'Success', this.params);
 
         return response.message;

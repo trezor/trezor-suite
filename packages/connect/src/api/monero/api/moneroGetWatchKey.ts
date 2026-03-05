@@ -51,7 +51,7 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
     }
 
     async run(): Promise<MoneroWatchKey> {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('MoneroGetWatchKey', 'MoneroWatchKey', {
             address_n: this.params.address_n,
             network_type: this.params.network_type,

@@ -246,7 +246,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         if (this.params.serialize) {
             const tx = await createTransactionShimFromHex(this.params.serialized_tx);

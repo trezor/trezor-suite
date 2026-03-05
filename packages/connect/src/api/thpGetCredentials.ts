@@ -18,19 +18,19 @@ export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials
     init() {}
 
     async run() {
-        const thpState = this.device.getThpState();
+        const thpState = this.getDevice().getThpState();
         if (!thpState?.handshakeCredentials) {
             throw ERRORS.TypedError('Device_ThpStateMissing');
         }
 
-        const credentials = await getThpCredentials(this.device, true);
+        const credentials = await getThpCredentials(this.getDevice(), true);
         thpState.setPairingCredentials([credentials]);
 
         // update values in DataManager
         DataManager.getSettings('thp')?.knownCredentials?.push(credentials);
 
         // emit change event to host, store new credentials in DataManager
-        this.device.emit(DEVICE.THP_CREDENTIALS_CHANGED, {
+        this.getDevice().emit(DEVICE.THP_CREDENTIALS_CHANGED, {
             credentials,
         });
 

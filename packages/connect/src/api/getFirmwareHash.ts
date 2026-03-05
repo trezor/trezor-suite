@@ -31,7 +31,7 @@ export default class GetFirmwareHash extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('GetFirmwareHash', 'FirmwareHash', this.params);
 
         return response.message;

@@ -124,7 +124,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     }
 
     private async _call(params: Params) {
-        const response = await this.device.getCommands().ethereumGetAddress(params);
+        const response = await this.getDevice().getCommands().ethereumGetAddress(params);
 
         return {
             path: params.address_n,

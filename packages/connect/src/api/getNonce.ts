@@ -17,7 +17,7 @@ export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce>
     override init() {}
 
     override async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('GetNonce', 'Nonce');
 
         return response.message;

@@ -241,7 +241,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
-        return this.device.atLeast(CardanoSignTransactionFeatures[feature]);
+        return this.getDevice().atLeast(CardanoSignTransactionFeatures[feature]);
     }
 
     _ensureFeatureIsSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
@@ -272,7 +272,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     async _sign_tx(): Promise<CardanoSignedTxData> {
-        const { typedCall } = this.device.getCommands();
+        const { typedCall } = this.getDevice().getCommands();
 
         const hasAuxiliaryData = !!this.params.auxiliaryData;
 

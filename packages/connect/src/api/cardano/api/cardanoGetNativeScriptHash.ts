@@ -85,7 +85,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
     }
 
     async run() {
-        const { message } = await this.device
+        const { message } = await this.getDevice()
             .getCommands()
             .typedCall('CardanoGetNativeScriptHash', 'CardanoNativeScriptHash', {
                 script: this.params.script,

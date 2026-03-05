@@ -247,8 +247,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
     }
 
     private async fetchAddresses(blockchain: Blockchain) {
+        const device = this.getDevice();
         const {
-            device,
             params: { inputs, coinInfo },
         } = this;
 
@@ -317,7 +317,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
     }
 
     async run() {
-        const { device, params } = this;
+        const device = this.getDevice();
+        const { params } = this;
         const { inputs, outputs, coinInfo } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
         const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));

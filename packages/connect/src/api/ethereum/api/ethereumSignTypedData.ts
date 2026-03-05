@@ -157,9 +157,9 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { address_n, definitions } = this.params;
-        if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
+        if (this.getDevice().features.internal_model === DeviceModelInternal.T1B1) {
             Assert(
                 Type.Object({
                     domain_separator_hash: Type.String(),
@@ -273,7 +273,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 }
                 if (memberData === null || memberData === undefined) {
                     // Cancel the request so the device isn't left hanging
-                    this.device.getCurrentSession().cancelCall();
+                    this.getDevice().getCurrentSession().cancelCall();
                     throw ERRORS.TypedError(
                         'Runtime',
                         `Value from member path ${member_path} is missing in the data object`,

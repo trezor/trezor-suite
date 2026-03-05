@@ -79,7 +79,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         for (let i = 0; i < this.params.length; i++) {
             const { address_n, show_display } = this.params[i];
