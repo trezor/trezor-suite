@@ -21,7 +21,7 @@ import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNav
 import { FirmwareLanguageStackNavigator } from './FirmwareLanguageStackNavigator';
 import { FirmwareUpdateStackNavigator } from './FirmwareUpdateStackNavigator';
 import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
-import { BackupAndPassphraseScreen } from '../screens/BackupAndPassphrase/BackupAndPassphraseScreen';
+import { BackupAndPassphraseScreen } from '../screens/BackupAndPassphraseScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAutoConnectScreen } from '../screens/DeviceAutoConnectScreen';

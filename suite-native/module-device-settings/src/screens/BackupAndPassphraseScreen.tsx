@@ -5,8 +5,8 @@ import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { CheckBackupCard } from './CheckBackupCard';
-import { PassphraseCard } from './PassphraseCard';
+import { CheckBackupCard } from '../components/CheckBackupCard';
+import { PassphraseCard } from '../components/PassphraseCard';
 
 export const BackupAndPassphraseScreen = () => {
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
