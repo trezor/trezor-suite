@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { getAssociatedTokenAccountAddress } from '@trezor/connect/src/api/solana/solanaUtils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingSendRejectedProps } from '../../types';
@@ -19,10 +20,35 @@ export const getPaymentRequestOutputs = createThunk<
         const outputs: PaymentRequestOutput[] = [];
 
         for (const output of composedLevels.outputs) {
+            const amount = formatSlip24SendAmountByNetwork({ value: output.amount, network });
             if ('address' in output && output.address) {
+                let sendAddress = output.address;
+
+                // solana sends tokens to associated token accounts not to base account
+                if (network.networkType === 'solana' && composedLevels?.token?.contract) {
+                    try {
+                        const { contract, standard } = composedLevels.token;
+                        const associatedTokenAccountAddress =
+                            await getAssociatedTokenAccountAddress(
+                                output.address,
+                                contract,
+                                standard === 'SPL' ? 'spl-token' : 'spl-token-2022',
+                            );
+
+                        sendAddress = associatedTokenAccountAddress.toString();
+                    } catch {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            error: {
+                                id: 'TR_PAYMENT_REQUESTS_ERROR',
+                            },
+                        });
+                    }
+                }
+
                 outputs.push({
-                    amount: formatSlip24SendAmountByNetwork({ value: output.amount, network }),
-                    address: output.address,
+                    amount,
+                    address: sendAddress,
                 });
             }
 
