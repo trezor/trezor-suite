@@ -1,6 +1,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
+import { cloneObject, createDeferredManager } from '@trezor/utils';
 
+import { initCoreState } from '../core';
 import { parseConnectSettings } from '../data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
@@ -19,81 +20,37 @@ import {
     createErrorMessage,
 } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '../types';
+import type { ConnectSettings, ConnectSettingsPublic, ConnectSettingsTransport } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
-import { Log, initLog } from '../utils/debug';
+import { initLog } from '../utils/debug';
 
 export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
-    public eventEmitter = new ConnectEmitter();
-    public _settings: ConnectSettings;
+    public readonly eventEmitter = new ConnectEmitter();
 
-    private _coreManager?: any;
-    private _log: Log;
-    private _messagePromises: DeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>;
+    private settings;
+    private coreManager;
+    private log;
+    private messagePromises;
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
+    protected get defaultTransports(): ConnectSettingsTransport[] {
+        return ['BridgeTransport', 'WebUsbTransport'];
+    }
+
     public constructor() {
-        this._settings = parseConnectSettings();
-        this._log = initLog('@trezor/connect-web');
-        this._messagePromises = createDeferredManager({ initialId: 1 });
-    }
-
-    private async initCoreManager() {
-        const importResult = await import('@trezor/connect/src/core/index').catch(_err => {
-            this._log.error(`_err: Cannot load connect core`, _err);
-        });
-
-        if (!importResult) {
-            this._log.error(`importResult is empty! Cannot load connect core`);
-            throw new Error(`importResult is empty! Cannot load connect core`);
-        }
-
-        const { initCoreState } = importResult;
-
-        if (!initCoreState) return;
-
-        this._coreManager = initCoreState();
-
-        return this._coreManager;
-    }
-
-    public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
-    }
-
-    public dispose() {
-        this.eventEmitter.removeAllListeners();
-        this._settings = parseConnectSettings();
-        if (this._coreManager) {
-            this._coreManager.dispose();
-        }
-        this._coreManager = undefined;
-
-        return Promise.resolve(undefined);
-    }
-
-    public cancel(error?: string) {
-        if (this._coreManager) {
-            const core = this._coreManager.get();
-            if (!core) {
-                throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-            }
-
-            this.handleCoreMessage({
-                type: POPUP.CLOSED,
-                payload: error ? { error } : null,
-            });
-        }
+        this.settings = parseConnectSettings();
+        this.log = initLog('@trezor/connect');
+        this.coreManager = initCoreState();
+        this.messagePromises = createDeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>(
+            { initialId: 1 },
+        );
     }
 
     // handle messages to core
     public handleCoreMessage(message: CoreRequestMessage) {
-        const core = this._coreManager.get();
+        const core = this.coreManager.get();
         if (!core) {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
         }
@@ -102,21 +59,22 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     // handle message received from Core
     private onCoreEvent(rawMessage: CoreEventMessage) {
+        this.log.debug('handleMessage', rawMessage.type);
+
         const message = cloneObject(rawMessage);
 
         const { event, type, payload } = message;
 
         switch (event) {
             case RESPONSE_EVENT: {
-                const { id = 0, success, error, device } = message;
-                const resolved = this._messagePromises.resolve(id, {
+                const { id = 0, success, device } = message;
+                const resolved = this.messagePromises.resolve(
                     id,
-                    success,
-                    payload,
-                    error,
-                    device,
-                });
-                if (!resolved) this._log.warn(`Unknown message id ${id}`);
+                    success
+                        ? { id, success, payload: message.payload, device }
+                        : { id, success, error: message.error, device },
+                );
+                if (!resolved) this.log.warn(`Unknown message id ${id}`);
                 break;
             }
             case DEVICE_EVENT:
@@ -142,97 +100,86 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
                 break;
 
             default:
-                this._log.warn('Undefined message', event, message);
+                this.log.warn('Undefined message', event, message);
         }
     }
 
     public async init(settings: Partial<ConnectSettings>) {
-        if (this._coreManager && (this._coreManager.get() || this._coreManager.getPending())) {
+        if (this.coreManager.get() || this.coreManager.getPending()) {
             throw ERRORS.TypedError('Init_AlreadyInitialized');
         }
 
-        this._settings = parseConnectSettings({ ...this._settings, ...settings });
+        this.settings = parseConnectSettings({ ...this.settings, ...settings });
 
-        if (!this._settings.manifest) {
+        if (!this.settings.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
-        // defaults for connect-web
-        if (!this._settings.transports?.length) {
-            this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        if (!this.settings.transports?.length) {
+            this.settings.transports = this.defaultTransports;
         }
 
-        if (!this._coreManager) {
-            this._coreManager = await this.initCoreManager();
-            await this._coreManager.getOrInit(this._settings, this.boundOnCoreEvent);
-        }
+        this.log.enabled = !!this.settings.debug;
 
-        this._log.enabled = !!this._settings.debug;
+        await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
 
-    public updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports } = params;
-
+    protected updateProxy(proxy: UpdateConnectSettings['proxy']) {
         if (proxy !== undefined) {
-            return Promise.resolve(
-                createErrorMessage(
-                    ERRORS.TypedError(
-                        'Method_InvalidPackage',
-                        'proxy setting is not supported in web environment',
-                    ),
-                ),
+            throw ERRORS.TypedError(
+                'Method_InvalidPackage',
+                'proxy setting is not supported in web environment',
             );
         }
 
-        if (transports !== undefined) {
-            let newTransports = transports;
-            if (!transports?.length) {
-                newTransports = ['BridgeTransport', 'WebUsbTransport'];
-            }
-            this._settings = parseConnectSettings({ ...this._settings, transports: newTransports });
-            this.handleCoreMessage({
-                type: TRANSPORT.SET_TRANSPORTS,
-                payload: { transports: newTransports },
-            });
+        return Promise.resolve();
+    }
+
+    public async updateConnectSettings(params: UpdateConnectSettings) {
+        const { proxy, transports: newTransports } = params;
+
+        try {
+            await this.updateProxy(proxy);
+        } catch (err) {
+            return Promise.resolve(createErrorMessage(err));
         }
 
-        return Promise.resolve({
-            success: true as const,
-            payload: { message: 'success' },
-        } as const);
+        if (newTransports !== undefined) {
+            const transports = newTransports?.length ? newTransports : this.defaultTransports;
+
+            this.settings = parseConnectSettings({ ...this.settings, transports });
+            this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+        }
+
+        return { success: true as const, payload: { message: 'success' } } as const;
     }
 
     public async call(params: CallMethodPayload) {
-        if (!this._coreManager) {
-            try {
-                await this.init({});
-            } catch (err) {
-                return createErrorMessage(err);
-            }
-        }
         try {
-            const { promiseId, promise } = this._messagePromises.create();
+            const { promiseId, promise } = this.messagePromises.create();
             const payload = cloneObject<any>(params);
-            this.handleCoreMessage({
-                type: CORE_CALL,
-                id: promiseId,
-                payload,
-            });
+            this.handleCoreMessage({ type: CORE_CALL, id: promiseId, payload });
             const response = cloneObject(await promise);
 
             return response ?? createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
         } catch (error) {
-            this._log.error('call', error);
+            this.log.error('call', error);
 
             return createErrorMessage(error);
         }
     }
 
     public uiResponse(response: UiResponseEvent) {
-        const core = this._coreManager.get();
-        if (!core) {
-            throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-        }
         this.handleCoreMessage(response);
+    }
+
+    public cancel(error?: string) {
+        this.handleCoreMessage({ type: POPUP.CLOSED, payload: error ? { error } : null });
+    }
+
+    public dispose() {
+        this.eventEmitter.removeAllListeners();
+        this.settings = parseConnectSettings();
+        this.coreManager.dispose();
     }
 }
