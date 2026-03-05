@@ -7,7 +7,6 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 let ethereumStakingBalance: string | null;
-const MOCKED_FEE_AMOUNT = 0.000290278609719;
 const WITHDRAWAL_BUFFER = 0.005;
 
 test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -124,12 +123,10 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                         .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
                             values: { amount: '0.005', networkDisplaySymbol: 'ETH' },
                         });
-                    const expectedMax = new BigNumber(ethereumStakingBalance!)
-                        .minus(WITHDRAWAL_BUFFER)
-                        .minus(MOCKED_FEE_AMOUNT);
-                    const formattedExpectedMax = localizeNumber(
-                        expectedMax.decimalPlaces(2, BigNumber.ROUND_UP),
+                    const expectedMax = new BigNumber(ethereumStakingBalance!).minus(
+                        WITHDRAWAL_BUFFER,
                     );
+                    const formattedExpectedMax = localizeNumber(expectedMax);
                     await expect.soft(stakingSection.cryptoInput).toHaveValue(formattedExpectedMax);
                 });
             });
