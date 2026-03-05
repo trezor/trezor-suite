@@ -6,12 +6,14 @@ import TrezorConnect, { FIRMWARE } from '@trezor/connect';
 import { TimerId } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { selectFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
+import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
 
 const REFRESH_INTERVAL = 3_000; // [ms]
 
 export const useRetryFwAuthenticityChecks = () => {
-    const firmwareRevisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const firmwareRevisionCheckError = useSelector(
+        selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled,
+    );
 
     const isRetriableError =
         firmwareRevisionCheckError !== null &&

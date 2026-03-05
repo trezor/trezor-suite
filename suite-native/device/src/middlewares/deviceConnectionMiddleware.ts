@@ -5,7 +5,12 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import { deviceActions, selectDevices, selectIsDeviceRemembered } from '@suite-common/device';
+import {
+    deviceActions,
+    selectDevices,
+    selectIsDeviceRemembered,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -139,7 +144,10 @@ deviceConnectionMiddleware.startListening({
         // Your decision logic should be derived from device passed from TrezorConnect in the action payload (not selectedDevice from the state).
         const { device } = action.payload;
 
-        const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
+        const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(
+            getState(),
+            device,
+        );
 
         if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
 
@@ -190,7 +198,11 @@ deviceConnectionMiddleware.startListening({
         }
 
         const isDeviceRemembered = selectIsDeviceRemembered(getState());
-        const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
+        const device = selectSelectedDevice(getState()); // the device being disconnected is the one currently selected
+        const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(
+            getState(),
+            device?.id,
+        );
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
         const wasDeviceConnectedViaBluetooth = getIsDeviceDescriptorApiTypeBluetooth(
             action.payload,

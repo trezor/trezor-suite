@@ -8,7 +8,7 @@ import {
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
-import { selectFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
+import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TxKeyPath> = {
     'other-error': 'moduleDevice.toasts.firmwareRevisionCheckOtherError',
@@ -22,7 +22,7 @@ const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TxK
 export const useDeviceCompromisedNotification = () => {
     const { translate } = useTranslate();
     const { showToast } = useToast();
-    const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const revisionCheckError = useSelector(selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled);
 
     useEffect(() => {
         if (revisionCheckError === null) return;

@@ -1,10 +1,5 @@
 import { TranslationKey } from '@suite/intl';
-import {
-    getIsDeviceIdValid,
-    selectIsDeviceInvariabilityCheckSuccess,
-    selectSelectedDevice,
-    selectWasFwHashCheckOtherErrorLastTime,
-} from '@suite-common/device';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
 import { FirmwareHashCheckError } from '@trezor/connect';
@@ -13,6 +8,8 @@ import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
+    selectIsDeviceIdCheckEnabledAndFailed,
+    selectIsDeviceInvariabilityEnabledAndFailed,
     selectIsEntropyCheckEnabledAndFailed,
 } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
@@ -36,15 +33,15 @@ const hashCheckSubtitleMap: Record<
 };
 
 const DeviceCompromisedContent = () => {
-    const isValidId = getIsDeviceIdValid(useSelector(selectSelectedDevice));
-    const isDeviceInvariabilityCheckSuccess = useSelector(selectIsDeviceInvariabilityCheckSuccess);
+    const isIdCheckFailure = useSelector(selectIsDeviceIdCheckEnabledAndFailed);
+    const isInvariabilityCheckFailure = useSelector(selectIsDeviceInvariabilityEnabledAndFailed);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
     // this check is only a precaution, not expected to be seen often. This one cannot be dismissed (need id to register dismissal)
-    if (!isValidId) {
+    if (isIdCheckFailure) {
         return (
             <SecurityCheckFail
                 ctaSection={<FwAuthenticityCheckSupportButton />}
@@ -55,7 +52,7 @@ const DeviceCompromisedContent = () => {
         );
     }
     // this check is only a precaution, not expected to be seen often
-    if (!isDeviceInvariabilityCheckSuccess) {
+    if (isInvariabilityCheckFailure) {
         return (
             <SecurityCheckFail
                 ctaSection={<FwAuthencityChecksCtas />}

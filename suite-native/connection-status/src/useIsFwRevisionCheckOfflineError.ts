@@ -1,10 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { revisionCheckErrorScenarios } from '@suite-common/firmware-authenticity';
-import { selectFirmwareRevisionCheckErrorIfEnabled } from '@suite-native/device';
+import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '@suite-native/device';
 
 export const useIsFwRevisionCheckOfflineError = () => {
-    const firmwareRevisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const firmwareRevisionCheckError = useSelector(
+        selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled,
+    );
 
     return (
         firmwareRevisionCheckError === 'cannot-perform-check-offline' &&

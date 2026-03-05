@@ -14,7 +14,7 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -105,7 +105,7 @@ export const TransactionListHeader = memo(
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
         const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-            selectHasFirmwareAuthenticityCheckHardFailed,
+            selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
         );
         const token = useSelector((state: TokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
