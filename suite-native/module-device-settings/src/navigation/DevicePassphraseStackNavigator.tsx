@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DeviceConnectionGuardScreenWithCancel,
+    DeviceConnectionGuardScreen,
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
@@ -38,7 +38,7 @@ export const DevicePassphraseStackNavigator = () => {
             {isDeviceConnectionGuardVisible && (
                 <BackupAndPassphraseStack.Screen
                     name={DevicePassphraseStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
             <BackupAndPassphraseStack.Screen
