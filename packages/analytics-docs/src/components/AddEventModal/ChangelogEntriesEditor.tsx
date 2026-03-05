@@ -1,5 +1,6 @@
 import { Button, Column, IconButton, Input, Paragraph, Row, Text } from '@trezor/components';
 
+import { VersionReleasesTooltip } from './VersionReleasesTooltip';
 import { CHANGELOG_ERROR_MESSAGES, defaultChangelogEntry } from './constants';
 import type { EventFormChangelogEntry } from '../../utils/eventFileUtils';
 import { isValidAppVersion } from '../../utils/eventFileUtils';
@@ -16,9 +17,10 @@ export const ChangelogEntriesEditor = ({
     <Column gap={8}>
         {entries.length > 0 && (
             <Row gap={8}>
-                <Paragraph typographyStyle="body-sm" width={100}>
-                    Version
-                </Paragraph>
+                <Row gap={4} alignItems="center" width={100}>
+                    <Paragraph typographyStyle="body-sm">Version</Paragraph>
+                    <VersionReleasesTooltip />
+                </Row>
                 <Text typographyStyle="body-sm">Notes</Text>
             </Row>
         )}
