@@ -8,7 +8,7 @@
  *     a quarantined test is automatically skipped when running via `pwc`.
  */
 
-import { fixtures, type CurrentsFixtures, type CurrentsWorkerFixtures } from '@currents/playwright';
+import { type CurrentsFixtures, type CurrentsWorkerFixtures, fixtures } from '@currents/playwright';
 import { test as base } from '@playwright/test';
 
 export const test = base.extend<CurrentsFixtures, CurrentsWorkerFixtures>({
