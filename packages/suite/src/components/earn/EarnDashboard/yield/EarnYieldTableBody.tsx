@@ -2,19 +2,19 @@ import { Translation } from '@suite/intl';
 import { Paragraph, Row, Spinner, Table } from '@trezor/components';
 
 import { EarnYieldAccountOpportunity } from './EarnYieldAccountOpportunity';
-import { type YieldAccountOpportunity, type YieldNetworkNotActivated } from './types';
-import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
+import { EarnYieldInactiveVaultOpportunity } from './EarnYieldInactiveVaultOpportunity';
+import { type YieldAccountOpportunity, type YieldInactiveVaultOpportunity } from './types';
 
 type EarnYieldTableBodyProps = {
     isYieldOpportunitiesLoading: boolean;
     yieldAccountOpportunities: YieldAccountOpportunity[];
-    yieldNetworksNotActivated: YieldNetworkNotActivated[];
+    yieldInactiveVaultOpportunities: YieldInactiveVaultOpportunity[];
 };
 
 export const EarnYieldTableBody = ({
     isYieldOpportunitiesLoading,
     yieldAccountOpportunities,
-    yieldNetworksNotActivated,
+    yieldInactiveVaultOpportunities,
 }: EarnYieldTableBodyProps) => {
     if (isYieldOpportunitiesLoading) {
         return (
@@ -30,7 +30,7 @@ export const EarnYieldTableBody = ({
         );
     }
 
-    if (yieldAccountOpportunities.length === 0 && yieldNetworksNotActivated.length === 0) {
+    if (yieldAccountOpportunities.length === 0 && yieldInactiveVaultOpportunities.length === 0) {
         return (
             <Table.Body>
                 <Table.Row>
@@ -50,11 +50,10 @@ export const EarnYieldTableBody = ({
                 <EarnYieldAccountOpportunity key={opportunity.key} opportunity={opportunity} />
             ))}
 
-            {yieldNetworksNotActivated.map(network => (
-                <EarnInactiveNetworkOpportunity
-                    key={network.symbol}
-                    symbol={network.symbol}
-                    apy={network.apyPercentage}
+            {yieldInactiveVaultOpportunities.map(opportunity => (
+                <EarnYieldInactiveVaultOpportunity
+                    key={opportunity.key}
+                    opportunity={opportunity}
                 />
             ))}
         </Table.Body>

@@ -1,18 +1,20 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { YieldDto } from '@suite-common/earn-api';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import {
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Card, Table } from '@trezor/components';
+import { Button, Card, Column, Table } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useAllYieldOpportunities } from './hooks/useAllYieldOpportunities';
 import { useBalances } from './hooks/useBalances';
+import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
@@ -29,7 +31,6 @@ export const EarnYieldTable = () => {
     );
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const { yieldOpportunities, isYieldOpportunitiesLoading } = useAllYieldOpportunities();
-
     const availableVaults = useMemo(
         () => yieldOpportunities.filter(isYieldOpportunityAvailable),
         [yieldOpportunities],
@@ -39,11 +40,13 @@ export const EarnYieldTable = () => {
         () => new Set(normalAccounts.map(account => account.symbol)),
         [normalAccounts],
     );
+
     const { suppliedBalancesByYieldAndAddress } = useBalances({
         vaults: availableVaults,
         accounts: normalAccounts,
     });
-    const { yieldAccountOpportunities, yieldNetworksNotActivated, isYieldActive } =
+
+    const { yieldAccountOpportunities, yieldInactiveVaultOpportunities, isYieldActive } =
         useYieldTableData({
             availableVaults,
             deviceSupportedNetworkSymbols,
@@ -51,6 +54,13 @@ export const EarnYieldTable = () => {
             visibleAccounts: normalAccounts,
             visibleAccountSymbols,
         });
+
+    const {
+        displayedYieldAccountOpportunities,
+        hasHiddenYieldAccountOpportunities,
+        isExpanded,
+        toggleIsExpanded,
+    } = useYieldAccountsVisibility({ yieldAccountOpportunities });
 
     const badge = getEarnDashboardBadgeState({
         isSectionActive: isYieldActive,
@@ -65,16 +75,24 @@ export const EarnYieldTable = () => {
             provider="morpho"
             statusBadge={badge}
         >
-            <Card paddingType="none">
-                <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                    <EarnDashboardTableHeader />
-                    <EarnYieldTableBody
-                        isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
-                        yieldAccountOpportunities={yieldAccountOpportunities}
-                        yieldNetworksNotActivated={yieldNetworksNotActivated}
-                    />
-                </Table>
-            </Card>
+            <Column gap={16} alignItems="center">
+                <Card paddingType="none">
+                    <Table isRowHighlightedOnHover margin={{ top: 8 }}>
+                        <EarnDashboardTableHeader />
+                        <EarnYieldTableBody
+                            isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
+                            yieldAccountOpportunities={displayedYieldAccountOpportunities}
+                            yieldInactiveVaultOpportunities={yieldInactiveVaultOpportunities}
+                        />
+                    </Table>
+                </Card>
+
+                {hasHiddenYieldAccountOpportunities && (
+                    <Button intent="neutral" priority="secondary" onClick={toggleIsExpanded}>
+                        <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
+                    </Button>
+                )}
+            </Column>
         </EarnDashboardSection>
     );
 };
