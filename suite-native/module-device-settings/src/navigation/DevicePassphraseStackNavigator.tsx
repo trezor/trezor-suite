@@ -1,36 +1,50 @@
-import { useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
-import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
+import {
+    DeviceConnectionGuardScreenWithCancel,
+    useDeviceConnectionGuard,
+} from '@suite-native/device-authorization';
 import {
     DevicePassphraseStackParamList,
     DevicePassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { useTogglePassphrase } from '../hooks/useTogglePassphrase';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 
 const BackupAndPassphraseStack = createNativeStackNavigator<DevicePassphraseStackParamList>();
 
 export const DevicePassphraseStackNavigator = () => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
+    const [isTogglePassphraseStarted, setIsTogglePassphraseStarted] = useState(false);
+
+    const { togglePassphrase } = useTogglePassphrase();
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!isDeviceConnectionGuardVisible && !isTogglePassphraseStarted) {
+                setIsTogglePassphraseStarted(true);
+                togglePassphrase();
+            }
+        }, [isDeviceConnectionGuardVisible, isTogglePassphraseStarted, togglePassphrase]),
+    );
 
     return (
         <BackupAndPassphraseStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <BackupAndPassphraseStack.Screen
                     name={DevicePassphraseStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreenWithCancel}
                 />
             )}
-            {isDeviceConnected && (
-                <BackupAndPassphraseStack.Screen
-                    name={DevicePassphraseStackRoutes.ContinueOnTrezor}
-                    component={ContinueOnTrezorScreen}
-                />
-            )}
+            <BackupAndPassphraseStack.Screen
+                name={DevicePassphraseStackRoutes.ContinueOnTrezor}
+                component={ContinueOnTrezorScreen}
+            />
         </BackupAndPassphraseStack.Navigator>
     );
 };

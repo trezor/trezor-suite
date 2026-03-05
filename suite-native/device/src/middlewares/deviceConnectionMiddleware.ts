@@ -240,6 +240,7 @@ deviceConnectionMiddleware.startListening({
                 DeviceSettingsStackRoutes.FirmwareLanguageStack,
                 DeviceSettingsStackRoutes.DevicePinProtectionStack,
                 DeviceSettingsStackRoutes.DeviceCheckBackupStack,
+                DeviceSettingsStackRoutes.DevicePassphraseStack,
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
             ])
         ) {
