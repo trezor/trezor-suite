@@ -22,36 +22,40 @@ const customFirmwareBuild =
     // integration tests in trezor-firmware repo use 2.99.99 version
     process.env.TESTS_FIRMWARE === '2.99.99';
 
+const baseFeatures = {
+    device_id: expect.any(String),
+    vendor: 'trezor.io',
+    major_version: expect.any(Number),
+    minor_version: expect.any(Number),
+    patch_version: expect.any(Number),
+    bootloader_mode: null,
+    pin_protection: expect.any(Boolean),
+    passphrase_protection: expect.any(Boolean),
+    language: 'en-US',
+    label: expect.any(String),
+    initialized: true,
+    revision: expect.any(String),
+    imported: null,
+    unlocked: expect.any(Boolean),
+    firmware_present: null,
+    fw_major: null,
+    fw_minor: null,
+    fw_patch: null,
+    unfinished_backup: expect.any(Boolean),
+    no_backup: expect.any(Boolean),
+};
+
 const tests = [
     {
         description: 'core devices features',
         skip: ['1'],
         params: {},
         result: {
-            device_id: expect.any(String),
-            vendor: 'trezor.io',
-            major_version: expect.any(Number),
-            minor_version: expect.any(Number),
-            patch_version: expect.any(Number),
-            bootloader_mode: null,
-            pin_protection: expect.any(Boolean),
-            passphrase_protection: expect.any(Boolean),
-            language: 'en-US',
-            label: expect.any(String),
-            initialized: true,
-            revision: expect.any(String),
+            ...baseFeatures,
             bootloader_hash: null,
-            imported: null,
-            unlocked: expect.any(Boolean),
-            firmware_present: null,
             backup_availability: expect.any(String),
-            // flags: expect.any(Number), // flags may be changed by applyFlags test
             model: expect.any(String), // "T" | "R"
             internal_model: expect.any(String),
-            fw_major: null,
-            fw_minor: null,
-            fw_patch: null,
-            // fw_vendor: null, // "EMULATOR" since 2.5.1
             unfinished_backup: expect.any(Boolean),
             no_backup: expect.any(Boolean),
             recovery_status: 'Nothing',
@@ -75,7 +79,6 @@ const tests = [
             sd_card_present: expect.any(Boolean),
             sd_protection: false,
             wipe_code_protection: false,
-            // session_id: expect.any(String), // T3W1 in this case is not paired, thus returns null, other models should return a string
             passphrase_always_on_device: false,
             flags: expect.any(Number),
             fw_vendor: expect.any(String),
@@ -84,7 +87,15 @@ const tests = [
             display_rotation: 'North',
             experimental_features: expect.any(Boolean),
         },
-        legacyResults: [],
+        legacyResults: [
+            {
+                rules: ['<2.4.2'], // 2.4.2 removed Lisk capability
+                success: true,
+                payload: {
+                    ...baseFeatures,
+                },
+            },
+        ],
     },
     {
         description: 'T1B1 features',
@@ -140,7 +151,15 @@ const tests = [
             experimental_features: expect.any(Boolean),
             backup_type: 'Bip39',
         },
-        legacyResults: [],
+        legacyResults: [
+            {
+                rules: ['<1.10.3'],
+                success: true,
+                payload: {
+                    ...baseFeatures,
+                },
+            },
+        ],
     },
 ];
 
