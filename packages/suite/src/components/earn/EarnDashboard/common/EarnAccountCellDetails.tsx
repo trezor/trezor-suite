@@ -10,24 +10,34 @@ type EarnAccountCellDetailsProps = {
     account?: Account;
     networkSymbol: NetworkSymbol;
     tokenBalance?: EarnTokenBalance;
+    subtitle?: string;
 };
 
 export const EarnAccountCellDetails = ({
     account,
     networkSymbol,
     tokenBalance,
+    subtitle,
 }: EarnAccountCellDetailsProps) => {
     if (!account) {
         return (
-            <Text
-                typographyStyle="body-sm"
-                intent="neutral"
-                priority="primary"
-                ellipsisLineCount={1}
-                maxWidth="100%"
-            >
-                {getNetwork(networkSymbol).name}
-            </Text>
+            <>
+                <Text
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="primary"
+                    ellipsisLineCount={1}
+                    maxWidth="100%"
+                >
+                    {getNetwork(networkSymbol).name}
+                </Text>
+
+                {subtitle && (
+                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        {subtitle}
+                    </Text>
+                )}
+            </>
         );
     }
 
@@ -42,22 +52,28 @@ export const EarnAccountCellDetails = ({
                 typographyStyle="body-sm"
             />
 
-            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                {tokenBalance ? (
-                    <FormattedCryptoAmount
-                        value={tokenBalance.value}
-                        symbol={tokenBalance.symbol}
-                        contractAddress={tokenBalance.contractAddress}
-                        isBalance
-                    />
-                ) : (
-                    <FormattedCryptoAmount
-                        value={account.formattedBalance}
-                        symbol={networkSymbol}
-                        isBalance
-                    />
-                )}
-            </Text>
+            {subtitle ? (
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    {subtitle}
+                </Text>
+            ) : (
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    {tokenBalance ? (
+                        <FormattedCryptoAmount
+                            value={tokenBalance.value}
+                            symbol={tokenBalance.symbol}
+                            contractAddress={tokenBalance.contractAddress}
+                            isBalance
+                        />
+                    ) : (
+                        <FormattedCryptoAmount
+                            value={account.formattedBalance}
+                            symbol={networkSymbol}
+                            isBalance
+                        />
+                    )}
+                </Text>
+            )}
         </>
     );
 };

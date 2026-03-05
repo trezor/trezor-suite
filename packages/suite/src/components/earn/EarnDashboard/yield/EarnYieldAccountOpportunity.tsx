@@ -109,6 +109,22 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         );
     };
 
+    const navigateToYieldSupply = () => {
+        if (!opportunity.account) {
+            return;
+        }
+
+        dispatch(
+            goto('earn-supply', {
+                params: getEarnRouteParams({
+                    account: opportunity.account,
+                    yieldId: opportunity.vault.id,
+                    contractAddress: opportunity.vault.token.address ?? undefined,
+                }),
+            }),
+        );
+    };
+
     const navigateToYieldWithdraw = () => {
         if (!opportunity.account) {
             return;
@@ -133,6 +149,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     symbol={opportunity.networkSymbol}
                     iconToken={opportunity.vault.token}
                     showAssetNetworkIcon
+                    subtitle={opportunity.vault.metadata.name}
                     tokenBalance={{
                         value: opportunity.additionalSupplyAmount,
                         symbol: opportunity.suppliedSymbol,
@@ -219,7 +236,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 <Row justifyContent="flex-end" gap={8}>
                     {hasSuppliedBalance && (
                         <>
-                            <Button size="small" onClick={openYieldSupplyFlow}>
+                            <Button size="small" onClick={navigateToYieldSupply}>
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
                             </Button>
                             <Button

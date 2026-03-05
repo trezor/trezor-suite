@@ -13,6 +13,7 @@ type EarnAccountCellProps = {
     iconToken?: TokenDto;
     showAssetNetworkIcon?: boolean;
     tokenBalance?: EarnTokenBalance;
+    subtitle?: string;
 };
 
 export const EarnAccountCell = ({
@@ -21,6 +22,7 @@ export const EarnAccountCell = ({
     iconToken,
     showAssetNetworkIcon = false,
     tokenBalance,
+    subtitle,
 }: EarnAccountCellProps) => {
     const networkSymbol = account?.symbol ?? symbol;
     const assetLogo =
@@ -57,6 +59,7 @@ export const EarnAccountCell = ({
                     account={account}
                     networkSymbol={networkSymbol}
                     tokenBalance={tokenBalance}
+                    subtitle={subtitle}
                 />
             </Column>
         </Row>
