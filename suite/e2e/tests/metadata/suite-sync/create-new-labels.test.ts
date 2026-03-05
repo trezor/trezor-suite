@@ -89,7 +89,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 expectedAccount.label,
             );
         });
-        // we need to check toasts
+        // we need to think about how to handle toasts
         await test.step('Change wallet label', async () => {
             await dashboardPage.openDeviceSwitcher();
             await metadataPage.wallet.changeLabel({
@@ -100,7 +100,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
                 .toHaveText(expectedWallet.label);
             await dashboardPage.deviceSwitchingCloseButton.click();
-            // TODO: we want to add this to different test - probably multi-wallet test, but we are not sure about how the design is supposed to look
+            // TODO: we want to add this to different test - probably multi-wallet test, its a bug but will take some time to fix because its not prio
             // await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(expectedWallet.label);
             await page.pause();
         });
@@ -118,6 +118,36 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .soft(metadataPage.address.label(expectedAddress.address))
                 .toHaveText(expectedAddress.label);
         });
+        // TODO: we need to move this test to a wallet with funds for coinjoin address verification
+
+        await page.getByTestId('@wallet/receive/reveal-address-button/1').click();
+        await expect(
+            page.getByTestId('@modal/output-address').getByTestId('@metadata/input'),
+        ).toContainText('Evolu write BTC address');
+        await page.getByTestId('@modal/close-button').click();
+        await page.getByTestId('@account-menu/btc/normal/0').click();
+
+        // we need money for coin control verification
+        // need to have ETH or anything else enabled to be able to check address label in buy/sell/swap
+        // await page.getByTestId('@wallet/menu/wallet-send').click();
+        // await page.getByTestId('coin-control-button').click();
+        await page.getByTestId('@suite/menu/suite-index').click();
+        await page.getByTestId('@wallet/menu/wallet-trading-buy').click();
+        await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
+            'Evolu write BTC account',
+        );
+        await page.getByTestId('@trading/form/select-crypto-for-buy/input').click();
+        await page
+            .getByTestId('@trading/form/select-crypto-for-buy/top-assets')
+            .getByRole('button', { name: 'BTC' })
+            .click();
+        await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
+            'Evolu write BTC account',
+        );
+        await page.getByText('Evolu write BTC account0 BTC$').click();
+        await expect(page.getByTestId('@trading/bitcoin-receive-address-modal')).toContainText(
+            'bc1q kkr2 ... qfxy fa',
+        );
 
         await test.step('Change output label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });

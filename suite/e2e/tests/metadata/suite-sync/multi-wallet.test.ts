@@ -11,6 +11,8 @@ import {
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
+const defaultWalletIndex = 0;
+
 const walletOne = {
     index: 1,
     passphrase: 'First passphrase',
@@ -139,6 +141,23 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
                 index: walletTwo.index,
                 label: expectedWalletTwoLabel.label,
             });
+        });
+
+        await test.step('Verify wallet labels with closed wallet switcher', async () => {
+            await dashboardPage.deviceSwitchingCloseButton.click();
+            await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(
+                expectedWalletTwoLabel.label,
+            );
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.openDevice(walletOne.index);
+            await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(
+                expectedWalletOneLabel.label,
+            );
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.openDevice(defaultWalletIndex);
+            await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(
+                expectedDefaultWalletLabel.label,
+            );
         });
 
         await test.step('Verify data are synced to Relay', async () => {
