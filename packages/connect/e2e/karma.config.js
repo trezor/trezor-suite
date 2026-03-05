@@ -119,7 +119,7 @@ module.exports = config => {
                 // provide fallback plugins, Buffer and process are used in fixtures
                 new webpack.ProvidePlugin({
                     Buffer: ['buffer', 'Buffer'],
-                    process: 'process/browser',
+                    process: 'process/browser.js',
                 }),
                 new webpack.DefinePlugin({
                     // pass required process.env variables

@@ -77,7 +77,6 @@ module.exports = {
         // provide fallback plugins
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
-            process: 'process/browser',
         }),
         new HtmlWebpackPlugin({
             template: `${SRC}ui/index.html`,

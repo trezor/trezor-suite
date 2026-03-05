@@ -63,7 +63,7 @@ module.exports = {
         // provide fallback plugins
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
-            process: 'process/browser',
+            process: 'process/browser.js',
         }),
         new HtmlWebpackPlugin({
             chunks: ['indexUI'],
