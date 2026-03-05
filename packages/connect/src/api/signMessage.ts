@@ -72,9 +72,9 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
     }
 
     async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.message);
 
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SignMessage', 'MessageSignature', this.params);
         // convert signature to base64
         const signatureBuffer = Buffer.from(message.signature, 'hex');

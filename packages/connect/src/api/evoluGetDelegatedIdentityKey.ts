@@ -26,7 +26,7 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     }
 
     async run() {
-        const thpState = this.device.getThpState();
+        const thpState = this.getDevice().getThpState();
         if (thpState) {
             this.params = {
                 thp_credential: thpState.pairingCredentials[0].credential,
@@ -35,7 +35,7 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
             };
         }
 
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall(
             'EvoluGetDelegatedIdentityKey',
             'EvoluDelegatedIdentityKey',

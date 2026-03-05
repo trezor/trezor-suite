@@ -31,7 +31,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         if (!this.preauthorized) {
             if (!(await cmd.preauthorize(false))) {

@@ -127,7 +127,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
     }
 
     async run(): Promise<MoneroKeyImageSyncResult> {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         // Compute hash of all tdis for verification
         const tdHashes: Uint8Array[] = [];

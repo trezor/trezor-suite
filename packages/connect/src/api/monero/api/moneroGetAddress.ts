@@ -101,7 +101,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         payment_id,
         chunkify,
     }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('MoneroGetAddress', 'MoneroAddress', {
             address_n,
             show_display,

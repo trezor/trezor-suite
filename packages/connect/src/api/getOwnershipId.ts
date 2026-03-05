@@ -57,7 +57,7 @@ export default class GetOwnershipId extends AbstractMethod<
 
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             const { message } = await cmd.typedCall('GetOwnershipId', 'OwnershipId', batch);

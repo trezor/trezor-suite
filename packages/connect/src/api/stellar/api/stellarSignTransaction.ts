@@ -62,7 +62,7 @@ export default class StellarSignTransaction extends AbstractMethod<
     }
 
     _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        return this.device.atLeast(StellarSignTransactionFeatures[feature]);
+        return this.getDevice().atLeast(StellarSignTransactionFeatures[feature]);
     }
 
     _ensureFeatureIsSupported(feature: keyof typeof StellarSignTransactionFeatures) {
@@ -95,7 +95,7 @@ export default class StellarSignTransaction extends AbstractMethod<
         this._ensureFirmwareSupportsParams();
 
         const response = await helper.stellarSignTx(
-            this.device.getCommands().typedCall,
+            this.getDevice().getCommands().typedCall,
             this.params.path,
             this.params.networkPassphrase,
             this.params.transaction,

@@ -40,14 +40,14 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         // https://github.com/trezor/trezor-firmware/pull/5015
         // homescreen bytes are streamed in smaller data chunks
         const homescreenBytes = this.params.homescreen
             ? Buffer.from(this.params.homescreen, 'hex')
             : undefined;
-        if (this.device.atLeast('2.9.0') && homescreenBytes) {
+        if (this.getDevice().atLeast('2.9.0') && homescreenBytes) {
             // cannot use both. Failure: Mutually exclusive settings
             this.params.homescreen = undefined;
             this.params.homescreen_length = homescreenBytes.length;

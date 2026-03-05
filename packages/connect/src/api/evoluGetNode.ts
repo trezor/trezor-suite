@@ -30,7 +30,7 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);
 
         return response.message;

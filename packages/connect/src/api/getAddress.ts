@@ -134,7 +134,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         unlockPath,
         chunkify,
     }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }

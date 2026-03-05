@@ -54,7 +54,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         await cmd.typedCall('TronSignTx', 'TronContractRequest', this.params.tx);
 

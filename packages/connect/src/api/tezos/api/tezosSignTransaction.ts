@@ -43,7 +43,7 @@ export default class TezosSignTransaction extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('TezosSignTx', 'TezosSignedTx', this.params);
 
         return response.message;

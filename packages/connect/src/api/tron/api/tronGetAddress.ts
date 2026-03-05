@@ -91,7 +91,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     }
 
     async _call({ address_n, show_display, chunkify }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('TronGetAddress', 'TronAddress', {
             address_n,
             show_display,

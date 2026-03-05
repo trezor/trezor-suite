@@ -44,7 +44,7 @@ export default class AuthenticateDevice extends AbstractMethod<
     async run() {
         const challenge = getRandomChallenge();
 
-        const { message } = await this.device
+        const { message } = await this.getDevice()
             .getCommands()
             .typedCall('AuthenticateDevice', 'AuthenticityProof', {
                 challenge: challenge.toString('hex'),
@@ -54,7 +54,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
             data: prepareDeviceAuthenticityData({ payload: challenge }),
-            deviceModel: this.device.features.internal_model,
+            deviceModel: this.getDevice().features.internal_model,
             allowDebugKeys: this.params.allowDebugKeys,
             config,
             blacklistConfig,
@@ -74,7 +74,8 @@ export default class AuthenticateDevice extends AbstractMethod<
         const getTropicResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
             const { tropic_signature: signature, tropic_certificates: certificates } = message;
             const isAvailable = signature !== undefined && certificates.length > 0;
-            const isRequired = !this.device.unavailableCapabilities['tropicDeviceAuthentication'];
+            const isRequired =
+                !this.getDevice().unavailableCapabilities['tropicDeviceAuthentication'];
             if (isAvailable) {
                 return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
             }
