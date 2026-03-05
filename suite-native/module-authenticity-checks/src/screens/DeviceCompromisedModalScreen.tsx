@@ -22,6 +22,7 @@ export const DeviceCompromisedModalScreen = () => {
         case 'entropy':
             return <EntropyCheckFailModalContent />;
         case 'firmware-authenticity':
+        case null: // TODO fix entropy check screen persistence after disconnecting the device
             return <FirmwareAuthenticityCheckFailModalContent />;
         default:
             return exhaustive(failedCheck);

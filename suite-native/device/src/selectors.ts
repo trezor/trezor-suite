@@ -254,7 +254,7 @@ export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
         isDeviceInBootloader && hasDeviceFirmwareInstalled,
 );
 
-export const selectIsDeviceCompromised = createMemoizedSelector(
+export const selectCompromisedDeviceFailedCheck = createMemoizedSelector(
     [
         selectIsDeviceAuthenticityCheckEnabled,
         selectIsDeviceAuthenticityCheckFailed,
@@ -275,35 +275,21 @@ export const selectIsDeviceCompromised = createMemoizedSelector(
         const isFirmwareAuthenticityCheckHardFailedAndNotDismissed =
             hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
 
-        return (
-            isDeviceAuthenticityEnabledAndFailed ||
-            isEntropyCheckEnabledAndFailed ||
-            isFirmwareAuthenticityCheckHardFailedAndNotDismissed
-        );
-    },
-);
-
-export const selectCompromisedDeviceFailedCheck = createMemoizedSelector(
-    [
-        selectIsDeviceAuthenticityCheckEnabled,
-        selectIsDeviceAuthenticityCheckFailed,
-        selectIsEntropyCheckEnabledAndFailed,
-    ],
-    (
-        isDeviceAuthenticityCheckEnabled,
-        isDeviceAuthenticityCheckFailed,
-        isEntropyCheckEnabledAndFailed,
-    ) => {
-        const isDeviceAuthenticityEnabledAndFailed =
-            isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
-
         if (isDeviceAuthenticityEnabledAndFailed) {
             return 'device-authenticity';
         }
         if (isEntropyCheckEnabledAndFailed) {
             return 'entropy';
         }
+        if (isFirmwareAuthenticityCheckHardFailedAndNotDismissed) {
+            return 'firmware-authenticity';
+        }
 
-        return 'firmware-authenticity';
+        return null;
     },
+);
+
+export const selectIsDeviceCompromised = createMemoizedSelector(
+    [selectCompromisedDeviceFailedCheck],
+    failedCheck => failedCheck !== null,
 );
