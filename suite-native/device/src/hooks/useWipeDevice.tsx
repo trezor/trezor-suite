@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -28,6 +29,10 @@ export const useWipeDevice = () => {
 
     const device = useSelector(selectSelectedDevice);
 
+    const navigateToWipeDeviceStack = useCallback(() => {
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
+    }, [navigation]);
+
     const wipeDevice = async () => {
         if (!device) return;
 
@@ -55,5 +60,5 @@ export const useWipeDevice = () => {
         }
     };
 
-    return { wipeDevice };
+    return { navigateToWipeDeviceStack, wipeDevice };
 };

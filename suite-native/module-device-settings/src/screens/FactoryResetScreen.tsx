@@ -9,7 +9,7 @@ import { wipeDeviceStepToContentMap } from '../constants';
 
 export const FactoryResetScreen = () => {
     const navigation = useNavigation();
-    const { wipeDevice } = useWipeDevice();
+    const { navigateToWipeDeviceStack } = useWipeDevice();
 
     const handleSecondaryButtonPress = () => {
         if (navigation.canGoBack()) {
@@ -27,7 +27,7 @@ export const FactoryResetScreen = () => {
                     <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.description" />
                 </Text>
                 <CardStepper
-                    onFinish={wipeDevice}
+                    onFinish={navigateToWipeDeviceStack}
                     secondaryButtonText={<Translation id="generic.buttons.goBack" />}
                     primaryButtonText={<Translation id="generic.buttons.understand" />}
                     buttonsActionType="destructive"

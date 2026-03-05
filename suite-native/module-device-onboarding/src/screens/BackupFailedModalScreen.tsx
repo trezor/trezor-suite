@@ -13,7 +13,7 @@ export const BACKUP_FAILED_SUPPORT_URL = `${HELP_CENTER_RECOVERY_ISSUES_URL}#ope
 export const BackupFailedModalScreen = () => {
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
-    const { wipeDevice } = useWipeDevice();
+    const { navigateToWipeDeviceStack } = useWipeDevice();
 
     const handleSecondaryButtonPress = () => openLink(BACKUP_FAILED_SUPPORT_URL);
 
@@ -30,14 +30,14 @@ export const BackupFailedModalScreen = () => {
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.alert.primaryButton" />
                 ),
                 primaryButtonVariant: 'redBold',
-                onPressPrimaryButton: wipeDevice,
+                onPressPrimaryButton: navigateToWipeDeviceStack,
                 secondaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.alert.secondaryButton" />
                 ),
                 secondaryButtonVariant: 'redElevation1',
                 onPressSecondaryButton: () => openLink(BACKUP_FAILED_SUPPORT_URL),
             }),
-        [showAlert, openLink, wipeDevice],
+        [showAlert, openLink, navigateToWipeDeviceStack],
     );
 
     return (
