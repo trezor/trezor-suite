@@ -9574,6 +9574,11 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CURRENT_DELEGATE',
         defaultMessage: 'Current delegate',
     },
+    TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP: {
+        id: 'TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP',
+        defaultMessage:
+            'You cannot select your current delegate. Please select a different delegate.',
+    },
     TR_STAKE_PROVIDER_UNKNOWN: {
         id: 'TR_STAKE_PROVIDER_UNKNOWN',
         defaultMessage: 'Unknown provider',
