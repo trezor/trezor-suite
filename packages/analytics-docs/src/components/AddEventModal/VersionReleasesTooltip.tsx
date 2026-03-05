@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Column, Icon, Link, Row, Text, Tooltip } from '@trezor/components';
+import { Column, Icon, InfoItem, Link, Paragraph, Row, Text, Tooltip } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { useLatestReleases } from '../../utils/useLatestReleases';
@@ -20,29 +20,25 @@ export const VersionReleasesTooltip = () => {
     } else if (desktop ?? mobile) {
         content = (
             <Column gap={4}>
-                <Text typographyStyle="body-sm" color="textPrimary">
-                    Latest released:
-                </Text>
-                <Row gap={8} flexWrap="wrap">
+                <Paragraph typographyStyle="body-sm-strong">
+                    Latest releases (
+                    <Link href={RELEASES_URL} target="_blank" typographyStyle="body-sm">
+                        show all
+                    </Link>
+                    )
+                </Paragraph>
+                <Row gap={20} margin={{ bottom: 8 }}>
                     {desktop && (
-                        <Text typographyStyle="body-sm">
-                            Desktop <strong>{desktop}</strong>
-                        </Text>
-                    )}
-                    {desktop && mobile && (
-                        <Text typographyStyle="body-sm" color="textSubdued">
-                            •
-                        </Text>
+                        <InfoItem label="Desktop">
+                            <strong>{desktop}</strong>
+                        </InfoItem>
                     )}
                     {mobile && (
-                        <Text typographyStyle="body-sm">
-                            Mobile <strong>{mobile}</strong>
-                        </Text>
+                        <InfoItem label="Mobile">
+                            <strong>{mobile}</strong>
+                        </InfoItem>
                     )}
                 </Row>
-                <Link href={RELEASES_URL} target="_blank" typographyStyle="body-sm">
-                    View all releases
-                </Link>
             </Column>
         );
     }
