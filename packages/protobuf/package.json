@@ -46,12 +46,18 @@
         "update:protobuf": "./scripts/protobuf-build.sh"
     },
     "dependencies": {
+        "@bufbuild/protobuf": "^2.11.0",
         "@trezor/schema-utils": "workspace:*",
         "long": "5.2.5",
         "protobufjs": "7.4.0"
     },
     "devDependencies": {
-        "protobufjs-cli": "^1.1.3"
+        "@bufbuild/buf": "^1.62.1",
+        "@bufbuild/protoc-gen-es": "2.11.0",
+        "@bufbuild/protoplugin": "2.11.0",
+        "@trezor/eslint": "workspace:*",
+        "protobufjs-cli": "^1.1.3",
+        "tsx": "^4.21.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

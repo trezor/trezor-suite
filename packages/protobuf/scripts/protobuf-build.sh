@@ -39,10 +39,29 @@ cd ..
 
 cd "$SCRIPTS_PATH"
 
-yarn g:tsx ./protobuf-definitions.ts "$REPO_PATH/common/protob" --skip=webauthn,thp,benchmark,nostr,nem
+# copy proto files to monorepo context
+rm -rf ./build
+mkdir -p ./build
+cp  "$REPO_PATH"/common/protob/*.proto ./build
+
+# remove unused files
+rm -f ./build/messages-{webauthn,benchmark,nem,nostr}.proto
+
+# build `protobufjs` definitions and types
+yarn g:tsx ./protobuf-definitions.ts ./build --skip=thp
 yarn g:tsx ./protobuf-types.ts
 
-yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 
+yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts}
 yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
 
-yarn g:tsx ./protobuf-thp-definitions.ts "$REPO_PATH/common/protob"
+yarn g:tsx ./protobuf-thp-definitions.ts ./build
+
+# build `@bufbuild`` definitions
+buf generate
+cd ..
+
+# clear all generated comments and empty lines
+perl -0777 -pi -e 's{/\*.*?\*/}{}gs; s/^\s*\n//mg' src/definitions/*.js
+
+yarn workspace @trezor/protobuf g:eslint --fix src/definitions/*
+yarn workspace @trezor/protobuf g:prettier --write src/definitions/*

@@ -4,5 +4,9 @@
     "compilerOptions": {
         "outDir": "./libESM"
     },
-    "references": []
+    "references": [
+        {
+            "path": "../eslint"
+        }
+    ]
 }

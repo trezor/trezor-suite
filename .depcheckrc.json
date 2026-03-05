@@ -10,7 +10,6 @@
         "process",
         "rimraf",
         "tslib",
-        "protobufjs-cli",
         "buffer",
         "node-gyp",
         "version-bump-prompt",
