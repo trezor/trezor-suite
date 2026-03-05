@@ -16,7 +16,7 @@ import {
     Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { Device } from '../device/Device';
+import type { Device } from '../device/Device';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { checkXPubWithHashes } from './firmware';
