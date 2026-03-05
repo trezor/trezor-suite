@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DeviceConnectionGuardScreenWithCancel,
+    DeviceConnectionGuardScreen,
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import { useFirmwareLanguage } from '@suite-native/firmware';
@@ -42,7 +42,7 @@ export const FirmwareLanguageStackNavigator = ({
             {isDeviceConnectionGuardVisible && (
                 <FirmwareLanguageStack.Screen
                     name={FirmwareLanguageStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
             <FirmwareLanguageStack.Screen

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDeviceModel } from '@suite-common/device';
 import {
-    DeviceConnectionGuardScreenWithCancel,
+    DeviceConnectionGuardScreen,
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
@@ -45,7 +45,7 @@ export const DeviceCheckBackupStackNavigator = () => {
             {isDeviceConnectionGuardVisible && (
                 <DeviceCheckBackupStack.Screen
                     name={DeviceCheckBackupStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
             <DeviceCheckBackupStack.Screen
