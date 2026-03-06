@@ -1,0 +1,115 @@
+name: "Post quarantine list"
+description: "Posts the current list of quarantined E2E tests to the pull request description"
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  currents_api_key:
+    description: "Currents API key used to fetch quarantine actions"
+    required: true
+  project_name:
+    description: "Project name to filter results to a single project (e.g. 'web', 'desktop'). Omit to list all projects."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch quarantined tests
+      shell: bash
+      env:
+        CURRENTS_API_KEY: ${{ inputs.currents_api_key }}
+      run: |
+        PROJECT_ARGS=()
+        if [ -n "${{ inputs.project_name }}" ]; then
+          PROJECT_ARGS+=(--project "${{ inputs.project_name }}")
+        fi
+        npx tsx \
+          "${{ github.workspace }}/packages/e2e-utils/src/quarantineBot/index.ts" \
+          --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine.json"
+
+    - name: Update PR description with quarantine list
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const fs = require('fs');
+          const raw = fs.readFileSync('${{ runner.temp }}/quarantine.json', 'utf8');
+          const report = JSON.parse(raw);
+
+          const projectName = '${{ inputs.project_name }}';
+          const suffix = projectName ? `:${projectName}` : '';
+          const START_MARKER = `<!-- QUARANTINE-LIST${suffix}:START -->`;
+          const END_MARKER   = `<!-- QUARANTINE-LIST${suffix}:END -->`;
+          const HEADING_START = '<!-- QUARANTINE-LIST:HEADING:START -->';
+          const HEADING_END   = '<!-- QUARANTINE-LIST:HEADING:END -->';
+          const headingBlock  = `${HEADING_START}\n## 🔒 Quarantined E2E Tests\n${HEADING_END}`;
+
+          // Build the per-project section (no ## heading — that lives in the shared heading block)
+          const lines = [];
+
+          let totalTests = 0;
+          for (const project of report) {
+            totalTests += project.tests.length;
+            const summary = `${project.projectLabel} — ${project.tests.length} test(s)`;
+            if (project.tests.length === 0) {
+              lines.push(`<details><summary>${summary}</summary>`);
+              lines.push('');
+              lines.push('_No quarantined tests_ ✅');
+              lines.push('');
+              lines.push('</details>');
+            } else {
+              lines.push(`<details><summary>${summary}</summary>`);
+              lines.push('');
+              lines.push('| Test | Type |');
+              lines.push('|------|------|');
+              for (const t of project.tests) {
+                const type = t.isAutoQuarantine ? '🤖 auto' : '🙋 manual';
+                const name = t.name.replace(/\|/g, '\\|');
+                lines.push(`| ${name} | ${type} |`);
+              }
+              lines.push('');
+              lines.push('</details>');
+            }
+            lines.push('');
+          }
+
+          lines.push(`_Updated: ${new Date().toISOString()} • ${totalTests} test(s) total_`);
+
+          const newSection =
+            START_MARKER + '\n' + lines.join('\n') + '\n' + END_MARKER;
+
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          let body = pr.data.body || '';
+
+          // Ensure the shared heading block exists (written only once, by whichever project runs first).
+          if (!body.includes(HEADING_START)) {
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            body = body + sep + headingBlock;
+          }
+
+          // Update the per-project section or insert it right after the shared heading block.
+          let newBody;
+          if (body.includes(START_MARKER) && body.includes(END_MARKER)) {
+            const before = body.slice(0, body.indexOf(START_MARKER));
+            const after  = body.slice(body.indexOf(END_MARKER) + END_MARKER.length);
+            newBody = before + newSection + after;
+          } else {
+            const headingEndIdx = body.indexOf(HEADING_END);
+            const insertAt = headingEndIdx + HEADING_END.length;
+            newBody = body.slice(0, insertAt) + '\n\n' + newSection + body.slice(insertAt);
+          }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body: newBody,
+          });
+
+          console.log(`Quarantine list updated (${totalTests} test(s) across ${report.length} project(s)).`);

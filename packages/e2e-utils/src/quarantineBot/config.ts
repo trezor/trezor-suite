@@ -17,8 +17,8 @@ export const TEST_RESULTS_PAGE_SIZE = 10; // default page size of the test-resul
 export const DEVELOP_BRANCH = 'develop';
 export const SLACK_TITLE_MAX_LENGTH = 50;
 
-export const PROJECTS: Array<{ id: string; label: string }> = [
-    { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
-    { id: '4ytF0E', label: 'Trezor Suite (desktop)' },
-    //{ id: 'iBEsWE', label: 'Experimental Playground' },
+export const PROJECTS: Array<{ id: string; name: string; label: string }> = [
+    { id: 'Og0NOQ', name: 'web', label: 'Trezor Suite (web)' },
+    { id: '4ytF0E', name: 'desktop', label: 'Trezor Suite (desktop)' },
+    //{ id: 'iBEsWE', name: 'playground', label: 'Experimental Playground' },
 ];
