@@ -12040,7 +12040,7 @@ __metadata:
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-launch-arguments: "npm:^4.1.1"
     react-native-mmkv: "npm:~4.1.2"
-    react-native-nitro-modules: "npm:^0.33.2"
+    react-native-nitro-modules: "npm:^0.33.9"
     react-native-performance: "npm:^5.1.4"
     react-native-permissions: "npm:5.4.4"
     react-native-quick-crypto: "npm:0.7.17"
@@ -40080,13 +40080,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-nitro-modules@npm:^0.33.2":
-  version: 0.33.2
-  resolution: "react-native-nitro-modules@npm:0.33.2"
+"react-native-nitro-modules@npm:^0.33.9":
+  version: 0.33.9
+  resolution: "react-native-nitro-modules@npm:0.33.9"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/fece339c9f69b256d4e18e6fbf29bc52a16e2e8ea7e70551d8265dbaf455402a67fd8ca9f4e8abe5b6e6d3e33bf6c598d4e980dbbed00a3b791f6fa49c98be17
+  checksum: 10/4ebf4db46d1e4987a0e52054724081aa9712bcd1d505a6dbdd47aebc6afe72a7abaa0e947651d9f3cc594e4eb3dba47fc6f59db27c5a5ed383946e40d96543a0
   languageName: node
   linkType: hard
 
