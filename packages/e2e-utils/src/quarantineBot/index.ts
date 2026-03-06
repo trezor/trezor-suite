@@ -8,6 +8,8 @@ import {
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
 import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
+import { buildSlackSummary, sendSlackNotification } from './slack';
+import type { SlackEvent } from './types';
 import { wipeAllAutoQuarantineActions } from './wipe';
 
 async function main(): Promise<void> {
@@ -29,6 +31,7 @@ async function main(): Promise<void> {
     console.log('');
 
     let hasError = false;
+    const slackEvents: SlackEvent[] = [];
 
     for (const project of PROJECTS) {
         try {
@@ -36,8 +39,20 @@ async function main(): Promise<void> {
                 getAutoQuarantineActions(project.id),
                 getActiveTests(project.id),
             ]);
-            await quarantineFailingTests(project.id, project.label, existingActions, activeTests);
-            await unquarantinePassingTests(project.id, project.label, existingActions, activeTests);
+            await quarantineFailingTests(
+                project.id,
+                project.label,
+                existingActions,
+                activeTests,
+                slackEvents,
+            );
+            await unquarantinePassingTests(
+                project.id,
+                project.label,
+                existingActions,
+                activeTests,
+                slackEvents,
+            );
         } catch (err) {
             console.error(
                 `\n[ERROR] Failed processing project ${project.label} (${project.id}):`,
@@ -45,6 +60,11 @@ async function main(): Promise<void> {
             );
             hasError = true;
         }
+    }
+
+    const summary = buildSlackSummary(PROJECTS, slackEvents);
+    if (summary) {
+        await sendSlackNotification(summary);
     }
 
     console.log('\n=== Done ===');
