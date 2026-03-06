@@ -32,6 +32,7 @@ import {
     selectTradingIsSlip24Allowed,
     selectTradingTrades,
     selectTradingVerifiedAddress,
+    tradingActions,
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -241,6 +242,19 @@ export const useTradingExchangeForm = ({
         methods,
         setShowReserveBanner,
     });
+
+    useEffect(() => {
+        if (pageType !== 'form') return;
+
+        dispatch(tradingActions.saveComposedTransactionInfo({}));
+    }, [
+        dispatch,
+        pageType,
+        values?.sendCryptoSelect?.id,
+        values?.receiveCryptoSelect?.id,
+        output?.amount,
+        values?.provider,
+    ]);
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,

@@ -208,6 +208,22 @@ export const useTradingSellForm = ({
         setShowReserveBanner,
     });
 
+    useEffect(() => {
+        if (pageType !== 'form') return;
+
+        dispatch(tradingActions.saveComposedTransactionInfo({}));
+    }, [
+        dispatch,
+        pageType,
+        values?.sendCryptoSelect?.id,
+        output?.amount,
+        output?.fiat,
+        values?.paymentMethod?.value,
+        values?.provider,
+        values?.countrySelect?.value,
+        values?.countrySubdivisionSelect?.value,
+    ]);
+
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
         account,
         methods,
