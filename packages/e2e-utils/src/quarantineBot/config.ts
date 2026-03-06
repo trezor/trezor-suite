@@ -16,8 +16,8 @@ export const PRE_FILTER_FAILURE_RATE = 0.02; // inspect anything that isn't clos
 export const TEST_RESULTS_PAGE_SIZE = 10; // default page size of the test-results API endpoint
 export const DEVELOP_BRANCH = 'develop';
 
-export const PROJECTS: Array<{ id: string; label: string }> = [
-    { id: 'Og0NOQ', label: 'Trezor Suite (web)' },
-    { id: '4ytF0E', label: 'Trezor Suite (desktop)' },
-    //{ id: 'iBEsWE', label: 'Experimental Playground' },
+export const PROJECTS: Array<{ id: string; name: string; label: string }> = [
+    { id: 'Og0NOQ', name: 'web', label: 'Trezor Suite (web)' },
+    { id: '4ytF0E', name: 'desktop', label: 'Trezor Suite (desktop)' },
+    //{ id: 'iBEsWE', name: 'playground', label: 'Experimental Playground' },
 ];

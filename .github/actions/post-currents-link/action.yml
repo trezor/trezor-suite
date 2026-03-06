@@ -20,9 +20,21 @@ runs:
         github-token: ${{ inputs.github_token }}
         script: |
           const projectId = '${{ inputs.currents-project-id }}';
+          const project = '${{ inputs.project }}';
           const branch = context.payload.pull_request.head.ref;
           const currentsUrl = `https://app.currents.dev/projects/${projectId}/runs?branch=${branch}&lookback=7`;
-          const appendedNote = `🔍🖥️ **Suite ${{ inputs.project }} test results:** [View in Currents](${currentsUrl})`;
+          const linkLine = `🔍 **Suite ${project} test results:** [View in Currents](${currentsUrl})`;
+
+          // Markers for the shared section (written once)
+          const SECTION_START = '<!-- CURRENTS-LINKS:SECTION:START -->';
+          const SECTION_END   = '<!-- CURRENTS-LINKS:SECTION:END -->';
+          const sectionHeading = `## 🔍 Currents Test Results`;
+
+          // Markers for this specific project's link
+          const projectKey = project.replace(/\s+/g, '-').toUpperCase();
+          const LINK_START = `<!-- CURRENTS-LINK:${projectKey}:START -->`;
+          const LINK_END   = `<!-- CURRENTS-LINK:${projectKey}:END -->`;
+          const newLinkSection = `${LINK_START}\n${linkLine}\n${LINK_END}`;
 
           const pr = await github.rest.pulls.get({
             owner: context.repo.owner,
@@ -30,17 +42,27 @@ runs:
             pull_number: context.payload.pull_request.number,
           });
 
-          const existingBody = pr.data.body || '';
+          let body = pr.data.body || '';
 
-          if (!existingBody.includes(currentsUrl)) {
-            const newBody = existingBody + '\n\n' + appendedNote;
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              body: newBody
-            });
-            console.log('Appended Currents link to PR description.');
+          if (body.includes(LINK_START)) {
+            console.log(`Currents link for project "${project}" already present. Skipping.`);
+            return;
+          } else if (body.includes(SECTION_START) && body.includes(SECTION_END)) {
+            // Section exists but this project's link does not yet — insert before SECTION_END.
+            const insertAt = body.indexOf(SECTION_END);
+            body = body.slice(0, insertAt) + newLinkSection + '\n' + body.slice(insertAt);
           } else {
-            console.log('Currents link already present. Skipping append.');
+            // Neither section nor link exists — append a brand-new section.
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            const newSection =
+              `${SECTION_START}\n${sectionHeading}\n\n${newLinkSection}\n${SECTION_END}`;
+            body = body + sep + newSection;
           }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body,
+          });
+          console.log(`Currents link for project "${project}" updated in PR description.`);

@@ -61,14 +61,21 @@ jobs:
     if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
-  post-currents-link:
+  post-currents-pr-info:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    concurrency:
+      group: post-currents-pr-info-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
     needs:
       - build-app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
@@ -81,6 +88,12 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "desktop"
           currents-project-id: "4ytF0E"
+      - name: Post quarantine list
+        uses: ./.github/actions/post-quarantine-list
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          currents_api_key: ${{ secrets.CURRENTS_API_KEY }}
+          project_name: "desktop"
 
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
