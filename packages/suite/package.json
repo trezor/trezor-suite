@@ -79,6 +79,7 @@
         "@suite/metadata": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
+        "@suite/recovery": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",

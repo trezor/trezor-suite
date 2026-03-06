@@ -14595,6 +14595,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/recovery@workspace:*, @suite/recovery@workspace:suite/recovery":
+  version: 0.0.0-use.local
+  resolution: "@suite/recovery@workspace:suite/recovery"
+  languageName: unknown
+  linkType: soft
+
 "@suite/sentry@workspace:*, @suite/sentry@workspace:suite/sentry":
   version: 0.0.0-use.local
   resolution: "@suite/sentry@workspace:suite/sentry"
@@ -16000,6 +16006,7 @@ __metadata:
     "@suite/metadata": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
+    "@suite/recovery": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"

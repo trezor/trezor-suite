@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
+import { WordCount } from '@suite/recovery';
+
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
 import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { WordCount } from 'src/types/recovery';
 
 const getWordRequestInputType = (request: string | undefined) => {
     switch (request) {

@@ -157,6 +157,7 @@
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
+        { "path": "../../suite/recovery" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/tx-simulation" },
