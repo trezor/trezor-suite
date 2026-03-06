@@ -33,6 +33,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.1.0",
+        "react-native": "0.81.5",
         "react-redux": "9.2.0"
     }
 }
