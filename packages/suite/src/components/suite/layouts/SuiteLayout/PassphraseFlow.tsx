@@ -1,7 +1,7 @@
+import { MODAL_CONTEXT_DEVICE, MODAL_CONTEXT_NONE } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
-import { MODAL } from '../../../../actions/suite/constants';
 import { closeModalApp } from '../../../../actions/suite/routerActions';
 import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
@@ -15,7 +15,7 @@ import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextMo
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
     windowType,
-}: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
+}: ReduxModalProps<typeof MODAL_CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
 
     if (!device) return null;
@@ -33,14 +33,14 @@ export const DeviceContextModal = ({
 export type ReduxModalProps<
     T extends AppState['modal']['context'] = Exclude<
         AppState['modal']['context'],
-        typeof MODAL.CONTEXT_NONE
+        typeof MODAL_CONTEXT_NONE
     >,
 > = Extract<AppState['modal'], { context: T }>;
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {
     switch (modal.context) {
-        case MODAL.CONTEXT_DEVICE: // Modals requested by Device from `trezor-connect`
+        case MODAL_CONTEXT_DEVICE: // Modals requested by Device from `trezor-connect`
             return <DeviceContextModal {...modal} />;
         default:
             return null;

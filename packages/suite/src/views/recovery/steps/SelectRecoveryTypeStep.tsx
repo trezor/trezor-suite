@@ -3,7 +3,6 @@ import { RecoveryType, recoveryTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-
 type SelectRecoveryTypeStepProps = {
     setRecoveryType: (type: RecoveryType) => void;
     recoveryType?: RecoveryType;

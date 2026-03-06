@@ -3,7 +3,6 @@ import { WordCount, wordCounts } from '@suite/recovery';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-
 type SelectWordCountStepProps = {
     setWordCount: (number: WordCount) => void;
     wordCount?: WordCount;

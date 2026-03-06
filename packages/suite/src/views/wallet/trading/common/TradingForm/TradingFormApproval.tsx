@@ -4,6 +4,7 @@ import styled, { DefaultTheme, keyframes } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import {
     TradingExchangeType,
     tokenSupportsIncreasingAllowance,
@@ -14,7 +15,6 @@ import { AllowanceType } from '@suite-common/wallet-types';
 import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { Address } from 'src/components/suite/Address';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';

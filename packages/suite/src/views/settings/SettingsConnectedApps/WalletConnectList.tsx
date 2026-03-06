@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import * as modalActions from '@suite/modal';
 import {
     getSessionNetworks,
     selectSessions,
@@ -7,7 +8,6 @@ import {
 import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

@@ -10,6 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
+import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -26,7 +27,6 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import backupMiddlewares from 'src/middlewares/backup';
@@ -172,7 +172,7 @@ export const initStore = (
             getDefaultMiddleware({
                 immutableCheck: false,
                 serializableCheck: {
-                    ignoredActions: [OPEN_USER_CONTEXT],
+                    ignoredActions: [MODAL_OPEN_USER_CONTEXT],
                     ignoredPaths: [
                         'modal.payload.decision.promise',
                         'modal.payload.decision.resolve',

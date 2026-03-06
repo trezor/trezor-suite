@@ -1,11 +1,10 @@
 import { useWatch } from 'react-hook-form';
 
+import { MODAL_CONTEXT_DEVICE, REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from '@suite/modal';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from 'src/actions/suite/constants/modalConstants';
 import { useSelector } from 'src/hooks/suite';
 
 function useIsRefetchDisabled() {
@@ -17,7 +16,7 @@ function useIsRefetchDisabled() {
     }
 
     if (
-        modal.context === MODAL.CONTEXT_DEVICE &&
+        modal.context === MODAL_CONTEXT_DEVICE &&
         modal.windowType !== undefined &&
         REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES.includes(modal.windowType)
     ) {

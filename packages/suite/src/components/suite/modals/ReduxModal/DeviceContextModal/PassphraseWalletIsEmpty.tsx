@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { onCancel as onCancelModal } from '@suite/modal';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -6,7 +7,6 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { onCancel as onCancelModal } from '../../../../../actions/suite/modalActions';
 import { goto } from '../../../../../actions/suite/routerActions';
 import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from '../../../../../hooks/suite';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import type { RecoveryType, WordCount } from '@suite/recovery';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -18,7 +19,6 @@ import {
     setStatus,
     setWordsCount,
 } from 'src/actions/recovery/recoveryActions';
-import { MODAL } from 'src/actions/suite/constants';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -101,7 +101,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'in-progress':
                 // When T1B1 requests PIN confirmation, the status is still 'waiting-for-confirmation'
                 // so we need to check the modal context to know if we should show the loading indicator
-                if (modal.context !== MODAL.CONTEXT_DEVICE) {
+                if (modal.context !== MODAL_CONTEXT_DEVICE) {
                     return (
                         <Box padding={spacings.xxl}>
                             <Loading />
@@ -231,7 +231,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'waiting-for-confirmation':
                 if (
                     isT1B1 &&
-                    modal.context === MODAL.CONTEXT_DEVICE &&
+                    modal.context === MODAL_CONTEXT_DEVICE &&
                     modal.windowType === UI_REQUEST.REQUEST_PIN
                 ) {
                     return (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { openDeferredModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -13,7 +14,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { UseSendFormState } from 'src/types/wallet/sendForm';

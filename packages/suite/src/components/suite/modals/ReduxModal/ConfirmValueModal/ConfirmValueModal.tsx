@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -31,7 +32,6 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
@@ -113,7 +113,7 @@ export const ConfirmValueModal = ({
 
     // Device connected while the modal is open -> validate on device.
     useEffect(() => {
-        if (canConfirmOnDevice && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
+        if (canConfirmOnDevice && modalContext === MODAL_CONTEXT_USER && !isConfirmed) {
             dispatch(validateOnDevice());
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);

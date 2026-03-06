@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import { METADATA } from '@suite/metadata';
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -13,7 +14,7 @@ import {
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
+import { DESKTOP_UPDATE, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
@@ -43,7 +44,7 @@ const breadcrumbActions = new Set<Action['type']>([
     DESKTOP_UPDATE.AVAILABLE,
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
-    MODAL.CLOSE,
+    MODAL_CLOSE,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
@@ -63,7 +64,7 @@ const breadcrumbActions = new Set<Action['type']>([
     deviceActions.addButtonRequest.type,
     deviceActions.removeButtonRequests.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
-    MODAL.OPEN_USER_CONTEXT,
+    MODAL_OPEN_USER_CONTEXT,
 ]);
 
 const sentryMiddleware =

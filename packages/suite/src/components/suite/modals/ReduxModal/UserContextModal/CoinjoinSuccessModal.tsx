@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { onCancel as closeModal } from '@suite/modal';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

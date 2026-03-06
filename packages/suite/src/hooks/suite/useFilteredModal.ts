@@ -1,12 +1,12 @@
+import { MODAL_CONTEXT_USER } from '@suite/modal';
+import type { State as ModalState } from '@suite/modal';
 import { UserContextPayload } from '@suite-common/suite-types';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
-import type { State as ModalState } from 'src/reducers/suite/modalReducer';
 
 type ModalContext = ModalState['context'];
 type UserModalType = UserContextPayload['type'];
-type UserModalState = Extract<ModalState, { context: typeof MODAL.CONTEXT_USER }>;
+type UserModalState = Extract<ModalState, { context: typeof MODAL_CONTEXT_USER }>;
 
 const hasGivenContext = <T extends ModalContext>(
     modal: ModalState,
@@ -21,7 +21,7 @@ const hasGivenUserModalType = <T extends UserModalType>(
 
 export const useFilteredModal = <T extends ModalContext>(
     context: T[],
-    type?: T extends typeof MODAL.CONTEXT_USER ? UserModalType[] : never,
+    type?: T extends typeof MODAL_CONTEXT_USER ? UserModalType[] : never,
 ): Extract<ModalState, { context: T }> | null => {
     const modal = useSelector(state => state.modal);
 
@@ -29,7 +29,7 @@ export const useFilteredModal = <T extends ModalContext>(
         return null;
     }
 
-    if (modal.context === MODAL.CONTEXT_USER) {
+    if (modal.context === MODAL_CONTEXT_USER) {
         const userModal = modal as UserModalState;
 
         if (type && !hasGivenUserModalType(userModal, type)) {

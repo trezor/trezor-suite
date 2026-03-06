@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { ConnectionStatus } from '@suite-common/wallet-types';
@@ -8,7 +9,6 @@ import { Button } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { SectionItem, StatusLight } from 'src/components/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useDispatch, useSelector } from 'src/hooks/suite';

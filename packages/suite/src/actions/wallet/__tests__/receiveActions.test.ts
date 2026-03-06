@@ -1,3 +1,4 @@
+import { modalReducer } from '@suite/modal';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -7,7 +8,6 @@ import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 
 import * as receiveActions from 'src/actions/wallet/receiveActions';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import { extraDependencies } from 'src/support/extraDependencies';

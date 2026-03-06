@@ -4,6 +4,7 @@ import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { openDeferredModal } from '@suite/modal';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -31,7 +32,6 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';

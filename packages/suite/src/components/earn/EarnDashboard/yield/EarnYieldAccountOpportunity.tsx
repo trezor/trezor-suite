@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -10,7 +11,6 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import * as modalActions from '@suite/modal';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

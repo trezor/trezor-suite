@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { modalReducer } from '@suite/modal';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
@@ -8,7 +9,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';

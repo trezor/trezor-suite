@@ -1,9 +1,9 @@
+import { onCancel, openModal, preserve } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showXpubOnDevice } from '@suite-common/wallet-core';
 
-import { onCancel, openModal, preserve } from 'src/actions/suite/modalActions';
 import { Dispatch, GetState } from 'src/types/suite';
 
 export const openXpubModal =

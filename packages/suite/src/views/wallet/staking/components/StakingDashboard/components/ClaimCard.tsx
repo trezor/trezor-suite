@@ -2,13 +2,13 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

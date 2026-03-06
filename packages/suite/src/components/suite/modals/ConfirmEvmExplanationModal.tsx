@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { onCancel } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Image, Modal, Paragraph } from '@trezor/components';
@@ -8,7 +9,6 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { onCancel } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const ImageWrapper = styled.div`

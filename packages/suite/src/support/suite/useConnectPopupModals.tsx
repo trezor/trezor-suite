@@ -1,15 +1,19 @@
 import { useEffect } from 'react';
 
+import {
+    MODAL_CONTEXT_NONE,
+    MODAL_CONTEXT_USER,
+    onCancel as cancelModal,
+    openModal,
+    selectModalType,
+} from '@suite/modal';
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
-import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
-import { onCancel as cancelModal, openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 export const useConnectPopupModals = () => {
@@ -25,7 +29,7 @@ export const useConnectPopupModals = () => {
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     useEffect(() => {
         const isConnectModal =
-            modalContext === CONTEXT_USER &&
+            modalContext === MODAL_CONTEXT_USER &&
             modalType &&
             [
                 'connect-popup',
@@ -45,7 +49,7 @@ export const useConnectPopupModals = () => {
         ) => {
             // Prevent duplicate opening of the same modal
             // And also prevent opening connect modals if different modal is already open
-            if (modalType !== type && (modalContext === CONTEXT_NONE || isConnectModal)) {
+            if (modalType !== type && (modalContext === MODAL_CONTEXT_NONE || isConnectModal)) {
                 dispatch(openModal({ type }));
             }
         };
@@ -72,7 +76,7 @@ export const useConnectPopupModals = () => {
                 return;
             }
             case 'switch-device': {
-                if (modalContext !== CONTEXT_NONE && !isInDiscoveryFlow) {
+                if (modalContext !== MODAL_CONTEXT_NONE && !isInDiscoveryFlow) {
                     TrezorConnect.cancel('switching-device');
                     dispatch(cancelModal());
                     dispatch(

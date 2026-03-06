@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { openModal } from '@suite/modal';
 import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { CoinList } from 'src/components/suite/CoinList/CoinList';
 import { useDispatch } from 'src/hooks/suite';
 
