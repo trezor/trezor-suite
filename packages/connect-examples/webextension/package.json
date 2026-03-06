@@ -17,6 +17,6 @@
         "@types/chrome": "^0.0.299",
         "copy-webpack-plugin": "^13.0.1",
         "html-webpack-plugin": "5.6.6",
-        "webpack": "5.104.1"
+        "webpack": "5.105.3"
     }
 }
