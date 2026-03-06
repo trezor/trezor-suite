@@ -1,54 +1,53 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { WordCount } from '@suite/recovery';
+import {
+    RECOVERY_RESET_REDUCER,
+    RECOVERY_SET_ADVANCED_RECOVERY,
+    RECOVERY_SET_ERROR,
+    RECOVERY_SET_STATUS,
+    RECOVERY_SET_WORDS_COUNT,
+    SeedInputStatus,
+    WordCount,
+} from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { RECOVERY } from 'src/actions/recovery/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
 import { Dispatch, GetState } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
-export type SeedInputStatus =
-    | 'initial'
-    | 'select-word-count'
-    | 'select-recovery-type'
-    | 'waiting-for-confirmation'
-    | 'in-progress'
-    | 'finished';
-
 export type RecoveryAction =
-    | { type: typeof RECOVERY.SET_WORDS_COUNT; payload: WordCount }
-    | { type: typeof RECOVERY.SET_ADVANCED_RECOVERY; payload: boolean }
-    | { type: typeof RECOVERY.SET_ERROR; payload: string | undefined }
-    | { type: typeof RECOVERY.SET_STATUS; payload: SeedInputStatus }
-    | { type: typeof RECOVERY.RESET_REDUCER };
+    | { type: typeof RECOVERY_SET_WORDS_COUNT; payload: WordCount }
+    | { type: typeof RECOVERY_SET_ADVANCED_RECOVERY; payload: boolean }
+    | { type: typeof RECOVERY_SET_ERROR; payload: string | undefined }
+    | { type: typeof RECOVERY_SET_STATUS; payload: SeedInputStatus }
+    | { type: typeof RECOVERY_RESET_REDUCER };
 
 const setWordsCount = (count: WordCount): RecoveryAction => ({
-    type: RECOVERY.SET_WORDS_COUNT,
+    type: RECOVERY_SET_WORDS_COUNT,
     payload: count,
 });
 
 const setAdvancedRecovery = (value: boolean): RecoveryAction => ({
-    type: RECOVERY.SET_ADVANCED_RECOVERY,
+    type: RECOVERY_SET_ADVANCED_RECOVERY,
     payload: value,
 });
 
 const setError = (payload: string | undefined): RecoveryAction => ({
-    type: RECOVERY.SET_ERROR,
+    type: RECOVERY_SET_ERROR,
     payload,
 });
 
 const resetReducer = (): RecoveryAction => ({
-    type: RECOVERY.RESET_REDUCER,
+    type: RECOVERY_RESET_REDUCER,
 });
 
 const setStatus = (status: SeedInputStatus): RecoveryAction => ({
-    type: RECOVERY.SET_STATUS,
+    type: RECOVERY_SET_STATUS,
     payload: status,
 });
 
