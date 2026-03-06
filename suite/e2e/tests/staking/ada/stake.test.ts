@@ -142,7 +142,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                         body: [
                             ['to pool:'],
                             device.wrapText(
-                                'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                                'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
                             ),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -209,7 +209,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             rewards: '0',
                             isActive: true,
-                            poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                            poolId: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
                             drep: {
                                 drep_id: 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                                 hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
