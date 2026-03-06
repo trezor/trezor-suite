@@ -148,7 +148,7 @@
         "jest-environment-node": "^29.7.0",
         "jest-expo": "^54.0.17",
         "node-gyp": "12.2.0",
-        "nx": "^22.4.3",
+        "nx": "^22.5.2",
         "patch-package": "8.0.1",
         "prettier": "^3.8.1",
         "rimraf": "^6.1.2",
