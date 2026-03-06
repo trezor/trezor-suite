@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import type { RecoveryType, WordCount } from '@suite/recovery';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
@@ -20,7 +21,6 @@ import {
 import { MODAL } from 'src/actions/suite/constants';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
 import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 

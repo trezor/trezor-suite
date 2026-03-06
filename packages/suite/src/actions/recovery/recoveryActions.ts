@@ -1,4 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { WordCount } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
@@ -8,7 +9,6 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { RECOVERY } from 'src/actions/recovery/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
-import { WordCount } from 'src/types/recovery';
 import { Dispatch, GetState } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
