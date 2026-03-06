@@ -1,50 +1,99 @@
-import { UAParser } from 'ua-parser-js';
+import Bowser from 'bowser';
 
-let userAgentParser: UAParser;
+/** Minimal typing for the experimental Navigator.userAgentData Client Hints API. */
+interface UAData {
+    getHighEntropyValues(
+        hints: string[],
+    ): Promise<{ platformVersion?: string; architecture?: string }>;
+}
+
+let bowserParser: Bowser.Parser.Parser;
 
 export const getUserAgent = () => window.navigator.userAgent;
 
-export const getUserAgentParser = () => {
-    if (!userAgentParser) {
-        const ua = getUserAgent();
-        userAgentParser = new UAParser(ua);
+const getBowserParser = () => {
+    if (!bowserParser) {
+        bowserParser = Bowser.getParser(getUserAgent());
     }
 
-    return userAgentParser;
+    return bowserParser;
 };
 
 /**
- * .getOS() without `.withClientHints()` is sync and uses only `userAgent`, which is insufficient
- * to distinguish macOS >= 11 (Big Sur and above) and Windows 10 | 11, so we need the async `.withClientHints()`.
- * FYI it uses `getHighEntropyValues` under the hood (works only on Chromium-based browsers).
+ * Uses the Client Hints API (Chromium-based browsers) for accurate OS version detection,
+ * since the basic user-agent string cannot distinguish macOS >= 11 or Windows 10 vs 11.
+ * Falls back to Bowser's parsed version on non-Chromium browsers.
  */
 export const getOsVersion = async () => {
-    const { version } = await getUserAgentParser().getOS().withClientHints();
+    if ('userAgentData' in navigator && navigator.userAgentData) {
+        try {
+            const values = await (navigator.userAgentData as UAData).getHighEntropyValues(
+                ['platformVersion'],
+            );
+            if (values.platformVersion) {
+                return values.platformVersion;
+            }
+        } catch {
+            // Fall through to Bowser
+        }
+    }
 
-    return version ?? '';
+    return getBowserParser().getOSVersion() ?? '';
 };
 
 /**
- * Similar to `getOsVersion`. Here, the sync fn works everywhere but macOS, hence we use async.
+ * Uses the Client Hints API for CPU architecture detection (Chromium-based browsers).
+ * Returns an empty string on browsers that don't support Client Hints.
  */
 export const getCpuArch = async () => {
-    const { architecture } = await getUserAgentParser().getCPU().withClientHints();
+    if ('userAgentData' in navigator && navigator.userAgentData) {
+        try {
+            const values = await (navigator.userAgentData as UAData).getHighEntropyValues(
+                ['architecture'],
+            );
+            if (values.architecture) {
+                return values.architecture;
+            }
+        } catch {
+            // Fall through
+        }
+    }
 
-    return architecture ?? '';
+    return '';
 };
+
+/**
+ * Mapping to normalize Bowser browser names to legacy identifiers.
+ * For example, Bowser reports "Microsoft Edge" while the codebase expects "edge".
+ */
+const browserNameOverrides: Record<string, string> = {
+    microsoftedge: 'edge',
+};
+
+const isBrave = () =>
+    typeof navigator !== 'undefined' &&
+    'brave' in navigator &&
+    typeof (navigator as Navigator & { brave?: { isBrave?: unknown } }).brave?.isBrave ===
+    'function';
+
 export const getBrowserName = () => {
-    const browserName = getUserAgentParser().getBrowser().name?.replace(' ', '');
+    if (isBrave()) {
+        return 'brave';
+    }
 
-    return browserName?.toLowerCase() || '';
+    const normalized = getBowserParser().getBrowserName().replace(/\s+/g, '').toLowerCase();
+
+    return browserNameOverrides[normalized] ?? normalized;
 };
 
-export const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
+export const getBrowserVersion = () => getBowserParser().getBrowserVersion() || '';
 
-// generally works the same as `getOsName`, just with different information source, but does not work in some specific iOS cases
-export const getOsNameWeb = () => getUserAgentParser().getOS().name?.replaceAll(' ', '');
+// Generally works the same as `getOsName`, just with a different information source,
+// but does not work in some specific iOS cases.
+export const getOsNameWeb = () => getBowserParser().getOSName().replaceAll(' ', '') || undefined;
 
 export const getOsFamily = () => {
-    const osName = getUserAgentParser().getOS().name?.toLowerCase().replaceAll(' ', '');
+    const osName = getBowserParser().getOSName().toLowerCase().replaceAll(' ', '');
 
     if (osName === 'windows') {
         return 'Windows';
@@ -56,4 +105,4 @@ export const getOsFamily = () => {
     return 'Linux';
 };
 
-export const getDeviceType = () => getUserAgentParser().getDevice().type;
+export const getDeviceType = () => getBowserParser().getPlatformType() || undefined;

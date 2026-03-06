@@ -99,12 +99,6 @@ window.addEventListener('load', () => {
             version: '109',
             mobile: true,
         },
-        // in UAParser v2, chrome is differently identified between desktop & mobile version
-        {
-            name: 'mobilechrome',
-            version: '109',
-            mobile: true,
-        },
         {
             name: 'firefox',
             version: '115',

@@ -21,6 +21,7 @@
 @types/react
 @types/react-dom
 babel-preset-expo
+bowser
 browserify-zlib
 expo
 expo-atlas
@@ -71,4 +72,3 @@ tsx
 type-fest
 typescript
 typescript-styled-plugin
-ua-parser-js
