@@ -98,7 +98,7 @@ export const FormattedCryptoAmount = ({
     if (isBalance && !isAmountLow) {
         formattedValue = formatCoinBalance(String(formattedValue), locale);
     } else {
-        formattedValue = localizeNumber(formattedValue, locale);
+        formattedValue = localizeNumber(formattedValue, locale, 0, undefined, true);
     }
 
     // prefix balance with < if it's below threshold

@@ -6,6 +6,7 @@ export const localizeNumber = (
     locale: Locale = 'en-US',
     minDecimals = 0,
     maxDecimals?: number,
+    groupFractionalPart = false,
 ) => {
     if (maxDecimals !== undefined && maxDecimals < minDecimals) {
         throw Error(
@@ -43,9 +44,30 @@ export const localizeNumber = (
             ? 4
             : 3;
 
-    return amount.toFormat(getDecimalsLength(), {
+    const localized = amount.toFormat(getDecimalsLength(), {
         decimalSeparator,
         groupSize,
         groupSeparator: thousandsSeparator,
     });
+
+    if (!groupFractionalPart) {
+        return localized;
+    }
+
+    const decimalIndex = localized.indexOf(decimalSeparator);
+    if (decimalIndex === -1) {
+        return localized;
+    }
+
+    const whole = localized.slice(0, decimalIndex);
+    const fractional = localized.slice(decimalIndex + decimalSeparator.length);
+
+    // Keep shorter fractions readable (e.g. 0.42, 0.0001). Add grouping only for long fractions.
+    if (fractional.length <= 6) {
+        return localized;
+    }
+
+    const groupedFractional = fractional.replace(/(\d{3})(?=\d)/g, `$1${thousandsSeparator}`);
+
+    return `${whole}${decimalSeparator}${groupedFractional}`;
 };

@@ -21,8 +21,8 @@ test('formatBalanceUtils', () => {
     expect(formatCoinBalance('2000000')).toEqual('2,000,000');
     expect(formatCoinBalance('2900000')).toEqual('2,900,000');
     expect(formatCoinBalance('0099999999.999999999999')).toEqual('99,999,999.9…');
-    expect(formatCoinBalance('0.12345678')).toEqual('0.12345678');
-    expect(formatCoinBalance('10.12345678')).toEqual('10.1234567…');
+    expect(formatCoinBalance('0.12345678')).toEqual('0.123,456,78');
+    expect(formatCoinBalance('10.12345678')).toEqual('10.123,456,7…');
     expect(formatCoinBalance('10000.123', 'cs-CZ')).toEqual('10\xa0000,123');
     expect(formatCoinBalance('10000.123', 'es-ES')).toEqual('10.000,123');
     expect(formatCoinBalance('10000.123', 'ru-RU')).toEqual('10\xa0000,123');

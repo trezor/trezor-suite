@@ -13,6 +13,23 @@ describe('localizeNumber', () => {
         expect(localizeNumber(1.234832924423748, 'cs-CZ')).toStrictEqual('1,234832924423748');
     });
 
+    it('groups fractional part when enabled', () => {
+        expect(localizeNumber('0.023324534', 'cs-CZ', 0, undefined, true)).toStrictEqual(
+            '0,023 324 534',
+        );
+        expect(localizeNumber('10.023324534', 'cs-CZ', 0, undefined, true)).toStrictEqual(
+            '10,023 324 534',
+        );
+        expect(localizeNumber('0.42', 'cs-CZ', 0, undefined, true)).toStrictEqual('0,42');
+
+        expect(localizeNumber('0.023324534', 'en-US', 0, undefined, true)).toStrictEqual(
+            '0.023,324,534',
+        );
+        expect(localizeNumber('1234.0000001', 'en-US', 0, undefined, true)).toStrictEqual(
+            '1,234.000,000,1',
+        );
+    });
+
     it('errors with wrong values', () => {
         expect(localizeNumber(NaN)).toStrictEqual('');
         expect(localizeNumber(Infinity)).toStrictEqual('');
