@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -48,6 +49,13 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
         const prevApp = getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             dispatch(appChanged(action.payload.app));
+        }
+
+        if (
+            action.type === SUITE.APP_CHANGED &&
+            (action.payload === 'recovery' || action.payload === 'onboarding')
+        ) {
+            dispatch(recoveryActions.resetReducer());
         }
 
         // this action needs to be processed before propagation to deviceReducer

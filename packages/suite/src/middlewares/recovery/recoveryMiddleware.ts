@@ -5,7 +5,6 @@ import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
-import { SUITE } from 'src/actions/suite/constants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
@@ -14,13 +13,6 @@ const recovery =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        if (
-            action.type === SUITE.APP_CHANGED &&
-            (action.payload === 'recovery' || action.payload === 'onboarding')
-        ) {
-            api.dispatch(recoveryActions.resetReducer());
-        }
-
         // pass action
         next(action);
 
