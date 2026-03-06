@@ -8,6 +8,7 @@ import {
     type TradingType,
     isCountrySubdivisionEmpty,
     isSendingEvmNativeToken,
+    selectTradingComposedTransactionInfo,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -45,6 +46,9 @@ import { TradingRevokeModal } from './TradingRevokeModal';
 import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
+const isFeeRequiredButMissing = (fee: string | undefined, type: TradingType) =>
+    (type === 'sell' || type === 'exchange') && (fee === undefined || fee === '');
 
 const getQuotesFilteredByPaymentMethod = (
     quotes: BuyTrade[] | SellFiatTrade[],
@@ -114,7 +118,11 @@ export const TradingFormOffer = () => {
     const quote = preselectedQuote ?? getSelectedQuote(context);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const fee = composedTransactionInfo?.composed?.fee;
+    const isFeeRequiredButMissingValue = isFeeRequiredButMissing(fee, type);
 
     const selectedCryptoId = getSelectedCryptoId(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
@@ -241,7 +249,9 @@ export const TradingFormOffer = () => {
         tradingDeviceDisconnected ||
         state.isLoadingOrInvalid ||
         !quote ||
-        amountTooHigh;
+        amountTooHigh ||
+        areFeesLoading ||
+        isFeeRequiredButMissingValue;
 
     const isLoading = requiresTokenApproval
         ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
