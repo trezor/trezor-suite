@@ -1,10 +1,14 @@
+import { AnyAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { WordCount } from '@suite/recovery';
-
-import { RECOVERY } from 'src/actions/recovery/constants';
-import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
-import { Action } from 'src/types/suite';
+import {
+    RECOVERY_RESET_REDUCER,
+    RECOVERY_SET_ADVANCED_RECOVERY,
+    RECOVERY_SET_ERROR,
+    RECOVERY_SET_STATUS,
+    RECOVERY_SET_WORDS_COUNT,
+} from './constants';
+import { SeedInputStatus, WordCount } from './types';
 
 export interface RecoveryState {
     advancedRecovery: boolean;
@@ -20,26 +24,27 @@ const initialState: RecoveryState = {
     status: 'initial',
 };
 
-const recovery = (state: RecoveryState = initialState, action: Action): RecoveryState =>
+export const recoveryReducer = (
+    state: RecoveryState = initialState,
+    action: AnyAction,
+): RecoveryState =>
     produce(state, draft => {
         switch (action.type) {
-            case RECOVERY.SET_WORDS_COUNT:
+            case RECOVERY_SET_WORDS_COUNT:
                 draft.wordsCount = action.payload;
                 break;
-            case RECOVERY.SET_ADVANCED_RECOVERY:
+            case RECOVERY_SET_ADVANCED_RECOVERY:
                 draft.advancedRecovery = action.payload;
                 break;
-            case RECOVERY.SET_ERROR:
+            case RECOVERY_SET_ERROR:
                 draft.error = action.payload;
                 break;
-            case RECOVERY.SET_STATUS:
+            case RECOVERY_SET_STATUS:
                 draft.status = action.payload;
                 break;
-            case RECOVERY.RESET_REDUCER:
+            case RECOVERY_RESET_REDUCER:
                 return initialState;
             default:
             // no default
         }
     });
-
-export default recovery;

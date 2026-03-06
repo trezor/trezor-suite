@@ -11,6 +11,7 @@ import {
 import { createLogger } from 'redux-logger';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { recoveryReducer } from '@suite/recovery';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -37,7 +38,6 @@ import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
 import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
-import recoveryReducers from 'src/reducers/recovery';
 import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
@@ -63,7 +63,7 @@ const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
-    recovery: recoveryReducers,
+    recovery: recoveryReducer,
     firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,

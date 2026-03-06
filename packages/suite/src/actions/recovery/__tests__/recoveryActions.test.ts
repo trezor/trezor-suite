@@ -1,7 +1,7 @@
+import { recoveryReducer } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
-import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
