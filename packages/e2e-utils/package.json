@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@currents/playwright": "^1.21.2",
-        "@playwright/test": "^1.58.2",
+        "@playwright/test": "1.57.0",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
     }
