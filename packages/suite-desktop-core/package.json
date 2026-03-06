@@ -53,6 +53,6 @@
         "lodash": "^4.17.21",
         "rimraf": "^6.1.2",
         "terser-webpack-plugin": "^5.3.16",
-        "webpack": "5.104.1"
+        "webpack": "5.105.3"
     }
 }
