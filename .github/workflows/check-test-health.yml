@@ -44,5 +44,6 @@ jobs:
         env:
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK: ${{ secrets.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           npx tsx packages/e2e-utils/src/quarantineBot/index.ts

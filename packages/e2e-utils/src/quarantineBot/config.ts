@@ -15,6 +15,7 @@ export const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to dis
 export const PRE_FILTER_FAILURE_RATE = 0.02; // inspect anything that isn't close to 100% passing
 export const TEST_RESULTS_PAGE_SIZE = 10; // default page size of the test-results API endpoint
 export const DEVELOP_BRANCH = 'develop';
+export const SLACK_TITLE_MAX_LENGTH = 50;
 
 export const PROJECTS: Array<{ id: string; label: string }> = [
     { id: 'Og0NOQ', label: 'Trezor Suite (web)' },

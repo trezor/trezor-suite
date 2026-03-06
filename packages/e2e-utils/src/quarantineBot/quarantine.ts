@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { computeStats, extractKeyFromAction, getTestKey } from './actions';
+import { computeStats, extractKeyFromAction, getTestKey, normalizeTitlePath } from './actions';
 import {
     createQuarantineAction,
     deleteAction,
@@ -14,14 +14,14 @@ import {
     UNQUARANTINE_FAILURE_RATE,
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
-import { sendSlackNotification } from './slack';
-import type { Action, TestExplorerItem } from './types';
+import type { Action, SlackEvent, TestExplorerItem } from './types';
 
 export async function quarantineFailingTests(
     projectId: string,
     projectLabel: string,
     existingActions: Action[],
     activeTests: TestExplorerItem[],
+    slackEvents: SlackEvent[],
 ): Promise<void> {
     console.log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
@@ -41,8 +41,6 @@ export async function quarantineFailingTests(
             `${candidateTests.length} candidate(s) have ≥${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate in the explorer window. ` +
             `Fetching last ${QUARANTINE_LAST_N_EXECUTIONS} individual results for each candidate...`,
     );
-
-    let newQuarantineCount = 0;
 
     for (const test of candidateTests) {
         if (!test.signature) {
@@ -75,22 +73,21 @@ export async function quarantineFailingTests(
                 `(${failurePercent}% fail rate, ${stats.failures}/${stats.executions} latest runs)`,
         );
 
-        await createQuarantineAction(projectId, test, stats);
-        newQuarantineCount++;
+        const action = await createQuarantineAction(projectId, test, stats);
+        slackEvents.push({
+            kind: 'quarantined',
+            projectId,
 
-        const slackMsg =
-            `:warning: *[${projectLabel}] Test auto-quarantined* :warning:\n` +
-            `> *Test:* \`${test.title}\`\n` +
-            `> *Spec:* \`${test.spec}\`\n` +
-            `> *Failure rate:* ${failurePercent}% (${stats.failures}/${stats.executions} latest executions)\n` +
-            `> *Action:* Test has been quarantined in Currents — its failures will no longer block CI.\n` +
-            `> _Investigate and fix the issue, then the test will be automatically unquarantined once it stabilises._\n` +
-            `> <https://app.currents.dev/projects/${projectId}|View in Currents Dashboard>`;
-
-        await sendSlackNotification(slackMsg);
+            titlePath: normalizeTitlePath(test),
+            signature: test.signature,
+            actionId: action.actionId,
+            failures: stats.failures,
+            executions: stats.executions,
+        });
     }
 
-    if (newQuarantineCount === 0) {
+    const quarantinedCount = slackEvents.filter(e => e.kind === 'quarantined').length;
+    if (quarantinedCount === 0) {
         console.log('  ✓ No new tests to quarantine.');
     }
 }
@@ -100,6 +97,7 @@ export async function unquarantinePassingTests(
     projectLabel: string,
     existingActions: Action[],
     activeTests: TestExplorerItem[],
+    slackEvents: SlackEvent[],
 ): Promise<void> {
     console.log(`\n── [${projectLabel}] Checking quarantined tests for recovery ──`);
 
@@ -153,16 +151,15 @@ export async function unquarantinePassingTests(
             );
 
             await deleteAction(action.actionId);
+            slackEvents.push({
+                kind: 'unquarantined',
+                projectId,
 
-            const slackMsg =
-                `:white_check_mark: *[${projectLabel}] Quarantined test is now healthy* :white_check_mark:\n` +
-                `> *Test:* \`${testTitle}\`\n` +
-                `> *Spec:* \`${test.spec}\`\n` +
-                `> *Pass rate:* ${passPercent}% (${stats.passes}/${stats.executions} latest executions)\n` +
-                `> *Action:* Test has been removed from quarantine — it will now contribute to CI results as normal.\n` +
-                `> <https://app.currents.dev/projects/${projectId}|View in Currents Dashboard>`;
-
-            await sendSlackNotification(slackMsg);
+                titlePath: JSON.parse(testKey) as string[],
+                signature: test.signature,
+                passes: stats.passes,
+                executions: stats.executions,
+            });
         } else {
             console.log(
                 `  ↳ Still failing: "${testTitle.slice(0, 80)}" ` +
