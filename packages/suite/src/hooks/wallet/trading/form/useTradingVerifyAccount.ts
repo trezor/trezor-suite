@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cryptoIdToSymbol,
@@ -14,7 +15,6 @@ import {
 import { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';

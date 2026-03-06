@@ -1,34 +1,38 @@
-import { createAction } from '@reduxjs/toolkit';
+import { Dispatch, createAction } from '@reduxjs/toolkit';
 
 import { UserContextPayload } from '@suite-common/suite-types';
 import TrezorConnect, { UI_RESPONSE, UiResponseFee } from '@trezor/connect';
 import { DeferredResponse, createDeferred } from '@trezor/utils';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { Dispatch } from 'src/types/suite';
+import {
+    MODAL_CLOSE,
+    MODAL_OPEN_USER_CONTEXT,
+    MODAL_PRESERVE,
+    MODAL_REMOVE_PRESERVE,
+} from './constants';
 
 export type ModalAction =
-    | { type: typeof MODAL.CLOSE }
-    | { type: typeof MODAL.PRESERVE }
-    | { type: typeof MODAL.REMOVE_PRESERVE }
+    | { type: typeof MODAL_CLOSE }
+    | { type: typeof MODAL_PRESERVE }
+    | { type: typeof MODAL_REMOVE_PRESERVE }
     | {
-          type: typeof MODAL.OPEN_USER_CONTEXT;
+          type: typeof MODAL_OPEN_USER_CONTEXT;
           payload: UserContextPayload;
       };
 
-export const onCancel = createAction(MODAL.CLOSE);
+export const onCancel = createAction(MODAL_CLOSE);
 
 /**
  * Don't close modals on UI.CLOSE_UI.WINDOW event (closing via modal US), but wait for explicit closing instead
  * (usually coming from a redux action from device, or other sources not directly controlled by Suite UI)
  */
-export const preserve = createAction(MODAL.PRESERVE);
+export const preserve = createAction(MODAL_PRESERVE);
 
 /**
  * Remove preserve lock from modal; usually those modals are closed, but this is useful when the modal
  * is only replaced by another one, and that one must no longer be preserved.
  */
-export const removePreserve = createAction(MODAL.REMOVE_PRESERVE);
+export const removePreserve = createAction(MODAL_REMOVE_PRESERVE);
 
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({
@@ -63,7 +67,7 @@ export const onReceiveFee = (payload: UiResponseFee['payload'] | null) => (dispa
     dispatch(onCancel());
 };
 
-export const openModal = createAction(MODAL.OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({
+export const openModal = createAction(MODAL_OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({
     payload,
 }));
 
@@ -93,9 +97,8 @@ export const openDeferredModal =
     <T extends DeferredModals['type']>(payload: DeferredPayload<T>) =>
     (dispatch: Dispatch) => {
         const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
-        // @ts-expect-error: Tightening types, but I don't know how to resolve this.
         dispatch({
-            type: MODAL.OPEN_USER_CONTEXT,
+            type: MODAL_OPEN_USER_CONTEXT,
             payload: {
                 ...payload,
                 decision: dfd,

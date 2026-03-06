@@ -1,9 +1,15 @@
+import {
+    MODAL_CLOSE,
+    MODAL_OPEN_USER_CONTEXT,
+    MODAL_PRESERVE,
+    MODAL_REMOVE_PRESERVE,
+} from '@suite/modal';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
-import { MODAL, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 
 import { RECEIVE } from '../constants';
@@ -21,7 +27,7 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_OPEN_USER_CONTEXT },
                 {
                     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
                     path: PATH,
@@ -38,14 +44,14 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
         },
@@ -72,14 +78,14 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
         },
@@ -106,14 +112,14 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
         },
@@ -139,11 +145,11 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.CLOSE },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: {
@@ -171,7 +177,7 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
-                    type: MODAL.OPEN_USER_CONTEXT,
+                    type: MODAL_OPEN_USER_CONTEXT,
                     payload: { addressPath: PATH, value: ADDRESS },
                 },
             ],
@@ -187,14 +193,14 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.CLOSE },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'verify-address-error', error: 'Runtime error' },
@@ -216,14 +222,14 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
-                { type: MODAL.REMOVE_PRESERVE },
-                { type: MODAL.CLOSE },
+                { type: MODAL_REMOVE_PRESERVE },
+                { type: MODAL_CLOSE },
             ],
         },
     },

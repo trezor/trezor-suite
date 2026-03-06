@@ -1,3 +1,4 @@
+import { openModal } from '@suite/modal';
 import {
     EarnFlow,
     EarnModalAction,
@@ -8,7 +9,6 @@ import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common
 import { Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';

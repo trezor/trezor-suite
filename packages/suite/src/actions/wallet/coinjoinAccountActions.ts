@@ -1,3 +1,4 @@
+import { openModal } from '@suite/modal';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,7 +18,6 @@ import { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coin
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import {
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
+import * as modalActions from '@suite/modal';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     SuiteLogsApplicationInfoRootState,

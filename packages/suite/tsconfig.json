@@ -151,6 +151,7 @@
         },
         { "path": "../../suite/intl" },
         { "path": "../../suite/metadata" },
+        { "path": "../../suite/modal" },
         {
             "path": "../../suite/platform-encryption-electron"
         },

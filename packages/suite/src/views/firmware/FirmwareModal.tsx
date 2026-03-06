@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 
+import * as modalActions from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
@@ -15,7 +16,6 @@ import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
-import * as modalActions from '../../actions/suite/modalActions';
 import { FirmwareInstallationProgressCheck } from '../../components/firmware';
 
 type FirmwareModalProps = {

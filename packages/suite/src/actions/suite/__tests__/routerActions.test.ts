@@ -1,7 +1,8 @@
 import { createMemoryHistory } from 'history';
 
+import { modalReducer } from '@suite/modal';
+
 import { AppState } from 'src/reducers/store';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { createSuiteRouterHistory } from 'src/support/extraDependencies';

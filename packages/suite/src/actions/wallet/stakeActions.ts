@@ -1,3 +1,5 @@
+import * as modalActions from '@suite/modal';
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -34,8 +36,6 @@ import { BigNumber } from '@trezor/utils';
 import { Dispatch, GetState } from 'src/types/suite';
 
 import { setPendingStakeTx } from './cardanoStakingActions';
-import * as modalActions from '../suite/modalActions';
-import { openModal } from '../suite/modalActions';
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';

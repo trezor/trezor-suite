@@ -3,6 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
+import * as modalActions from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -29,7 +30,6 @@ import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils
 import { PROTO, StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import {
     selectIsSelectedAccountLoaded,
     selectSelectedAccountKey,

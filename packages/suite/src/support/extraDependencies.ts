@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 
 import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
+import * as modalActions from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
@@ -38,7 +39,6 @@ import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';

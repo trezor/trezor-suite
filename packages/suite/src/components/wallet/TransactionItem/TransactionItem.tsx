@@ -3,6 +3,7 @@ import { memo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import {
     createTargets,
@@ -14,7 +15,6 @@ import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';

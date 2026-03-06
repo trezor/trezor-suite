@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { onCancel } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { onCancel } from 'src/actions/suite/modalActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Dispatch, GetState } from 'src/types/suite';
 

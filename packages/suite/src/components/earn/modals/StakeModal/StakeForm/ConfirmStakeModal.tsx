@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -9,7 +10,6 @@ import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';

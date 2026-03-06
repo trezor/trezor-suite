@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
@@ -33,7 +33,7 @@ export const FirmwareStep = () => {
     }, [goToNextStep, resetReducer]);
 
     const showFingerprintCheck =
-        modal.context === MODAL.CONTEXT_DEVICE &&
+        modal.context === MODAL_CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
     if (showFingerprintCheck && device) {

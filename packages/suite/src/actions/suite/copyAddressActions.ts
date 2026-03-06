@@ -1,10 +1,9 @@
 import { Dispatch } from 'redux';
 
+import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressType } from '@suite-common/wallet-types';
 import { copyToClipboard } from '@trezor/dom-utils';
-
-import { openModal } from 'src/actions/suite/modalActions';
 
 export const showCopyAddressModal =
     (address: string, addressType: AddressType) => (dispatch: Dispatch) => {

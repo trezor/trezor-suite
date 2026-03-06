@@ -1,4 +1,5 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import * as modalActions from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
@@ -18,7 +19,6 @@ import {
 } from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
-import * as modalActions from '../suite/modalActions';
 import * as routerActions from '../suite/routerActions';
 import * as suiteActions from '../suite/suiteActions';
 

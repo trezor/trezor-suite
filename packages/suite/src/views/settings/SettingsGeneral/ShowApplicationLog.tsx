@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

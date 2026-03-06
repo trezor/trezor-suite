@@ -1,7 +1,13 @@
+import {
+    MODAL_CLOSE,
+    MODAL_CONTEXT_DEVICE,
+    MODAL_CONTEXT_DEVICE_CONFIRMATION,
+    MODAL_CONTEXT_NONE,
+    MODAL_CONTEXT_USER,
+    MODAL_OPEN_USER_CONTEXT,
+} from '@suite/modal';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE, UI_REQUEST } from '@trezor/connect';
-
-import { MODAL } from 'src/actions/suite/constants';
 
 // Default devices
 const CONNECT_DEVICE = mockConnectDevice({
@@ -12,10 +18,10 @@ const SUITE_DEVICE = mockSuiteDevice({
 });
 
 const initialState = {
-    context: MODAL.CONTEXT_NONE,
+    context: MODAL_CONTEXT_NONE,
 };
 const deviceContextState = {
-    context: MODAL.CONTEXT_DEVICE,
+    context: MODAL_CONTEXT_DEVICE,
     device: SUITE_DEVICE,
 };
 
@@ -45,7 +51,7 @@ export default [
     {
         description: 'Disconnect device, modal is opened (user context) and should be closed',
         initialState: {
-            context: MODAL.CONTEXT_USER,
+            context: MODAL_CONTEXT_USER,
             payload: {
                 type: 'application-log',
             },
@@ -61,7 +67,7 @@ export default [
     {
         description: 'Disconnect device, modal is opened and should not be closed',
         initialState: {
-            context: MODAL.CONTEXT_DEVICE,
+            context: MODAL_CONTEXT_DEVICE,
             device: mockConnectDevice({
                 path: '2',
             }),
@@ -73,7 +79,7 @@ export default [
             },
         ],
         result: {
-            context: MODAL.CONTEXT_DEVICE,
+            context: MODAL_CONTEXT_DEVICE,
             device: mockConnectDevice({
                 path: '2',
             }),
@@ -161,7 +167,7 @@ export default [
             },
         ],
         result: {
-            context: MODAL.CONTEXT_DEVICE,
+            context: MODAL_CONTEXT_DEVICE,
             device: CONNECT_DEVICE,
             windowType: 'WordRequestType_Plain',
         },
@@ -178,7 +184,7 @@ export default [
             },
         ],
         result: {
-            context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
+            context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
             windowType: 'no-backup',
         },
     },
@@ -193,28 +199,28 @@ export default [
         result: initialState,
     },
     {
-        description: 'MODAL.CLOSE',
+        description: 'MODAL_CLOSE',
         initialState: deviceContextState,
         actions: [
             {
-                type: MODAL.CLOSE,
+                type: MODAL_CLOSE,
             },
         ],
         result: initialState,
     },
     {
-        description: 'MODAL.OPEN_USER_CONTEXT',
+        description: 'MODAL_OPEN_USER_CONTEXT',
         initialState: undefined,
         actions: [
             {
-                type: MODAL.OPEN_USER_CONTEXT,
+                type: MODAL_OPEN_USER_CONTEXT,
                 payload: {
                     type: 'application-log',
                 },
             },
         ],
         result: {
-            context: MODAL.CONTEXT_USER,
+            context: MODAL_CONTEXT_USER,
             payload: {
                 type: 'application-log',
             },

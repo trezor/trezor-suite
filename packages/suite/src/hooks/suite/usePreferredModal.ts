@@ -1,9 +1,9 @@
+import { MODAL_CONTEXT_NONE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { ModalAppParams } from 'src/utils/suite/router';
@@ -67,7 +67,7 @@ export const usePreferredModal = () => {
         return getForegroundAppAction(route, params);
     }
 
-    if (modal.context !== MODAL.CONTEXT_NONE) {
+    if (modal.context !== MODAL_CONTEXT_NONE) {
         // NOTE: in case when passphrase flow is active, we handle the device passphrase request
         // within the passphrase flow
         const windowType = 'windowType' in modal ? modal.windowType : undefined;

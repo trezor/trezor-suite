@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';

@@ -1,10 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 
 import { METADATA } from '@suite/metadata';
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { addLog } from '@suite-common/logger';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
+import { DESKTOP_UPDATE, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
@@ -24,7 +25,7 @@ const log =
             case DESKTOP_UPDATE.CHECKING:
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
-            case MODAL.CLOSE:
+            case MODAL_CLOSE:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -96,7 +97,7 @@ const log =
                     }),
                 );
                 break;
-            case MODAL.OPEN_USER_CONTEXT:
+            case MODAL_OPEN_USER_CONTEXT:
                 api.dispatch(
                     addLog({
                         type: action.type,

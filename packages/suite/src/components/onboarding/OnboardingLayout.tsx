@@ -3,11 +3,11 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
 import { SuiteBanners } from 'src/components/suite/banners';
@@ -81,7 +81,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const isDesktopApp = isDesktop();
 
     const allowedModal = useFilteredModal(
-        [MODAL.CONTEXT_USER],
+        [MODAL_CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
 

@@ -1,6 +1,7 @@
 import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
 import { TranslationKey } from '@suite/intl';
 import { metadataReducer } from '@suite/metadata';
+import { modalReducer as modal } from '@suite/modal';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
@@ -13,7 +14,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
-import modal from './modalReducer';
 import protocol from './protocolReducer';
 import router from './routerReducer';
 import suite from './suiteReducer';

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { WordCount } from '@suite/recovery';
 
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
-import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const getWordRequestInputType = (request: string | undefined) => {
@@ -26,7 +26,7 @@ export const useRecovery = () => {
     const dispatch = useDispatch();
 
     let wordRequestInputType;
-    if (modal.context === MODAL.CONTEXT_DEVICE) {
+    if (modal.context === MODAL_CONTEXT_DEVICE) {
         // checks modal reducer if device requested to show word input and which type
         wordRequestInputType = getWordRequestInputType(modal.windowType);
     }
