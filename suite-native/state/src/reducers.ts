@@ -396,6 +396,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         accounts: migratedAccounts,
                         transactions: {
                             transactions: migratedTransactions,
+                            phishing: oldStateWallet.transactions?.phishing ?? {},
                             fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
                         },
                     },
@@ -418,6 +419,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         accounts: migratedAccounts,
                         transactions: {
                             transactions: migratedTransactions,
+                            phishing: oldStateWallet.transactions?.phishing ?? {},
                             fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
                         },
                     },
