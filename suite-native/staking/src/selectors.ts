@@ -21,6 +21,7 @@ import {
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardanoStakingSelectors';
 import {
+    selectEntryPeriodInDaysBySymbol,
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
@@ -31,6 +32,7 @@ import {
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
     selectEthereumUnstakingBalanceByAccountKey,
+    selectUnstakingPeriodInDaysBySymbol,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereumStakingSelectors';
 import {
@@ -421,3 +423,4 @@ export const selectPendingDepositedBalanceByAccountKey = (
             return exhaustive(symbol);
     }
 };
+export { selectEntryPeriodInDaysBySymbol, selectUnstakingPeriodInDaysBySymbol };

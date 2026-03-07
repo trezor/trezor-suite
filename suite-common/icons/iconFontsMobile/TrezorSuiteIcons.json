@@ -159,6 +159,7 @@
     "arrowLineUp": 61854,
     "arrowLineDown": 61855,
     "arrowLeft": 61856,
-    "arrowDown": 61857,
-    "arrowCounterClockwise": 61858
+    "arrowDownLeft": 61857,
+    "arrowDown": 61858,
+    "arrowCounterClockwise": 61859
 }
