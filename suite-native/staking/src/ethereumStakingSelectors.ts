@@ -1,9 +1,10 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
     selectAccountStakeTransactions,
     selectDeviceAccounts,
+    selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
@@ -120,4 +121,36 @@ export const selectEthereumPendingDepositedBalanceByAccountKey = (
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
     return stakingPool?.pendingDepositedBalance ?? '0';
+
 };
+
+export const selectUnstakingPeriodInDaysBySymbol = (
+    state: StakeRootState,
+    symbol: NetworkSymbol | undefined,
+) => {
+    const { validatorWithdrawTime, validatorExitTime } = selectValidatorsQueueData(state, symbol);
+
+    return getUnstakingPeriodInDays({
+        networkType: symbol ? getNetworkType(symbol) : undefined,
+        validatorWithdrawTime,
+        validatorExitTime,
+    });
+};
+
+export const selectEntryPeriodInDaysBySymbol = (
+    state: StakeRootState,
+    symbol: NetworkSymbol | undefined,
+) => {
+    const { validatorActivationTime, validatorAddingDelay } = selectValidatorsQueueData(
+        state,
+        symbol,
+    );
+
+    if (validatorActivationTime === undefined || validatorAddingDelay === undefined) {
+        return undefined;
+    }
+
+    const daysToWait = secondsToDays(validatorActivationTime + validatorAddingDelay);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
+

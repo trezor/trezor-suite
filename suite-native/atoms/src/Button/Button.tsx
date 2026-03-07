@@ -396,6 +396,7 @@ export const Button = ({
                         textAlign="center"
                         variant={buttonToTextSizeMap[size]}
                         color={textColor}
+                        adjustsFontSizeToFit
                         style={applyStyle(buttonTextStyle, {
                             additionalSpacing: sizeToAdditionalSpacingMap[size],
                             hasLeftView: !!viewLeft,
