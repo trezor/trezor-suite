@@ -8,7 +8,13 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
         },
         {
             "path": "../../suite-common/wallet-core"
@@ -33,7 +39,9 @@
         { "path": "../services" },
         { "path": "../staking" },
         { "path": "../test-utils" },
+        { "path": "../transaction-management" },
         { "path": "../transactions" },
+        { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"
         },

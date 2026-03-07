@@ -12,6 +12,7 @@ import { type IconName as AllAvailableIcons } from './src/icons';
 const usedIcons = [
     'arrowDown',
     'arrowDown',
+    'arrowDownLeft',
     'arrowLineDown',
     'arrowLineUp',
     'arrowLineUpRight',

@@ -1,9 +1,16 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
 import {
     selectAPYByAccountKey,
     selectRewardsBalanceByAccountKey,
@@ -31,11 +38,21 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
+
 export const StakingManagementStakedCard = ({
     accountKey,
     networkSymbol,
 }: StakingManagementStakedCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProp>();
+
+    const handleStakeMore = () => {
+        navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
+            accountKey,
+            symbol: networkSymbol,
+        });
+    };
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
     const rewardsBalance = useSelector(state =>
@@ -103,8 +120,7 @@ export const StakingManagementStakedCard = ({
                 <Button flex={1} colorScheme="primaryElevation0">
                     <Translation id="earn.stakingManagementScreen.unstakeButton" />
                 </Button>
-                {/* TODO: wire up stake more action */}
-                <Button flex={1} colorScheme="primaryElevation0">
+                <Button flex={1} colorScheme="primaryElevation0" onPress={handleStakeMore}>
                     <Translation id="earn.stakingManagementScreen.stakeMoreButton" />
                 </Button>
             </HStack>
