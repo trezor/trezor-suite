@@ -26,7 +26,7 @@ import {
     DeviceOnboardingStackNavigator,
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
-import { StakingDetailScreen } from '@suite-native/module-earn';
+import { HowStakeWorksScreen, StakingDetailScreen } from '@suite-native/module-earn';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
@@ -96,6 +96,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.StakingDetail }}
                 name={RootStackRoutes.StakingDetail}
                 component={StakingDetailScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.HowStakeWorksScreen }}
+                name={RootStackRoutes.HowStakeWorksScreen}
+                component={HowStakeWorksScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}

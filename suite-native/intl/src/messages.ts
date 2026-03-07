@@ -2356,6 +2356,62 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accesible while earning rewards.',
         },
+        howStakeWorksScreen: {
+            title: 'How {symbol} staking works?',
+            subtitle:
+                'Support the {networkName} network. Lock in your funds and earn staking rewards.',
+            infoBannerTitle: '<b>{totalStakedAmount}</b> currently staked with Trezor',
+            benefits: {
+                first: {
+                    title: 'Earn up to ~{potentialRewards} {symbol} annually',
+                    description: 'When staking your total {symbol} balance',
+                },
+                second: {
+                    title: 'Compounds automatically',
+                    description: 'Rewards are re-staked for you',
+                },
+                third: {
+                    title: 'Put your {symbol} to work',
+                    description: 'Enjoy weekly growth while you hold',
+                },
+            },
+            timelineCardTitle: 'Staking timeline',
+            timelineBottomSheetTitle: 'Staking timeline & fees',
+            stakingTimelineTitle: 'Staking',
+            stakingTimeline: {
+                first: {
+                    title: 'Sign staking transaction',
+                    description: 'Network fee',
+                },
+                second: {
+                    title: 'Entry period',
+                    description: '{entryPeriod}',
+                },
+                third: {
+                    title: 'Receive weekly rewards',
+                    description: '{yearlyReward}',
+                },
+            },
+            unstakeTimelineTitle: 'Unstake',
+            unstakeTimeline: {
+                first: {
+                    title: 'Sign unstaking transaction',
+                    description: 'Network fee',
+                },
+                second: {
+                    title: 'Leave staking pool',
+                    description: '{unstakingPeriod}',
+                },
+                third: {
+                    title: 'Claim unstaked {symbol}',
+                    description: 'Network fee',
+                },
+                fourth: {
+                    title: 'Receive {symbol} in your account',
+                    description: 'Instantly',
+                },
+            },
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',
@@ -2370,7 +2426,7 @@ export const messages = {
                 'Your current provider is reducing ADA rewards. Update your provider on desktop and earn {apy}% APY.',
             updateToNewProvider:
                 'Update to our new provider, Everstake, and earn ~{apy}% APY. Your ADA with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
-            rewardsReduced: 'Cardano staking rewards reduced',
+            rewardsReduced: '{networkName} staking rewards reduced',
         },
         notAvailable: 'Not available',
         notAvailableShort: 'N/A',

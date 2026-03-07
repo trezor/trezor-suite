@@ -1,12 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { events } from '@suite-native/analytics';
-import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { PressableOpacity, VStack } from '@suite-native/atoms';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EarnItem } from '../types';
 import { EarnItemCardanoInfo } from './EarnItemCardanoInfo';
-import { EarnItemInfoModal } from './EarnItemInfoModal';
 import { EarnItemOverviewSection } from './EarnItemOverviewSection';
 import { EarnItemRewardSection } from './EarnItemRewardSection';
 
@@ -21,15 +27,19 @@ const earnItemStyle = prepareNativeStyle(utils => ({
 export type EarnListItemProps = EarnItem;
 
 export const EarnListItem = (earnItem: EarnListItemProps) => {
-    const { accountKey } = earnItem;
+    const { accountKey, symbol } = earnItem;
     const { applyStyle } = useNativeStyles();
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
     const analytics = useAnalytics();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
 
     const handlePress = () => {
-        openModal();
+        navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
+            accountKey,
+            symbol,
+        });
         analytics.report({ type: events.earnStakeTilePressedEvent.name });
     };
 
@@ -46,8 +56,6 @@ export const EarnListItem = (earnItem: EarnListItemProps) => {
                     )}
                 </VStack>
             </PressableOpacity>
-
-            <EarnItemInfoModal ref={bottomSheetRef} />
         </>
     );
 };
