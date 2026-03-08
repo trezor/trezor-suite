@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
@@ -26,7 +26,14 @@ export const TradingFormInputCountry = ({
 }: TradingFormInputCountryProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { control, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
+    const {
+        control,
+        defaultCountry,
+        setValue,
+        methods: {
+            formState: { dirtyFields },
+        },
+    } = useTradingFormContext<TradingTradeBuySellType>();
     const getCountryName = useGetCountryName();
 
     const countryValue = useWatch({
@@ -37,6 +44,13 @@ export const TradingFormInputCountry = ({
     const country = countryValue ?? defaultCountry;
     const countryFlag = getCountryFlag(country?.value);
     const countryName = getCountryName(country);
+
+    useEffect(() => {
+        if (!dirtyFields[TRADING_FORM_COUNTRY_SELECT]) {
+            const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
+            setValueTyped(TRADING_FORM_COUNTRY_SELECT, defaultCountry, { shouldDirty: false });
+        }
+    }, [defaultCountry, dirtyFields, setValue]);
 
     return (
         <>
