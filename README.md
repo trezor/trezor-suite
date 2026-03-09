@@ -36,7 +36,7 @@ It's recommended to enable `git config --global submodule.recurse true` so you d
 
 ## **Connect** @trezor/connect
 
-This repository is used for development of version 9 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
+This repository is used for development of version 10 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
 
 Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
 
