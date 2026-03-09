@@ -37,15 +37,6 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     } else {
         proxy.error.message.toLowerCase();
     }
-    api.updateConnectSettings({
-        proxy: {
-            type: 5,
-            host: 'localhost',
-            port: 9050,
-            username: 'johndoe',
-            timeout: 100000,
-        },
-    });
     api.updateConnectSettings({ proxy: 'socks://localhost:9050' });
     api.updateConnectSettings({ proxy: undefined });
 

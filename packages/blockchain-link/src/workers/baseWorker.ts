@@ -148,11 +148,7 @@ export abstract class BaseWorker<API> {
             this.settings = data.settings;
             const { proxy } = data.settings;
             if (proxy) {
-                const agentUri =
-                    typeof proxy === 'string' ? proxy : `socks://${proxy.host}:${proxy.port}`;
-                const socketOptions =
-                    typeof proxy === 'object' ? { timeout: proxy?.timeout } : undefined;
-                this.proxyAgent = new SocksProxyAgent(agentUri, socketOptions);
+                this.proxyAgent = new SocksProxyAgent(proxy);
             } else {
                 this.proxyAgent = undefined;
             }
