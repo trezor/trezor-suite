@@ -27,7 +27,7 @@ import type {
     WalletSettings,
 } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
-import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
+import { FirmwareChannel } from '@trezor/connect-common';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';

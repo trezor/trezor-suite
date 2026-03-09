@@ -1,19 +1,22 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { Manifest as CommonManifest, FirmwareChannel } from '@trezor/connect-common';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
-import { Static, Type } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport';
 import { PartialRecord } from '@trezor/type-utils';
 
-import type { FirmwareChannel } from '../types/firmware';
-
+// Runtime schema for Manifest – kept for backward compatibility and internal validation.
+// The TypeScript type is defined in @trezor/connect-common/src/types/manifest.ts.
 export const Manifest = Type.Object({
     appName: Type.String(),
     appIcon: Type.Optional(Type.String()),
     appUrl: Type.String(),
     email: Type.String(),
 });
-export type Manifest = Static<typeof Manifest>;
+
+// Use the type from connect-common to ensure a single source of truth.
+export type Manifest = CommonManifest;
 
 // timeouts for firmware hash check in milliseconds per model type
 export type FirmwareHashCheckTimeouts = PartialRecord<DeviceModelInternal, number>;

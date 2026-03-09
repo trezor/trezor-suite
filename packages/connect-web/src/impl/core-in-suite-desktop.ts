@@ -7,7 +7,7 @@ import {
     POPUP,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
-import type { Manifest } from '@trezor/connect/src/types/settings';
+import type { Manifest } from '@trezor/connect-common';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';

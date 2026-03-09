@@ -7,6 +7,8 @@ import type {
 } from '@trezor/device-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
+export type { FirmwareChannel } from '@trezor/connect-common';
+
 export type FirmwareRange = Record<
     DeviceModelInternal,
     {
@@ -47,12 +49,3 @@ export type FirmwareUpdateFlowType =
     | 'reboot_and_upgrade'
     | 'manual'
     | 'unknown_flow';
-
-export type FirmwareChannel =
-    | 'production'
-    | 'production-early-access'
-    | 'test-unsigned'
-    | 'test-unsigned-stable'
-    | 'test-signed'
-    | 'localhost-unsigned'
-    | 'localhost-signed';
