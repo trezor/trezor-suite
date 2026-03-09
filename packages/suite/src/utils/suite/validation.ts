@@ -257,6 +257,7 @@ export const validateNetworkReserve =
         { reserve, balance, fee = '0' }: ValidateNetworkReserveOptions,
     ) =>
     (value: string) => {
+        if (!value) return;
         if (!isAmountWithinNetworkReserve({ reserve, balance, fee, amount: value })) {
             return translationString('AMOUNT_EXCEEDS_NETWORK_RESERVE');
         }
