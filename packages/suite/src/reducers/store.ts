@@ -11,7 +11,7 @@ import {
 import { createLogger } from 'redux-logger';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
-import { recoveryReducer } from '@suite/recovery';
+import { recoveryMiddleware, recoveryReducer } from '@suite/recovery';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -32,7 +32,6 @@ import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import recoveryMiddlewares from 'src/middlewares/recovery';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
@@ -89,7 +88,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
         ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
         ...backupMiddlewares,
-        ...recoveryMiddlewares,
+        recoveryMiddleware,
     ];
 
     if (!isCodesignBuild()) {

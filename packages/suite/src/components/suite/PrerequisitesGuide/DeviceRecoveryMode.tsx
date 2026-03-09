@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { Banner } from '@trezor/components';
 
-import { recoveryRerun } from 'src/actions/recovery/recoveryActions';
+import { recoveryRerun } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
