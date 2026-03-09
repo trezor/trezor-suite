@@ -1,14 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 
-import { recoveryActions } from '@suite/recovery';
+import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { deviceActions } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { rerun } from 'src/actions/recovery/recoveryActions';
+import { recoveryRerun } from 'src/actions/recovery/recoveryActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
-
-import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
 const recovery =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -17,11 +15,13 @@ const recovery =
         // pass action
         next(action);
 
-        const { recovery, analytics } = api.getState();
+        const state = api.getState();
+        const recoveryStatus = selectRecoveryStatus(state);
+        const { analytics } = state;
 
         if (
             action.type === UI_REQUEST.REQUEST_WORD &&
-            recovery.status === 'waiting-for-confirmation'
+            recoveryStatus === 'waiting-for-confirmation'
         ) {
             // Since the device asked for a first word, we can safely assume we've received confirmation from the user
             api.dispatch(recoveryActions.setStatus('in-progress'));
@@ -31,7 +31,7 @@ const recovery =
             deviceActions.updateSelectedDevice.match(action) &&
             action.payload?.features !== undefined &&
             isRecoveryInProgress(action.payload?.features) &&
-            recovery.status !== 'in-progress'
+            recoveryStatus !== 'in-progress'
         ) {
             api.dispatch(
                 onboardingActions.updateAnalytics({
@@ -43,7 +43,7 @@ const recovery =
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
-                api.dispatch(rerun());
+                api.dispatch(recoveryRerun());
             }
         }
 

@@ -7,7 +7,9 @@ import {
     type RecoveryType,
     type SeedInputStatus,
     type WordCount,
+    checkSeedThunk,
     recoveryActions,
+    selectRecovery,
 } from '@suite/recovery';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -17,7 +19,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { checkSeed } from 'src/actions/recovery/recoveryActions';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -31,7 +32,7 @@ import { SelectWordCountStep } from './steps/SelectWordCountStep';
 import { WordInputStep } from './steps/WordInputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
-    const recovery = useSelector(state => state.recovery);
+    const recovery = useSelector(selectRecovery);
     const modal = useSelector(state => state.modal);
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
@@ -181,7 +182,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         onClick={() =>
                             isT1B1
                                 ? dispatch(recoveryActions.setStatus('select-word-count'))
-                                : dispatch(checkSeed())
+                                : dispatch(checkSeedThunk())
                         }
                         isDisabled={!isUnderstood || isLocked()}
                         data-testid="@recovery/start-button"
@@ -208,7 +209,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
                             if (shouldSkipSelection) {
                                 dispatch(recoveryActions.setAdvancedRecovery(true));
-                                dispatch(checkSeed());
+                                dispatch(checkSeedThunk());
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
@@ -226,7 +227,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             dispatch(
                                 recoveryActions.setAdvancedRecovery(recoveryType === 'advanced'),
                             );
-                            dispatch(checkSeed());
+                            dispatch(checkSeedThunk());
                         }}
                         data-testid="@recovery/continue-button"
                     >

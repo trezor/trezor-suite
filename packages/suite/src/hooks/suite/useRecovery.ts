@@ -1,9 +1,14 @@
 import { useMemo } from 'react';
 
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
-import { SeedInputStatus, WordCount, recoveryActions } from '@suite/recovery';
+import {
+    SeedInputStatus,
+    WordCount,
+    recoverDeviceThunk,
+    recoveryActions,
+    selectRecovery,
+} from '@suite/recovery';
 
-import { recoverDevice } from 'src/actions/recovery/recoveryActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const getWordRequestInputType = (request: string | undefined) => {
@@ -20,7 +25,7 @@ const getWordRequestInputType = (request: string | undefined) => {
 };
 
 export const useRecovery = () => {
-    const recovery = useSelector(state => state.recovery);
+    const recovery = useSelector(selectRecovery);
     const modal = useSelector(state => state.modal);
     const dispatch = useDispatch();
 
@@ -35,7 +40,7 @@ export const useRecovery = () => {
             setWordsCount: (count: WordCount) => dispatch(recoveryActions.setWordsCount(count)),
             setAdvancedRecovery: (value: boolean) =>
                 dispatch(recoveryActions.setAdvancedRecovery(value)),
-            recoverDevice: () => dispatch(recoverDevice()),
+            recoverDevice: () => dispatch(recoverDeviceThunk()),
             setStatus: (status: SeedInputStatus) => dispatch(recoveryActions.setStatus(status)),
             resetReducer: () => dispatch(recoveryActions.resetReducer()),
         }),
