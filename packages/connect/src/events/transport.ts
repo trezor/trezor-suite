@@ -7,7 +7,7 @@ import type { MessageFactoryFn } from '../types/utils';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
-export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
+export { TRANSPORT_EVENT } from '@trezor/connect-common';
 
 export interface TransportInfo {
     apiType: Transport['apiType'];

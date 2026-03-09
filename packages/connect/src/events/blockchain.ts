@@ -8,15 +8,7 @@ import type {
 import type { CoinInfo } from '../types/coinInfo';
 import type { MessageFactoryFn } from '../types/utils';
 
-export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
-export const BLOCKCHAIN = {
-    CONNECT: 'blockchain-connect',
-    RECONNECTING: 'blockchain-reconnecting',
-    ERROR: 'blockchain-error',
-    BLOCK: 'blockchain-block',
-    NOTIFICATION: 'blockchain-notification',
-    FIAT_RATES_UPDATE: 'fiat-rates-update',
-} as const;
+export { BLOCKCHAIN_EVENT, BLOCKCHAIN } from '@trezor/connect-common';
 
 export interface BlockchainInfo extends ServerInfo {
     coin: CoinInfo;

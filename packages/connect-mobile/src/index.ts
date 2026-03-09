@@ -1,10 +1,9 @@
 import { corsValidator, parseManifest } from '@trezor/connect/src/data/connectSettings';
-import { createErrorMessage } from '@trezor/connect/src/events';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import type { Manifest } from '@trezor/connect-common';
-import { ConnectEmitter } from '@trezor/connect-common';
+import { ConnectEmitter , createErrorMessage } from '@trezor/connect-common';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     DEEPLINK_VERSION,

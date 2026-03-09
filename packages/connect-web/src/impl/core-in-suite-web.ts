@@ -1,12 +1,7 @@
-import {
-    CORE_CALL,
-    CallMethodAnyResponse,
-    CallMethodPayload,
-    POPUP,
-    createErrorMessage,
-} from '@trezor/connect/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
+import type { CallMethodAnyResponse, CallMethodPayload } from '@trezor/connect/src/events';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
+import { CORE_CALL, POPUP, createErrorMessage } from '@trezor/connect-common';
+import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
 import { getEnv } from '../connectSettings';

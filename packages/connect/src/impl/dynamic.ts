@@ -1,19 +1,14 @@
+import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
 import { parseManifest, parseVersion } from '../data/connectSettings';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import { ConnectSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 
-export type ConnectImplSettings = {
-    manifest: NonNullable<ConnectSettings['manifest']>;
-    version: NonNullable<ConnectSettings['version']>;
-    env?: ConnectSettings['env'];
-    debug?: ConnectSettings['debug'];
-};
+export type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common';
 
 type CoreMode = 'auto' | 'suite-desktop' | 'suite-web';
 
@@ -22,13 +17,6 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
 };
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
-
-export type ConnectImpl = Omit<
-    ConnectFactoryDependencies<{}>,
-    'init' | 'eventEmitter' | 'uiResponse' | 'updateConnectSettings'
-> & {
-    init: (params: ConnectImplSettings) => Promise<void>;
-};
 
 type TrezorConnectDynamicParams = {
     implementations: Record<ImplType, ConnectImpl>;

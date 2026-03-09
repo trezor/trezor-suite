@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
 import type { ConnectSettings } from '@trezor/connect';
-import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
+import { CoreEventMessage } from '@trezor/connect/src/events';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
+import { DEVICE_EVENT, POPUP } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect-common/src/data/version';
 import {

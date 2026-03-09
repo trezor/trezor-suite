@@ -1,4 +1,4 @@
-import { POPUP } from '@trezor/connect/src/events/popup';
+import { POPUP } from '@trezor/connect-common';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
 function trezorContentScript() {

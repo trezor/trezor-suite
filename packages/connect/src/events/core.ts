@@ -1,10 +1,3 @@
-import {
-    ErrorCode,
-    SerializedError,
-    TrezorError,
-} from '@trezor/connect-common/src/constants/errors';
-import { Err } from '@trezor/type-utils';
-
 import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
@@ -18,6 +11,8 @@ import type {
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
+
+export { createErrorMessage } from '@trezor/connect-common';
 
 export const CORE_EVENT = 'CORE_EVENT';
 
@@ -63,14 +58,3 @@ export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = n
 
     return message as T;
 };
-
-// common response used straight from npm index (not from Core)
-export const createErrorMessage = (
-    error: (Error & { code?: ErrorCode }) | TrezorError,
-): Err<SerializedError> => ({
-    success: false,
-    error: {
-        message: error.message,
-        code: error.code ?? 'Failure_UnknownCode',
-    },
-});
