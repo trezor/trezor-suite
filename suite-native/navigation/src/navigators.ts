@@ -11,6 +11,7 @@ import {
     TokenAddress,
     XpubAddress,
 } from '@suite-common/wallet-types';
+import { ExperimentalFeature } from '@suite-native/settings';
 import { AccountInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -393,6 +394,7 @@ export type RootStackParamList = {
     [RootStackRoutes.Storybook]: undefined;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
+    [RootStackRoutes.ExperimentalFeedbackModal]: { feature: ExperimentalFeature };
 };
 
 export type TransactionDetailStackParamList = {

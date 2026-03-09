@@ -63,6 +63,7 @@
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },
         { "path": "../discovery" },
+        { "path": "../experimental-features" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../graph" },

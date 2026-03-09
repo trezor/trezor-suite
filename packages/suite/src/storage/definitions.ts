@@ -2,9 +2,9 @@ import { FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
-import type { ExperimentalFeedbackState } from '@suite/experimental-feedback';
 import { AnalyticsState } from '@suite-common/analytics-redux';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { ExperimentalFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';

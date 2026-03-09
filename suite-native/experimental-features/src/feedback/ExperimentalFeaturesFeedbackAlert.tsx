@@ -1,7 +1,11 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { ExperimentalFeature } from '@suite-native/settings';
 
 import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';
@@ -9,14 +13,19 @@ import { feedbackDismissed } from './experimentalFeedbackSlice';
 
 type ExperimentalFeaturesFeedbackAlertProps = {
     pendingFeature: ExperimentalFeature;
-    onRate: () => void;
 };
 
 export const ExperimentalFeaturesFeedbackAlert = ({
     pendingFeature,
-    onRate,
 }: ExperimentalFeaturesFeedbackAlertProps) => {
     const dispatch = useDispatch();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    const handleRate = useCallback(() => {
+        navigation.navigate(RootStackRoutes.ExperimentalFeedbackModal, {
+            feature: pendingFeature,
+        });
+    }, [navigation, pendingFeature]);
 
     const handleDismiss = () => {
         dispatch(feedbackDismissed(pendingFeature));
@@ -43,7 +52,7 @@ export const ExperimentalFeaturesFeedbackAlert = ({
             secondaryButtonLabel={
                 <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.dismissButton" />
             }
-            onPressPrimaryButton={onRate}
+            onPressPrimaryButton={handleRate}
             onPressSecondaryButton={handleDismiss}
         />
     );
