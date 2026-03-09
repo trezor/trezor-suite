@@ -68,8 +68,13 @@ export const CryptoAmountInput = ({
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
 
-        const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
-        if (fiatValue) setValue(fiatFieldName, fiatValue?.toFixed(baseCurrencyDecimals));
+        if (transformedValue) {
+            const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
+            if (fiatValue && !fiatValue.isNaN())
+                setValue(fiatFieldName, fiatValue.toFixed(baseCurrencyDecimals));
+        } else {
+            setValue(fiatFieldName, '');
+        }
         setValue('setMaxOutputId', undefined);
         debounce(() => {
             trigger(cryptoFieldName);

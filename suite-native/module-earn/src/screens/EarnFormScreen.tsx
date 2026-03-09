@@ -1,0 +1,48 @@
+import { AccountDetailsCard } from '@suite-native/accounts';
+import { Box } from '@suite-native/atoms';
+import { Form } from '@suite-native/forms';
+import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
+
+import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
+import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
+import { EarnOutputFields } from '../components/EarnOutputFields';
+import { useEarnForm } from '../hooks/useEarnForm';
+
+export const EarnFormScreen = () => {
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnForm>>();
+    const { accountKey } = route.params;
+
+    const earnForm = useEarnForm(accountKey);
+
+    if (!earnForm) {
+        return null;
+    }
+
+    const { form, amountValue, account } = earnForm;
+    const {
+        formState: { isValid },
+    } = form;
+
+    return (
+        <Screen
+            header={<EarnFormScreenHeader accountKey={accountKey} />}
+            footer={
+                <EarnFormScreenFooter
+                    accountKey={accountKey}
+                    symbol={account.symbol}
+                    amountValue={amountValue}
+                    isDisabled={!isValid}
+                    onPress={handleSubmit}
+                />
+            }
+        >
+            <AccountDetailsCard accountKey={accountKey} variant="stake" />
+
+            <Box marginTop="sp16">
+                <Form form={form}>
+                    <EarnOutputFields accountKey={accountKey} />
+                </Form>
+            </Box>
+        </Screen>
+    );
+};

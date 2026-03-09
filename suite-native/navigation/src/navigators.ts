@@ -385,8 +385,11 @@ export type RootStackParamList = {
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.HowStakeWorksScreen]: {
-        accountKey: AccountKey;
+        accountKey?: AccountKey;
         symbol: NetworkSymbol;
+    };
+    [RootStackRoutes.EarnForm]: {
+        accountKey: AccountKey;
     };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
