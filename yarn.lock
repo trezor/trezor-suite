@@ -14612,6 +14612,12 @@ __metadata:
   resolution: "@suite/recovery@workspace:suite/recovery"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

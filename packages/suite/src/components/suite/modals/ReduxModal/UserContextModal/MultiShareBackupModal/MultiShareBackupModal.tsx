@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -19,7 +20,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
 import { MultiShareBackupStep5 } from './MultiShareBackupStep5';
-import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/device/isRecoveryInProgress';
 
 const steps = ['first-info', 'second-info', 'verify-ownership', 'backup-seed', 'done'] as const;
 export type Steps = (typeof steps)[number];

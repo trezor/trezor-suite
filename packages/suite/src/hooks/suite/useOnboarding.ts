@@ -5,7 +5,7 @@ import { BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { rerun as recoveryRerun } from 'src/actions/recovery/recoveryActions';
+import { recoveryRerun } from 'src/actions/recovery/recoveryActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 

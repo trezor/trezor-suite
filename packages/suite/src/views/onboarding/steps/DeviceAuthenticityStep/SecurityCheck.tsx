@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectRecoveryStatus } from '@suite/recovery';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
@@ -132,7 +133,7 @@ const SecurityCheckContent = ({
 }: SecurityCheckContentProps) => {
     const analytics = useAnalytics();
     const { isBelowTablet } = useLayoutSize();
-    const recovery = useSelector(state => state.recovery);
+    const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
@@ -143,7 +144,7 @@ const SecurityCheckContent = ({
     const dispatch = useDispatch();
 
     const initialized = !!device?.features?.initialized;
-    const isRecoveryInProgress = recovery.status === 'in-progress';
+    const isRecoveryInProgress = recoveryStatus === 'in-progress';
     const isFirmwareInstalled = device?.firmware !== 'none';
     const secondaryButtonText = isFirmwareInstalled ? 'TR_I_HAVE_NOT_USED_IT' : 'TR_I_HAVE_DOUBTS';
     const primaryButtonTopText = isFirmwareInstalled

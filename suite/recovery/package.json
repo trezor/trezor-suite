@@ -8,9 +8,16 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2"
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }
