@@ -55,6 +55,8 @@ export const TransactionOutputLabelEditable = ({
 
         if (!result.success) {
             handleSuiteSyncError(result.error);
+
+            return;
         }
 
         dispatch(featureUsed('suite-sync'));

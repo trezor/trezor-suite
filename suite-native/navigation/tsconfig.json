@@ -24,6 +24,7 @@
         { "path": "../scrollview" },
         { "path": "../sentry" },
         { "path": "../services" },
+        { "path": "../settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },

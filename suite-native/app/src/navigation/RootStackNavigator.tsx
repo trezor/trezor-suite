@@ -27,6 +27,7 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { StakingDetailScreen } from '@suite-native/module-earn';
+import { ExperimentalFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
@@ -182,6 +183,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.StellarManageTokenStack}
                     component={StellarManageTokenStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.ExperimentalFeedbackModal}
+                    component={ExperimentalFeedbackModalScreen}
                 />
 
                 {isDevelopOrDebugEnv() && (

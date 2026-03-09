@@ -11,6 +11,11 @@ export type ExperimentalFeedbackRootState<FeatureName extends string = string> =
     experimentalFeedback: ExperimentalFeedbackState<FeatureName>;
 };
 
+export const experimentalFeedbackInitialState: ExperimentalFeedbackState = {
+    usageCounts: {},
+    pendingFeedbackFeatures: [],
+};
+
 export const FEEDBACK_THRESHOLD = 3;
 
 export function createExperimentalFeedbackSlice<FeatureName extends string>(options?: {
@@ -20,10 +25,7 @@ export function createExperimentalFeedbackSlice<FeatureName extends string>(opti
 }) {
     return createSlice({
         name: 'experimentalFeedback',
-        initialState: {
-            usageCounts: {} as UsageCount<FeatureName>,
-            pendingFeedbackFeatures: [] as FeatureName[],
-        },
+        initialState: experimentalFeedbackInitialState as ExperimentalFeedbackState<FeatureName>,
         reducers: {
             /** Increments usage count and queues the feedback modal once the threshold is reached.
              * Counting stops at the threshold to avoid re-triggering the modal. */

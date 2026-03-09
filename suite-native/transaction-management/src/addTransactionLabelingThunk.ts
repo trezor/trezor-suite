@@ -65,8 +65,6 @@ export const addTransactionLabelingThunk = createThunk<
                 return acc;
             }, []);
 
-            dispatch(featureUsed('suite-sync'));
-
             for (const label of transactionUtxoLabels) {
                 extra.services.suiteSync.labeling.updateOutputLabel({
                     deviceStaticSessionId: selectedAccount.deviceState,
@@ -76,6 +74,10 @@ export const addTransactionLabelingThunk = createThunk<
                     accountDescriptor: selectedAccount.descriptor,
                     networkSymbol: selectedAccount.symbol,
                 });
+            }
+
+            if (transactionUtxoLabels.length > 0) {
+                dispatch(featureUsed('suite-sync'));
             }
         }
     },

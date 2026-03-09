@@ -47,6 +47,8 @@ export const AddressLabelEditable = ({
 
         if (!result.success) {
             handleSuiteSyncError(result.error);
+
+            return;
         }
 
         dispatch(featureUsed('suite-sync'));

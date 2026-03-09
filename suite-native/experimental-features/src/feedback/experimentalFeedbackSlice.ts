@@ -6,3 +6,4 @@ export const experimentalFeedbackSlice = createExperimentalFeedbackSlice<Experim
 export const { featureUsed, feedbackRequested, feedbackDismissed } =
     experimentalFeedbackSlice.actions;
 export const experimentalFeedbackReducer = experimentalFeedbackSlice.reducer;
+export const experimentalFeedbackInitialState = experimentalFeedbackSlice.getInitialState();
