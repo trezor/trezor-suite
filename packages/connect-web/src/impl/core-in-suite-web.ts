@@ -65,7 +65,9 @@ export class CoreInSuiteWeb implements ConnectImpl {
             typeof window !== 'undefined' &&
             window.location.href.startsWith('https://dev.suite.sldev.cz/connect/')
         ) {
-            const branch = window.location.href.match(/\/connect\/(.+?)(?:\/methods\/|$)/)?.[1];
+            const branch = window.location.href.match(
+                /\/connect\/(.+?)(?:\/methods\/|\/settings\/|$)/,
+            )?.[1];
             if (branch) {
                 return `https://dev.suite.sldev.cz/suite-web/${branch}/web/connect-popup`;
             }
