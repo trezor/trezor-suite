@@ -18,10 +18,14 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 
 const buttonStyle = prepareNativeStyle(utils => ({
     padding: BUTTON_PADDING,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderColor: utils.colors.borderDashed,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
+}));
+
+const iconWrapperStyle = prepareNativeStyle(() => ({
+    transform: [{ rotate: '90deg' }],
 }));
 
 export const SwitchViewsButton = ({ onPress, label }: SwitchAmountsButtonProps) => {
@@ -37,7 +41,9 @@ export const SwitchViewsButton = ({ onPress, label }: SwitchAmountsButtonProps) 
                     label ?? translate('atoms.animatedDoubleView.defaultSwitchLabel')
                 }
             >
-                <Icon size="mediumLarge" name="arrowsCounterClockwise" />
+                <Box style={applyStyle(iconWrapperStyle)}>
+                    <Icon size="mediumLarge" name="arrowsCounterClockwise" />
+                </Box>
             </PressableOpacity>
         </Box>
     );

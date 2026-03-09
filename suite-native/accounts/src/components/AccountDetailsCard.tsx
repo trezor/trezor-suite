@@ -11,23 +11,17 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { TokenReceiveCard } from './TokenReceiveCard';
 
+type AccountDetailsCardVariant = 'default' | 'stake';
+
 type AccountDetailsCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     isStakeVariant?: boolean;
 };
 
-const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
-    (utils, { isStakeVariant }) => ({
-        extend: {
-            condition: isStakeVariant,
-            style: {
-                backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-                borderColor: utils.colors.borderElevation1,
-            },
-        },
-    }),
-);
+const stakeCardStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+}));
 
 export const AccountDetailsCard = ({
     accountKey,
@@ -35,6 +29,7 @@ export const AccountDetailsCard = ({
     isStakeVariant = false,
 }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -46,17 +41,24 @@ export const AccountDetailsCard = ({
             />
         );
 
+    const isStakeVariant = variant === 'stake';
+
     return (
         <VStack spacing="sp16">
             <Card
                 noPadding={!tokenContract}
                 noShadow={isStakeVariant}
-                style={applyStyle(stakeCardStyle, { isStakeVariant })}
+                borderColor={isStakeVariant ? 'backgroundTertiaryDefaultOnElevation0' : undefined}
+                style={isStakeVariant ? applyStyle(stakeCardStyle) : undefined}
             >
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (
-                    <AccountsListItem account={account} isNativeCoinOnly />
+                    <AccountsListItem
+                        account={account}
+                        isNativeCoinOnly
+                        isCryptoBalancePrimary={isStakeVariant}
+                    />
                 )}
             </Card>
         </VStack>

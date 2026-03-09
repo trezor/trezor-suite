@@ -113,6 +113,11 @@ export const RootStackNavigator = () => {
                 component={HowStakeWorksScreen}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnForm }}
+                name={RootStackRoutes.EarnForm}
+                component={EarnFormScreen}
+            />
+            <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />

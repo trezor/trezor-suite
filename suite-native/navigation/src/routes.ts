@@ -8,6 +8,7 @@ export enum RootStackRoutes {
     StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
+    EarnForm = 'EarnForm',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
