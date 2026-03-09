@@ -3,7 +3,7 @@ import type { CallMethod } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
-import { CORE_CALL, ConnectEmitter, POPUP , createErrorMessage } from '@trezor/connect-common';
+import { CORE_CALL, ConnectEmitter, POPUP, createErrorMessage } from '@trezor/connect-common';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 

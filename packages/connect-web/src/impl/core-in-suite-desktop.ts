@@ -2,7 +2,7 @@
 
 import type { CallMethodAnyResponse, CallMethodPayload } from '@trezor/connect/src/events';
 import { CORE_CALL, POPUP } from '@trezor/connect-common';
-import type { ConnectImpl, ConnectImplSettings , Manifest } from '@trezor/connect-common';
+import type { ConnectImpl, ConnectImplSettings, Manifest } from '@trezor/connect-common';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
