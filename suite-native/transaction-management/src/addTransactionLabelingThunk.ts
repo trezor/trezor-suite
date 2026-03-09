@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, TxTargetId } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
+import { featureUsed } from '@suite-native/experimental-features';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 
@@ -24,7 +25,7 @@ export const addTransactionLabelingThunk = createThunk<
     void
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
-    ({ selectedAccount, txId }, { getState, extra }) => {
+    ({ selectedAccount, txId }, { dispatch, getState, extra }) => {
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
         if (!isSuiteSyncEnabled) {
@@ -63,6 +64,8 @@ export const addTransactionLabelingThunk = createThunk<
 
                 return acc;
             }, []);
+
+            dispatch(featureUsed('suite-sync'));
 
             for (const label of transactionUtxoLabels) {
                 extra.services.suiteSync.labeling.updateOutputLabel({

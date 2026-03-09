@@ -10,6 +10,7 @@ import {
     useAccountLabelForm,
 } from '@suite-native/accounts';
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
+import { featureUsed } from '@suite-native/experimental-features';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -79,6 +80,8 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
             if (!result.success) {
                 return handleSuiteSyncError(result.error);
             }
+
+            dispatch(featureUsed('suite-sync'));
         } else {
             dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
         }
