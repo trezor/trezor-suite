@@ -13,8 +13,10 @@ import { DestinationTagInput } from './DestinationTagInput';
 type RecipientInputsProps = {
     index: number;
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
-export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => {
+
+export const RecipientInputs = ({ index, accountKey, tokenContract }: RecipientInputsProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -27,7 +29,12 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
         <VStack spacing="sp16">
             <AddressInput index={index} accountKey={accountKey} />
             <CardDivider />
-            <AmountInputs index={index} />
+            <AmountInputs
+                index={index}
+                accountKey={accountKey}
+                symbol={account.symbol}
+                tokenContract={tokenContract}
+            />
             {hasDestinationTag && (
                 <Animated.View layout={LinearTransition}>
                     <VStack spacing="sp16">

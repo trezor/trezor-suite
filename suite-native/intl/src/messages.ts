@@ -2469,6 +2469,13 @@ export const messages = {
                 "We've left {amount} {displaySymbol} in your account so you can pay for withdrawal fees.",
             estimatedRewardsLabel: 'Estimated yearly rewards',
             estimatedRewardsPlaceholder: 'To be calculated',
+            validation: {
+                amountIsZero: 'Amount must be greater than 0.',
+                amountBelowMinimum: 'Amount must be at least {amount} {symbol}.',
+                insufficientBalance: "You don't have enough balance to stake this amount.",
+                feeBufferReserve: 'Not enough funds left after we reserve for withdrawal fees.',
+                tooManyDecimals: 'Too many decimals.',
+            },
         },
         earnScreen: {
             title: 'Earn',
