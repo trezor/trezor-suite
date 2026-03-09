@@ -2342,6 +2342,15 @@ export const messages = {
         stakingDetailScreen: {
             title: 'Staking',
         },
+        earnFormScreen: {
+            title: '{assetName} staking',
+            amountLabel: 'Amount',
+            stakeMaxButton: 'Stake max',
+            withdrawalFeesBanner:
+                "We've left {amount} {displaySymbol} in your account so you can pay for withdrawal fees.",
+            estimatedRewardsLabel: 'Estimated yearly rewards',
+            estimatedRewardsPlaceholder: 'To be calculated',
+        },
         earnScreen: {
             title: 'Earn',
             subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',

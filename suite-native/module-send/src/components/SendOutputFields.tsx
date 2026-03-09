@@ -40,7 +40,12 @@ export const SendOutputFields = ({ accountKey, tokenContract }: SendOutputFields
             <Card style={applyStyle(cardStyle)}>
                 <VStack spacing="sp12">
                     {outputsFieldArray.fields.map((output, index) => (
-                        <RecipientInputs key={output.id} index={index} accountKey={accountKey} />
+                        <RecipientInputs
+                            key={output.id}
+                            index={index}
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
                     ))}
                     {/*
                     TODO: add output (outputs.append({...})) button
