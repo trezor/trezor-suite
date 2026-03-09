@@ -1,10 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 
+import { recoveryActions } from '@suite/recovery';
 import { deviceActions } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { rerun } from 'src/actions/recovery/recoveryActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
@@ -42,7 +43,7 @@ const recovery =
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
-                api.dispatch(recoveryActions.rerun());
+                api.dispatch(rerun());
             }
         }
 

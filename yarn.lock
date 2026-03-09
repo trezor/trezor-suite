@@ -14610,6 +14610,8 @@ __metadata:
 "@suite/recovery@workspace:*, @suite/recovery@workspace:suite/recovery":
   version: 0.0.0-use.local
   resolution: "@suite/recovery@workspace:suite/recovery"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
   languageName: unknown
   linkType: soft
 

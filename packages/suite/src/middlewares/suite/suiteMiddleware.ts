@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { METADATA } from '@suite/metadata';
+import { recoveryActions } from '@suite/recovery';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import {
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';

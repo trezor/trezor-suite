@@ -3,7 +3,12 @@ import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
-import type { RecoveryType, WordCount } from '@suite/recovery';
+import {
+    type RecoveryType,
+    type SeedInputStatus,
+    type WordCount,
+    recoveryActions,
+} from '@suite/recovery';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
@@ -12,13 +17,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import {
-    SeedInputStatus,
-    checkSeed,
-    setAdvancedRecovery,
-    setStatus,
-    setWordsCount,
-} from 'src/actions/recovery/recoveryActions';
+import { checkSeed } from 'src/actions/recovery/recoveryActions';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -66,7 +65,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const handleBackClick = () => {
-        dispatch(setStatus(statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1]));
+        dispatch(
+            recoveryActions.setStatus(
+                statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1],
+            ),
+        );
     };
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
@@ -177,7 +180,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <Modal.Button
                         onClick={() =>
                             isT1B1
-                                ? dispatch(setStatus('select-word-count'))
+                                ? dispatch(recoveryActions.setStatus('select-word-count'))
                                 : dispatch(checkSeed())
                         }
                         isDisabled={!isUnderstood || isLocked()}
@@ -193,7 +196,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         onClick={() => {
                             if (!wordCount) return;
 
-                            dispatch(setWordsCount(wordCount));
+                            dispatch(recoveryActions.setWordsCount(wordCount));
 
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
@@ -204,10 +207,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             );
 
                             if (shouldSkipSelection) {
-                                dispatch(setAdvancedRecovery(true));
+                                dispatch(recoveryActions.setAdvancedRecovery(true));
                                 dispatch(checkSeed());
                             } else {
-                                dispatch(setStatus('select-recovery-type'));
+                                dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
                         }}
                         data-testid="@recovery/continue-button"
@@ -220,7 +223,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <Modal.Button
                         isDisabled={!recoveryType}
                         onClick={() => {
-                            dispatch(setAdvancedRecovery(recoveryType === 'advanced'));
+                            dispatch(
+                                recoveryActions.setAdvancedRecovery(recoveryType === 'advanced'),
+                            );
                             dispatch(checkSeed());
                         }}
                         data-testid="@recovery/continue-button"

@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { EarnAnalyticsStep, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAllYieldOpportunities } from 'src/components/earn/EarnDashboard/yield/hooks/useAllYieldOpportunities';
 import { AccountLabel } from 'src/components/suite';

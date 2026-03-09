@@ -1,9 +1,10 @@
-import { recoveryReducer } from '@suite/recovery';
+import type { UnknownAction } from '@reduxjs/toolkit';
+
+import { recoveryActions, recoveryReducer } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { checkSeed, recoverDevice } from 'src/actions/recovery/recoveryActions';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
 
 const getInitialState = (custom?: any): any => ({
     suite: {
@@ -19,7 +20,7 @@ const getInitialState = (custom?: any): any => ({
         },
     },
     recovery: {
-        ...recoveryReducer(undefined, {} as Action),
+        ...recoveryReducer(undefined, {} as UnknownAction),
         ...custom,
     },
     analytics: {
@@ -109,7 +110,7 @@ describe('Recovery Actions', () => {
 
     it('recoverDevice', async () => {
         const store = mockStore(getInitialState());
-        const action = store.dispatch(recoveryActions.recoverDevice());
+        const action = store.dispatch(recoverDevice());
         expect(store.getState().recovery.status).toMatch('in-progress');
         await action;
         expect(store.getState().recovery.status).toMatch('finished');
@@ -117,7 +118,7 @@ describe('Recovery Actions', () => {
 
     it('checkSeed', async () => {
         const store = mockStore(getInitialState());
-        const action = store.dispatch(recoveryActions.checkSeed());
+        const action = store.dispatch(checkSeed());
         expect(store.getState().recovery.status).toMatch('in-progress');
         await action;
         expect(store.getState().recovery.status).toMatch('finished');

@@ -1,13 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import {
-    RECOVERY_RESET_REDUCER,
-    RECOVERY_SET_ADVANCED_RECOVERY,
-    RECOVERY_SET_ERROR,
-    RECOVERY_SET_STATUS,
-    RECOVERY_SET_WORDS_COUNT,
-    SeedInputStatus,
-    WordCount,
-} from '@suite/recovery';
+import { recoveryActions } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
@@ -20,36 +12,7 @@ import { Dispatch, GetState } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
-export type RecoveryAction =
-    | { type: typeof RECOVERY_SET_WORDS_COUNT; payload: WordCount }
-    | { type: typeof RECOVERY_SET_ADVANCED_RECOVERY; payload: boolean }
-    | { type: typeof RECOVERY_SET_ERROR; payload: string | undefined }
-    | { type: typeof RECOVERY_SET_STATUS; payload: SeedInputStatus }
-    | { type: typeof RECOVERY_RESET_REDUCER };
-
-const setWordsCount = (count: WordCount): RecoveryAction => ({
-    type: RECOVERY_SET_WORDS_COUNT,
-    payload: count,
-});
-
-const setAdvancedRecovery = (value: boolean): RecoveryAction => ({
-    type: RECOVERY_SET_ADVANCED_RECOVERY,
-    payload: value,
-});
-
-const setError = (payload: string | undefined): RecoveryAction => ({
-    type: RECOVERY_SET_ERROR,
-    payload,
-});
-
-const resetReducer = (): RecoveryAction => ({
-    type: RECOVERY_RESET_REDUCER,
-});
-
-const setStatus = (status: SeedInputStatus): RecoveryAction => ({
-    type: RECOVERY_SET_STATUS,
-    payload: status,
-});
+export type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 
 const submit = (word: string) => () => {
     TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word });
@@ -62,12 +25,12 @@ const checkSeed =
 
         if (!device?.features) return;
 
-        dispatch(setError(undefined));
+        dispatch(recoveryActions.setError(undefined));
 
         if (device.features.internal_model === DeviceModelInternal.T1B1) {
-            dispatch(setStatus('waiting-for-confirmation'));
+            dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
         } else {
-            dispatch(setStatus('in-progress'));
+            dispatch(recoveryActions.setStatus('in-progress'));
         }
 
         const response = await TrezorConnect.recoveryDevice({
@@ -83,7 +46,7 @@ const checkSeed =
         });
 
         if (!response.success) {
-            dispatch(setError(response.error.message));
+            dispatch(recoveryActions.setError(response.error.message));
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.settingsDeviceCheckSeedEvent.name,
                 payload: {
@@ -100,7 +63,7 @@ const checkSeed =
             });
         }
 
-        dispatch(setStatus('finished'));
+        dispatch(recoveryActions.setStatus('finished'));
     };
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -110,12 +73,12 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!device?.features) {
         return;
     }
-    dispatch(setError(undefined));
+    dispatch(recoveryActions.setError(undefined));
 
     if (device.features.internal_model === DeviceModelInternal.T1B1) {
-        dispatch(setStatus('waiting-for-confirmation'));
+        dispatch(recoveryActions.setStatus('waiting-for-confirmation'));
     } else {
-        dispatch(setStatus('in-progress'));
+        dispatch(recoveryActions.setStatus('in-progress'));
     }
 
     const params: RecoveryDevice = {
@@ -140,10 +103,10 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!response.success) {
-        dispatch(setError(response.error.message));
+        dispatch(recoveryActions.setError(response.error.message));
     }
 
-    dispatch(setStatus('finished'));
+    dispatch(recoveryActions.setStatus('finished'));
 };
 
 // Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.
@@ -156,15 +119,15 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    dispatch(setStatus('in-progress'));
+    dispatch(recoveryActions.setStatus('in-progress'));
 
     // user might have proceeded with recovery on screen which means that we need to
     // reload fresh features before deciding what to do
     const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
 
     if (!response.success) {
-        dispatch(setStatus('finished'));
-        dispatch(setError('failed to rerun recovery'));
+        dispatch(recoveryActions.setStatus('finished'));
+        dispatch(recoveryActions.setError('failed to rerun recovery'));
 
         return;
     }
@@ -190,13 +153,4 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export {
-    submit,
-    setWordsCount,
-    setAdvancedRecovery,
-    checkSeed,
-    recoverDevice,
-    resetReducer,
-    setStatus,
-    rerun,
-};
+export { submit, checkSeed, recoverDevice, rerun };
