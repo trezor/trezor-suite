@@ -1,5 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
+import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -33,6 +35,26 @@ const onboardingMiddleware =
             //  1. make reducer to accept actions (enableReducer) and apply changes
             if (action.payload === 'onboarding') {
                 api.dispatch(onboardingActions.enableOnboardingReducer(true));
+            }
+        }
+
+        if (
+            deviceActions.updateSelectedDevice.match(action) &&
+            action.payload?.features !== undefined &&
+            isRecoveryInProgress(action.payload?.features) &&
+            selectRecoveryStatus(api.getState()) !== 'in-progress'
+        ) {
+            api.dispatch(
+                onboardingActions.updateAnalytics({
+                    startTime: Date.now(),
+                    seed: 'recovery-in-progress',
+                }),
+            );
+            if (!api.getState().analytics.confirmed) {
+                // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
+                api.dispatch(recoveryActions.setStatus('in-progress'));
+            } else {
+                api.dispatch(onboardingActions.recoveryRerun());
             }
         }
 

@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { isRecoveryInProgress } from './isRecoveryInProgress';
 import { recoveryActions } from './recoveryReducer';
 import { selectAdvancedRecovery, selectWordsCount } from './recoverySelectors';
 
@@ -115,3 +116,46 @@ export const recoverDeviceThunk = createThunk(
         dispatch(recoveryActions.setStatus('finished'));
     },
 );
+
+// Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.
+// In such case, we need to call again the call that brought device into recovery mode (either proper recovery
+// or seed check). This way, communication is renewed and host starts receiving messages from device again.
+export const recoveryRerunThunk = createThunk<
+    { initialized: boolean | null },
+    void,
+    { rejectValue: string }
+>(`${actionPrefix}/recoveryRerunThunk`, async (_, { dispatch, getState, rejectWithValue }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device?.features) {
+        return rejectWithValue('no device features');
+    }
+
+    dispatch(recoveryActions.setStatus('in-progress'));
+
+    // user might have proceeded with recovery on screen which means that we need to
+    // reload fresh features before deciding what to do
+    const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
+
+    if (!response.success) {
+        dispatch(recoveryActions.setStatus('finished'));
+        dispatch(recoveryActions.setError('failed to rerun recovery'));
+
+        return rejectWithValue('failed to rerun recovery');
+    }
+
+    const features = response.payload;
+
+    if (!isRecoveryInProgress(features)) {
+        return rejectWithValue('recovery not in progress');
+    }
+
+    if (!features.initialized) {
+        dispatch(recoverDeviceThunk());
+    }
+
+    if (features.initialized) {
+        dispatch(checkSeedThunk());
+    }
+
+    return { initialized: features.initialized };
+});

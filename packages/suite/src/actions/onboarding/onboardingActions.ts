@@ -1,5 +1,6 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import * as modalActions from '@suite/modal';
+import { recoveryRerunThunk } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
@@ -197,6 +198,27 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
+const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
+    const result = await dispatch(recoveryRerunThunk());
+
+    if (!recoveryRerunThunk.fulfilled.match(result)) {
+        return;
+    }
+
+    const { initialized } = result.payload;
+    const { router } = getState();
+
+    if (initialized) {
+        dispatch(routerActions.goto('recovery-index'));
+    } else {
+        if (router.app !== 'onboarding') {
+            dispatch(routerActions.goto('onboarding-index'));
+        }
+        dispatch(goToStep('recovery'));
+        dispatch(addPath('recovery'));
+    }
+};
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -210,4 +232,5 @@ export {
     beginOnboardingTutorial,
     updateBackupType,
     resolveNextAfterSkipped,
+    recoveryRerun,
 };

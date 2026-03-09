@@ -4,6 +4,7 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 import { experimentalFeedbackSlice } from '@suite/experimental-feedback';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
+import type { recoveryActions } from '@suite/recovery';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceActions } from '@suite-common/device';
@@ -26,7 +27,6 @@ import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import { deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
-import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
@@ -106,6 +106,7 @@ type DeviceActionDesktop = ReturnType<
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
+type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
