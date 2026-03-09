@@ -6,11 +6,7 @@ import {
     useAccoutsSelector,
 } from '@suite-common/wallet-core';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
-import {
-    CryptoAmountFormatter,
-    NetworkDisplaySymbolNameFormatter,
-    TokenAmountFormatter,
-} from '@suite-native/formatters';
+import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     selectAPYByAccountKey,
@@ -19,8 +15,7 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../constants';
-import { EarnItem } from '../types';
+import { type EarnPromoItem } from '../types';
 
 const accountDescriptionStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
@@ -34,14 +29,47 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.sp8,
 }));
 
-type EarnItemOverviewSectionProps = {
-    balance: string | null;
-} & EarnItem;
+type EarnItemSecondaryDescriptionProps = {
+    accountKey: EarnPromoItem['accountKey'];
+    accountLabel: EarnPromoItem['accountLabel'];
+    formattedAccountType: string | null;
+    item: EarnPromoItem;
+};
 
-export const EarnItemOverviewSection = (item: EarnItemOverviewSectionProps) => {
+const EarnItemSecondaryDescription = ({
+    accountKey,
+    accountLabel,
+    formattedAccountType,
+    item,
+}: EarnItemSecondaryDescriptionProps) => {
+    if (accountKey) {
+        return (
+            <HStack>
+                <Text color="textSubdued" variant="body-sm">
+                    {accountLabel}
+                </Text>
+                {formattedAccountType && (
+                    <Badge label={formattedAccountType} size="small" elevation="1" />
+                )}
+            </HStack>
+        );
+    }
+
+    if (item.type === 'stablecoin-yield') {
+        return (
+            <Text color="textSubdued" variant="body-sm">
+                <NetworkDisplaySymbolNameFormatter value={item.networkSymbol} />
+            </Text>
+        );
+    }
+
+    return null;
+};
+
+export const EarnItemOverviewSection = (item: EarnPromoItem) => {
     const { applyStyle } = useNativeStyles();
 
-    const { accountKey, accountLabel, balance } = item;
+    const { accountKey, accountLabel } = item;
 
     const formattedAccountType = useAccoutsSelector(state =>
         selectFormattedAccountType(state, accountKey),
@@ -80,47 +108,26 @@ export const EarnItemOverviewSection = (item: EarnItemOverviewSectionProps) => {
                             item.vaultName
                         )}
                     </Text>
-                    {accountKey && (
-                        <HStack>
-                            <Text color="textSubdued" variant="body-sm">
-                                {accountLabel}
-                            </Text>
-                            {formattedAccountType && (
-                                <Badge label={formattedAccountType} size="small" elevation="1" />
-                            )}
-                        </HStack>
-                    )}
+                    <EarnItemSecondaryDescription
+                        accountKey={accountKey}
+                        accountLabel={accountLabel}
+                        formattedAccountType={formattedAccountType}
+                        item={item}
+                    />
                 </Box>
             </Box>
 
             {isDiscoveryRunning ? (
                 <BoxSkeleton width={70} height={20} />
             ) : (
-                <>
-                    <Box style={applyStyle(valuesContainerStyle)}>
-                        {balance !== null &&
-                            (item.type === 'staking' ? (
-                                <CryptoAmountFormatter
-                                    value={balance}
-                                    symbol={item.symbol}
-                                    decimals={CRYPTO_BALANCE_DECIMALS}
-                                    color="textDefault"
-                                />
-                            ) : (
-                                <TokenAmountFormatter
-                                    value={balance}
-                                    tokenSymbol={item.tokenSymbol}
-                                    color="textDefault"
-                                />
-                            ))}
-                        {apyValue !== null && apyValue !== undefined && (
-                            <Text
-                                variant={accountKey ? 'body-sm' : 'body-md'}
-                                color={accountKey ? 'textSubdued' : 'textDefault'}
-                            >{`${apyValue}% p.a.`}</Text>
-                        )}
-                    </Box>
-                </>
+                <Box style={applyStyle(valuesContainerStyle)}>
+                    {apyValue != null && (
+                        <Text
+                            variant={accountKey ? 'body-sm' : 'body-md'}
+                            color={accountKey ? 'textSubdued' : 'textDefault'}
+                        >{`${apyValue}% APY`}</Text>
+                    )}
+                </Box>
             )}
         </HStack>
     );

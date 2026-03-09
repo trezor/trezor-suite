@@ -11,7 +11,6 @@ import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import { useHandleEarnNavigation } from '@suite-native/module-earn';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -20,7 +19,6 @@ import {
 } from '@suite-native/navigation';
 
 export const AccountsScreen = () => {
-    const { handleEarnNavigation } = useHandleEarnNavigation();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
@@ -28,7 +26,9 @@ export const AccountsScreen = () => {
 
     const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, isStaking }) => {
         if (isStaking) {
-            handleEarnNavigation(account.key);
+            navigation.navigate(RootStackRoutes.StakingDetail, {
+                accountKey: account.key,
+            });
 
             return;
         }

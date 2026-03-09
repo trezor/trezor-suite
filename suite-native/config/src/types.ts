@@ -14,4 +14,5 @@ export type LaunchArguments = {
     isTradingResidenceCheckEnabled?: boolean;
     isTradingDebugEnabled?: boolean;
     isEarnEnabled?: boolean;
+    isStablecoinYieldEnabled?: boolean;
 };

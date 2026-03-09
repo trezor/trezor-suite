@@ -128,11 +128,11 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
 
 export const selectIsStakePendingByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return false;
     }
 
@@ -252,11 +252,11 @@ export const selectStakedBalanceByAccountKey = (
 
 export const selectRewardsBalanceByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return '0';
     }
 
@@ -278,11 +278,11 @@ export const selectRewardsBalanceByAccountKey = (
 
 export const selectTotalStakePendingByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return '0';
     }
 

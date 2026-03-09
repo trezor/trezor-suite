@@ -2344,12 +2344,24 @@ export const messages = {
         },
     },
     earn: {
+        staking: 'Staking',
+        stablecoinYield: 'Stablecoin yield',
         stakingDetailScreen: {
             title: 'Staking',
         },
         earnScreen: {
             title: 'Earn',
             subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
+            otherOpportunities: 'Other opportunities',
+            depositsCard: {
+                title: 'Your deposits',
+                stablecoin: 'Stablecoin',
+                networkStaking: '{networkName} staking',
+            },
+            activeSheet: {
+                stakingTitle: 'Your stakes',
+                stablecoinYieldTitle: 'Your yields',
+            },
             earnItem: {
                 rewards: 'Rewards',
                 pending: 'Activation pending',
@@ -2357,7 +2369,7 @@ export const messages = {
             infoModal: {
                 title: 'Manage {earnType} in Trezor Suite for desktop',
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
-                copyLabel: 'tap to copy',
+                copyLabel: 'Tap to copy',
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
@@ -2371,6 +2383,8 @@ export const messages = {
         trezorDesktop: 'Trezor Suite for desktop or web.',
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
+            updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
+            updateProviderButton: 'Update provider',
             providerReducingRewards:
                 "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
             updateToNewProvider:

@@ -5,21 +5,28 @@ import { useGetYieldOpportunities } from './useGetYieldOpportunities';
 
 type UseAllYieldOpportunitiesProps = {
     limit?: number;
+    enabled?: boolean;
 };
 
 export const useAllYieldOpportunities = ({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
+    enabled = true,
 }: UseAllYieldOpportunitiesProps = {}) => {
     const { mutateAsync } = useGetYieldOpportunities({});
 
-    const query = useQuery({
+    const queryResult = useQuery({
         queryKey: desktopQueryKeys.yieldOpportunities({ limit }),
-        queryFn: () => mutateAsync({ offset: 0, limit }),
+        queryFn: async () => {
+            const { data } = await mutateAsync({ offset: 0, limit });
+
+            return data.items;
+        },
+        enabled,
         staleTime: EARN_QUERY_STALE_TIME,
     });
 
     return {
-        yieldOpportunities: query.data?.data?.items ?? [],
-        isYieldOpportunitiesLoading: query.isLoading,
+        ...queryResult,
+        yieldOpportunities: queryResult.data || [],
     };
 };

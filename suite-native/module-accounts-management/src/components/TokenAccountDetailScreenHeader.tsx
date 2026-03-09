@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -25,7 +29,9 @@ export const TokenAccountDetailScreenHeader = ({
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
         selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
     );
@@ -42,6 +48,8 @@ export const TokenAccountDetailScreenHeader = ({
     if (!symbol) {
         return null;
     }
+
+    const accountLabelBadge = accountLabel ?? account?.accountLabel ?? '';
 
     return (
         <ScreenHeader
@@ -64,7 +72,7 @@ export const TokenAccountDetailScreenHeader = ({
                                 ellipsizeMode="tail"
                             >
                                 {translate('moduleAccounts.accountDetail.accountLabelBadge', {
-                                    accountLabel,
+                                    accountLabel: accountLabelBadge,
                                 })}
                             </Text>
                         </VStack>
