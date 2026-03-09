@@ -135,6 +135,7 @@ const usedIcons = [
     'spinnerGap',
     'stack',
     'star',
+    'smiley',
     'starFilled',
     'starFour',
     'surfaceProtection',
