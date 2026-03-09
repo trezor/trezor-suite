@@ -5,14 +5,14 @@
 This package is bundled into web implementations. There are two primary runtime modes:
 
 - **Suite Desktop WebSocket**: when Trezor Suite Desktop is running, Connect talks to it over a localhost WebSocket and UI is handled inside Suite.
-- **Suite Web popup**: otherwise, user interaction is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`.
+- **Suite Web popup**: otherwise, user interaction is presented in a secure popup window served from `https://suite.trezor.io/web/connect-popup/`.
 
-To try it out, use [@trezor/connect-explorer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer) hosted [here](https://connect.trezor.io/9/).
+To try it out, use [@trezor/connect-explorer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer) hosted [here](https://connect.trezor.io/10/).
 
 Contains minimum of code required to:
 
 - Define `TrezorConnect` API object
-- Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/<version>/popup.html`
+- Create and handle communication and lifecycle of Connect popup window
 
 ## Installation
 
