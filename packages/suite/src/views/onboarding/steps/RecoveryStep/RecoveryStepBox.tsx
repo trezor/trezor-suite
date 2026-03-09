@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { recoveryActions } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
-import { setStatus } from 'src/actions/recovery/recoveryActions';
 import {
     OnboardingCard,
     type OnboardingCardProps,
@@ -23,7 +23,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
 
     const handleBack = () => {
         if (recovery.status === 'select-recovery-type') {
-            return dispatch(setStatus('initial'));
+            return dispatch(recoveryActions.setStatus('initial'));
         }
         // allow to change recovery settings for T1B1 in case of error
         if (
@@ -31,7 +31,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
             recovery.error &&
             deviceModelInternal === DeviceModelInternal.T1B1
         ) {
-            return dispatch(setStatus('initial'));
+            return dispatch(recoveryActions.setStatus('initial'));
         }
 
         return dispatch(goToPreviousStep());
