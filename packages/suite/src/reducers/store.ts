@@ -11,7 +11,7 @@ import {
 import { createLogger } from 'redux-logger';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
-import { recoveryMiddleware, recoveryReducer } from '@suite/recovery';
+import { recoveryReducer } from '@suite/recovery';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -88,7 +88,6 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
         ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
         ...backupMiddlewares,
-        recoveryMiddleware,
     ];
 
     if (!isCodesignBuild()) {

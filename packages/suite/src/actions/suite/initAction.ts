@@ -1,5 +1,6 @@
 import { metadataLabelingActions } from '@suite/metadata';
 import * as modalActions from '@suite/modal';
+import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -88,6 +89,12 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                         modalActions.openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }),
                     );
                     dispatch(modalActions.preserve());
+                },
+                [UI_REQUEST.REQUEST_WORD]: () => {
+                    if (selectRecoveryStatus(getState()) === 'waiting-for-confirmation') {
+                        // Since the device asked for a first word, we can safely assume we've received confirmation from the user
+                        dispatch(recoveryActions.setStatus('in-progress'));
+                    }
                 },
             }),
         ).unwrap();
