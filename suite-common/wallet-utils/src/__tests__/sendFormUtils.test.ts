@@ -19,6 +19,7 @@ import {
     getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
+    isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
@@ -760,5 +761,29 @@ describe('sendForm utils', () => {
                 );
             },
         );
+    });
+
+    describe('isAmountWithinNetworkReserve', () => {
+        it('should treat empty amount as zero', () => {
+            expect(
+                isAmountWithinNetworkReserve({
+                    reserve: '1',
+                    balance: '10',
+                    fee: '2',
+                    amount: '',
+                }),
+            ).toBe(true);
+        });
+
+        it('should return false when amount exceeds maximum spendable amount', () => {
+            expect(
+                isAmountWithinNetworkReserve({
+                    reserve: '1',
+                    balance: '10',
+                    fee: '2',
+                    amount: '8.00000001',
+                }),
+            ).toBe(false);
+        });
     });
 });

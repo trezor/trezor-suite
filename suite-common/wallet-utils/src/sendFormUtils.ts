@@ -771,7 +771,7 @@ export const isAmountWithinNetworkReserve = ({
     fee = '0',
     amount,
 }: IsAmountWithinNetworkReserveProps): boolean => {
-    if (!reserve || !balance) return true;
+    if (!reserve || !balance || !amount) return true;
 
     const sendAmount = new BigNumber(amount);
     const accountBalance = new BigNumber(balance);
