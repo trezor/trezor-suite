@@ -5,16 +5,12 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import {
-    deviceActions,
-    selectDevices,
-    selectIsDeviceRemembered,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { deviceActions, selectDevices } from '@suite-common/device';
 import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
+    getIsDeviceRemembered,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction, selectThpAutoconnectStep } from '@suite-common/thp';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
@@ -197,8 +193,8 @@ deviceConnectionMiddleware.startListening({
             throw new Error('This listener only handles deviceDisconnect action');
         }
 
-        const isDeviceRemembered = selectIsDeviceRemembered(getState());
-        const device = selectSelectedDevice(getState()); // the device being disconnected is the one currently selected
+        const device = action.payload;
+        const isDeviceRemembered = getIsDeviceRemembered(device);
         const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(
             getState(),
             device?.id,
