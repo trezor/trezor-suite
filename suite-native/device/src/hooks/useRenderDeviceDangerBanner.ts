@@ -6,7 +6,7 @@ import { useSetAtom } from 'jotai';
 
 import { selectIsDeviceBackupRequired, selectIsDeviceBackupUnfinished } from '@suite-common/device';
 import {
-    isSkippedRevisionCheckError as getIsSkippedRevisionCheckError,
+    getIsSkippedRevisionCheckError,
     revisionCheckErrorScenarios,
 } from '@suite-common/firmware-authenticity';
 import {

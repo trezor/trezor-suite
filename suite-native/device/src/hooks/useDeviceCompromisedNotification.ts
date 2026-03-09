@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     RevisionCheckErrorWithNotification,
-    isRevisionCheckErrorWithNotification,
+    getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -26,7 +26,7 @@ export const useDeviceCompromisedNotification = () => {
 
     useEffect(() => {
         if (revisionCheckError === null) return;
-        if (isRevisionCheckErrorWithNotification(revisionCheckError)) {
+        if (getIsRevisionCheckErrorWithNotification(revisionCheckError)) {
             showToast({
                 variant: 'error',
                 message: translate(revisionCheckNotifications[revisionCheckError]),
