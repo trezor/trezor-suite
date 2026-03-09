@@ -1,3 +1,5 @@
+export { ExperimentalFeatureRatingForm } from './feedback/ExperimentalFeatureRatingForm';
+export { ExperimentalFeaturesFeedbackAlert } from './feedback/ExperimentalFeaturesFeedbackAlert';
 export { ExperimentalFeaturesSettingsCard } from './ExperimentalFeaturesSettingsCard';
 export {
     experimentalFeedbackSlice,
@@ -5,4 +7,5 @@ export {
     featureUsed,
     feedbackRequested,
     feedbackDismissed,
-} from './experimentalFeedbackSlice';
+} from './feedback/experimentalFeedbackSlice';
+export { EXPERIMENTAL_FEATURES } from './experimentalFeatures';
