@@ -81,6 +81,8 @@ export const useTradingBuyForm = ({
 
     const { account, cryptoId } = useTradingFormAccount(type);
 
+    const wasLoadingBuyInfo = useRef(!buyInfo);
+
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
@@ -146,7 +148,6 @@ export const useTradingBuyForm = ({
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
-    const isInitialDataLoading = !buyInfo?.buyInfo?.providers;
     const noProviders = buyInfo?.buyInfo?.providers.length === 0;
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
@@ -421,14 +422,15 @@ export const useTradingBuyForm = ({
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
-        if (!isDraft && buyInfo && isInitialDataLoading) {
+        if (!isDraft && buyInfo && wasLoadingBuyInfo.current) {
+            wasLoadingBuyInfo.current = false;
             const currentReceiveAddress = values.receiveAddress;
             reset({
                 ...defaultValues,
                 receiveAddress: currentReceiveAddress,
             });
         }
-    }, [reset, buyInfo, defaultValues, isDraft, values.receiveAddress, isInitialDataLoading]);
+    }, [reset, buyInfo, defaultValues, isDraft, values.receiveAddress]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
