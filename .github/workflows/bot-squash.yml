@@ -1,0 +1,58 @@
+name: "[Bot] squash pull request"
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  squash-pr:
+    name: Squash pull request
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != '' && startsWith(github.event.comment.body, '/squash') && github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Respond in pull request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Start squashing: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            })
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.trezor-bot-token.outputs.token }}
+      - name: Auto squash pull request
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          bash scripts/ci/bot-squash.sh
+      - name: Report failure
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Squashing failed, please squash manually."
+            })
