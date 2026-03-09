@@ -17,6 +17,7 @@ import {
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
+    getIsDeviceRemembered,
     getIsThpDevice,
     getSortedDevicesWithoutInstances,
     getStatus,
@@ -470,7 +471,7 @@ export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
 
 export const selectIsDeviceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.remember,
+    getIsDeviceRemembered,
 );
 
 export const selectRememberedStandardWallets = createMemoizedSelector(
