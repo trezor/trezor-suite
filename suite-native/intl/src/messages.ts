@@ -1462,6 +1462,16 @@ export const messages = {
                     description:
                         'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
                 },
+                feedback: {
+                    title: 'Rate your {featureName} experience',
+                    description:
+                        'It takes just a few seconds. Your feedback helps us improve the feature for everyone.',
+                    rateButton: 'Share feedback',
+                    dismissButton: 'Dismiss',
+                    ratingLabel: "How's {featureName} making you feel?",
+                    descriptionLabel: "Tell us what's working and what's not—we read every reply.",
+                    submitButton: 'Submit',
+                },
             },
         },
         appLog: {
