@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import type { ExperimentalFeature } from '@suite/experimental';
 import type { TranslationKey } from '@suite/intl';
-import * as modalActions from '@suite/modal';
+import { openDeferredModal } from '@suite/modal';
 import { deviceActions } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
@@ -207,7 +207,7 @@ export const toggleTor =
         );
 
         if (!shouldEnable && hasOnlyOnionBackends) {
-            const res = await dispatch(modalActions.openDeferredModal({ type: 'disable-tor' }));
+            const res = await dispatch(openDeferredModal({ type: 'disable-tor' }));
             if (!res) return;
         }
 

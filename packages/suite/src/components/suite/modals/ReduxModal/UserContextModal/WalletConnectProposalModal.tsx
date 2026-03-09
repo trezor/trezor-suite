@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { onCancel } from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { TxSimulationBanner } from '@suite/tx-simulation';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -73,14 +73,14 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 selectedDefaultAccount,
             }),
         );
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleReject = () => {
         dispatch(sessionProposalRejectThunk({ eventId }));
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleGoToCoinSettings = async () => {
-        await dispatch(onCancel());
+        await dispatch(closeModal());
         dispatch(goto('settings-coins'));
     };
 

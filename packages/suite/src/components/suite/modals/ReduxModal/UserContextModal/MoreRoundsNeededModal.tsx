@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { onCancel as closeModal } from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

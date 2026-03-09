@@ -20,19 +20,19 @@ export type ModalAction =
           payload: UserContextPayload;
       };
 
-export const onCancel = createAction(MODAL_CLOSE);
+export const closeModal = createAction(MODAL_CLOSE);
 
 /**
  * Don't close modals on UI.CLOSE_UI.WINDOW event (closing via modal US), but wait for explicit closing instead
  * (usually coming from a redux action from device, or other sources not directly controlled by Suite UI)
  */
-export const preserve = createAction(MODAL_PRESERVE);
+export const preserveModal = createAction(MODAL_PRESERVE);
 
 /**
  * Remove preserve lock from modal; usually those modals are closed, but this is useful when the modal
  * is only replaced by another one, and that one must no longer be preserved.
  */
-export const removePreserve = createAction(MODAL_REMOVE_PRESERVE);
+export const removePreserveModal = createAction(MODAL_REMOVE_PRESERVE);
 
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({
@@ -40,7 +40,7 @@ export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispa
         payload: confirmation,
     });
 
-    dispatch(onCancel());
+    dispatch(closeModal());
 };
 export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Dispatch) => {
     if (accountIndex === null) {
@@ -52,7 +52,7 @@ export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Disp
         });
     }
 
-    dispatch(onCancel());
+    dispatch(closeModal());
 };
 export const onReceiveFee = (payload: UiResponseFee['payload'] | null) => (dispatch: Dispatch) => {
     if (payload === null) {
@@ -64,7 +64,7 @@ export const onReceiveFee = (payload: UiResponseFee['payload'] | null) => (dispa
         });
     }
 
-    dispatch(onCancel());
+    dispatch(closeModal());
 };
 
 export const openModal = createAction(MODAL_OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { onCancel as onCancelModal } from '@suite/modal';
+import { closeModal as closeModalAction } from '@suite/modal';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -122,7 +122,7 @@ const PassphraseWalletIsEmptyContent = ({
                                     size="small"
                                     onClick={() => {
                                         onCancel();
-                                        dispatch(onCancelModal());
+                                        dispatch(closeModalAction());
                                         dispatch(goto('settings-coins'));
                                     }}
                                 >

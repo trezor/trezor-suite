@@ -1,4 +1,4 @@
-import { onCancel as closeModal, openModal } from '@suite/modal';
+import { closeModal, openModal } from '@suite/modal';
 import { selectDevices } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';

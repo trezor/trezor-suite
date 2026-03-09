@@ -3,7 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
-import * as modalActions from '@suite/modal';
+import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -227,8 +227,8 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-        // this action is blocked by modalActions.preserve()
-        dispatch(modalActions.preserve());
+        // this action is blocked by preserveModal()
+        dispatch(preserveModal());
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
             type: events.sendInitialisedEvent.name,
@@ -266,16 +266,14 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }
 
             // Close the modal manually since UI.CLOSE_UI.WINDOW was
-            // blocked by `modalActions.preserve` above.
-            dispatch(modalActions.onCancel());
+            // blocked by preserveModal() above.
+            dispatch(closeModal());
 
             return;
         }
 
         // Open a deferred modal and get the decision
-        const isPushConfirmed = await dispatch(
-            modalActions.openDeferredModal({ type: 'review-transaction' }),
-        );
+        const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
             return;

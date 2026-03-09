@@ -1,5 +1,5 @@
 import { metadataLabelingActions } from '@suite/metadata';
-import * as modalActions from '@suite/modal';
+import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
@@ -85,10 +85,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
                 [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(
-                        modalActions.openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }),
-                    );
-                    dispatch(modalActions.preserve());
+                    dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
+                    dispatch(preserveModal());
                 },
                 [UI_REQUEST.REQUEST_WORD]: () => {
                     if (selectRecoveryStatus(getState()) === 'waiting-for-confirmation') {

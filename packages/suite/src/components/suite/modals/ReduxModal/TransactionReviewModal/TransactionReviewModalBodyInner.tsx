@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import * as modalActions from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
@@ -176,7 +176,7 @@ export const TransactionReviewModalBodyInner = ({
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const onCancel = () => {
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
 
         cancelSignTx();
         decision?.resolve(false);
