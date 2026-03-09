@@ -89,8 +89,14 @@ export const AccountList = ({
                 : tradingExchangeActions.setReceiveAccountKey(receiveAccount.account.key);
         const addressAction =
             tradingType === 'buy'
-                ? tradingBuyActions.setReceiveAddress(receiveAccount.address?.address)
-                : tradingExchangeActions.setReceiveAddress(receiveAccount.address?.address);
+                ? tradingBuyActions.setReceiveAddress({
+                      address: receiveAccount.address?.address,
+                      symbol,
+                  })
+                : tradingExchangeActions.setReceiveAddress({
+                      address: receiveAccount.address?.address,
+                      symbol,
+                  });
         dispatch(accountAction);
         dispatch(addressAction);
         if (tradingType === 'buy') {

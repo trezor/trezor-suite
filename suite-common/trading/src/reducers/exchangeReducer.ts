@@ -6,6 +6,7 @@ import {
     type ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
@@ -25,6 +26,7 @@ export interface TradingExchangeState {
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
     receiveAddress?: string;
+    receiveSymbol?: NetworkSymbol;
     extraField?: string;
     selectedQuote: ExchangeTrade | undefined;
     preselectedQuote: ExchangeTrade | undefined;
@@ -45,6 +47,7 @@ export const exchangeInitialState: TradingExchangeState = {
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     receiveAddress: undefined,
+    receiveSymbol: undefined,
     extraField: undefined,
     selectedQuote: undefined,
     preselectedQuote: undefined,
@@ -80,8 +83,15 @@ const tradingExchangeSlice = createSlice({
         setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.receiveAccountKey = action.payload;
         },
-        setReceiveAddress(state, action: PayloadAction<string | undefined>) {
-            state.receiveAddress = action.payload;
+        setReceiveAddress(
+            state,
+            action: PayloadAction<{
+                address: string | undefined;
+                symbol: NetworkSymbol | undefined;
+            }>,
+        ) {
+            state.receiveAddress = action.payload.address;
+            state.receiveSymbol = action.payload.symbol;
         },
         setExtraField(state, action: PayloadAction<string | undefined>) {
             state.extraField = action.payload;

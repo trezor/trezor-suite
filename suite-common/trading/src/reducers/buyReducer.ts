@@ -8,6 +8,7 @@ import {
     type FiatCurrencyCode,
 } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_PREFIX } from '../constants';
@@ -30,6 +31,7 @@ export interface TradingBuyState {
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
     receiveAddress?: string;
+    receiveSymbol?: NetworkSymbol;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
     transactionId?: string;
@@ -47,6 +49,7 @@ export const buyInitialState: TradingBuyState = {
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     receiveAddress: undefined,
+    receiveSymbol: undefined,
     isLoading: false,
     amountLimits: undefined,
 };
@@ -91,8 +94,15 @@ const tradingBuySlice = createSlice({
         setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.receiveAccountKey = action.payload;
         },
-        setReceiveAddress(state, action: PayloadAction<string | undefined>) {
-            state.receiveAddress = action.payload;
+        setReceiveAddress(
+            state,
+            action: PayloadAction<{
+                address: string | undefined;
+                symbol: NetworkSymbol | undefined;
+            }>,
+        ) {
+            state.receiveAddress = action.payload.address;
+            state.receiveSymbol = action.payload.symbol;
         },
         setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;

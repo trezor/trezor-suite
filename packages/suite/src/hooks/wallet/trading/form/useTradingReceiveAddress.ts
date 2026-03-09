@@ -10,9 +10,11 @@ import {
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
+    selectTradingBuyReceiveSymbol,
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeReceiveAddress,
+    selectTradingExchangeReceiveSymbol,
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -73,10 +75,21 @@ export const useTradingReceiveAddress = ({
     const persistedExchangeReceiveAddress = useSelector(selectTradingExchangeReceiveAddress);
     const persistedBuyReceiveAddress = useSelector(selectTradingBuyReceiveAddress);
 
-    const [persistedReceiveAccountKey, persistedReceiveAddress] =
+    const persistedExchangeReceiveSymbol = useSelector(selectTradingExchangeReceiveSymbol);
+    const persistedBuyReceiveSymbol = useSelector(selectTradingBuyReceiveSymbol);
+
+    const [persistedReceiveAccountKey, persistedReceiveAddress, persistedReceiveSymbol] =
         type === 'exchange'
-            ? [persistedExchangeReceiveAccountKey, persistedExchangeReceiveAddress]
-            : [persistedBuyReceiveAccountKey, persistedBuyReceiveAddress];
+            ? [
+                  persistedExchangeReceiveAccountKey,
+                  persistedExchangeReceiveAddress,
+                  persistedExchangeReceiveSymbol,
+              ]
+            : [
+                  persistedBuyReceiveAccountKey,
+                  persistedBuyReceiveAddress,
+                  persistedBuyReceiveSymbol,
+              ];
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
@@ -181,9 +194,14 @@ export const useTradingReceiveAddress = ({
         }
 
         if (isPreviousRouteFromTradeSection && persistedReceiveAddress && canUseNonSuiteAccount) {
-            selectNonSuiteAddress(persistedReceiveAddress);
+            // Only restore the persisted address if it belongs to the expected receive network.
+            // This prevents cross-network address contamination (e.g. a BTC address being used
+            // in an ETH receive field) after reconnecting a device or changing the receive asset.
+            if (persistedReceiveSymbol === symbol) {
+                selectNonSuiteAddress(persistedReceiveAddress);
 
-            return;
+                return;
+            }
         }
 
         const preferredReceiveAccountKey =
@@ -235,6 +253,7 @@ export const useTradingReceiveAddress = ({
         suiteReceiveAccounts,
         persistedReceiveAccountKey,
         persistedReceiveAddress,
+        persistedReceiveSymbol,
         isPreviousRouteFromTradeSection,
         walletSelectedAccount.account?.key,
         selectSuiteAccount,
@@ -254,9 +273,13 @@ export const useTradingReceiveAddress = ({
         if (!receiveAddressValue) return undefined;
         if (receiveAddressValue.trim() === '') return undefined;
         if (methods.formState.errors.address) return undefined;
+        // When selectedAccount is undefined the hook is in a reset state (e.g. after the
+        // receive network changed). Suppress the stale form value so it is not emitted
+        // before the initialization effect selects a fresh address.
+        if (selectedAccount === undefined) return undefined;
 
         return receiveAddressValue;
-    }, [receiveAddressValue, methods.formState.errors.address]);
+    }, [receiveAddressValue, methods.formState.errors.address, selectedAccount]);
 
     const extraField = useMemo(() => {
         if (!extraFieldValue) return undefined;
@@ -270,13 +293,18 @@ export const useTradingReceiveAddress = ({
         if (pageType === 'retry') return;
 
         if (type === 'exchange') {
-            dispatch(tradingExchangeActions.setReceiveAddress(receiveAddress));
+            dispatch(
+                tradingExchangeActions.setReceiveAddress({
+                    address: receiveAddress,
+                    symbol,
+                }),
+            );
         }
 
         if (type === 'buy') {
-            dispatch(tradingBuyActions.setReceiveAddress(receiveAddress));
+            dispatch(tradingBuyActions.setReceiveAddress({ address: receiveAddress, symbol }));
         }
-    }, [receiveAddress, pageType, type, dispatch]);
+    }, [receiveAddress, pageType, type, dispatch, symbol]);
 
     useEffect(() => {
         if (pageType === 'retry') return;
