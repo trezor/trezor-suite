@@ -146,9 +146,9 @@ export abstract class BaseWorker<API> {
 
         if (data.type === MESSAGES.HANDSHAKE) {
             this.settings = data.settings;
-            const { proxy } = data.settings;
+            const { proxy, timeout } = data.settings;
             if (proxy) {
-                this.proxyAgent = new SocksProxyAgent(proxy);
+                this.proxyAgent = new SocksProxyAgent(proxy, { timeout });
             } else {
                 this.proxyAgent = undefined;
             }
