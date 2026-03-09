@@ -189,7 +189,6 @@ export const mockSuiteDevice = (
             remember: false,
             connected: false,
             available: false,
-            instance: undefined,
             ts: 0,
             buttonRequests: [],
             metadata: {},

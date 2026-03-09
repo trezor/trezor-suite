@@ -91,7 +91,6 @@ const manageTrustline = async (
     const response = await TrezorConnect.stellarSignTransaction({
         device: {
             path: device.path,
-            instance: device.instance,
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },

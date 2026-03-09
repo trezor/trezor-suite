@@ -299,8 +299,6 @@ const onCallDevice = async (
         }
     }
 
-    // set device instance. default is 0
-    device.setInstance(message.payload.device?.instance);
     device.setState(method.deviceState);
 
     // device is available

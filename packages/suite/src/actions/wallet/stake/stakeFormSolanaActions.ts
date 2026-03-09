@@ -299,7 +299,6 @@ export const signTransaction =
         const signedTx = await TrezorConnect.solanaSignTransaction({
             device: {
                 path: device.path,
-                instance: device.instance,
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },

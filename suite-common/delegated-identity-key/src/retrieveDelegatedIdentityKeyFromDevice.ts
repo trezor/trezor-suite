@@ -32,7 +32,6 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
             device: {
                 path: device.path,
                 state: device.state,
-                instance: device.instance ?? 0,
                 useEmptyPassphrase: device.useEmptyPassphrase ?? false,
             },
         });

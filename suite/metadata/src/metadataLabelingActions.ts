@@ -475,7 +475,6 @@ export const setDeviceMetadataKey =
             device: {
                 path: device.path,
                 state: device.state,
-                instance: device.instance,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
             ...METADATA_LABELING.ENCRYPTION_VERSION_CONFIGS[encryptionVersion],

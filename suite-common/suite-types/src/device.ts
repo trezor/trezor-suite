@@ -52,6 +52,7 @@ export interface ExtendedDevice {
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     discovered?: boolean;
 
+    /** @deprecated Use walletNumber instead */
     instance?: number;
     ts: number;
     firstConnectedTimestamp: number;
@@ -73,6 +74,7 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
 export type AuthorizedDevice = AcquiredDevice & {
     useEmptyPassphrase: boolean;
     state: Required<DeviceState>;
+    /** @deprecated Use walletNumber instead */
     instance: number;
     walletNumber: number;
 };

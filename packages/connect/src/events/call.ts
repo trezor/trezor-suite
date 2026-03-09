@@ -102,7 +102,6 @@ export const createResponseMessage = (
         ? {
               path: device?.getUniquePath(),
               state: device?.getState(),
-              instance: device?.getInstance(),
           }
         : undefined;
     if (success)

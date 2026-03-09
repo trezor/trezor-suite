@@ -1171,7 +1171,6 @@ export const prepareNewAccountPayload = async ({
         coin: networkSymbol,
         device: {
             path: device.path,
-            instance: device.instance,
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },

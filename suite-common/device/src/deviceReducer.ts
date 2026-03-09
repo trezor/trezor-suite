@@ -100,7 +100,6 @@ const merge = (
     ...(({ state, ...rest }) => rest)(upcoming),
     id: upcoming.id ?? device.id,
     state: mergeDeviceState(device, upcoming),
-    instance: device.instance,
     features: {
         // Don't override features if upcoming device is locked.
         // In such case the features are redacted i.e. all fields are `null`
@@ -193,10 +192,6 @@ const connectDevice = (
     // fill draft with not affected devices
     otherDevices.forEach(d => draft.devices.push(d));
 
-    const deviceInstance = features.passphrase_protection
-        ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
-        : undefined;
-
     const newDevice: TrezorDevice = {
         ...device,
         ...deviceCommonFields,
@@ -205,7 +200,6 @@ const connectDevice = (
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         temporaryRemember: false,
         available: true,
-        instance: deviceInstance,
     };
 
     // update affected devices
@@ -332,7 +326,6 @@ const addAuthorizedDevice = (
     const newDevice = {
         ...oldDevice,
         metadata: {},
-        instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
         walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
         useEmptyPassphrase,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
@@ -353,7 +346,7 @@ const setDeviceState = (
         d =>
             d.features &&
             d.connected &&
-            d.instance === device.instance &&
+            d.walletNumber === device.walletNumber &&
             (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
     );
 

@@ -53,7 +53,7 @@ const validate = async (context: WorkflowContext) => {
     if (isUnexpectedState(expectedState, uniqueState)) {
         throw ERRORS.TypedError('Device_InvalidState');
     }
-    if (!expectedState || expectedState !== uniqueState) {
+    if (!expectedState) {
         device.setState({ staticSessionId: uniqueState });
     }
 };

@@ -113,7 +113,6 @@ const preCallHook = async <M extends CallMethodKeys>({
                 path: (payload as any).path,
                 device: {
                     path: device.path,
-                    instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },

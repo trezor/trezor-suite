@@ -180,7 +180,7 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
         device.features &&
         device.id &&
         selected.id === device.id &&
-        selected.instance === device.instance
+        selected.walletNumber === device.walletNumber
     );
 
 export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: TrezorDevice) => {
@@ -205,6 +205,7 @@ export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
 
 /**
  * Generate new instance number
+ * @deprecated Use getNewWalletNumber instead
  */
 export const getNewInstanceNumber = (devices: TrezorDevice[], device: Pick<KnownDevice, 'id'>) =>
     devices.reduce(
@@ -234,7 +235,7 @@ export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice)
     draft.findIndex(
         d =>
             d.features &&
-            d.instance === device.instance &&
+            d.walletNumber === device.walletNumber &&
             (d.id ? d.id === device.id : d.path === device.path && d.mode === device.mode), // if id is not present, e.g. in bootloader, fall back to path+mode
     );
 
@@ -251,18 +252,18 @@ export const getSelectedDevice = (
 ): TrezorDevice | undefined => {
     // selected device is not acquired
     if (!device.features) return devices.find(d => d.path === device.path);
-    const { path, instance } = device;
+    const { path, walletNumber } = device;
 
     return devices.find(d => {
         if ((!d.features || d.mode === 'bootloader') && d.path === path) {
             return true;
         }
-        if (d.instance === instance && d.features && d.id === device.id) {
+        if (d.walletNumber === walletNumber && d.features && d.id === device.id) {
             return true;
         }
 
         // special case we need to use after wipe device (which changes device_id)
-        if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
+        if (d.walletNumber === walletNumber && d.path.length > 0 && d.path === device.path) {
             return true;
         }
 
@@ -392,13 +393,13 @@ export const getDeviceInstances = (
             d =>
                 d.features &&
                 d.id === device.id &&
-                (!exclude || (exclude && d.instance !== device.instance)),
+                (!exclude || (exclude && d.walletNumber !== device.walletNumber)),
         )
         .sort((a, b) => {
-            if (!a.instance) return -1;
-            if (!b.instance) return 1;
+            if (!a.walletNumber) return -1;
+            if (!b.walletNumber) return 1;
 
-            return a.instance > b.instance ? 1 : -1;
+            return a.walletNumber > b.walletNumber ? 1 : -1;
         }) as AcquiredDevice[];
 };
 

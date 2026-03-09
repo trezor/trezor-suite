@@ -418,7 +418,6 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         const response = await TrezorConnect.ethereumSignTransaction({
             device: {
                 path: device.path,
-                instance: device.instance,
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },

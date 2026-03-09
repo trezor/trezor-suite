@@ -168,9 +168,9 @@ const isSelectedInstance = [
         result: false,
     },
     {
-        description: `Device instance is not selected (instance is different)`,
+        description: `Device instance is not selected (walletNumber is different)`,
         selected: SUITE_DEVICE,
-        device: mockSuiteDevice({ instance: 1 }),
+        device: mockSuiteDevice({ walletNumber: 1 }),
         result: false,
     },
 ];
@@ -289,20 +289,20 @@ const findInstanceIndex = [
     },
     {
         description: `get second instance`,
-        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
-        device: mockSuiteDevice({ instance: 1 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 1 })],
+        device: mockSuiteDevice({ walletNumber: 1 }),
         result: 1,
     },
     {
         description: `get second from mixed instances`,
-        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 4 }), mockSuiteDevice({ instance: 1 })],
-        device: mockSuiteDevice({ instance: 4 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 4 }), mockSuiteDevice({ walletNumber: 1 })],
+        device: mockSuiteDevice({ walletNumber: 4 }),
         result: 1,
     },
     {
         description: `unknown instance (not found)`,
-        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
-        device: mockSuiteDevice({ instance: 2 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 1 })],
+        device: mockSuiteDevice({ walletNumber: 2 }),
         result: -1,
     },
     {
@@ -394,7 +394,7 @@ const d = (obj: any) => ({
         : undefined,
     mode: obj.mode || 'normal',
     firmware: obj.fw || 'valid',
-    instance: obj.inst,
+    walletNumber: obj.inst,
     ts: obj.ts,
 });
 

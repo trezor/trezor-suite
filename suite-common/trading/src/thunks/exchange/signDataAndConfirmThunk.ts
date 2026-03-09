@@ -96,7 +96,6 @@ export const signDataAndConfirmThunk = createThunk(
             message_hash: hashes.message_hash || undefined,
             device: {
                 path: device?.path,
-                instance: device?.instance,
                 state: device?.state,
                 useEmptyPassphrase: device?.useEmptyPassphrase,
             },

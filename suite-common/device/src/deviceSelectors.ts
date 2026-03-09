@@ -519,7 +519,7 @@ export const selectIsDeviceInViewOnlyMode = createMemoizedSelector(
 export const selectIsDeviceUsingPassphrase = createMemoizedSelector(
     [selectIsDeviceProtectedByPassphrase, selectSelectedDevice],
     (isDeviceProtectedByPassphrase, device) => {
-        const shouldTreatAsPassphraseProtected = (device?.instance ?? 1) > 1;
+        const shouldTreatAsPassphraseProtected = (device?.walletNumber ?? 1) > 1;
 
         return (
             (isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false) ||

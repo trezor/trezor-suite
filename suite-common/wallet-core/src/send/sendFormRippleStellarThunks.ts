@@ -257,7 +257,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             response = await TrezorConnect.rippleSignTransaction({
                 device: {
                     path: device.path,
-                    instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
@@ -328,7 +327,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             const transformedTransaction = {
                 device: {
                     path: device.path,
-                    instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },

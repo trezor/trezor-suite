@@ -20,7 +20,6 @@ import {
     TrezorDevice,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import {
     Bip43Path,
     NetworkSymbol,
@@ -383,14 +382,9 @@ export const runDiscoveryThunk = createThunk(
                 );
             }
 
-            const instance = !device?.state
-                ? device.instance
-                : getNewInstanceNumber(selectDevices(getState()), device);
-
             const deviceStateResponse = await TrezorConnect.getDeviceState({
                 device: {
                     path: device.path,
-                    instance,
                     state: undefined,
                     useEmptyPassphrase: !isAddingHiddenWallet,
                 },
@@ -717,7 +711,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const deviceStateResponse = await TrezorConnect.getDeviceState({
             device: {
                 path: device.path,
-                instance: device.instance,
                 state: { staticSessionId: device.state.staticSessionId },
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },

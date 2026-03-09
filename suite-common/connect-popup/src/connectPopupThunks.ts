@@ -126,7 +126,6 @@ export const connectPopupCallThunkInner = createThunk<
             const response = await TrezorConnect.call({
                 device: {
                     path: device.path,
-                    instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
@@ -331,7 +330,6 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
             const res = await TrezorConnect[call.method]({
                 device: {
                     path: device.path,
-                    instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },

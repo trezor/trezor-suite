@@ -147,7 +147,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                         </Row>
                                     </Column>
                                 }
-                                key={`${instance.id}-${instance.instance}-${instance.state}`}
+                                key={`${instance.id}-${instance.walletNumber}-${instance.state}`}
                                 isOpen={showTooltip && index === 0}
                                 width="100%"
                                 placement="right-start"

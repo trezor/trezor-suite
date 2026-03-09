@@ -159,7 +159,6 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
                 path: device.path,
-                instance: device.instance,
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },

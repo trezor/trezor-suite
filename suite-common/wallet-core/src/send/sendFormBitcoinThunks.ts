@@ -333,7 +333,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         const signPayload: Params<SignTransaction> = {
             device: {
                 path: device.path,
-                instance: device.instance,
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },

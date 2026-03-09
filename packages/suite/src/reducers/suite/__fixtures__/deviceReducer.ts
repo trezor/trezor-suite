@@ -108,7 +108,7 @@ const connect: Fixture<
             ...deviceReducerInitialState,
             devices: [
                 mockSuiteDevice({
-                    instance: 1,
+                    walletNumber: 1,
                 }),
                 SUITE_DEVICE,
             ],
@@ -127,12 +127,12 @@ const connect: Fixture<
         result: [
             {
                 path: '1',
-                instance: 1,
+                walletNumber: 1,
                 connected: true,
             },
             {
                 path: '1',
-                instance: undefined,
+                walletNumber: undefined,
                 connected: true,
             },
         ],
@@ -376,7 +376,7 @@ const disconnect = [
                 mockSuiteDevice({
                     path: '1',
                     remember: true,
-                    instance: 1,
+                    walletNumber: 1,
                     state: { staticSessionId: '1stTestnet@device_id_2:0' },
                 }),
             ],
@@ -392,14 +392,14 @@ const disconnect = [
         result: [
             {
                 path: '',
-                instance: undefined,
+                walletNumber: undefined,
                 connected: false,
                 available: false,
                 state: { staticSessionId: '1stTestnet@device_id:0' },
             },
             {
                 path: '',
-                instance: 1,
+                walletNumber: 1,
                 connected: false,
                 available: false,
                 state: { staticSessionId: '1stTestnet@device_id_2:0' },
@@ -742,23 +742,23 @@ const selectDevice: Array<
         description: `Select device instance (2 instances, 1 affected)`,
         initialState: {
             ...deviceReducerInitialState,
-            devices: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
+            devices: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 1 })],
         },
         actions: [
             {
                 type: deviceActions.selectDevice.type,
-                payload: mockSuiteDevice({ instance: 1 }),
+                payload: mockSuiteDevice({ walletNumber: 1 }),
             },
         ],
         result: [
             {
-                instance: undefined,
+                walletNumber: undefined,
                 features: {
                     device_id: 'device-id',
                 },
             },
             {
-                instance: 1,
+                walletNumber: 1,
                 features: {
                     device_id: 'device-id',
                 },
@@ -770,7 +770,7 @@ const selectDevice: Array<
         description: `Select first then second instance (2 instances, 2 affected)`,
         initialState: {
             ...deviceReducerInitialState,
-            devices: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
+            devices: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 1 })],
         },
         actions: [
             {
@@ -779,18 +779,18 @@ const selectDevice: Array<
             },
             {
                 type: deviceActions.selectDevice.type,
-                payload: mockSuiteDevice({ instance: 1 }),
+                payload: mockSuiteDevice({ walletNumber: 1 }),
             },
         ],
         result: [
             {
-                instance: undefined,
+                walletNumber: undefined,
                 features: {
                     device_id: 'device-id',
                 },
             },
             {
-                instance: 1,
+                walletNumber: 1,
                 features: {
                     device_id: 'device-id',
                 },
@@ -834,7 +834,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                     device_id: 'ignored-device-id',
                 }),
                 mockSuiteDevice(
-                    { instance: 1 },
+                    { walletNumber: 1 },
                     {
                         device_id: 'ignored-device-id',
                     },
@@ -842,17 +842,17 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                 mockSuiteDevice({
                     state: { staticSessionId: '1stTestnetAddress@device_id:3' },
                     connected: true,
-                    instance: 3,
+                    walletNumber: 3,
                 }),
                 SUITE_DEVICE,
-                mockSuiteDevice({ instance: 1 }),
+                mockSuiteDevice({ walletNumber: 1 }),
             ],
         },
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
                 payload: {
-                    device: mockSuiteDevice({ instance: 1 }),
+                    device: mockSuiteDevice({ walletNumber: 1 }),
                 },
             },
             {
@@ -862,27 +862,27 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
             {
                 type: deviceActions.forgetDevice.type,
                 payload: {
-                    device: mockSuiteDevice({ connected: true, instance: 3 }),
+                    device: mockSuiteDevice({ connected: true, walletNumber: 3 }),
                 },
             },
         ],
         result: [
             {
-                instance: undefined,
+                walletNumber: undefined,
                 features: {
                     device_id: 'ignored-device-id',
                 },
                 useEmptyPassphrase: undefined,
             },
             {
-                instance: 1,
+                walletNumber: 1,
                 features: {
                     device_id: 'ignored-device-id',
                 },
                 useEmptyPassphrase: undefined,
             },
             {
-                ...mockSuiteDevice({ connected: true, instance: 3 }),
+                ...mockSuiteDevice({ connected: true, walletNumber: 3 }),
                 state: undefined,
             },
         ],
@@ -896,20 +896,20 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                     device_id: 'ignored-device-id',
                 }),
                 mockSuiteDevice(
-                    { instance: 1 },
+                    { walletNumber: 1 },
                     {
                         device_id: 'ignored-device-id',
                     },
                 ),
                 SUITE_DEVICE,
-                mockSuiteDevice({ instance: 1 }),
-                mockSuiteDevice({ instance: 3 }),
+                mockSuiteDevice({ walletNumber: 1 }),
+                mockSuiteDevice({ walletNumber: 3 }),
             ],
         },
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: { device: mockSuiteDevice({ instance: 3 }) },
+                payload: { device: mockSuiteDevice({ walletNumber: 3 }) },
             },
             {
                 type: deviceActions.forgetDevice.type,
@@ -926,13 +926,13 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
         ],
         result: [
             {
-                instance: 1,
+                walletNumber: 1,
                 features: {
                     device_id: 'ignored-device-id',
                 },
             },
             {
-                instance: 1,
+                walletNumber: 1,
                 features: {
                     device_id: 'device-id',
                 },
@@ -1047,14 +1047,14 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
                 }),
                 mockSuiteDevice({
                     state: { staticSessionId: '1stTestnet@device_id:0' },
-                    instance: 1,
+                    walletNumber: 1,
                 }),
                 mockSuiteDevice({
-                    instance: 2,
+                    walletNumber: 2,
                 }),
                 mockSuiteDevice({
                     state: { staticSessionId: '1stTestnet@device_id:0' },
-                    instance: 3,
+                    walletNumber: 3,
                 }),
                 mockSuiteDevice(
                     {
@@ -1082,7 +1082,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
                 payload: {
                     device: mockSuiteDevice({
                         state: { staticSessionId: '1stTestnet@device_id:0' },
-                        instance: 3,
+                        walletNumber: 3,
                     }),
                     remember: true,
                 },
@@ -1095,15 +1095,15 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
             }),
             mockSuiteDevice({
                 state: { staticSessionId: '1stTestnet@device_id:0' },
-                instance: 1,
+                walletNumber: 1,
                 remember: false,
             }),
             mockSuiteDevice({
-                instance: 2,
+                walletNumber: 2,
             }),
             mockSuiteDevice({
                 state: { staticSessionId: '1stTestnet@device_id:0' },
-                instance: 3,
+                walletNumber: 3,
                 remember: true,
             }),
             mockSuiteDevice(

@@ -9,6 +9,7 @@ import { DeviceState, DeviceUniquePath } from './device';
 export interface DeviceIdentity {
     path?: DeviceUniquePath;
     state?: DeviceState;
+    /** @deprecated */
     instance?: number;
 }
 

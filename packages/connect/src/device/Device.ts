@@ -186,10 +186,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
 
-    private instance = 0;
-
-    // DeviceState list [this.instance]: DeviceState | undefined
-    private state: DeviceState[] = [];
+    private _state?: DeviceState;
     private busy?: DeviceBusyStatus;
 
     private _unavailableCapabilities: UnavailableCapabilities = {};
@@ -644,38 +641,43 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return DeviceCommands(this.getCurrentSession());
     }
 
-    setInstance(instance = 0) {
-        if (this.instance !== instance) {
-            // if requested instance is different than current
-            // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
-            // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
-            if (this.keepTransportSession) {
-                this.sessionAcquired = null;
-                this.keepTransportSession = false;
-            }
-        }
-        this.instance = instance;
+    /** @deprecated */
+    setInstance(_instance = 0) {
+        // no-op: instance is deprecated
     }
 
+    /** @deprecated */
     getInstance() {
-        return this.instance;
+        return 0;
     }
 
     getState(): DeviceState | undefined {
-        return this.state[this.instance];
+        return this._state;
     }
 
     setState(state?: Partial<DeviceState>) {
         if (!state) {
-            delete this.state[this.instance];
+            // Detect wallet change: if clearing state while keepTransportSession is active, reset it
+            if (this.keepTransportSession) {
+                this.sessionAcquired = null;
+                this.keepTransportSession = false;
+            }
+            this._state = undefined;
         } else {
-            const prevState = this.state[this.instance];
-            const newState = {
+            const prevState = this._state;
+            // Detect wallet change: if the staticSessionId prefix changes, reset the transport session
+            if (state.staticSessionId && prevState?.staticSessionId) {
+                const prevPrefix = prevState.staticSessionId.split(':')[0];
+                const newPrefix = state.staticSessionId.split(':')[0];
+                if (prevPrefix !== newPrefix && this.keepTransportSession) {
+                    this.sessionAcquired = null;
+                    this.keepTransportSession = false;
+                }
+            }
+            this._state = {
                 ...prevState,
                 ...state,
             };
-
-            this.state[this.instance] = newState;
         }
     }
 

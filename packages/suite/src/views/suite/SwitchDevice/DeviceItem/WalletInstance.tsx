@@ -156,7 +156,7 @@ export const WalletInstance = ({
 
     return (
         <Card
-            key={`${instance.instance}${instance.state}`}
+            key={`${instance.walletNumber}${instance.state}`}
             paddingType="none"
             onClick={handleClick}
             tabIndex={0}

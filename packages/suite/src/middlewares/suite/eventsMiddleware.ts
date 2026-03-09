@@ -101,7 +101,7 @@ const eventsMiddleware =
                 ? devices.filter(
                       d =>
                           d.path === action.payload.device.path &&
-                          d.instance === action.payload.device.instance,
+                          d.walletNumber === action.payload.device.walletNumber,
                   )
                 : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
