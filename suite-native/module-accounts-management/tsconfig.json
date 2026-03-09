@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/earn-api" },
         {
             "path": "../../suite-common/fiat-services"
         },
@@ -43,7 +44,6 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
-        { "path": "../module-earn" },
         {
             "path": "../module-stellar-token-management"
         },

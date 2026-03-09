@@ -3,61 +3,72 @@ import { useSelector } from 'react-redux';
 
 import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     isCardanoStakedWithFiveBinaries,
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
 
-import { StakingEarnItem } from '../types';
+import { EarnPromoListDataItem, StakingEarnItem } from '../types';
+
+type UseStakingListDataReturn = {
+    activeItems: StakingEarnItem[];
+    promoListData: EarnPromoListDataItem[];
+    accountStakedWithFiveBinaries: Account | undefined;
+};
 
 export const useStakingListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
-    return useMemo(() => {
+    return useMemo<UseStakingListDataReturn>(() => {
         const stakingAccounts = accounts.filter(acc => isStakingSymbol(acc.symbol));
 
         const accountStakedWithFiveBinaries = stakingAccounts.find(
             account => account.visible && isCardanoStakedWithFiveBinaries(account),
         );
 
-        const stakingData: StakingEarnItem[] = PROD_STAKING_SYMBOLS.flatMap(
-            (symbol): StakingEarnItem[] => {
-                const accs = stakingAccounts.filter(acc => acc.symbol === symbol);
-                const accountsStakingActive = accs.flatMap(acc => {
-                    const stakedAmount = getAccountTotalStakingBalance(acc);
+        const activeItems: StakingEarnItem[] = [];
+        const promoItems: StakingEarnItem[] = [];
 
-                    // return user's accounts with active accounts if has any
-                    if (stakedAmount !== null && stakedAmount !== '0') {
-                        return {
-                            type: 'staking',
-                            symbol,
-                            accountKey: acc.key,
-                            accountLabel: acc.accountLabel,
-                        } satisfies StakingEarnItem;
-                    }
+        PROD_STAKING_SYMBOLS.forEach(symbol => {
+            promoItems.push({
+                id: symbol,
+                type: 'staking',
+                symbol,
+                accountKey: null,
+                accountLabel: '',
+                balance: null,
+            });
 
-                    return [];
-                });
-
-                // if not return fallback value
-                if (accountsStakingActive.length === 0) {
-                    return [
-                        {
-                            type: 'staking',
-                            symbol,
-                            accountKey: null,
-                            accountLabel: '',
-                        } satisfies StakingEarnItem,
-                    ];
+            stakingAccounts.forEach(account => {
+                if (account.symbol !== symbol) {
+                    return;
                 }
 
-                return accountsStakingActive;
-            },
-        );
+                const stakedAmount = getAccountTotalStakingBalance(account);
 
-        const listData = ['Staking', ...stakingData];
+                if (stakedAmount === null || stakedAmount === '0') {
+                    return;
+                }
 
-        return { listData, accountStakedWithFiveBinaries };
+                activeItems.push({
+                    id: `${symbol}-${account.key}`,
+                    type: 'staking',
+                    symbol,
+                    accountKey: account.key,
+                    accountLabel: account.accountLabel,
+                    balance: stakedAmount,
+                });
+            });
+        });
+
+        const promoListData: EarnPromoListDataItem[] = ['staking', ...promoItems];
+
+        return {
+            activeItems,
+            promoListData,
+            accountStakedWithFiveBinaries,
+        };
     }, [accounts]);
 };

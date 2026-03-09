@@ -10,7 +10,7 @@ import {
 } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Icon, IconName } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SUITE_URL } from '@trezor/urls';
 
@@ -56,17 +56,18 @@ const iconByEarnType: Record<EarnType, IconName> = {
     'stablecoin-yield': 'coins',
 };
 
-const earnTypeLabelByType: Record<EarnType, string> = {
-    staking: 'Staking',
-    'stablecoin-yield': 'StableCoin yield',
-};
+const earnTypeTranslationIdByType = {
+    staking: 'earn.staking',
+    'stablecoin-yield': 'earn.stablecoinYield',
+} as const;
 
 export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
     const copyToClipboard = useCopyToClipboard();
     const formattedUrl = SUITE_URL.replace('https://', 'www.');
 
-    const earnType = earnTypeLabelByType[type];
+    const earnType = translate(earnTypeTranslationIdByType[type]);
 
     return (
         <BottomSheetModal ref={ref}>

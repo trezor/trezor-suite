@@ -211,7 +211,7 @@ export const TransactionListHeader = memo(
                     {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
                 </VStack>
                 {hasAccountTransactions && (
-                    <Box marginTop="sp52" marginHorizontal="sp32">
+                    <Box marginTop="sp52" marginHorizontal="sp16">
                         <Text variant="headline-sm">
                             <Translation id="transactions.title" />
                         </Text>

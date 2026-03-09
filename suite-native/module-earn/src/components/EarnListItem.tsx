@@ -1,41 +1,30 @@
-import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { PressableOpacity, useBottomSheetModal } from '@suite-native/atoms';
 import { useAnalytics } from '@suite-native/services';
-import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { EarnItem } from '../types';
+import { type EarnPromoItem } from '../types';
 import { EarnItemInfoModal } from './EarnItemInfoModal';
 import { EarnItemOverviewSection } from './EarnItemOverviewSection';
 
-const earnItemStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+const promoItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
-    borderRadius: utils.spacings.sp16,
-    marginBottom: utils.spacings.sp16,
-    ...utils.boxShadows.small,
+    minHeight: 70,
 }));
 
-export type EarnListItemProps = EarnItem;
+export type EarnListItemProps = EarnPromoItem;
 
-export const EarnListItem = (earnItem: EarnListItemProps) => {
-    const { accountKey, type } = earnItem;
+export const EarnListItem = (item: EarnListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal } = useBottomSheetModal();
     const analytics = useAnalytics();
 
-    const safeAccountKey = accountKey ?? ('' as AccountKey);
-    const stakedBalance = useSelector(state =>
-        selectStakedBalanceByAccountKey(state, safeAccountKey),
-    );
-    const balance = type === 'stablecoin-yield' ? earnItem.tokenBalance : stakedBalance;
-
     const handlePress = () => {
         openModal();
+
         analytics.report({
             type:
-                type === 'staking'
+                item.type === 'staking'
                     ? events.earnStakeTilePressedEvent.name
                     : events.earnStablecoinYieldTilePressedEvent.name,
         });
@@ -43,13 +32,11 @@ export const EarnListItem = (earnItem: EarnListItemProps) => {
 
     return (
         <>
-            <PressableOpacity style={applyStyle(earnItemStyle)} onPress={handlePress}>
-                <VStack flex={1}>
-                    <EarnItemOverviewSection balance={balance} {...earnItem} />
-                </VStack>
+            <PressableOpacity style={applyStyle(promoItemStyle)} onPress={handlePress}>
+                <EarnItemOverviewSection {...item} />
             </PressableOpacity>
 
-            <EarnItemInfoModal ref={bottomSheetRef} type={type} />
+            <EarnItemInfoModal ref={bottomSheetRef} type={item.type} />
         </>
     );
 };

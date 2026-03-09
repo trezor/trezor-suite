@@ -1,46 +1,65 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-native/analytics';
-import { TitleHeader, VStack } from '@suite-native/atoms';
+import { ListItemSkeleton, TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
-import { EarnListItem } from '../components/EarnListItem';
-import { EarnSectionHeader } from '../components/EarnSectionHeader';
+import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
+import { EarnPromoListRow } from '../components/EarnPromoListRow';
+import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStakingListData } from '../hooks/useStakingListData';
-import { EarnItem } from '../types';
+import { type EarnPromoListDataItem } from '../types';
 
-export type EarnListItem = string | EarnItem;
+const getEarnListItemType = (item: EarnPromoListDataItem) =>
+    typeof item === 'string' ? 'section-header' : `row-${item.type}`;
 
-const renderItem = ({ item }: { item: EarnListItem }) => {
-    if (typeof item === 'string') {
-        return <EarnSectionHeader title={item} />;
-    } else {
-        return <EarnListItem {...item} />;
-    }
-};
+const getEarnListItemKey = (item: EarnPromoListDataItem) =>
+    typeof item === 'string' ? item : item.id;
 
 export const EarnScreen = () => {
-    const { listData: stakingListData } = useStakingListData();
-    const { listData: stablecoinListData } = useStablecoinYieldListData();
+    const analytics = useAnalytics();
+    const {
+        promoListData: stakingPromoItems,
+        activeItems: stakingActiveItems,
+        accountStakedWithFiveBinaries,
+    } = useStakingListData();
+    const { promoListData: stablecoinYieldPromoItems, activeItems: stablecoinYieldActiveItems } =
+        useStablecoinYieldListData();
 
     const earnListData = useMemo(
-        () => [...stakingListData, ...stablecoinListData],
-        [stakingListData, stablecoinListData],
+        (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
+        [stablecoinYieldPromoItems, stakingPromoItems],
     );
-
-    const analytics = useAnalytics();
 
     useFocusEffect(
         useCallback(() => {
             analytics.report({ type: events.earnNavigateEvent.name });
         }, [analytics]),
+    );
+
+    const renderItem = useCallback(
+        ({ item, index }: { item: EarnPromoListDataItem; index: number }) => {
+            if (typeof item === 'string') {
+                return <EarnPromoListHeader item={item} />;
+            }
+
+            const nextItem = earnListData[index + 1];
+            const isLastInSection = nextItem === undefined || typeof nextItem === 'string';
+
+            if (item.type === 'skeleton-loader') {
+                return <ListItemSkeleton />;
+            }
+
+            return <EarnPromoListRow item={item} isLastInSection={isLastInSection} />;
+        },
+        [earnListData],
     );
 
     return (
@@ -55,8 +74,16 @@ export const EarnScreen = () => {
                 />
 
                 <FlashList
-                    getItemType={item => (typeof item === 'string' ? 'sectionHeader' : 'item')}
                     data={earnListData}
+                    getItemType={getEarnListItemType}
+                    ListHeaderComponent={
+                        <EarnScreenListHeader
+                            cardanoStakingAccountKey={accountStakedWithFiveBinaries?.key}
+                            stakingActiveItems={stakingActiveItems}
+                            stablecoinYieldActiveItems={stablecoinYieldActiveItems}
+                        />
+                    }
+                    keyExtractor={getEarnListItemKey}
                     renderItem={renderItem}
                 />
             </VStack>

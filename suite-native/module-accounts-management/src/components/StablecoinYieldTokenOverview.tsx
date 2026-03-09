@@ -1,13 +1,15 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-api';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { Box, Card, CardDivider, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type StablecoinYieldTokenOverviewProps = {
     accountKey: AccountKey;
@@ -19,24 +21,27 @@ export const StablecoinYieldTokenOverview = ({
     tokenContract,
 }: StablecoinYieldTokenOverviewProps) => {
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
-    const { yieldOpportunities } = useAllYieldOpportunities();
+    const { yieldOpportunities } = useAllYieldOpportunities({ enabled: isEnabled });
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
-    if (!isEnabled) return null;
-
-    const normalizedContract = tokenContract.toLowerCase();
-    const vault = yieldOpportunities.find(
-        v => v.token.address?.toLowerCase() === normalizedContract,
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    if (!vault) return null;
+    const vault = useMemo(() => {
+        const normalizedContract = tokenContract.toLowerCase();
 
-    const token = account?.tokens?.find(t => t.contract?.toLowerCase() === normalizedContract);
+        return yieldOpportunities.find(v => v.token.address?.toLowerCase() === normalizedContract);
+    }, [yieldOpportunities, tokenContract]);
+
+    if (!isEnabled || !vault) return null;
+
     const vaultName = vault.outputToken?.name ?? '';
     const apy =
         vault.rewardRate.total != null ? `${(vault.rewardRate.total * 100).toFixed(2)}%` : null;
+    const apyColor = apy === null ? 'textSubdued' : 'textDefault';
+    const apyValue = apy ?? <Translation id="earn.notAvailable" />;
 
     return (
         <Box marginHorizontal="sp16">
@@ -62,23 +67,19 @@ export const StablecoinYieldTokenOverview = ({
                         <Text variant="body-sm" color="textSubdued">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.apy" />
                         </Text>
-                        {apy !== null ? (
-                            <Text variant="body-sm">{apy}</Text>
-                        ) : (
-                            <Text variant="body-sm" color="textSubdued">
-                                <Translation id="earn.notAvailable" />
-                            </Text>
-                        )}
+                        <Text variant="body-sm" color={apyColor}>
+                            {apyValue}
+                        </Text>
                     </HStack>
                     <CardDivider />
                     <HStack justifyContent="space-between" alignItems="center">
                         <Text variant="body-sm" color="textSubdued">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.supplied" />
                         </Text>
-                        {token && (
+                        {account && token && (
                             <HStack alignItems="center" spacing="sp8">
                                 <CryptoIconWithNetwork
-                                    symbol={account!.symbol}
+                                    symbol={account.symbol}
                                     contractAddress={tokenContract}
                                     size="extraSmall"
                                 />
