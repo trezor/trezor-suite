@@ -106,3 +106,18 @@ describe('SUITE.REMEMBER_DEVICE', () => {
         });
     });
 });
+
+describe('DEVICE.ADD_AUTHORIZED_DEVICE', () => {
+    fixtures.addAuthorizedDevice.forEach(f => {
+        it(f.description, () => {
+            let state: State = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a);
+            });
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});

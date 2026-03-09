@@ -328,6 +328,24 @@ const addAuthorizedDevice = (
     draft: DeviceReducerState,
     { device, state, useEmptyPassphrase, isAutoEjectEnabled }: DeviceStateActionPayload,
 ) => {
+    // Prevent duplicate wallet entries by merging into the existing device when one with the
+    // same identity already exists. This happens when a remembered standard wallet reconnects:
+    // since the device already has a state, devicesByPathWithoutState is 0, so addAuthorizedDevice
+    // is called instead of setDeviceState. Without this check, a new duplicate entry would be
+    // created alongside the remembered one.
+    if (useEmptyPassphrase) {
+        const existingStandardWallet = draft.devices.find(
+            d => d.features && d.id === device.id && d.useEmptyPassphrase === true,
+        );
+        if (existingStandardWallet) {
+            existingStandardWallet.state = state;
+            existingStandardWallet.remember = shouldDeviceBeRemembered({ isAutoEjectEnabled, device });
+            delete existingStandardWallet.discovered;
+
+            return;
+        }
+    }
+
     const { discovered, ...oldDevice } = device;
     const newDevice = {
         ...oldDevice,

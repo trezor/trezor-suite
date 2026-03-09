@@ -1119,6 +1119,159 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
     },
 ];
 
+const addAuthorizedDevice: Fixture<ReturnType<typeof deviceActions.addAuthorizedDevice>>[] = [
+    {
+        description: 'Add new passphrase wallet when standard wallet is already authorized',
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    connected: true,
+                    path: '1',
+                    instance: 1,
+                    useEmptyPassphrase: true,
+                    state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                    remember: true,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.addAuthorizedDevice.type,
+                payload: {
+                    device: mockSuiteDevice({
+                        connected: true,
+                        path: '1',
+                        instance: 1,
+                        useEmptyPassphrase: true,
+                        state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                        remember: true,
+                    }) as Parameters<typeof deviceActions.addAuthorizedDevice>[0]['device'],
+                    state: {
+                        staticSessionId: 'passphrase-address@device-id:2' as import('@trezor/connect').StaticSessionId,
+                        sessionId: 'session-pp',
+                    },
+                    useEmptyPassphrase: false,
+                    isAutoEjectEnabled: false,
+                },
+            },
+        ],
+        result: [
+            {
+                instance: 1,
+                state: { staticSessionId: 'address@device-id:1' },
+                useEmptyPassphrase: true,
+            },
+            {
+                state: { staticSessionId: 'passphrase-address@device-id:2' },
+                useEmptyPassphrase: false,
+            },
+        ],
+    },
+    {
+        description: 'Merge into existing standard wallet instead of creating duplicate (standard wallet reconnect)',
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    connected: true,
+                    path: '1',
+                    instance: 1,
+                    useEmptyPassphrase: true,
+                    state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                    remember: true,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.addAuthorizedDevice.type,
+                payload: {
+                    device: mockSuiteDevice({
+                        connected: true,
+                        path: '1',
+                        instance: 1,
+                        useEmptyPassphrase: true,
+                        state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                        remember: true,
+                    }) as Parameters<typeof deviceActions.addAuthorizedDevice>[0]['device'],
+                    state: {
+                        staticSessionId: 'address@device-id:2' as import('@trezor/connect').StaticSessionId,
+                        sessionId: 'session-2',
+                    },
+                    useEmptyPassphrase: true,
+                    isAutoEjectEnabled: false,
+                },
+            },
+        ],
+        result: [
+            {
+                instance: 1,
+                state: { staticSessionId: 'address@device-id:2' },
+                useEmptyPassphrase: true,
+            },
+        ],
+    },
+    {
+        description: 'Merge into existing standard wallet with multiple devices in state',
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    connected: true,
+                    path: '1',
+                    instance: 1,
+                    useEmptyPassphrase: true,
+                    state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                    remember: true,
+                }),
+                mockSuiteDevice({
+                    connected: true,
+                    path: '1',
+                    instance: 2,
+                    useEmptyPassphrase: false,
+                    walletNumber: 1,
+                    state: { staticSessionId: 'passphrase-address@device-id:2' as import('@trezor/connect').StaticSessionId },
+                    remember: true,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.addAuthorizedDevice.type,
+                payload: {
+                    device: mockSuiteDevice({
+                        connected: true,
+                        path: '1',
+                        instance: 1,
+                        useEmptyPassphrase: true,
+                        state: { staticSessionId: 'address@device-id:1' as import('@trezor/connect').StaticSessionId },
+                        remember: true,
+                    }) as Parameters<typeof deviceActions.addAuthorizedDevice>[0]['device'],
+                    state: {
+                        staticSessionId: 'address@device-id:3' as import('@trezor/connect').StaticSessionId,
+                        sessionId: 'session-3',
+                    },
+                    useEmptyPassphrase: true,
+                    isAutoEjectEnabled: false,
+                },
+            },
+        ],
+        result: [
+            {
+                instance: 1,
+                state: { staticSessionId: 'address@device-id:3' },
+                useEmptyPassphrase: true,
+            },
+            {
+                instance: 2,
+                state: { staticSessionId: 'passphrase-address@device-id:2' },
+                useEmptyPassphrase: false,
+            },
+        ],
+    },
+];
+
 export default {
     connect,
     disconnect,
@@ -1126,4 +1279,5 @@ export default {
     selectDevice,
     forget,
     remember,
+    addAuthorizedDevice,
 };
