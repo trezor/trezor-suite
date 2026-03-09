@@ -235,7 +235,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                   {
                                       scheme: 'https',
                                       host: 'connect.trezor.io',
-                                      pathPattern: '/9/deeplink/.*',
+                                      // Universal pattern to match any Connect version (e.g. /9/deeplink/..., /10/deeplink/...).
+                                      // Android pathPattern only supports '.' (any char) and '*' (repeat), not character classes.
+                                      pathPattern: '/.*/deeplink/.*',
                                   },
                                   {
                                       scheme: 'https',
