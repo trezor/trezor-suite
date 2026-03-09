@@ -317,8 +317,10 @@ export class TradingPage {
 
     @step()
     async waitForRedirectCompletion() {
-        await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
+        const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
+
+        await expect(tradeHeading).toBeHidden();
+        await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
     }
 
     @step()
