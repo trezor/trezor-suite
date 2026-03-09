@@ -1,5 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import * as modalActions from '@suite/modal';
+import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
@@ -29,7 +29,7 @@ export const openAddressModal =
     ) =>
     (dispatch: Dispatch) => {
         dispatch(
-            modalActions.openModal({
+            openModal({
                 type: 'address',
                 ...params,
             }),
@@ -60,7 +60,7 @@ export const showAddress =
         // Show warning when device is not connected
         if (!device.connected || !device.available) {
             dispatch(
-                modalActions.openModal({
+                openModal({
                     type: 'unverified-address',
                     ...modalPayload,
                 }),
@@ -77,7 +77,7 @@ export const showAddress =
             return;
         }
 
-        dispatch(modalActions.preserve());
+        dispatch(preserveModal());
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
             type: events.createReceiveAddressShowAddressEvent.name,
@@ -92,7 +92,7 @@ export const showAddress =
         ).unwrap();
 
         // After confirming address on the modal, it does not have to be persistent anymore
-        dispatch(modalActions.removePreserve());
+        dispatch(removePreserveModal());
 
         if (response.success) {
             // show second part of the "confirm address" modal
@@ -103,7 +103,7 @@ export const showAddress =
                 payload: { assetSymbol: account.symbol },
             });
         } else {
-            dispatch(modalActions.onCancel());
+            dispatch(closeModal());
             // special case: device no-backup permissions not granted
             if (response.error.code === 'Method_PermissionsNotGranted') return;
 

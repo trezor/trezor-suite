@@ -1,4 +1,4 @@
-import * as modalActions from '@suite/modal';
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice, selectSimulatedEntropyCheckFail } from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
@@ -54,7 +54,7 @@ export const changePin =
                 dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
             }
         } else if (result.error.code === 'Failure_PinMismatch') {
-            dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
+            dispatch(openModal({ type: 'pin-mismatch' }));
         } else if (result.error.message.includes('string overflow')) {
             // this is a workaround for FW < 1.10.0
             // translate generic error from the device if the entered PIN is longer than 9 digits
@@ -89,7 +89,7 @@ export const changeWipeCode =
                 }),
             );
         } else if (result.error.code === 'Failure_WipeCodeMismatch') {
-            dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
+            dispatch(openModal({ type: 'pin-mismatch' }));
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }

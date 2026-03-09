@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import * as modalActions from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -24,7 +24,7 @@ export const AutoStartBeforeQuitModal = () => {
         action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
     ) => {
         desktopApi.appAutoStartPopupResponse(action);
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
         analytics.report({
             type: events.autostartModalEvent.name,
             payload: {

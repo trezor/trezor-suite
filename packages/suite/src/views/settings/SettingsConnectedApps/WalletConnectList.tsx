@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import * as modalActions from '@suite/modal';
+import { openModal } from '@suite/modal';
 import {
     getSessionNetworks,
     selectSessions,
@@ -91,7 +91,7 @@ export const WalletConnectList = () => {
                                     label: <Translation id="TR_SWITCH_ACCOUNT" />,
                                     onClick: () => {
                                         dispatch(
-                                            modalActions.openModal({
+                                            openModal({
                                                 type: 'walletconnect-switch-account',
                                                 sessionTopic: session.topic,
                                             }),

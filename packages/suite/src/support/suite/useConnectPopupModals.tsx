@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import {
     MODAL_CONTEXT_NONE,
     MODAL_CONTEXT_USER,
-    onCancel as cancelModal,
+    closeModal as cancelModal,
     openModal,
     selectModalType,
 } from '@suite/modal';

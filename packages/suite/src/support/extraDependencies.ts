@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 
 import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
-import * as modalActions from '@suite/modal';
+import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
@@ -191,8 +191,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         lockDevice: suiteActions.lockDevice,
-        onModalCancel: modalActions.onCancel,
-        openModal: modalActions.openModal,
+        onModalCancel: closeModal,
+        openModal,
     },
     actionTypes: {
         storageLoad: '@storage/load',

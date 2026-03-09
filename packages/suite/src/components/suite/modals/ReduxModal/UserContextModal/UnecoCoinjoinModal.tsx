@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { onCancel } from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -23,12 +23,12 @@ export const UnecoCoinjoinModal = () => {
     const decimals = getAccountDecimals(symbol) || 8;
 
     const handleContinue = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
         dispatch(goto('wallet-anonymize', { preserveParams: true }));
     };
 
     const handleCancel = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
 
     return (

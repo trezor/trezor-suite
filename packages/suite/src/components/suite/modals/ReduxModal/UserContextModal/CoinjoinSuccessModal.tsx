@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { onCancel as closeModal } from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';

@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import * as modalActions from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
@@ -48,7 +48,7 @@ export const FirmwareModal = ({
         if (device?.status !== 'available') {
             dispatch(acquireDevice({ requestedDevice: device }));
         }
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
         dispatch(closeModalApp());
         resetReducer();
     };

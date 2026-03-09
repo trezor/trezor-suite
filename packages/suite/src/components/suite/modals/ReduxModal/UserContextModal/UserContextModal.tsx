@@ -1,5 +1,5 @@
 import { MetadataProviderModal } from '@suite/metadata';
-import { MODAL_CONTEXT_USER, onCancel as onCancelAction } from '@suite/modal';
+import { MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
 import { AccountKey } from '@suite-common/wallet-types';
 import { UI_REQUEST } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -60,7 +60,7 @@ import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(onCancelAction());
+    const onCancel = () => dispatch(closeModalAction());
 
     switch (payload.type) {
         case 'add-account':

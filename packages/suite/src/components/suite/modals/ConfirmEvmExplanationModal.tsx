@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
-import { onCancel } from '@suite/modal';
+import { closeModal } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Image, Modal, Paragraph } from '@trezor/components';
@@ -39,7 +39,7 @@ export const ConfirmEvmExplanationModal = ({
 }: ConfirmNetworkExplanationModalProps) => {
     const dispatch = useDispatch();
     const close = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
         if (!account?.symbol) {
             return;
         }

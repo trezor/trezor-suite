@@ -1,5 +1,4 @@
-import * as modalActions from '@suite/modal';
-import { openModal } from '@suite/modal';
+import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -72,7 +71,7 @@ export const cancelSignTx =
             return;
         }
         // otherwise just close modal and open stake modal
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
 
         const { stakeType } = precomposedForm ?? {};
         if (account && stakeType && !isSuccessTx) {
@@ -111,7 +110,7 @@ const pushTransaction =
         });
 
         // close modal regardless result
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
 
         const spentWithoutFee = new BigNumber(precomposedTx.totalSpent)
             .minus(precomposedTx.fee)
@@ -241,8 +240,8 @@ export const signTransaction =
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-        // this action is blocked by modalActions.preserve()
-        dispatch(modalActions.preserve());
+        // this action is blocked by preserveModal()
+        dispatch(preserveModal());
 
         // signTransaction by Trezor
         let serializedTx: undefined | string | Err<SerializedError>;
@@ -269,7 +268,7 @@ export const signTransaction =
                 return;
             }
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
-            dispatch(modalActions.onCancel());
+            dispatch(closeModal());
 
             const { stakeType } = formValues;
             if (stakeType) {
@@ -299,9 +298,7 @@ export const signTransaction =
         }
 
         // Open a deferred modal and get the decision
-        const decision = await dispatch(
-            modalActions.openDeferredModal({ type: 'review-transaction' }),
-        );
+        const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
             return dispatch(pushTransaction(formValues.stakeType));
