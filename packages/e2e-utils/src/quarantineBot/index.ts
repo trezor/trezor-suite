@@ -19,7 +19,7 @@ async function main(): Promise<void> {
     if (args.includes('--help') || args.includes('-h')) {
         console.log(
             [
-                'Usage: node index.ts [options]',
+                'Usage: yarn workspace @trezor/e2e-utils test-health [options]',
                 '',
                 'Options:',
                 '  (no args)                  Run the test health check: quarantine newly failing tests and',
