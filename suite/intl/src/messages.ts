@@ -8712,30 +8712,29 @@ export const messages = defineMessages({
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
-        defaultMessage:
-            'Proceed with caution. This may be a fraudulent transaction. <a>Learn more</a>',
+        defaultMessage: 'This transaction looks suspicious. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
-        defaultMessage: 'Hide transaction',
+        defaultMessage: 'Mark as suspicious',
     },
     TR_UNHIDE_TRANSACTION: {
         id: 'TR_UNHIDE_TRANSACTION',
-        defaultMessage: 'Unhide transaction',
+        defaultMessage: 'Mark as safe',
     },
     TR_MARKED_AS_RECOGNIZED_BANNER: {
         id: 'TR_MARKED_AS_RECOGNIZED_BANNER',
-        defaultMessage: "You've marked this transaction as recognized.",
+        defaultMessage: 'You’ve confirmed this transaction is safe.',
     },
     TR_HIDE_TRANSACTION_TOOLTIP: {
         id: 'TR_HIDE_TRANSACTION_TOOLTIP',
         defaultMessage:
-            'To enable marking this transaction as fraudulent, set this wallet as remembered.',
+            'To enable marking this transaction as suspicious, set this wallet as remembered.',
     },
     TR_UNHIDE_TRANSACTION_TOOLTIP: {
         id: 'TR_UNHIDE_TRANSACTION_TOOLTIP',
         defaultMessage:
-            'To enable marking this transaction as recognized, set this wallet as remembered.',
+            'To enable marking this transaction as safe, set this wallet as remembered.',
     },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',

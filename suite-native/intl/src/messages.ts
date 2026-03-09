@@ -1893,11 +1893,10 @@ export const messages = {
         },
         phishing: {
             badge: 'Caution!',
-            warning:
-                "Caution! This transaction may be a scam. If you’re unsure, don't engage. <blogLink>Read more</blogLink>",
-            markedAsRecognized: "You've marked this transaction as recognized.",
-            hideTransaction: 'Hide transaction',
-            unhideTransaction: 'Unhide transaction',
+            warning: 'This transaction looks suspicious. <blogLink>Learn more</blogLink>',
+            markedAsRecognized: 'You’ve confirmed this transaction is safe..',
+            hideTransaction: 'Mark as suspicious',
+            unhideTransaction: 'Mark as safe',
         },
         emptyState: {
             title: 'No transactions',
