@@ -7,10 +7,10 @@ import {
 } from '@suite-common/device';
 import {
     getFirmwareAuthenticityCheckErrors,
-    isHardHashCheckError,
-    isHardRevisionCheckError,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
+    getIsHardHashCheckError,
+    getIsHardRevisionCheckError,
+    getIsSkippedHashCheckError,
+    getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
@@ -27,7 +27,7 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const { revisionCheckError } = getFirmwareAuthenticityCheckErrors(device);
     if (revisionCheckError === null) return null;
-    if (isSkippedRevisionCheckError(revisionCheckError)) return null;
+    if (getIsSkippedRevisionCheckError(revisionCheckError)) return null;
 
     const isFirmwareRevisionCheckDisabled = !selectIsFirmwareRevisionCheckEnabled(state);
     if (isFirmwareRevisionCheckDisabled) return null;
@@ -42,7 +42,7 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const { hashCheckError } = getFirmwareAuthenticityCheckErrors(device);
     if (hashCheckError === null) return null;
-    if (isSkippedHashCheckError(hashCheckError)) return null;
+    if (getIsSkippedHashCheckError(hashCheckError)) return null;
 
     const isFirmwareHashCheckDisabled = !selectIsFirmwareHashCheckEnabled(state);
     if (isFirmwareHashCheckDisabled) return null;
@@ -81,7 +81,7 @@ export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: App
     const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
     const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
 
-    return isHardRevisionCheckError(revisionError) || isHardHashCheckError(hashError);
+    return getIsHardRevisionCheckError(revisionError) || getIsHardHashCheckError(hashError);
 };
 
 /**

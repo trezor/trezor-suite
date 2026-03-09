@@ -21,7 +21,7 @@ import {
 } from '@suite-common/device';
 import {
     getFirmwareAuthenticityCheckErrors,
-    isHardRevisionCheckError,
+    getIsHardRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import {
     Feature,
@@ -221,7 +221,7 @@ export const selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled = (
  */
 export const selectHasFirmwareAuthenticityCheckHardFailed = createMemoizedSelector(
     [selectFirmwareRevisionCheckErrorIfEnabled],
-    revisionError => isHardRevisionCheckError(revisionError), // FW hash check to be implemented
+    revisionError => getIsHardRevisionCheckError(revisionError), // FW hash check to be implemented
 );
 
 export const selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice = (
