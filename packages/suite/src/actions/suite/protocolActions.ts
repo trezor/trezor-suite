@@ -1,4 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { AnchorSettingSection, SettingsAnchor, mapAnchorToRoute } from '@suite/router';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -21,11 +22,6 @@ import { parseUri } from 'src/utils/suite/parseUri';
 import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
 
 import { PROTOCOL } from './constants';
-import {
-    AnchorSettingSection,
-    SettingsAnchor,
-    mapAnchorToRoute,
-} from '../../constants/suite/anchors';
 
 export type ProtocolAction =
     | {

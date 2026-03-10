@@ -4,13 +4,12 @@ import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import {
     DashboardParams,
-    EarnParams,
     decodeEarnRouteParams,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
 } from './routerParams';
-import { type RouterAppWithParams, suiteRoutes } from './routes';
+import { type RouteParams, type RouterAppWithParams, suiteRoutes } from './routes';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
 export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
@@ -203,12 +202,6 @@ export const resolveEffectiveBackgroundRouteName = (
 };
 
 export type WalletParams = CommonWalletParams;
-export type RouteParams = {
-    [K in keyof (WalletParams & EarnParams & ModalAppParams & DashboardParams)]?: (WalletParams &
-        EarnParams &
-        ModalAppParams &
-        DashboardParams)[K];
-};
 
 export const getRoute = (name: Route['name']) => suiteRoutes.find(r => r.name === name);
 

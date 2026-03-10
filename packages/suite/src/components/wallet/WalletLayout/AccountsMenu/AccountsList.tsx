@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
-import { RouteParams , selectRouterParams } from '@suite/router';
+import { RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
@@ -12,7 +12,6 @@ import { spacings } from '@trezor/theme';
 
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
-
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';

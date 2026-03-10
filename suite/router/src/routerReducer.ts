@@ -3,10 +3,7 @@ import type { AnyAction } from '@reduxjs/toolkit';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';
-import {
-    type RouterPath,
-    type RouterPathOptional,
-} from './router';
+import { type RouterPath, type RouterPathOptional } from './router';
 import * as ROUTER from './routerConstants';
 import { type RouterAppWithParams, type SettingsBackRoute } from './routes';
 

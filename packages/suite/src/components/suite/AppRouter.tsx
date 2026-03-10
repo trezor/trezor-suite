@@ -1,6 +1,6 @@
 import { ComponentType, createElement, memo } from 'react';
 
-import { resolveEffectiveBackgroundRouteName, selectRouteName , suiteRoutes } from '@suite/router';
+import { resolveEffectiveBackgroundRouteName, selectRouteName, suiteRoutes } from '@suite/router';
 import { PageName } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
