@@ -26,7 +26,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (
             nextState.router.app !== 'wallet' &&
             nextState.router.app !== 'dashboard' &&
-            nextState.router.app !== 'earn'
+            nextState.router.app !== 'earn' &&
+            nextState.router.app !== 'settings'
         )
             return action;
 
