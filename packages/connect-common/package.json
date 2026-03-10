@@ -47,7 +47,6 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
@@ -61,7 +60,6 @@
         "@trezor/protocol": "workspace:^",
         "@types/chrome": "^0.0.299",
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10",
-        "tsx": "^4.21.0"
+        "@types/node": "22.13.10"
     }
 }

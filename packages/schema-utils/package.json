@@ -27,14 +27,12 @@
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "codegen": "ts-node --skip-project ./src/codegen.ts",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "codegen": "ts-node --skip-project ./src/codegen.ts"
     },
     "devDependencies": {
         "@sinclair/typebox-codegen": "^0.10.4",
         "@trezor/eslint": "workspace:*",
-        "ts-node": "^10.9.2",
-        "tsx": "^4.21.0"
+        "ts-node": "^10.9.2"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.33.7",
