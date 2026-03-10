@@ -20,7 +20,7 @@ import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDet
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
 import { TradingDetailSellPaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSending';
 import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailSellSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSellSidebar';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -42,7 +42,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
 export const TradingDetailSell = () => {
     const analytics = useAnalytics();
     const accounts = useSelector(selectAccounts);
-    const { account, trade, info } = useTradingDetailContext<TradingSellType>();
+    const { trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -149,18 +149,12 @@ export const TradingDetailSell = () => {
                     country={country}
                 />
             </Column>
-            <Card>
-                <TradingSelectedOfferInfo
-                    account={account}
-                    selectedAccount={sendAccount}
-                    providers={info?.providerInfos}
-                    selectedQuote={trade.data}
-                    type="sell"
-                    quoteAmounts={quoteAmounts}
-                    paymentMethod={trade.data.paymentMethod}
-                    paymentMethodName={trade.data.paymentMethodName}
-                />
-            </Card>
+            <TradingDetailSellSidebar
+                sendAccount={sendAccount}
+                quoteAmounts={quoteAmounts}
+                paymentMethod={trade.data.paymentMethod}
+                paymentMethodName={trade.data.paymentMethodName}
+            />
         </Wrapper>
     );
 };

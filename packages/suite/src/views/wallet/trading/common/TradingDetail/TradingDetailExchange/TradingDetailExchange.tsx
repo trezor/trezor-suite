@@ -25,7 +25,7 @@ import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/com
 import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
 import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
 import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailExchangeSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchangeSidebar';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -184,16 +184,12 @@ export const TradingDetailExchange = () => {
                     quoteAmounts={quoteAmounts}
                 />
             </Column>
-            <Card>
-                <TradingSelectedOfferInfo
-                    account={sendAccount}
-                    selectedAccount={receiveAccount}
-                    selectedQuote={trade.data}
-                    providers={info?.providerInfos}
-                    type="exchange"
-                    quoteAmounts={quoteAmounts}
-                />
-            </Card>
+            <TradingDetailExchangeSidebar
+                sendAccount={sendAccount}
+                receiveAccount={receiveAccount}
+                trade={trade.data}
+                providers={info?.providerInfos}
+            />
         </Wrapper>
     );
 };
