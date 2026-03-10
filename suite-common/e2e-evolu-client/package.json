@@ -18,8 +18,6 @@
         "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
-        "@types/better-sqlite3": "^7.6.13",
-        "@types/lodash": "^4.17.16",
-        "lodash": "^4.17.21"
+        "@types/better-sqlite3": "^7.6.13"
     }
 }
