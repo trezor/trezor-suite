@@ -2,16 +2,12 @@ import { type MouseEvent } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { enableOnboardingReducer, resetOnboarding, updateAnalytics } from '@suite/onboarding';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    enableOnboardingReducer,
-    resetOnboarding,
-    updateAnalytics,
-} from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';

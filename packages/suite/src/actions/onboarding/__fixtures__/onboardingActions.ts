@@ -1,7 +1,7 @@
-import { STEP, onboardingReducer } from '@suite/onboarding';
+import { STEP, addPath, onboardingReducer, removePath, resetOnboarding } from '@suite/onboarding';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { goToNextStep, goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 
 export default [
     {
@@ -9,7 +9,7 @@ export default [
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStep(),
+        action: () => goToNextStep(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_AUTHENTICATE_DEVICE_STEP },
         },
@@ -19,7 +19,7 @@ export default [
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStep('firmware'),
+        action: () => goToNextStep('firmware'),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
@@ -36,7 +36,7 @@ export default [
                 }),
             },
         },
-        action: () => onboardingActions.goToNextStep(),
+        action: () => goToNextStep(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_COINS_STEP },
         },
@@ -48,7 +48,7 @@ export default [
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
         },
-        action: () => onboardingActions.goToPreviousStep(),
+        action: () => goToPreviousStep(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_RESET_DEVICE_STEP },
         },
@@ -61,7 +61,7 @@ export default [
             },
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.addPath('create'),
+        action: () => addPath('create'),
         expect: {
             toMatchObject: { path: ['new', 'create'] },
         },
@@ -74,7 +74,7 @@ export default [
             },
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.addPath('create'),
+        action: () => addPath('create'),
         expect: {
             toMatchObject: { path: ['create'] },
         },
@@ -86,7 +86,7 @@ export default [
                 path: ['create'],
             },
         },
-        action: () => onboardingActions.removePath(['create']),
+        action: () => removePath(['create']),
         expect: {
             toMatchObject: { path: [] },
         },
@@ -99,7 +99,7 @@ export default [
             },
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.removePath(['recovery']),
+        action: () => removePath(['recovery']),
         expect: {
             toMatchObject: { path: ['create'] },
         },
@@ -113,7 +113,7 @@ export default [
             },
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.resetOnboarding(),
+        action: () => resetOnboarding(),
         expect: {
             toMatchObject: onboardingReducer(undefined, { type: 'foo' } as any),
         },

@@ -1,14 +1,28 @@
 import { useMemo } from 'react';
 
-import { type OnboardingAnalytics } from '@suite/analytics';
-import { type AnyPath, type AnyStepId } from '@suite/onboarding';
+import { typeOnboardingAnalytics } from '@suite/analytics';
+import {
+   type AnyPath,
+   type AnyStepId,
+    addPath,
+    enableOnboardingReducer,
+    goToStep,
+    parseStepId,
+    resetOnboarding,
+    updateAnalytics,
+    updateBackupType,
+} from '@suite/onboarding';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import {
+    goToNextStep,
+    goToPreviousStep,
+    goToSuite,
+    recoveryRerun,
+    resolveNextAfterSkipped,
+} from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { parseStepId } from '../../utils/onboarding/steps';
 
 export const useOnboarding = () => {
     const dispatch = useDispatch();
@@ -21,21 +35,19 @@ export const useOnboarding = () => {
 
     const actions = useMemo(
         () => ({
-            goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
-            goToNextStep: (stepId?: AnyStepId) => dispatch(onboardingActions.goToNextStep(stepId)),
-            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStep()),
-            resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
-            enableOnboardingReducer: (enabled: boolean) =>
-                dispatch(onboardingActions.enableOnboardingReducer(enabled)),
-            rerun: () => dispatch(onboardingActions.recoveryRerun()),
+            goToStep: (stepId: AnyStepId) => dispatch(goToStep(stepId)),
+            goToNextStep: (stepId?: AnyStepId) => dispatch(goToNextStep(stepId)),
+            goToPreviousStep: () => dispatch(goToPreviousStep()),
+            resetOnboarding: () => dispatch(resetOnboarding()),
+            enableOnboardingReducer: (enabled: boolean) => dispatch(enableOnboardingReducer(enabled)),
+            rerun: () => dispatch(recoveryRerun()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
-                dispatch(onboardingActions.updateAnalytics(payload)),
-            addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
-            updateBackupType: (payload: BackupType) =>
-                dispatch(onboardingActions.updateBackupType(payload)),
-            goToSuite: () => dispatch(onboardingActions.goToSuite()),
+                dispatch(updateAnalytics(payload)),
+            addPath: (payload: AnyPath) => dispatch(addPath(payload)),
+            updateBackupType: (payload: BackupType) => dispatch(updateBackupType(payload)),
+            goToSuite: () => dispatch(goToSuite()),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
-                dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),
+                dispatch(resolveNextAfterSkipped(requestedStepId)),
         }),
         [dispatch],
     );

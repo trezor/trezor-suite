@@ -1,14 +1,16 @@
-import { type OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import {
-   type AnyPath,
    type AnyStepId,
-    ONBOARDING,
     STEP,
+    addPath,
     findNextStep,
     findPrevStep,
+    goToStep,
     isStepUsed,
+    removePath,
+    resetOnboarding,
     resolveNextAvailableStep,
     selectOnboardingAnalytics,
     stepCategories,
@@ -21,55 +23,10 @@ import {
 } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { type BackupType } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
-
-export type OnboardingAction =
-    | {
-          type: typeof ONBOARDING.ENABLE_ONBOARDING_REDUCER;
-          payload: boolean;
-      }
-    | {
-          type: typeof ONBOARDING.RESET_ONBOARDING;
-      }
-    | {
-          type: typeof ONBOARDING.REMOVE_PATH;
-          payload: AnyPath[];
-      }
-    | {
-          type: typeof ONBOARDING.ADD_PATH;
-          payload: AnyPath;
-      }
-    | {
-          type: typeof ONBOARDING.SET_STEP_ACTIVE;
-          stepId: AnyStepId;
-      }
-    | {
-          type: typeof ONBOARDING.ANALYTICS;
-          payload: Partial<OnboardingAnalytics>;
-      }
-    | {
-          type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
-          payload: BackupType;
-      };
-
-const goToStep = (stepId: AnyStepId): OnboardingAction => ({
-    type: ONBOARDING.SET_STEP_ACTIVE,
-    stepId,
-});
-
-const addPath = (payload: AnyPath): OnboardingAction => ({
-    type: ONBOARDING.ADD_PATH,
-    payload,
-});
-
-const removePath = (payload: AnyPath[]): OnboardingAction => ({
-    type: ONBOARDING.REMOVE_PATH,
-    payload,
-});
 
 const getAllStepsInPath = (getState: GetState) => {
     const allSteps = stepCategories.flatMap(({ steps }) => steps);
@@ -102,13 +59,6 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
 
     dispatch(goToStep(prevStep.id));
 };
-
-/**
- * Set onboarding reducer to initial state.
- */
-const resetOnboarding = (): OnboardingAction => ({
-    type: ONBOARDING.RESET_ONBOARDING,
-});
 
 const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     const device = selectSelectedDevice(getState());
@@ -160,26 +110,6 @@ const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     dispatch(goToStep(nextStep.id));
 };
 
-/**
- * Make onboarding reducer listen to actions.
- * @param payload,
- */
-
-const enableOnboardingReducer = (payload: boolean): OnboardingAction => ({
-    type: ONBOARDING.ENABLE_ONBOARDING_REDUCER,
-    payload,
-});
-
-const updateAnalytics = (payload: Partial<OnboardingAnalytics>): OnboardingAction => ({
-    type: ONBOARDING.ANALYTICS,
-    payload,
-});
-
-const updateBackupType = (payload: BackupType): OnboardingAction => ({
-    type: ONBOARDING.SELECT_BACKUP_TYPE,
-    payload,
-});
-
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
@@ -223,17 +153,10 @@ const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
 };
 
 export {
-    enableOnboardingReducer,
     goToNextStep,
-    goToStep,
     goToPreviousStep,
-    addPath,
-    removePath,
-    resetOnboarding,
     goToSuite,
-    updateAnalytics,
     beginOnboardingTutorial,
-    updateBackupType,
     resolveNextAfterSkipped,
     recoveryRerun,
 };

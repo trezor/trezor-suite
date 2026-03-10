@@ -8,14 +8,14 @@ import {
     selectBackupStatus,
 } from '@suite/backup';
 import { Translation } from '@suite/intl';
+import { resetOnboarding, updateAnalytics } from '@suite/onboarding';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -50,7 +50,7 @@ export const BackupStep = () => {
     };
 
     const handleResetOnboarding = () => {
-        dispatch(onboardingActions.resetOnboarding());
+        dispatch(resetOnboarding());
         dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.WipeDevice }));
     };
 

@@ -7,6 +7,7 @@ import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
+import type { OnboardingAction } from '@suite/onboarding';
 import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
@@ -39,7 +40,6 @@ import {
 import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
 import { type deviceSlice } from 'src/actions/device/deviceSlice';
-import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
