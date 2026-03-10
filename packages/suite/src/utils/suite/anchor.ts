@@ -1,4 +1,5 @@
-import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
+import { AccountTransactionBaseAnchor, AnchorType } from '@suite/router';
+
 import type { WalletAccountTransaction } from 'src/types/wallet';
 
 export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';

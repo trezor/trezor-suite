@@ -46,7 +46,7 @@ export type {
     ReceiveInfo,
 } from '@suite-common/wallet-types';
 
-export type { WalletParams } from 'src/utils/suite/router';
+export type { WalletParams } from '@suite/router';
 export type AccountItemType = 'coin' | 'tokens' | 'staking';
 
 /*

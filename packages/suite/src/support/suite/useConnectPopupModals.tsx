@@ -7,6 +7,7 @@ import {
     openModal,
     selectModalType,
 } from '@suite/modal';
+import { selectRouteName } from '@suite/router';
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -14,7 +15,6 @@ import TrezorConnect from '@trezor/connect';
 import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 export const useConnectPopupModals = () => {
     const dispatch = useDispatch();

@@ -1,4 +1,5 @@
 import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
+import { AccountTransactionBaseAnchor } from '@suite/router';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -26,7 +27,6 @@ import {
 } from '@trezor/env-utils';
 import { UpdateInfo } from '@trezor/suite-desktop-api';
 
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';

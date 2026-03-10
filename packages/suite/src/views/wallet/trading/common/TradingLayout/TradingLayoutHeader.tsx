@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { selectRouteName } from '@suite/router';
 import { Route } from '@suite-common/suite-types';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
@@ -10,7 +11,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {
     const routePrefix = 'wallet-trading-';

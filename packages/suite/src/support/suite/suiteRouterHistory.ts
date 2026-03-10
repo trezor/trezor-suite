@@ -1,6 +1,6 @@
 import { type History } from 'history';
 
-import type { RouterPath } from 'src/utils/suite/router';
+import type { RouterPath } from '@suite/router';
 
 export type LocationPushState = Record<string, unknown>;
 

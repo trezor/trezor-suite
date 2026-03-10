@@ -3,7 +3,7 @@ import { Route } from '@suite-common/suite-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
 
-import { RouteParams } from 'src/utils/suite/router';
+import { RouteParams } from './router';
 
 export type SettingsBackRoute = {
     name: Route['name'];
@@ -39,4 +39,4 @@ export type RouterAppWithParams =
           route: undefined;
       };
 
-export default [...routes] as Route[];
+export const suiteRoutes = [...routes] as Route[];

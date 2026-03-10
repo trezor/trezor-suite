@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`

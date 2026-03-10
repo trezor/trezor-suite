@@ -1,9 +1,9 @@
 import { Translation, TranslationKey } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { Column, Icon, IconName, UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';

@@ -14646,6 +14646,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/router@workspace:*, @suite/router@workspace:suite/router":
+  version: 0.0.0-use.local
+  resolution: "@suite/router@workspace:suite/router"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/sentry@workspace:*, @suite/sentry@workspace:suite/sentry":
   version: 0.0.0-use.local
   resolution: "@suite/sentry@workspace:suite/sentry"
@@ -16033,6 +16047,7 @@ __metadata:
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/recovery": "workspace:*"
+    "@suite/router": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"

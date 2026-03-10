@@ -1,10 +1,10 @@
 import { Translation, TranslationKey } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 

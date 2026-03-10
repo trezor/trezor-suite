@@ -2,12 +2,12 @@ import type { Locale } from 'date-fns';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

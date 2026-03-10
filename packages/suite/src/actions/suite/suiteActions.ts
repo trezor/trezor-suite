@@ -4,6 +4,7 @@ import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import type { ExperimentalFeature } from '@suite/experimental';
 import type { TranslationKey } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
+import { selectRouterUrl } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
@@ -11,7 +12,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { AutodetectSettings, DebugModeOptions, EvmSettings } from 'src/reducers/suite/suiteReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';

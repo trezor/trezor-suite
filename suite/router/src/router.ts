@@ -2,7 +2,6 @@ import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
-import routes, { type RouterAppWithParams } from 'src/constants/suite/routes';
 import {
     DashboardParams,
     EarnParams,
@@ -10,7 +9,8 @@ import {
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
-} from 'src/utils/suite/routerParams';
+} from './routerParams';
+import { type RouterAppWithParams, suiteRoutes } from './routes';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
 export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
@@ -80,7 +80,7 @@ export const isEqualLocation = (loc1: RouterPathOptional, loc2: RouterPathOption
 export const findRoute = (pathname: PathString) => {
     const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 
-    return routes.find(r => r.pattern === clean);
+    return suiteRoutes.find(r => r.pattern === clean);
 };
 
 const parseHash = (hash: HashString) => hash.replace(/^#/, '').split('/').filter(Boolean);
@@ -210,7 +210,7 @@ export type RouteParams = {
         DashboardParams)[K];
 };
 
-export const getRoute = (name: Route['name']) => routes.find(r => r.name === name);
+export const getRoute = (name: Route['name']) => suiteRoutes.find(r => r.name === name);
 
 export const getRouteHash = (route?: Route, params?: RouteParams) =>
     ensureHashString(

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 
 type SafetyChecksBannerProps = {

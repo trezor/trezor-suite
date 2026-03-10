@@ -1,10 +1,14 @@
+import type { AnyAction } from '@reduxjs/toolkit';
+
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
-import { ROUTER } from 'src/actions/suite/constants';
-import type { AnchorType } from 'src/constants/suite/anchors';
-import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
-import { Action } from 'src/types/suite';
-import type { RouterPath } from 'src/utils/suite/router';
+import { type AnchorType } from './anchors';
+import {
+    type RouterPath,
+    type RouterPathOptional,
+} from './router';
+import * as ROUTER from './routerConstants';
+import { type RouterAppWithParams, type SettingsBackRoute } from './routes';
 
 const ACCOUNT_TABS = [
     'wallet-index',
@@ -27,6 +31,19 @@ export type RouterRootState = {
     router: RouterState;
 };
 
+export type RouterAction =
+    | {
+          type: typeof ROUTER.LOCATION_CHANGE;
+          payload: RouterPathOptional & {
+              anchor?: AnchorType;
+              settingsBackRoute?: SettingsBackRoute;
+          } & RouterAppWithParams;
+      }
+    | {
+          type: typeof ROUTER.ANCHOR_CHANGE;
+          payload: AnchorType | undefined;
+      };
+
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
 
 const initialState: RouterState = {
@@ -44,21 +61,22 @@ const initialState: RouterState = {
 
 export const routerInitialState = initialState;
 
-const routerReducer = (state: RouterState = initialState, action: Action): RouterState => {
+export const routerReducer = (
+    state: RouterState = initialState,
+    action: RouterAction | AnyAction,
+): RouterState => {
     switch (action.type) {
-        case ROUTER.LOCATION_CHANGE: {
+        case ROUTER.LOCATION_CHANGE:
             return {
                 ...state,
                 loaded: true,
                 ...action.payload,
             };
-        }
-        case ROUTER.ANCHOR_CHANGE: {
+        case ROUTER.ANCHOR_CHANGE:
             return {
                 ...state,
                 anchor: action.payload,
             };
-        }
         default:
             return state;
     }
@@ -75,9 +93,6 @@ export const selectURLSearchParams = createMemoizedSelector(
     (search): URLSearchParams | null => (search ? new URLSearchParams(search) : null),
 );
 
-// TODO: perhaps TabPage is not the most ideal name...
-// however currently there are account pages accessible via tabs on the "front page"
-// and the rest, like send page or the trade section
 export const selectIsAccountTabPage = (state: RouterRootState) => {
     const routeName = selectRouteName(state);
 
@@ -85,5 +100,3 @@ export const selectIsAccountTabPage = (state: RouterRootState) => {
 };
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
-
-export default routerReducer;
