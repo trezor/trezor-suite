@@ -79,7 +79,9 @@ export const WalletCreationScreen = () => {
 
             // handle entropy check failure
             if (isEntropyCheckEnabled && code === 'Failure_EntropyCheck') {
-                return navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+                return navigation.navigate(RootStackRoutes.DeviceCompromisedModal, {
+                    failedCheck: 'entropy',
+                });
             }
             // canceled on device -> cancel in suite
             else if (code === 'Failure_ActionCancelled' || code === 'Method_Interrupted') {
