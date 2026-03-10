@@ -289,7 +289,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (
-                deviceActions.setThpCredentials.match(action) ||
                 thpActions.removeCredentials.match(action) ||
                 action.type === 'device-thp_credentials_changed' ||
                 (action.type === 'device-thp_pairing_status_changed' &&

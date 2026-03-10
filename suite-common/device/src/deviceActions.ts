@@ -5,7 +5,6 @@ import type {
     ButtonRequest,
     PersistentDeviceData,
     StoredAuthenticateDeviceResult,
-    ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
 import {
@@ -135,13 +134,6 @@ const setEntropyCheckResult = createAction(
     (payload: SetEntropyCheckResultParams) => ({ payload }),
 );
 
-const setThpCredentials = createAction(
-    `${DEVICE_MODULE_PREFIX}/setThpCredentials`,
-    ({ credentials }: { credentials: ThpSuiteCredentials[] }) => ({
-        payload: { credentials },
-    }),
-);
-
 type SetDelegatedIdentityKeyParams = {
     deviceId: string;
     delegatedKey: PersistentDeviceData['delegatedIdentityKey'];
@@ -194,7 +186,6 @@ export const deviceActions = {
     updateSelectedDevice,
     removeButtonRequests,
     setEntropyCheckResult,
-    setThpCredentials,
     setDelegatedIdentityKey,
     setDiscovered,
     devicePushNotification,
