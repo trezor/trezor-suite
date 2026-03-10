@@ -1,9 +1,9 @@
+import { PrerequisiteType } from '@suite/prerequisites';
 import { Card } from '@trezor/components';
 
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
-import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 import { ModalSwitcher } from '../../components/suite/modals/ModalSwitcher/ModalSwitcher';
 import { SecurityCheck } from '../onboarding/steps/DeviceAuthenticityStep/SecurityCheck';

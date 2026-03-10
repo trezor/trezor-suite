@@ -1,5 +1,5 @@
 {
-    "name": "@suite/onboarding",
+    "name": "@suite/prerequisites",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,14 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/suite-types": "workspace:*",
-        "@suite/analytics": "workspace:*",
-        "@suite/intl": "workspace:*",
-        "@suite/prerequisites": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "immer": "11.0.0"
+        "@suite/recovery": "workspace:*"
     }
 }

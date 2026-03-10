@@ -15058,7 +15058,11 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/suite-types": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/prerequisites": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     immer: "npm:11.0.0"
   languageName: unknown
   linkType: soft
@@ -15079,6 +15083,12 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/prerequisites@workspace:*, @suite/prerequisites@workspace:suite/prerequisites":
+  version: 0.0.0-use.local
+  resolution: "@suite/prerequisites@workspace:suite/prerequisites"
   languageName: unknown
   linkType: soft
 
@@ -16557,6 +16567,7 @@ __metadata:
     "@suite/onboarding-components": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
+    "@suite/prerequisites": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"

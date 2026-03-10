@@ -6,6 +6,10 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../analytics" },
-        { "path": "../../packages/connect" }
+        { "path": "../intl" },
+        { "path": "../prerequisites" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

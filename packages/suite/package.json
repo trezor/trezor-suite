@@ -88,6 +88,7 @@
         "@suite/onboarding-components": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
+        "@suite/prerequisites": "workspace:*",
         "@suite/recovery": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",

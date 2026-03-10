@@ -1,8 +1,5 @@
-import { STEP } from '@suite/onboarding';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
-
-import { type Step, type StepCategory } from 'src/types/onboarding';
 
 import {
     type IsStepUsedProps,
@@ -11,7 +8,9 @@ import {
     isStepCategoryUsed,
     isStepUsed,
     resolveNextAvailableStep,
-} from '../steps';
+} from '../onboardingStepUtils';
+import * as STEP from '../onboardingSteps';
+import { type Step, type StepCategory } from '../types';
 
 const firmwareStep: Step = {
     id: STEP.ID_FIRMWARE_STEP,

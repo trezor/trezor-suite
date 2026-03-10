@@ -64,7 +64,7 @@ export type {
     UnreadableDevice,
 } from '@suite-common/suite-types';
 export type { AppState } from 'src/reducers/store';
-export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
+export type { PrerequisiteType } from '@suite/prerequisites';
 export type { Route };
 
 type FilteredDeviceEvents = FilterOutFromUnionByTypeProperty<

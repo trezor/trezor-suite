@@ -1,3 +1,4 @@
+import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from '@suite/prerequisites';
 import { type RouterRootState, selectRouter } from '@suite/router';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TransportInfo } from '@trezor/connect';
@@ -9,7 +10,6 @@ import {
     TorStatus,
     type TrezorDevice,
 } from 'src/types/suite';
-import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
@@ -48,8 +48,15 @@ export const selectPrerequisite = (
     const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 
-    const prerequisite = getPrerequisiteName({ router, device, transport });
-    const isExcluded = isPrerequisiteGloballyExcluded({ router, prerequisite });
+    const prerequisite = getPrerequisiteName({
+        isAppRouteUnknown: router.app === 'unknown',
+        device,
+        hasNoTransport: !transport?.transports.length,
+    });
+    const isExcluded = isPrerequisiteGloballyExcluded({
+        isSettingsAppRoute: router.app === 'settings',
+        prerequisite,
+    });
 
     if (prerequisite === null || isExcluded) {
         return null;

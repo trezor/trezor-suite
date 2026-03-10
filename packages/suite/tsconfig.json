@@ -160,6 +160,7 @@
         { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
         { "path": "../../suite/onboarding" },
+        { "path": "../../suite/prerequisites" },
         {
             "path": "../../suite/onboarding-components"
         },

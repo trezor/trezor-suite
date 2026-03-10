@@ -1,10 +1,10 @@
-import { type AnyPath, type AnyStepId,  STEP, type Step, type StepCategory } from '@suite/onboarding';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { type TrezorDevice } from 'src/types/suite';
-
-import { stepCategories } from '../../config/onboarding/steps';
+import { stepCategories } from './onboardingStepCategories';
+import * as STEP from './onboardingSteps';
+import { type AnyPath, type AnyStepId, type Step, type StepCategory } from './types';
 
 export const parseStepId = (stepId: AnyStepId) => {
     const activeStepCategory =

@@ -1,3 +1,8 @@
+import { TranslationKey } from '@suite/intl';
+import { PrerequisiteType } from '@suite/prerequisites';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import { FirmwareVersionString } from '@trezor/device-utils/src/types';
+
 import * as STEP from './onboardingSteps';
 
 export type AnyStepId =
@@ -13,3 +18,24 @@ export type AnyStepId =
     | typeof STEP.ID_COINS_STEP;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;
+
+type ModelWithFirmwareVersion = {
+    model: DeviceModelInternal;
+    minFwVersion: FirmwareVersionString;
+};
+
+export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
+
+export type Step = {
+    id: AnyStepId;
+    prerequisites?: (PrerequisiteType | 'device-different')[];
+    path?: AnyPath[];
+    supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];
+    supportedFirmwareTypes?: FirmwareType[];
+};
+
+export type StepCategory = {
+    id: StepCategoryKey;
+    steps: Step[];
+    labelTranslationId?: TranslationKey;
+};

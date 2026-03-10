@@ -1,7 +1,18 @@
 import { type OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
-import { type AnyPath, type AnyStepId, ONBOARDING, STEP, selectOnboardingAnalytics } from '@suite/onboarding';
+import {
+   type AnyPath,
+   type AnyStepId,
+    ONBOARDING,
+    STEP,
+    findNextStep,
+    findPrevStep,
+    isStepUsed,
+    resolveNextAvailableStep,
+    selectOnboardingAnalytics,
+    stepCategories,
+} from '@suite/onboarding';
 import { recoveryRerunThunk } from '@suite/recovery';
 import { closeModalApp, goto } from '@suite/router';
 import {
@@ -14,14 +25,7 @@ import { type BackupType } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { stepCategories } from 'src/config/onboarding/steps';
 import { type Dispatch, type GetState } from 'src/types/suite';
-import {
-    findNextStep,
-    findPrevStep,
-    isStepUsed,
-    resolveNextAvailableStep,
-} from 'src/utils/onboarding/steps';
 
 export type OnboardingAction =
     | {

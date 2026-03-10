@@ -1,14 +1,10 @@
 import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 
-import type { TransportState } from 'src/reducers/suite/suiteReducer';
-import type { AppState, TrezorDevice } from 'src/types/suite';
+import type {  TrezorDevice } from 'src/types/suite';
 
-type GetPrerequisiteNameParams = {
-    router: AppState['router'];
-    device?: TrezorDevice;
-    transport?: TransportState;
-};
+
+import { TrezorDevice } from '@suite-common/suite-types';
 
 export const prerequisiteTypes = [
     'no-transport',
@@ -35,15 +31,21 @@ export const prerequisiteTypes = [
 
 export type PrerequisiteType = (typeof prerequisiteTypes)[number];
 
+type GetPrerequisiteNameParams = {
+    isAppRouteUnknown: boolean;
+    device?: TrezorDevice;
+    hasNoTransport: boolean;
+};
+
 export const getPrerequisiteName = ({
-    router,
+    isAppRouteUnknown,
     device,
-    transport,
+    hasNoTransport,
 }: GetPrerequisiteNameParams): PrerequisiteType | null => {
-    if (!router || router.app === 'unknown') return null;
+    if (isAppRouteUnknown) return null;
 
     // no transport available
-    if (transport && !transport.transports.length) return 'no-transport';
+    if (hasNoTransport) return 'no-transport';
 
     if (!device) return 'device-disconnected';
 
@@ -111,7 +113,7 @@ export const getPrerequisiteName = ({
 const settingsAppActivePrerequisites: PrerequisiteType[] = ['device-disconnect-required'];
 
 type IsPrerequisiteExcluded = {
-    router: RouterState;
+    isSettingsAppRoute: boolean;
     prerequisite: PrerequisiteType | null;
 };
 
@@ -121,11 +123,11 @@ type IsPrerequisiteExcluded = {
  * TODO: remove the fullscreenApp logic, see Preloader
  */
 export const isPrerequisiteGloballyExcluded = ({
-    router,
+    isSettingsAppRoute,
     prerequisite,
 }: IsPrerequisiteExcluded): boolean => {
     if (prerequisite === null) return true;
-    if (router.app === 'settings') {
+    if (isSettingsAppRoute) {
         return !settingsAppActivePrerequisites.includes(prerequisite);
     }
 
