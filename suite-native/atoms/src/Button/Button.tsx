@@ -56,6 +56,7 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     isLoading?: boolean;
     flex?: number;
     isFullWidth?: boolean;
+    adjustsFontSizeToFit?: boolean;
 } & MergeExclusive<{ viewLeft?: ButtonAccessory }, { viewRight?: ButtonAccessory }> &
     TestProps;
 
@@ -338,6 +339,7 @@ export const Button = ({
     isDisabled = false,
     isLoading = false,
     isFullWidth = false,
+    adjustsFontSizeToFit = false,
     ...pressableProps
 }: ButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);

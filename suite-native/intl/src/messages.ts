@@ -2451,7 +2451,7 @@ export const messages = {
             title: 'Before you continue',
             entryPeriodCard: {
                 title: 'Entry period',
-                firstItem: 'The entry period can currently take up to {entryPeriodInDays} days.',
+                firstItem: 'The entry period can currently take up to 72 days.',
                 secondItem: 'You can not cancel your stake during this period.',
             },
             delegatingCard: {
