@@ -1,4 +1,12 @@
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectRecoveryWordRequestInputType } from '@suite/modal';
+import {
+    recoverDeviceThunk,
+    recoveryActions,
+    selectRecoveryError,
+    selectRecoveryStatus,
+    selectWordsCount,
+} from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Column } from '@trezor/components';
@@ -9,26 +17,18 @@ import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboarding
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { TrezorLink } from 'src/components/suite';
-import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
 export const RecoveryStep = () => {
     const device = useSelector(selectSelectedDevice);
+    const status = useSelector(selectRecoveryStatus);
+    const error = useSelector(selectRecoveryError);
+    const wordsCount = useSelector(selectWordsCount);
+    const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
     const dispatch = useDispatch();
-
-    const {
-        status,
-        error,
-        wordsCount,
-        wordRequestInputType,
-        setWordsCount,
-        setAdvancedRecovery,
-        recoverDevice,
-        setStatus,
-        resetReducer,
-    } = useRecovery();
 
     if (!device || !device.features) {
         return null;
@@ -50,7 +50,7 @@ export const RecoveryStep = () => {
                 >
                     <SelectWordCount
                         onSelect={number => {
-                            setWordsCount(number);
+                            dispatch(recoveryActions.setWordsCount(number));
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
                             const shouldSkipSelection = isStandardRecoveryDisabled(
@@ -60,11 +60,11 @@ export const RecoveryStep = () => {
                             );
 
                             if (shouldSkipSelection) {
-                                setAdvancedRecovery(true);
+                                dispatch(recoveryActions.setAdvancedRecovery(true));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
-                                recoverDevice();
+                                dispatch(recoverDeviceThunk());
                             } else {
-                                setStatus('select-recovery-type');
+                                dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
                         }}
                     />
@@ -79,7 +79,7 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
-                        onClick={recoverDevice}
+                        onClick={() => dispatch(recoverDeviceThunk())}
                     >
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
@@ -91,9 +91,9 @@ export const RecoveryStep = () => {
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
         const handleSelect = (type: 'standard' | 'advanced') => {
-            setAdvancedRecovery(type === 'advanced');
+            dispatch(recoveryActions.setAdvancedRecovery(type === 'advanced'));
             dispatch(updateAnalytics({ recoveryType: type }));
-            recoverDevice();
+            dispatch(recoverDeviceThunk());
         };
 
         return (
@@ -140,7 +140,7 @@ export const RecoveryStep = () => {
 
     if (status === 'in-progress') {
         const getModel1Description = () => {
-            if (wordRequestInputType === 'plain') {
+            if (recoveryWordRequestInputType === 'plain') {
                 return (
                     <>
                         <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />{' '}
@@ -149,7 +149,7 @@ export const RecoveryStep = () => {
                 );
             }
 
-            if (wordRequestInputType === 6 || wordRequestInputType === 9) {
+            if (recoveryWordRequestInputType === 6 || recoveryWordRequestInputType === 9) {
                 return <Translation id="TR_ADVANCED_RECOVERY_TEXT" />;
             }
         };
@@ -206,8 +206,8 @@ export const RecoveryStep = () => {
                         data-testid="@onboarding/recovery/retry-button"
                         onClick={
                             deviceModelInternal === DeviceModelInternal.T1B1
-                                ? resetReducer
-                                : recoverDevice
+                                ? () => dispatch(recoveryActions.resetReducer())
+                                : () => dispatch(recoverDeviceThunk())
                         }
                         intent="critical"
                     >

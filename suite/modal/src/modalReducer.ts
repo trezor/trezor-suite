@@ -165,4 +165,21 @@ export const selectModalType = (state: ModalRootState) => {
     return undefined;
 };
 
+export const selectRecoveryWordRequestInputType = (state: ModalRootState) => {
+    if (state.modal.context !== MODAL_CONTEXT_DEVICE) {
+        return null;
+    }
+
+    switch (state.modal.windowType) {
+        case 'WordRequestType_Matrix6':
+            return 6 as const;
+        case 'WordRequestType_Matrix9':
+            return 9 as const;
+        case 'WordRequestType_Plain':
+            return 'plain' as const;
+        default:
+            return null;
+    }
+};
+
 export { modalReducer };
