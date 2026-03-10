@@ -22,8 +22,7 @@ const stealBridgeSession = async () => {
 
 test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
-    // Skipped, because it started failing after PW update. Needs to be investigated.
-    test.skip(
+    test(
         'Session overtaken by another',
         {
             annotation: createTestAnnotation({

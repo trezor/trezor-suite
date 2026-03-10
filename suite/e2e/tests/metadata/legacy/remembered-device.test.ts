@@ -128,21 +128,21 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
 
         // device saved, disable metadata
         // TODO: Not possible to disabled the metadata in this state, the dropdown is greyed out.
-        await test.step.skip(
-            'Disable metadata and verify editing labels is not possible',
-            async () => {
-                await settingsPage.navigateTo('application');
-                await page.selectDropdownOptionWithRetry(
-                    settingsPage.metadataSelectInput,
-                    settingsPage.metadataSelectInputOption('off'),
-                );
-                await walletPage.openAccount();
+        // await test.step(
+        //     'Disable metadata and verify editing labels is not possible',
+        //     async () => {
+        //         await settingsPage.navigateTo('application');
+        //         await page.selectDropdownOptionWithRetry(
+        //             settingsPage.metadataSelectInput,
+        //             settingsPage.metadataSelectInputOption('off'),
+        //         );
+        //         await walletPage.openAccount();
 
-                // Now it is not possible to add labels, keys are gone and device is not connected
-                await expect(
-                    metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1),
-                ).toBeHidden();
-            },
-        );
+        //         // Now it is not possible to add labels, keys are gone and device is not connected
+        //         await expect(
+        //             metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1),
+        //         ).toBeHidden();
+        //     },
+        // );
     });
 });

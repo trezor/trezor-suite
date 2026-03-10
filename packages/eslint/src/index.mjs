@@ -79,7 +79,6 @@ export const eslint = [
 
 const playwrightEslintRules = {
     ...playwright.configs['flat/recommended'].rules,
-    'playwright/no-skipped-test': 'off',
     'playwright/no-nested-step': 'off',
     'playwright/expect-expect': 'off',
     'playwright/no-wait-for-timeout': 'off',
