@@ -16,6 +16,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/validators": "workspace:*",

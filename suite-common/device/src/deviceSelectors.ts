@@ -77,11 +77,6 @@ export const selectIsPendingTransportEvent = createMemoizedSelector(
     devices => devices.length < 1,
 );
 
-export const selectDeviceAutoconnectCredentials = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.thp?.credentials.filter(cred => cred.autoconnect) ?? [],
-);
-
 export const selectIsDeviceUnlocked = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device?.features?.unlocked,
