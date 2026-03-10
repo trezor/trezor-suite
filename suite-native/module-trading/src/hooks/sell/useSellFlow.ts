@@ -22,9 +22,7 @@ export const useSellFlow = () => {
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
-    const { openBrowserForFormData } = useBrowserAuth({
-        tradingType: 'sell',
-    });
+    const { openBrowserForFormData } = useBrowserAuth('sell');
 
     const getCommonFunctions = useCallback(
         (trade?: SellFiatTrade) => {

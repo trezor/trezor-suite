@@ -61,10 +61,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         coinInfo,
     });
 
-    const { openBrowserForFormData } = useBrowserAuth({
-        tradingType: 'buy',
-        orderId: candidateQuote?.orderId,
-    });
+    const { openBrowserForFormData } = useBrowserAuth('buy');
 
     const reportTradeConfirmation = () => {
         analytics.report({
@@ -91,7 +88,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
 
         if (response.tradeForm) {
-            openBrowserForFormData(response.tradeForm.form, returnUrl);
+            openBrowserForFormData(response.tradeForm.form, returnUrl, response.trade.orderId);
         }
 
         clearBuyFormQuoteData(form);
@@ -162,7 +159,8 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 timer,
                 returnUrl,
-                loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
+                loginRequest: formResponse =>
+                    openBrowserForFormData(formResponse, returnUrl, candidateQuote.orderId),
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },
