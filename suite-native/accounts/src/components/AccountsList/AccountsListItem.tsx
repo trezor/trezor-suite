@@ -17,7 +17,6 @@ import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/s
 import {
     TokensRootState,
     isNetworkWithTokens,
-    selectAccountHasAnyKnownToken,
     selectNumberOfAccountKnownTokensWithBalance,
 } from '@suite-native/tokens';
 
@@ -64,8 +63,9 @@ export const AccountsListItem = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const accountHasAnyTokens = useSelector((state: TokensRootState) =>
-        selectAccountHasAnyKnownToken(state, account.key),
+    const accountHasKnownTokensWithBalance = useSelector(
+        (state: TokensRootState) =>
+            selectNumberOfAccountKnownTokensWithBalance(state, account.key) > 0,
     );
 
     const accountHasStaking = useSelector((state: NativeStakingRootState) =>
@@ -79,10 +79,10 @@ export const AccountsListItem = ({
     const handleOnPress = useCallback(() => {
         onPress?.({
             account,
-            hasAnyKnownTokens: accountHasAnyTokens,
+            hasAnyKnownTokens: accountHasKnownTokensWithBalance,
             hasStaking: accountHasStaking,
         });
-    }, [account, accountHasAnyTokens, accountHasStaking, onPress]);
+    }, [account, accountHasKnownTokensWithBalance, accountHasStaking, onPress]);
 
     const icon = useMemo(
         () =>
@@ -96,7 +96,7 @@ export const AccountsListItem = ({
 
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
+    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
 
     return (

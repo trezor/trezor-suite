@@ -160,7 +160,12 @@ export const getAccountListSections = (
         account.networkType === 'stellar'
             ? (account.tokens ?? [])
             : filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
-    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokens.length;
+
+    const tokensWithBalance =
+        account.networkType === 'stellar'
+            ? tokens
+            : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokensWithBalance.length;
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
