@@ -23,7 +23,10 @@ import {
     NativeStakingRootState,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
-import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import {
+    TokensRootState,
+    selectHasDeviceAnyTokensWithBalanceForNetwork,
+} from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -96,15 +99,15 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     );
 
     const accountsPerAsset = accountsKeysForNetworkSymbol.length;
-    const hasAnyTokens = useSelector((state: TokensRootState) =>
-        selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
+    const hasAnyTokensWithBalance = useSelector((state: TokensRootState) =>
+        selectHasDeviceAnyTokensWithBalanceForNetwork(state, cryptoCurrencySymbol),
     );
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
 
     const handleAssetPress = () => {
-        if (accountsPerAsset === 1 && !hasAnyTokens) {
+        if (accountsPerAsset === 1 && !hasAnyTokensWithBalance) {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: accountsKeysForNetworkSymbol[0],
                 closeActionType: 'back',
@@ -131,7 +134,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                     {hasAnyAccountsWithStaking && (
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
                     )}
-                    {hasAnyTokens && (
+                    {hasAnyTokensWithBalance && (
                         <Badge
                             elevation="1"
                             size="small"

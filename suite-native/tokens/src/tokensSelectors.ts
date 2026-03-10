@@ -207,10 +207,23 @@ export const selectHasDeviceAnyTokensForNetwork = (
 
     const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
 
-    return A.any(accounts, account => {
-        const result = selectAnyOfTokensIsKnown(state, account.key);
+    return A.any(accounts, account => selectAnyOfTokensIsKnown(state, account.key));
+};
 
-        return result;
+export const selectHasDeviceAnyTokensWithBalanceForNetwork = (
+    state: TokensRootState,
+    symbol: NetworkSymbol,
+) => {
+    if (!isNetworkWithTokens(symbol)) {
+        return false;
+    }
+
+    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
+
+    return A.any(accounts, account => {
+        const count = selectNumberOfAccountKnownTokensWithBalance(state, account.key);
+
+        return count > 0;
     });
 };
 
