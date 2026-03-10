@@ -1,3 +1,5 @@
+import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware';
+
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -50,19 +52,21 @@ const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): Upda
 type GetDeviceStatusParams = {
     isDeviceDisconnected: boolean;
     isSuiteUpdateInProgress: boolean;
+    isFirmwareInstallationRunning: boolean;
     isFirmwareOutdated: boolean;
 };
 
 const getDeviceStatus = ({
     isDeviceDisconnected,
     isSuiteUpdateInProgress,
+    isFirmwareInstallationRunning,
     isFirmwareOutdated,
 }: GetDeviceStatusParams): UpdateStatusDevice => {
     if (isDeviceDisconnected) {
         return 'disconnected';
     }
 
-    if (isFirmwareOutdated && !isSuiteUpdateInProgress) {
+    if (isFirmwareOutdated && !isSuiteUpdateInProgress && !isFirmwareInstallationRunning) {
         return 'update-available';
     }
 
@@ -72,6 +76,7 @@ const getDeviceStatus = ({
 export const useUpdateStatus = (): UpdateStatusData => {
     const { device } = useDevice();
     const desktopUpdate = useSelector(selectDesktopUpdate);
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
     const isDeviceDisconnected = device?.connected !== true;
 
@@ -101,6 +106,7 @@ export const useUpdateStatus = (): UpdateStatusData => {
     const updateStatusDevice = getDeviceStatus({
         isDeviceDisconnected,
         isSuiteUpdateInProgress,
+        isFirmwareInstallationRunning,
         isFirmwareOutdated,
     });
 

@@ -8,6 +8,7 @@ import {
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { selectHasDeviceSuiteSyncError } from '@suite-common/suite-sync';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -66,6 +67,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const hasSuiteSyncError = useSelector(state =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
     );
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -128,7 +130,9 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     }
 
     // message system banners should always be visible in the app even if app body is blurred
-    const isMessageSystemBannerVisible = bannerMessage && bannerMessage.priority >= priority;
+    // Don't show message system banner when firmware installation is in progress to avoid confusion
+    const isMessageSystemBannerVisible =
+        bannerMessage && bannerMessage.priority >= priority && !isFirmwareInstallationRunning;
 
     const isBannerVisible =
         isMessageSystemBannerVisible ||
