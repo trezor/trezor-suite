@@ -1,5 +1,6 @@
-import { RecoveryType, WordCount } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
+
+import { RecoveryType, WordCount } from './types';
 
 const WORD_COUNT_12 = 12 as const;
 const WORD_COUNT_18 = 18 as const;
