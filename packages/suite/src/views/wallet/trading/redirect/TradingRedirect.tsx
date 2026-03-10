@@ -4,13 +4,13 @@ import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invit
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectRouter } from '@suite/router';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
-import { selectRouter } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`

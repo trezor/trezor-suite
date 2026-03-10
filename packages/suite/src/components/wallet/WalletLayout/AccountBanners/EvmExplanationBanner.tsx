@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { selectRouteName } from '@suite/router';
 import { networks } from '@suite-common/wallet-config';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';

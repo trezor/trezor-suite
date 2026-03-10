@@ -1,11 +1,11 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { removeThpCredentialsThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

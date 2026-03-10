@@ -1,3 +1,4 @@
+import { routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -9,7 +10,6 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import { SUITE } from 'src/actions/suite/constants';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action, Dispatch } from 'src/types/suite';

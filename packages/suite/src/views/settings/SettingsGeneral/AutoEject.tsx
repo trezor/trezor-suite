@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
@@ -9,7 +10,6 @@ import { Modal, Switch } from '@trezor/components';
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

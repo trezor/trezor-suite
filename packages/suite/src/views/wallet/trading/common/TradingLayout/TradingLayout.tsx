@@ -1,9 +1,9 @@
 import { PropsWithChildren } from 'react';
 
+import { selectRouteName } from '@suite/router';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
 
 export const TradingLayout = ({ children }: PropsWithChildren) => {

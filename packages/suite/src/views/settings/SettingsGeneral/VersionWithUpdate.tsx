@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -11,7 +12,6 @@ import {
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getReleaseUrl } from 'src/services/github';

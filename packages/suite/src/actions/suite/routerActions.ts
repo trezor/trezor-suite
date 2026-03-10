@@ -2,25 +2,28 @@
  * Use override for react-native (@suite-native/app/src/actions)
  */
 
-import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { Route } from '@suite-common/suite-types';
-
-import { ROUTER } from 'src/actions/suite/constants';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import type { AnchorType } from 'src/constants/suite/anchors';
-import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
-import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { asSuiteServices } from 'src/support/extraDependencies';
-import { Dispatch, GetState } from 'src/types/suite';
 import {
+    type AnchorType,
     RouteParams,
+    RouterAppWithParams,
     RouterPathOptional,
+    SettingsBackRoute,
+} from '@suite/router';
+import {
     findRoute,
     getAppWithParams,
     getRoute,
     getRouteHash,
     isEqualLocation,
-} from 'src/utils/suite/router';
+} from '@suite/router';
+import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { Route } from '@suite-common/suite-types';
+
+import { ROUTER } from 'src/actions/suite/constants';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
+import { asSuiteServices } from 'src/support/extraDependencies';
+import { Dispatch, GetState } from 'src/types/suite';
 
 export type RouterAction =
     | {

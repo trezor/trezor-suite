@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { SendState, StakeState } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
@@ -13,7 +14,6 @@ import TrezorConnect from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';

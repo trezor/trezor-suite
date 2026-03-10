@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
+import { SettingsAnchor } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
@@ -10,7 +11,6 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     LABELING_LEGACY_OPTION_LABEL,
     LABELING_SELECT_OPTIONS,

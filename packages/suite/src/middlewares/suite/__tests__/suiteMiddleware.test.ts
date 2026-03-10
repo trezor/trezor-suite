@@ -1,4 +1,5 @@
 import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
@@ -6,7 +7,6 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { ROUTER } from 'src/actions/suite/constants';
 import { appChanged } from 'src/actions/suite/suiteActions';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';

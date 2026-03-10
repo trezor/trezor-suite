@@ -1,12 +1,12 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { routerReducer } from '@suite/router';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { fixtures } from 'src/middlewares/wallet/__fixtures__/coinjoinMiddleware';
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';

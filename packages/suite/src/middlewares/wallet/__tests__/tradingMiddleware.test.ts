@@ -2,6 +2,7 @@ import { CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
 import { MODAL_CONTEXT_NONE, State as ModalState, modalReducer } from '@suite/modal';
+import { RouterState, routerReducer } from '@suite/router';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -18,7 +19,6 @@ import { ROUTER } from 'src/actions/suite/constants';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
 import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';

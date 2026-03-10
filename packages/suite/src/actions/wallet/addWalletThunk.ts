@@ -1,8 +1,8 @@
+import { findRoute } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { asSuiteServices } from 'src/support/extraDependencies';
-import { findRoute } from 'src/utils/suite/router';
 
 import { goto } from '../suite/routerActions';
 

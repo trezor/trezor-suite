@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { AccountTransactionBaseAnchor } from '@suite/router';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import {
     createTargets,
@@ -16,7 +17,6 @@ import { Button, Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';

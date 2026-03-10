@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
@@ -13,7 +14,6 @@ import { WalletLabeling } from 'src/components/suite/labeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import {
     selectRoundsDurationInHours,
     selectSessionProgressByAccountKey,

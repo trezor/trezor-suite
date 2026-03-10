@@ -1,3 +1,4 @@
+import { RouterState } from '@suite/router';
 import { accountsActions } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
@@ -5,7 +6,6 @@ import { DEVICE, StaticSessionId } from '@trezor/connect';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { RouterState } from 'src/reducers/suite/routerReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 import { Account } from 'src/types/wallet';

@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import {
     setFlag,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 

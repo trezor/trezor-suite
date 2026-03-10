@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { LANGUAGES, Locale, LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
@@ -11,7 +12,6 @@ import { setLanguage } from 'src/actions/settings/languageActions';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';

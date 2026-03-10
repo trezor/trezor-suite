@@ -1,9 +1,9 @@
 import type { ExperimentalFeature } from '@suite/experimental';
+import { RouterRootState, selectRouter } from '@suite/router';
 import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { TransportInfo } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { RouterRootState, selectRouter } from 'src/reducers/suite/routerReducer';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';

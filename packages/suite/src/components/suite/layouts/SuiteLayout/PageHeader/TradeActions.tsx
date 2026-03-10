@@ -1,5 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 import { useAnalytics } from 'src/support/useAnalytics';
 

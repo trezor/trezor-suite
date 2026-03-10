@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
 import { disconnectProvider, selectSelectedProviderForLabels } from '@suite/metadata';
+import { SettingsAnchor } from '@suite/router';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DisconnectLabelingProvider = () => {

@@ -2,6 +2,7 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import {
     selectDeviceSupportedNetworks,
@@ -19,7 +20,6 @@ import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';

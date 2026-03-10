@@ -2,13 +2,13 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
