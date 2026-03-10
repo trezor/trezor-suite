@@ -1,6 +1,7 @@
 import { Translation, TranslationKey } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
+import { Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
@@ -167,7 +168,11 @@ export const RecoveryStep = () => {
                 isActionAbortable
                 isConfirmedOnDevice
             >
-                {deviceModelInternal === DeviceModelInternal.T1B1 && <SelectRecoveryWord />}
+                {deviceModelInternal === DeviceModelInternal.T1B1 && (
+                    <Column alignItems="center">
+                        <SelectRecoveryWord />
+                    </Column>
+                )}
             </RecoveryStepBox>
         );
     }
