@@ -8,6 +8,7 @@ import {
     type SeedInputStatus,
     type WordCount,
     checkSeedThunk,
+    isStandardRecoveryDisabled,
     recoveryActions,
     selectRecovery,
 } from '@suite/recovery';
@@ -22,7 +23,6 @@ import { spacings } from '@trezor/theme';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
-import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { InitialStep } from './steps/InitialStep';

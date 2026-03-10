@@ -1,6 +1,7 @@
 import { Translation, TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import {
+    isStandardRecoveryDisabled,
     recoverDeviceThunk,
     recoveryActions,
     selectRecoveryError,
@@ -17,7 +18,6 @@ import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/Onboard
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
