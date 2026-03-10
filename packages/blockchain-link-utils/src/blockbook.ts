@@ -269,7 +269,7 @@ export const transformTransaction = (
             : undefined;
 
     const fee =
-        tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
+        tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit
             ? new BigNumber(
                   tx.ethereumSpecific?.maxFeePerGas ?? tx.ethereumSpecific?.gasPrice ?? '0',
               )
