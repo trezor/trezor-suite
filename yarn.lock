@@ -10969,9 +10969,7 @@ __metadata:
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.13"
-    "@types/lodash": "npm:^4.17.16"
     better-sqlite3: "npm:^12.1.1"
-    lodash: "npm:^4.17.21"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
