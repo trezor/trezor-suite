@@ -41,6 +41,7 @@ const usedIcons = [
     'browsers',
     'bugBeetle',
     'cableUsbC',
+    'calendarBlank',
     'calendar',
     'cameraSlash',
     'caretCircleRight',

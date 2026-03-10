@@ -27,6 +27,7 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
+    EarnConsentsScreen,
     EarnFormScreen,
     HowStakeWorksScreen,
     StakingDetailScreen,
@@ -110,6 +111,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.EarnForm }}
                 name={RootStackRoutes.EarnForm}
                 component={EarnFormScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnConsents }}
+                name={RootStackRoutes.EarnConsents}
+                component={EarnConsentsScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}

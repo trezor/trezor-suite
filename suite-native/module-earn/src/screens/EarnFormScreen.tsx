@@ -1,12 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
@@ -16,6 +21,8 @@ import { useEarnForm } from '../hooks/useEarnForm';
 export const EarnFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnForm>>();
     const { accountKey } = route.params;
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -27,10 +34,14 @@ export const EarnFormScreen = () => {
         return null;
     }
 
-    const { form, handleSubmitEarnForm, amountValue } = earnForm;
+    const { form, amountValue } = earnForm;
     const {
         formState: { isValid },
     } = form;
+
+    const handleSubmit = form.handleSubmit(() => {
+        navigation.navigate(RootStackRoutes.EarnConsents, { accountKey });
+    });
 
     return (
         <Screen
@@ -41,7 +52,7 @@ export const EarnFormScreen = () => {
                     symbol={account.symbol}
                     amountValue={amountValue}
                     isFormValid={isValid}
-                    onPress={handleSubmitEarnForm}
+                    onPress={handleSubmit}
                 />
             }
         >

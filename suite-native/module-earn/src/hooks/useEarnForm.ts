@@ -32,9 +32,5 @@ export const useEarnForm = (accountKey: AccountKey) => {
 
     if (!account) return null;
 
-    const handleSubmitEarnForm = form.handleSubmit(_values => {
-        // TODO: navigate to next screen
-    });
-
-    return { form, handleSubmitEarnForm, amountValue };
+    return { form, amountValue };
 };
