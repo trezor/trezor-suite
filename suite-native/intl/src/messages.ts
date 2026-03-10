@@ -33,7 +33,7 @@ export const messages = {
         unknown: 'Unknown',
         unknownError: 'Something went wrong',
         default: 'Default',
-        orSeparator: 'OR',
+        orSeparator: 'or',
         banners: {
             offline: {
                 title: "You're offline.",
@@ -114,7 +114,7 @@ export const messages = {
     },
     moduleHome: {
         graphIgnoredNetworks:
-            '{networksString} and all related tokens are reflected in the balance, but not in the graph.',
+            "{networksString} and all related tokens amounts are included in your portfolio balance, but aren't currently supported in the graph.",
         emptyState: {
             emptyDevice: {
                 title: 'Your wallet is empty',
@@ -202,7 +202,7 @@ export const messages = {
         tokens: 'Tokens',
         staking: 'Staking',
         rewardsReduced: 'Rewards reduced',
-        stakingDisabled: 'Staking is not available in this context.',
+        stakingDisabled: "Staking isn't available in this context.",
     },
     assets: {
         dashboard: {
@@ -280,13 +280,13 @@ export const messages = {
             remove: {
                 title: 'Pair your Trezor again',
                 subtitle:
-                    'If your device is not visible in your phone’s Bluetooth settings, it’s best to pair it again.',
+                    "If your Trezor isn't visible in your phone’s Bluetooth settings, try pairing it again.",
             },
         },
         deviceCard: {
             connect: {
                 actionButton: 'Connect',
-                pairingHint: 'Confirm the Bluetooth pairing request on your Trezor as well.',
+                pairingHint: 'Make sure the pairing code on your Trezor matches.',
             },
             remove: {
                 actionButton: 'Pair again',
@@ -331,7 +331,7 @@ export const messages = {
                     address: 'Enter address manually',
                 },
                 error: {
-                    address: 'Address is not valid',
+                    address: "Address isn't valid",
                 },
             },
             scanButton: {
@@ -612,7 +612,7 @@ export const messages = {
             },
         },
         pinCanceledDuringDiscovery: {
-            title: 'Some of your balances have not been loaded.',
+            title: "Some of your balances haven't been loaded.",
             subtitle: 'You need to unlock your device in order to finish loading your balances',
             button: 'Enter PIN again',
         },
@@ -785,7 +785,7 @@ export const messages = {
             },
         },
         noBackupModal: {
-            title: 'Your Trezor wallet is not backed up',
+            title: "Your Trezor wallet isn't backed up",
             subtitle: 'If your Trezor is lost or damaged, your funds may be irreversibly lost.',
             cta: 'Create wallet backup',
             continue: 'Continue anyway',
@@ -846,7 +846,7 @@ export const messages = {
             },
             pictograms: {
                 enable: {
-                    title: 'Your PIN is not set',
+                    title: "Your PIN isn't set",
                     subtitle: 'Set your PIN to protect against unauthorized access to your Trezor.',
                 },
                 change: {
@@ -884,11 +884,11 @@ export const messages = {
         passphrase: {
             title: 'Passphrase wallets',
             description:
-                'Passphrase wallets are separate, extra-secure wallets. Each passphrase wallet is unique and only accessible with its own passphrase.',
+                'Add a passphrase to create a separate, extra-secure wallet. Each Passphrase wallet is unique and only accessible with its own passphrase.',
         },
         checkBackup: {
             title: 'Check wallet backup',
-            subtitle: 'Check the validity of your backup',
+            subtitle: 'Check the validity of your wallet backup.',
         },
         authenticity: {
             title: 'Device authenticity',
@@ -1254,7 +1254,7 @@ export const messages = {
                 },
                 '1': {
                     question: 'Can I connect my Trezor to Trezor Suite?',
-                    answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
+                    answer: "No, it's not possible. It's designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.",
                 },
                 '2': {
                     question: 'How do I send {coinLabel} in Trezor Suite?',
@@ -1596,8 +1596,8 @@ export const messages = {
                 subtitle:
                     'Firmware is already installed on this Trezor. Continue only if you have used this Trezor before.',
                 confirmButton: 'Yes, set up my Trezor',
-                button: "Yes, let's get started",
-                noButton: 'No, I have not',
+                button: 'Yes, I have',
+                noButton: "No, I haven't",
             },
             lookDifferentLabel: 'My device looks different',
         },
@@ -2364,7 +2364,7 @@ export const messages = {
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
                 copyLabel: 'Hold to copy',
             },
-            adaInfo: 'Your ADA stays fully accesible while earning rewards.',
+            adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
@@ -2374,10 +2374,10 @@ export const messages = {
         apy: 'Annual percentage yield',
         stakingCanBeManaged: 'Staking can be currently managed only in',
         trezorDesktop: 'Trezor Suite for desktop or web.',
-        adaStaysFullyAccessuble: 'Your ADA stays fully accesible while earning rewards.',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
             providerReducingRewards:
-                'Your current provider is reducing ADA rewards. Update your provider on desktop and earn {apy}% APY.',
+                "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
             updateToNewProvider:
                 'Update to our new provider, Everstake, and earn ~{apy}% APY. Your ADA with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
             rewardsReduced: 'Cardano staking rewards reduced',
@@ -2805,7 +2805,7 @@ export const messages = {
         versionCard: {
             title: 'Version',
             status: {
-                upToDate: 'You’re up to date',
+                upToDate: 'Up to date',
                 updateAvailable: 'Update available',
                 updateRequired: 'Update required',
             },
@@ -2824,7 +2824,7 @@ export const messages = {
             },
         },
         updateCard: {
-            upToDate: 'You’re all up to date',
+            upToDate: 'Up to date',
             newVersionAvailable: 'New firmware is available.',
             updateButton: 'Update',
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
@@ -2858,7 +2858,7 @@ export const messages = {
         },
         firmwareUpdateScreen: {
             updateFirmware: 'Update firmware',
-            skipButton: 'Skip for now',
+            skipButton: 'Skip',
             title: 'Firmware update',
             subtitle: 'Firmware is your Trezor’s operating system.',
         },
@@ -2882,12 +2882,12 @@ export const messages = {
             },
             doNotCloseApp: {
                 alertBox: {
-                    title: 'Please don’t close the app.',
+                    title: 'Keep the app open',
                     button: 'Why?',
                 },
                 alert: {
-                    title: 'Leaving the app would corrupt the firmware and you’d need to start the installation over.',
-                    button: 'Okay, got it',
+                    title: 'Closing the app during installation may corrupt the firmware. Keep the app open.',
+                    button: 'Got it',
                 },
             },
             trezorFacts: {
