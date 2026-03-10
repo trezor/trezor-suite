@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 
 import { Action } from 'history';
 
+import { selectRouterLoaded } from '@suite/router';
+
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -9,7 +11,7 @@ import { useSuiteServices } from '../SuiteServicesProvider';
 
 export const RouterHandler = () => {
     const dispatch = useDispatch();
-    const routerLoaded = useSelector(state => state.router.loaded);
+    const routerLoaded = useSelector(selectRouterLoaded);
     const { suiteRouterHistory } = useSuiteServices();
 
     useEffect(() => {

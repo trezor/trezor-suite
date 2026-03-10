@@ -8,6 +8,9 @@ import {
     RouterAppWithParams,
     RouterPathOptional,
     SettingsBackRoute,
+    selectRouter,
+    selectRouterApp,
+    selectRouterHash,
 } from '@suite/router';
 import {
     findRoute,
@@ -57,7 +60,7 @@ export const onLocationChange =
     (location: RouterPathOptional & { anchor?: AnchorType }) =>
     (dispatch: Dispatch, getState: GetState) => {
         const unlocked = dispatch(onBeforePopState());
-        const { router } = getState();
+        const router = selectRouter(getState());
         if (!unlocked && router.loaded) return;
 
         if (isEqualLocation(router, location) && router.app !== 'unknown') {
@@ -83,7 +86,7 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
  */
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
-    if (getState().router.app === 'unknown') {
+    if (selectRouterApp(getState()) === 'unknown') {
         const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         dispatch(onLocationChange(location));
     }
@@ -115,9 +118,9 @@ export const goto =
         const route = getRoute(routeName);
         const newHash = getRouteHash(route, params);
         const pathname = route?.pattern || '/';
-        const hash = preserveParams ? state.router.hash : (newHash ?? '');
+        const hash = preserveParams ? selectRouterHash(state) : (newHash ?? '');
 
-        if (isEqualLocation(state.router, { pathname, hash, search: '' })) {
+        if (isEqualLocation(selectRouter(state), { pathname, hash, search: '' })) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
                 // postpone propagation to allow clearing anchor in redux state by click listener

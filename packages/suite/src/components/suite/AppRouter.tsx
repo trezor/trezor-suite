@@ -1,6 +1,11 @@
 import { ComponentType, createElement, memo } from 'react';
 
-import { resolveEffectiveBackgroundRouteName, selectRouteName, suiteRoutes } from '@suite/router';
+import {
+    resolveEffectiveBackgroundRouteName,
+    selectRoute,
+    selectRouteName,
+    suiteRoutes,
+} from '@suite/router';
 import { PageName } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -12,7 +17,7 @@ type AppRouterProps = {
 
 export const AppRouter = memo(({ components }: AppRouterProps) => {
     const routeName = useSelector(selectRouteName);
-    const route = useSelector(state => state.router.route);
+    const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useSuiteServices();
 
     const resolvedRouteName =

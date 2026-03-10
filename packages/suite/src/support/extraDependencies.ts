@@ -6,7 +6,13 @@ import { metadataActions, metadataLabelingActions } from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
-import { ensureRouterPath, getPrefixedURL, stripPrefixedURL } from '@suite/router';
+import {
+    ensureRouterPath,
+    getPrefixedURL,
+    selectRoute,
+    selectRouterApp,
+    stripPrefixedURL,
+} from '@suite/router';
 import {
     DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
@@ -171,8 +177,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectRouterApp: (state: AppState) => state.router.app,
-        selectRoute: (state: AppState) => state.router.route,
+        selectRouterApp,
+        selectRoute,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,

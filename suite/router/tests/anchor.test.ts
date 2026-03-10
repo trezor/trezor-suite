@@ -1,5 +1,5 @@
 import * as fixtures from './__fixtures__/anchor';
-import * as anchorUtils from '../src/anchor';
+import * as anchorUtils from '../src/anchorUtils';
 
 describe('anchor utils', () => {
     test('getDefaultBackendType', () => {

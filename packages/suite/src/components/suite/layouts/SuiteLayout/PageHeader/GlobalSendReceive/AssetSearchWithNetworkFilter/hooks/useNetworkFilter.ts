@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useMemo, useState } from 'react';
 
-import { parseDashboardParams } from '@suite/router';
+import { parseDashboardParams, selectRouterParams } from '@suite/router';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 
@@ -15,7 +15,7 @@ export interface UseNetworkFilterProps {
 }
 
 export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilterProps) {
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const networkSymbolUrlParam = useMemo(
         () => parseDashboardParams(routerParams)?.networkSymbol,
         [routerParams],

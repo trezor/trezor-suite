@@ -80,9 +80,13 @@ export const routerReducer = (
 };
 
 export const selectRouter = (state: RouterRootState) => state.router;
+export const selectRouterLoaded = (state: RouterRootState) => state.router.loaded;
+export const selectRouterHash = (state: RouterRootState) => state.router.hash;
+export const selectRouterAnchor = (state: RouterRootState) => state.router.anchor;
 export const selectRoute = (state: RouterRootState): RouterState['route'] => state.router.route;
 export const selectRouterParams = (state: RouterRootState) => state.router.params;
 export const selectRouteName = (state: RouterRootState) => state.router.route?.name;
+export const selectSettingsBackRoute = (state: RouterRootState) => state.router.settingsBackRoute;
 export const selectRouterUrl = (state: RouterRootState) =>
     `${state.router.pathname}${state.router.search}${state.router.hash}`;
 export const selectURLSearchParams = createMemoizedSelector(

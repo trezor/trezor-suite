@@ -9,7 +9,6 @@ import {
 } from '../src/router';
 import type { RouteParams } from '../src/routes';
 
-
 const OLD_ENV = { ...process.env };
 
 describe('router', () => {

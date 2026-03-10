@@ -1,4 +1,3 @@
-import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
@@ -9,7 +8,7 @@ import {
     parseEarnParams,
     validateAccountRouteParams,
 } from './routerParams';
-import { type RouteParams, type RouterAppWithParams, suiteRoutes } from './routes';
+import { ModalAppParams, type RouteParams, type RouterAppWithParams, suiteRoutes } from './routes';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
 export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
@@ -122,10 +121,6 @@ const parseParamValue = <T>(value: string, defaultValue?: T) => {
     if (value === 'false') return false;
 
     return value ?? defaultValue;
-};
-
-export type ModalAppParams = {
-    [key in (typeof modalAppParams)[number]]: string | boolean | undefined;
 };
 
 const modalAppParamsDefaultValues: ModalAppParams = {

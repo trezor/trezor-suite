@@ -1,4 +1,5 @@
 import { openModal } from '@suite/modal';
+import { selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -855,7 +856,7 @@ export const restorePausedCoinjoinSessions = () => (dispatch: Dispatch, getState
     const coinjoinAccounts = selectCoinjoinAccounts(state);
     const eligibleAccounts = coinjoinAccounts.filter(({ key, session }) => {
         const hasSendFormOpen =
-            state.router.route?.name === 'wallet-send' &&
+            selectRouteName(state) === 'wallet-send' &&
             key === state.wallet.selectedAccount.account?.key;
         const blocker = selectCoinjoinSessionBlockerByAccountKey(state, key);
 

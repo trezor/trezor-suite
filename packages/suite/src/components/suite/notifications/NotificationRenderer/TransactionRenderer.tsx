@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getTxAnchor , selectRouteName } from '@suite/router';
+import { getTxAnchor, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,

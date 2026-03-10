@@ -34,6 +34,7 @@
         "@suite-common/e2e-evolu-client": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

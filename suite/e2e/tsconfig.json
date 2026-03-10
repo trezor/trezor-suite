@@ -23,6 +23,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/suite-config"
+        },
+        {
             "path": "../../suite-common/suite-sync-evolu"
         },
         {
