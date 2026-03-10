@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import { getActiveTests, getAutoQuarantineActions } from './api';
+import { getAutoQuarantineActions } from './api';
 import {
+    EXPLORER_LOOKBACK_DAYS,
     PROJECTS,
     QUARANTINE_FAILURE_RATE,
     QUARANTINE_LAST_N_EXECUTIONS,
@@ -12,6 +13,7 @@ import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
 import { buildSlackSummary, sendSlackNotification } from './slack';
 import type { SlackEvent } from './types';
 import { wipeAllAutoQuarantineActions } from './wipe';
+import { getActiveTests } from '../currentsApi/api';
 
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
@@ -77,7 +79,7 @@ async function main(): Promise<void> {
         try {
             const [existingActions, activeTests] = await Promise.all([
                 getAutoQuarantineActions(project.id),
-                getActiveTests(project.id),
+                getActiveTests(project.id, EXPLORER_LOOKBACK_DAYS),
             ]);
             await quarantineFailingTests(
                 project.id,
