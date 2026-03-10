@@ -977,7 +977,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_COUNTRY_NOT_FOUND',
     },
     TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION: {
-        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        defaultMessage: 'Check the spelling or select from the list.',
         id: 'TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION',
     },
     TR_TRADING_COUNTRY_SUBDIVISION: {
@@ -997,7 +997,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED',
     },
     TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS: {
-        defaultMessage: 'To see available offers, choose your state of residence.',
+        defaultMessage: 'To see available offers, select your state of residence.',
         id: 'TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS',
     },
     TR_TRADING_OFFER_LOOKING: {
@@ -5128,7 +5128,7 @@ export const messages = defineMessages({
     TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
         defaultMessage:
-            'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
+            'Enable the Tron Network with the latest firmware to receive funds, check your balance, and view tokens, charts, and transaction history (may contain bugs). Full support is coming soon, or you can use a third-party wallet in the meantime.',
     },
     TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
@@ -5645,7 +5645,7 @@ export const messages = defineMessages({
     },
     LOCKTIME_DESCRIPTION: {
         id: 'LOCKTIME_DESCRIPTION',
-        defaultMessage: "The transaction can't be broadcasted until:",
+        defaultMessage: "The transaction can't be broadcast until:",
     },
     LOCKTIME_CURRENT_UTC: {
         id: 'LOCKTIME_CURRENT_UTC',
@@ -7054,7 +7054,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_SUPPORT_CONSENT_TOGGLE: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_TOGGLE',
-        defaultMessage: 'Share one-time system details',
+        defaultMessage: 'Temporarily share system info',
     },
     TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION: {
         id: 'TR_GUIDE_SUPPORT_CONSENT_DESCRIPTION',
@@ -7780,12 +7780,12 @@ export const messages = defineMessages({
     TR_EARN_INSTANTLY_STAKED: {
         id: 'TR_EARN_INSTANTLY_STAKED',
         defaultMessage:
-            "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other { The remaining {symbol} will be staked within # days}}",
+            "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other {The remaining {symbol} will be staked within # days.}}",
     },
     TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS: {
         id: 'TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
-            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days}}",
+            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days.}}",
     },
     TR_EARN_STAKING_GETTING_READY: {
         id: 'TR_EARN_STAKING_GETTING_READY',
@@ -8658,7 +8658,7 @@ export const messages = defineMessages({
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
         defaultMessage:
-            'Address poisoning alert! This transaction looks suspicious. <a>Learn more</a>',
+            'Address poisoning alert. This transaction looks suspicious. <a>Learn more</a>',
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
@@ -8976,7 +8976,7 @@ export const messages = defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            "You're now earning significantly less ADA rewards. Switch to Everstake for up to {apy}% APY. Your funds and past rewards are safe.",
+            "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
     },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
@@ -9536,7 +9536,7 @@ export const messages = defineMessages({
     },
     TR_EARN_APPROXIMATE_DAYS: {
         id: 'TR_EARN_APPROXIMATE_DAYS',
-        defaultMessage: '~{count, plural, one {# day} other {# days}}',
+        defaultMessage: '~{count, plural, one {# 日} other {# 日}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
