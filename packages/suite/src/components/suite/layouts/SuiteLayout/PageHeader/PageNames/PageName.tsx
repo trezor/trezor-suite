@@ -1,5 +1,9 @@
 import { Translation } from '@suite/intl';
-import { resolveEffectiveBackgroundRouteName, selectIsAccountTabPage } from '@suite/router';
+import {
+    resolveEffectiveBackgroundRouteName,
+    selectIsAccountTabPage,
+    selectRoute,
+} from '@suite/router';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -12,7 +16,7 @@ import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const route = useSelector(state => state.router.route);
+    const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useSuiteServices();
     const currentRoute = resolveEffectiveBackgroundRouteName(
         route,

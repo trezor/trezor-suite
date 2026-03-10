@@ -1,5 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectRouterParams } from '@suite/router';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
@@ -14,7 +15,7 @@ import { WalletParams } from 'src/types/wallet';
 export const AccountNavigation = () => {
     const analytics = useAnalytics();
     const account = useSelector(selectSelectedAccount);
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);

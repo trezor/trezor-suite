@@ -1,12 +1,14 @@
 import { RefObject, useEffect } from 'react';
 
+import { selectRouterAnchor } from '@suite/router';
+
 import { onAnchorChange } from 'src/actions/suite/routerActions';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
 export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement | null>) => {
-    const anchor = useSelector(state => state.router.anchor);
+    const anchor = useSelector(selectRouterAnchor);
     const dispatch = useDispatch();
 
     // Remove anchor highlight on click.

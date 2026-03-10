@@ -24,7 +24,7 @@ type ExtractType<T extends keyof AppParamsTypes> = {
     [P in T]: AppParamsTypes[P];
 };
 
-type ModalAppParams = {
+export type ModalAppParams = {
     [key in (typeof modalAppParams)[number]]: string | boolean | undefined;
 };
 
