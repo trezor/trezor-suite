@@ -10961,6 +10961,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/e2e-evolu-client@workspace:*, @suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
+  dependencies:
+    "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch"
+    "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@types/better-sqlite3": "npm:^7.6.13"
+    "@types/lodash": "npm:^4.17.16"
+    better-sqlite3: "npm:^12.1.1"
+    lodash: "npm:^4.17.21"
+    ws: "npm:^8.18.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/earn-api@workspace:*, @suite-common/earn-api@workspace:suite-common/earn-api":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-api@workspace:suite-common/earn-api"
@@ -15871,6 +15886,7 @@ __metadata:
     "@solana/rpc-types": "npm:^2.3.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/e2e-evolu-client": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
@@ -15897,12 +15913,9 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/better-sqlite3": "npm:^7.6.13"
     "@types/lodash": "npm:^4.17.16"
-    "@types/ws": "npm:^8"
     "@walletconnect/sign-client": "npm:2.21.4"
     "@walletconnect/types": "npm:2.21.4"
-    better-sqlite3: "npm:^12.1.1"
     dotenv: "npm:^16.4.7"
     fs-extra: "npm:^11.3.1"
     jest-diff: "npm:^29.7.0"
@@ -15910,7 +15923,6 @@ __metadata:
     react-intl: "npm:^8.1.3"
     tsx: "npm:^4.21.0"
     type-fest: "npm:^5.4.1"
-    ws: "npm:^8.19.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
   linkType: soft
@@ -17812,7 +17824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8, @types/ws@npm:^8.5.13":
+"@types/ws@npm:^8.5.13":
   version: 8.18.1
   resolution: "@types/ws@npm:8.18.1"
   dependencies:

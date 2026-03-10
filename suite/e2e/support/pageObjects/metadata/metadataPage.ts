@@ -1,5 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { QUOTA_URL, RELAY_URL } from '@suite-common/e2e-evolu-client';
+
 import { step } from '../../common';
 import { MetadataProvider } from '../../mocks/metadataMock';
 import { DevicePrompt } from '../devicePrompt';
@@ -8,7 +10,6 @@ import { AddressMetadata } from './addressMetadata';
 import { OutputMetadata } from './outputMetadata';
 import { WalletMetadata } from './walletMetadata';
 import { DeviceFixture } from '../../device';
-import { QUOTA_URL, RELAY_URL } from '../../helpers/evoluClient';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {

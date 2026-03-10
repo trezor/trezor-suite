@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
+
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -126,9 +128,8 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new PaginationControl(page));
     },
     evoluClient: async ({}, use) => {
-        const evoluClient = new EvoluClient();
-        await evoluClient.checkServerRunning();
-        await use(evoluClient);
+        await checkEvoluRelayServerRunning();
+        await use(new EvoluClient());
     },
 });
 
