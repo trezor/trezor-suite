@@ -16,6 +16,7 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 const SLIPPAGE_MIN = '0.01';
 const SLIPPAGE_MAX = '50';
@@ -28,18 +29,6 @@ const slippageOptions = [
     { label: '3%', value: '3' },
     { label: <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM" />, value: CUSTOM_SLIPPAGE },
 ];
-
-const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals = 8): string => {
-    let digits = 4;
-    if (baseAmount < 1) {
-        digits = 6;
-    }
-    if (baseAmount < 0.01) {
-        digits = decimals;
-    }
-
-    return amount.toFixed(digits);
-};
 
 interface TradingOfferExchangeSlippageModalProps {
     onClose: () => void;
