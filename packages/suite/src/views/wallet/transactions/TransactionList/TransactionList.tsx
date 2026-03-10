@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
+import { findAnchorTransactionPage } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -14,7 +15,6 @@ import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
