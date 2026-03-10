@@ -80,8 +80,8 @@ export const createEnsureStorage =
             isWriteMode,
         });
 
-        if (quotaResult.success) {
-            // Only set the relay URL for transport in case that quota manager is enabled or has quota for device.
+        // Set the relay URL if quota is allocated or if we are not in write mode.
+        if (quotaResult.success || quotaResult.error.type === 'WriteModeRequiredForAllocation') {
             await newStorage.updateRelayUrl(deps.getRelayUrl());
         }
 

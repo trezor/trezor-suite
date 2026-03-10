@@ -139,7 +139,7 @@ describe(createEnsureStorage.name, () => {
         });
     });
 
-    it('does not update relay URL when ensureQuota fails', async () => {
+    it('does update relay URL when ensureQuota fails on WriteModeRequiredForAllocation', async () => {
         const device = mockSuiteDevice();
         const updateRelayUrl = mock(() => Promise.resolve());
         const newStorage = createSuiteSyncStorageMock({ updateRelayUrl });
@@ -166,7 +166,7 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.createSuiteStorage).toHaveBeenCalled();
-        expect(updateRelayUrl).not.toHaveBeenCalled();
+        expect(updateRelayUrl).toHaveBeenCalled();
     });
 
     it('creates and stores new storage when all dependencies succeed', async () => {
