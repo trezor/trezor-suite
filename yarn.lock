@@ -15225,6 +15225,7 @@ __metadata:
     "@trezor/protobuf": "workspace:^"
     "@trezor/schema-utils": "workspace:^"
     "@trezor/theme": "workspace:^"
+    "@trezor/urls": "workspace:^"
     "@types/chrome": "npm:^0.0.299"
     "@types/node": "npm:22.13.10"
     "@types/redux-logger": "npm:^3.0.13"
@@ -16234,7 +16235,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/urls@workspace:*, @trezor/urls@workspace:packages/urls":
+"@trezor/urls@workspace:*, @trezor/urls@workspace:^, @trezor/urls@workspace:packages/urls":
   version: 0.0.0-use.local
   resolution: "@trezor/urls@workspace:packages/urls"
   languageName: unknown

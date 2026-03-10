@@ -23,6 +23,7 @@
         "@trezor/protobuf": "workspace:^",
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",
+        "@trezor/urls": "workspace:^",
         "@uiw/react-codemirror": "^4.23.0",
         "codemirror-json-schema": "^0.7.8",
         "codemirror-json5": "^1.0.3",
