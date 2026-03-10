@@ -38,9 +38,7 @@ export const useExchangeFlow = () => {
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
-    const { openBrowserForFormData } = useBrowserAuth({
-        tradingType: 'exchange',
-    });
+    const { openBrowserForFormData } = useBrowserAuth('exchange');
 
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
