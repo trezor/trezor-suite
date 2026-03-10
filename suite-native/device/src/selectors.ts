@@ -241,6 +241,14 @@ export const selectIsEntropyCheckEnabledAndFailed = createMemoizedSelector(
     ],
     (isFeatureEnabled, isEntropyCheckFailed) => isFeatureEnabled && isEntropyCheckFailed,
 );
+export const selectIsEntropyCheckEnabledAndFailedForSelectedDevice = (
+    state: FwAuthenticityCheckState,
+) => {
+    const device = selectSelectedDevice(state);
+    if (!device) return false;
+
+    return selectIsEntropyCheckEnabledAndFailed(state, device.id);
+};
 
 export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
     [selectDeviceAuthenticityByDeviceId],

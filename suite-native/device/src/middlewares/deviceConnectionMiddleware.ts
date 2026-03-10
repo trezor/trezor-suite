@@ -33,11 +33,7 @@ import {
     DEVICE_CONNECTION_BLACKLISTED_ROUTES,
     buildDisconnectionBlacklist,
 } from '../deviceNavigationConfig';
-import {
-    NativeDeviceRootState,
-    selectCompromisedDeviceFailedCheck,
-    selectIsEntropyCheckEnabledAndFailed,
-} from '../selectors';
+import { NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
 import { getIsDeviceSetupSupported } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
@@ -194,19 +190,13 @@ deviceConnectionMiddleware.startListening({
 
         const device = action.payload;
         const isDeviceRemembered = getIsDeviceRemembered(device);
-        const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(
-            getState(),
-            device?.id,
-        );
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
         const wasDeviceConnectedViaBluetooth = getIsDeviceDescriptorApiTypeBluetooth(
             action.payload,
         );
 
         if (
-            checkIsActiveRouteAnyOf(
-                buildDisconnectionBlacklist(isEntropyCheckEnabledAndFailed, isDeviceRemembered),
-            ) ||
+            checkIsActiveRouteAnyOf(buildDisconnectionBlacklist(isDeviceRemembered)) ||
             isFirmwareInstallationRunning
         )
             return;
