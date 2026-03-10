@@ -391,6 +391,9 @@ export type RootStackParamList = {
     [RootStackRoutes.EarnForm]: {
         accountKey: AccountKey;
     };
+    [RootStackRoutes.EarnConsents]: {
+        accountKey: AccountKey;
+    };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;

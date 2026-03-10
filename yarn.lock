@@ -13056,12 +13056,17 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/clipboard": "workspace:*"
+    "@suite-native/confirm-on-trezor": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
@@ -13077,6 +13082,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
+    react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -13706,14 +13712,18 @@ __metadata:
   dependencies:
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
     "@suite-native/labeling": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.2.0"
@@ -31142,6 +31152,27 @@ __metadata:
     react:
       optional: true
   checksum: 10/66bdc674a910941d051ef2d21f103419cf6d7483fbdf33792acde926d45cac3d68d7a8d2e950837cc2aee4e95eb55eaef0dc8d19a046944961befe6bef5e151a
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^2.18.0":
+  version: 2.18.0
+  resolution: "jotai@npm:2.18.0"
+  peerDependencies:
+    "@babel/core": ">=7.0.0"
+    "@babel/template": ">=7.0.0"
+    "@types/react": ">=17.0.0"
+    react: ">=17.0.0"
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+    "@babel/template":
+      optional: true
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: 10/dfa48f53604824f15450a79bbf4ca447d8382c9fd54e0bd726c2e97caaaeef4018f192cf9de925df3d6bfac01367ee35fbefbe3a28d665c1c98ab8ef820d86a7
   languageName: node
   linkType: hard
 

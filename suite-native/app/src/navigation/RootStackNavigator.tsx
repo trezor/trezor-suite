@@ -118,6 +118,11 @@ export const RootStackNavigator = () => {
                 component={EarnFormScreen}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnConsents }}
+                name={RootStackRoutes.EarnConsents}
+                component={EarnConsentsScreen}
+            />
+            <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />

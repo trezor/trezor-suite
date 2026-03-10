@@ -2451,13 +2451,13 @@ export const messages = {
             title: 'Before you continue',
             entryPeriodCard: {
                 title: 'Entry period',
-                firstItem: 'The entry period can currently take up to {entryPeriodInDays} days.',
+                firstItem: 'The entry period can currently take up to 72 days.',
                 secondItem: 'You can not cancel your stake during this period.',
             },
             delegatingCard: {
                 title: 'Delegating to Everstake',
                 firstItem:
-                    "Staking transfers the direct control of your {symbol} from your Trezor device to Everstake's smart contract environment.",
+                    "Staking transfers the direct control of your ETH from your Trezor device to Everstake's smart contract environment.",
                 secondItem: 'Everstake maintains and secures your funds.',
             },
         },

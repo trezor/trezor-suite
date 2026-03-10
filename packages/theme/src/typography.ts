@@ -5,6 +5,7 @@ import { type FontWeightValue, fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
     'headline-lg',
+    'title-xl',
     'headline-md',
     'headline-sm',
     'body-md-strong',
@@ -46,6 +47,12 @@ export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyle
         lineHeight: 56,
         fontWeight: fontWeights.medium,
         letterSpacing: -1.44,
+    },
+    'title-xl': {
+        fontSize: 34,
+        lineHeight: 42,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -0.85,
     },
     'headline-md': {
         fontSize: 32,
@@ -93,6 +100,7 @@ export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyle
 
 const nativeFontFamilyStyle = {
     'headline-lg': 'TTSatoshi-Medium',
+    'title-xl': 'TTSatoshi-Medium',
     'headline-md': 'TTSatoshi-Medium',
     'headline-sm': 'TTSatoshi-Medium',
     'body-md-strong': 'TTSatoshi-DemiBold',
