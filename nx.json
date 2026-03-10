@@ -6,7 +6,8 @@
             "{workspaceRoot}/patches/*.patch",
             "{workspaceRoot}/package.json"
         ],
-        "default": ["{projectRoot}/**/*", "sharedGlobals"]
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": ["{projectRoot}/**/*", "!{projectRoot}/**/*.test.{ts,tsx}"]
     },
     "tui": {
         "autoExit": true
@@ -15,6 +16,7 @@
         "build:lib": {
             "dependsOn": [],
             "inputs": [
+                "^production",
                 "default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
@@ -30,6 +32,7 @@
                 "@suite-common/message-system:build:lib"
             ],
             "inputs": [
+                "^production",
                 "default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
@@ -40,6 +43,7 @@
         "test:unit": {
             "dependsOn": ["@suite-common/message-system:build:lib"],
             "inputs": [
+                "^production",
                 "default",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
