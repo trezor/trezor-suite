@@ -1941,6 +1941,12 @@ export const messages = {
             stakeDeregistration: 'Deregistration of a stake address',
             stellarTrustlineAdded: 'Established trustline',
             stellarTrustlineRemoved: 'Removed trustline',
+            stake: 'Stake',
+            staking: 'Staking',
+            unstake: 'Unstake',
+            unstaking: 'Unstaking',
+            claim: 'Claim',
+            claiming: 'Claiming',
         },
         TransactionDetailScreen: {
             sheetSubtitle: 'Transaction #{transactionId}',
@@ -2339,6 +2345,16 @@ export const messages = {
         },
     },
     earn: {
+        instantStakeBanner: {
+            stakedTitle: '{amount} {symbol} staked instantly',
+            unstakedTitle: '{amount} {symbol} unstaked instantly',
+            claimedTitle: '{amount} {symbol} claimed',
+            stakedDescription:
+                "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other {The remaining {symbol} will be staked within # days.}}",
+            unstakedDescription:
+                "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days.}}",
+            claimedDescription: "You've successfully claimed {amount} {symbol} from your stake.",
+        },
         stakingDetailScreen: {
             title: 'Staking',
         },

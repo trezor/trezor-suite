@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -12,7 +12,12 @@ import {
     selectTransactionBlockTimeById,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    StakeType,
+    TransactionType,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -30,14 +35,16 @@ import { TransactionName } from './TransactionName';
 
 type TransactionListItemContainerProps = {
     children: ReactNode;
+    banner?: ReactNode;
     txid: string;
     accountKey: AccountKey;
     includedCoinsCount: number;
     isFirst?: boolean;
     isLast?: boolean;
-    symbol?: NetworkSymbol | undefined;
+    symbol?: NetworkSymbol;
     tokenTransfer?: TypedTokenTransfer;
     transactionType: TransactionType;
+    stakeOperationType?: StakeType;
 };
 
 type TransactionListItemStyleProps = {
@@ -47,9 +54,7 @@ type TransactionListItemStyleProps = {
 
 export const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
     (utils, { isFirst, isLast }) => ({
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         marginHorizontal: utils.spacings.sp16,
         paddingHorizontal: utils.spacings.sp16,
@@ -96,12 +101,14 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
 
 export const TransactionListItemContainer = ({
     children,
+    banner,
     txid,
     accountKey,
     isFirst = false,
     isLast = false,
     includedCoinsCount,
     transactionType,
+    stakeOperationType,
     symbol,
     tokenTransfer,
 }: TransactionListItemContainerProps) => {
@@ -109,7 +116,7 @@ export const TransactionListItemContainer = ({
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
-    const handleNavigateToTransactionDetail = () => {
+    const handleNavigateToTransactionDetail = useCallback(() => {
         navigation.navigate(RootStackRoutes.TransactionDetailStack, {
             screen: TransactionDetailStackRoutes.TransactionDetail,
             params: {
@@ -118,7 +125,7 @@ export const TransactionListItemContainer = ({
                 tokenContract: tokenTransfer?.contract,
             },
         });
-    };
+    }, [navigation, txid, accountKey, tokenTransfer?.contract]);
 
     const hasIncludedCoins = includedCoinsCount > 0;
     const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
@@ -147,42 +154,46 @@ export const TransactionListItemContainer = ({
             onPress={handleNavigateToTransactionDetail}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
-            <Box style={applyStyle(descriptionBoxStyle)}>
-                <TransactionIcon
-                    symbol={coinSymbol}
-                    contractAddress={contractAddress}
-                    transactionType={transactionType}
-                    isAnimated={isTransactionPending}
-                />
-                <Box marginLeft="sp16" flex={1}>
-                    <HStack flexDirection="row" alignItems="center" spacing="sp4">
-                        <Box style={applyStyle(titleStyle)}>
-                            <TransactionName
-                                transaction={transaction}
-                                isPending={isTransactionPending}
-                            />
-                            {isPhishingTransaction && (
-                                <Badge
-                                    label={<Translation id="transactions.phishing.badge" />}
-                                    size="small"
-                                    icon="warning"
-                                    variant="red"
+            <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+                <Box style={applyStyle(descriptionBoxStyle)}>
+                    <TransactionIcon
+                        symbol={coinSymbol}
+                        contractAddress={contractAddress}
+                        transactionType={transactionType}
+                        stakeOperationType={stakeOperationType}
+                        isAnimated={isTransactionPending}
+                    />
+                    <Box marginLeft="sp16" flex={1}>
+                        <HStack alignItems="center" spacing="sp4">
+                            <Box style={applyStyle(titleStyle)}>
+                                <TransactionName
+                                    transaction={transaction}
+                                    isPending={isTransactionPending}
                                 />
-                            )}
-                        </Box>
-                        {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
-                    </HStack>
+                                {isPhishingTransaction && (
+                                    <Badge
+                                        label={<Translation id="transactions.phishing.badge" />}
+                                        size="small"
+                                        icon="warning"
+                                        variant="red"
+                                    />
+                                )}
+                            </Box>
+                            {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                        </HStack>
 
-                    <DateTextComponent
-                        isForcedDiscreetMode={isPhishingTransaction}
-                        variant="body-sm"
-                        color="textSubdued"
-                    >
-                        {DateTimeFormatter.format(transactionBlockTime)}
-                    </DateTextComponent>
+                        <DateTextComponent
+                            isForcedDiscreetMode={isPhishingTransaction}
+                            variant="body-sm"
+                            color="textSubdued"
+                        >
+                            {DateTimeFormatter.format(transactionBlockTime)}
+                        </DateTextComponent>
+                    </Box>
                 </Box>
+                <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
             </Box>
-            <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
+            {banner && <Box marginTop="sp12">{banner}</Box>}
         </PressableOpacity>
     );
 };

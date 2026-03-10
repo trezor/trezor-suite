@@ -1,4 +1,5 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { signatureToStakeTypeMap } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { NativeTypographyStyle } from '@trezor/theme';
@@ -30,10 +31,36 @@ const getSelfTransactionMessageByType = ({
     }
 };
 
+const getStakingOperationType = (transaction: WalletAccountTransaction): StakeType => {
+    const ethMethodId = transaction.ethereumSpecific?.parsedData?.methodId;
+    const ethStakeType = signatureToStakeTypeMap[ethMethodId ?? ''];
+
+    return ethStakeType;
+};
+
+const getStakeOperationName = (type: StakeType, isPending: boolean): TxKeyPath => {
+    switch (type) {
+        case 'stake':
+            return isPending ? 'transactions.name.staking' : 'transactions.name.stake';
+        case 'unstake':
+            return isPending ? 'transactions.name.unstaking' : 'transactions.name.unstake';
+        case 'claim':
+            return isPending ? 'transactions.name.claiming' : 'transactions.name.claim';
+        default:
+            return isPending ? 'transactions.name.pending' : 'transactions.name.unknown';
+    }
+};
+
 export const getTransactionName = (
     transaction: WalletAccountTransaction,
     isPending: boolean,
 ): TxKeyPath => {
+    const stakeOperationType = getStakingOperationType(transaction);
+
+    if (stakeOperationType) {
+        return getStakeOperationName(stakeOperationType, isPending);
+    }
+
     switch (transaction.type) {
         case 'sent':
             return isPending ? 'transactions.name.sending' : 'transactions.name.sent';

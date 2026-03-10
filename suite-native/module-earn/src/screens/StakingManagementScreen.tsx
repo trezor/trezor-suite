@@ -3,12 +3,11 @@ import { useMemo } from 'react';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseAccountKey } from '@suite-common/wallet-utils';
-import { Text, VStack } from '@suite-native/atoms';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 
-import { StakingManagementHistorySection } from '../components/StakingManagementHistorySection';
 import { StakingManagementScreenHeader } from '../components/StakingManagementScreenHeader';
 import { StakingManagementStakedCard } from '../components/StakingManagementStakedCard';
 
@@ -27,7 +26,11 @@ export const StakingManagementScreen = () => {
                     accountKey={accountKey}
                     networkSymbol={networkSymbol}
                 />
-                <StakingManagementHistorySection />
+                <Box marginTop="sp32">
+                    <Text variant="headline-sm">
+                        <Translation id="earn.stakingManagementScreen.stakingHistory" />
+                    </Text>
+                </Box>
             </VStack>
         ),
         [accountKey, networkSymbol],
@@ -35,7 +38,11 @@ export const StakingManagementScreen = () => {
 
     return (
         <Screen header={<StakingManagementScreenHeader />} noHorizontalPadding>
-            <TransactionList accountKey={accountKey} listHeaderComponent={listHeaderComponent} />
+            <TransactionList
+                accountKey={accountKey}
+                listHeaderComponent={listHeaderComponent}
+                stakingOnly
+            />
         </Screen>
     );
 };
