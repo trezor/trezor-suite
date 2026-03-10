@@ -1,5 +1,12 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { events } from '@suite-native/analytics';
 import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -23,14 +30,20 @@ export type EarnListItemProps = EarnItem;
 export const EarnListItem = (earnItem: EarnListItemProps) => {
     const { accountKey } = earnItem;
     const { applyStyle } = useNativeStyles();
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef } = useBottomSheetModal();
     const analytics = useAnalytics();
+    const navigation =
+        useNavigation<
+            StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>
+        >();
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
 
     const handlePress = () => {
-        openModal();
         analytics.report({ type: events.earnStakeTilePressedEvent.name });
+        if (accountKey) {
+            navigation.navigate(RootStackRoutes.StakingManagement, { accountKey });
+        }
     };
 
     return (

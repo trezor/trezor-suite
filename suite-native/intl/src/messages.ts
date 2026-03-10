@@ -2342,6 +2342,16 @@ export const messages = {
         stakingDetailScreen: {
             title: 'Staking',
         },
+        stakingManagementScreen: {
+            yourStake: 'Your stake',
+            stakedLabel: 'Staked',
+            totalRewardsLabel: 'Total rewards',
+            apyLabel: 'APY • {value}%',
+            nextRewardLabel: 'Next reward in {value} days',
+            unstakeButton: 'Unstake',
+            stakeMoreButton: 'Stake more',
+            stakingHistory: 'Staking history',
+        },
         earnScreen: {
             title: 'Earn',
             subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
