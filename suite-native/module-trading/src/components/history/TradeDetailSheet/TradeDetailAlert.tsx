@@ -114,11 +114,7 @@ export const TradeDetailAlert = ({
 
     const alertConfig = getAlertConfig(alertType);
 
-    const { openBrowser } = useBrowserAuth(
-        trade?.tradeType === 'buy'
-            ? { tradingType: trade.tradeType, orderId: trade.data.orderId }
-            : { tradingType: trade?.tradeType },
-    );
+    const { openBrowser } = useBrowserAuth(trade?.tradeType);
 
     // If no config found for this alert type, return null
     if (!alertConfig) {
@@ -146,7 +142,7 @@ export const TradeDetailAlert = ({
                 orderId,
             });
             onOpenedBrowser?.();
-            openBrowser(trade.data.partnerData, callbackUrl);
+            openBrowser(trade.data.partnerData, callbackUrl, orderId);
         }
     };
 
