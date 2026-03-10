@@ -146,6 +146,15 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             if (!this.settings.manifest) {
                 throw ERRORS.TypedError('Init_ManifestMissing');
             }
+
+            // If init() is in progress but hasn't completed yet, wait for it.
+            if (!this.coreManager.get()) {
+                const pending = this.coreManager.getPending();
+                if (pending) {
+                    await pending;
+                }
+            }
+
             const { promiseId, promise } = this.messagePromises.create();
             const payload = cloneObject<any>(params);
             this.handleCoreMessage({ type: CORE_CALL, id: promiseId, payload });
@@ -170,6 +179,12 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     public dispose() {
         this.eventEmitter.removeAllListeners();
         this.settings = parseConnectSettings();
-        this.coreManager.dispose();
+
+        // Only dispose coreManager if initialization has completed.
+        // If init is still pending (getPending() is truthy), disposing would reject
+        // the pending promise and cause an unhandled rejection in the init() caller.
+        if (this.coreManager.get()) {
+            this.coreManager.dispose();
+        }
     }
 }
