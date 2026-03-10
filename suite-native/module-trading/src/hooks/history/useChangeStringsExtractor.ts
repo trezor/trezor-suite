@@ -47,6 +47,7 @@ export const useChangeStringsExtractor = (
     const formatFiatValue = (
         value: BaseCurrencyAmount | undefined,
         currency: string | undefined,
+        fractionDigits?: number,
     ) => {
         if (value === undefined) {
             return undefined;
@@ -55,6 +56,8 @@ export const useChangeStringsExtractor = (
         return (
             BaseCurrencyAmountFormatter.format(value, {
                 currency,
+                minimumFractionDigits: fractionDigits,
+                maximumFractionDigits: fractionDigits,
             }) ?? undefined
         );
     };
@@ -64,22 +67,22 @@ export const useChangeStringsExtractor = (
             return undefined;
         }
 
-        const fromNumericValue = parseFloat(fromValue);
-        const toNumericValue = parseFloat(toValue);
+        const fromBigNumber = new BigNumber(fromValue);
+        const toBigNumber = new BigNumber(toValue);
 
-        if (isNaN(fromNumericValue) || isNaN(toNumericValue) || toNumericValue === 0) {
+        if (fromBigNumber.isNaN() || toBigNumber.isNaN() || toBigNumber.isZero()) {
             return undefined;
         }
 
-        const rate = fromNumericValue / toNumericValue;
+        const rate = fromBigNumber.div(toBigNumber);
 
         const rateFormatted = isFromCrypto
             ? formatCryptoValue(rate.toString(), fromCurrency, false)
-            : formatFiatValue(asBaseCurrencyAmount(new BigNumber(rate)), fromCurrency);
+            : formatFiatValue(asBaseCurrencyAmount(rate), fromCurrency);
 
         const targetCurrencyFormatted = isToCrypto
             ? formatCryptoValue('1', toCurrency, false)
-            : formatFiatValue(asBaseCurrencyAmount(new BigNumber('1')), toCurrency);
+            : formatFiatValue(asBaseCurrencyAmount(new BigNumber('1')), toCurrency, 0);
 
         if (!rateFormatted || !targetCurrencyFormatted) {
             return undefined;
