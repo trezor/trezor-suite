@@ -2,6 +2,9 @@ import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
+
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
@@ -26,6 +29,20 @@ const PassphraseWalletBestPracticesContent = ({
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
             </H3>
             <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="body-sm">
+                <List.Item bulletComponent={<Icon intent="info" name="warningCircle" size={16} />}>
+                    <Paragraph intent="info" typographyStyle="body-sm-strong">
+                        <Translation
+                            id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
+                            values={{
+                                a: text => (
+                                    <TrezorLink href={HELP_CENTER_PASSPHRASE_URL}>
+                                        {text}
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    </Paragraph>
+                </List.Item>
                 <List.Item bulletComponent={<Icon name="newspaper" size={16} />}>
                     <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
