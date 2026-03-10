@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
     OtcProviderType,
     TradingCountryCode,
-    TradingRootState,
-    selectOtcProvidersByCountry,
+    getOtcProvidersByCountry,
+    useFetchOtc,
 } from '@suite-common/trading';
 import {
     Banner,
@@ -34,9 +33,11 @@ export const TradingConciergeProviderInput = ({
     isLoading,
 }: TradingConciergeProviderInputProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { data: otcData, isSuccess } = useFetchOtc();
 
-    const providers = useSelector((state: TradingRootState) =>
-        selectOtcProvidersByCountry(state, country),
+    const providers = useMemo(
+        () => (isSuccess ? getOtcProvidersByCountry(otcData, country) : []),
+        [isSuccess, otcData, country],
     );
 
     useEffect(() => {
@@ -68,8 +69,12 @@ export const TradingConciergeProviderInput = ({
     };
 
     return (
-        <Column hasDivider>
-            <GhostContainer onClick={() => setIsModalOpen(true)} isDisabled={isLoading}>
+        <>
+            <GhostContainer
+                onClick={() => setIsModalOpen(true)}
+                isDisabled={isLoading}
+                borderRadius={0}
+            >
                 <Row justifyContent="space-between" padding={20}>
                     <Text typographyStyle="body-md" align="start">
                         <Translation id="TR_TRADING_PROVIDER" />
@@ -113,6 +118,6 @@ export const TradingConciergeProviderInput = ({
                     </CardList>
                 </Modal>
             )}
-        </Column>
+        </>
     );
 };

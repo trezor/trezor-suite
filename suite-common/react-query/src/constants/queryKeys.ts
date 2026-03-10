@@ -19,3 +19,7 @@ export const desktopQueryKeys = {
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const mobileQueryKeys = {} as const satisfies Record<string, AllowedQueryKey>;
+
+export const tradingQueryKeys = {
+    otcData: () => ['trading', 'otc-data'],
+} as const satisfies Record<string, AllowedQueryKey>;

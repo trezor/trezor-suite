@@ -10,7 +10,6 @@ import {
     TradingType,
     TradingVerifiedAddress,
 } from '../types';
-import type { TradingOTC } from '../types';
 import { TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { TradingExchangeState, exchangeInitialState } from './exchangeReducer';
@@ -64,7 +63,6 @@ export interface TradingState {
     settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
     favouriteAssets: Record<CryptoId, true>;
-    otc?: TradingOTC;
 }
 
 export type TradingRootState = {
@@ -123,9 +121,7 @@ const tradingCommonSlice = createSlice({
         saveComposedTransactionInfo(state, action: PayloadAction<TradingComposedTransactionInfo>) {
             state.composedTransactionInfo = action.payload;
         },
-        saveOtc(state, action: PayloadAction<TradingOTC | undefined>) {
-            state.otc = action.payload;
-        },
+
         saveTrade(state, action: PayloadAction<TradingTransaction>) {
             if (action.payload.key) {
                 const trades = state.trades.filter(t => t.key !== action.payload.key);

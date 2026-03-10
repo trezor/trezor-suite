@@ -8,7 +8,7 @@ import {
     isCountryCode,
     useFetchOtc,
 } from '@suite-common/trading';
-import { Button, Card } from '@trezor/components';
+import { Button, Card, Column } from '@trezor/components';
 
 import { TradingConciergeCountryInput } from './TradingConciergeCountryInput';
 import { TradingConciergeProviderInput } from './TradingConciergeProviderInput';
@@ -34,17 +34,19 @@ export const TradingConciergeForm = () => {
     return (
         <>
             <Card paddingType="none">
-                <TradingConciergeCountryInput
-                    onChange={handleCountryChange}
-                    country={country}
-                    isLoading={isLoading}
-                />
-                <TradingConciergeProviderInput
-                    provider={provider}
-                    country={country}
-                    onProviderSelect={setProvider}
-                    isLoading={isLoading}
-                />
+                <Column hasDivider>
+                    <TradingConciergeCountryInput
+                        onChange={handleCountryChange}
+                        country={country}
+                        isLoading={isLoading}
+                    />
+                    <TradingConciergeProviderInput
+                        provider={provider}
+                        country={country}
+                        onProviderSelect={setProvider}
+                        isLoading={isLoading}
+                    />
+                </Column>
             </Card>
             <Button width="100%" isDisabled={!provider} href={provider?.url}>
                 <Translation id="TR_CONTINUE" />

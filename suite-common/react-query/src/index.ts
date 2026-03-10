@@ -1,4 +1,6 @@
 export {
+    QueryClient,
+    QueryClientProvider,
     useQuery,
     useMutation,
     useQueryClient,
