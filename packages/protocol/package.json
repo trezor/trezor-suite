@@ -42,13 +42,9 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
     }
 }

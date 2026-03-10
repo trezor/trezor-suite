@@ -25,8 +25,7 @@
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs"
     },
     "peerDependencies": {
         "expo-constants": "*",
@@ -44,8 +43,5 @@
         "react-native": {
             "optional": true
         }
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
     }
 }

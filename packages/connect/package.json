@@ -93,8 +93,7 @@
         "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
-        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node"
     },
     "dependencies": {
         "@ethereumjs/common": "^10.1.1",
@@ -153,7 +152,6 @@
         "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
         "ts-node": "^10.9.2",
-        "tsx": "^4.21.0",
         "vm-browserify": "^1.1.2",
         "web3-utils": "^4.3.2",
         "webpack": "5.104.1",

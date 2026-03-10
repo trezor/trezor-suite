@@ -57,8 +57,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
@@ -83,8 +82,7 @@
         "@trezor/eslint": "workspace:*",
         "@types/bn.js": "^5.2.0",
         "@types/create-hmac": "^1.1.3",
-        "minimaldata": "^1.0.2",
-        "tsx": "^4.21.0"
+        "minimaldata": "^1.0.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

@@ -14978,7 +14978,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -14999,7 +14998,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.21.0"
     xrpl: "npm:4.5.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -15034,7 +15032,6 @@ __metadata:
     socks-proxy-agent: "npm:8.0.5"
     stream-browserify: "npm:^3.0.0"
     tiny-worker: "npm:^2.3.0"
-    tsx: "npm:^4.21.0"
     viem: "npm:^2.45.0"
     webpack: "npm:5.104.1"
     xrpl: "npm:4.5.0"
@@ -15141,7 +15138,6 @@ __metadata:
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15154,7 +15150,6 @@ __metadata:
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15261,7 +15256,6 @@ __metadata:
     "@trezor/connect": "workspace:^"
     "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:^"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15313,7 +15307,6 @@ __metadata:
     "@types/web": "npm:^0.0.197"
     babel-loader: "npm:^10.0.0"
     rimraf: "npm:^6.0.1"
-    tsx: "npm:^4.21.0"
     worker-loader: "npm:^3.0.8"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
@@ -15398,7 +15391,6 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.21.0"
     vm-browserify: "npm:^1.1.2"
     web3-utils: "npm:^4.3.2"
     webpack: "npm:5.104.1"
@@ -15411,8 +15403,6 @@ __metadata:
 "@trezor/crypto-utils@workspace:*, @trezor/crypto-utils@workspace:packages/crypto-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
-  dependencies:
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15427,7 +15417,6 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
 
@@ -15437,7 +15426,6 @@ __metadata:
   dependencies:
     "@trezor/protobuf": "workspace:*"
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
 
@@ -15467,8 +15455,6 @@ __metadata:
 "@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:packages/env-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
-  dependencies:
-    tsx: "npm:^4.21.0"
   peerDependencies:
     expo-constants: "*"
     expo-localization: "*"
@@ -15570,7 +15556,6 @@ __metadata:
     long: "npm:5.2.5"
     protobufjs: "npm:7.4.0"
     protobufjs-cli: "npm:^1.1.3"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15579,8 +15564,6 @@ __metadata:
 "@trezor/protocol@workspace:*, @trezor/protocol@workspace:^, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
-  dependencies:
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15641,7 +15624,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -16216,7 +16198,6 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     cross-fetch: "npm:^4.1.0"
     jest: "npm:29.7.0"
-    tsx: "npm:^4.21.0"
     usb: "npm:^2.15.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -16238,8 +16219,6 @@ __metadata:
 "@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:^, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
-  dependencies:
-    tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
 
@@ -16256,7 +16235,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     bignumber.js: "npm:^9.3.1"
-    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -16284,7 +16262,6 @@ __metadata:
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
     tiny-secp256k1: "npm:^1.1.7"
-    tsx: "npm:^4.21.0"
     typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
@@ -16315,7 +16292,6 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/web": "npm:^0.0.197"
     "@types/ws": "npm:^8.5.13"
-    tsx: "npm:^4.21.0"
     ws: "npm:^8.18.0"
   peerDependencies:
     tslib: ^2.6.2
