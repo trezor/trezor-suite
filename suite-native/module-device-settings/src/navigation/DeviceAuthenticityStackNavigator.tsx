@@ -44,7 +44,9 @@ export const DeviceAuthenticityStackNavigator = () => {
     }, [navigation]);
 
     const handleFailure = useCallback(() => {
-        navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+        navigation.navigate(RootStackRoutes.DeviceCompromisedModal, {
+            failedCheck: 'device-authenticity',
+        });
     }, [navigation]);
 
     useEffect(() => {

@@ -9,15 +9,12 @@ import {
 } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
-import { Button } from '@suite-native/atoms';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
-import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    ScreenHeader,
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
@@ -68,17 +65,7 @@ export const useCloseDeviceCompromisedScreen = () => {
         }
     };
 
-    const screenHeaderContent = <ScreenHeader closeActionType="close" closeAction={handleClose} />;
-
-    const closeButtonContent = (
-        <Button colorScheme="redElevation0" onPress={handleClose}>
-            <Translation id="generic.buttons.close" />
-        </Button>
-    );
-
     return {
         handleClose,
-        screenHeaderContent,
-        closeButtonContent,
     };
 };

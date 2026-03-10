@@ -99,10 +99,7 @@ describe('deviceConnectionMiddleware', () => {
 
                     expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
                         expectedNavigation.route,
-                        {
-                            screen: expectedNavigation.params?.screen,
-                            params: expectedNavigation.params?.params,
-                        },
+                        expectedNavigation.params,
                     );
                     expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
                 },
@@ -183,6 +180,7 @@ describe('deviceConnectionMiddleware', () => {
 
                     expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
                         expectedNavigation.route,
+                        expectedNavigation.params,
                     );
                     expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
                 },

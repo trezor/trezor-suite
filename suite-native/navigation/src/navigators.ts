@@ -60,6 +60,11 @@ export type DeviceSuspicionCause =
     | 'securitySeal'
     | 'packaging';
 
+export type DeviceCompromisedModalFailedCheck =
+    | 'device-authenticity'
+    | 'entropy'
+    | 'firmware-authenticity';
+
 type AccountDetailParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
@@ -387,7 +392,9 @@ export type RootStackParamList = {
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.BackupFailedModal]: undefined;
-    [RootStackRoutes.DeviceCompromisedModal]: undefined;
+    [RootStackRoutes.DeviceCompromisedModal]: {
+        failedCheck: DeviceCompromisedModalFailedCheck;
+    };
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;

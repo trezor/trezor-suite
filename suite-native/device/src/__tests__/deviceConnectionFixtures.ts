@@ -71,12 +71,10 @@ type ResetNavigationTarget = {
 };
 
 type NavigationTarget = {
-    route: RootStackRoutes;
-    params?: {
-        screen: string;
-        params?: Record<string, any>;
-    };
-};
+    [K in keyof RootStackParamList]: undefined extends RootStackParamList[K]
+        ? { route: K; params?: RootStackParamList[K] }
+        : { route: K; params: RootStackParamList[K] };
+}[keyof RootStackParamList];
 
 type NavigationFixture = {
     description: string;
@@ -377,6 +375,9 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
         },
         expectedNavigation: {
             route: RootStackRoutes.DeviceCompromisedModal,
+            params: {
+                failedCheck: 'device-authenticity',
+            },
         },
     },
 ];

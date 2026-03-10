@@ -35,7 +35,7 @@ import {
 } from '../deviceNavigationConfig';
 import {
     NativeDeviceRootState,
-    selectIsDeviceCompromised,
+    selectCompromisedDeviceFailedCheck,
     selectIsEntropyCheckEnabledAndFailed,
 } from '../selectors';
 import { getIsDeviceSetupSupported } from '../utils';
@@ -140,20 +140,19 @@ deviceConnectionMiddleware.startListening({
         // Your decision logic should be derived from device passed from TrezorConnect in the action payload (not selectedDevice from the state).
         const { device } = action.payload;
 
-        const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(
-            getState(),
-            device,
-        );
+        const failedCheck = selectCompromisedDeviceFailedCheck(getState(), device);
 
         if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
 
         // During firmware installation, device restarts (disconnect + connect) and we want to ignore it.
         if (selectIsFirmwareInstallationRunning(getState())) return;
 
-        if (shouldNavigateToDeviceCompromisedModal) {
+        if (failedCheck) {
             // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
             // to coin enabling so he can continue to the app with running discovery.
-            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
+            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
+                failedCheck,
+            });
 
             return;
         }
