@@ -311,6 +311,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
         plugins: getPlugins(),
         extra: {
+            // FIXME: Fingerprint is always changed between commits because of this. We need to find a better solution.
             commitHash:
                 process.env.EAS_BUILD_GIT_COMMIT_HASH ||
                 process.env.COMMIT_HASH ||
