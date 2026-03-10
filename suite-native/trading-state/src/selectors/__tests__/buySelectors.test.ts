@@ -290,16 +290,16 @@ describe('buySelectors', () => {
         it('should return only first quote for each payment method', () => {
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
+                    paymentMethod: 'googlePay',
+                    rate: 9991.316675433,
+                }),
+                expect.objectContaining({
                     paymentMethod: 'applePay',
                     rate: 9998.316675433,
                 }),
                 expect.objectContaining({
                     paymentMethod: 'creditCard',
                     rate: 20000,
-                }),
-                expect.objectContaining({
-                    paymentMethod: 'googlePay',
-                    rate: 9991.316675433,
                 }),
             ]);
         });
@@ -330,6 +330,23 @@ describe('buySelectors', () => {
             state.wallet.trading.buy.quotes = [quote];
 
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
+        });
+
+        it('should sort quotes by rate', () => {
+            const quote1 = {
+                ...buyQuotes[0],
+                paymentMethod: 'creditCard',
+                rate: 20000,
+            } as BuyTrade;
+            const quote2 = {
+                ...buyQuotes[0],
+                paymentMethod: 'applePay',
+                rate: 10000,
+            } as BuyTrade;
+
+            state.wallet.trading.buy.quotes = [quote1, quote2];
+
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([quote2, quote1]);
         });
     });
 

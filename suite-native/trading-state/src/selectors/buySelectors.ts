@@ -150,7 +150,15 @@ export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelec
             return quotesByPaymentMethodMap;
         }, new Map<BuyCryptoPaymentMethod, BuyTrade>());
 
-        return [...bestQuoteByPaymentMethodMap.values()];
+        return [...bestQuoteByPaymentMethodMap.values()].sort(
+            ({ rate: aRate }, { rate: bRate }) => {
+                // note that quotes without a valid rate should be filtered out by selectValidTradingBuyQuotesNative -> selectValidTradingBuyQuotes
+                invariant(aRate, 'rate in object "a" is required for sorting');
+                invariant(bRate, 'rate in object "b" is required for sorting');
+
+                return aRate - bRate;
+            },
+        );
     },
 );
 
