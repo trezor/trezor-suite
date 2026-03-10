@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
+import { selectIsNetworkReserveSettingsVisible } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { ExperimentalFeaturesSettingsCard } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
@@ -16,6 +17,7 @@ import { selectIsBitcoinBackendsConfigVisible } from '../selectors';
 export const SettingsAdvancedScreen = () => {
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isBitcoinBackendsConfigVisible = useSelector(selectIsBitcoinBackendsConfigVisible);
+    const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
 
     return (
         <Screen
@@ -29,7 +31,7 @@ export const SettingsAdvancedScreen = () => {
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
                 <ToggleFirmwareAuthenticityCheckCard />
                 <ToggleDeviceAuthenticityCheckCard />
-                <ToggleNetworkReserveCheckCard />
+                {isNetworkReserveSettingsVisible && <ToggleNetworkReserveCheckCard />}
             </VStack>
         </Screen>
     );

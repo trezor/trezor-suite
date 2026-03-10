@@ -192,7 +192,7 @@ const outputSchema = yup.object({
         )
         .test(
             'network-reserve',
-            'Not enough funds left after we reserve for network fees.',
+            'Not enough funds remaining after reserving network fees',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
                 if (!value || !context) return true;
 
