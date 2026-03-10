@@ -1,0 +1,63 @@
+name: "[Bot] squash pull request"
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  squash-pr:
+    name: Squash pull request
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'pull_request' && github.head_ref == 'add-squash-command-to-action-test') || (github.event.issue.pull_request != '' && startsWith(github.event.comment.body, '/squash') && github.repository == 'trezor/trezor-suite')
+    steps:
+      - name: Respond in pull request
+        if: github.event_name != 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Start squashing: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            })
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.trezor-bot-token.outputs.token }}
+      - name: Set test squash message
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "SQUASH_MESSAGE=test: verify squash action works" >> "$GITHUB_ENV"
+      - name: Auto squash pull request
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: bash scripts/ci/bot-squash.sh
+      - name: Report failure
+        if: ${{ failure() && github.event_name != 'pull_request' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Squashing failed, please squash manually."
+            })
