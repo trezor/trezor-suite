@@ -1,8 +1,7 @@
+import { STEP, onboardingReducer } from '@suite/onboarding';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as STEP from 'src/constants/onboarding/steps';
-import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 
 export default [
     {

@@ -1,13 +1,13 @@
+import { AnyAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { type BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 
-import { ONBOARDING } from 'src/actions/onboarding/constants';
-import * as STEP from 'src/constants/onboarding/steps';
-import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { type Action } from 'src/types/suite';
+import * as ONBOARDING from './onboardingConstants';
+import * as STEP from './onboardingSteps';
+import { type AnyPath, type AnyStepId } from './types';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;
@@ -47,13 +47,13 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
 const removePath = (paths: AnyPath[], state: OnboardingState) =>
     state.path.filter(p => !paths.includes(p));
 
-const ALLOWED_ACTION_TYPES = new Set<Action['type']>([
+const ALLOWED_ACTION_TYPES = new Set<string>([
     ONBOARDING.RESET_ONBOARDING,
     ONBOARDING.ENABLE_ONBOARDING_REDUCER,
     ONBOARDING.ANALYTICS,
 ]);
 
-const onboarding = (state: OnboardingState = initialState, action: Action) => {
+export const onboardingReducer = (state: OnboardingState = initialState, action: AnyAction) => {
     if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
         return state;
     }
@@ -94,4 +94,3 @@ export const selectIsOnboardingActive = (state: OnboardingRootState) => state.on
 export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
     state.onboarding.onboardingAnalytics;
 
-export default onboarding;

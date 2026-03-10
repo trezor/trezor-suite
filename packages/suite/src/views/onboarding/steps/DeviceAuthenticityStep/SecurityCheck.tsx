@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { events } from '@suite/analytics';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectIsOnboardingActive } from '@suite/onboarding';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
 import {
@@ -41,7 +42,6 @@ import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCh
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';

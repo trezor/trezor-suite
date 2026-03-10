@@ -1,7 +1,7 @@
+import { onboardingReducer } from '@suite/onboarding';
 import { recoveryReducer } from '@suite/recovery';
 import { suiteSettingsInitialState } from '@suite/settings';
 
-import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { type Action } from 'src/types/suite';

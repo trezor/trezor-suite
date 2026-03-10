@@ -159,6 +159,7 @@
         { "path": "../../suite/locks" },
         { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
+        { "path": "../../suite/onboarding" },
         {
             "path": "../../suite/onboarding-components"
         },

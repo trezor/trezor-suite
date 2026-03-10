@@ -84,6 +84,7 @@
         "@suite/locks": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@suite/modal": "workspace:*",
+        "@suite/onboarding": "workspace:*",
         "@suite/onboarding-components": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",

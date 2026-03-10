@@ -12,6 +12,7 @@ import { createLogger } from 'redux-logger';
 
 import { backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { onboardingReducer } from '@suite/onboarding';
 import { recoveryReducer } from '@suite/recovery';
 import { type HistoryDep } from '@suite/router';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -36,7 +37,6 @@ import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
-import onboardingReducers from 'src/reducers/onboarding';
 import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
@@ -59,7 +59,7 @@ const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(e
 
 const rootReducer = combineReducers({
     ...suiteReducers,
-    onboarding: onboardingReducers,
+    onboarding: onboardingReducer,
     wallet: walletReducers,
     recovery: recoveryReducer,
     firmware: firmwareReducer,

@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { STEP } from '@suite/onboarding';
 import { Grid } from '@trezor/components';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
-import * as STEP from 'src/constants/onboarding/steps';
 import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 
 export const CreateOrRecoverStep = () => {

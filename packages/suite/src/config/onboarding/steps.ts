@@ -1,6 +1,6 @@
+import { STEP } from '@suite/onboarding';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import * as STEP from 'src/constants/onboarding/steps';
 import { type Step, type StepCategory } from 'src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [

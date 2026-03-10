@@ -1,8 +1,7 @@
+import { type AnyPath, type AnyStepId,  STEP, type Step, type StepCategory } from '@suite/onboarding';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { ID_AUTHENTICATE_DEVICE_STEP, ID_SET_PIN_STEP } from 'src/constants/onboarding/steps';
-import { type AnyPath, type AnyStepId, type Step, type StepCategory } from 'src/types/onboarding';
 import { type TrezorDevice } from 'src/types/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
@@ -62,7 +61,7 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
         return false;
     }
 
-    if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
+    if (step.id === STEP.ID_AUTHENTICATE_DEVICE_STEP) {
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
 
         return (
@@ -106,7 +105,7 @@ export const resolveNextAvailableStep = (
         return null;
     }
 
-    if (nextStep.id === ID_SET_PIN_STEP && device) {
+    if (nextStep.id === STEP.ID_SET_PIN_STEP && device) {
         // Skip PIN setup step only if device has PIN protection explicitly enabled
         if (device?.features?.pin_protection === true) {
             return resolveNextAvailableStep(steps[currentIndex + 1]?.id, steps, device);

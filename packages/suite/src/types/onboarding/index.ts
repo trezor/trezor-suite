@@ -1,8 +1,8 @@
 import { type TranslationKey } from '@suite/intl';
+import { type AnyPath, type AnyStepId } from '@suite/onboarding';
 import { type DeviceModelInternal, type FirmwareType } from '@trezor/device-utils';
 import { type FirmwareVersionString } from '@trezor/device-utils/src/types';
 
-import type * as STEP from 'src/constants/onboarding/steps';
 import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 type ModelWithFirmwareVersion = {
@@ -25,18 +25,3 @@ export type Step = {
     supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];
     supportedFirmwareTypes?: FirmwareType[];
 };
-
-// todo: remove, improve typing
-export type AnyStepId =
-    | typeof STEP.ID_CREATE_OR_RECOVER
-    | typeof STEP.ID_BACKUP_STEP
-    | typeof STEP.ID_FIRMWARE_STEP
-    | typeof STEP.ID_AUTHENTICATE_DEVICE_STEP
-    | typeof STEP.ID_TUTORIAL_STEP
-    | typeof STEP.ID_SET_PIN_STEP
-    | typeof STEP.ID_SECURITY_STEP
-    | typeof STEP.ID_RESET_DEVICE_STEP
-    | typeof STEP.ID_RECOVERY_STEP
-    | typeof STEP.ID_COINS_STEP;
-
-export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;
