@@ -14,6 +14,7 @@ jobs:
       NODE_ENV: "test"
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       RN_SRC_EXT: "e2e.ts,e2e.tsx"
+      COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
