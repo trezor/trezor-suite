@@ -18,6 +18,8 @@ import { useEarnForm } from '../hooks/useEarnForm';
 export const EarnFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnForm>>();
     const { accountKey } = route.params;
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>>();
 
     const earnForm = useEarnForm(accountKey);
 
@@ -46,7 +48,7 @@ export const EarnFormScreen = () => {
                     accountKey={accountKey}
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid}
+                    isFormValid={isValid}
                     onPress={handleSubmit}
                 />
             }
