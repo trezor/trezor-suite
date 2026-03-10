@@ -149,7 +149,7 @@ export const PinStep = () => {
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && (
-                    <Column gap={spacings.md}>
+                    <Column gap={spacings.md} alignItems="center">
                         <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
                         <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
                             <Translation id="TR_CONFIRM" />
