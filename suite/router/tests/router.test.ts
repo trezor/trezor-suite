@@ -7,7 +7,7 @@ import {
     getRoute,
     getRouteHash,
     stripPrefixedURL,
-} from '../router';
+} from '../src/router';
 
 const OLD_ENV = { ...process.env };
 

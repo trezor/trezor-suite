@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { selectRouteName } from '@suite/router';
+import { getTxAnchor , selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -26,7 +26,6 @@ import { AccountLabeling } from 'src/components/suite/labeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getTxAnchor } from 'src/utils/suite/anchor';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<
