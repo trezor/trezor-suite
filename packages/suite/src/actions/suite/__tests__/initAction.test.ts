@@ -2,6 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
+import type { PathString } from '@suite/router';
 import { routerReducer } from '@suite/router';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -45,7 +46,6 @@ import { createSuiteRouterHistory, extraDependencies } from 'src/support/extraDe
 import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
 
-import { PathString } from '../../../utils/suite/router';
 import { initialRedirection } from '../routerActions';
 import { appChanged } from '../suiteActions';
 

@@ -1,7 +1,6 @@
 import { RouteParams } from '@suite/router';
 import { Account } from '@suite-common/wallet-types';
 
-
 type GetEarnRouteParamsProps = {
     account: Account;
     yieldId: string;

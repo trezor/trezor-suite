@@ -1,11 +1,10 @@
 import { Translation } from '@suite/intl';
-import { resolveEffectiveBackgroundRouteName , selectIsAccountTabPage } from '@suite/router';
+import { resolveEffectiveBackgroundRouteName, selectIsAccountTabPage } from '@suite/router';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
