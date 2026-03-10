@@ -248,7 +248,6 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
-    [DeviceSettingsStackRoutes.DeviceAutoConnectGuard]: undefined;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {

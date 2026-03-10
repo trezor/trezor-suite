@@ -30,18 +30,10 @@ const configMap = {
 } as const satisfies Record<'enabled' | 'disabled', CardConfig>;
 
 export const DeviceAutoConnectScreen = () => {
-    const { isAutoconnectEnabled, turnAutoConnectOn, turnAutoConnectOff } = useDeviceAutoConnect();
-
-    const onPress = () => {
-        if (isAutoconnectEnabled) {
-            turnAutoConnectOff();
-        } else {
-            turnAutoConnectOn();
-        }
-    };
+    const { isAutoConnectEnabled, toggleAutoConnect } = useDeviceAutoConnect();
 
     const { pictogramVariant, pictogramIcon, titleId, subtitleId, buttonId } =
-        configMap[isAutoconnectEnabled ? 'enabled' : 'disabled'];
+        configMap[isAutoConnectEnabled ? 'enabled' : 'disabled'];
 
     return (
         <Screen
@@ -61,7 +53,7 @@ export const DeviceAutoConnectScreen = () => {
                         title={<Translation id={titleId} />}
                         subtitle={<Translation id={subtitleId} />}
                     />
-                    <Button onPress={onPress} colorScheme="primary" size="medium">
+                    <Button onPress={toggleAutoConnect} colorScheme="primary" size="medium">
                         <Translation id={buttonId} />
                     </Button>
                 </VStack>
