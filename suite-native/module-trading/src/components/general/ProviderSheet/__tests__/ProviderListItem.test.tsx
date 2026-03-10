@@ -47,9 +47,8 @@ describe('ProviderListItem', () => {
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
-        // estimated rate in base currency (component is mocked)
-        expect(getByText(/^0.001[0-9]+-bitcoin$/)).toBeOnTheScreen();
         expect(getByText('Centralized exchange')).toBeOnTheScreen();
+        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
     it('should render KYC information when provider has KYC policy', () => {
