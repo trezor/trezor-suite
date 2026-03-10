@@ -42,12 +42,7 @@ export const preloadFeeInfoThunk = createThunk(
                 const feeInfo: FeeInfo = {
                     blockHeight: 0,
                     ...payload,
-                    levels: sortLevels(
-                        payload.levels
-                            // hack to hide "low" fee option
-                            // (we do not want to change the connect API as it is a potentially breaking change)
-                            .filter(level => level.label !== 'low'),
-                    ).map(level => ({
+                    levels: sortLevels(payload.levels).map(level => ({
                         ...level,
                         label: level.label || 'normal',
                     })),

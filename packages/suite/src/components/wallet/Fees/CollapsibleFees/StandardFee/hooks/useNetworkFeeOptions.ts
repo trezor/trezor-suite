@@ -32,7 +32,9 @@ export function useNetworkFeeOptions({
     composedLevels,
 }: UseNetworkFeeOptionsProps): FeeOptionType[] {
     return useMemo(() => {
-        const filteredLevels = levels.filter(level => level.label !== 'custom');
+        const filteredLevels = levels.filter(
+            level => level.label !== 'custom' && level.label !== 'low',
+        );
 
         const getNetworkAmount = (level: FeeLevel) => {
             const transactionInfo = composedLevels?.[level.label];

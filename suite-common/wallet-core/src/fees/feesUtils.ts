@@ -101,11 +101,6 @@ export const getNewFeeInfo = async ({
 
     return {
         ...result.payload,
-        levels: sortLevels(
-            result.payload.levels
-                // hack to hide "low" fee option
-                // (we do not want to change the connect API as it is a potentially breaking change)
-                .filter(level => level.label !== 'low'),
-        ),
+        levels: sortLevels(result.payload.levels),
     };
 };
