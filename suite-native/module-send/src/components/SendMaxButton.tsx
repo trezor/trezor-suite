@@ -13,10 +13,10 @@ import {
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { getDecimalsForBaseCurrency, isAddressValid } from '@suite-common/wallet-utils';
-import { Button } from '@suite-native/atoms';
+import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
-import { useField, useFormContext } from '@suite-native/forms';
+import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
@@ -54,10 +54,6 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    const { value: addressValue } = useField({
-        name: getOutputFieldName(outputIndex, 'address'),
-    });
-
     const [maxAmountValue, setMaxAmountValue] = useState<string | null>();
 
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
@@ -65,11 +61,10 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
 
     const formValues = watch();
 
-    const isAddressInputValid = symbol && isAddressValid(addressValue, symbol);
-
-    const isMainnetSendMaxAvailable =
-        !tokenContract && formValues.outputs.length === 1 && isAddressInputValid;
+    const isMainnetSendMaxAvailable = !tokenContract && formValues.outputs.length === 1;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
+
+    const isSendMaxEnabled = formValues.setMaxOutputId === outputIndex;
 
     const calculateFeeLevelsMaxAmount = useCallback(async () => {
         const response = await debounce(() =>
@@ -94,12 +89,11 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         else setMaxAmountValue(undefined);
     }, [isMainnetSendMaxAvailable, calculateFeeLevelsMaxAmount, tokenBalance]);
 
-    const setOutputSendMax = () => {
+    const enableSendMax = () => {
         if (!maxAmountValue) return;
 
-        Keyboard.dismiss();
-
         setValue('setMaxOutputId', outputIndex);
+
         setValue(getOutputFieldName(outputIndex, 'amount'), maxAmountValue, {
             shouldValidate: true,
             shouldTouch: true,
@@ -114,13 +108,41 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         }
     };
 
+    const disableSendMax = () => {
+        setValue('setMaxOutputId', undefined);
+
+        setValue(getOutputFieldName(outputIndex, 'amount'), '', {
+            shouldValidate: true,
+            shouldTouch: true,
+        });
+
+        setValue(getOutputFieldName(outputIndex, 'fiat'), '', {
+            shouldValidate: true,
+            shouldTouch: true,
+        });
+    };
+
+    const toggleSendMax = (isToggled: boolean) => {
+        Keyboard.dismiss();
+
+        if (isToggled) {
+            enableSendMax();
+        } else {
+            disableSendMax();
+        }
+    };
+
     return (
         isSendMaxAvailable &&
         maxAmountValue && (
             <Animated.View entering={FadeIn}>
-                <Button size="small" colorScheme="tertiaryElevation0" onPress={setOutputSendMax}>
-                    <Translation id="moduleSend.outputs.recipients.maxButton" />
-                </Button>
+                <HStack alignItems="center" spacing="sp8">
+                    <Text variant="body-sm">
+                        <Translation id="moduleSend.outputs.recipients.maxButton" />
+                    </Text>
+
+                    <Switch isChecked={isSendMaxEnabled} onChange={toggleSendMax} />
+                </HStack>
             </Animated.View>
         )
     );
