@@ -2,10 +2,9 @@ import { FiatCurrencyCode } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import {
-    TradingRootState,
     TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
-    selectOtcProvidersByCountry,
+    getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -25,7 +24,8 @@ import {
 
 export const TradingFormOfferOTC = () => {
     const dispatch = useDispatch();
-    const { data: otcData } = useFetchOtc();
+    const otcQuery = useFetchOtc();
+    const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();
     const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -58,9 +58,9 @@ export const TradingFormOfferOTC = () => {
         : { network: undefined, contractAddress: undefined };
 
     const countrySelect = context.getValues().countrySelect.value;
-    const otcProviders = useSelector((state: TradingRootState) =>
-        selectOtcProvidersByCountry(state, countrySelect || 'unknown'),
-    );
+    const otcProviders = isSuccess
+        ? getOtcProvidersByCountry(otcData, countrySelect || 'unknown')
+        : [];
 
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',

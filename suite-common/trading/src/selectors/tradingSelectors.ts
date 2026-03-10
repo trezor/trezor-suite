@@ -16,12 +16,7 @@ import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
-import {
-    TradingCountryCode,
-    TradingFiatCurrenciesProps,
-    TradingTransaction,
-    TradingType,
-} from '../types';
+import { TradingFiatCurrenciesProps, TradingTransaction, TradingType } from '../types';
 import { cryptoIdToNetwork, isBuyTrade, isExchangeProvider, testnetToProdCryptoId } from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
@@ -114,17 +109,6 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
 );
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
-
-export const selectTradingOtc = (state: TradingRootState) => state.wallet.trading.otc;
-
-export const selectOtcProvidersByCountry = createMemoizedSelector(
-    [
-        (state: TradingRootState) => state.wallet.trading.otc?.links,
-        (_: TradingRootState, country: TradingCountryCode) => country,
-    ],
-    (links, country) =>
-        returnStableArrayIfEmpty(links?.filter(link => link.allowedCountries?.includes(country))),
-);
 
 export const selectTradingBuyInfo = createMemoizedSelector(
     [state => state.wallet.trading.buy.buyInfo],

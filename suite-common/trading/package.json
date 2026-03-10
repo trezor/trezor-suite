@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
