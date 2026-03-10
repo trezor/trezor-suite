@@ -166,7 +166,7 @@ export const EarnActiveItemsBottomSheet = ({
 
             switch (item.type) {
                 case 'staking':
-                    navigation.navigate(RootStackRoutes.StakingDetail, {
+                    navigation.navigate(RootStackRoutes.StakingManagement, {
                         accountKey: item.accountKey,
                     });
                     break;

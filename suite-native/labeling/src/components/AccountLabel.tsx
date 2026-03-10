@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountDescriptor } from '@suite-common/wallet-types';
-import { Text } from '@suite-native/atoms';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { type CombinedLabelingState, selectAccountLabel } from '../selectors';
@@ -11,9 +11,12 @@ type AccountLabelProps = {
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
+    color?: TextProps['color'];
 };
 
-type AccountLabelPropsWithAccount = AccountLabelProps | { account: Account };
+type AccountLabelPropsWithAccount =
+    | AccountLabelProps
+    | { account: Account; color?: TextProps['color'] };
 
 const normalizeProps = (props: AccountLabelPropsWithAccount): AccountLabelProps =>
     'account' in props
@@ -21,16 +24,18 @@ const normalizeProps = (props: AccountLabelPropsWithAccount): AccountLabelProps 
               deviceStaticSessionId: props.account.deviceState,
               networkSymbol: props.account.symbol,
               accountDescriptor: props.account.descriptor,
+              color: props.color,
           }
         : props;
 
 export const AccountLabel = (props: AccountLabelPropsWithAccount) => {
-    const { accountDescriptor, deviceStaticSessionId, networkSymbol } = normalizeProps(props);
+    const { accountDescriptor, deviceStaticSessionId, networkSymbol, color } =
+        normalizeProps(props);
 
     // This selector already handles the Suite Sync Feature & Legacy Label fallback
     const accountLabel = useSelector((state: CombinedLabelingState) =>
         selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, networkSymbol),
     );
 
-    return accountLabel ? <Text>{accountLabel}</Text> : null;
+    return accountLabel ? <Text color={color}>{accountLabel}</Text> : null;
 };

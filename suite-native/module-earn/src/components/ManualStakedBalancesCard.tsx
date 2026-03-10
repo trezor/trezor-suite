@@ -119,7 +119,7 @@ export const ManualStakedBalancesCard = ({
                     <Text color="textSubdued">
                         <Translation id="earn.apy" />
                     </Text>
-                    <Text>{apy ? `${apy}%` : <Translation id="earn.notAvailable" />}</Text>
+                    <Text>{apy != null ? `${apy}%` : <Translation id="earn.notAvailable" />}</Text>
                 </Box>
             </Card>
         </PressableOpacity>

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     selectFormattedAccountType,
     selectHasRunningDiscovery,
-    useAccoutsSelector,
+    useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
@@ -71,7 +71,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const { accountKey, accountLabel } = item;
 
-    const formattedAccountType = useAccoutsSelector(state =>
+    const formattedAccountType = useAccountsSelector(state =>
         selectFormattedAccountType(state, accountKey),
     );
 

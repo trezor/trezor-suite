@@ -10,7 +10,8 @@ import {
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box } from '@suite-native/atoms';
+import { signatureToStakeTypeMap } from '@suite-common/wallet-utils';
+import { Box, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -22,6 +23,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
+import { InstantStakeBanner } from './InstantStakeBanner';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -41,13 +43,15 @@ const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailed
     },
 }));
 
+type TransactionListItemValuesProps = {
+    accountKey: AccountKey;
+    transaction: WalletAccountTransaction;
+};
+
 export const TransactionListItemValues = ({
     accountKey,
     transaction,
-}: {
-    accountKey: AccountKey;
-    transaction: WalletAccountTransaction;
-}) => {
+}: TransactionListItemValuesProps) => {
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
@@ -63,16 +67,15 @@ export const TransactionListItemValues = ({
         selectTransactionFiatRate(state, transaction),
     );
     const isFailedTx = transaction.type === 'failed';
+    const sign = getTransactionValueSign(transaction.type);
 
     return (
-        <>
+        <VStack spacing="sp4" alignItems="flex-end">
             {isTestnetAccount ? (
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && (
-                        <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
-                    )}
+                    {!isFailedTx && <SignValueFormatter value={sign} />}
                     <CryptoToFiatAmountFormatter
                         value={transaction.amount}
                         symbol={transaction.symbol}
@@ -94,7 +97,7 @@ export const TransactionListItemValues = ({
                 variant="body-sm"
                 color="textSubdued"
             />
-        </>
+        </VStack>
     );
 };
 
@@ -121,15 +124,21 @@ export const TransactionListItem = ({
             />
         );
 
+    const stakeOperationType =
+        signatureToStakeTypeMap[transaction.ethereumSpecific?.parsedData?.methodId ?? ''] ??
+        transaction.solanaSpecific?.stakeOperation?.type;
+
     return (
         <TransactionListItemContainer
             symbol={transaction.symbol}
             txid={transaction.txid}
             transactionType={transaction.type}
+            stakeOperationType={stakeOperationType}
             accountKey={accountKey}
             includedCoinsCount={includedCoinsCount}
             isFirst={isFirst}
             isLast={isLast}
+            banner={<InstantStakeBanner accountKey={accountKey} transaction={transaction} />}
         >
             <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
         </TransactionListItemContainer>

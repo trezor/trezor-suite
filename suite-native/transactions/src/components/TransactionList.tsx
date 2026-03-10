@@ -11,6 +11,7 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
+    selectAccountStakeTypeTransactions,
     selectBaseCurrency,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
@@ -39,6 +40,7 @@ type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    stakingOnly?: boolean;
 };
 
 type RenderSectionHeaderParams = {
@@ -83,7 +85,7 @@ const sortKeysPendingFirst = (a: string, b: string) => {
     return dateB.getTime() - dateA.getTime();
 };
 
-const sortPendingTransactions = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+const sortPendingTransactions = (a: { blockTime?: number }, b: { blockTime?: number }) => {
     if (a.blockTime === undefined && b.blockTime === undefined) return 0;
     if (a.blockTime === undefined) return -1;
     if (b.blockTime === undefined) return 1;
@@ -130,6 +132,7 @@ export const TransactionList = ({
     listHeaderComponent,
     accountKey,
     tokenContract,
+    stakingOnly = false,
 }: AccountTransactionProps) => {
     const dispatch = useDispatch();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -147,9 +150,13 @@ export const TransactionList = ({
         selectIsLoadingAccountTransactions(state, accountKey),
     );
 
-    const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
+    const allTransactions = useSelector((state: TransactionsRootState & TokensRootState) =>
         selectAccountTransactionsWithTokenTransfers(state, accountKey),
     );
+    const stakingTransactions = useSelector((state: TransactionsRootState) =>
+        selectAccountStakeTypeTransactions(state, accountKey),
+    );
+    const transactions = stakingOnly ? stakingTransactions : allTransactions;
 
     const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;
 
