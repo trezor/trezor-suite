@@ -1,6 +1,7 @@
 import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingCountryCode,
     type TradingPaymentMethodProps,
@@ -88,7 +89,15 @@ export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSele
             return quotesByPaymentMethodMap;
         }, new Map<SellCryptoPaymentMethod, SellFiatTrade>());
 
-        return [...bestQuoteByPaymentMethodMap.values()];
+        return [...bestQuoteByPaymentMethodMap.values()].sort(
+            ({ rate: aRate }, { rate: bRate }) => {
+                // note that quotes without a valid rate should be filtered out by selectValidTradingSellQuotes
+                invariant(aRate, 'rate in object "a" is required for sorting');
+                invariant(bRate, 'rate in object "b" is required for sorting');
+
+                return bRate - aRate;
+            },
+        );
     },
 );
 
