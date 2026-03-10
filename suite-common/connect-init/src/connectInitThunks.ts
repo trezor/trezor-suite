@@ -122,6 +122,8 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 }
             }
 
+            console.log('meow');
+
             if (
                 action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED &&
                 connectInitHooks &&
