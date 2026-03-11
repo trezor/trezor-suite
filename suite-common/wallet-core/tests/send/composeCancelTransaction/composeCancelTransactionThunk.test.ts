@@ -1,6 +1,6 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { PrecomposeResultFinal } from '@trezor/connect';
+import TrezorConnect, { CancelablePromise, PrecomposeResultFinal } from '@trezor/connect';
 
 import { chainedTxsFixture } from './chainedTransactions.fixture';
 import {
@@ -120,12 +120,12 @@ const createComposeTransactionMock = () =>
 
         // First `composeTransaction` call is just to get size of the transaction
         .mockImplementation(() =>
-            Promise.resolve({ success: true, payload: [createComposeTsResult()] }),
+            CancelablePromise.resolve({ success: true, payload: [createComposeTsResult()] }),
         )
 
         // Second `composeTransaction` call calculates the fee
         .mockImplementation(() =>
-            Promise.resolve({
+            CancelablePromise.resolve({
                 success: true,
                 // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
                 payload: [createComposeTsResult({ fee: '2930' })],

@@ -5,6 +5,7 @@ import { Static, TSchema, Type } from '@trezor/schema-utils';
 import { Err, Ok } from '@trezor/type-utils';
 
 import { DeviceState, DeviceUniquePath } from './device';
+import { CancelablePromise } from './utils';
 
 export interface DeviceIdentity {
     path?: DeviceUniquePath;
@@ -47,7 +48,7 @@ export interface OkWithDevice<T> extends Ok<T> {
     device?: DeviceIdentity;
 }
 
-export type Response<T> = Promise<OkWithDevice<T> | Err<SerializedError>>;
+export type Response<T> = CancelablePromise<OkWithDevice<T> | Err<SerializedError>>;
 
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {

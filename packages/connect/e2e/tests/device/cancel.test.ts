@@ -104,6 +104,69 @@ describe('TrezorConnect.cancel', () => {
         //   }
     });
 
+    it(`GetAddress - New cancel API`, async () => {
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: false,
+        });
+        await initTrezorConnect(controller);
+
+        TrezorConnect.removeAllListeners();
+        const getAddressCall = getAddress(true);
+        await new Promise<void>(resolve => {
+            TrezorConnect.on('button', event => {
+                if (event.code === 'ButtonRequest_Address') {
+                    resolve();
+                }
+            });
+        });
+
+        getAddressCall.cancel('Cancel reason');
+
+        const response = await getAddressCall;
+
+        expect(response).toMatchObject({
+            success: false,
+            error: {
+                message: 'Cancel reason',
+                code: 'Method_Cancel',
+            },
+        });
+    });
+
+    it(`GetAddress - AbortController API`, async () => {
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: false,
+        });
+        await initTrezorConnect(controller);
+
+        const abortController = new AbortController();
+
+        TrezorConnect.removeAllListeners();
+        const getAddressCall = getAddress(true);
+        getAddressCall.setAbortSignal(abortController.signal);
+
+        await new Promise<void>(resolve => {
+            TrezorConnect.on('button', event => {
+                if (event.code === 'ButtonRequest_Address') {
+                    resolve();
+                }
+            });
+        });
+        abortController.abort('Cancel reason');
+
+        const response = await getAddressCall;
+
+        expect(response).toMatchObject({
+            success: false,
+            error: {
+                message: 'Cancel reason',
+                code: 'Method_Cancel',
+            },
+        });
+    });
+
     it('Synchronous Cancel', async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',

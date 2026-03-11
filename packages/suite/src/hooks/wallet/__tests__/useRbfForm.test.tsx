@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ServerInfo } from '@trezor/blockchain-link-types';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { CancelablePromise } from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
@@ -195,7 +195,7 @@ describe('useRbfForm hook', () => {
             const signTransactionMock = jest
                 .spyOn(TrezorConnect, 'signTransaction')
                 .mockImplementation(() =>
-                    Promise.resolve({
+                    CancelablePromise.resolve({
                         success: false,
                         error: { message: 'error', code: 'Failure_UnknownCode' },
                     }),

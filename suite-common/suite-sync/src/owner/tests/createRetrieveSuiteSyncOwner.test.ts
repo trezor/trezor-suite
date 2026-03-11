@@ -5,7 +5,7 @@ import {
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { asDeviceUniquePath } from '@trezor/connect';
+import { CancelablePromise, asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
@@ -30,7 +30,7 @@ const owner1: SuiteSyncOwner = {
 
 const trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'] = {
     evoluGetNode: () =>
-        Promise.resolve({
+        CancelablePromise.resolve({
             payload: { data: 'evoluNodeData' },
             success: true,
         }),

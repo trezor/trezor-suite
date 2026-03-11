@@ -1,8 +1,9 @@
 import { Type } from '@trezor/schema-utils';
 
 import { UI_REQUEST } from './events';
-import type { CallMethod, CallMethodKeys } from './events/call';
+import type { CallMethod, CallMethodKeys, CallMethodPayload } from './events/call';
 import {
+    CancelablePromise,
     type Manifest,
     type TrezorConnect,
     TrezorConnectAccount,
@@ -72,16 +73,36 @@ export const factory = <
     init: InitType<SettingsType>;
     call: CallMethod;
 } & ExtraMethodsType => {
+    const wrappedCall = (params: CallMethodPayload) => {
+        const { method } = params;
+        const useEventListener = method?.toLowerCase()?.endsWith('getaddress')
+            ? eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0
+            : undefined;
+
+        const result = call({
+            ...params,
+            useEventListener,
+        }) as CancelablePromise<any>;
+        result.cancel = (reason?: string) => cancel(reason);
+        result.setAbortSignal = (signal: AbortSignal) => {
+            const handleAbort = () => {
+                cancel(signal.reason.toString());
+            };
+            signal.addEventListener('abort', handleAbort);
+
+            return () => signal.removeEventListener('abort', handleAbort);
+        };
+
+        return result;
+    };
+
     const callableMethods = Object.fromEntries(
         connectCallableMethods.map(method => [
             method,
             (params: any) =>
-                call({
+                wrappedCall({
                     ...params,
                     method,
-                    useEventListener: method.toLowerCase().endsWith('getaddress')
-                        ? eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0
-                        : undefined,
                 }),
         ]),
     ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
@@ -98,7 +119,7 @@ export const factory = <
 
         uiResponse,
 
-        call,
+        call: wrappedCall,
 
         dispose,
 
