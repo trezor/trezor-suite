@@ -17,7 +17,6 @@
             "dependsOn": [],
             "inputs": [
                 "^production",
-                "default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
@@ -33,7 +32,6 @@
             ],
             "inputs": [
                 "^production",
-                "default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
@@ -44,7 +42,6 @@
             "dependsOn": ["@suite-common/message-system:build:lib"],
             "inputs": [
                 "^production",
-                "default",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
             ],
