@@ -14,12 +14,12 @@ function getConnectExplorerUrl() {
     if (!baseUrl) {
         return 'http://localhost:8088/';
     }
-    const branchMatch = baseUrl.match(/suite-web\/(.*?)\/web/);
+    const branchMatch = baseUrl.match(/suite-web\/(.*?)\/web\/$/);
     if (!branchMatch) {
         throw new Error('Could not extract branch from BASE_URL');
     }
 
-    return getConnectExplorerUrlSldev(baseUrl.match(/suite-web\/(.*?)\/web/)?.[1]);
+    return getConnectExplorerUrlSldev(branchMatch[1]);
 }
 
 async function gotoConnectExplorer(page: Page, method: string) {
