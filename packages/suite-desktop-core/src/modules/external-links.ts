@@ -34,8 +34,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                     // TODO: Replace with in-app modal
                     const result = dialog.showMessageBoxSync(mainWindow, {
                         type: 'warning',
-                        message: 'You are leaving Trezor Suite',
-                        detail: `This link will be opened in your default browser, outside the protection of Tor. Verify the URL before continuing.\n\n${url}`,
+                        message: "You're leaving Trezor Suite",
+                        detail: `This link will open in your default browser, outside Tor protection. Verify the URL before continuing.\n\n${url}`,
                         buttons: ['Cancel', 'Continue'],
                     });
                     const cancel = result === 0;
