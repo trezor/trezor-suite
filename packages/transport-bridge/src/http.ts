@@ -327,7 +327,7 @@ export class TrezordNode {
 
                             return this.handleResponse(
                                 res,
-                                str({ error: result.error, message: result.message }),
+                                str({ error: result.error.code, message: result.error.message }),
                             );
                         }
                         res.statusCode = 200;
@@ -370,7 +370,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -393,7 +396,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -445,7 +451,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -475,7 +484,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -505,7 +517,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;

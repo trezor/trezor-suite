@@ -1,3 +1,4 @@
+import type { Ok } from '@trezor/type-utils';
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
 import { type TRANSPORT } from '../constants';
@@ -9,7 +10,6 @@ import type {
     DescriptorApiLevel,
     Logger,
     PathInternal,
-    Success,
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
 
@@ -146,7 +146,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     public nativeWriteChunking: boolean = false;
 
-    protected success<T>(payload: T): Success<T> {
+    protected success<T>(payload: T): Ok<T> {
         return success(payload);
     }
 

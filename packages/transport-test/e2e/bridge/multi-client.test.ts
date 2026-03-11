@@ -205,7 +205,7 @@ describe('bridge', () => {
             await expect(receive1res).resolves.toMatchObject({
                 success: false,
                 // todo: this error is expected, fix errors. also emu error is weird
-                error: errorCase1,
+                error: { code: errorCase1 },
             });
 
             if (!session2.success) {

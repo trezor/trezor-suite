@@ -309,11 +309,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
             const { type, message } = result.payload;
             logger.debug('Received', type, filterForLog(type, message));
         } else {
-            // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-            logger.warn('Received transport error', result.error, result.message);
+            // result.error.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
+            logger.warn('Received transport error', result.error.code, result.error.message);
         }
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success
+            ? success(result.payload)
+            : fail(result.error.message || result.error.code);
     }
 
     async send(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
@@ -328,7 +330,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
             ...options,
         });
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success
+            ? success(result.payload)
+            : fail(result.error.message || result.error.code);
     }
 
     async receive(options: AbortableOptions = {}) {
@@ -341,7 +345,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
             ...options,
         });
 
-        return result.success ? success(result.payload) : fail(result.message || result.error);
+        return result.success
+            ? success(result.payload)
+            : fail(result.error.message || result.error.code);
     }
 
     cancelCall() {

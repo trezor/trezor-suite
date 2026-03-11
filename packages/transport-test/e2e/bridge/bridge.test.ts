@@ -195,7 +195,7 @@ describe('bridge', () => {
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: `${Number.parseInt(session) + 1}` },
-            { success: false, error: 'wrong previous session' },
+            { success: false, error: { code: 'wrong previous session' } },
         ]);
         assertSuccess(results[0]);
         session = results[0].payload;
@@ -213,7 +213,7 @@ describe('bridge', () => {
 
             expect(results).toIncludeAllPartialMembers([
                 { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
+                { success: false, error: { code: 'other call in progress' } },
             ]);
         });
     }
@@ -225,7 +225,7 @@ describe('bridge', () => {
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-            { success: false, error: 'other call in progress' },
+            { success: false, error: { code: 'other call in progress' } },
         ]);
     });
 
@@ -291,13 +291,12 @@ describe('bridge', () => {
 
             expect(results[0]).toMatchObject({
                 success: false,
-                error: 'session not found',
-                message: undefined,
+                error: { code: 'session not found' },
             });
 
             expect([results[1], results[2]]).toIncludeAllPartialMembers([
                 { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
+                { success: false, error: { code: 'other call in progress' } },
             ]);
         });
     }

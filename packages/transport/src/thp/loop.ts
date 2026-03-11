@@ -101,11 +101,11 @@ export const thpLoop = async ({
                     THP_ACK_TIMEOUT,
                 );
                 if (!ackResult.success) {
-                    switch (ackResult.error) {
+                    switch (ackResult.error.code) {
                         case 'UnexpectedChunk':
                             break; // keep reading
                         case 'UnexpectedCRC':
-                            return thpStateError(ackResult.error);
+                            return thpStateError(ackResult.error.code);
                         case 'UnexpectedChannel':
                             break; // keep reading. TODO: try to close unknown channel
                         case 'UnexpectedRecentMessage':
@@ -173,11 +173,11 @@ export const thpLoop = async ({
 
                 const receiveResult = await receiveExpectedMessage(apiRead, thpState, signal);
                 if (!receiveResult.success) {
-                    switch (receiveResult.error) {
+                    switch (receiveResult.error.code) {
                         case 'UnexpectedChunk':
                             break; // keep reading
                         case 'UnexpectedCRC':
-                            return thpStateError(receiveResult.error);
+                            return thpStateError(receiveResult.error.code);
                         case 'UnexpectedChannel':
                             break; // keep reading. TODO: try to close unknown channel
                         case 'UnexpectedRecentMessage':
@@ -185,12 +185,12 @@ export const thpLoop = async ({
                                 phase = ThpLoopState.SEND_RECENT_ACK;
                                 break;
                             } else {
-                                return thpStateError(receiveResult.error);
+                                return thpStateError(receiveResult.error.code);
                             }
                         case 'Timeout': // NOTE: timeout should never happen here as receiveExpectedMessage doesn't use it
                         case 'UnexpectedMessage':
                         case 'UnexpectedRecvBit':
-                            return thpStateError(receiveResult.error);
+                            return thpStateError(receiveResult.error.code);
                         default:
                             return receiveResult;
                     }

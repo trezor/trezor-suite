@@ -34,7 +34,7 @@ export const initDebugLink = async () => {
 
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
-        throw new Error(enumerate.error);
+        throw new Error(enumerate.error.code);
     }
 };
 
@@ -45,7 +45,7 @@ const waitForDebugDevice = async () => {
         const enumerate = await debugTransport.enumerate();
         console.log('DebugLink enumerate attempt', attempt);
         if (!enumerate.success) {
-            throw new Error(enumerate.error);
+            throw new Error(enumerate.error.code);
         }
         if (enumerate.payload.length > 0) {
             device = enumerate.payload[0];
@@ -64,7 +64,7 @@ export const debugLinkState = async (uiEvent: UiRequestThpPairing['payload']) =>
     const input = { ...descriptor, previous: descriptor.session };
     const acquire = await debugTransport.acquire({ input });
     if (!acquire.success) {
-        throw new Error(acquire.error);
+        throw new Error(acquire.error.code);
     }
 
     const { channel } = uiEvent.device.thp;
@@ -97,14 +97,14 @@ export const debugLinkDecision = async () => {
 
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
-        throw new Error(enumerate.error);
+        throw new Error(enumerate.error.code);
     }
     const descriptor = enumerate.payload[0];
     const input = { ...descriptor, previous: descriptor.session };
 
     const acquire = await debugTransport.acquire({ input });
     if (!acquire.success) {
-        throw new Error(acquire.error);
+        throw new Error(acquire.error.code);
     }
 
     const session = acquire.payload;

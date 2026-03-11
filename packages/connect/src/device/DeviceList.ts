@@ -279,7 +279,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const enumerateResult = await transport.enumerate({ signal });
 
         if (!enumerateResult.success) {
-            throw new Error(enumerateResult.message || enumerateResult.error);
+            throw new Error(enumerateResult.error.message || enumerateResult.error.code);
         }
 
         const descriptors = enumerateResult.payload;

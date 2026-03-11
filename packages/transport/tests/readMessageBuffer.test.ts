@@ -10,11 +10,11 @@ describe('readMessageBuffer', () => {
         r.onMessage('1', Buffer.alloc(2).fill(2));
 
         let result = await r.read('1');
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0101');
 
         result = await r.read('1');
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0202');
     });
 
@@ -29,15 +29,15 @@ describe('readMessageBuffer', () => {
         r.onMessage('1', Buffer.alloc(2).fill(2));
 
         let result = await readPromise1;
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0101');
 
         result = await readPromise2;
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0101');
 
         result = await r.read('1');
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0202');
     });
 
@@ -52,11 +52,11 @@ describe('readMessageBuffer', () => {
 
         let result = await readPromise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toEqual(ABORTED_BY_SIGNAL);
+        expect(result.error.code).toEqual(ABORTED_BY_SIGNAL);
 
         r.onMessage('1', Buffer.alloc(2).fill(1));
         result = await r.read('1');
-        if (!result.success) throw new Error(result.error);
+        if (!result.success) throw new Error(result.error.code);
         expect(result.payload.toString('hex')).toEqual('0101');
     });
 
@@ -68,6 +68,6 @@ describe('readMessageBuffer', () => {
         const result = await readPromise;
 
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toEqual(INTERFACE_DATA_TRANSFER);
+        expect(result.error.code).toEqual(INTERFACE_DATA_TRANSFER);
     });
 });

@@ -11,6 +11,7 @@
 
 import { type TimerId } from '@trezor/type-utils';
 import { type Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
+import type { Ok } from '@trezor/type-utils';
 
 import type {
     AcquireDoneRequest,
@@ -24,7 +25,7 @@ import type {
     SessionsBackgroundInterface,
 } from './types';
 import * as ERRORS from '../errors';
-import type { Descriptor, PathInternal, Success } from '../types';
+import type { Descriptor, PathInternal } from '../types';
 import { PathPublic, Session } from '../types';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
@@ -294,17 +295,17 @@ export class SessionsBackground
         await this.waitForUnlocked(myIndex);
     }
 
-    private success<T>(payload: T): Success<T> {
+    private success<T>(payload: T): Ok<T> {
         return {
             success: true as const,
             payload,
         };
     }
 
-    private error<E>(error: E) {
+    private error<E extends string>(error: E) {
         return {
             success: false as const,
-            error,
+            error: { code: error } as const,
         };
     }
 

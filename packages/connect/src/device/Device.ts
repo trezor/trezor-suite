@@ -231,13 +231,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 if ((await sessionPromise) !== response.payload) {
                     return {
                         success: false,
-                        error: TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS,
+                        error: { code: TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS },
                     } as const;
                 }
             } catch {
                 return {
                     success: false,
-                    error: TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION,
+                    error: { code: TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION },
                 } as const;
             }
         }
@@ -264,7 +264,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
                     return result;
                 } else {
-                    throw new Error(result.error);
+                    throw new Error(result.error.code);
                 }
             })
             .finally(() => {

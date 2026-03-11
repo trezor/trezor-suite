@@ -5,25 +5,19 @@ import {
     type TransportProtocol,
     type thp as protocolThp,
 } from '@trezor/protocol';
+import { type Result } from '@trezor/type-utils';
 
 import type * as ERRORS from '../errors';
 
 export type AnyError = (typeof ERRORS)[keyof typeof ERRORS] | typeof PROTOCOL_MALFORMED;
 
-export interface Success<T> {
-    success: true;
-    payload: T;
-}
-
-type ErrorGeneric<ErrorType> = {
-    success: false;
-    error: ErrorType;
-    message?: string;
+export type TransportError<E extends string = AnyError> = {
+    readonly code: E;
+    readonly message?: string;
 };
 
-// Todo: consider using Result from `@trezor/type-utils`
-export type ResultWithTypedError<T, E> = Success<T> | ErrorGeneric<E>;
-export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<E>>;
+export type ResultWithTypedError<T, E extends string> = Result<T, TransportError<E>>;
+export type AsyncResultWithTypedError<T, E extends string> = Promise<Result<T, TransportError<E>>>;
 
 export type AbortableParam = { signal?: AbortSignal; timeout?: number };
 

@@ -80,10 +80,11 @@ describe('thp', () => {
             const result = await receiveThpMessage({
                 thpState,
                 apiRead: () => Promise.resolve({ success: true, payload: HANDSHAKE_COMP_RES }),
-                apiWrite: () => Promise.resolve({ success: false, error: 'unexpected error' }),
+                apiWrite: () =>
+                    Promise.resolve({ success: false, error: { code: 'unexpected error' } }),
             });
 
-            expect(result).toMatchObject({ success: false, error: 'unexpected error' });
+            expect(result).toMatchObject({ success: false, error: { code: 'unexpected error' } });
         });
 
         it('success', async () => {

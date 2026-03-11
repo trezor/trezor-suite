@@ -6,6 +6,7 @@ import {
     TypedEmitter,
     scheduleAction,
 } from '@trezor/utils';
+import type { Ok } from '@trezor/type-utils';
 
 import { type OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
@@ -21,7 +22,6 @@ import type {
     PathPublic,
     ResultWithTypedError,
     Session,
-    Success,
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
 
@@ -77,7 +77,14 @@ export type ReadWriteError =
     | typeof ERRORS.DEVICE_NOT_FOUND
     | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
     | typeof ERRORS.INTERFACE_DATA_TRANSFER
-    | typeof ERRORS.THP_STATE_ERROR;
+    | typeof ERRORS.THP_STATE_ERROR
+    | 'UnexpectedChunk'
+    | 'UnexpectedChannel'
+    | 'UnexpectedCRC'
+    | 'UnexpectedRecvBit'
+    | 'UnexpectedRecentMessage'
+    | 'UnexpectedMessage'
+    | 'Timeout';
 
 type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
@@ -389,7 +396,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         return loadDefinitions(this.messages, packageName, packageLoader);
     }
 
-    protected success<T>(payload: T): Success<T> {
+    protected success<T>(payload: T): Ok<T> {
         return success(payload);
     }
 

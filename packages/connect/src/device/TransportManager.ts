@@ -108,7 +108,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
         const result = await transport.init({ signal });
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest, signal);
-        else throw new Error(result.error);
+        else throw new Error(result.error.code);
     }
 
     private scheduleUpgradeCheck(pendingTransportEvent: boolean) {
