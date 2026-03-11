@@ -835,6 +835,17 @@ export const messages = {
                 title: 'Name changed!',
             },
         },
+        connection: {
+            title: 'Device connection',
+            description: 'Manage device connection settings',
+        },
+        autoConnect: {
+            title: 'Auto-connect',
+            description:
+                'Trezor will connect automatically without having to confirm every connection.',
+            successToast: 'Auto-connect turned on.',
+            errorToast: 'Auto-connect failed to turn on.',
+        },
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',
@@ -942,30 +953,6 @@ export const messages = {
             description:
                 'This removes your Trezor from the list of paired devices in Trezor Suite.',
             successMessage: 'Trezor has been unpaired.',
-        },
-        autoconnect: {
-            settingsCard: {
-                title: 'Auto-connect',
-                description: 'Toggle auto-connect settings',
-            },
-            screen: {
-                subtitle:
-                    'Trezor will connect automatically, so you don’t need to approve each connection.',
-            },
-            enable: {
-                pictogramTitle: 'Auto-connect turned on',
-                description:
-                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
-                turnOffButton: 'Turn off',
-                error: 'Auto-connect failed to turn on.',
-                successToast: 'Auto-connect turned on',
-            },
-            disable: {
-                pictogramTitle: 'Auto-connect turned off',
-                description:
-                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
-                turnOnButton: 'Turn on',
-            },
         },
         firmware: {
             title: 'Firmware',

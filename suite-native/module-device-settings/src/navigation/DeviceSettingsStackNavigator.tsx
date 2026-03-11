@@ -20,7 +20,7 @@ import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
 import { BackupAndPassphraseScreen } from '../screens/BackupAndPassphraseScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
-import { DeviceAutoConnectScreen } from '../screens/DeviceAutoConnectScreen';
+import { DeviceConnectionScreen } from '../screens/DeviceConnectionScreen';
 import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
 import { DeviceSettingsScreen } from '../screens/DeviceSettingsScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
@@ -43,8 +43,8 @@ export const DeviceSettingsStackNavigator = () => (
             component={DeviceFirmwareScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.DeviceAutoConnect}
-            component={DeviceAutoConnectScreen}
+            name={DeviceSettingsStackRoutes.DeviceConnection}
+            component={DeviceConnectionScreen}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.UnpairBluetoothDevice}

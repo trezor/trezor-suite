@@ -252,7 +252,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.FirmwareLanguageStack]: {
         language: Locale;
     };
-    [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
+    [DeviceSettingsStackRoutes.DeviceConnection]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;

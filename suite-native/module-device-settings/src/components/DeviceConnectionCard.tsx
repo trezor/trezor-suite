@@ -13,21 +13,19 @@ type NavigationProp = StackNavigationProps<
     DeviceSettingsStackRoutes.DeviceSettings
 >;
 
-export const DeviceAutoConnectCard = () => {
+export const DeviceConnectionCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const onPress = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceAutoConnect);
+    const navigateToDeviceConnection = () => {
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceConnection);
     };
 
     return (
         <CompactCardWithIconLayout
-            icon="trezorSafe5"
-            title={<Translation id="moduleDeviceSettings.autoconnect.settingsCard.title" />}
-            subtitle={
-                <Translation id="moduleDeviceSettings.autoconnect.settingsCard.description" />
-            }
-            onPress={onPress}
+            icon="plugs"
+            title={<Translation id="moduleDeviceSettings.connection.title" />}
+            subtitle={<Translation id="moduleDeviceSettings.connection.description" />}
+            onPress={navigateToDeviceConnection}
         />
     );
 };
