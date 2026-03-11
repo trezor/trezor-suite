@@ -17,7 +17,7 @@ export const DEFAULT_ACCOUNT_SIZE_QUOTA = Math.round(DEFAULT_DEVICE_SIZE_QUOTA /
 export const DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA = DEFAULT_ACCOUNT_SIZE_QUOTA;
 
 export const DEFAULT_QUOTA_MANAGER_URL = isDevEnv
-    ? 'https://suite-sync.suite.sldev.cz/quota-manager/'
+    ? 'https://suite-sync-dev.suite.sldev.cz/quota-manager/'
     : 'https://suite-sync.trezor.io/quota-manager/';
 
 /**
