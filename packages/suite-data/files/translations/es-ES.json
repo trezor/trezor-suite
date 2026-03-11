@@ -1140,7 +1140,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Puerto externo de Tor",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Usa el demonio Tor que se ejecuta en un proceso externo en vez del que incluye Trezor Suite.",
   "TR_EXPERIMENTAL_TRON_VIEW_ONLY": "Tron Solo Lectura (Beta)",
-  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Habilita la red Tron. Se necesita el último firmware. Puedes recibir fondos, revisar tu saldo, ver tokens, gráficas y el historial de transacciones (puede contener bugs). Soporte completo próximamente (o a través de billeteras de terceros).",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Habilita la red Tron con el firmware más reciente para consultar tu saldo y ver tokens, gráficos e historial de transacciones (puede contener errores). Ten en cuenta que aún no se admite el envío de fondos desde el monedero. El soporte completo llegará pronto.",
   "TR_EXPLORER": "Explorador",
   "TR_EXPLORER_ADDRESS": "Dirección",
   "TR_EXPLORER_BASE_URL": "URL raíz",

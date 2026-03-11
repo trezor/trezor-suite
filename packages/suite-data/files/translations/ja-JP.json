@@ -1140,7 +1140,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor 外部ポート",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Trezor Suiteにバンドルされているものではなく、外部のプロセスで実行中のTorデーモンを使用します。",
   "TR_EXPERIMENTAL_TRON_VIEW_ONLY": "Tron 閲覧専用（ベータ版）",
-  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Tron ネットワークを有効にします。最新のファームウェアが必要です。資金の受け取り、残高の確認、トークン、チャート、トランザクション履歴の閲覧が可能です（バグが含まれている可能性があります）。近日中に完全サポートを予定しています（またはサードパーティのウォレット経由でもご利用いただけます）。",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "最新のファームウェアで Tron ネットワークを有効にすると、残高の確認、トークン、チャート、取引履歴の表示が可能になります（バグが含まれる可能性があります）。ウォレットからの送金はまだサポートされていないことにご注意ください。完全なサポートは近日中に提供予定です。",
   "TR_EXPLORER": "エクスプローラー",
   "TR_EXPLORER_ADDRESS": "アドレス",
   "TR_EXPLORER_BASE_URL": "ルート URL",

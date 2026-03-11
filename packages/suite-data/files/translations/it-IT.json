@@ -949,6 +949,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Connettiti al daemon Tor in esecuzione sulla porta 9050, invece di utilizzare quello in dotazione con Trezor Suite.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Porta esterna Tor",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Esegui il daemon Tor in un processo esterno, invece di utilizzare quello in dotazione con Trezor Suite.",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Abilita la rete Tron con l'ultimo firmware per controllare il tuo saldo e visualizzare token, grafici e cronologia delle transazioni (potrebbe contenere bug). Tieni presente che l'invio di fondi dal portafoglio non è ancora supportato. Il supporto completo arriverà presto.",
   "TR_EXPLORER": "Esplora risorse",
   "TR_EXPLORER_ADDRESS": "Indirizzo",
   "TR_EXPLORER_BASE_URL": "URL di base",
