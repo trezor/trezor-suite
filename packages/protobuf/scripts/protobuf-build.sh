@@ -39,7 +39,7 @@ cd ..
 
 cd "$SCRIPTS_PATH"
 
-yarn g:tsx ./protobuf-definitions.ts "$REPO_PATH/common/protob" --skip=webauthn,thp,benchmark,nostr,nem
+yarn g:tsx ./protobuf-definitions.ts "$REPO_PATH/common/protob" --skip=webauthn,thp,benchmark,nem
 yarn g:tsx ./protobuf-types.ts
 
 yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 

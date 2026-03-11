@@ -2147,6 +2147,34 @@ export type DebugMoneroDiagAck = {
     data2?: string;
 };
 
+export type NostrGetPubkey = {
+    address_n: number[];
+};
+
+export type NostrPubkey = {
+    pubkey: string;
+};
+
+export type NostrTag = {
+    key: string;
+    value?: string;
+    extra: string[];
+};
+
+export type NostrSignEvent = {
+    address_n: number[];
+    created_at: number;
+    kind: number;
+    tags: NostrTag[];
+    content: string;
+};
+
+export type NostrEventSignature = {
+    pubkey: string;
+    id: string;
+    signature: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2890,6 +2918,11 @@ export type MessageType = {
     MoneroLiveRefreshFinalAck: MoneroLiveRefreshFinalAck;
     DebugMoneroDiagRequest: DebugMoneroDiagRequest;
     DebugMoneroDiagAck: DebugMoneroDiagAck;
+    NostrGetPubkey: NostrGetPubkey;
+    NostrPubkey: NostrPubkey;
+    NostrTag: NostrTag;
+    NostrSignEvent: NostrSignEvent;
+    NostrEventSignature: NostrEventSignature;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;

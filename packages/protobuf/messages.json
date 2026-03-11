@@ -6256,6 +6256,96 @@
                 }
             }
         },
+        "NostrGetPubkey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                }
+            }
+        },
+        "NostrPubkey": {
+            "fields": {
+                "pubkey": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "NostrTag": {
+            "fields": {
+                "key": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "value": {
+                    "type": "string",
+                    "id": 2
+                },
+                "extra": {
+                    "rule": "repeated",
+                    "type": "string",
+                    "id": 3
+                }
+            }
+        },
+        "NostrSignEvent": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "created_at": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
+                },
+                "kind": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 3
+                },
+                "tags": {
+                    "rule": "repeated",
+                    "type": "NostrTag",
+                    "id": 4
+                },
+                "content": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 5
+                }
+            }
+        },
+        "NostrEventSignature": {
+            "fields": {
+                "pubkey": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "id": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -7968,6 +8058,10 @@
                 "SolanaAddress": 903,
                 "SolanaSignTx": 904,
                 "SolanaTxSignature": 905,
+                "NostrGetPubkey": 2001,
+                "NostrPubkey": 2002,
+                "NostrSignEvent": 2003,
+                "NostrEventSignature": 2004,
                 "EvoluGetNode": 2100,
                 "EvoluNode": 2101,
                 "EvoluSignRegistrationRequest": 2102,

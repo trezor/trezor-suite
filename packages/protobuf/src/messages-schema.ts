@@ -3328,6 +3328,54 @@ export const DebugMoneroDiagAck = Type.Object(
     { $id: 'DebugMoneroDiagAck' },
 );
 
+export type NostrGetPubkey = Static<typeof NostrGetPubkey>;
+export const NostrGetPubkey = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+    },
+    { $id: 'NostrGetPubkey' },
+);
+
+export type NostrPubkey = Static<typeof NostrPubkey>;
+export const NostrPubkey = Type.Object(
+    {
+        pubkey: Type.String(),
+    },
+    { $id: 'NostrPubkey' },
+);
+
+export type NostrTag = Static<typeof NostrTag>;
+export const NostrTag = Type.Object(
+    {
+        key: Type.String(),
+        value: Type.Optional(Type.String()),
+        extra: Type.Array(Type.String()),
+    },
+    { $id: 'NostrTag' },
+);
+
+export type NostrSignEvent = Static<typeof NostrSignEvent>;
+export const NostrSignEvent = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        created_at: Type.Number(),
+        kind: Type.Number(),
+        tags: Type.Array(NostrTag),
+        content: Type.String(),
+    },
+    { $id: 'NostrSignEvent' },
+);
+
+export type NostrEventSignature = Static<typeof NostrEventSignature>;
+export const NostrEventSignature = Type.Object(
+    {
+        pubkey: Type.String(),
+        id: Type.String(),
+        signature: Type.String(),
+    },
+    { $id: 'NostrEventSignature' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -4343,6 +4391,11 @@ export const MessageType = Type.Object(
         MoneroLiveRefreshFinalAck,
         DebugMoneroDiagRequest,
         DebugMoneroDiagAck,
+        NostrGetPubkey,
+        NostrPubkey,
+        NostrTag,
+        NostrSignEvent,
+        NostrEventSignature,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
