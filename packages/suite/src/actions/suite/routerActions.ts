@@ -9,6 +9,8 @@ import {
     RouterAppWithParams,
     RouterPathOptional,
     SettingsBackRoute,
+    anchorChange,
+    routerLocationChange,
     selectRouter,
     selectRouterApp,
     selectRouterHash,
@@ -23,20 +25,19 @@ import {
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { Dispatch, GetState } from 'src/types/suite';
 
 export type RouterAction =
     | {
-          type: typeof ROUTER.LOCATION_CHANGE;
+          type: typeof routerLocationChange.type;
           payload: RouterPathOptional & {
               anchor?: AnchorType;
               settingsBackRoute?: SettingsBackRoute;
           } & RouterAppWithParams;
       }
     | {
-          type: typeof ROUTER.ANCHOR_CHANGE;
+          type: typeof anchorChange.type;
           payload: AnchorType | undefined;
       };
 
@@ -69,15 +70,12 @@ export const onLocationChange =
         // TODO: check if the view is not locked by the device request
         const appWithParams = getAppWithParams(location);
 
-        return dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: { ...location, ...appWithParams },
-        });
+        return dispatch(routerLocationChange({ ...location, ...appWithParams }));
     };
 
 // if anchor param is not set, it works as reset
 export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _getState: GetState) =>
-    dispatch({ type: ROUTER.ANCHOR_CHANGE, payload: anchor });
+    dispatch(anchorChange(anchor));
 
 /**
  * Dispatch initial url

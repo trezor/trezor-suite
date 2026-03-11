@@ -4,6 +4,7 @@ import { LocksState, locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 
+import { appChanged } from 'src/actions/suite/suiteActions';
 import { AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { createSuiteRouterHistory } from 'src/support/extraDependencies';
@@ -14,6 +15,9 @@ import * as routerActions from '../routerActions';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+type InitialRouterState = Partial<Omit<RouterState, 'route'>> & {
+    route?: Partial<NonNullable<RouterState['route']>>;
+};
 
 const defaultLocation = {
     pathname: '/',
@@ -25,7 +29,7 @@ const defaultLocation = {
 
 interface InitialState {
     suite?: Partial<SuiteState>;
-    router?: Exclude<RouterState, 'app|url|pathname'>;
+    router?: InitialRouterState;
     locks?: Partial<LocksState>;
 }
 
@@ -39,14 +43,14 @@ const getInitialState = (
 
     return {
         suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
+            ...suiteReducer(undefined, appChanged('unknown')),
             ...suite,
         },
         router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
+            ...routerReducer(undefined, appChanged('unknown')),
             ...router,
-        },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
+        } as RouterState,
+        modal: modalReducer(undefined, appChanged('unknown')),
         analytics: {
             confirmed: false,
         },
@@ -66,6 +70,10 @@ const initStore = (state: State) => {
     })(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
+        if (!action) {
+            return;
+        }
+
         const { suite, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router, action);
@@ -122,7 +130,11 @@ describe('Suite Actions', () => {
             suiteRouterHistory.navigate({ ...defaultLocation, hash: `#${f.hash}` });
             store.dispatch(routerActions.onLocationChange(suiteRouterHistory.getLocation()));
 
-            store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
+            store.dispatch(
+                routerActions.goto(f.url as Parameters<typeof routerActions.goto>[0], {
+                    preserveParams: f.preserveHash,
+                }),
+            );
             if (f.result) {
                 expect(
                     suiteRouterHistory.getLocation().pathname +
@@ -143,7 +155,6 @@ describe('Suite Actions', () => {
     });
 
     it('closeModalApp', () => {
-        // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const { store, suiteRouterHistory } = initStore(state);
         suiteRouterHistory.navigate({

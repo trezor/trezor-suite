@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
+import { routerLocationChange } from '@suite/router';
 import { fetchCountryCodeThunk } from '@suite-common/geolocation';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { shouldFetchCountryCode } from 'src/utils/suite/geolocation';
 
@@ -10,7 +10,7 @@ const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     const { router, geolocation } = api.getState();
 
     switch (action.type) {
-        case ROUTER.LOCATION_CHANGE: {
+        case routerLocationChange.type: {
             // Fetch country code only when entering trading or staking routes
             if (
                 geolocation.countryCode == null &&
