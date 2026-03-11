@@ -74,7 +74,6 @@ export type SuiteAction =
           type: typeof SUITE.EVM_CLOSE_EXPLANATION_BANNER;
           symbol: keyof EvmSettings['explanationBannerClosed'];
       }
-    | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.SET_THEME;
           variant: AppState['suite']['settings']['theme']['variant'];
@@ -104,10 +103,6 @@ export type SuiteAction =
           payload: { isCoinsFilterVisible: boolean };
       }
     | SetSendFormPrefillAction;
-
-export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
-    payload,
-}));
 
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,

@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
@@ -36,6 +36,10 @@ type LocationChangePayload = RouterPathOptional & {
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
 
+export const appChanged = createAction('@suite/app-changed', (payload: RouterAppWithParams['app']) => ({
+    payload,
+}));
+
 const initialState: RouterState = {
     loaded: false,
     pathname: '/',
@@ -67,7 +71,8 @@ export const routerReducer = routerSlice.reducer;
 export const { routerLocationChange, anchorChange } = routerSlice.actions;
 export type RouterAction =
     | ReturnType<typeof routerLocationChange>
-    | ReturnType<typeof anchorChange>;
+    | ReturnType<typeof anchorChange>
+    | ReturnType<typeof appChanged>;
 
 export const selectRouter = (state: RouterRootState) => state.router;
 export const selectRouterLoaded = (state: RouterRootState) => state.router.loaded;

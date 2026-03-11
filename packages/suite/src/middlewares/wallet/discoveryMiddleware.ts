@@ -1,4 +1,5 @@
 import { selectIsDeviceLocked } from '@suite/locks';
+import { appChanged } from '@suite/router';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -63,7 +64,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             becomesAcquired ||
             becomesConnected ||
             isTHPAutoconnectFinished ||
-            action.type === SUITE.APP_CHANGED ||
+            action.type === appChanged.type ||
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             changeNetworks.match(action) ||

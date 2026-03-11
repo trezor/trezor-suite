@@ -1,12 +1,11 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { getRoute, routerLocationChange, routerReducer } from '@suite/router';
+import { appChanged, getRoute, routerLocationChange, routerReducer } from '@suite/router';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { appChanged } from 'src/actions/suite/suiteActions';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
