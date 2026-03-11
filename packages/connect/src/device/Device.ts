@@ -25,12 +25,12 @@ import { FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
+import { changeLanguage } from './workflow/changeLanguage';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
-    getLanguage,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
 import {
@@ -583,7 +583,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             _log.info('language version mismatch. silently updating...');
 
             try {
-                await this.changeLanguage({ language: this.features.language });
+                await changeLanguage({ device: this, language: this.features.language });
             } catch (err) {
                 _log.error('change language failed silently', err);
             }
@@ -740,86 +740,6 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             ...this.authenticityChecks,
             firmwareRevision: result,
         };
-    }
-
-    async changeLanguage({
-        language,
-        binary,
-    }: { language?: undefined; binary: ArrayBuffer } | { language: string; binary?: undefined }) {
-        if (language === 'en-US') {
-            return this._uploadTranslationData(null);
-        }
-
-        if (binary) {
-            return this._uploadTranslationData(binary);
-        }
-
-        const version = this.getVersion();
-        if (!version) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: device version unknown');
-        }
-
-        if (!this.firmwareType) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: firmware type unknown');
-        }
-
-        if (!this._currentRelease) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: release not found');
-        }
-        const languageBinPath = this._currentRelease.translations[language];
-        const downloadedBinary = await getLanguage(languageBinPath);
-
-        if (!downloadedBinary) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: translation not found');
-        }
-
-        // This is mostly to satisfy Types, since `downloadedBinary` could be ArrayBuffer or Buffer<ArrayBufferLike>
-        // but `_uploadTranslationData` takes only ArrayBuffer or null.
-        let dataToSend: ArrayBuffer;
-        if (Buffer.isBuffer(downloadedBinary)) {
-            // Creates a "copy" if given a Buffer/Uint8Array in order to guarantee dataToSend is ArrayBuffer.
-            dataToSend = new Uint8Array(downloadedBinary).buffer;
-        } else {
-            dataToSend = downloadedBinary;
-        }
-
-        return this._uploadTranslationData(dataToSend);
-    }
-
-    private async _uploadTranslationData(payload: ArrayBuffer | null) {
-        if (payload === null) {
-            const response = await this.getCurrentSession().typedCall(
-                'ChangeLanguage',
-                ['Success'],
-                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
-            );
-
-            return response.message;
-        }
-
-        const length = payload.byteLength;
-
-        let response = await this.getCurrentSession().typedCall(
-            'ChangeLanguage',
-            ['DataChunkRequest', 'Success'],
-            { data_length: length },
-        );
-
-        while (response.type !== 'Success') {
-            const start = response.message.data_offset!;
-            const end = response.message.data_offset! + response.message.data_length!;
-            const chunk = payload.slice(start, end);
-
-            response = await this.getCurrentSession().typedCall(
-                'DataChunkAck',
-                ['DataChunkRequest', 'Success'],
-                {
-                    data_chunk: Buffer.from(chunk).toString('hex'),
-                },
-            );
-        }
-
-        return response.message;
     }
 
     private async _updateCurrentRelease(feat: Features) {
