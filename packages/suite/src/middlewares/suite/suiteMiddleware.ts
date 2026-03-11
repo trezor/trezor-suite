@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { METADATA } from '@suite/metadata';
 import { recoveryActions } from '@suite/recovery';
-import { appChanged } from '@suite/router';
+import { routerAppChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -48,7 +48,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
         if (
-            action.type === appChanged.type &&
+            action.type === routerAppChanged.type &&
             (action.payload === 'recovery' || action.payload === 'onboarding')
         ) {
             dispatch(recoveryActions.resetReducer());

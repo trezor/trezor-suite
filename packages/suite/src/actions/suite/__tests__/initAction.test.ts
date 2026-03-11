@@ -5,7 +5,7 @@ import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
-import { appChanged, routerLocationChange, routerReducer } from '@suite/router';
+import { routerAppChanged, routerLocationChange, routerReducer } from '@suite/router';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -61,7 +61,7 @@ global.fetch = jest.fn().mockImplementation(() =>
     }),
 );
 
-const EMPTY_ACTION = appChanged('unknown');
+const EMPTY_ACTION = routerAppChanged('unknown');
 
 const getInitialState = (initialRun?: boolean) => {
     const initialSuiteState = suiteReducer(undefined, EMPTY_ACTION);
@@ -119,7 +119,7 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirection.pending.type,
-            appChanged.type,
+            routerAppChanged.type,
             routerLocationChange.type,
             lockRouter.type,
             connectInitThunk.pending.type,
@@ -195,7 +195,7 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
-            appChanged.type,
+            routerAppChanged.type,
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
@@ -277,7 +277,7 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirection.pending.type,
-            appChanged.type,
+            routerAppChanged.type,
             routerLocationChange.type,
             lockRouter.type,
             connectInitThunk.pending.type,

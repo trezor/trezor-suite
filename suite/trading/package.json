@@ -11,13 +11,16 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.1.0",
+        "redux": "^5.0.1",
         "styled-components": "^6.3.9"
     }
 }

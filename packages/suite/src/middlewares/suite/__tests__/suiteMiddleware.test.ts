@@ -1,7 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { appChanged, getRoute, routerLocationChange, routerReducer } from '@suite/router';
+import { getRoute, routerAppChanged, routerLocationChange, routerReducer } from '@suite/router';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
@@ -30,7 +30,7 @@ const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
-const EMPTY_ACTION = appChanged('unknown');
+const EMPTY_ACTION = routerAppChanged('unknown');
 
 const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {
@@ -108,7 +108,7 @@ describe('suite middleware', () => {
             };
             store.dispatch(routerLocationChange(payload));
             expect(store.getActions()).toEqual([
-                { type: appChanged.type, payload: 'dashboard' },
+                { type: routerAppChanged.type, payload: 'dashboard' },
                 routerLocationChange(payload),
             ]);
         });

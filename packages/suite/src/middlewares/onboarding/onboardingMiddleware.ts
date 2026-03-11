@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
-import { appChanged } from '@suite/router';
+import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 
@@ -30,7 +30,7 @@ const onboardingMiddleware =
             next(action);
         }
 
-        if (action.type === appChanged.type) {
+        if (action.type === routerAppChanged.type) {
             // here middleware detects that onboarding app is loaded, do following:
             //  1. make reducer to accept actions (enableReducer) and apply changes
             if (action.payload === 'onboarding') {

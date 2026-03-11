@@ -14,7 +14,6 @@ export const ONLINE_STATUS = '@suite/online-status';
 export const TOR_STATUS = '@suite/tor-status';
 export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';
 export const ONION_LINKS = '@suite/onion-links';
-export const APP_CHANGED = '@suite/app-changed';
 export const SET_THEME = '@suite/set-theme';
 export const SET_SEND_FORM_PREFILL = '@suite/set-send-form-prefill';
 export const SET_TRANSACTION_HISTORY_PREFILL = '@suite/set-transaction-history-prefill';

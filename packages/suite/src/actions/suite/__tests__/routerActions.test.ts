@@ -2,7 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { LocksState, locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { appChanged, routerReducer } from '@suite/router';
+import { routerAppChanged, routerReducer } from '@suite/router';
 
 import { AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -42,14 +42,14 @@ const getInitialState = (
 
     return {
         suite: {
-            ...suiteReducer(undefined, appChanged('unknown')),
+            ...suiteReducer(undefined, routerAppChanged('unknown')),
             ...suite,
         },
         router: {
-            ...routerReducer(undefined, appChanged('unknown')),
+            ...routerReducer(undefined, routerAppChanged('unknown')),
             ...router,
         } as RouterState,
-        modal: modalReducer(undefined, appChanged('unknown')),
+        modal: modalReducer(undefined, routerAppChanged('unknown')),
         analytics: {
             confirmed: false,
         },

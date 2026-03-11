@@ -8,6 +8,8 @@
     },
     "include": ["src/**/*", "styled.d.ts"],
     "references": [
+        { "path": "../../suite-common/geolocation" },
+        { "path": "../../suite/router" },
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/trading" },
         { "path": "../intl" },

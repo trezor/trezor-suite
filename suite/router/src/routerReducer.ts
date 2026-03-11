@@ -36,9 +36,12 @@ type LocationChangePayload = RouterPathOptional & {
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
 
-export const appChanged = createAction('@suite/app-changed', (payload: RouterAppWithParams['app']) => ({
-    payload,
-}));
+export const routerAppChanged = createAction(
+    '@router/appChanged',
+    (payload: RouterAppWithParams['app']) => ({
+        payload,
+    }),
+);
 
 const initialState: RouterState = {
     loaded: false,
@@ -72,7 +75,7 @@ export const { routerLocationChange, anchorChange } = routerSlice.actions;
 export type RouterAction =
     | ReturnType<typeof routerLocationChange>
     | ReturnType<typeof anchorChange>
-    | ReturnType<typeof appChanged>;
+    | ReturnType<typeof routerAppChanged>;
 
 export const selectRouter = (state: RouterRootState) => state.router;
 export const selectRouterLoaded = (state: RouterRootState) => state.router.loaded;

@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { appChanged } from '@suite/router';
+import { routerAppChanged } from '@suite/router';
 
 import * as backupActions from 'src/actions/backup/backupActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
@@ -13,7 +13,7 @@ const backup =
         // pass action
         next(action);
 
-        if (action.type === appChanged.type && ['backup', 'onboarding'].includes(prevApp)) {
+        if (action.type === routerAppChanged.type && ['backup', 'onboarding'].includes(prevApp)) {
             api.dispatch(backupActions.resetReducer());
         }
 
