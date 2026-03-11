@@ -28,8 +28,7 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -45,8 +44,7 @@
         "@solana/rpc-types": "^2.3.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

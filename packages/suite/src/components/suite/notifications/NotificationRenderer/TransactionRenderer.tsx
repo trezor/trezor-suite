@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { getTxAnchor, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -18,15 +20,12 @@ import {
 import { Row } from '@trezor/components';
 import { TransactionNotification } from '@trezor/product-components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { getTxAnchor } from 'src/utils/suite/anchor';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<

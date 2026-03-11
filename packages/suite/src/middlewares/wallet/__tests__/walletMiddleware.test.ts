@@ -1,3 +1,4 @@
+import { RouterState } from '@suite/router';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
 import {
     SendState,
@@ -7,7 +8,6 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
-import { RouterState } from 'src/reducers/suite/routerReducer';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
 import selectedAccountReducer, {

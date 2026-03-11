@@ -7,6 +7,7 @@ import {
     UNQUARANTINE_FAILURE_RATE,
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
+import { listAllQuarantinedTests } from './list';
 import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
 import { buildSlackSummary, sendSlackNotification } from './slack';
 import type { SlackEvent } from './types';
@@ -14,6 +15,45 @@ import { wipeAllAutoQuarantineActions } from './wipe';
 
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
+
+    if (args.includes('--help') || args.includes('-h')) {
+        console.log(
+            [
+                'Usage: yarn workspace @trezor/e2e-utils test-health [options]',
+                '',
+                'Options:',
+                '  (no args)                  Run the test health check: quarantine newly failing tests and',
+                '                             unquarantine tests that have recovered.',
+                '',
+                '  --list                     List all currently quarantined tests for every monitored project.',
+                '                             Outputs a JSON report to stdout; progress messages go to stderr.',
+                '                             Combine with --project to narrow to a single project.',
+                '',
+                '  --list --project <name>    Same as --list but limited to the specified project.',
+                `                             Known project names: ${PROJECTS.map(p => p.name).join(', ')}.`,
+                '',
+                '  --wipeAutoQuarantine       Delete ALL auto-quarantine actions (those created by this bot)',
+                '                             across every monitored project. Use with caution.',
+                '',
+                '  --help, -h                 Show this help message and exit.',
+                '',
+                'Environment variables:',
+                '  CURRENTS_API_KEY                          (required) API key for the Currents.dev API.',
+                '  E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK     (optional) Slack incoming-webhook URL for',
+                '                                            quarantine/unquarantine notifications.',
+            ].join('\n'),
+        );
+
+        return;
+    }
+
+    if (args.includes('--list')) {
+        const projectFlagIndex = args.indexOf('--project');
+        const projectNameFilter = projectFlagIndex !== -1 ? args[projectFlagIndex + 1] : undefined;
+        await listAllQuarantinedTests(projectNameFilter);
+
+        return;
+    }
 
     if (args.includes('--wipeAutoQuarantine')) {
         await wipeAllAutoQuarantineActions();

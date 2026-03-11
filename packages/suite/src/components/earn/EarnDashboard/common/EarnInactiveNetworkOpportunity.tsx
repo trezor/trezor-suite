@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Paragraph, Table } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 

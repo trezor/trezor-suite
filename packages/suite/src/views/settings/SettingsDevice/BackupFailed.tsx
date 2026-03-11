@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const BackupFailed = () => (
     <SettingsSectionItem anchorId={SettingsAnchor.BackupFailed}>

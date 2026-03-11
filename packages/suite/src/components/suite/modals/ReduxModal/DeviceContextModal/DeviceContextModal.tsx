@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl';
 
 import { messages } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -22,7 +22,7 @@ import { TransactionReviewModal } from '../TransactionReviewModal/TransactionRev
 export const DeviceContextModal = ({
     windowType,
     data,
-}: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
+}: ReduxModalProps<typeof MODAL_CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
     const intl = useIntl();
     const selectedAccount = useSelector(selectSelectedAccount);

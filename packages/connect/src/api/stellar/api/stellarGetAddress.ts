@@ -92,7 +92,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
     }
 
     async _call({ address_n, show_display, chunkify }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('StellarGetAddress', 'StellarAddress', {
             address_n,
             show_display,

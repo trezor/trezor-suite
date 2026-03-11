@@ -9,13 +9,13 @@ import {
 import { Account, TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getApyPercent, getApyRate } from '../../../utils/earnApyUtils';
+import { getApyPercent } from '../../../utils/earnApyUtils';
 import {
     compareYieldRowsByAvailableBalanceDesc,
     compareYieldRowsBySuppliedAmountDesc,
     getYieldAddressKey,
 } from '../../utils/earnYieldUtils';
-import { type YieldAccountOpportunity, type YieldNetworkNotActivated } from '../types';
+import { type YieldAccountOpportunity, type YieldInactiveVaultOpportunity } from '../types';
 
 const getMatchedTokenForVault = (
     account: Account,
@@ -60,12 +60,7 @@ export const useYieldTableData = ({
         const allOpportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
 
-            if (!network) {
-                return [];
-            }
-            const isNetworkActivated = visibleAccountSymbols.has(network.symbol);
-
-            if (!isNetworkActivated) {
+            if (!network || !visibleAccountSymbols.has(network.symbol)) {
                 return [];
             }
 
@@ -99,7 +94,7 @@ export const useYieldTableData = ({
 
         const activeOpportunities: YieldAccountOpportunity[] = [];
         const supplyableOpportunities: YieldAccountOpportunity[] = [];
-        const opportunitiesWithoutSupplyableBalance: YieldAccountOpportunity[] = [];
+        const buyOnlyOpportunities: YieldAccountOpportunity[] = [];
 
         allOpportunities.forEach(opportunity => {
             const hasSuppliedBalance = new BigNumber(opportunity.suppliedAmount).gt(0);
@@ -118,15 +113,13 @@ export const useYieldTableData = ({
                 return;
             }
 
-            opportunitiesWithoutSupplyableBalance.push(opportunity);
+            buyOnlyOpportunities.push(opportunity);
         });
 
         return [
             ...activeOpportunities.toSorted(compareYieldRowsBySuppliedAmountDesc),
             ...supplyableOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
-            ...opportunitiesWithoutSupplyableBalance.toSorted(
-                compareYieldRowsByAvailableBalanceDesc,
-            ),
+            ...buyOnlyOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
         ];
     }, [
         availableVaults,
@@ -135,39 +128,32 @@ export const useYieldTableData = ({
         visibleAccountSymbols,
     ]);
 
-    const yieldNetworksNotActivated = useMemo<YieldNetworkNotActivated[]>(() => {
-        const networkRowsBySymbol = availableVaults.reduce((map, vault) => {
+    const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
+        const opportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
 
             if (!network) {
-                return map;
+                return [];
             }
 
             const isNetworkActivated = visibleAccountSymbols.has(network.symbol);
             const isNetworkSupported = deviceSupportedNetworkSymbols.includes(network.symbol);
 
             if (isNetworkActivated || !isNetworkSupported) {
-                return map;
+                return [];
             }
 
-            const currentApyRate = getApyRate(vault.rewardRate.total);
-            const currentNetworkRow = map.get(network.symbol);
-
-            if (!currentNetworkRow || currentApyRate > currentNetworkRow.apyRate) {
-                map.set(network.symbol, {
-                    symbol: network.symbol,
+            return [
+                {
+                    key: `${vault.id}:${network.symbol}:inactive`,
+                    networkSymbol: network.symbol,
+                    vault,
                     apyPercentage: getApyPercent(vault.rewardRate.total),
-                    apyRate: currentApyRate,
-                });
-            }
+                },
+            ];
+        });
 
-            return map;
-        }, new Map<NetworkSymbol, YieldNetworkNotActivated & { apyRate: number }>());
-
-        return Array.from(networkRowsBySymbol.values()).map(({ symbol, apyPercentage }) => ({
-            symbol,
-            apyPercentage,
-        }));
+        return opportunities;
     }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
 
     const isYieldActive = useMemo(
@@ -181,6 +167,6 @@ export const useYieldTableData = ({
     return {
         isYieldActive,
         yieldAccountOpportunities,
-        yieldNetworksNotActivated,
+        yieldInactiveVaultOpportunities,
     };
 };

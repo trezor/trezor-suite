@@ -10,12 +10,12 @@ import {
     getFirmwareDowngradeUrl,
     getFirstDeviceInstance,
     getIsDeviceConnectedViaBluetooth,
+    getIsDeviceRemembered,
     getNewInstanceNumber,
     getNewWalletNumber,
     getPackagingUrl,
     getSelectedDevice,
     getStatus,
-    isDeviceRemembered,
     isDeviceWithButtonOnlyNoTouchscreen,
     isSelectedDevice,
     isSelectedInstance,
@@ -118,10 +118,10 @@ describe(getDeviceInstances.name, () => {
     });
 });
 
-describe(isDeviceRemembered.name, () => {
+describe(getIsDeviceRemembered.name, () => {
     fixtures.isDeviceRemembered.forEach(f => {
         it(f.description, () => {
-            expect(isDeviceRemembered(f.device)).toEqual(f.result);
+            expect(getIsDeviceRemembered(f.device)).toEqual(f.result);
         });
     });
 });

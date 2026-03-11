@@ -1,4 +1,6 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { closeModal } from '@suite/modal';
+import { recoveryRerunThunk } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
@@ -18,7 +20,6 @@ import {
 } from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
-import * as modalActions from '../suite/modalActions';
 import * as routerActions from '../suite/routerActions';
 import * as suiteActions from '../suite/suiteActions';
 
@@ -113,7 +114,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
     // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
     // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
-    dispatch(modalActions.onCancel());
+    dispatch(closeModal());
 
     dispatch(suiteActions.initialRunCompleted());
     dispatch(resetOnboarding());
@@ -197,6 +198,27 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
+const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
+    const result = await dispatch(recoveryRerunThunk());
+
+    if (!recoveryRerunThunk.fulfilled.match(result)) {
+        return;
+    }
+
+    const { initialized } = result.payload;
+    const { router } = getState();
+
+    if (initialized) {
+        dispatch(routerActions.goto('recovery-index'));
+    } else {
+        if (router.app !== 'onboarding') {
+            dispatch(routerActions.goto('onboarding-index'));
+        }
+        dispatch(goToStep('recovery'));
+        dispatch(addPath('recovery'));
+    }
+};
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -210,4 +232,5 @@ export {
     beginOnboardingTutorial,
     updateBackupType,
     resolveNextAfterSkipped,
+    recoveryRerun,
 };

@@ -20,7 +20,7 @@ import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/T
 import { TradingDetailBuyPaymentProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessingStep';
 import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
 import { TradingDetailBuyPaymentWaitingForUserStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUserStep';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailBuySidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuySidebar';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -159,18 +159,12 @@ export const TradingDetailBuy = () => {
                     country={country}
                 />
             </Column>
-            <Card>
-                <TradingSelectedOfferInfo
-                    account={account}
-                    selectedAccount={receiveAccount}
-                    selectedQuote={trade.data}
-                    providers={info?.providerInfos}
-                    quoteAmounts={quoteAmounts}
-                    type="buy"
-                    paymentMethod={trade.data.paymentMethod}
-                    paymentMethodName={trade.data.paymentMethodName}
-                />
-            </Card>
+            <TradingDetailBuySidebar
+                receiveAccount={receiveAccount}
+                quoteAmounts={quoteAmounts}
+                paymentMethod={trade.data.paymentMethod}
+                paymentMethodName={trade.data.paymentMethodName}
+            />
         </Wrapper>
     );
 };

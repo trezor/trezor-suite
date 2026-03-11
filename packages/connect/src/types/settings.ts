@@ -45,7 +45,6 @@ export interface ConnectSettingsPublic {
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;
-    lazyLoad?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
@@ -71,17 +70,7 @@ export interface ConnectSettingsInternal {
     firmwareChannel?: FirmwareChannel;
 }
 
-export interface ConnectSettingsMobile {
-    connectSrc?: string;
-    deeplinkUrl?: string;
-    deeplinkOpen?: (url: string) => void;
-    deeplinkCallbackUrl?: string;
-    coreMode?: 'deeplink';
-}
-
 export type ConnectSettings = ConnectSettingsPublic &
     ConnectSettingsInternal &
     // coreMode is a common parameter between these, so it is explicitly handled here for correct handling
-    Omit<ConnectSettingsMobile, 'coreMode'> & {
-        coreMode?: 'auto' | 'suite-desktop' | 'suite-web' | 'deeplink';
-    };
+    { coreMode?: 'auto' | 'suite-desktop' | 'suite-web' | 'deeplink' };

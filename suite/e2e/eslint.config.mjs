@@ -13,4 +13,10 @@ export default [
         },
     },
     playwrightEslintFlat,
+    {
+        files: ['**/tests/manual/**'],
+        rules: {
+            'playwright/no-skipped-test': 'off',
+        },
+    },
 ];

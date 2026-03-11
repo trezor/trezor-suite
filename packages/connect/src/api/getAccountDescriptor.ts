@@ -166,7 +166,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             if (this.disposed) break;
 
             try {
-                const { descriptor, address_n, legacyXpub } = await this.device
+                const { descriptor, address_n, legacyXpub } = await this.getDevice()
                     .getCommands()
                     .getAccountDescriptor(
                         request.coinInfo,

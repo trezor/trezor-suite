@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { selectRouteName } from '@suite/router';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
@@ -9,10 +11,8 @@ import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';

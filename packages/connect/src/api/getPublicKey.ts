@@ -90,7 +90,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const { coinInfo, unlockPath, ...batch } = this.params[i];
             // if coinInfo is not provided, use fallback (see above in init method)

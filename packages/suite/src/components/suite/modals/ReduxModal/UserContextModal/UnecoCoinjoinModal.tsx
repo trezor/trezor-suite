@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDispatch } from 'src/hooks/suite';
@@ -23,12 +23,12 @@ export const UnecoCoinjoinModal = () => {
     const decimals = getAccountDecimals(symbol) || 8;
 
     const handleContinue = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
         dispatch(goto('wallet-anonymize', { preserveParams: true }));
     };
 
     const handleCancel = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
 
     return (

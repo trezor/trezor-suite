@@ -234,7 +234,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
         const signature = isLegacy
             ? await helper.ethereumSignTx(
-                  this.device.getCommands().typedCall,
+                  this.getDevice().getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,
@@ -249,7 +249,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.payment_req,
               )
             : await helper.ethereumSignTxEIP1559(
-                  this.device.getCommands().typedCall,
+                  this.getDevice().getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,

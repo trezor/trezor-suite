@@ -8953,9 +8953,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
+    TR_EARN_YIELD_WITHDRAW_ASSET: {
+        id: 'TR_EARN_YIELD_WITHDRAW_ASSET',
+        defaultMessage: 'Withdraw {symbol}',
+    },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
         defaultMessage: 'Supply now',
+    },
+    TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
+        id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
+        defaultMessage: 'Select amount & approve',
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',
@@ -9321,6 +9329,10 @@ export const messages = defineMessages({
     TR_EARN_ENTER_THE_STAKING_POOL: {
         id: 'TR_EARN_ENTER_THE_STAKING_POOL',
         defaultMessage: 'Enter staking pool',
+    },
+    TR_EARN_HOW_IT_WORKS: {
+        id: 'TR_EARN_HOW_IT_WORKS',
+        defaultMessage: 'How it works?',
     },
     TR_EARN_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_EARN_STAKE_WAIT_FOR_ACTIVATION',

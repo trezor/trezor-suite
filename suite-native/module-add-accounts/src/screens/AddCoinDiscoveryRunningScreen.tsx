@@ -22,7 +22,7 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { selectHasPassphraseIncorrectError } from '@suite-native/passphrase';
+import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 
 import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
@@ -36,9 +36,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
     const discoveryInfo = useSelector(selectDiscoveryForSelectedDevice);
-    const passphraseModalCancelled =
-        discoveryInfo?.status === 'failed' && discoveryInfo?.errorCode === 'Method_Interrupted';
-    const hasPassphraseIncorrectError = useSelector(selectHasPassphraseIncorrectError);
+    const hasPassphraseFailure = isPassphraseDiscoveryFailure(discoveryInfo);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
@@ -89,11 +87,13 @@ export const AddCoinDiscoveryRunningScreen = ({
     };
 
     useEffect(() => {
+        const isBlockedByPassphraseError = hasPassphraseFailure && loadingResult === 'error';
         if (
             networkSymbol &&
             !enabledNetworkSymbols.includes(networkSymbol) &&
             accounts.length === 0 &&
-            !hasDiscovery
+            !hasDiscovery &&
+            !isBlockedByPassphraseError
         ) {
             dispatch(
                 changeCoinVisibility({
@@ -105,7 +105,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             return;
         }
 
-        if (!hasDiscovery && (hasPassphraseIncorrectError || passphraseModalCancelled)) {
+        if (!hasDiscovery && hasPassphraseFailure) {
             setLoadingResult('error');
         }
 
@@ -119,8 +119,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         enabledNetworkSymbols,
         loadingResult,
         networkSymbol,
-        hasPassphraseIncorrectError,
-        passphraseModalCancelled,
+        hasPassphraseFailure,
     ]);
 
     return (

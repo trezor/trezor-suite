@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectRouterApp } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Network,
@@ -67,7 +68,7 @@ export const AddAccountModal = ({
     isBackClickDisabled,
 }: AddAccountProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
-    const app = useSelector(state => state.router.app);
+    const app = useSelector(selectRouterApp);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);

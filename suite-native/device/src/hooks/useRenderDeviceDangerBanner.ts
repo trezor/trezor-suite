@@ -6,6 +6,10 @@ import { useSetAtom } from 'jotai';
 
 import { selectIsDeviceBackupRequired, selectIsDeviceBackupUnfinished } from '@suite-common/device';
 import {
+    getIsSkippedRevisionCheckError,
+    revisionCheckErrorScenarios,
+} from '@suite-common/firmware-authenticity';
+import {
     AppTabsRoutes,
     HomeStackRoutes,
     RootStackRoutes,
@@ -13,20 +17,36 @@ import {
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { FirmwareRevisionCheckError } from '@trezor/connect';
 
 import { DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
-import {
-    selectFirmwareRevisionCheckErrorIfEnabled,
-    selectIsSkippedRevisionCheckError,
-} from '../selectors';
+import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
+
+/**
+ * On mobile, we should skip revision check errors that are defined as skipped, but also the offline error,
+ * because its banner is rendered separately in useIsOfflineBannerVisible.
+ * So consider it skipped when rendering the banner centrally.
+ */
+const getShouldSkipRevisionCheckError = (
+    revisionCheckError: FirmwareRevisionCheckError | null,
+): boolean => {
+    if (revisionCheckError === null) return false;
+    if (getIsSkippedRevisionCheckError(revisionCheckError)) return true;
+
+    return (
+        revisionCheckError === 'cannot-perform-check-offline' &&
+        // if TS throws error, it means that the aforementioned logic is no longer valid, and this function should be removed
+        revisionCheckErrorScenarios[revisionCheckError].type === 'softWarning'
+    );
+};
 
 export const useRenderDeviceDangerBanner = () => {
     const setBannerVariant = useSetAtom(deviceDangerBannerAtom);
     const navigation = useNavigation();
     const lastRoute = useLastRouteName();
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
-    const isSkippedRevisionCheckError = useSelector(selectIsSkippedRevisionCheckError);
+    const revisionCheckError = useSelector(selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled);
+    const isSkippedRevisionCheckError = getShouldSkipRevisionCheckError(revisionCheckError);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
 

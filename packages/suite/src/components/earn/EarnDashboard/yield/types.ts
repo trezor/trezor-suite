@@ -15,7 +15,7 @@ export type YieldAccountOpportunity = {
     apyPercentage: number | null;
 };
 
-export type YieldNetworkNotActivated = {
-    symbol: NetworkSymbol;
-    apyPercentage: number | null;
-};
+export type YieldInactiveVaultOpportunity = Pick<
+    YieldAccountOpportunity,
+    'key' | 'networkSymbol' | 'vault' | 'apyPercentage'
+>;

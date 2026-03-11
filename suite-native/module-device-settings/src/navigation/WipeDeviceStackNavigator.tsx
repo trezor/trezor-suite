@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useWipeDevice } from '@suite-native/device';
 import {
-    DeviceConnectionGuardScreenWithCancel,
+    DeviceConnectionGuardScreen,
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
@@ -40,7 +40,7 @@ export const WipeDeviceStackNavigator = () => {
             {isDeviceConnectionGuardVisible && (
                 <WipeDeviceStack.Screen
                     name={WipeDeviceStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
             <WipeDeviceStack.Screen

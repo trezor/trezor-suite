@@ -1,9 +1,14 @@
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { openModal } from '@suite/modal';
+import {
+    EarnFlow,
+    EarnModalAction,
+    EarnProvider,
+    EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -13,8 +18,8 @@ interface UseEarnInANutshellProps {
     provider: EarnProvider;
     onCancel: () => void;
     account: Account;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    actionType?: EarnModalAction;
+    yieldContext?: EarnYieldContext;
 }
 
 export const useEarnInANutshell = ({
@@ -22,8 +27,8 @@ export const useEarnInANutshell = ({
     provider,
     onCancel,
     account,
-    yieldId,
-    tokenContractAddress,
+    actionType = 'continue',
+    yieldContext,
 }: UseEarnInANutshellProps) => {
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
         selectValidatorsQueueData(state, account.symbol),
@@ -39,23 +44,25 @@ export const useEarnInANutshell = ({
     const dispatch = useDispatch();
     const analytics = useAnalytics();
 
-    const handleContinue = () => {
+    const handleAction = () => {
         onCancel();
-        dispatch(
-            openModal({
-                type: 'earn-provider-consent',
-                flow,
-                provider,
-                account,
-                yieldId,
-                tokenContractAddress,
-            }),
-        );
+
+        if (actionType === 'continue') {
+            dispatch(
+                openModal({
+                    type: 'earn-provider-consent',
+                    flow,
+                    provider,
+                    account,
+                    yieldContext,
+                }),
+            );
+        }
 
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
-                action: 'continue',
+                action: actionType,
                 step: 'stake-in-a-nutshell-modal',
                 networkSymbol: account.symbol,
             },
@@ -78,7 +85,7 @@ export const useEarnInANutshell = ({
     return {
         unstakingPeriod,
         apy,
-        handleContinue,
+        handleAction,
         onCancelClick,
     };
 };

@@ -1,4 +1,5 @@
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
+import { RouterState } from '@suite/router';
 import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
@@ -12,7 +13,6 @@ import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { AppState } from 'src/reducers/store';
 import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
 import { ProtocolState } from 'src/reducers/suite/protocolReducer';
-import { RouterState } from 'src/reducers/suite/routerReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import WalletReducers from 'src/reducers/wallet';
 

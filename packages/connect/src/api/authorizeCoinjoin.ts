@@ -38,7 +38,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         if (this.preauthorized) {
             if (await cmd.preauthorize(false)) {

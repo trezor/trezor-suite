@@ -1,5 +1,6 @@
+import { recoveryReducer } from '@suite/recovery';
+
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
-import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';

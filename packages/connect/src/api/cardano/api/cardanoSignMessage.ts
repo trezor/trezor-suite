@@ -72,7 +72,9 @@ export default class CardanoSignMessage extends AbstractMethod<
     }
 
     async run(): Promise<CardanoSignedMessage> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
+        const typedCall = this.getDevice()
+            .getCommands()
+            .typedCall.bind(this.getDevice().getCommands());
         const payloadSize = hexStringByteLength(this.params.payload);
 
         let response = await typedCall(

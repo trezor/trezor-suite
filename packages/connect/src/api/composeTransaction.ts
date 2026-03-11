@@ -222,7 +222,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async selectAccount() {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain();
-        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
+        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         if (this.discovery && this.discovery.completed) {
             const { discovery } = this;
@@ -250,7 +250,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             new Discovery({
                 blockchain,
                 getDescriptor: path =>
-                    this.device.getCommands().getAccountDescriptor(this.params.coinInfo, path),
+                    this.getDevice().getCommands().getAccountDescriptor(this.params.coinInfo, path),
             });
         this.discovery = discovery;
 
@@ -351,7 +351,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async _selectFeeUiResponse(
         composer: TransactionComposer,
     ): Promise<SignedTransaction | 'change-account'> {
-        const resp = await this.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.device).promise;
+        const resp = await this.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
         switch (resp.payload.type) {
             case 'compose-custom':
                 // recompose custom fee level with requested value
@@ -375,7 +375,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     async _sign(tx: ComposeResult) {
-        const { device, params } = this;
+        const device = this.getDevice();
+        const { params } = this;
 
         if (tx.type !== 'final')
             throw ERRORS.TypedError('Runtime', 'ComposeTransaction: Trying to sign unfinished tx');

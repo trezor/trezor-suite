@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { onReceiveAccount } from '@suite/modal';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
@@ -17,7 +18,6 @@ import { UiRequestSelectAccount } from '@trezor/connect';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { onReceiveAccount } from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

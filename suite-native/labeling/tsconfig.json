@@ -29,6 +29,7 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../experimental-features" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },

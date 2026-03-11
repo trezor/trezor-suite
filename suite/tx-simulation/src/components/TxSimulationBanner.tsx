@@ -32,7 +32,7 @@ export const TxSimulationBanner = ({
                     <Checkbox
                         data-testid="@tx-simulation-modal/disclaimer-checkbox"
                         isChecked={disclaimerAccepted}
-                        onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
+                        onChange={() => setDisclaimerAccepted(!disclaimerAccepted)}
                         verticalAlignment="center"
                     >
                         <Text intent="neutral" typographyStyle="body-sm">

@@ -1,4 +1,4 @@
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider, EarnYieldContext } from '@suite-common/suite-types/src/staking';
 import { Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -10,8 +10,7 @@ interface EarnProviderConsentModalProps {
     flow: EarnFlow;
     provider: EarnProvider;
     account: Account;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
     onCancel: () => void;
 }
 
@@ -19,8 +18,7 @@ export const EarnProviderConsentModal = ({
     flow,
     provider,
     account,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
     onCancel,
 }: EarnProviderConsentModalProps) => {
     switch (flow) {
@@ -30,8 +28,7 @@ export const EarnProviderConsentModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.Yield:
@@ -40,8 +37,7 @@ export const EarnProviderConsentModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.UpdateProvider:
@@ -50,8 +46,7 @@ export const EarnProviderConsentModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         default:

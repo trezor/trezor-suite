@@ -1,16 +1,15 @@
 import { MetadataProviderModal } from '@suite/metadata';
+import { MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
 import { AccountKey } from '@suite-common/wallet-types';
 import { UI_REQUEST } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import {
     EarnClaimModal,
     EarnInANutshellModal,
     EarnProviderConsentModal,
-    EarnSupplyModal,
-    EarnWithdrawalModal,
+    StakeModal,
+    UnstakeModal,
 } from 'src/components/earn';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
@@ -58,10 +57,10 @@ import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountMod
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 
 /** Modals opened as a result of user action */
-export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
+export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(onCancelAction());
+    const onCancel = () => dispatch(closeModalAction());
 
     switch (payload.type) {
         case 'add-account':
@@ -149,12 +148,10 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
             return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
-        case 'supply':
         case 'stake':
-            return <EarnSupplyModal {...payload} onCancel={onCancel} />;
-        case 'withdraw':
+            return <StakeModal {...payload} onCancel={onCancel} />;
         case 'unstake':
-            return <EarnWithdrawalModal onCancel={onCancel} account={payload.account} />;
+            return <UnstakeModal onCancel={onCancel} account={payload.account} />;
         case 'claim':
             return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
         case 'change-delegate':

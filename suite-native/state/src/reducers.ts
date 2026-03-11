@@ -37,6 +37,8 @@ import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/b
 import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
+import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
+import { experimentalFeedbackReducer } from '@suite-native/experimental-features';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
@@ -263,6 +265,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const experimentalFeedbackPersistedReducer = preparePersistReducer({
+        reducer: experimentalFeedbackReducer,
+        persistedKeys: ['usageCounts', 'pendingFeedbackFeatures'],
+        key: 'experimentalFeedback',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const messageSystemPersistedReducer = preparePersistReducer({
         reducer: messageSystemReducer,
         persistedKeys: messageSystemPersistedWhitelist,
@@ -338,6 +348,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             appSettings: appSettingsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,
             bluetooth: bluetoothPersistedReducer,
+            experimentalFeedback: experimentalFeedbackPersistedReducer,
             connectPopup: connectPopupPersistedReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
@@ -351,6 +362,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             messageSystem: messageSystemPersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
+            pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

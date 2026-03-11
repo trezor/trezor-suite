@@ -39,7 +39,7 @@ export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.B
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('BackupDevice', 'Success', this.params);
 
         return response.message;

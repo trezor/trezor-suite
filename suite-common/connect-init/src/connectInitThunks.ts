@@ -42,7 +42,12 @@ type ConnectInitHooks = Partial<
         (device: Device, prevConnectedDevices: TrezorDevice[]) => void
     >
 > &
-    Partial<Record<typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, () => void>>;
+    Partial<
+        Record<
+            typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED | typeof UI_REQUEST.REQUEST_WORD,
+            () => void
+        >
+    >;
 
 export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>(
     `${CONNECT_INIT_MODULE}/initThunk`,
@@ -123,11 +128,11 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             }
 
             if (
-                action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED &&
                 connectInitHooks &&
-                UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED in connectInitHooks
+                (action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED ||
+                    action.type === UI_REQUEST.REQUEST_WORD)
             ) {
-                connectInitHooks?.[UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]?.();
+                connectInitHooks[action.type]?.();
             }
         });
 

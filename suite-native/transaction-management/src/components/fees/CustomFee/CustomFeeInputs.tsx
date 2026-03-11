@@ -1,8 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
-import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
+import {
+    FeesRootState,
+    selectConvertedNetworkFeeInfo,
+    selectIsEip1559Fee,
+} from '@suite-common/wallet-core';
+import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { decimalTransformer, integerTransformer } from '@suite-native/helpers';
@@ -23,6 +27,8 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, symbol),
     );
+
+    const isEip1559Fee = useSelector((state: FeesRootState) => selectIsEip1559Fee(state, symbol));
     const debounce = useDebounce();
     const {
         formState: { errors },
@@ -35,7 +41,6 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const networkType = getNetworkType(symbol);
     const feeUnits = getFeeUnits(networkType);
     const formattedFeePerUnit = `${feeInfo?.minFee} ${feeUnits}`;
-    const isEip1559Fee = networkType === 'ethereum' && isEip1559(feeInfo?.levels?.[0]);
 
     const handleFieldChangeValue =
         (fieldName: keyof FeesFormValues, transformerType: 'crypto' | 'integer') =>
@@ -62,9 +67,9 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     onChangeText={handleFieldChangeValue(FEE_LIMIT_FIELD_NAME, 'integer')}
                 />
             )}
-            {isEip1559Fee ? (
+            {isEip1559Fee && feeInfo?.levels?.[0] ? (
                 <EIP1559CustomInputs
-                    feeLevel={feeInfo?.levels?.[0]}
+                    feeLevel={feeInfo.levels[0]}
                     feeUnits={feeUnits}
                     handleFieldChangeValue={handleFieldChangeValue}
                 />

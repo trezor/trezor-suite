@@ -4,10 +4,10 @@ import type { FilterPropertiesByType } from '@trezor/type-utils';
 
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
-export const isHardRevisionCheckError = (error: FirmwareRevisionCheckError | null) =>
+export const getIsHardRevisionCheckError = (error: FirmwareRevisionCheckError | null) =>
     error !== null && revisionCheckErrorScenarios[error].type === 'hardModal';
 
-export const isHardHashCheckError = (error: FirmwareHashCheckError | null) =>
+export const getIsHardHashCheckError = (error: FirmwareHashCheckError | null) =>
     error !== null && hashCheckErrorScenarios[error].type === 'hardModal';
 
 export type SkippedRevisionCheckError = keyof FilterPropertiesByType<
@@ -15,7 +15,7 @@ export type SkippedRevisionCheckError = keyof FilterPropertiesByType<
     { type: 'skipped' }
 >;
 
-export const isSkippedRevisionCheckError = (
+export const getIsSkippedRevisionCheckError = (
     error: FirmwareRevisionCheckError,
 ): error is SkippedRevisionCheckError => revisionCheckErrorScenarios[error].type === 'skipped';
 
@@ -24,7 +24,7 @@ export type SkippedHashCheckError = keyof FilterPropertiesByType<
     { type: 'skipped' }
 >;
 
-export const isSkippedHashCheckError = (
+export const getIsSkippedHashCheckError = (
     error: FirmwareHashCheckError,
 ): error is SkippedHashCheckError => hashCheckErrorScenarios[error].type === 'skipped';
 
@@ -33,7 +33,7 @@ export type RevisionCheckErrorWithNotification = keyof FilterPropertiesByType<
     { shouldNotify: true }
 >;
 
-export const isRevisionCheckErrorWithNotification = (
+export const getIsRevisionCheckErrorWithNotification = (
     error: FirmwareRevisionCheckError,
 ): error is RevisionCheckErrorWithNotification =>
     revisionCheckErrorScenarios[error].shouldNotify === true;
@@ -43,7 +43,7 @@ export type HashCheckErrorWithNotification = keyof FilterPropertiesByType<
     { shouldNotify: true }
 >;
 
-export const isHashCheckErrorWithNotification = (
+export const getIsHashCheckErrorWithNotification = (
     error: FirmwareHashCheckError,
 ): error is HashCheckErrorWithNotification =>
     // @ts-expect-error if this no longer gives error, then TODO hash check notifications must be implemented

@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 
+import { openModal } from '@suite/modal';
 import { Link, type TextProps } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { Address } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 

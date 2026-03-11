@@ -6,6 +6,7 @@ import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     StackProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
@@ -14,6 +15,7 @@ export const WalletRecoveryScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.WalletRecovery>) => {
     const dispatch = useDispatch();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleRecoverWallet = useCallback(async () => {
         const response = await dispatch(recoverWalletThunk()).unwrap();
@@ -27,13 +29,14 @@ export const WalletRecoveryScreen = ({
         if (
             response.error.code === 'Failure_ActionCancelled' ||
             response.error.code === 'Method_Interrupted'
-        )
-            return;
+        ) {
+            return navigateToInitialScreen();
+        }
 
         // This code is OK, but the eslint plugin crashes on recursive calls
         // eslint-disable-next-line react-hooks/immutability
         handleRecoverWallet();
-    }, [dispatch, navigation]);
+    }, [dispatch, navigation, navigateToInitialScreen]);
 
     useEffect(() => {
         handleRecoverWallet();

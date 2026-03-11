@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { DashboardAnchor } from '@suite/router';
 import { StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -11,7 +12,6 @@ import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Table } from '@trezor/components';
 
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

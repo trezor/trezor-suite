@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
-import { setStatus } from 'src/actions/recovery/recoveryActions';
 import {
     OnboardingCard,
     type OnboardingCardProps,
@@ -10,7 +10,8 @@ import {
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {
-    const recovery = useSelector(state => state.recovery);
+    const recoveryStatus = useSelector(selectRecoveryStatus);
+    const recoveryError = useSelector(selectRecoveryError);
     const dispatch = useDispatch();
 
     const { device } = useDevice();
@@ -22,26 +23,26 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
     }
 
     const handleBack = () => {
-        if (recovery.status === 'select-recovery-type') {
-            return dispatch(setStatus('initial'));
+        if (recoveryStatus === 'select-recovery-type') {
+            return dispatch(recoveryActions.setStatus('initial'));
         }
         // allow to change recovery settings for T1B1 in case of error
         if (
-            recovery.status === 'finished' &&
-            recovery.error &&
+            recoveryStatus === 'finished' &&
+            recoveryError &&
             deviceModelInternal === DeviceModelInternal.T1B1
         ) {
-            return dispatch(setStatus('initial'));
+            return dispatch(recoveryActions.setStatus('initial'));
         }
 
         return dispatch(goToPreviousStep());
     };
 
     const isBackButtonVisible = () => {
-        if (recovery.status === 'finished' && recovery.error) {
+        if (recoveryStatus === 'finished' && recoveryError) {
             return true;
         }
-        if (!['finished', 'in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+        if (!['finished', 'in-progress', 'waiting-for-confirmation'].includes(recoveryStatus)) {
             return true;
         }
 

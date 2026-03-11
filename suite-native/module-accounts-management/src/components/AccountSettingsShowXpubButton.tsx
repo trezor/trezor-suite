@@ -7,7 +7,7 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
@@ -34,7 +34,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
     } = useBottomSheetModal();
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
 
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);

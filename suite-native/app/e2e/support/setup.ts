@@ -32,7 +32,15 @@ const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     isTradingResidenceCheckEnabled: false,
 };
 
-const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
+const MODEL_NAMES: Record<Model, string> = {
+    [Model.T1B1]: 'Model One',
+    [Model.T2T1]: 'Model T',
+    [Model.T3B1]: 'Safe 3',
+    [Model.T3T1]: 'Safe 5',
+    [Model.T3W1]: 'Safe 7',
+};
+
+const getTrezorE2eDeviceLabel = (model: Model) => `${MODEL_NAMES[model]} - Tester`;
 
 const getExpoDeepLinkUrl = () => {
     const expoLauncherUrl = encodeURIComponent(
@@ -116,16 +124,13 @@ export const openApp = async ({
 };
 
 const getFwVersion = (model: Model, version: string | undefined) => {
-    if (model === Model.T3W1) {
-        return '2-main'; // At this time only this firmware works with T3W1
-    } else {
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const defaultLatestVersion = model === Model.T1B1 ? '1-latest' : '2-latest';
 
-        return (
-            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
-            '2-latest'
-        );
-    }
+    return (
+        (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+        defaultLatestVersion
+    );
 };
 
 export const prepareTrezorEmulator = async ({
@@ -147,7 +152,7 @@ export const prepareTrezorEmulator = async ({
 
         if (seed) {
             await TrezorUserEnvLink.setupEmu({
-                label: TREZOR_E2E_DEVICE_LABEL,
+                label: getTrezorE2eDeviceLabel(model),
                 mnemonic: seed,
                 passphrase_protection,
             });

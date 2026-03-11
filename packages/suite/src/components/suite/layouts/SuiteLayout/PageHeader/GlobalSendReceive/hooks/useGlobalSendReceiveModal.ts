@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { selectRouterParams } from '@suite/router';
 import { yup } from '@suite-common/validators';
 import { Account, GlobalSendReceiveType } from '@suite-common/wallet-types';
 
@@ -36,7 +37,7 @@ const getDashboardParamModal = (param: unknown): GlobalSendReceiveType => {
 export function useGlobalSendReceiveModal() {
     const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);
 
     useEffect(() => {

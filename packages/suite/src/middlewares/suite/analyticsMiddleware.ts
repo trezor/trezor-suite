@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectRouterUrl } from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -32,7 +33,6 @@ import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import {
     selectAnonymityGainToReportByAccountKey,
     selectCoinjoinAccountByKey,

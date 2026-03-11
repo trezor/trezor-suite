@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { TranslationKey } from '@suite/intl';
 import {
     RevisionCheckErrorWithNotification,
-    isRevisionCheckErrorWithNotification,
+    getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -29,7 +29,7 @@ export const useDeviceCompromisedNotification = () => {
 
     useEffect(() => {
         if (errorType === null) return;
-        if (isRevisionCheckErrorWithNotification(errorType)) {
+        if (getIsRevisionCheckErrorWithNotification(errorType)) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'firmware-authenticity-check-error',

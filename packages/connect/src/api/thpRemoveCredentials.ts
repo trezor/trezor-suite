@@ -17,8 +17,8 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
 
     run() {
         const requestedCredentials = this.payload.credentials || [];
-        if (this.device) {
-            const thpState = this.device.getThpState();
+        if (this.useDevice) {
+            const thpState = this.getDevice().getThpState();
             if (thpState) {
                 requestedCredentials.push(...thpState.pairingCredentials);
 

@@ -1,11 +1,12 @@
-import { useSelector } from 'react-redux';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { selectCompromisedDeviceFailedCheck } from '@suite-native/device';
+import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
 import { FirmwareAuthenticityCheckFailModalContent } from '../components/FirmwareAuthenticityCheckFailModalContent';
+import { useCloseDeviceCompromisedScreen } from '../components/useCloseDeviceCompromisedScreen';
 
 /**
  * Modal can be displayed for:
@@ -14,7 +15,16 @@ import { FirmwareAuthenticityCheckFailModalContent } from '../components/Firmwar
  * - device authenticity check failure
  */
 export const DeviceCompromisedModalScreen = () => {
-    const failedCheck = useSelector(selectCompromisedDeviceFailedCheck);
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>>();
+    const { failedCheck } = route.params;
+    const { handleClose } = useCloseDeviceCompromisedScreen();
+
+    if (!failedCheck) {
+        console.error('DeviceCompromisedModalScreen requires failedCheck param to be passed');
+        handleClose();
+
+        return null;
+    }
 
     switch (failedCheck) {
         case 'device-authenticity':

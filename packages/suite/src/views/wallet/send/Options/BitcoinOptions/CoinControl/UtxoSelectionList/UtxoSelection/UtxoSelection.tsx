@@ -2,6 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { openModal } from '@suite/modal';
 import {
     selectSuiteSyncAddressLabels,
     selectSuiteSyncOutputLabels,
@@ -22,7 +23,6 @@ import {
 } from '@trezor/components';
 import { AccountUtxo } from '@trezor/connect';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -129,19 +129,14 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
 
     return (
-        <GhostContainer
-            onClick={handleCheckbox}
-            isActive={isChecked}
-            padding={12}
-            margin={{ horizontal: -12 }}
-            as="div"
-        >
+        <GhostContainer onClick={handleCheckbox} padding={12} margin={{ horizontal: -12 }} as="div">
             <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
                         isChecked={isChecked}
                         isDisabled={isDisabled}
-                        onClick={handleCheckbox}
+                        onChange={handleCheckbox}
+                        onClick={e => e.stopPropagation()}
                     />
                 </Tooltip>
                 <Column flex="1" gap={0}>

@@ -1,5 +1,7 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -17,8 +19,6 @@ import {
 import { DEVICE } from '@trezor/connect';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';

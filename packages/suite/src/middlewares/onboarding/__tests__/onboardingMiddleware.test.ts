@@ -1,8 +1,9 @@
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+
 import { SUITE } from 'src/actions/suite/constants';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 

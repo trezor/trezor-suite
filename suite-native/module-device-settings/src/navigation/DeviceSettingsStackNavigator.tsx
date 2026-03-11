@@ -1,11 +1,7 @@
-import { useSelector } from 'react-redux';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
 // this import is against the rule of not importing from other modules. This specific case is OK, because the @suite-native/module-check-backup
 // is imported only here and nowhere else, so it is treated as a submodule of @suite-native/module-device-settings.
-import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
 import { DeviceCheckBackupStackNavigator } from '@suite-native/module-check-backup';
 import {
     DeviceSettingsStackParamList,
@@ -33,94 +29,84 @@ import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
 
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
-export const DeviceSettingsStackNavigator = () => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
-
-    return (
-        <DeviceSettingsStack.Navigator
-            initialRouteName={DeviceSettingsStackRoutes.DeviceSettings}
-            screenOptions={stackNavigationOptionsConfig}
-        >
+export const DeviceSettingsStackNavigator = () => (
+    <DeviceSettingsStack.Navigator
+        initialRouteName={DeviceSettingsStackRoutes.DeviceSettings}
+        screenOptions={stackNavigationOptionsConfig}
+    >
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceSettings}
+            component={DeviceSettingsScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceFirmware}
+            component={DeviceFirmwareScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceAutoConnect}
+            component={DeviceAutoConnectScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.UnpairBluetoothDevice}
+            component={UnpairBluetoothDeviceScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DevicePinProtection}
+            component={PinProtectionScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceBackupAndPassphrase}
+            component={BackupAndPassphraseScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceAuthenticity}
+            component={DeviceAuthenticityScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.WipeDevice}
+            component={WipeDeviceScreen}
+        />
+        <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceSettings}
-                component={DeviceSettingsScreen}
+                name={DeviceSettingsStackRoutes.DeviceNameStack}
+                component={DeviceNameStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceFirmware}
-                component={DeviceFirmwareScreen}
+                name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
+                component={FirmwareUpdateStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceAutoConnect}
-                component={DeviceAutoConnectScreen}
+                name={DeviceSettingsStackRoutes.FirmwareLanguageStack}
+                component={FirmwareLanguageStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.UnpairBluetoothDevice}
-                component={UnpairBluetoothDeviceScreen}
+                name={DeviceSettingsStackRoutes.ContinueOnTrezor}
+                component={ContinueOnTrezorScreen}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DevicePinProtection}
-                component={PinProtectionScreen}
+                name={DeviceSettingsStackRoutes.DeviceAutoConnectStack}
+                component={DeviceAutoConnectStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceBackupAndPassphrase}
-                component={BackupAndPassphraseScreen}
+                name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
+                component={DevicePinProtectionStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceAuthenticity}
-                component={DeviceAuthenticityScreen}
+                name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
+                component={DeviceCheckBackupStackNavigator}
             />
             <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.WipeDevice}
-                component={WipeDeviceScreen}
+                name={DeviceSettingsStackRoutes.DevicePassphraseStack}
+                component={DevicePassphraseStackNavigator}
             />
-            <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DeviceNameStack}
-                    component={DeviceNameStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
-                    component={FirmwareUpdateStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.FirmwareLanguageStack}
-                    component={FirmwareLanguageStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.ContinueOnTrezor}
-                    component={ContinueOnTrezorScreen}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DeviceAutoConnectStack}
-                    component={DeviceAutoConnectStackNavigator}
-                />
-                {!isDeviceConnected && (
-                    <DeviceSettingsStack.Screen
-                        name={DeviceSettingsStackRoutes.DeviceAutoConnectGuard}
-                        component={DeviceConnectionGuardScreenWithCancel}
-                    />
-                )}
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
-                    component={DevicePinProtectionStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
-                    component={DeviceCheckBackupStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DevicePassphraseStack}
-                    component={DevicePassphraseStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
-                    component={DeviceAuthenticityStackNavigator}
-                />
-                <DeviceSettingsStack.Screen
-                    name={DeviceSettingsStackRoutes.WipeDeviceStack}
-                    component={WipeDeviceStackNavigator}
-                />
-            </DeviceSettingsStack.Group>
-        </DeviceSettingsStack.Navigator>
-    );
-};
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
+                component={DeviceAuthenticityStackNavigator}
+            />
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.WipeDeviceStack}
+                component={WipeDeviceStackNavigator}
+            />
+        </DeviceSettingsStack.Group>
+    </DeviceSettingsStack.Navigator>
+);

@@ -1,16 +1,16 @@
 import {
-    selectFirmwareHashCheckError,
-    selectFirmwareRevisionCheckError,
-    selectIsDeviceIdCheckSuccess,
+    getIsDeviceIdValid,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    isHardHashCheckError,
-    isHardRevisionCheckError,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
+    getFirmwareAuthenticityCheckErrors,
+    getIsHardHashCheckError,
+    getIsHardRevisionCheckError,
+    getIsSkippedHashCheckError,
+    getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
@@ -24,9 +24,10 @@ import {
 } from './suiteSelectors';
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
-    const revisionCheckError = selectFirmwareRevisionCheckError(state);
+    const device = selectSelectedDevice(state);
+    const { revisionCheckError } = getFirmwareAuthenticityCheckErrors(device);
     if (revisionCheckError === null) return null;
-    if (isSkippedRevisionCheckError(revisionCheckError)) return null;
+    if (getIsSkippedRevisionCheckError(revisionCheckError)) return null;
 
     const isFirmwareRevisionCheckDisabled = !selectIsFirmwareRevisionCheckEnabled(state);
     if (isFirmwareRevisionCheckDisabled) return null;
@@ -38,9 +39,10 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
 };
 
 export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
-    const hashCheckError = selectFirmwareHashCheckError(state);
+    const device = selectSelectedDevice(state);
+    const { hashCheckError } = getFirmwareAuthenticityCheckErrors(device);
     if (hashCheckError === null) return null;
-    if (isSkippedHashCheckError(hashCheckError)) return null;
+    if (getIsSkippedHashCheckError(hashCheckError)) return null;
 
     const isFirmwareHashCheckDisabled = !selectIsFirmwareHashCheckEnabled(state);
     if (isFirmwareHashCheckDisabled) return null;
@@ -79,35 +81,41 @@ export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: App
     const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
     const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
 
-    return isHardRevisionCheckError(revisionError) || isHardHashCheckError(hashError);
+    return getIsHardRevisionCheckError(revisionError) || getIsHardHashCheckError(hashError);
 };
 
 /**
  * Return true if entropy check has failed and is not disabled via settings nor message system.
  */
 export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
+    const device = selectSelectedDevice(state);
     const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
     const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
         state,
         Feature.entropyCheck,
     );
-    const isEntropyCheckFailed = selectIsEntropyCheckFailed(state);
+    const isEntropyCheckFailed = selectIsEntropyCheckFailed(state, device?.id);
 
     return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
 };
 
 export const selectIsDeviceIdCheckEnabledAndFailed = (state: AppState) => {
+    const device = selectSelectedDevice(state);
     const areDeviceMetaChecksEnabled = selectAreDeviceMetaChecksEnabled(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.idCheck);
-    const isDeviceIdValid = selectIsDeviceIdCheckSuccess(state);
+    const isDeviceIdValid = getIsDeviceIdValid(device);
 
     return areDeviceMetaChecksEnabled && !isDisabledByMessageSystem && !isDeviceIdValid;
 };
 
 export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AppState) => {
+    const device = selectSelectedDevice(state);
     const areDeviceMetaChecksEnabled = selectAreDeviceMetaChecksEnabled(state);
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.invariabilityCheck);
-    const isDeviceInvariabilityCheckSuccess = selectIsDeviceInvariabilityCheckSuccess(state);
+    const isDeviceInvariabilityCheckSuccess = selectIsDeviceInvariabilityCheckSuccess(
+        state,
+        device,
+    );
 
     return (
         areDeviceMetaChecksEnabled &&
@@ -123,7 +131,11 @@ export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean =
     if (isEntropyCheckEnabledAndFailed) return true;
 
     // All following checks are dismissable
-    const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
+    const device = selectSelectedDevice(state);
+    const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(
+        state,
+        device?.id,
+    );
     if (isFirmwareAuthenticityCheckDismissed) return false;
 
     const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);

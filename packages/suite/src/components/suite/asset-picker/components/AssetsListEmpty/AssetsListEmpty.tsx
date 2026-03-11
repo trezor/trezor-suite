@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 interface AssetsListEmptyProps {

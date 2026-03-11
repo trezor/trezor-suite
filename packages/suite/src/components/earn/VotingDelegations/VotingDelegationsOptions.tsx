@@ -86,7 +86,7 @@ export const VotingDelegationsOptions = ({
                         <Radio
                             key={key}
                             isChecked={selectedVotingDelegation.type === key}
-                            onClick={() => handleOptionSelect(key)}
+                            onChange={() => handleOptionSelect(key)}
                         >
                             <Translation id={translationId} />
                         </Radio>

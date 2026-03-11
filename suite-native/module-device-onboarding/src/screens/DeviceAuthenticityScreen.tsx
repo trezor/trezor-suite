@@ -26,7 +26,9 @@ export const DeviceAuthenticityScreen = ({ navigation }: { navigation: Navigatio
         navigation.navigate(DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess);
     }, [navigation]);
     const handleFailure = useCallback(() => {
-        navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+        navigation.navigate(RootStackRoutes.DeviceCompromisedModal, {
+            failedCheck: 'device-authenticity',
+        });
     }, [navigation]);
 
     const startCheckDeviceAuthenticity = useCallback(() => {

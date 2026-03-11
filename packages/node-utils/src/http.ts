@@ -417,7 +417,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     query[key] = allParamsOfSameKey.map(singleParam => {
                         const decoded = this.getSafeDecodedURI(singleParam);
                         const sanitized = sanitizeUrl(decoded);
-                        if (sanitized !== decoded) isParamInvalid = true;
+                        // remove trailing slash from sanitized URL
+                        if (sanitized.replace(/\/$/, '') !== decoded) isParamInvalid = true;
 
                         return sanitized;
                     });

@@ -43,8 +43,7 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
-        "update:protobuf": "./scripts/protobuf-build.sh",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "update:protobuf": "./scripts/protobuf-build.sh"
     },
     "dependencies": {
         "@trezor/schema-utils": "workspace:*",
@@ -52,8 +51,7 @@
         "protobufjs": "7.4.0"
     },
     "devDependencies": {
-        "protobufjs-cli": "^1.1.3",
-        "tsx": "^4.21.0"
+        "protobufjs-cli": "^1.1.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

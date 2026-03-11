@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Box,
@@ -24,7 +25,6 @@ import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
-import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
 import { useSelector } from 'src/hooks/suite';
 
 type PassphraseInputCardProps = {
@@ -61,7 +61,7 @@ export const PassphraseInputCard = ({
     const setValue = setExternalValue ?? setInternalValue;
 
     const isDeviceLoading = !(
-        modal.context === CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
+        modal.context === MODAL_CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
     );
 
     const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
@@ -30,7 +31,6 @@ import { Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Deferred } from '@trezor/utils';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -176,7 +176,7 @@ export const TransactionReviewModalBodyInner = ({
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const onCancel = () => {
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
 
         cancelSignTx();
         decision?.resolve(false);

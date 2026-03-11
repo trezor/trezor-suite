@@ -1,6 +1,7 @@
 import { ComponentType, ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectModalType } from '@suite/modal';
 import {
     Banner,
     Card,
@@ -16,7 +17,6 @@ import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 

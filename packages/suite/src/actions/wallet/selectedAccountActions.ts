@@ -1,4 +1,5 @@
 import { metadataActions } from '@suite/metadata';
+import { selectRouteName, selectRouterApp, selectRouterParams } from '@suite/router';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -51,8 +52,8 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
     // get params from router
     // or set first default account from discovery list
     const params = (
-        state.router.app === 'wallet' && state.router.params
-            ? state.router.params
+        selectRouterApp(state) === 'wallet' && selectRouterParams(state)
+            ? selectRouterParams(state)
             : {
                   accountIndex: 0,
                   accountType: 'normal' as const,
@@ -180,12 +181,17 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     if (!actions.has(action.type)) return;
     const state = getState();
     // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
+    if (selectRouterApp(state) !== 'wallet') {
+        return;
+    }
+
+    const routeName = selectRouteName(state);
+
     if (
-        state.router.app !== 'wallet' ||
-        state.router.route.name.startsWith('wallet-trading-buy') ||
-        state.router.route.name.startsWith('wallet-trading-sell') ||
-        state.router.route.name.startsWith('wallet-trading-exchange') ||
-        state.router.route.name === 'wallet-trading-redirect'
+        routeName?.startsWith('wallet-trading-buy') ||
+        routeName?.startsWith('wallet-trading-sell') ||
+        routeName?.startsWith('wallet-trading-exchange') ||
+        routeName === 'wallet-trading-redirect'
     ) {
         return;
     }

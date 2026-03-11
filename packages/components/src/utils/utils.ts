@@ -11,6 +11,11 @@ export const getFocusShadowStyle = (selector = '&:focus-visible') => css`
     }
 `;
 
+export const commonFocusStyles = css`
+    outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
+    outline-offset: 2px;
+`;
+
 export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
     const cleanHex = hex.replace(/^#/, '');
     const clampedPercent = Math.min(1, Math.max(0, percent));

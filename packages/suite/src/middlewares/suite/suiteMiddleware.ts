@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { METADATA } from '@suite/metadata';
+import { recoveryActions } from '@suite/recovery';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -48,6 +49,13 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
         const prevApp = getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             dispatch(appChanged(action.payload.app));
+        }
+
+        if (
+            action.type === SUITE.APP_CHANGED &&
+            (action.payload === 'recovery' || action.payload === 'onboarding')
+        ) {
+            dispatch(recoveryActions.resetReducer());
         }
 
         // this action needs to be processed before propagation to deviceReducer

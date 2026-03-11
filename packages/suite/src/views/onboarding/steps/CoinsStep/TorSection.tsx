@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { selectModalType } from '@suite/modal';
 import { Paragraph, Row, Switch } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { TorStatus } from 'src/types/suite';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 

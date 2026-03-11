@@ -1,9 +1,5 @@
 import { expect as detoxExpect } from 'detox';
 
-import { Model } from '@trezor/trezor-user-env-link';
-
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
@@ -11,14 +7,11 @@ import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
-import { getModelFromEnv, waitForVisible } from '../support/utils';
+import { waitForVisible } from '../support/utils';
 
-const preloadedState = preparePreloadedReduxState(
-    onboardingCompletedState,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
-);
+const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Coin enabling [@androidOnly @T3T1]', () => {
+describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();

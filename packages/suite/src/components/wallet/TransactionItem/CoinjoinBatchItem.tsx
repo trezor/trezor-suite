@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch } from 'src/hooks/suite';

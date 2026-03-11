@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import type { ExperimentalFeature } from '@suite/experimental';
+import {
+    ExperimentalFeedbackRootState,
+    Rating,
+    buildUserFeedbackData,
+    selectPendingFeedbackFeature,
+    sendFeedbackAction,
+} from '@suite-common/feedback';
 
-import { selectPendingFeedbackFeature } from '../experimentalFeedbackSelectors';
-import { ExperimentalFeedbackRootState, feedbackDismissed } from '../experimentalFeedbackSlice';
+import { feedbackDismissed } from '../experimentalFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';
 import { RateYourExperienceCard } from './RateYourExperienceCard';
 
@@ -12,8 +18,9 @@ export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dispatch = useDispatch();
-    const pendingFeature = useSelector((state: ExperimentalFeedbackRootState) =>
-        selectPendingFeedbackFeature(state),
+    const pendingFeature = useSelector(
+        (state: ExperimentalFeedbackRootState<ExperimentalFeature>) =>
+            selectPendingFeedbackFeature(state),
     );
 
     if (!pendingFeature) return null;

@@ -32,7 +32,7 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       EXPO_PUBLIC_ENVIRONMENT: preview
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-      COMMIT_HASH: ${{ github.sha }}
+      COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     permissions:
       contents: read
       pull-requests: write

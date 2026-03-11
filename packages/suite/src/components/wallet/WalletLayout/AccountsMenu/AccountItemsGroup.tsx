@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectRouteName } from '@suite/router';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     BASE_CURRENCY_ZERO,
@@ -11,7 +12,6 @@ import { Column } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';

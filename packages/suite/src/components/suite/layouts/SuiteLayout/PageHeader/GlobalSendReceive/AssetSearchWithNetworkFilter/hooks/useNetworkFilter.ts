@@ -1,12 +1,12 @@
 import { RefObject, useEffect, useMemo, useState } from 'react';
 
+import { parseDashboardParams, selectRouterParams } from '@suite/router';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { parseDashboardParams } from 'src/utils/suite/router';
 
 export interface UseNetworkFilterProps {
     modal?: NonNullable<GlobalSendReceiveType>;
@@ -15,7 +15,7 @@ export interface UseNetworkFilterProps {
 }
 
 export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilterProps) {
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const networkSymbolUrlParam = useMemo(
         () => parseDashboardParams(routerParams)?.networkSymbol,
         [routerParams],

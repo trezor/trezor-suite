@@ -27,6 +27,7 @@ export enum RootStackRoutes {
     Storybook = 'Storybook',
     PassphraseStack = 'PassphraseStack',
     StellarManageTokenStack = 'StellarManageTokenStack',
+    ExperimentalFeedbackModal = 'ExperimentalFeedbackModal',
 }
 
 export enum AppTabsRoutes {
@@ -87,7 +88,6 @@ export enum DeviceSettingsStackRoutes {
     ContinueOnTrezor = 'ContinueOnTrezor',
     DeviceAutoConnect = 'DeviceAutoConnect',
     DeviceAutoConnectStack = 'DeviceAutoConnectStack',
-    DeviceAutoConnectGuard = 'DeviceAutoConnectGuard',
     UnpairBluetoothDevice = 'UnpairBluetoothDevice',
     DevicePinProtection = 'DevicePinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',

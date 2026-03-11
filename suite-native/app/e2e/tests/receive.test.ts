@@ -2,8 +2,6 @@ import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
 import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
@@ -18,10 +16,9 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3W1
         ? btcDiscoveryFinishedStateT3W1
         : btcDiscoveryFinishedStateT3T1,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-describe('Receive [@androidOnly @T3T1]', () => {
+describe('Receive [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();

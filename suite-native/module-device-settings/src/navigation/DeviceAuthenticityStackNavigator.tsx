@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useDeviceAuthenticityCheck } from '@suite-native/device';
 import {
-    DeviceConnectionGuardScreenWithCancel,
+    DeviceConnectionGuardScreen,
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
@@ -44,7 +44,9 @@ export const DeviceAuthenticityStackNavigator = () => {
     }, [navigation]);
 
     const handleFailure = useCallback(() => {
-        navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+        navigation.navigate(RootStackRoutes.DeviceCompromisedModal, {
+            failedCheck: 'device-authenticity',
+        });
     }, [navigation]);
 
     useEffect(() => {
@@ -65,7 +67,7 @@ export const DeviceAuthenticityStackNavigator = () => {
             {isDeviceConnectionGuardVisible && (
                 <DeviceAuthenticityStack.Screen
                     name={DeviceAuthenticityStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
             <DeviceAuthenticityStack.Screen

@@ -14,11 +14,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs"
     },
     "dependencies": {
         "@trezor/connect": "workspace:^",

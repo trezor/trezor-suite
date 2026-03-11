@@ -181,6 +181,15 @@ export async function getAutoQuarantineActions(projectId: string): Promise<Actio
 }
 
 /**
+ * Fetch ALL quarantine actions for a project (both manual and auto-quarantined).
+ */
+export async function getAllQuarantineActions(projectId: string): Promise<Action[]> {
+    const response = await currentsRequest<ActionsListResponse>(`/actions?projectId=${projectId}`);
+
+    return response.data.filter(a => a.action.some(r => r.op === 'quarantine'));
+}
+
+/**
  * Create a quarantine action for a failing test.
  */
 export function createQuarantineAction(

@@ -1,11 +1,10 @@
-import { MODAL } from '../constants';
-import * as modalActions from '../modalActions';
+import { MODAL_CLOSE, closeModal } from '@suite/modal';
 
 describe('Modal Actions', () => {
     it('cancel actions', () => {
         const expectedAction = {
-            type: MODAL.CLOSE,
+            type: MODAL_CLOSE,
         };
-        expect(modalActions.onCancel()).toEqual(expectedAction);
+        expect(closeModal()).toEqual(expectedAction);
     });
 });

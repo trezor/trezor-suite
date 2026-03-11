@@ -3,7 +3,7 @@ name: "[Test] suite-native Android E2E"
 permissions:
   id-token: write # for fetching the OIDC token (needed for aws s3 actions)
   contents: read # read attached artifacts from tests
-  actions: write # attach artifact overview and delete shard-x.txt
+  actions: write # upload/download artifacts
 
 on:
   schedule:
@@ -33,14 +33,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-previous-runs:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+      - name: Check previous runs
+        id: check-previous-runs
+        uses: "./.github/actions/check-previous-test-runs"
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          pr_branch: ${{ github.head_ref }}
+          pr_created: ${{ github.event.pull_request.created_at }}
+          repo: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          run_attempt: ${{ github.run_attempt }}
+
   prepare_android_test_app:
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
+    needs: check-previous-runs
     uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
     secrets:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   run_android_e2e_tests:
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
     uses: ./.github/workflows/template-suite-native-e2e-android.yml
-    needs: prepare_android_test_app
+    needs: [prepare_android_test_app, check-previous-runs]
     with:
       publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
     secrets:

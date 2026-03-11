@@ -1,6 +1,12 @@
 import { useEffect } from 'react';
 
-import { EarnAnalyticsStep, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnAnalyticsStep,
+    EarnFlow,
+    EarnModalAction,
+    EarnProvider,
+    EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
 import { Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -11,36 +17,63 @@ import { StakingEarnInANutshellModal } from './StakingEarnInANutshellModal';
 import { UpdateEarnInANutshellModal } from './UpdateEarnInANutshellModal';
 import { YieldEarnInANutshellModal } from './YieldEarnInANutshellModal';
 
-interface EarnInANutshellModalProps {
-    flow: EarnFlow;
+type EarnInANutshellBaseProps = {
     provider: EarnProvider;
     account: Account;
-    analyticsStep: EarnAnalyticsStep;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    actionType?: EarnModalAction;
+    yieldContext?: EarnYieldContext;
     onCancel: () => void;
-}
+};
+
+type StakingEarnInANutshellModalProps = EarnInANutshellBaseProps & {
+    flow: EarnFlow.Stake | EarnFlow.UpdateProvider;
+    analyticsStep: Extract<EarnAnalyticsStep, 'staking-dashboard'>;
+};
+
+type YieldEarnInANutshellModalProps = EarnInANutshellBaseProps & {
+    flow: EarnFlow.Yield;
+    analyticsStep: Extract<EarnAnalyticsStep, 'earn-dashboard' | 'yield-supply' | 'yield-withdraw'>;
+};
+
+type EarnInANutshellModalProps = StakingEarnInANutshellModalProps | YieldEarnInANutshellModalProps;
 
 export const EarnInANutshellModal = ({
     flow,
     provider,
     account,
     analyticsStep,
-    yieldId,
-    tokenContractAddress,
+    actionType,
+    yieldContext,
     onCancel,
 }: EarnInANutshellModalProps) => {
     const analytics = useAnalytics();
 
     useEffect(() => {
-        analytics.report({
-            type: earnFlowToEventTypeMap[flow],
-            payload: {
-                action: 'continue',
-                step: analyticsStep,
-                networkSymbol: account.symbol,
-            },
-        });
+        switch (flow) {
+            case EarnFlow.Stake:
+            case EarnFlow.UpdateProvider:
+                analytics.report({
+                    type: earnFlowToEventTypeMap[flow],
+                    payload: {
+                        action: 'continue',
+                        step: analyticsStep,
+                        networkSymbol: account.symbol,
+                    },
+                });
+                break;
+            case EarnFlow.Yield:
+                analytics.report({
+                    type: earnFlowToEventTypeMap[flow],
+                    payload: {
+                        action: 'continue',
+                        step: analyticsStep,
+                        networkSymbol: account.symbol,
+                    },
+                });
+                break;
+            default:
+                exhaustive(flow);
+        }
     }, [account.symbol, analytics, analyticsStep, flow]);
 
     switch (flow) {
@@ -50,8 +83,8 @@ export const EarnInANutshellModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    actionType={actionType}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.Yield:
@@ -60,8 +93,8 @@ export const EarnInANutshellModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    actionType={actionType}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.UpdateProvider:
@@ -70,8 +103,8 @@ export const EarnInANutshellModal = ({
                     account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    actionType={actionType}
+                    yieldContext={yieldContext}
                 />
             );
         default:

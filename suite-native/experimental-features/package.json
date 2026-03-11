@@ -11,10 +11,13 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "7.1.26",
+        "@suite-common/feedback": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/styles": "workspace:*",

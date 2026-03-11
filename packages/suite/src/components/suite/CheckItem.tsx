@@ -19,7 +19,7 @@ export const CheckItem = ({
     onClick,
     ...rest
 }: CheckItemProps) => (
-    <Checkbox isChecked={isChecked} onClick={onClick} {...rest}>
+    <Checkbox isChecked={isChecked} onChange={onClick} {...rest}>
         <Column alignItems="flex-start" gap={spacings.xs}>
             <Paragraph>{title}</Paragraph>
             {description && (

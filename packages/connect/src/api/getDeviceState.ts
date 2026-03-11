@@ -12,7 +12,7 @@ export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
     init() {}
 
     run() {
-        const state = this.device.getState();
+        const state = this.getDevice().getState();
         if (!state?.staticSessionId) {
             throw ERRORS.TypedError('Runtime', 'Device state not set');
         }

@@ -6,9 +6,11 @@ import type { Sort } from '../types';
 import {
     compareVersionsDesc,
     fuzzyMatch,
+    fuzzyMatchExportName,
     getEventAddedVersion,
     getEventUpdatedVersion,
     getEventsFromJson,
+    toEventExportName,
 } from './filterUtils';
 import { getParamsFromUrl, updateUrl } from './urlParams';
 
@@ -74,7 +76,12 @@ export const useFilteredEvents = () => {
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
             .filter(e => (platform === 'all' ? true : e.platform.includes(platform)))
-            .filter(e => (normalizedQuery ? fuzzyMatch(normalizedQuery, e.name) : true));
+            .filter(e =>
+                normalizedQuery
+                    ? fuzzyMatch(normalizedQuery, e.name) ||
+                      fuzzyMatchExportName(normalizedQuery, toEventExportName(e.name))
+                    : true,
+            );
 
         return byPlatformAndQuery.sort((a, b) => {
             const an = a.name ?? '';

@@ -1,3 +1,5 @@
+import { openModal } from '@suite/modal';
+import { selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,7 +19,6 @@ import { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coin
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import {
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
@@ -855,7 +856,7 @@ export const restorePausedCoinjoinSessions = () => (dispatch: Dispatch, getState
     const coinjoinAccounts = selectCoinjoinAccounts(state);
     const eligibleAccounts = coinjoinAccounts.filter(({ key, session }) => {
         const hasSendFormOpen =
-            state.router.route?.name === 'wallet-send' &&
+            selectRouteName(state) === 'wallet-send' &&
             key === state.wallet.selectedAccount.account?.key;
         const blocker = selectCoinjoinSessionBlockerByAccountKey(state, key);
 

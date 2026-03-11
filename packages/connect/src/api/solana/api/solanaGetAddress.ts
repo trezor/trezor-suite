@@ -93,7 +93,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     }
 
     async _call({ address_n, show_display, chunkify }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
             address_n,
             show_display,

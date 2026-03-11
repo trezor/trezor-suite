@@ -88,7 +88,7 @@ export const SuiteSyncSettings = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={isSuiteSyncDebugEnabled}
-                        onClick={handleToggleSuiteSyncDebug}
+                        onChange={handleToggleSuiteSyncDebug}
                     />
                 </ActionColumn>
             </SectionItem>

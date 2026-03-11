@@ -1,7 +1,8 @@
+import { selectModalType } from '@suite/modal';
+
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
 
 export const Tor = () => {
     const modalType = useSelector(selectModalType);

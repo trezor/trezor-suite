@@ -115,7 +115,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         show_display,
         chunkify,
     }: Params) {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', {
             address_parameters,
             protocol_magic,

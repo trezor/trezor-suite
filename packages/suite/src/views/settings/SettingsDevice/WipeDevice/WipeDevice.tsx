@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice } from 'src/hooks/suite';
 
 import { WipeDeviceModal } from './WipeDeviceModal';

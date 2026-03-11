@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
@@ -157,6 +157,7 @@ export const useTradingSellForm = ({
     const draftUpdated = getDraftUpdated();
 
     const isDraft = !!draft;
+    const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues ?? draftUpdated ?? defaultValues,
@@ -518,10 +519,11 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got sellInfo from Invity API server
-        if (!isDraft && sellInfo && isInitialDataLoading) {
+        if (!isDraft && sellInfo && shouldResetOnInitialSellInfoLoad.current) {
+            shouldResetOnInitialSellInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft, isFormPage, isInitialDataLoading]);
+    }, [reset, sellInfo, defaultValues, isDraft]);
 
     useDebounce(
         () => {

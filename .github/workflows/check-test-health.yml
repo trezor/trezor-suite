@@ -34,11 +34,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Uses the version from .nvmrc (Node 24+, which natively strips TypeScript types).
           node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        shell: bash
+        run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Check test health and manage quarantine
         env:
@@ -46,4 +57,4 @@ jobs:
           E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK: ${{ secrets.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          npx tsx packages/e2e-utils/src/quarantineBot/index.ts
+          yarn workspace @trezor/e2e-utils test-health

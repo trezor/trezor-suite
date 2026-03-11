@@ -2,25 +2,31 @@
  * Use override for react-native (@suite-native/app/src/actions)
  */
 
-import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { Route } from '@suite-common/suite-types';
-
-import { ROUTER } from 'src/actions/suite/constants';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import type { AnchorType } from 'src/constants/suite/anchors';
-import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
-import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { asSuiteServices } from 'src/support/extraDependencies';
-import { Dispatch, GetState } from 'src/types/suite';
 import {
+    type AnchorType,
     RouteParams,
+    RouterAppWithParams,
     RouterPathOptional,
+    SettingsBackRoute,
+    selectRouter,
+    selectRouterApp,
+    selectRouterHash,
+} from '@suite/router';
+import {
     findRoute,
     getAppWithParams,
     getRoute,
     getRouteHash,
     isEqualLocation,
-} from 'src/utils/suite/router';
+} from '@suite/router';
+import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { Route } from '@suite-common/suite-types';
+
+import { ROUTER } from 'src/actions/suite/constants';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
+import { asSuiteServices } from 'src/support/extraDependencies';
+import { Dispatch, GetState } from 'src/types/suite';
 
 export type RouterAction =
     | {
@@ -54,7 +60,7 @@ export const onLocationChange =
     (location: RouterPathOptional & { anchor?: AnchorType }) =>
     (dispatch: Dispatch, getState: GetState) => {
         const unlocked = dispatch(onBeforePopState());
-        const { router } = getState();
+        const router = selectRouter(getState());
         if (!unlocked && router.loaded) return;
 
         if (isEqualLocation(router, location) && router.app !== 'unknown') {
@@ -80,7 +86,7 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
  */
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
-    if (getState().router.app === 'unknown') {
+    if (selectRouterApp(getState()) === 'unknown') {
         const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         dispatch(onLocationChange(location));
     }
@@ -112,9 +118,9 @@ export const goto =
         const route = getRoute(routeName);
         const newHash = getRouteHash(route, params);
         const pathname = route?.pattern || '/';
-        const hash = preserveParams ? state.router.hash : (newHash ?? '');
+        const hash = preserveParams ? selectRouterHash(state) : (newHash ?? '');
 
-        if (isEqualLocation(state.router, { pathname, hash, search: '' })) {
+        if (isEqualLocation(selectRouter(state), { pathname, hash, search: '' })) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
                 // postpone propagation to allow clearing anchor in redux state by click listener

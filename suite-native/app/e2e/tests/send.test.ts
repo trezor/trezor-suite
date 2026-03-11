@@ -2,8 +2,6 @@ import { expect as detoxExpect } from 'detox';
 
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
@@ -67,10 +65,9 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1
         : regtestDiscoveryFinishedStateT3W1,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-describe('Send transaction flow. [@androidOnly @T3T1]', () => {
+describe('Send transaction flow. [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeAll(async () => {
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

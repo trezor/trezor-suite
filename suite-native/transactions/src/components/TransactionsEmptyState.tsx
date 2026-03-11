@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
@@ -20,7 +20,7 @@ type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.A
 export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey }) => {
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
     const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
 

@@ -1,8 +1,9 @@
 import { Translation } from '@suite/intl';
+import { isRecoveryInProgress } from '@suite/recovery';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
@@ -13,7 +14,6 @@ import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
-import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
@@ -60,7 +60,7 @@ export const SettingsDevice = () => {
     const bootloaderMode = device?.mode === 'bootloader';
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
-    const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
+    const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 

@@ -15,9 +15,15 @@
             "path": "../../suite-common/analytics"
         },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-config"
         },
         {
             "path": "../../suite-common/suite-sync-evolu"

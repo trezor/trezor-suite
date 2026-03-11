@@ -73,7 +73,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
                 ) : (
                     <Checkbox
                         isChecked={checked}
-                        onClick={onChangeFeature}
+                        onChange={onChangeFeature}
                         data-testid={`@settings/experimental-features/${feature}-checkbox`}
                     />
                 )}

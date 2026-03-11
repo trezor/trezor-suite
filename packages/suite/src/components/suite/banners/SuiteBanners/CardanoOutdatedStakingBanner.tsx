@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { DashboardAnchor } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 

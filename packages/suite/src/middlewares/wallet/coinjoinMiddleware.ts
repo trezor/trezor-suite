@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
+import { selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import {
     Feature,
     messageSystemActions,
@@ -212,7 +213,7 @@ export const coinjoinMiddleware =
             const state = api.getState();
             const isDeviceOrUiLocked = selectIsDeviceOrUiLocked(state);
             if (!isDeviceOrUiLocked) {
-                const previousRoute = state.router.settingsBackRoute.name;
+                const previousRoute = selectSettingsBackRoute(state).name;
                 if (previousRoute === 'wallet-send') {
                     api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
                 } else {
@@ -220,7 +221,7 @@ export const coinjoinMiddleware =
                     if (accountKey) {
                         const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
                         if (
-                            state.router.route?.name === 'wallet-send' &&
+                            selectRouteName(state) === 'wallet-send' &&
                             !session?.paused &&
                             !session?.starting
                         ) {

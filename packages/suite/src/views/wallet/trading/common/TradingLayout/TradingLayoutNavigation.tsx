@@ -28,6 +28,11 @@ const navigationItems: NavigationItem[] = [
         icon: 'minus',
         translationId: 'TR_NAV_SELL',
     },
+    {
+        id: 'wallet-trading-exchange',
+        icon: 'arrowsLeftRight',
+        translationId: 'TR_TRADING_SWAP',
+    },
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
@@ -52,6 +57,15 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     payload: {
                         action: 'navigate',
                         type: 'sell',
+                        from: 'buy/sell',
+                    },
+                });
+            case 'wallet-trading-exchange':
+                return analytics.report({
+                    type: events.tradeNavigateEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        type: 'exchange',
                         from: 'buy/sell',
                     },
                 });

@@ -4,11 +4,11 @@ import { lighten, rgba } from 'polished';
 import styled, { DefaultTheme, css, keyframes } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import {
     coinjoinSessionAutostop,

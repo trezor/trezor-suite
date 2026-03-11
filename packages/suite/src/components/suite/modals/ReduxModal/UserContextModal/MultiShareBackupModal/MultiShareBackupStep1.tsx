@@ -7,7 +7,6 @@ import { spacings } from '@trezor/theme';
 type MultiShareBackupStep1Props = {
     isChecked1: boolean;
     isChecked2: boolean;
-    isSubmitted: boolean;
     setIsChecked1: Dispatch<SetStateAction<boolean>>;
     setIsChecked2: Dispatch<SetStateAction<boolean>>;
 };
@@ -15,16 +14,9 @@ type MultiShareBackupStep1Props = {
 export const MultiShareBackupStep1 = ({
     isChecked1,
     isChecked2,
-    isSubmitted,
     setIsChecked1,
     setIsChecked2,
 }: MultiShareBackupStep1Props) => {
-    const getCheckboxVariant = (isChecked: boolean) =>
-        isSubmitted && !isChecked ? 'destructive' : undefined;
-
-    const checkboxVariant1 = getCheckboxVariant(isChecked1);
-    const checkboxVariant2 = getCheckboxVariant(isChecked2);
-
     const toggleCheckbox1 = () => setIsChecked1(prev => !prev);
     const toggleCheckbox2 = () => setIsChecked2(prev => !prev);
 
@@ -50,16 +42,14 @@ export const MultiShareBackupStep1 = ({
                 <Column gap={spacings.sm}>
                     <Checkbox
                         isChecked={isChecked1}
-                        onClick={toggleCheckbox1}
-                        variant={checkboxVariant1}
+                        onChange={toggleCheckbox1}
                         data-testid="@multi-share-backup/checkbox/1"
                     >
                         <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_1" />
                     </Checkbox>
                     <Checkbox
                         isChecked={isChecked2}
-                        onClick={toggleCheckbox2}
-                        variant={checkboxVariant2}
+                        onChange={toggleCheckbox2}
                         data-testid="@multi-share-backup/checkbox/2"
                     >
                         <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_2" />

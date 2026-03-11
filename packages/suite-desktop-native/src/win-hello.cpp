@@ -8,6 +8,7 @@
 #include <chrono>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Security.Credentials.UI.h>
+#include <tlhelp32.h>
 
 #pragma comment(lib, "runtimeobject.lib")
 #pragma comment(lib, "ole32.lib")
@@ -95,77 +96,6 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
     }
 }
 
-// Helper function to find and elevate Windows Hello dialog
-HWND FindAndElevateHelloWindow() {
-    HWND helloWindow = FindWindowW(L"Credential Dialog Xaml Host", NULL);
-    if (helloWindow != NULL && IsWindow(helloWindow)) {
-        // Make it topmost and bring to foreground
-        SetWindowPos(helloWindow, HWND_TOPMOST, 0, 0, 0, 0, 
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-        
-        // Force the window to be the foreground window
-        // Local helper to check if our target is already foreground
-        auto isForeground = [&]() -> bool { return GetForegroundWindow() == helloWindow; };
-
-        // If already foreground, no further action is necessary
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 1. Basic foreground window setting
-        SetForegroundWindow(helloWindow);
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 2. Thread attachment technique for input focus
-        DWORD currentThreadId = GetCurrentThreadId();
-        DWORD windowThreadId = GetWindowThreadProcessId(helloWindow, NULL);
-        if (AttachThreadInput(currentThreadId, windowThreadId, TRUE)) {
-            // Activate and focus
-            BringWindowToTop(helloWindow);
-            SetActiveWindow(helloWindow);
-            SetFocus(helloWindow);
-            AttachThreadInput(currentThreadId, windowThreadId, FALSE);
-        }
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 3. Simulate Alt key press which can help with focus
-        keybd_event(VK_MENU, 0, 0, 0);                // Alt press
-        SetForegroundWindow(helloWindow);             // Set foreground
-        keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0); // Alt release
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 4. Force update of window (doesn't affect foreground but may help rendering)
-        UpdateWindow(helloWindow);
-
-        // 5. Disable then re-enable the window to force focus only if still not foreground
-        if (!isForeground()) {
-            EnableWindow(helloWindow, FALSE);
-            EnableWindow(helloWindow, TRUE);
-            if (isForeground()) {
-                return helloWindow;
-            }
-
-            // 6. Flash the window to get user attention as a last resort
-            FLASHWINFO fi;
-            fi.cbSize = sizeof(FLASHWINFO);
-            fi.hwnd = helloWindow;
-            fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-            fi.uCount = 3;
-            fi.dwTimeout = 0;
-            FlashWindowEx(&fi);
-        }
-
-        return helloWindow;
-    }
-    return NULL;
-}
-
 Napi::String requestHello(const Napi::CallbackInfo& info) {
     try {
         std::string message = "Verify your identity";
@@ -178,22 +108,56 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
         std::atomic<bool> threadCompleted(false);
         std::exception_ptr threadException = nullptr;
         
-        // Always enable foreground window switching
+        // Grant broad foreground permission
         AllowSetForegroundWindow(ASFW_ANY);
         
-        // Create a flag to signal the window monitor thread to stop
-        std::atomic<bool> stopWindowMonitor(false);
-        
-        // Start a thread to continuously monitor and elevate the Windows Hello dialog
-        std::thread windowMonitorThread([&stopWindowMonitor]() {
-            // Wait a bit for the dialog to appear
-            Sleep(500);
-            
-            // Keep checking for the Windows Hello dialog and elevating it
-            while (!stopWindowMonitor) {
-                FindAndElevateHelloWindow();
-                Sleep(100); // Check every 100ms
+        // Bring the Windows Hello dialog to front once it appears.
+        // Because this code runs inside a child process (not the foreground
+        // process), Windows blocks ordinary SetForegroundWindow calls.
+        // The keybd_event Alt-key trick is the standard workaround: it makes
+        // Windows believe this process is handling user input, which lifts the
+        // foreground lock. We deliberately avoid HWND_TOPMOST because that
+        // breaks the PIN input field inside the credential dialog.
+        std::thread foregroundThread([]() {
+            HWND helloWindow = NULL;
+            for (int i = 0; i < 50; i++) {
+                Sleep(100);
+                helloWindow = FindWindowW(L"Credential Dialog Xaml Host", NULL);
+                if (helloWindow != NULL && IsWindow(helloWindow) && IsWindowVisible(helloWindow)) {
+                    break;
+                }
             }
+            if (helloWindow == NULL) return;
+            
+            // Let the dialog fully initialise its input controls
+            Sleep(300);
+            
+            // Simulate Alt press/release – this is consumed by the window
+            // manager and allows the subsequent SetForegroundWindow to succeed
+            // even from a background process. It does NOT inject a character
+            // into the PIN field.
+            keybd_event(VK_MENU, 0, 0, 0);
+            keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0);
+            
+            // Use HWND_TOPMOST to bring above Electron, WITHOUT SWP_NOACTIVATE.
+            // The original code used SWP_NOACTIVATE which prevented the dialog
+            // from being properly activated – that was the root cause of the
+            // PIN input not accepting keyboard input.
+            SetWindowPos(helloWindow, HWND_TOPMOST, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE);
+            Sleep(50);
+            SetWindowPos(helloWindow, HWND_NOTOPMOST, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE);
+            
+            // Final SetForegroundWindow to ensure the dialog has proper
+            // foreground status and keyboard focus after Z-order change
+            SetForegroundWindow(helloWindow);
+            
+            // Simulate a Tab key press to move focus into the PIN input
+            // field if it is present in the dialog.
+            Sleep(50);
+            keybd_event(VK_TAB, 0, 0, 0);
+            keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
         });
         
         std::thread staThread([promptMessage, &resultString, &threadCompleted, &threadException]() {
@@ -263,13 +227,7 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
         });
         
         staThread.join();
-        
-        // Signal the window monitor thread to stop and wait for it to finish
-        stopWindowMonitor = true;
-        windowMonitorThread.join();
-        
-        // Final attempt to elevate the Windows Hello dialog
-        FindAndElevateHelloWindow();
+        foregroundThread.join();
         
         if (threadException) {
             try {

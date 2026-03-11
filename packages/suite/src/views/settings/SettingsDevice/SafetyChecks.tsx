@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { SettingsAnchor } from '@suite/router';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 
 interface SafetyChecksProps {

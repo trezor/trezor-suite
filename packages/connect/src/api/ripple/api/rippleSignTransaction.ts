@@ -55,7 +55,7 @@ export default class RippleSignTransaction extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('RippleSignTx', 'RippleSignedTx', this.params);
 
         return {

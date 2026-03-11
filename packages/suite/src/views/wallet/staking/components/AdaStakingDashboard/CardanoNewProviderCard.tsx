@@ -1,3 +1,4 @@
+import { selectRouteName } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
     hasPendingStakeTypeTransaction,
@@ -11,7 +12,6 @@ import {
 } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 

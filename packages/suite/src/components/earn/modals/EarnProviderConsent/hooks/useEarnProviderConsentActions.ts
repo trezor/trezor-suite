@@ -1,4 +1,5 @@
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { openModal } from '@suite/modal';
+import { EarnFlow, EarnModalAction, EarnYieldContext } from '@suite-common/suite-types/src/staking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
@@ -6,11 +7,14 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
+
+import { getEarnRouteParams } from '../../../utils/getEarnRouteParams';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
@@ -18,8 +22,7 @@ interface UseEarnProviderConsentActionsProps {
     includeVotingDelegation?: boolean;
     account: Account;
     networkSymbol?: NetworkSymbol;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
 }
 
 export const useEarnProviderConsentActions = ({
@@ -28,14 +31,13 @@ export const useEarnProviderConsentActions = ({
     includeVotingDelegation = false,
     account,
     networkSymbol,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
-    const report = (action: 'continue' | 'cancel') => {
+    const report = (action: EarnModalAction) => {
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
@@ -51,15 +53,35 @@ export const useEarnProviderConsentActions = ({
 
     const proceedToSupply = () => {
         onCancel();
-        dispatch(
-            openModal({
-                type: 'supply',
-                flow,
-                account,
-                yieldId,
-                tokenContractAddress,
-            }),
-        );
+
+        switch (flow) {
+            case EarnFlow.Yield:
+                if (yieldContext) {
+                    dispatch(
+                        goto('earn-supply', {
+                            params: getEarnRouteParams({
+                                account,
+                                yieldId: yieldContext.id,
+                                contractAddress: yieldContext.tokenContractAddress,
+                            }),
+                        }),
+                    );
+                }
+                break;
+            case EarnFlow.Stake:
+            case EarnFlow.UpdateProvider:
+                dispatch(
+                    openModal({
+                        type: 'stake',
+                        flow,
+                        account,
+                    }),
+                );
+                break;
+            default:
+                exhaustive(flow);
+        }
+
         report('continue');
     };
 

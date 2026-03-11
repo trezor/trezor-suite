@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { Box, Column, Icon } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

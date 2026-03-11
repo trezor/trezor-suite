@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
+import { preserveModal, removePreserveModal } from '@suite/modal';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     SuiteLogsApplicationInfoRootState,
@@ -19,10 +19,10 @@ export const useApplicationLogs = ({ hideSensitiveInfo }: { hideSensitiveInfo: b
     useEffect(() => {
         // Preserve modal while fetching device telemetry from Connect
         // This is required due to CLOSE_UI_WINDOW event
-        dispatch(modalActions.preserve());
+        dispatch(preserveModal());
 
         return () => {
-            dispatch(modalActions.removePreserve());
+            dispatch(removePreserveModal());
         };
     }, [dispatch]);
 

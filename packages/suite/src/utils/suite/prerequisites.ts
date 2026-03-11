@@ -1,11 +1,8 @@
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
+import { RouterState } from '@suite/router';
+
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
-
-import {
-    isAdditionalShamirBackupInProgress,
-    isRecoveryInProgress,
-} from '../device/isRecoveryInProgress';
 
 type GetPrerequisiteNameParams = {
     router: AppState['router'];

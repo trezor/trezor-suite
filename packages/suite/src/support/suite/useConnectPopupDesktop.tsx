@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
     connectPopupCallThunk,
@@ -12,7 +13,6 @@ import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectP
 import { CallMethodKeys } from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

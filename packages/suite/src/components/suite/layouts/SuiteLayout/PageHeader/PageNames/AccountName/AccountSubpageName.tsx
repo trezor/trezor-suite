@@ -1,3 +1,4 @@
+import { selectSettingsBackRoute } from '@suite/router';
 import { Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 
@@ -12,7 +13,7 @@ interface AccountSubpageNameProps {
 
 export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps) => {
     const dispatch = useDispatch();
-    const previousRoute = useSelector(state => state.router.settingsBackRoute);
+    const previousRoute = useSelector(selectSettingsBackRoute);
 
     const handleBackClick = () =>
         dispatch(goto(previousRoute.name, { params: previousRoute.params }));

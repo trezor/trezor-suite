@@ -11,6 +11,7 @@ import {
     TokenAddress,
     XpubAddress,
 } from '@suite-common/wallet-types';
+import { ExperimentalFeature } from '@suite-native/settings';
 import { AccountInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -59,6 +60,11 @@ export type DeviceSuspicionCause =
     | 'untrustedReseller'
     | 'securitySeal'
     | 'packaging';
+
+export type DeviceCompromisedModalFailedCheck =
+    | 'device-authenticity'
+    | 'entropy'
+    | 'firmware-authenticity';
 
 type AccountDetailParams = {
     accountKey?: AccountKey;
@@ -248,7 +254,6 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
-    [DeviceSettingsStackRoutes.DeviceAutoConnectGuard]: undefined;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
@@ -388,12 +393,15 @@ export type RootStackParamList = {
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.BackupFailedModal]: undefined;
-    [RootStackRoutes.DeviceCompromisedModal]: undefined;
+    [RootStackRoutes.DeviceCompromisedModal]: {
+        failedCheck: DeviceCompromisedModalFailedCheck;
+    };
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
+    [RootStackRoutes.ExperimentalFeedbackModal]: { feature: ExperimentalFeature };
 };
 
 export type TransactionDetailStackParamList = {

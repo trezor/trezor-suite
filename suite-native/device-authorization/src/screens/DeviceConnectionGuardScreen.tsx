@@ -27,8 +27,16 @@ export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardS
 
     useOnThpPairingCanceled(navigateToInitialScreen);
 
+    const defaultOnCancel = () => {
+        TrezorConnect.cancel();
+        navigateToInitialScreen();
+    };
+
     return (
-        <Screen header={<ConnectDeviceScreenHeader onCancel={onCancel} />} isScrollable={false}>
+        <Screen
+            header={<ConnectDeviceScreenHeader onCancel={onCancel ?? defaultOnCancel} />}
+            isScrollable={false}
+        >
             {isBluetoothVariantVisible ? (
                 <TurnOnAndUnlockDeviceScreenContent />
             ) : (
@@ -36,15 +44,4 @@ export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardS
             )}
         </Screen>
     );
-};
-
-export const DeviceConnectionGuardScreenWithCancel = () => {
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-
-    const onCancel = () => {
-        TrezorConnect.cancel();
-        navigateToInitialScreen();
-    };
-
-    return <DeviceConnectionGuardScreen onCancel={onCancel} />;
 };

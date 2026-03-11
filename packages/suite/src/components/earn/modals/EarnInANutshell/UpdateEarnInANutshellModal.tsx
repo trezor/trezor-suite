@@ -1,5 +1,10 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    EarnModalAction,
+    EarnProvider,
+    EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
 import { Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
@@ -19,24 +24,24 @@ interface UpdateEarnInANutshellModalProps {
     account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    actionType?: EarnModalAction;
+    yieldContext?: EarnYieldContext;
 }
 
 export const UpdateEarnInANutshellModal = ({
     account,
     onCancel,
     provider,
-    yieldId,
-    tokenContractAddress,
+    actionType,
+    yieldContext,
 }: UpdateEarnInANutshellModalProps) => {
-    const { handleContinue, onCancelClick, apy } = useEarnInANutshell({
+    const { handleAction, onCancelClick, apy } = useEarnInANutshell({
         flow: EarnFlow.UpdateProvider,
         provider,
         onCancel,
         account,
-        yieldId,
-        tokenContractAddress,
+        actionType,
+        yieldContext,
     });
 
     if (!isStakingNetworkType(account.networkType)) return null;
@@ -58,7 +63,8 @@ export const UpdateEarnInANutshellModal = ({
         <EarnInANutshellModalLayout
             heading={<Translation id="TR_EARN_STAKING_IN_A_NUTSHELL" />}
             onCancel={onCancelClick}
-            onContinue={handleContinue}
+            actionType={actionType}
+            onAction={handleAction}
         >
             <UpdateEarnInANutshellHighlights
                 networkType={account.networkType}

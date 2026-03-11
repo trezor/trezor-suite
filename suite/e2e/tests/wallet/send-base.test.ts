@@ -219,7 +219,7 @@ test.describe(
                     errorMessageMaxCalculation,
                 ).toHaveText(ethereumMaximumFee);
                 const maxFeeWrapped = device.wrapText(`${ethereumMaximumFee} ETH`, {
-                    isAmount: true,
+                    wrapByWords: true,
                 });
                 await expect(device).toShowOnDisplay({
                     T3W1: {

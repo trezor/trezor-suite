@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -10,12 +11,12 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { type YieldAccountOpportunity } from './types';
+import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
@@ -100,8 +101,42 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 provider: EarnProvider.YieldXyz,
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
-                yieldId: opportunity.vault.id,
-                tokenContractAddress: opportunity.vault.token.address ?? undefined,
+                yieldContext: {
+                    id: opportunity.vault.id,
+                    tokenContractAddress: opportunity.vault.token.address ?? undefined,
+                },
+            }),
+        );
+    };
+
+    const navigateToYieldSupply = () => {
+        if (!opportunity.account) {
+            return;
+        }
+
+        dispatch(
+            goto('earn-supply', {
+                params: getEarnRouteParams({
+                    account: opportunity.account,
+                    yieldId: opportunity.vault.id,
+                    contractAddress: opportunity.vault.token.address ?? undefined,
+                }),
+            }),
+        );
+    };
+
+    const navigateToYieldWithdraw = () => {
+        if (!opportunity.account) {
+            return;
+        }
+
+        dispatch(
+            goto('earn-withdraw', {
+                params: getEarnRouteParams({
+                    account: opportunity.account,
+                    yieldId: opportunity.vault.id,
+                    contractAddress: opportunity.vault.token.address ?? undefined,
+                }),
             }),
         );
     };
@@ -114,6 +149,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     symbol={opportunity.networkSymbol}
                     iconToken={opportunity.vault.token}
                     showAssetNetworkIcon
+                    subtitle={opportunity.vault.metadata.name}
                     tokenBalance={{
                         value: opportunity.additionalSupplyAmount,
                         symbol: opportunity.suppliedSymbol,
@@ -200,10 +236,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 <Row justifyContent="flex-end" gap={8}>
                     {hasSuppliedBalance && (
                         <>
-                            <Button size="small" onClick={openYieldSupplyFlow}>
+                            <Button size="small" onClick={navigateToYieldSupply}>
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
                             </Button>
-                            <Button size="small" intent="brand" priority="secondary">
+                            <Button
+                                size="small"
+                                intent="brand"
+                                priority="secondary"
+                                onClick={navigateToYieldWithdraw}
+                            >
                                 <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
                             </Button>
                         </>

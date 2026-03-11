@@ -151,12 +151,15 @@
         },
         { "path": "../../suite/intl" },
         { "path": "../../suite/metadata" },
+        { "path": "../../suite/modal" },
         {
             "path": "../../suite/platform-encryption-electron"
         },
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
+        { "path": "../../suite/recovery" },
+        { "path": "../../suite/router" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/tx-simulation" },

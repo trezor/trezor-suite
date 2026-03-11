@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
@@ -7,7 +8,6 @@ import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';

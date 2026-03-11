@@ -24,6 +24,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/experimental-features": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
@@ -33,6 +34,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.1.0",
+        "react-native": "0.81.5",
         "react-redux": "9.2.0"
     }
 }

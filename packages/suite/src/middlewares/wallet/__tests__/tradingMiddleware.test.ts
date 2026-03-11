@@ -1,6 +1,8 @@
 import { CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
+import { MODAL_CONTEXT_NONE, State as ModalState, modalReducer } from '@suite/modal';
+import { RouterState, routerReducer } from '@suite/router';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -13,12 +15,10 @@ import {
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { MODAL, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
-import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
 import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
@@ -71,7 +71,7 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
         } as any,
     },
     router: router ?? routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, {} as Action),
-    modal: modalReducer({ context: MODAL.CONTEXT_NONE }, {} as Action),
+    modal: modalReducer({ context: MODAL_CONTEXT_NONE }, {} as Action),
 });
 
 type State = ReturnType<typeof getInitialState>;

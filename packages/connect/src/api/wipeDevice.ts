@@ -46,18 +46,18 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
-        if (this.device.isBootloader()) {
+        if (this.getDevice().isBootloader()) {
             // firmware doesn't send this button request in bootloader mode
-            this.device.emit(DEVICE.BUTTON, {
-                device: this.device,
+            this.getDevice().emit(DEVICE.BUTTON, {
+                device: this.getDevice(),
                 payload: { code: 'ButtonRequest_WipeDevice' },
             });
         }
 
         const response = await cmd.typedCall('WipeDevice', 'Success');
-        const thpState = this.device.getThpState();
+        const thpState = this.getDevice().getThpState();
         if (thpState) {
             // device will require THP pairing in the next call
             // reset state and do not call GetFeatures (finalReload)

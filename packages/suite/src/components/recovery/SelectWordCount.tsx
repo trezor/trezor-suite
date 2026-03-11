@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { WordCount } from '@suite/recovery';
 import { Grid } from '@trezor/components';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { WordCount } from 'src/types/recovery';
 
 type SelectWordCountProps = {
     onSelect: (number: WordCount) => void;

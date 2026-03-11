@@ -21,7 +21,7 @@ import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -102,7 +102,7 @@ export const ReceiveAddressScreen = ({
     }, [closeModal]);
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
 
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;

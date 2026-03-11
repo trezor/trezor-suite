@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { selectRouterParams } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 
@@ -15,7 +16,7 @@ import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 export const HeaderActions = () => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const routerParams = useSelector(selectRouterParams) as WalletParams;
     const { device } = useDevice();
 
     const accountType = selectedAccount.account?.accountType || routerParams?.accountType || '';

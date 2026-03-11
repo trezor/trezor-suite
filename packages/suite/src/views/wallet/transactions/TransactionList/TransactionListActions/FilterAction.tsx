@@ -93,7 +93,7 @@ export const FilterAction = () => {
                                 isChecked={
                                     Boolean(suspiciousTransactionsHidden) === Boolean(option.id)
                                 }
-                                onClick={() => {
+                                onChange={() => {
                                     handleToggleSuspiciousTransactionsRequest(Boolean(option.id));
                                 }}
                                 data-testid={dataTest}

@@ -1,36 +1,50 @@
-import { useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
-import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
+import {
+    DeviceConnectionGuardScreen,
+    useDeviceConnectionGuard,
+} from '@suite-native/device-authorization';
 import {
     DeviceAutoConnectStackParamList,
     DeviceAutoConnectStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { useDeviceAutoConnect } from '../hooks/useDeviceAutoConnect';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 
 const DeviceAutoConnectStack = createNativeStackNavigator<DeviceAutoConnectStackParamList>();
 
 export const DeviceAutoConnectStackNavigator = () => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
+    const [isEnableAutoconnectStarted, setIsEnableAutoconnectStarted] = useState(false);
+
+    const { enableAutoConnect } = useDeviceAutoConnect();
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!isDeviceConnectionGuardVisible && !isEnableAutoconnectStarted) {
+                setIsEnableAutoconnectStarted(true);
+                enableAutoConnect();
+            }
+        }, [isDeviceConnectionGuardVisible, isEnableAutoconnectStarted, enableAutoConnect]),
+    );
 
     return (
         <DeviceAutoConnectStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <DeviceAutoConnectStack.Screen
                     name={DeviceAutoConnectStackRoutes.DeviceConnectionGuard}
-                    component={DeviceConnectionGuardScreenWithCancel}
+                    component={DeviceConnectionGuardScreen}
                 />
             )}
-            {isDeviceConnected && (
-                <DeviceAutoConnectStack.Screen
-                    name={DeviceAutoConnectStackRoutes.ConfirmAutoConnect}
-                    component={ContinueOnTrezorScreen}
-                />
-            )}
+            <DeviceAutoConnectStack.Screen
+                name={DeviceAutoConnectStackRoutes.ConfirmAutoConnect}
+                component={ContinueOnTrezorScreen}
+            />
         </DeviceAutoConnectStack.Navigator>
     );
 };

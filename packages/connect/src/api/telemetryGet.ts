@@ -23,7 +23,7 @@ export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.T
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         const response = await cmd.typedCall('TelemetryGet', 'Telemetry', this.params);
 

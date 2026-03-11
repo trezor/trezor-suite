@@ -1,7 +1,8 @@
+import { State, modalReducer } from '@suite/modal';
+
 import { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/modalReducer';
-import modalReducer, { State } from '../modalReducer';
 
 describe('modalReducer', () => {
     fixtures.forEach(f => {

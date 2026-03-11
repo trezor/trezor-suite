@@ -1,11 +1,11 @@
 import { ReactNode, Ref } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { selectRouteName } from '@suite/router';
 import { Badge, BadgeIntent } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { EarnProviderId } from '../../providers/providerMetadata';

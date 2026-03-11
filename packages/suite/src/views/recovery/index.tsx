@@ -2,6 +2,16 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import {
+    type RecoveryType,
+    type SeedInputStatus,
+    type WordCount,
+    checkSeedThunk,
+    isStandardRecoveryDisabled,
+    recoveryActions,
+    selectRecovery,
+} from '@suite/recovery';
 import { usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
@@ -10,19 +20,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import {
-    SeedInputStatus,
-    checkSeed,
-    setAdvancedRecovery,
-    setStatus,
-    setWordsCount,
-} from 'src/actions/recovery/recoveryActions';
-import { MODAL } from 'src/actions/suite/constants';
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
-import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { InitialStep } from './steps/InitialStep';
@@ -32,7 +32,7 @@ import { SelectWordCountStep } from './steps/SelectWordCountStep';
 import { WordInputStep } from './steps/WordInputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
-    const recovery = useSelector(state => state.recovery);
+    const recovery = useSelector(selectRecovery);
     const modal = useSelector(state => state.modal);
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
@@ -66,7 +66,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const handleBackClick = () => {
-        dispatch(setStatus(statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1]));
+        dispatch(
+            recoveryActions.setStatus(
+                statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1],
+            ),
+        );
     };
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
@@ -101,7 +105,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'in-progress':
                 // When T1B1 requests PIN confirmation, the status is still 'waiting-for-confirmation'
                 // so we need to check the modal context to know if we should show the loading indicator
-                if (modal.context !== MODAL.CONTEXT_DEVICE) {
+                if (modal.context !== MODAL_CONTEXT_DEVICE) {
                     return (
                         <Box padding={spacings.xxl}>
                             <Loading />
@@ -177,8 +181,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <Modal.Button
                         onClick={() =>
                             isT1B1
-                                ? dispatch(setStatus('select-word-count'))
-                                : dispatch(checkSeed())
+                                ? dispatch(recoveryActions.setStatus('select-word-count'))
+                                : dispatch(checkSeedThunk())
                         }
                         isDisabled={!isUnderstood || isLocked()}
                         data-testid="@recovery/start-button"
@@ -193,7 +197,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         onClick={() => {
                             if (!wordCount) return;
 
-                            dispatch(setWordsCount(wordCount));
+                            dispatch(recoveryActions.setWordsCount(wordCount));
 
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
@@ -204,10 +208,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             );
 
                             if (shouldSkipSelection) {
-                                dispatch(setAdvancedRecovery(true));
-                                dispatch(checkSeed());
+                                dispatch(recoveryActions.setAdvancedRecovery(true));
+                                dispatch(checkSeedThunk());
                             } else {
-                                dispatch(setStatus('select-recovery-type'));
+                                dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
                         }}
                         data-testid="@recovery/continue-button"
@@ -220,8 +224,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <Modal.Button
                         isDisabled={!recoveryType}
                         onClick={() => {
-                            dispatch(setAdvancedRecovery(recoveryType === 'advanced'));
-                            dispatch(checkSeed());
+                            dispatch(
+                                recoveryActions.setAdvancedRecovery(recoveryType === 'advanced'),
+                            );
+                            dispatch(checkSeedThunk());
                         }}
                         data-testid="@recovery/continue-button"
                     >
@@ -231,7 +237,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'waiting-for-confirmation':
                 if (
                     isT1B1 &&
-                    modal.context === MODAL.CONTEXT_DEVICE &&
+                    modal.context === MODAL_CONTEXT_DEVICE &&
                     modal.windowType === UI_REQUEST.REQUEST_PIN
                 ) {
                     return (

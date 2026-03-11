@@ -7,6 +7,7 @@ import {
     changeCoinVisibility,
     changeNetworks,
     discoveryActions,
+    selectDiscoveryForSelectedDevice,
     selectIsAnyNetworkEnabled,
     selectIsBitcoinEnabled,
     selectShouldRediscover,
@@ -17,8 +18,16 @@ import {
     recoverWalletThunk,
     selectIsDeviceFirmwareSupported,
 } from '@suite-native/device';
+import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 import { DEVICE } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+
+import {
+    PendingCoinVisibilityRootState,
+    addPendingCoinVisibility,
+    clearPendingCoinVisibility,
+    selectPendingCoinVisibilitySymbols,
+} from './pendingCoinVisibilitySlice';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -36,6 +45,25 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
         const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
         const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
+
+        // Clear pending coins on discovery success, revert on passphrase failure
+        if (discoveryActions.updateDiscovery.match(action)) {
+            const discoveryStatus = action.payload?.status;
+
+            if (discoveryStatus?.status === 'complete') {
+                dispatch(clearPendingCoinVisibility());
+            } else if (isPassphraseDiscoveryFailure(discoveryStatus)) {
+                const pendingSymbols = selectPendingCoinVisibilitySymbols(
+                    getState() as PendingCoinVisibilityRootState,
+                );
+
+                for (const symbol of pendingSymbols) {
+                    dispatch(changeCoinVisibility({ symbol, shouldBeVisible: false }));
+                }
+
+                dispatch(clearPendingCoinVisibility());
+            }
+        }
 
         // ensure that BTC is enabled when device with BTC-only firmware is connected
         // (it could have been disabled via some other device with universal firmware)
@@ -70,8 +98,23 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 device.connected &&
                 isDeviceAcquired(device)
             ) {
+                // Track every enabled coin for revert on passphrase failure
+                if (
+                    changeCoinVisibility.fulfilled.match(action) &&
+                    action.meta.arg?.shouldBeVisible === true
+                ) {
+                    dispatch(addPendingCoinVisibility(action.meta.arg.symbol));
+                }
+
+                // Don't restart discovery when reverting after passphrase failure (we dispatch
+                // changeCoinVisibility(false) for each pending coin, which would retrigger discovery).
+                const isRevertingAfterPassphraseFailure =
+                    changeCoinVisibility.fulfilled.match(action) &&
+                    action.meta.arg?.shouldBeVisible === false &&
+                    isPassphraseDiscoveryFailure(selectDiscoveryForSelectedDevice(getState()));
+
                 const shouldRediscover = selectShouldRediscover(getState(), device);
-                if (shouldRediscover) {
+                if (shouldRediscover && !isRevertingAfterPassphraseFailure) {
                     dispatch(startOrRestartDiscoveryThunk());
                 }
             }

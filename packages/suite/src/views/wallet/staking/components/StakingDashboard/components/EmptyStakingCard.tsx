@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
@@ -27,7 +28,6 @@ import {
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';

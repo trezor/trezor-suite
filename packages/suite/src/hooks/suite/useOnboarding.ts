@@ -5,7 +5,6 @@ import { BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 
@@ -28,7 +27,7 @@ export const useOnboarding = () => {
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
             enableOnboardingReducer: (enabled: boolean) =>
                 dispatch(onboardingActions.enableOnboardingReducer(enabled)),
-            rerun: () => dispatch(recoveryActions.rerun()),
+            rerun: () => dispatch(onboardingActions.recoveryRerun()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),

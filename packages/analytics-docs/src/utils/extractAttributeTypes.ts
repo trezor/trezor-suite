@@ -220,8 +220,10 @@ const extractAttributeTypesFromType = (
 
         return out;
     }
-    // No named properties – type is e.g. Record<string, number>; show the whole type as one row.
-    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatTypeAsString(attributesType, varDecl);
+    // No named properties – empty object {} has no attributes to show; Record<K,V> has one row.
+    const formatted = formatTypeAsString(attributesType, varDecl);
+    if (formatted === '{}') return out;
+    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatted;
 
     return out;
 };

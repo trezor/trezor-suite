@@ -47,7 +47,7 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('LoadDevice', 'Success', this.params);
 
         return response.message;

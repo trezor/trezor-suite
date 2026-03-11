@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     DefinitionType,
@@ -44,7 +45,6 @@ import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';

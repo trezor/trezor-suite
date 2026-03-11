@@ -1,4 +1,6 @@
 import { metadataLabelingActions } from '@suite/metadata';
+import { openModal, preserveModal } from '@suite/modal';
+import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -17,7 +19,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -84,10 +85,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
                 [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(
-                        modalActions.openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }),
-                    );
-                    dispatch(modalActions.preserve());
+                    dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
+                    dispatch(preserveModal());
+                },
+                [UI_REQUEST.REQUEST_WORD]: () => {
+                    if (selectRecoveryStatus(getState()) === 'waiting-for-confirmation') {
+                        // Since the device asked for a first word, we can safely assume we've received confirmation from the user
+                        dispatch(recoveryActions.setStatus('in-progress'));
+                    }
                 },
             }),
         ).unwrap();

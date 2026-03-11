@@ -11,6 +11,7 @@ import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
 import { getEnv } from '../connectSettings';
 import { PopupManager } from '../popup';
+import { getSuiteWebUrl } from './getSuiteWebUrl';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
@@ -55,20 +56,8 @@ export class CoreInSuiteWeb implements ConnectImpl {
     }
 
     private getSuiteUrl() {
-        // this is for web
-        // todo: the only problem I see here is that a 3rd party when developing locally
-        // on the http://localhost:8088 will not fallback to the the production version of connect-popup
-        if (typeof window !== 'undefined' && window.location.origin === 'http://localhost:8088') {
-            return 'http://localhost:8000/connect-popup';
-        }
-        if (
-            typeof window !== 'undefined' &&
-            window.location.href.startsWith('https://dev.suite.sldev.cz/connect/')
-        ) {
-            const branch = window.location.href.match(/\/connect\/(.+?)(?:\/methods\/|$)/)?.[1];
-            if (branch) {
-                return `https://dev.suite.sldev.cz/suite-web/${branch}/web/connect-popup`;
-            }
+        if (typeof window !== 'undefined') {
+            return getSuiteWebUrl(window.location.href, window.location.origin);
         }
 
         return 'https://suite.trezor.io/web/connect-popup';

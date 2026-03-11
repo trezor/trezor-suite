@@ -25,7 +25,7 @@ export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangeP
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('ChangePin', 'Success', this.params);
 
         return response.message;

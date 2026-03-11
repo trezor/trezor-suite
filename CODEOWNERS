@@ -87,9 +87,15 @@
 
 /packages/websocket-client @mroz22 @marekrjpolak
 
+# Automation
+/.github/actions/post-currents-link.yml @HajekOndrej @Vere-Grey @vdovhanych
+/.github/actions/post-quarantine-list.yml @HajekOndrej @Vere-Grey @vdovhanych
+/.github/actions/upload-test-logs.yml @HajekOndrej @Vere-Grey @vdovhanych
+/.github/workflows/check-test-health.yml @HajekOndrej @Vere-Grey @vdovhanych
+/.github/workflows/test-suite-** @HajekOndrej @Vere-Grey @vdovhanych
 /suite/e2e @HajekOndrej @Vere-Grey
-
 /packages/e2e-utils @HajekOndrej @Vere-Grey
+/suite-common/e2e-evolu-client @HajekOndrej @Vere-Grey
 
 # Analytics
 /packages/analytics-uploader @jvaclavik

@@ -1,4 +1,5 @@
-import { FEEDBACK_THRESHOLD } from '../constants';
+import { FEEDBACK_THRESHOLD } from '@suite-common/feedback';
+
 import {
     experimentalFeedbackReducer,
     featureUsed,

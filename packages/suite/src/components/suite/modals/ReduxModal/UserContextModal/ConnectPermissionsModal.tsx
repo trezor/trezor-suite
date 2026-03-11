@@ -151,7 +151,7 @@ export const ConnectPermissionsModal = () => {
                                 <Checkbox
                                     data-testid="@connect-permissions-modal/remember-checkbox"
                                     isChecked={isRemembered}
-                                    onClick={() => setIsRemembered(!isRemembered)}
+                                    onChange={() => setIsRemembered(!isRemembered)}
                                 >
                                     <Translation id="TR_CONNECT_MODAL_REMEMBER" />
                                 </Checkbox>
