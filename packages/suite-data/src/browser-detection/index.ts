@@ -195,7 +195,7 @@ window.addEventListener('load', () => {
     const iOS = getMainHtml({
         title: 'Trezor Suite web doesn’t support iOS',
         subtitle:
-            'If you have a Trezor Safe 7, connect it via Bluetooth using the Trezor Suite desktop app. You can also use Trezor Suite on the following platforms:',
+            'Trezor Safe 7 can connect via Bluetooth using the Trezor Suite desktop app. Trezor Suite is also available on:',
         supportedDevicesList: true,
         iosAppBanner: true,
         metaTags: [
