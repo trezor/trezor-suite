@@ -1,3 +1,4 @@
+export * from './currentsApi';
 export { BackendWebsocketServerMock } from './mocks/backendServer';
 export { DropboxMock } from './mocks/dropbox';
 export { GoogleMock } from './mocks/google';

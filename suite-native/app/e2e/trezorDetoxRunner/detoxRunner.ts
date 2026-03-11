@@ -5,6 +5,9 @@ import minimist from 'minimist';
 import * as path from 'path';
 import xml2js from 'xml2js';
 
+import { getActions } from '@trezor/e2e-utils';
+import type { Action, RuleMatcherCondition } from '@trezor/e2e-utils';
+
 import { ProjectConfig, RunnerConfig } from './types';
 
 const getProjectsFromCmdlineArgs = (
@@ -22,7 +25,7 @@ const getProjectsFromCmdlineArgs = (
 };
 
 const parseArgs = () => {
-    const argv = minimist(process.argv.slice(2));
+    const argv = minimist(process.argv.slice(2), { boolean: ['headless', 'quarantine', 'help'] });
 
     if (argv.help) {
         console.log(`
@@ -34,6 +37,7 @@ Options:
   --shard <n>           Current shard index (0-based)
   --totalShards <n>     Total number of shards
   --headless            Run tests in headless mode
+  --quarantine          Enable quarantine processing via Currents actions (requires CURRENTS_PROJECT_ID and CURRENTS_API_KEY env vars)
   --help                Show this help message
 
 Arguments:
@@ -57,6 +61,7 @@ Arguments:
     const { shard } = argv;
     const { totalShards } = argv;
     const { headless } = argv;
+    const quarantine = !!argv.quarantine;
     const projects = getProjectsFromCmdlineArgs(argv.project);
     const testFiles = argv._;
 
@@ -90,10 +95,156 @@ Arguments:
         shard,
         totalShards,
         headless: !!headless,
+        quarantine,
         projects,
         testFiles,
     };
 };
+
+/**
+ * Fetch quarantined actions from Currents for the configured project.
+ * Returns an empty array and logs a warning if the required env vars are missing.
+ */
+const fetchQuarantinedActions = async (): Promise<Action[]> => {
+    const projectId = process.env.CURRENTS_PROJECT_ID;
+    const apiKey = process.env.CURRENTS_API_KEY;
+
+    if (!projectId || !apiKey) {
+        console.warn(
+            '[quarantine] Missing CURRENTS_PROJECT_ID or CURRENTS_API_KEY env vars — skipping quarantine processing.',
+        );
+
+        return [];
+    }
+
+    try {
+        const actions = await getActions(projectId);
+        const quarantined = actions.filter(a => a.action.some(r => r.op === 'quarantine'));
+        console.log(`[quarantine] Loaded ${quarantined.length} quarantine action(s) from Currents.`);
+
+        return quarantined;
+    } catch (err) {
+        console.warn('[quarantine] Failed to fetch actions from Currents:', err);
+
+        return [];
+    }
+};
+
+/**
+ * Build the titlePath array for a testcase, mirroring the format that the Currents Test Explorer
+ * returns for JUnit-uploaded tests and that the quarantine bot stores in action conditions.
+ *
+ * When tests are uploaded to Currents via `currents convert --input-format=junit`, Currents
+ * constructs the title as "<testsuite name> > <testcase name>".  The quarantine bot then splits
+ * that on " > " (via normalizeTitlePath) to produce a two-element array that it stores as the
+ * `titlePath` condition value.  We need to reproduce that same two-element array here so that
+ * `incAll` / `eq` conditions created by the bot actually match.
+ */
+const getTitlePath = (suiteName: string, tc: any): string[] => {
+    const testName: string = tc.$?.name ?? '';
+
+    return [suiteName, testName].filter(Boolean);
+};
+
+interface TestIdentity {
+    testTitle: string;
+    titlePath: string[];
+}
+
+/**
+ * Evaluate a single condition against the test identity.
+ * Supports:
+ *   - type "title"     — matches against the flat JUnit `name` string
+ *   - type "titlePath" — matches against the reconstructed path array (joined with " > " for string ops)
+ * Supported ops: "eq", "contains", "startsWith", "endsWith".
+ */
+const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIdentity): boolean => {
+    if (cond.type === 'title') {
+        const values = Array.isArray(cond.value) ? cond.value : [cond.value];
+        const { testTitle } = identity;
+
+        let result: boolean;
+        switch (cond.op) {
+            case 'eq':
+                result = values.some(v => v === testTitle);
+                break;
+            case 'contains':
+                result = values.some(v => testTitle.includes(v));
+                break;
+            case 'startsWith':
+                result = values.some(v => testTitle.startsWith(v));
+                break;
+            case 'endsWith':
+                result = values.some(v => testTitle.endsWith(v));
+                break;
+            default:
+                result = false;
+        }
+
+        return result;
+    }
+
+    if (cond.type === 'titlePath') {
+        const { titlePath } = identity;
+        const titlePathStr = titlePath.join(' > ');
+
+        // value may be a string[] (array equality/inclusion) or a string
+        let result: boolean;
+        const values = Array.isArray(cond.value) ? cond.value : [cond.value];
+        switch (cond.op) {
+            // incAll: every element in the condition value must be present in titlePath
+            // This is the op created by the auto-quarantine bot.
+            case 'incAll':
+                result = values.every(v => titlePath.includes(v));
+                break;
+            case 'eq':
+                if (Array.isArray(cond.value)) {
+                    result =
+                        cond.value.length === titlePath.length &&
+                        cond.value.every((v, i) => v === titlePath[i]);
+                } else {
+                    result = values.some(v => v === titlePathStr);
+                }
+                break;
+            case 'contains':
+                result = values.some(v => titlePathStr.includes(v));
+                break;
+            case 'startsWith':
+                result = values.some(v => titlePathStr.startsWith(v));
+                break;
+            case 'endsWith':
+                result = values.some(v => titlePathStr.endsWith(v));
+                break;
+            default:
+                result = false;
+        }
+
+        return result;
+    }
+
+    return false;
+};
+
+/**
+ * Check whether a test (identified by title and titlePath) matches the given action's matcher.
+ */
+const matchesAction = (identity: TestIdentity, action: Action): boolean => {
+    const { matcher } = action;
+    const conds = matcher.cond;
+
+    const result =
+        matcher.op === 'and'
+            ? conds.every(c => evaluateCondition(c, identity))
+            : conds.some(c => evaluateCondition(c, identity));
+
+    return result;
+};
+
+/**
+ * Determine if a test is covered by any quarantined action.
+ */
+const isQuarantined = (identity: TestIdentity, quarantinedActions: Action[]): boolean =>
+    quarantinedActions.some(a => matchesAction(identity, a));
 
 const getJestTestFiles = (): string[] => {
     try {
@@ -114,15 +265,28 @@ const getJestTestFiles = (): string[] => {
     }
 };
 
-const processJUnitReport = async (projectName: string, grep?: string) => {
-    if (!grep) return;
+/**
+ * Process the JUnit XML report for a project.
+ * - Filters out skipped tests that don't match grep (existing behaviour).
+ * - When quarantinedActions are provided, converts failing testcases that are
+ *   quarantined into skipped ones and adjusts suite-level counters.
+ *
+ * Returns true when there are still genuine (non-quarantined) failures remaining,
+ * false when every failure was quarantined (or there were no failures).
+ */
+const processJUnitReport = async (
+    projectName: string,
+    grep?: string,
+    quarantinedActions: Action[] = [],
+): Promise<boolean> => {
+    if (!grep && quarantinedActions.length === 0) return false;
 
     const reportPath = path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
 
     if (!fs.existsSync(reportPath)) {
         console.warn(`Report not found at ${reportPath}`);
 
-        return;
+        return false;
     }
 
     try {
@@ -133,31 +297,91 @@ const processJUnitReport = async (projectName: string, grep?: string) => {
         if (!result.testsuites || !result.testsuites.testsuite) {
             console.log(`No test suites found in report for ${projectName}.`);
 
-            return;
+            return false;
         }
 
-        const regex = new RegExp(grep);
+        const regex = grep ? new RegExp(grep) : null;
 
         result.testsuites.testsuite.forEach((suite: any) => {
             if (!suite.testcase) return;
 
-            suite.testcase = suite.testcase.filter((tc: any) => {
-                const isSkipped = tc.skipped !== undefined;
-                // Keep tests that were not skipped
-                if (!isSkipped) return true;
+            // Step 1: grep-filter (existing behaviour — remove non-matching skipped tests)
+            if (regex) {
+                suite.testcase = suite.testcase.filter((tc: any) => {
+                    const isSkipped = tc.skipped !== undefined;
+                    if (!isSkipped) return true;
 
-                // For skipped tests, keep them only if they match the grep pattern
-                // We check if the test name matches the regex.
-                return regex.test(tc.$.name);
-            });
+                    return regex.test(tc.$.name);
+                });
+            }
+
+            // Step 2: quarantine processing — convert quarantined failures to skipped
+            if (quarantinedActions.length > 0) {
+                let quarantinedCount = 0;
+
+                suite.testcase.forEach((tc: any) => {
+                    const hasFailed = tc.failure !== undefined || tc.error !== undefined;
+                    if (!hasFailed) return;
+
+                    const identity: TestIdentity = {
+                        testTitle: tc.$?.name ?? '',
+                        titlePath: getTitlePath(suite.$?.name ?? '', tc),
+                    };
+                    if (isQuarantined(identity, quarantinedActions)) {
+                        console.log(`[quarantine] Marking as skipped: ${identity.testTitle}`);
+                        delete tc.failure;
+                        delete tc.error;
+                        tc.skipped = [{}];
+                        quarantinedCount++;
+                    }
+                });
+
+                // Update suite-level counters to reflect quarantined tests
+                if (quarantinedCount > 0 && suite.$) {
+                    suite.$.failures = String(
+                        Math.max(0, parseInt(suite.$.failures ?? '0', 10) - quarantinedCount),
+                    );
+                    suite.$.skipped = String(
+                        parseInt(suite.$.skipped ?? '0', 10) + quarantinedCount,
+                    );
+                    console.log(
+                        `[quarantine] ${projectName}/${suite.$.name ?? 'suite'}: ${quarantinedCount} test(s) quarantined.`,
+                    );
+                }
+            }
         });
+
+        // Recompute root <testsuites> aggregate counters from the (now-updated) <testsuite> children
+        if (result.testsuites.$) {
+            const totals = result.testsuites.testsuite.reduce(
+                (acc: { failures: number; errors: number; skipped: number }, suite: any) => ({
+                    failures: acc.failures + parseInt(suite.$?.failures ?? '0', 10),
+                    errors: acc.errors + parseInt(suite.$?.errors ?? '0', 10),
+                    skipped: acc.skipped + parseInt(suite.$?.skipped ?? '0', 10),
+                }),
+                { failures: 0, errors: 0, skipped: 0 },
+            );
+            result.testsuites.$.failures = String(totals.failures);
+            result.testsuites.$.errors = String(totals.errors);
+            result.testsuites.$.skipped = String(totals.skipped);
+        }
 
         const builder = new xml2js.Builder();
         const newXml = builder.buildObject(result);
         fs.writeFileSync(reportPath, newXml);
         console.log(`Processed and updated JUnit report for ${projectName}`);
+
+        const hasRemainingFailures = result.testsuites.testsuite.some(
+            (suite: any) =>
+                parseInt(suite.$?.failures ?? '0', 10) > 0 ||
+                parseInt(suite.$?.errors ?? '0', 10) > 0,
+        );
+
+        return hasRemainingFailures;
     } catch (error) {
         console.error(`Failed to process JUnit report for ${projectName}:`, error);
+
+        return true; // Treat parse errors as failures to be safe
     }
 };
 
@@ -267,6 +491,7 @@ const runAllProjects = async (
     projects: ProjectConfig[],
     headless: boolean,
     testFiles: string[],
+    quarantinedActions: Action[] = [],
 ) => {
     const failedProjects: string[] = [];
 
@@ -275,10 +500,17 @@ const runAllProjects = async (
             await runProject(project, headless, testFiles);
         } catch (error) {
             console.error(`Project ${project.projectName} failed:`, error);
-            failedProjects.push(project.projectName);
         } finally {
-            await processJUnitReport(project.projectName, project.grep);
+            const hasRemainingFailures = await processJUnitReport(
+                project.projectName,
+                project.grep,
+                quarantinedActions,
+            );
             uploadToCurrents(project.projectName);
+
+            if (hasRemainingFailures) {
+                failedProjects.push(project.projectName);
+            }
         }
     }
 
@@ -291,7 +523,7 @@ const runAllProjects = async (
     }
 };
 
-const { configPath, shard, totalShards, headless, projects, testFiles } = parseArgs();
+const { configPath, shard, totalShards, headless, quarantine, projects, testFiles } = parseArgs();
 
 const config = require(configPath) as RunnerConfig;
 console.log(`Loaded config with ${config.projects.length} projects`);
@@ -330,4 +562,8 @@ if (shardingEnabled) {
     );
 }
 
-runAllProjects(projectsToRun, headless, shardedFiles);
+void (async () => {
+    const quarantinedActions = quarantine ? await fetchQuarantinedActions() : [];
+
+    await runAllProjects(projectsToRun, headless, shardedFiles, quarantinedActions);
+})();
