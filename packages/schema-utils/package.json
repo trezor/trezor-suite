@@ -35,7 +35,7 @@
         "ts-node": "^10.9.2"
     },
     "dependencies": {
-        "@sinclair/typebox": "^0.33.7",
+        "@sinclair/typebox": "^0.33.12",
         "@trezor/type-utils": "workspace:*",
         "ts-mixer": "^6.0.3"
     },

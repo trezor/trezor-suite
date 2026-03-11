@@ -8,7 +8,8 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, typeforce } from '../types';
+import { Payment, PaymentOpts } from '../types';
+import { BufferNSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -71,14 +72,16 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
 
     const o: Payment = { name: 'p2tr', network };
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-
-            address: typeforce.maybe(typeforce.String),
-            output: typeforce.maybe(typeforce.BufferN(34)),
-            pubkey: typeforce.maybe(typeforce.anyOf(typeforce.BufferN(32), typeforce.BufferN(33))), // see liftX
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                output: Type.Optional(BufferNSchema(34)),
+                pubkey: Type.Optional(Type.Union([BufferNSchema(32), BufferNSchema(33)])),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 

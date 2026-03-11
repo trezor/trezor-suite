@@ -3,7 +3,8 @@ import { BufferWriter } from '../bufferutils';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack, typeforce } from '../types';
+import { Payment, PaymentOpts, Stack } from '../types';
+import { BufferNSchema, BufferSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -15,14 +16,17 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            address: typeforce.maybe(typeforce.String),
-            amount: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            output: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                amount: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                output: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 

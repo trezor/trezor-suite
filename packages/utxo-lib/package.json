@@ -60,6 +60,7 @@
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
     },
     "dependencies": {
+        "@sinclair/typebox": "^0.33.12",
         "@trezor/utils": "workspace:*",
         "bech32": "^2.0.0",
         "bip66": "^2.0.0",
@@ -74,7 +75,6 @@
         "int64-buffer": "^1.1.0",
         "pushdata-bitcoin": "^1.0.1",
         "tiny-secp256k1": "^1.1.7",
-        "typeforce": "^1.18.0",
         "varuint-bitcoin": "2.0.0",
         "wif": "^5.0.0"
     },

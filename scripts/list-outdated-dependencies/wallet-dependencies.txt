@@ -66,7 +66,6 @@ redux-thunk
 reselect
 tiny-secp256k1
 toml
-typeforce
 varuint-bitcoin
 wif
 web3-eth-abi
