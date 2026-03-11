@@ -945,6 +945,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Csatlakozz a 9050-es porton futó Tor daemonhoz, a Trezor Suite-ba csomagolt használata helyett.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor külső port",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Egy külső folyamatban és nem a Trezor Suite-ba csomagolt Tor Daemon használata.",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Engedélyezze a Tron hálózatot a legújabb firmware-rel az egyenleg ellenőrzéséhez, valamint a tokenek, grafikonok és tranzakciós előzmények megtekintéséhez (hibákat tartalmazhat). Kérjük, vegye figyelembe, hogy a pénzeszközök tárcából történő kiküldése még nem támogatott. A teljes támogatás hamarosan érkezik.",
   "TR_EXPLORER": "Böngésző",
   "TR_EXPLORER_ADDRESS": "Cím",
   "TR_EXPLORER_BASE_URL": "Gyökér URL",

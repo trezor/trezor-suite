@@ -1426,7 +1426,7 @@ export const messages = defineMessages({
         id: 'TR_BACKEND_RECONNECTING',
     },
     TR_HOMESCREEN_GALLERY: {
-        defaultMessage: 'Homescreen gallery',
+        defaultMessage: 'Gallery',
         id: 'TR_HOMESCREEN_GALLERY',
     },
     TR_BACKUP: {
@@ -2037,7 +2037,7 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
-        defaultMessage: 'Homescreen editor',
+        defaultMessage: 'Wallpaper editor',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
@@ -2045,7 +2045,7 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_TITLE: {
-        defaultMessage: 'Homescreen',
+        defaultMessage: 'Device wallpaper',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_TITLE',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE: {
@@ -5128,7 +5128,7 @@ export const messages = defineMessages({
     TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
         defaultMessage:
-            'Enable the Tron Network with the latest firmware to receive funds, check your balance, and view tokens, charts, and transaction history (may contain bugs). Full support is coming soon, or you can use a third-party wallet in the meantime.',
+            'Enable the Tron Network with the latest firmware to check your balance, and view tokens, charts, and transaction history (may contain bugs). Please note that sending funds out of the wallet is not yet supported. Full support is coming soon.',
     },
     TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
@@ -5306,11 +5306,11 @@ export const messages = defineMessages({
     },
     TR_CHANGE_HOMESCREEN: {
         id: 'TR_CHANGE_HOMESCREEN',
-        defaultMessage: 'Change homescreen',
+        defaultMessage: 'Change wallpaper',
     },
     TR_CUSTOM_HOMESCREEN: {
         id: 'TR_CUSTOM_HOMESCREEN',
-        defaultMessage: 'Custom homescreen uploaded',
+        defaultMessage: 'Custom wallpaper uploaded',
     },
     IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_PNG_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_PNG_JPG',
@@ -6112,7 +6112,7 @@ export const messages = defineMessages({
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
-        defaultMessage: 'Update your firmware to change your homescreen',
+        defaultMessage: 'Update your firmware to change your wallpaper',
     },
     TR_FIRMWARE_LANGUAGE_CHANGED: {
         id: 'TR_FIRMWARE_LANGUAGE_CHANGED',
@@ -9536,7 +9536,7 @@ export const messages = defineMessages({
     },
     TR_EARN_APPROXIMATE_DAYS: {
         id: 'TR_EARN_APPROXIMATE_DAYS',
-        defaultMessage: '~{count, plural, one {# 日} other {# 日}}',
+        defaultMessage: '~{count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',

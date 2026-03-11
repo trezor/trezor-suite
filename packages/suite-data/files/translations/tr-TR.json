@@ -920,6 +920,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Trezor Suite ile birlikte sunulan daemon yazılımı yerine 9050 numaralı bağlantı noktasında çalışan Tor daemon yazılımına bağlanın.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor harici bağlantı noktası",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Trezor Suite ile birlikte sunulan daemon yazılımı yerine harici bir işlemde çalışan Tor daemon yazılımına bağlanın.",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Bakiyenizi kontrol etmek, jetonları, grafikleri ve işlem geçmişini görüntülemek için Tron ağını en son donanım yazılımıyla etkinleştirin (hatalar içerebilir). Cüzdandan para göndermenin henüz desteklenmediğini lütfen unutmayın. Tam destek yakında gelecek.",
   "TR_EXPLORER": "Kaşif",
   "TR_EXPLORER_ADDRESS": "Adres",
   "TR_EXPLORER_BASE_URL": "Ana URL",

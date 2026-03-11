@@ -1133,6 +1133,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Підключення до зовнішнього Tor-демона на порту 9050 замість вбудованого в Trezor Suite.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Порт зовнішнього Tor",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Використовуйте Tor-демон у зовнішньому процесі замість вбудованого в Trezor Suite.",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Увімкніть мережу Tron з останньою версією прошивки, щоб перевіряти баланс, переглядати токени, графіки та історію транзакцій (може містити помилки). Зверніть увагу, що надсилання коштів із гаманця поки що не підтримується. Повна підтримка з’явиться незабаром.",
   "TR_EXPLORER": "Експлорер",
   "TR_EXPLORER_ADDRESS": "Адреса",
   "TR_EXPLORER_BASE_URL": "Базовий URL",

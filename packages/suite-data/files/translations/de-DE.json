@@ -1140,7 +1140,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor externer Port",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Verwende den Tor-Daemon, der auf einem externen Port ausgeführt wird, anstatt den, der mit Trezor Suite gebündelt ist.",
   "TR_EXPERIMENTAL_TRON_VIEW_ONLY": "Tron Nur-Lesen (Beta)",
-  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Aktiviere das Tron-Netzwerk. Die neueste Firmware ist erforderlich. Du kannst Funds empfangen, dein Guthaben prüfen, Tokens, Charts und den Transaktionsverlauf anzeigen (kann Bugs enthalten). Vollständige Unterstützung kommt bald (oder ist über Drittanbieter-Wallets verfügbar).",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Aktivieren Sie das Tron-Netzwerk mit der neuesten Firmware, um Ihr Guthaben zu prüfen und Token, Charts sowie den Transaktionsverlauf anzuzeigen (kann Fehler enthalten). Bitte beachten Sie, dass das Senden von Geldern aus der Wallet noch nicht unterstützt wird. Volle Unterstützung folgt in Kürze.",
   "TR_EXPLORER": "Explorer",
   "TR_EXPLORER_ADDRESS": "Adresse",
   "TR_EXPLORER_BASE_URL": "Stamm-URL",

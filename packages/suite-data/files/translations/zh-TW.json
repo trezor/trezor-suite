@@ -955,6 +955,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "跟聽候在 9050 連接埠的 Tor daemon 連線，而非 Trezor Suite 內建的那一個。",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "外部 Tor 連接埠",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "使用以外部程序執行，而非 Trezor Suite 內建的 Tor daemon。",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "請更新至最新韌體以啟用 Tron 網路，從而查看餘額、代幣、圖表和交易歷史（可能存在錯誤）。請注意，目前尚不支持從錢包轉出資金。完整支援即將推出。",
   "TR_EXPLORER": "探索網站(Explorer)",
   "TR_EXPLORER_ADDRESS": "位址網址",
   "TR_EXPLORER_BASE_URL": "根網址(URL)",

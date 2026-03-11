@@ -1140,7 +1140,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Externí port Tor",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Použít daemon Tor spuštěný v externím procesu namísto toho, který je součástí aplikace Trezor Suite.",
   "TR_EXPERIMENTAL_TRON_VIEW_ONLY": "Tron - pouze pro zobrazení (Beta)",
-  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Zapněte síť Tron. Je potřeba nejnovější firmware. Můžete přijímat prostředky, kontrolovat zůstatek, zobrazit tokeny, grafy a historii transakcí (může obsahovat chyby). Plná podpora bude brzy k dispozici (případně ji lze využít přes peněženky třetích stran).",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Zapněte síť Tron. Je potřeba nejnovější firmware. Můžete kontrolovat zůstatek, zobrazit tokeny, grafy a historii transakcí (může obsahovat chyby). Odesílání prostředků z peněženky zatím není podporováno. Plná podpora bude brzy k dispozici.",
   "TR_EXPLORER": "Průzkumník",
   "TR_EXPLORER_ADDRESS": "Adresa",
   "TR_EXPLORER_BASE_URL": "Kořenová adresa URL",

@@ -1140,7 +1140,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Port externe Tor",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Utilisez le service Tor fonctionnant sur un processus externe plutôt que celui fourni avec Trezor Suite.",
   "TR_EXPERIMENTAL_TRON_VIEW_ONLY": "Tron lecture seule (Beta)",
-  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Activer le réseau Tron. Le dernier firmware est requis. Vous pouvez recevoir des fonds, vérifier votre solde, voire vos jetons, graphiques et historique de transaction (peut contenir des bugs). Prise en charge complète à venir (où disponible via un portefeuille tiers).",
+  "TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION": "Activez le réseau Tron avec le dernier firmware pour consulter votre solde et voir les jetons, les graphiques et l'historique des transactions (peut contenir des bugs). Veuillez noter que l'envoi de fonds depuis le portefeuille n'est pas encore pris en charge. Le support complet arrive bientôt.",
   "TR_EXPLORER": "Explorateur",
   "TR_EXPLORER_ADDRESS": "Adresse",
   "TR_EXPLORER_BASE_URL": "URL racine",
