@@ -465,9 +465,7 @@ export const getOwnershipProof = [
         description: 'getOwnershipProof unsuccessful with multiple unresolved inputs',
         connect: [],
         state: {
-            suite: {
-                locks: { device: 1 },
-            },
+            locks: { device: 1 },
             devices: [
                 DEVICE,
                 { ...DEVICE, state: { staticSessionId: 'device-state-2' } },

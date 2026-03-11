@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { locksReducer } from '@suite/locks';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
@@ -28,13 +29,13 @@ const DEVICE = mockSuiteDevice({
 const rootReducer = combineReducers({
     suite: createReducer(
         {
-            locks: [],
             settings: {
                 debug: {},
             },
         },
         () => ({}),
     ),
+    locks: locksReducer,
     messageSystem: prepareMessageSystemReducer(extraDependencies),
     device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),

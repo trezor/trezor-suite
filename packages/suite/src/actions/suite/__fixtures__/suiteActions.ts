@@ -67,21 +67,6 @@ const reducerActions = [
         ],
     },
     {
-        description: `lockUI (true/false)`,
-        actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
-        result: [{ locks: { ui: 1 } }, { locks: { ui: 0 } }],
-    },
-    {
-        description: `lockDevice (true/false)`,
-        actions: [suiteActions.lockDevice(true), suiteActions.lockDevice(false)],
-        result: [{ locks: { device: 1 } }, { locks: { device: 0 } }],
-    },
-    {
-        description: `lockRouter (true/false)`,
-        actions: [suiteActions.lockRouter(true), suiteActions.lockRouter(false)],
-        result: [{ locks: { router: 1 } }, { locks: { router: 0 } }],
-    },
-    {
         description: `updateOnlineStatus (true/false)`,
         actions: [suiteActions.updateOnlineStatus(true), suiteActions.updateOnlineStatus(false)],
         result: [

@@ -1,3 +1,4 @@
+import { selectIsDeviceLocked } from '@suite/locks';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -11,7 +12,6 @@ import {
 } from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 
 // todo: this is crazy. needs some consideration
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(

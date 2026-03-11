@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
@@ -17,7 +18,7 @@ import { BigNumber } from '@trezor/utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectIsDeviceOrUiLocked, selectTorState } from 'src/selectors/suite/suiteSelectors';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     CLIENT_STATUS_FALLBACK,
     DEFAULT_TARGET_ANONYMITY,
@@ -68,7 +69,8 @@ export type CoinjoinRootState = {
 } & AccountsRootState &
     SelectedAccountRootState &
     SuiteRootState &
-    MessageSystemRootState;
+    MessageSystemRootState &
+    LocksRootState;
 
 export const initialState: CoinjoinState = {
     accounts: [],
@@ -910,7 +912,7 @@ export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
 };
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
-    state: CoinjoinRootState & DeviceRootState,
+    state: CoinjoinRootState & DeviceRootState & LocksRootState,
     accountKey: AccountKey | null,
 ) => {
     if (accountKey === null) {

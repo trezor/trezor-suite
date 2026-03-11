@@ -1,3 +1,4 @@
+import { selectIsDeviceLocked } from '@suite/locks';
 import { closeModal, openModal } from '@suite/modal';
 import { selectDevices } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
@@ -26,7 +27,7 @@ import {
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
+import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';

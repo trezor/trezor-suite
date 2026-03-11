@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -6,7 +7,6 @@ import { spacings } from '@trezor/theme';
 import { ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 
 import { BackupStepDescription } from './BackupStepDescription';
 import { BackupState } from '../../reducers/backup/backupReducer';

@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { lockDevice } from '@suite/locks';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
@@ -59,7 +60,6 @@ import {
     SuiteRouterHistoryDeps,
 } from './suite/suiteRouterHistory';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import * as suiteActions from '../actions/suite/suiteActions';
 import { createDisableLegacyMetadataIfNeeded } from '../actions/suiteSync/disableLegacyMetadateIfNeeded';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { AppState, TrezorDevice } from '../types/suite';
@@ -196,7 +196,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        lockDevice: suiteActions.lockDevice,
+        lockDevice,
         onModalCancel: closeModal,
         openModal,
     },

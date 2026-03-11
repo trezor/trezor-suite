@@ -12,7 +12,6 @@ import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { LOCK_TYPE } from 'src/actions/suite/constants/suiteConstants';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 
@@ -121,7 +120,6 @@ export interface SuiteState {
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
     transport?: TransportState;
-    locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
     flags: Flags;
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
@@ -137,11 +135,6 @@ const initialState: SuiteState = {
     torStatus: TorStatus.Disabled,
     torBootstrap: null,
     lifecycle: { status: 'initial' },
-    locks: {
-        [LOCK_TYPE.UI]: 0,
-        [LOCK_TYPE.ROUTER]: 0,
-        [LOCK_TYPE.DEVICE]: 0,
-    },
     flags: {
         initialRun: true,
         // recoveryCompleted: false;
@@ -216,14 +209,6 @@ const initialState: SuiteState = {
 };
 
 export const suiteInitialState = initialState;
-
-const changeLock = (
-    draft: SuiteState,
-    lock: (typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE],
-    enabled: boolean,
-) => {
-    draft.locks[lock] = Math.max(draft.locks[lock] + (enabled ? 1 : -1), 0);
-};
 
 const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
     draft.flags[key] = value;
@@ -406,18 +391,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.TOGGLE_ENTROPY_CHECK:
                 draft.settings.enabledSecurityChecks.entropy = action.payload;
                 break;
-            case SUITE.LOCK_UI:
-                changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
-                break;
-
-            case SUITE.LOCK_DEVICE:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, action.payload);
-                break;
-
-            case SUITE.LOCK_ROUTER:
-                changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
-                break;
-
             // no default
         }
     });

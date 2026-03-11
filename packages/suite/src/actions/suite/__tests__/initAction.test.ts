@@ -1,5 +1,6 @@
 import { createMemoryHistory } from 'history';
 
+import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
@@ -67,6 +68,7 @@ const getInitialState = (initialRun?: boolean) => ({
         ...suiteReducer(undefined, EMPTY_ACTION),
         ...(initialRun !== undefined ? ({ flags: { initialRun } } as any) : {}),
     },
+    locks: locksInitialState,
     router: routerReducer(undefined, EMPTY_ACTION),
     analytics: analyticsReducer(undefined, EMPTY_ACTION),
     modal: modalReducer(undefined, EMPTY_ACTION),
@@ -109,7 +111,7 @@ const fixtures: Fixture[] = [
             initialRedirection.pending.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
-            SUITE.LOCK_ROUTER,
+            lockRouter.type,
             connectInitThunk.pending.type,
             initialRedirection.fulfilled.type,
             connectInitThunk.fulfilled.type,
@@ -267,7 +269,7 @@ const fixtures: Fixture[] = [
             initialRedirection.pending.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
-            SUITE.LOCK_ROUTER,
+            lockRouter.type,
             connectInitThunk.pending.type,
             initialRedirection.fulfilled.type,
             connectInitThunk.rejected.type,
@@ -292,9 +294,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];
-        const { suite, router } = store.getState();
+        const { suite, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router, action);
+        store.getState().locks = locksReducer(locks, action);
     });
 
     return {

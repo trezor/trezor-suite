@@ -1,3 +1,4 @@
+import { lockDevice } from '@suite/locks';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -5,7 +6,6 @@ import { testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
-import { SUITE } from 'src/actions/suite/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
@@ -129,11 +129,11 @@ describe('TrezorConnect Actions', () => {
             type: '@suite/device/removeButtonRequests',
         });
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_DEVICE,
+            type: lockDevice.type,
             payload: false,
         });
         expect(actions.pop()).toEqual({
-            type: SUITE.LOCK_DEVICE,
+            type: lockDevice.type,
             payload: true,
         });
     });

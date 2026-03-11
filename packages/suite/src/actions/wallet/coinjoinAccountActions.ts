@@ -1,3 +1,4 @@
+import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -31,7 +32,6 @@ import {
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';

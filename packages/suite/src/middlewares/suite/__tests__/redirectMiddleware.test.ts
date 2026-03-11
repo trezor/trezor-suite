@@ -1,3 +1,4 @@
+import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
@@ -32,6 +33,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    locks: locksInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
@@ -55,10 +57,11 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, router, device } = store.getState();
+        const { suite, router, device, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router as RouterState, action);
         store.getState().device = deviceReducer(device, action);
+        store.getState().locks = locksReducer(locks, action);
 
         // add action back to stack
         store.getActions().push(action);
