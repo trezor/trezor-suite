@@ -55,7 +55,7 @@ export const buildMessage = ({ messages, name, data, protocol, thpState }: Build
     return protobufEncoder(name, data);
 };
 
-export const sendChunks = async <T, E>(
+export const sendChunks = async <T, E extends string>(
     chunks: Buffer[],
     apiWrite: (chunk: Buffer) => AsyncResultWithTypedError<T, E>,
 ) => {

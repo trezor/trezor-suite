@@ -131,7 +131,7 @@ export class BridgeTransport extends AbstractTransport {
             });
 
             if (!response.success) {
-                this.emit(TRANSPORT.ERROR, response.error);
+                this.emit(TRANSPORT.ERROR, response.error.code);
             } else {
                 this.handleDescriptorsChange(response.payload);
             }
@@ -431,18 +431,18 @@ export class BridgeTransport extends AbstractTransport {
         });
 
         if (!response.success) {
-            if (response.error === ERRORS.UNEXPECTED_ERROR) {
-                return this.unknownError(response.error);
+            if (response.error.code === ERRORS.UNEXPECTED_ERROR) {
+                return this.unknownError(response.error.code);
             }
-            if (response.error === ERRORS.HTTP_ERROR) {
-                return this.error({ error: response.error });
+            if (response.error.code === ERRORS.HTTP_ERROR) {
+                return this.error({ error: response.error.code });
             }
 
             switch (endpoint) {
                 case '/':
-                    return this.unknownError(response.error);
+                    return this.unknownError(response.error.code);
                 case '/acquire':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_WRONG_PREVIOUS,
                         ERRORS.DEVICE_NOT_FOUND,
                         ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
@@ -452,7 +452,7 @@ export class BridgeTransport extends AbstractTransport {
                 case '/call':
                 case '/read':
                 case '/post':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.OTHER_CALL_IN_PROGRESS,
@@ -460,12 +460,12 @@ export class BridgeTransport extends AbstractTransport {
                         PROTOCOL_MALFORMED,
                     ]);
                 case '/abort':
-                    return this.unknownError(response.error, [ERRORS.SESSION_NOT_FOUND]);
+                    return this.unknownError(response.error.code, [ERRORS.SESSION_NOT_FOUND]);
                 case '/enumerate':
                 case '/listen':
-                    return this.unknownError(response.error);
+                    return this.unknownError(response.error.code);
                 case '/release':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                     ]);

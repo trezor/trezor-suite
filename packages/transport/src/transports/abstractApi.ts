@@ -117,7 +117,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
                 if (!acquireIntentResponse.success) {
-                    return this.error({ error: acquireIntentResponse.error });
+                    return this.error({ error: acquireIntentResponse.error.code });
                 }
 
                 const reset = !!input.previous;
@@ -186,7 +186,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
 
                 if (!releaseIntentResponse.success) {
-                    return this.error({ error: releaseIntentResponse.error });
+                    return this.error({ error: releaseIntentResponse.error.code });
                 }
 
                 await this.api.closeDevice(releaseIntentResponse.payload.path, { channel: 'read' });
@@ -230,7 +230,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
                 if (!getPathBySessionResponse.success) {
                     // session not found means that device was disconnected
-                    if (getPathBySessionResponse.error === 'session not found') {
+                    if (getPathBySessionResponse.error.code === 'session not found') {
                         return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
                     }
 
@@ -276,7 +276,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         logger: this.logger,
                     });
                     if (!callResult.success) {
-                        handleError(callResult.error);
+                        handleError(callResult.error.code);
 
                         return callResult;
                     }
@@ -297,7 +297,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const sendResult = await sendChunks(chunks, apiWrite);
 
                 if (!sendResult.success) {
-                    handleError(sendResult.error);
+                    handleError(sendResult.error.code);
 
                     return sendResult;
                 }
@@ -305,7 +305,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const readResult = await receiveAndParse(this.messages, apiRead, protocol);
 
                 if (!readResult.success) {
-                    handleError(readResult.error);
+                    handleError(readResult.error.code);
 
                     return readResult;
                 }
@@ -331,7 +331,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     session,
                 });
                 if (!getPathBySessionResponse.success) {
-                    return this.error({ error: getPathBySessionResponse.error });
+                    return this.error({ error: getPathBySessionResponse.error.code });
                 }
                 const { path } = getPathBySessionResponse.payload;
 
@@ -376,7 +376,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
 
                 if (!sendResult.success) {
-                    if (sendResult.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                    if (sendResult.error.code === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
                 }
@@ -400,7 +400,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     session,
                 });
                 if (!getPathBySessionResponse.success) {
-                    return this.error({ error: getPathBySessionResponse.error });
+                    return this.error({ error: getPathBySessionResponse.error.code });
                 }
                 const { path } = getPathBySessionResponse.payload;
 
@@ -435,7 +435,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const message = await receiveAndParse(this.messages, apiRead, protocol);
 
                 if (!message.success) {
-                    if (message.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                    if (message.error.code === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
                 }

@@ -123,7 +123,7 @@ describe('api/usb', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.message).toContain('Aborted by signal');
+        expect(result.error.message).toContain('Aborted by signal');
     });
 
     it('openDevice aborted', async () => {
@@ -146,7 +146,7 @@ describe('api/usb', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.message).toContain('Aborted by signal');
+        expect(result.error.message).toContain('Aborted by signal');
     });
 
     it('device connection event induced chain of calls aborted', async () => {

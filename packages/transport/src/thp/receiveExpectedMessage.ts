@@ -74,11 +74,11 @@ export const receiveExpectedMessage = async (
 
     if (!receiveResult.success) {
         // apiRead received gibberish for example continuation packet or empty data
-        if (receiveResult.error === PROTOCOL_MALFORMED) {
+        if (receiveResult.error.code === PROTOCOL_MALFORMED) {
             return error({ error: 'UnexpectedChunk' });
         }
 
-        if (receiveResult.error === SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE) {
+        if (receiveResult.error.code === SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE) {
             return error({ error: 'Timeout' });
         }
 
