@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     deviceActions,
     selectDeviceBluetoothId,
@@ -20,8 +21,13 @@ import { Button, Card, Column, Icon, List, Modal, ModalProps, Paragraph } from '
 
 import { unpairCurrentBondThunk } from 'src/actions/bluetooth/bluetoothEraseBondsThunk';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { goto } from 'src/actions/suite/routerActions';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import {
+    ActionButton,
+    ActionColumn,
+    SectionItem,
+    TextColumn,
+    TrezorLink,
+} from 'src/components/suite';
 import { ForgetBluetoothDeviceFromOsModal } from 'src/components/suite/bluetooth/ForgetBluetoothDeviceFromOsModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -134,7 +140,14 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                 // forget fail with "Peripheral not found". The user will handle
                 // OS removal manually via UnpairBluetoothDeviceFromOsModal.
                 if (bluetoothId) {
-                    await dispatch(unpairCurrentBondThunk({ bluetoothId, skipDisconnect: true }));
+                    const success = await dispatch(
+                        unpairCurrentBondThunk({ bluetoothId, skipDisconnect: true }),
+                    ).unwrap();
+
+                    // Only proceed to OS removal if unpair was successful
+                    if (!success) {
+                        return;
+                    }
                 }
 
                 setStep('remove-from-os');
@@ -153,7 +166,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
 
     const handleTrezorRemovalConfirm = () => {
         forgetDevice({ skipBluetoothForget: true });
-        dispatch(goto('suite-index'));
+        dispatch(goto({ routeName: 'suite-index' }));
     };
 
     const handleOpenBluetoothSettings = () => {
@@ -195,7 +208,10 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
         if (wasBluetoothConnectedRef.current) {
             return (
                 <ForgetBluetoothDeviceFromOsModal
-                    onDone={() => forgetDevice({ skipBluetoothForget: true })}
+                    onDone={() => {
+                        forgetDevice({ skipBluetoothForget: true });
+                        dispatch(goto({ routeName: 'suite-index' }));
+                    }}
                     onFinish={onCancel}
                 />
             );
@@ -218,22 +234,14 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                                 values={{
                                     b: chunks => <b>{chunks}</b>,
                                     link: chunks => (
-                                        <button
-                                            type="button"
-                                            style={{
-                                                cursor: 'pointer',
-                                                textDecoration: 'underline',
-                                                fontWeight: 'inherit',
-                                                background: 'none',
-                                                border: 'none',
-                                                padding: 0,
-                                                font: 'inherit',
-                                                color: 'inherit',
+                                        <TrezorLink
+                                            onClick={event => {
+                                                event.preventDefault();
+                                                handleOpenBluetoothSettings();
                                             }}
-                                            onClick={handleOpenBluetoothSettings}
                                         >
                                             {chunks}
-                                        </button>
+                                        </TrezorLink>
                                     ),
                                 }}
                             />
