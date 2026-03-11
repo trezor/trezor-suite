@@ -32,7 +32,13 @@ export interface TestsExplorerResponse {
     };
 }
 
-export type RuleMatcherConditionOp = 'eq' | 'in' | 'incAll' | 'contains' | 'startsWith' | 'endsWith';
+export type RuleMatcherConditionOp =
+    | 'eq'
+    | 'in'
+    | 'incAll'
+    | 'contains'
+    | 'startsWith'
+    | 'endsWith';
 
 export interface RuleMatcherCondition {
     type: string;
