@@ -2,14 +2,13 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { appChanged, routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { appChanged } from 'src/actions/suite/suiteActions';
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';

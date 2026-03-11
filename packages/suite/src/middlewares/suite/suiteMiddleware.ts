@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { METADATA } from '@suite/metadata';
 import { recoveryActions } from '@suite/recovery';
-import { routerLocationChange } from '@suite/router';
+import { appChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -19,7 +19,7 @@ import { DEVICE } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -47,13 +47,8 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 
 export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
-        const prevApp = getState().router.app;
-        if (action.type === routerLocationChange.type && action.payload.app !== prevApp) {
-            dispatch(appChanged(action.payload.app));
-        }
-
         if (
-            action.type === SUITE.APP_CHANGED &&
+            action.type === appChanged.type &&
             (action.payload === 'recovery' || action.payload === 'onboarding')
         ) {
             dispatch(recoveryActions.resetReducer());

@@ -3,7 +3,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { appChanged, routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -28,7 +28,6 @@ import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
-import { appChanged } from '../suiteActions';
 import * as suiteActions from '../suiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);

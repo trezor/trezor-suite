@@ -1,10 +1,9 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { appChanged, routerReducer } from '@suite/router';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { appChanged } from 'src/actions/suite/suiteActions';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
 import suiteReducer from 'src/reducers/suite/suiteReducer';

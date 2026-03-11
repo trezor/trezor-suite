@@ -5,7 +5,7 @@ import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
-import { routerLocationChange, routerReducer } from '@suite/router';
+import { appChanged, routerLocationChange, routerReducer } from '@suite/router';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -49,7 +49,6 @@ import { configureStore } from 'src/support/tests/configureStore';
 import type { Action, AppState } from 'src/types/suite';
 
 import { initialRedirection } from '../routerActions';
-import { appChanged } from '../suiteActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);

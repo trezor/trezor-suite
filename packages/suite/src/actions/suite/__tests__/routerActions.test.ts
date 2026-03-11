@@ -2,9 +2,8 @@ import { createMemoryHistory } from 'history';
 
 import { LocksState, locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { appChanged, routerReducer } from '@suite/router';
 
-import { appChanged } from 'src/actions/suite/suiteActions';
 import { AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { createSuiteRouterHistory } from 'src/support/extraDependencies';

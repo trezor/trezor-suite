@@ -10,6 +10,7 @@ import {
     RouterPathOptional,
     SettingsBackRoute,
     anchorChange,
+    appChanged,
     routerLocationChange,
     selectRouter,
     selectRouterApp,
@@ -39,7 +40,8 @@ export type RouterAction =
     | {
           type: typeof anchorChange.type;
           payload: AnchorType | undefined;
-      };
+      }
+    | ReturnType<typeof appChanged>;
 
 /**
  * Handle Router.beforePopState action (back)
