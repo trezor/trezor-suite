@@ -3,6 +3,10 @@ import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/walle
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { getOs24HourFormat } from 'src/utils/suite/l10n';
+
+// Computed once at module level since the system time format doesn't change during app runtime.
+const is24HourFormat = getOs24HourFormat();
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);
@@ -13,6 +17,6 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
         locale,
         baseCurrency,
         bitcoinAmountUnit,
-        is24HourFormat: true,
+        is24HourFormat,
     };
 };

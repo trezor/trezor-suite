@@ -4,6 +4,13 @@ import { getPlatformLanguages } from '@trezor/env-utils';
 const DEFAULT_LOCALE = 'en-US';
 
 /**
+ * Detects whether the user's system is configured to use 24-hour time format.
+ * Uses the Intl API to check the resolved hour12 option for the user's default locale.
+ */
+export const getOs24HourFormat = (): boolean =>
+    !new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions().hour12;
+
+/**
  * Finds and returns first of languages preferred by user's environment
  * which is implemented and completed in Suite, or defaultLocale.
  */
