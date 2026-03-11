@@ -2294,7 +2294,7 @@
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Instalar a atualização agora?",
   "TR_UPDATE_MODAL_NOT_NOW": "Agora não",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "Isto reinicializará o Trezor Suite.",
-  "TR_UPDATE_MODAL_START_DOWNLOAD": "Donwload",
+  "TR_UPDATE_MODAL_START_DOWNLOAD": "Download",
   "TR_UPDATE_MODAL_UPDATE_DOWNLOADED": "Atualização baixada",
   "TR_UPDATE_MODAL_UPDATE_ON_QUIT": "Atualizar ao sair",
   "TR_UPDATE_MODAL_WHATS_NEW": "O que há de novo?",
