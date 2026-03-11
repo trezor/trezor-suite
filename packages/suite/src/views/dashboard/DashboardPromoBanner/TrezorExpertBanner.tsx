@@ -14,14 +14,20 @@ const underlineImage = resolveStaticPath(
 );
 const mainImage = resolveStaticPath(`${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_TEX}`);
 
-const StyledImage = styled.img`
+const ImageWrapper = styled.div`
     flex: 1;
+    max-width: 40%;
     height: 100%;
     margin-top: ${spacingsPx.xs};
     margin-bottom: ${spacingsPx.sm};
-    object-fit: cover;
     border-radius: ${borders.radii.md};
-    max-width: 40%;
+    overflow: hidden;
+`;
+
+const StyledImage = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
 const NextGenerationTextBlock = styled.span`
@@ -120,7 +126,9 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
                         <CTAButton onClick={onCTAClick} />
                     </Column>
 
-                    <StyledImage src={mainImage} alt="Trezor Expert" />
+                    <ImageWrapper>
+                        <StyledImage src={mainImage} alt="Trezor Expert" />
+                    </ImageWrapper>
                 </Row>
 
                 <CloseButton onClose={onClose} isInverse />
