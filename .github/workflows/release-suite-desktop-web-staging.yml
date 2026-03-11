@@ -216,7 +216,7 @@ jobs:
       - suite-desktop-autoupdate-release
       - build-web
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
