@@ -5,7 +5,7 @@ import minimist from 'minimist';
 import * as path from 'path';
 import xml2js from 'xml2js';
 
-import { getActions } from '@trezor/e2e-utils';
+import { getAllQuarantineActions } from '@trezor/e2e-utils';
 import type { Action, RuleMatcherCondition } from '@trezor/e2e-utils';
 
 import { ProjectConfig, RunnerConfig } from './types';
@@ -118,9 +118,10 @@ const fetchQuarantinedActions = async (): Promise<Action[]> => {
     }
 
     try {
-        const actions = await getActions(projectId);
-        const quarantined = actions.filter(a => a.action.some(r => r.op === 'quarantine'));
-        console.log(`[quarantine] Loaded ${quarantined.length} quarantine action(s) from Currents.`);
+        const quarantined = await getAllQuarantineActions(projectId);
+        console.log(
+            `[quarantine] Loaded ${quarantined.length} quarantine action(s) from Currents.`,
+        );
 
         return quarantined;
     } catch (err) {
@@ -156,7 +157,10 @@ interface TestIdentity {
  * Supports:
  *   - type "title"     — matches against the flat JUnit `name` string
  *   - type "titlePath" — matches against the reconstructed path array (joined with " > " for string ops)
- * Supported ops: "eq", "contains", "startsWith", "endsWith".
+ * Supported ops: "eq", "contains", "startsWith", "endsWith", "incAll" (titlePath only).
+ *
+ * Note: "incAll" is the op produced by the auto-quarantine bot and checks that every
+ * element of the condition value array is present somewhere in the titlePath array.
  */
 const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIdentity): boolean => {
     if (cond.type === 'title') {
@@ -233,7 +237,7 @@ const matchesAction = (identity: TestIdentity, action: Action): boolean => {
     const conds = matcher.cond;
 
     const result =
-        matcher.op === 'and'
+        matcher.op === 'AND'
             ? conds.every(c => evaluateCondition(c, identity))
             : conds.some(c => evaluateCondition(c, identity));
 
@@ -276,14 +280,26 @@ const getJestTestFiles = (): string[] => {
  */
 const processJUnitReport = async (
     projectName: string,
+    detoxFailed: boolean,
     grep?: string,
     quarantinedActions: Action[] = [],
 ): Promise<boolean> => {
+    const reportPath = path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
+    const reportExists = fs.existsSync(reportPath);
+
+    // Detox crashed without producing a report — treat as genuine failure regardless of other options.
+    if (detoxFailed && !reportExists) {
+        console.warn(
+            `Report not found at ${reportPath} and Detox already failed — treating as failure.`,
+        );
+
+        return true;
+    }
+
+    // Nothing to process — report either passed cleanly or doesn't exist for a benign reason.
     if (!grep && quarantinedActions.length === 0) return false;
 
-    const reportPath = path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
-
-    if (!fs.existsSync(reportPath)) {
+    if (!reportExists) {
         console.warn(`Report not found at ${reportPath}`);
 
         return false;
@@ -317,11 +333,13 @@ const processJUnitReport = async (
 
             // Step 2: quarantine processing — convert quarantined failures to skipped
             if (quarantinedActions.length > 0) {
-                let quarantinedCount = 0;
+                let quarantinedFailures = 0;
+                let quarantinedErrors = 0;
 
                 suite.testcase.forEach((tc: any) => {
-                    const hasFailed = tc.failure !== undefined || tc.error !== undefined;
-                    if (!hasFailed) return;
+                    const hasFailure = tc.failure !== undefined;
+                    const hasError = tc.error !== undefined;
+                    if (!hasFailure && !hasError) return;
 
                     const identity: TestIdentity = {
                         testTitle: tc.$?.name ?? '',
@@ -329,23 +347,39 @@ const processJUnitReport = async (
                     };
                     if (isQuarantined(identity, quarantinedActions)) {
                         console.log(`[quarantine] Marking as skipped: ${identity.testTitle}`);
-                        delete tc.failure;
-                        delete tc.error;
+                        if (hasFailure) {
+                            delete tc.failure;
+                            quarantinedFailures++;
+                        }
+                        if (hasError) {
+                            delete tc.error;
+                            quarantinedErrors++;
+                        }
                         tc.skipped = [{}];
-                        quarantinedCount++;
                     }
                 });
 
                 // Update suite-level counters to reflect quarantined tests
+                const quarantinedCount = quarantinedFailures + quarantinedErrors;
                 if (quarantinedCount > 0 && suite.$) {
-                    suite.$.failures = String(
-                        Math.max(0, parseInt(suite.$.failures ?? '0', 10) - quarantinedCount),
-                    );
+                    if (quarantinedFailures > 0) {
+                        suite.$.failures = String(
+                            Math.max(
+                                0,
+                                parseInt(suite.$.failures ?? '0', 10) - quarantinedFailures,
+                            ),
+                        );
+                    }
+                    if (quarantinedErrors > 0) {
+                        suite.$.errors = String(
+                            Math.max(0, parseInt(suite.$.errors ?? '0', 10) - quarantinedErrors),
+                        );
+                    }
                     suite.$.skipped = String(
                         parseInt(suite.$.skipped ?? '0', 10) + quarantinedCount,
                     );
                     console.log(
-                        `[quarantine] ${projectName}/${suite.$.name ?? 'suite'}: ${quarantinedCount} test(s) quarantined.`,
+                        `[quarantine] ${projectName}/${suite.$.name ?? 'suite'}: ${quarantinedCount} test(s) quarantined (${quarantinedFailures} failure(s), ${quarantinedErrors} error(s)).`,
                     );
                 }
             }
@@ -487,6 +521,26 @@ const runProject = async (project: ProjectConfig, headless: boolean, testFiles: 
     await runDetox(project.target, env, headless, testFiles);
 };
 
+/**
+ * Run a single project and return whether Detox itself crashed (exit code != 0
+ * or spawn error), independently of the JUnit report contents.
+ */
+const runProjectSafely = async (
+    project: ProjectConfig,
+    headless: boolean,
+    testFiles: string[],
+): Promise<boolean> => {
+    try {
+        await runProject(project, headless, testFiles);
+
+        return false;
+    } catch (error) {
+        console.error(`Project ${project.projectName} failed:`, error);
+
+        return true;
+    }
+};
+
 const runAllProjects = async (
     projects: ProjectConfig[],
     headless: boolean,
@@ -496,21 +550,19 @@ const runAllProjects = async (
     const failedProjects: string[] = [];
 
     for (const project of projects) {
-        try {
-            await runProject(project, headless, testFiles);
-        } catch (error) {
-            console.error(`Project ${project.projectName} failed:`, error);
-        } finally {
-            const hasRemainingFailures = await processJUnitReport(
-                project.projectName,
-                project.grep,
-                quarantinedActions,
-            );
-            uploadToCurrents(project.projectName);
+        const detoxFailed = await runProjectSafely(project, headless, testFiles);
+        const hasRemainingFailures = await processJUnitReport(
+            project.projectName,
+            detoxFailed,
+            project.grep,
+            quarantinedActions,
+        );
+        uploadToCurrents(project.projectName);
 
-            if (hasRemainingFailures) {
-                failedProjects.push(project.projectName);
-            }
+        // A project fails only when the (post-quarantine) report still contains failures,
+        // or when Detox crashed without producing a report at all.
+        if (hasRemainingFailures) {
+            failedProjects.push(project.projectName);
         }
     }
 
