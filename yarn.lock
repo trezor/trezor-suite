@@ -16133,6 +16133,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/test-downstream@workspace:packages/test-downstream":
+  version: 0.0.0-use.local
+  resolution: "@trezor/test-downstream@workspace:packages/test-downstream"
+  dependencies:
+    "@trezor/test": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/test@workspace:*, @trezor/test@workspace:packages/test":
+  version: 0.0.0-use.local
+  resolution: "@trezor/test@workspace:packages/test"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/theme@workspace:*, @trezor/theme@workspace:^, @trezor/theme@workspace:packages/theme":
   version: 0.0.0-use.local
   resolution: "@trezor/theme@workspace:packages/theme"
