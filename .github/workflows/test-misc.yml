@@ -74,9 +74,9 @@ jobs:
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
-        run: yarn test:unit --exclude='@suite-native/*'
+        run: yarn workspaces foreach --all -pt --exclude "@suite-native/*" run test:unit
       - name: Unit Tests - Native
-        run: yarn test:unit --exclude='@trezor/*,@suite/*,@suite-common/*'
+        run: yarn workspaces foreach --all -pt --include "@suite-native/*" run test:unit
 
   test-unit-windows:
     runs-on: windows-latest
