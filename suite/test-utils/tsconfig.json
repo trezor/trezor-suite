@@ -9,6 +9,7 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../intl" },
+        { "path": "../router" },
         { "path": "../../packages/suite" }
     ]
 }
