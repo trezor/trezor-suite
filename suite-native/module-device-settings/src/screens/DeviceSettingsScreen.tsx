@@ -4,7 +4,6 @@ import {
     selectDeviceLabel,
     selectDeviceModel,
     selectDeviceName,
-    selectIsDeviceConnectedViaBluetooth,
     selectIsDeviceInitialized,
     selectIsThpDevice,
 } from '@suite-common/device';
@@ -15,22 +14,21 @@ import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/
 
 import { BackupAndPassphraseCard } from '../components/BackupAndPassphraseCard';
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
-import { DeviceAutoConnectCard } from '../components/DeviceAutoConnectCard';
+import { DeviceConnectionCard } from '../components/DeviceConnectionCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
-import { UnpairBluetoothDeviceCard } from '../components/UnpairBluetoothDeviceCard';
 import { WipeDeviceCard } from '../components/WipeDeviceCard';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
 export const DeviceSettingsScreen = () => {
     useDeviceChangedCheck();
 
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
     const deviceModel = useSelector(selectDeviceModel);
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isThpDevice = useSelector(selectIsThpDevice);
 
@@ -48,8 +46,7 @@ export const DeviceSettingsScreen = () => {
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
                     <DeviceFirmwareCard />
-                    {isThpDevice && <DeviceAutoConnectCard />}
-                    {isDeviceConnectedViaBluetooth && <UnpairBluetoothDeviceCard />}
+                    {isThpDevice && <DeviceConnectionCard />}
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}

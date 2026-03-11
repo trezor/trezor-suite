@@ -86,7 +86,7 @@ export enum DeviceSettingsStackRoutes {
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     FirmwareLanguageStack = 'FirmwareLanguageStack',
     ContinueOnTrezor = 'ContinueOnTrezor',
-    DeviceAutoConnect = 'DeviceAutoConnect',
+    DeviceConnection = 'DeviceConnection',
     DeviceAutoConnectStack = 'DeviceAutoConnectStack',
     UnpairBluetoothDevice = 'UnpairBluetoothDevice',
     DevicePinProtection = 'DevicePinProtection',

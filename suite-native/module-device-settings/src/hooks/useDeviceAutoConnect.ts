@@ -43,12 +43,12 @@ export const useDeviceAutoConnect = () => {
             TrezorConnect.cancel();
             showToast({
                 variant: 'error',
-                message: translate('moduleDeviceSettings.autoconnect.enable.error'),
+                message: translate('moduleDeviceSettings.autoConnect.errorToast'),
             });
         } else {
             showToast({
                 variant: 'success',
-                message: translate('moduleDeviceSettings.autoconnect.enable.successToast'),
+                message: translate('moduleDeviceSettings.autoConnect.successToast'),
             });
         }
         navigation.goBack();
