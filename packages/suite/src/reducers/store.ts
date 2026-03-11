@@ -12,6 +12,7 @@ import { createLogger } from 'redux-logger';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { recoveryReducer } from '@suite/recovery';
+import { HistoryDep } from '@suite/router';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -41,7 +42,6 @@ import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
 
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';

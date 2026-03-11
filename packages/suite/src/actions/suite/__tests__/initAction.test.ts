@@ -5,7 +5,12 @@ import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
-import { routerAppChanged, routerLocationChange, routerReducer } from '@suite/router';
+import {
+    createSuiteRouterHistory,
+    routerAppChanged,
+    routerLocationChange,
+    routerReducer,
+} from '@suite/router';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -44,7 +49,7 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import walletReducers from 'src/reducers/wallet';
-import { createSuiteRouterHistory, extraDependencies } from 'src/support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import type { Action, AppState } from 'src/types/suite';
 

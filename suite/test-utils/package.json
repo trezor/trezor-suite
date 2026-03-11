@@ -14,6 +14,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
         "@testing-library/dom": "^10.4.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.5.2",
