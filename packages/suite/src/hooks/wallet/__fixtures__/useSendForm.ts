@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { locksReducer } from '@suite/locks';
 import { SuiteSyncDataState, SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
@@ -270,7 +271,6 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
     combineReducers({
         suite: createReducer(
             {
-                locks: [],
                 online: true,
                 settings: { debug: {}, theme: { variant: 'light' } },
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
@@ -280,6 +280,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             },
             () => ({}),
         ),
+        locks: locksReducer,
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,

@@ -1,10 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 
+import { selectIsRouterLocked } from '@suite/locks';
 import { selectRouteName, selectRouterApp, selectRouterParams } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { selectIsRouterLocked } from 'src/selectors/suite/suiteSelectors';
 import { Action, AppState, Dispatch, TrezorDevice } from 'src/types/suite';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {

@@ -3,7 +3,6 @@ import { RouterRootState, selectRouter } from '@suite/router';
 import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { TransportInfo } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
@@ -39,14 +38,6 @@ export const selectAutodetectTheme = (state: SuiteRootState) =>
     state.suite.settings.autodetect.theme;
 export const selectAddressDisplayType = (state: SuiteRootState) =>
     state.suite.settings.addressDisplayType;
-export const selectIsDeviceLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE];
-export const selectIsDeviceOrUiLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
-export const selectIsRouterLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER];
-export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
-    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
 
 export const selectSuiteTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));

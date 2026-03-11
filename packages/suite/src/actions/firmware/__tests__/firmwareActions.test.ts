@@ -25,7 +25,6 @@ const getInitialState = (override?: InitialState): any => {
 
     return {
         suite: {
-            locks: [],
             flags: {},
             settings: {
                 language: 'en',

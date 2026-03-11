@@ -14578,6 +14578,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/locks@workspace:*, @suite/locks@workspace:suite/locks":
+  version: 0.0.0-use.local
+  resolution: "@suite/locks@workspace:suite/locks"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/test-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/metadata@workspace:*, @suite/metadata@workspace:suite/metadata":
   version: 0.0.0-use.local
   resolution: "@suite/metadata@workspace:suite/metadata"
@@ -16065,6 +16074,7 @@ __metadata:
     "@suite/experimental-feedback": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/locks": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/modal": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"

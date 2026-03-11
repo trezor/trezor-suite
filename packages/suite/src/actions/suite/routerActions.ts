@@ -2,6 +2,7 @@
  * Use override for react-native (@suite-native/app/src/actions)
  */
 
+import { lockRouter, selectIsRouterLocked, selectIsRouterOrUiLocked } from '@suite/locks';
 import {
     type AnchorType,
     RouteParams,
@@ -23,8 +24,6 @@ import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
 
 import { ROUTER } from 'src/actions/suite/constants';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { Dispatch, GetState } from 'src/types/suite';
 
@@ -109,7 +108,7 @@ export const goto =
         const hasRouterLock = selectIsRouterLocked(state);
 
         if (hasRouterLock) {
-            dispatch(suiteActions.lockRouter(false));
+            dispatch(lockRouter(false));
         }
         const unlocked = dispatch(onBeforePopState());
 
@@ -132,7 +131,7 @@ export const goto =
 
         dispatch(onLocationChange({ pathname, hash, anchor }));
         if (route?.isForegroundApp) {
-            dispatch(suiteActions.lockRouter(true));
+            dispatch(lockRouter(true));
 
             // NOTE: this is useful eg. on welcome screen / logged out screen
             // where we want to have suite-start router clearing the URL to ensure
@@ -155,7 +154,7 @@ export const goto =
 export const closeModalApp =
     (preserveParams = true) =>
     (dispatch: Dispatch, _: GetState, extra: ExtraDependencies) => {
-        dispatch(suiteActions.lockRouter(false));
+        dispatch(lockRouter(false));
 
         const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         const route = findRoute(location.pathname);

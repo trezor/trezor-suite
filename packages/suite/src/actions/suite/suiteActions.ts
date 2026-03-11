@@ -48,9 +48,6 @@ export type SuiteAction =
     | { type: typeof SUITE.TOGGLE_ENTROPY_CHECK; payload: boolean }
     | { type: typeof SUITE.TOGGLE_DEVICE_META_CHECKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
-    | { type: typeof SUITE.LOCK_UI; payload: boolean }
-    | ReturnType<typeof lockDevice>
-    | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
     | {
           type: typeof SUITE.SET_FLAG;
           key: keyof AppState['suite']['flags'];
@@ -351,35 +348,5 @@ export const onSuiteReady = (): SuiteAction => ({
  */
 export const setDebugMode = (payload: Partial<DebugModeOptions>): SuiteAction => ({
     type: SUITE.SET_DEBUG_MODE,
-    payload,
-});
-
-/**
- * Called from multiple places before and after TrezorConnect call
- * Prevent from mad clicking
- * Set `lock` field in suite reducer
- * @returns {SuiteAction}
- */
-export const lockUI = (payload: boolean): SuiteAction => ({
-    type: SUITE.LOCK_UI,
-    payload,
-});
-
-/**
- * Prevent TrezorConnect multiple calls
- * Called before and after specific process, like onboarding
- * Set `lock` field in suite reducer
- * @returns {SuiteAction}
- */
-export const lockDevice = createAction(SUITE.LOCK_DEVICE, (payload: boolean) => ({ payload }));
-
-/**
- * Prevent route change and rendering
- * Called before and after specific process, like onboarding
- * Set `lock` field in suite reducer
- * @returns {SuiteAction}
- */
-export const lockRouter = (payload: boolean): SuiteAction => ({
-    type: SUITE.LOCK_ROUTER,
     payload,
 });

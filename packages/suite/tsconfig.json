@@ -153,6 +153,7 @@
             "path": "../../suite/idb-migration-utils"
         },
         { "path": "../../suite/intl" },
+        { "path": "../../suite/locks" },
         { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
         {

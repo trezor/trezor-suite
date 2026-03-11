@@ -29,14 +29,6 @@ export const TOGGLE_ENTROPY_CHECK = '@suite/toggle-entropy-check';
 export const TOGGLE_DEVICE_META_CHECKS = '@suite/toggle-device-meta-checks';
 export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const EVM_CLOSE_EXPLANATION_BANNER = '@suite/evm-close-explanation-banner';
-export const LOCK_UI = '@suite/lock-ui';
-export const LOCK_DEVICE = '@suite/lock-device';
-export const LOCK_ROUTER = '@suite/lock-router';
-export const LOCK_TYPE = {
-    ROUTER: 'router', // restricted route changes, all other actions are possible
-    DEVICE: 'device', // restricted device call (TrezorConnect)
-    UI: 'ui', // restricted most of the UI actions (buttons, keyboard etc.)
-} as const;
 export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
 export const SET_SIDEBAR_WIDTH = '@suite/set-sidebar-width';
 export const SET_IS_COINS_FILTER_VISIBLE = '@suite/set-is-coins-filter-visible';

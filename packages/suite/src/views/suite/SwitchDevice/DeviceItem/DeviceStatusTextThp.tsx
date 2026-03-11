@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
 import { selectDevices } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceStatusTextVisible } from './DeviceStatusTextVisible';

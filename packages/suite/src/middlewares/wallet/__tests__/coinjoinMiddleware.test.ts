@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { locksReducer } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
@@ -24,6 +25,7 @@ const messageSystem = prepareMessageSystemReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     device: createReducer({}, () => ({})),
+    locks: locksReducer,
     messageSystem,
     router: routerReducer,
     suite: suiteReducer,

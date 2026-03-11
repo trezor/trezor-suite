@@ -1,5 +1,6 @@
 import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
 import { TranslationKey } from '@suite/intl';
+import { locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer as modal } from '@suite/modal';
 import { routerReducer } from '@suite/router';
@@ -28,6 +29,7 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export default {
     suite,
+    locks: locksReducer,
     router: routerReducer,
     modal,
     device,

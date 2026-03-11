@@ -1,3 +1,4 @@
+import { lockDevice } from '@suite/locks';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
@@ -8,13 +9,11 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import * as backupActions from 'src/actions/backup/backupActions';
 import { BACKUP } from 'src/actions/backup/constants';
-import { SUITE } from 'src/actions/suite/constants';
 import { configureStore } from 'src/support/tests/configureStore';
 
 const getInitialState = (override: any) => {
     const defaults = {
         suite: {
-            locks: [3],
             settings: { debug: {} },
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
@@ -79,8 +78,8 @@ describe('Backup Actions', () => {
             type: BACKUP.SET_IN_PROGRESS,
             payload: true,
         });
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@suite/device/removeButtonRequests',
         });
@@ -118,14 +117,14 @@ describe('Backup Actions', () => {
             type: BACKUP.SET_IN_PROGRESS,
             payload: true,
         });
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@suite/device/removeButtonRequests',
         });
 
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
-        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@suite/device/removeButtonRequests',
         });

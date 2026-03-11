@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { experimentalFeedbackSlice } from '@suite/experimental-feedback';
+import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
 import type { recoveryActions } from '@suite/recovery';
@@ -124,6 +125,7 @@ export type Action =
     | FirmwareAction
     | GeolocationAction
     | GuideAction
+    | LockAction
     | MessageSystemAction
     | MetadataAction
     | ModalAction
