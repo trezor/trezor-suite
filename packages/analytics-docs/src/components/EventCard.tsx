@@ -70,6 +70,23 @@ const Header = ({ event, onEdit }: HeaderProps) => {
         setCopied(true);
     };
 
+    const copyExportName = () => {
+        void navigator.clipboard?.writeText(toEventExportName(event.name));
+        setCopied(true);
+    };
+
+    const handleCopyExportNameClick = (e: React.MouseEvent) => {
+        if (e.detail !== 3) return;
+        copyExportName();
+    };
+
+    const handleCopyExportNameKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            copyExportName();
+        }
+    };
+
     const dropdownItems = [
         ...(onEdit
             ? [
@@ -112,7 +129,14 @@ const Header = ({ event, onEdit }: HeaderProps) => {
             >
                 <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
                     <Tooltip content={toEventExportName(event.name)} hasArrow>
-                        <H3>{event.name} </H3>
+                        <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={handleCopyExportNameClick}
+                            onKeyDown={handleCopyExportNameKeyDown}
+                        >
+                            <H3>{event.name}</H3>
+                        </span>
                     </Tooltip>
                     <Row gap={4} alignItems="center">
                         <ChangelogButton />
