@@ -1,4 +1,3 @@
-import type { Ok } from '@trezor/type-utils';
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
 import { type TRANSPORT } from '../constants';
@@ -146,14 +145,6 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     public nativeWriteChunking: boolean = false;
 
-    protected success<T>(payload: T): Ok<T> {
-        return success(payload);
-    }
-
-    protected error<E extends AnyError>(payload: { error: E; message?: string }) {
-        return error(payload);
-    }
-
     protected unknownError<E extends AnyError = never>(err: Error, expectedErrors: E[] = []) {
         this.logger?.error('transport: abstract api: unknown error', err);
 
@@ -171,7 +162,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         }
         // check already existing lock
         if ((this.lock[path].read && lock.read) || (this.lock[path].write && lock.write)) {
-            return this.error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
+            return error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
         }
         // add to the current lock
         this.lock[path] = {
@@ -179,7 +170,7 @@ export abstract class AbstractApi extends TypedEmitter<{
             write: this.lock[path].write || lock.write,
         };
 
-        return this.success(undefined);
+        return success(undefined);
     }
 
     /**
