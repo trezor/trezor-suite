@@ -1,10 +1,11 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { getRoute, routerLocationChange, routerReducer } from '@suite/router';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { appChanged } from 'src/actions/suite/suiteActions';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -14,23 +15,37 @@ import type { Action } from 'src/types/suite';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+type LocationChangePayload = Parameters<typeof routerLocationChange>[0];
+
+const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route']>['name']>(
+    name: TName,
+) => {
+    const route = getRoute(name);
+
+    if (!route) {
+        throw new Error(`Missing route ${name}`);
+    }
+
+    return route as Extract<NonNullable<LocationChangePayload['route']>, { name: TName }>;
+};
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const EMPTY_ACTION = appChanged('unknown');
 
 const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...routerReducer(undefined, EMPTY_ACTION),
         ...router,
     },
     suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suiteReducer(undefined, EMPTY_ACTION),
         ...suite,
     },
     device: {
-        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...deviceReducer(undefined, EMPTY_ACTION),
     },
-    modal: modalReducer(undefined, { type: 'foo' } as any),
+    modal: modalReducer(undefined, EMPTY_ACTION),
     analytics: analyticsReducer(undefined, {
         type: analyticsActions.initAnalytics.type,
         payload: {
@@ -54,9 +69,13 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
+        if (!action) {
+            return;
+        }
+
         const { suite, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action);
+        store.getState().router = routerReducer(router, action as UnknownAction);
 
         // add action back to stack
         store.getActions().push(action);
@@ -82,25 +101,16 @@ describe('suite middleware', () => {
                     },
                 }),
             );
-            const payload = {
-                pathname: '/',
+            const payload: LocationChangePayload = {
+                pathname: '/' as const,
                 app: 'dashboard',
-                route: {
-                    name: 'suite-index',
-                    pattern: '/',
-                    app: 'dashboard',
-                },
+                route: getRequiredRoute('suite-index'),
+                params: undefined,
             };
-            store.dispatch({
-                type: ROUTER.LOCATION_CHANGE,
-                payload,
-            });
+            store.dispatch(routerLocationChange(payload));
             expect(store.getActions()).toEqual([
                 { type: appChanged.type, payload: 'dashboard' },
-                {
-                    type: ROUTER.LOCATION_CHANGE,
-                    payload,
-                },
+                routerLocationChange(payload),
             ]);
         });
 
@@ -129,24 +139,17 @@ describe('suite middleware', () => {
                     },
                 }),
             );
-            const payload = {
-                pathname: '/onboarding',
+            const payload: LocationChangePayload = {
+                pathname: '/onboarding' as const,
                 app: 'onboarding',
-                route: {
-                    name: 'onboarding-index',
-                    pattern: '/onboarding',
-                    app: 'onboarding',
-                    isForegroundApp: true,
-                    isFullscreenApp: true,
-                    isNestedRoute: undefined,
-                    params: undefined,
-                },
+                route: getRequiredRoute('onboarding-index'),
+                params: undefined,
             };
             store.dispatch({
-                type: ROUTER.LOCATION_CHANGE,
+                type: routerLocationChange.type,
                 payload,
             });
-            expect(store.getActions()).toEqual([{ type: ROUTER.LOCATION_CHANGE, payload }]);
+            expect(store.getActions()).toEqual([routerLocationChange(payload)]);
         });
     });
 });

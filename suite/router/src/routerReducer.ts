@@ -1,10 +1,9 @@
-import type { AnyAction } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';
 import { type RouterPath, type RouterPathOptional } from './router';
-import * as ROUTER from './routerConstants';
 import { type RouterAppWithParams, type SettingsBackRoute } from './routes';
 
 const ACCOUNT_TABS = [
@@ -18,6 +17,8 @@ const ACCOUNT_TABS = [
     'wallet-staking',
 ];
 
+export const ROUTER_PREFIX = 'router';
+
 export type RouterState = RouterPath & {
     loaded: boolean;
     settingsBackRoute: SettingsBackRoute; // TODO: Probably not needed with the new router
@@ -28,18 +29,10 @@ export type RouterRootState = {
     router: RouterState;
 };
 
-export type RouterAction =
-    | {
-          type: typeof ROUTER.LOCATION_CHANGE;
-          payload: RouterPathOptional & {
-              anchor?: AnchorType;
-              settingsBackRoute?: SettingsBackRoute;
-          } & RouterAppWithParams;
-      }
-    | {
-          type: typeof ROUTER.ANCHOR_CHANGE;
-          payload: AnchorType | undefined;
-      };
+type LocationChangePayload = RouterPathOptional & {
+    anchor?: AnchorType;
+    settingsBackRoute?: SettingsBackRoute;
+} & RouterAppWithParams;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
 
@@ -56,28 +49,25 @@ const initialState: RouterState = {
     },
 };
 
-export const routerInitialState = initialState;
+export const routerSlice = createSlice({
+    name: ROUTER_PREFIX,
+    initialState: initialState as RouterState,
+    reducers: {
+        routerLocationChange: (state, action: PayloadAction<LocationChangePayload>) => {
+            state.loaded = true;
+            Object.assign(state, action.payload);
+        },
+        anchorChange: (state, action: PayloadAction<AnchorType | undefined>) => {
+            state.anchor = action.payload;
+        },
+    },
+});
 
-export const routerReducer = (
-    state: RouterState = initialState,
-    action: RouterAction | AnyAction,
-): RouterState => {
-    switch (action.type) {
-        case ROUTER.LOCATION_CHANGE:
-            return {
-                ...state,
-                loaded: true,
-                ...action.payload,
-            };
-        case ROUTER.ANCHOR_CHANGE:
-            return {
-                ...state,
-                anchor: action.payload,
-            };
-        default:
-            return state;
-    }
-};
+export const routerReducer = routerSlice.reducer;
+export const { routerLocationChange, anchorChange } = routerSlice.actions;
+export type RouterAction =
+    | ReturnType<typeof routerLocationChange>
+    | ReturnType<typeof anchorChange>;
 
 export const selectRouter = (state: RouterRootState) => state.router;
 export const selectRouterLoaded = (state: RouterRootState) => state.router.loaded;

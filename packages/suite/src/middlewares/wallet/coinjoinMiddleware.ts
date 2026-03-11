@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
 import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import {
     Feature,
     messageSystemActions,
@@ -22,7 +22,7 @@ import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import * as coinjoinAccountActions from 'src/actions/wallet/coinjoinAccountActions';
 import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
@@ -49,7 +49,7 @@ export const coinjoinMiddleware =
     (next: Dispatch) =>
     (action: Action): Action => {
         // cancel discovery for each CoinjoinBackend
-        if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== 'wallet') {
+        if (action.type === routerLocationChange.type && action.payload.app !== 'wallet') {
             CoinjoinService.getInstances().forEach(({ backend }) => backend.cancel());
         }
 
@@ -210,7 +210,7 @@ export const coinjoinMiddleware =
 
         // Pause/restore coinjoin session depending on current route.
         // Device may be locked by another connect call, so check on LOCK_DEVICE action as well.
-        if (action.type === ROUTER.LOCATION_CHANGE || action.type === lockDevice.type) {
+        if (action.type === routerLocationChange.type || action.type === lockDevice.type) {
             const state = api.getState();
             const isDeviceOrUiLocked = selectIsDeviceOrUiLocked(state);
             if (!isDeviceOrUiLocked) {

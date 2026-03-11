@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
-import { selectRouterUrl } from '@suite/router';
+import { routerLocationChange, selectRouterUrl } from '@suite/router';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -15,7 +15,7 @@ import {
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { DESKTOP_UPDATE, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
+import { DESKTOP_UPDATE, PROTOCOL, SUITE } from 'src/actions/suite/constants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
@@ -57,7 +57,7 @@ const breadcrumbActions = new Set<Action['type']>([
     TRANSPORT.ERROR,
     blockchainActions.setBackend.type,
     accountsActions.updateSelectedAccount.type,
-    ROUTER.LOCATION_CHANGE,
+    routerLocationChange.type,
     DESKTOP_UPDATE.ALLOW_PRERELEASE,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
@@ -107,7 +107,7 @@ const sentryMiddleware =
                 });
                 break;
             }
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 setSentryTag('routerURL', selectRouterUrl(state));
                 break;
             case SUITE.TOR_STATUS:

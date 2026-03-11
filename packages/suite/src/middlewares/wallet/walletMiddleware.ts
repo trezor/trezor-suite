@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
+import { routerLocationChange } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -17,7 +18,6 @@ import {
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
@@ -90,7 +90,7 @@ const walletMiddleware =
             resetReducers = true;
         }
 
-        if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
+        if (prevRouter.app === 'wallet' && action.type === routerLocationChange.type) {
             // leaving wallet app or switching between accounts
             resetReducers =
                 (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||

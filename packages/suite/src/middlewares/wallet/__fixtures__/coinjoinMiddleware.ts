@@ -1,10 +1,10 @@
-import { RouterState } from '@suite/router';
+import { RouterState, routerLocationChange } from '@suite/router';
 import { accountsActions } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
@@ -185,7 +185,7 @@ export const fixtures = [
         description: 'interrupt current coinjoin session when user enters send form',
         state: DEFAULT_STATE,
         action: {
-            type: ROUTER.LOCATION_CHANGE,
+            type: routerLocationChange.type,
             payload: {
                 route: {
                     name: 'wallet-send',
@@ -211,7 +211,7 @@ export const fixtures = [
             },
         ],
         action: {
-            type: ROUTER.LOCATION_CHANGE,
+            type: routerLocationChange.type,
             payload: {
                 route: {
                     name: 'settings-index',

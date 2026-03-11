@@ -1,5 +1,7 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -26,6 +28,7 @@ import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
+import { appChanged } from '../suiteActions';
 import * as suiteActions from '../suiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
@@ -72,24 +75,24 @@ const getInitialState = (
     suiteSyncData?: Partial<ReturnType<typeof suiteSyncReducer>>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suiteReducer(undefined, appChanged('unknown')),
         ...suite,
     },
     device: {
-        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...deviceReducer(undefined, appChanged('unknown')),
         ...device,
     },
     router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...routerReducer(undefined, appChanged('unknown')),
         ...router,
     },
-    modal: modalReducer(undefined, { type: 'foo' } as any),
+    modal: modalReducer(undefined, appChanged('unknown')),
     firmware: {
-        ...firmwareReducer(undefined, { type: 'foo' } as any),
+        ...firmwareReducer(undefined, appChanged('unknown')),
         ...firmware,
     },
     suiteSync: {
-        ...suiteSyncReducer(undefined, { type: 'foo' } as any),
+        ...suiteSyncReducer(undefined, appChanged('unknown')),
     },
     suiteSyncData: {
         ...(suiteSyncData ?? {}),
@@ -111,7 +114,7 @@ const initStore = (state: State) => {
         const { suite, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().device = deviceReducer(device, action);
-        store.getState().router = routerReducer(router, action);
+        store.getState().router = routerReducer(router, action as UnknownAction);
         // add action back to stack
         store.getActions().push(action);
     });

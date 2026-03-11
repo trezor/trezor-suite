@@ -1,7 +1,10 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 
 import { SUITE } from 'src/actions/suite/constants';
+import { appChanged } from 'src/actions/suite/suiteActions';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -26,18 +29,18 @@ const getInitialState = (
     onboarding?: Partial<OnboardingState>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suiteReducer(undefined, appChanged('unknown')),
         ...suite,
     },
     router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...routerReducer(undefined, appChanged('unknown')),
         ...router,
     },
     onboarding: {
-        ...onboardingReducer(undefined, { type: 'foo' } as any),
+        ...onboardingReducer(undefined, appChanged('unknown')),
         ...onboarding,
     },
-    modal: modalReducer(undefined, { type: 'foo' } as any),
+    modal: modalReducer(undefined, appChanged('unknown')),
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -50,7 +53,7 @@ const initStore = (state: State) => {
         const action = store.getActions().pop();
         const { suite, router, onboarding } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action);
+        store.getState().router = routerReducer(router, action as UnknownAction);
         store.getState().onboarding = onboardingReducer(onboarding, action);
 
         // add action back to stack

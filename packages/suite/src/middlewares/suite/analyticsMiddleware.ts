@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectRouterUrl } from '@suite/router';
+import { anchorChange, routerLocationChange, selectRouterUrl } from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -29,7 +29,7 @@ import {
 } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
@@ -223,7 +223,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
             }
 
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 if (
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
@@ -239,7 +239,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 }
                 break;
 
-            case ROUTER.ANCHOR_CHANGE:
+            case anchorChange.type:
                 if (action.payload) {
                     asTypedDesktopAnalytics(analytics).report({
                         type: events.routerLocationChangeEvent.name,

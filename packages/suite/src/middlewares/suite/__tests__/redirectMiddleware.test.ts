@@ -1,3 +1,5 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
@@ -7,6 +9,7 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import * as routerActions from 'src/actions/suite/routerActions';
+import { appChanged } from 'src/actions/suite/suiteActions';
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -30,20 +33,20 @@ const getInitialState = (
     modal?: Partial<ModalState>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suiteReducer(undefined, appChanged('unknown')),
         ...suite,
     },
     locks: locksInitialState,
     device: {
-        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...deviceReducer(undefined, appChanged('unknown')),
         ...device,
     },
     router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...routerReducer(undefined, appChanged('unknown')),
         ...router,
     },
     modal: {
-        ...modalReducer(undefined, { type: 'foo' } as any),
+        ...modalReducer(undefined, appChanged('unknown')),
         ...modal,
     },
     messageSystem: {},
@@ -57,9 +60,13 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
+        if (!action) {
+            return;
+        }
+
         const { suite, router, device, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router as RouterState, action);
+        store.getState().router = routerReducer(router as RouterState, action as UnknownAction);
         store.getState().device = deviceReducer(device, action);
         store.getState().locks = locksReducer(locks, action);
 
