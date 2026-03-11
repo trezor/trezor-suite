@@ -16,6 +16,7 @@ import {
 import * as ERRORS from '../errors';
 import { type DescriptorApiLevel, PathInternal } from '../types';
 import { getUSBDescriptorModel } from '../utils/descriptor';
+import { error, success } from '../utils/result';
 
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: USB;
@@ -199,7 +200,7 @@ export class UsbApi extends AbstractApi {
 
             this.devices = await this.createDevices(devices, signal);
 
-            return this.success(this.devicesToDescriptors());
+            return success(this.devicesToDescriptors());
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err);
@@ -221,7 +222,7 @@ export class UsbApi extends AbstractApi {
     public async read(path: string, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
-            return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
@@ -237,10 +238,10 @@ export class UsbApi extends AbstractApi {
             if (!res.data?.byteLength) {
                 this.logger?.warn(`usb: device.transferIn error: empty data buffer`);
 
-                return this.success(Buffer.alloc(0));
+                return success(Buffer.alloc(0));
             }
 
-            return this.success(Buffer.from(res.data.buffer));
+            return success(Buffer.from(res.data.buffer));
         } catch (err) {
             this.logger?.error(`usb: device.transferIn error ${err}`);
 
@@ -251,7 +252,7 @@ export class UsbApi extends AbstractApi {
     public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
-            return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
         let newArray: Uint8Array<ArrayBuffer>;
@@ -286,7 +287,7 @@ export class UsbApi extends AbstractApi {
                 throw new Error('transfer out status not ok');
             }
 
-            return this.success(undefined);
+            return success(undefined);
         } catch (err) {
             return this.handleReadWriteError(err);
         } finally {
@@ -320,7 +321,7 @@ export class UsbApi extends AbstractApi {
     ) {
         const device = this.findDevice(path);
         if (!device) {
-            return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
@@ -330,10 +331,10 @@ export class UsbApi extends AbstractApi {
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
             if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
-                return this.error({ error: ERRORS.LIBUSB_ERROR_ACCESS });
+                return error({ error: ERRORS.LIBUSB_ERROR_ACCESS });
             }
 
-            return this.error({
+            return error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
             });
@@ -377,20 +378,20 @@ export class UsbApi extends AbstractApi {
             } catch (err) {
                 this.logger?.error(`usb: device.claimInterface error ${err}.`);
 
-                return this.error({
+                return error({
                     error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                     message: err.message,
                 });
             }
         }
 
-        return this.success(undefined);
+        return success(undefined);
     }
 
     public async closeDevice(path: string) {
         let device = this.findDevice(path);
         if (!device) {
-            return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
         this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
@@ -430,14 +431,14 @@ export class UsbApi extends AbstractApi {
             } catch (err) {
                 this.logger?.debug(`usb: device.close error ${err}.`);
 
-                return this.error({
+                return error({
                     error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
                     message: err.message,
                 });
             }
         }
 
-        return this.success(undefined);
+        return success(undefined);
     }
 
     private findDevice(path: string) {
@@ -586,7 +587,7 @@ export class UsbApi extends AbstractApi {
                 'The device was disconnected.',
             ].some(disconnectedErr => err.message.includes(disconnectedErr))
         ) {
-            return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+            return error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
         return this.unknownError(err, [

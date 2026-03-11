@@ -11,6 +11,7 @@ import { DEVICE_TYPE } from '../constants';
 import * as ERRORS from '../errors';
 import { type DescriptorApiLevel, PathInternal } from '../types';
 import { readMessageBuffer } from '../utils/readMessageBuffer';
+import { error, success } from '../utils/result';
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
@@ -67,7 +68,7 @@ export class UdpApi extends AbstractApi {
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             const listener = () => {
                 resolve(
-                    this.error({
+                    error({
                         error: ERRORS.ABORTED_BY_SIGNAL,
                     }),
                 );
@@ -95,14 +96,14 @@ export class UdpApi extends AbstractApi {
                     this.logger?.error(err.message);
 
                     resolve(
-                        this.error({
+                        error({
                             error: ERRORS.INTERFACE_DATA_TRANSFER,
                             message: err.message,
                         }),
                     );
                 }
 
-                resolve(this.success(undefined));
+                resolve(success(undefined));
             });
         });
     }
@@ -173,11 +174,11 @@ export class UdpApi extends AbstractApi {
             ).then(res => res.filter(isNotUndefined));
             this.handleDevicesChange(enumerateResult);
 
-            return this.success(enumerateResult);
+            return success(enumerateResult);
         } catch {
             this.handleDevicesChange([]);
 
-            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+            return error({ error: ERRORS.ABORTED_BY_SIGNAL });
         }
     }
 
@@ -204,13 +205,13 @@ export class UdpApi extends AbstractApi {
 
     public openDevice(_path: string) {
         // todo: maybe ping?
-        return Promise.resolve(this.success(undefined));
+        return Promise.resolve(success(undefined));
     }
 
     public closeDevice(path: string) {
         this.readBuffer.cancelRead(path);
 
-        return Promise.resolve(this.success(undefined));
+        return Promise.resolve(success(undefined));
     }
 
     public dispose() {

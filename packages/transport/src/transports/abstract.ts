@@ -6,7 +6,6 @@ import {
     TypedEmitter,
     scheduleAction,
 } from '@trezor/utils';
-import type { Ok } from '@trezor/type-utils';
 
 import { type OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
@@ -23,7 +22,7 @@ import type {
     ResultWithTypedError,
     Session,
 } from '../types';
-import { error, success, unknownError } from '../utils/result';
+import { unknownError } from '../utils/result';
 
 export type AcquireInput = {
     path: PathPublic;
@@ -394,14 +393,6 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
 
     public loadMessages(packageName: string, packageLoader: Parameters<typeof loadDefinitions>[2]) {
         return loadDefinitions(this.messages, packageName, packageLoader);
-    }
-
-    protected success<T>(payload: T): Ok<T> {
-        return success(payload);
-    }
-
-    protected error<E extends AnyError>(payload: { error: E; message?: string }) {
-        return error<E>(payload);
     }
 
     protected unknownError = <E extends AnyError = never>(

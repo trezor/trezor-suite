@@ -8,6 +8,7 @@ import * as ERRORS from '@trezor/transport/src/errors';
 import { type PathInternal } from '@trezor/transport/src/types';
 import { getBLEDescriptorModel } from '@trezor/transport/src/utils/descriptor';
 import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
+import { error, success } from '@trezor/transport/src/utils/result';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
 import { type BluetoothDevice, type TrezorBluetoothSettings } from './types';
@@ -45,18 +46,18 @@ export class BluetoothApi extends AbstractApi {
         const { api } = this;
         try {
             await api.connect();
-        } catch (error) {
-            return this.error({ error: ERRORS.UNEXPECTED_ERROR, message: error.message });
+        } catch (err) {
+            return error({ error: ERRORS.UNEXPECTED_ERROR, message: err.message });
         }
 
-        return this.success(true);
+        return success(true);
     }
 
     enumerate() {
         return this.api
             .send('enumerate')
-            .then(({ devices }) => this.success(this.devicesToDescriptors(devices)))
-            .catch(() => this.success([]));
+            .then(({ devices }) => success(this.devicesToDescriptors(devices)))
+            .catch(() => success([]));
     }
 
     listen() {
@@ -108,8 +109,8 @@ export class BluetoothApi extends AbstractApi {
 
         return this.api
             .send('write', { id: path, data: Array.from(chunk) })
-            .then(() => this.success(undefined))
-            .catch(e => this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
+            .then(() => success(undefined))
+            .catch(e => error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
     }
 
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
@@ -118,7 +119,7 @@ export class BluetoothApi extends AbstractApi {
             this.readBuffer.cancelRead(path);
             if (this.readSubscription[path]) {
                 // already subscribed to TX (read) characteristics
-                return Promise.resolve(this.success(undefined));
+                return Promise.resolve(success(undefined));
             } else {
                 this.readSubscription[path] = true;
             }
@@ -126,9 +127,9 @@ export class BluetoothApi extends AbstractApi {
 
         return this.api
             .send('open_device', { id: path, characteristic: options?.channel })
-            .then(() => this.success(undefined))
+            .then(() => success(undefined))
             .catch(e =>
-                this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
+                error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );
     }
 
@@ -138,14 +139,14 @@ export class BluetoothApi extends AbstractApi {
             // do not close subscriptions to TX (read) characteristics
             this.readBuffer.cancelRead(path);
 
-            return Promise.resolve(this.success(undefined));
+            return Promise.resolve(success(undefined));
         }
 
         return this.api
             .send('close_device', { id: path, characteristic: options?.channel })
-            .then(() => this.success(undefined))
+            .then(() => success(undefined))
             .catch(e =>
-                this.error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
+                error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
             );
     }
 }
