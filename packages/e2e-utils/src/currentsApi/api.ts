@@ -133,7 +133,10 @@ export async function getLastNResultsFromDistinctBranches(
  * Fetch all pages from the Tests Explorer for a given project.
  * Used only to enumerate active tests and obtain their signatures.
  */
-export async function getActiveTests(projectId: string, lookbackDays: number): Promise<TestExplorerItem[]> {
+export async function getActiveTests(
+    projectId: string,
+    lookbackDays: number,
+): Promise<TestExplorerItem[]> {
     const dateEnd = new Date();
     const dateStart = new Date(dateEnd.getTime() - lookbackDays * 24 * 60 * 60 * 1000);
 
@@ -173,6 +176,15 @@ export async function getActions(projectId: string): Promise<Action[]> {
     const response = await currentsRequest<ActionsListResponse>(`/actions?projectId=${projectId}`);
 
     return response.data;
+}
+
+/**
+ * Fetch all actions for a project that have a quarantine rule applied.
+ */
+export async function getAllQuarantineActions(projectId: string): Promise<Action[]> {
+    const actions = await getActions(projectId);
+
+    return actions.filter(a => a.action.some(r => r.op === 'quarantine'));
 }
 
 /**

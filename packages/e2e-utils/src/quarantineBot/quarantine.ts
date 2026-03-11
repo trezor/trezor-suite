@@ -10,7 +10,11 @@ import {
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
 import type { Action, SlackEvent, TestExplorerItem } from './types';
-import { deleteAction, getLastNResults, getLastNResultsFromDistinctBranches } from '../currentsApi/api';
+import {
+    deleteAction,
+    getLastNResults,
+    getLastNResultsFromDistinctBranches,
+} from '../currentsApi/api';
 
 export async function quarantineFailingTests(
     projectId: string,
@@ -48,7 +52,11 @@ export async function quarantineFailingTests(
             continue;
         }
 
-        const results = await getLastNResultsFromDistinctBranches(test.signature, QUARANTINE_LAST_N_EXECUTIONS, EXPLORER_LOOKBACK_DAYS);
+        const results = await getLastNResultsFromDistinctBranches(
+            test.signature,
+            QUARANTINE_LAST_N_EXECUTIONS,
+            EXPLORER_LOOKBACK_DAYS,
+        );
 
         if (results.length < QUARANTINE_LAST_N_EXECUTIONS) {
             console.log(
@@ -127,7 +135,11 @@ export async function unquarantinePassingTests(
             continue;
         }
 
-        const results = await getLastNResults(test.signature, UNQUARANTINE_LAST_N_EXECUTIONS, EXPLORER_LOOKBACK_DAYS);
+        const results = await getLastNResults(
+            test.signature,
+            UNQUARANTINE_LAST_N_EXECUTIONS,
+            EXPLORER_LOOKBACK_DAYS,
+        );
 
         if (results.length < UNQUARANTINE_LAST_N_EXECUTIONS) {
             console.log(

@@ -11,12 +11,6 @@ export async function getAutoQuarantineActions(projectId: string): Promise<Actio
     );
 }
 
-export async function getAllQuarantineActions(projectId: string): Promise<Action[]> {
-    const actions = await getActions(projectId);
-
-    return actions.filter(a => a.action.some(r => r.op === 'quarantine'));
-}
-
 /**
  * Create a quarantine action for a failing test.
  */
