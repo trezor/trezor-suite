@@ -1,9 +1,8 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { appChanged, routerReducer } from '@suite/router';
+import { routerAppChanged, routerReducer } from '@suite/router';
 
-import { SUITE } from 'src/actions/suite/constants';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -28,18 +27,18 @@ const getInitialState = (
     onboarding?: Partial<OnboardingState>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, appChanged('unknown')),
+        ...suiteReducer(undefined, routerAppChanged('unknown')),
         ...suite,
     },
     router: {
-        ...routerReducer(undefined, appChanged('unknown')),
+        ...routerReducer(undefined, routerAppChanged('unknown')),
         ...router,
     },
     onboarding: {
-        ...onboardingReducer(undefined, appChanged('unknown')),
+        ...onboardingReducer(undefined, routerAppChanged('unknown')),
         ...onboarding,
     },
-    modal: modalReducer(undefined, appChanged('unknown')),
+    modal: modalReducer(undefined, routerAppChanged('unknown')),
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -63,7 +62,7 @@ const initStore = (state: State) => {
 };
 
 describe('onboardingMiddleware', () => {
-    describe('SUITE.APP_CHANGED', () => {
+    describe('routerAppChanged.type', () => {
         it('payload=onboarding (into onboarding)', async () => {
             const store = initStore(
                 getInitialState({
@@ -79,10 +78,10 @@ describe('onboardingMiddleware', () => {
                     },
                 }),
             );
-            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
+            await store.dispatch({ type: routerAppChanged.type, payload: 'onboarding' });
             const result = store.getActions();
             expect(result).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'onboarding' },
+                { type: routerAppChanged.type, payload: 'onboarding' },
                 { type: '@onboarding/enable-onboarding-reducer', payload: true },
             ]);
         });

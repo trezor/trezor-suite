@@ -3,7 +3,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { modalReducer } from '@suite/modal';
-import { appChanged, routerReducer } from '@suite/router';
+import { routerAppChanged, routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -74,24 +74,24 @@ const getInitialState = (
     suiteSyncData?: Partial<ReturnType<typeof suiteSyncReducer>>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, appChanged('unknown')),
+        ...suiteReducer(undefined, routerAppChanged('unknown')),
         ...suite,
     },
     device: {
-        ...deviceReducer(undefined, appChanged('unknown')),
+        ...deviceReducer(undefined, routerAppChanged('unknown')),
         ...device,
     },
     router: {
-        ...routerReducer(undefined, appChanged('unknown')),
+        ...routerReducer(undefined, routerAppChanged('unknown')),
         ...router,
     },
-    modal: modalReducer(undefined, appChanged('unknown')),
+    modal: modalReducer(undefined, routerAppChanged('unknown')),
     firmware: {
-        ...firmwareReducer(undefined, appChanged('unknown')),
+        ...firmwareReducer(undefined, routerAppChanged('unknown')),
         ...firmware,
     },
     suiteSync: {
-        ...suiteSyncReducer(undefined, appChanged('unknown')),
+        ...suiteSyncReducer(undefined, routerAppChanged('unknown')),
     },
     suiteSyncData: {
         ...(suiteSyncData ?? {}),
