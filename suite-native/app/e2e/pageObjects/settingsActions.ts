@@ -6,7 +6,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { onTabBar } from './tabBarActions';
 import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
-const DEV_EVOLU_URL = 'https://suite-sync.suite.sldev.cz/evolu/';
+const DEV_EVOLU_URL = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
 
 type SettingsOptions =
     | 'preferences'
