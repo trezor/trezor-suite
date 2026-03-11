@@ -4,7 +4,7 @@
 // - more specific networks (zcash/komodo, dash, peercoin, decred)
 // - network type validation function.
 
-import { typeforce } from './types/typeforce';
+import { Type, UInt16, UInt32, UInt8, checkType } from './types/validation';
 
 export interface Bip32 {
     public: number;
@@ -264,23 +264,25 @@ const NETWORK_TYPES = {
 
 export type NetworkTypes = keyof typeof NETWORK_TYPES;
 
+const networkSchema = Type.Object(
+    {
+        bip32: Type.Object(
+            {
+                public: UInt32,
+                private: UInt32,
+            },
+            { additionalProperties: true },
+        ),
+        pubKeyHash: Type.Union([UInt8, UInt16]),
+        scriptHash: Type.Union([UInt8, UInt16]),
+    },
+    { additionalProperties: true },
+);
+
 export function isNetworkType(type: NetworkTypes, network?: Network) {
     if (typeof type !== 'string' || !network || !NETWORK_TYPES[type]) return false;
-    try {
-        typeforce(
-            {
-                bip32: {
-                    public: typeforce.UInt32,
-                    private: typeforce.UInt32,
-                },
-                pubKeyHash: typeforce.anyOf(typeforce.UInt8, typeforce.UInt16),
-                scriptHash: typeforce.anyOf(typeforce.UInt8, typeforce.UInt16),
-            },
-            network,
-        );
-    } catch {
-        return false;
-    }
+
+    if (!checkType(networkSchema, network)) return false;
 
     return !!NETWORK_TYPES[type].find(
         n =>

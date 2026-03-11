@@ -9966,7 +9966,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12, @sinclair/typebox@npm:^0.33.7":
+"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12":
   version: 0.33.12
   resolution: "@sinclair/typebox@npm:0.33.12"
   checksum: 10/3b868a540480a914fb05e939fd875f1db9d078671038786394d8ac21f1cb12f2e5e25f0cc1092925f613821d0a959a14c8c8ad35a4064639822ce5f7b83ce380
@@ -15942,7 +15942,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
   dependencies:
-    "@sinclair/typebox": "npm:^0.33.7"
+    "@sinclair/typebox": "npm:^0.33.12"
     "@sinclair/typebox-codegen": "npm:^0.10.4"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16572,6 +16572,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:
+    "@sinclair/typebox": "npm:^0.33.12"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bn.js": "npm:^5.2.0"
@@ -16590,7 +16591,6 @@ __metadata:
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
     tiny-secp256k1: "npm:^1.1.7"
-    typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
   peerDependencies:
@@ -45253,13 +45253,6 @@ __metadata:
   bin:
     typedoc: bin/typedoc
   checksum: 10/657afd087d88a14cf77ad941de8913041a6a025e87c78833a5ee58a52b8252b685730394ab7920781b0b2faa0507b1c9d87fcf82dd86d1b788420716fc17ded3
-  languageName: node
-  linkType: hard
-
-"typeforce@npm:^1.18.0":
-  version: 1.18.0
-  resolution: "typeforce@npm:1.18.0"
-  checksum: 10/dbf98c75b1d57e56e33c1e1271d5505e67981f4e6a2e2e6e8e31160b58777fea1726160810b6c606517db16476805b7dce315926ba2d4859b9a56cab05b7a41f
   languageName: node
   linkType: hard
 

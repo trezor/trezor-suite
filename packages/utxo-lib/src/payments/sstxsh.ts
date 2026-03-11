@@ -2,7 +2,8 @@ import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, typeforce } from '../types';
+import { Payment, PaymentOpts } from '../types';
+import { BufferNSchema, BufferSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -14,13 +15,16 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            output: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                output: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 

@@ -7,7 +7,8 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackElement, StackFunction, typeforce } from '../types';
+import { Payment, PaymentOpts, StackElement, StackFunction } from '../types';
+import { BufferNSchema, BufferSchema, Nullable, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -36,23 +37,29 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(32)),
-            output: typeforce.maybe(typeforce.BufferN(34)),
-
-            redeem: typeforce.maybe({
-                input: typeforce.maybe(typeforce.Buffer),
-                network: typeforce.maybe(typeforce.Object),
-                output: typeforce.maybe(typeforce.Buffer),
-                witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-            }),
-            input: typeforce.maybe(typeforce.BufferN(0)),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(32)),
+                output: Type.Optional(BufferNSchema(34)),
+                redeem: Type.Optional(
+                    Type.Object(
+                        {
+                            input: Type.Optional(BufferSchema),
+                            network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                            output: Type.Optional(BufferSchema),
+                            witness: Nullable(Type.Array(BufferSchema)),
+                        },
+                        { additionalProperties: true },
+                    ),
+                ),
+                input: Type.Optional(BufferNSchema(0)),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
