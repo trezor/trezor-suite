@@ -9,6 +9,8 @@ import {
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
 import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
@@ -20,6 +22,7 @@ import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessio
 
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;
+    hasOwnerAllowance: (walletDescriptor: WalletDescriptor) => boolean;
 } & SuiteSyncStorageRepositoryDep &
     CreateSuiteStorageDep &
     RefreshSuiteSyncKeysDep &
@@ -51,10 +54,14 @@ export const createEnsureStorage =
     (deps: EnsureStorageDeps): CreateEnsureStorage =>
     async ({ deviceStaticSessionId, isWriteMode }): ReturnType<CreateEnsureStorage> => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
         const storage = deps.suiteSyncStorageRepository.get(storageId);
 
-        if (isNotNull(storage)) {
+        // Return cached storage if it exists and user has owner quota.
+        // We intentionally skip the isWriteMode check here because deps.ensureQuota also refreshes
+        // the owner quota from QM server (we do it so other user devices can allocate more quota, thus here it would be outdated).
+        if (isNotNull(storage) && deps.hasOwnerAllowance(walletDescriptor)) {
             return ok(storage);
         }
 
@@ -72,10 +79,6 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const newStorage = deps.createSuiteStorage({
-            suiteSyncOwner: owner,
-        });
-
         const quotaResult = await deps.ensureQuota({
             deviceStaticSessionId,
             delegatedKey,
@@ -83,12 +86,17 @@ export const createEnsureStorage =
             isWriteMode,
         });
 
-        // Set the relay URL if quota is allocated or if we are not in write mode.
+        // correct approach would be to create a new storage anyway, but currently there is bug regarding the dispose function
+        const resolvedStorage = storage ?? deps.createSuiteStorage({ suiteSyncOwner: owner });
+
+        // Set the relay URL if quota is allocated or if storage was not yet initialized.
         if (quotaResult.success || quotaResult.error.type === 'WriteModeRequiredForAllocation') {
-            await newStorage.updateRelayUrl(deps.getRelayUrl());
+            await resolvedStorage.updateRelayUrl(deps.getRelayUrl());
         }
 
-        deps.suiteSyncStorageRepository.set(storageId, newStorage);
+        if (!isNotNull(storage)) {
+            deps.suiteSyncStorageRepository.set(storageId, resolvedStorage);
+        }
 
-        return ok(newStorage);
+        return ok(resolvedStorage);
     };

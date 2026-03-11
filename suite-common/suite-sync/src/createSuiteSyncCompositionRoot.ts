@@ -7,6 +7,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     selectEnforceQuotaManager,
     selectHasDeviceAllowance,
+    selectHasOwnerAllowance,
 } from '@suite-common/suite-sync-quota-manager';
 import {
     type CreateSuiteStorage,
@@ -127,6 +128,8 @@ export const createSuiteSyncCompositionRoot = (
         createSuiteStorage,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
+        hasOwnerAllowance: walletDescriptor =>
+            selectHasOwnerAllowance(deps.getState(), walletDescriptor),
     });
 
     const suiteSyncListener = createSuiteSyncListener({
