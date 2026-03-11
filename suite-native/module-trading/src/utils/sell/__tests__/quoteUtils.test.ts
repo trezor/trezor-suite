@@ -63,7 +63,7 @@ describe('quoteUtils', () => {
                     {
                         amount: '0.1',
                         fiat: undefined,
-                        currency: { value: 'usd' }, // Assuming USD is the default fiat currency
+                        currency: { value: 'usd' },
                     },
                 ],
                 countrySelect: {

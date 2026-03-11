@@ -1,6 +1,7 @@
+import { buildTradingFiatOption } from '@suite-common/trading';
+
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
-    buildTradingFiatOption,
     getCountryLabelParts,
     getTradeTypeByRoute,
     resolveAddressAndToken,

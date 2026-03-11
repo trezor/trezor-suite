@@ -15,6 +15,7 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -90,7 +91,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const tradingFiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
-        fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: getValues().outputs?.[0]?.currency?.value || undefined,
     });
 
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -123,7 +124,10 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
         if (!tradingFiatValues) return;
 
-        const rate = await tradingFiatValues.fiatRatesUpdater(value);
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(value);
+        if (!mappedBaseCurrencyCode) return;
+
+        const rate = await tradingFiatValues.fiatRatesUpdater(mappedBaseCurrencyCode);
         const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
             shouldSendInSats ? convertAmountSubunitsToUnits(amount, networkDecimals) : amount,
@@ -191,10 +195,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setAccountOnChange(account);
         changeFeeLevel('normal'); // reset fee level
 
-        await tradingFiatValues?.fiatRatesUpdater(
-            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
-            selected.contractAddress as TokenAddress,
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(
+            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value,
         );
+
+        if (mappedBaseCurrencyCode) {
+            await tradingFiatValues?.fiatRatesUpdater(
+                mappedBaseCurrencyCode,
+                selected.contractAddress as TokenAddress,
+            );
+        }
     };
 
     const setRatioAmount = (divisor: number) => {

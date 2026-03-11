@@ -7,6 +7,7 @@ import { invariant } from '@suite-common/suite-utils';
 import {
     TradingCountryCode,
     TradingPaymentMethodProps,
+    getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingBuyInfo,
@@ -17,7 +18,6 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
-    getCurrencyLabel,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';

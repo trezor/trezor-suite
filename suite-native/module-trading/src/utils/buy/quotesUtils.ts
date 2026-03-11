@@ -7,8 +7,9 @@ import {
     TradingPaymentMethodListProps,
     createAssetOption,
     cryptoIdToNetwork,
+    getCurrencyLabel,
 } from '@suite-common/trading';
-import { coinInfoToTradeableAsset, getCurrencyLabel } from '@suite-native/trading-atoms';
+import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import { BuyFormType } from '@suite-native/trading-types';
 
 export type GetAnalyticsTradingBuyPayloadProps = {

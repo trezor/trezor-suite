@@ -4,13 +4,13 @@ import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     TradingCountryCode,
     TradingPaymentMethodProps,
+    getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { getCurrencyLabel } from '@suite-native/trading-atoms';
 import { FiatCurrencyItem, SellFormValues } from '@suite-native/trading-types';
 
 import { selectTradingResidenceCountry } from './residenceSelectors';

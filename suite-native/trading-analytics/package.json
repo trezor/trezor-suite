@@ -25,6 +25,6 @@
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
-        "@types/invity-api": "^1.1.14"
+        "@types/invity-api": "^1.1.15"
     }
 }

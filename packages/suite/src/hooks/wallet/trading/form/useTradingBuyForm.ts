@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
@@ -17,6 +17,7 @@ import {
     buyThunks,
     getTradingQuotesByPaymentMethod,
     isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
     selectTradingBuy,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
@@ -90,12 +91,12 @@ export const useTradingBuyForm = ({
         ? {
               cryptoId: selectedQuote.receiveCurrency,
               amount: selectedQuote.receiveAmount?.toString(),
-              fiatCurrency: selectedQuote.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(selectedQuote.fiatCurrency),
           }
         : {
               cryptoId: quotesRequest?.receiveCurrency,
               amount: quotesRequest?.cryptoStringAmount,
-              fiatCurrency: quotesRequest?.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(quotesRequest?.fiatCurrency),
           };
     useTradingFiatValues(fiatTradingValuesParams);
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { events } from '@suite/analytics';
 import { TranslationKey, useTranslation } from '@suite/intl';
@@ -192,7 +192,7 @@ export const useTradingExchangeForm = ({
     useTradingFiatValues({
         cryptoId: receiveCryptoSelect?.id,
         amount: selectedQuote?.receiveStringAmount,
-        fiatCurrency: output?.currency?.value as FiatCurrencyCode | undefined,
+        fiatCurrency: output?.currency?.value || undefined,
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;

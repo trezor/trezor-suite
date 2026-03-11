@@ -1,4 +1,4 @@
-import { BuyTrade, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite/intl';
 import { type TradingType } from '@suite-common/trading';
@@ -24,11 +24,6 @@ export const translationKeys: Record<
     sell: 'TR_TRADING_SELL',
     exchange: 'TR_TRADING_SWAP',
 };
-
-export const buildTradingFiatOption = (currency: FiatCurrencyCode) => ({
-    value: currency,
-    label: currency.toUpperCase(),
-});
 
 export const getCountryLabelParts = (label: string) => {
     try {
