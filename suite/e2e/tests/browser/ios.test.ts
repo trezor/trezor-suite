@@ -4,7 +4,7 @@ import { expect, test } from '../../support/fixtures';
 
 const iosAria = `
     - heading "Trezor Suite web doesn’t support iOS" [level=1]
-    - paragraph: "If you have a Trezor Safe 7, connect it via Bluetooth using the Trezor Suite desktop app. You can also use Trezor Suite on the following platforms:"
+    - paragraph: "Trezor Safe 7 can connect via Bluetooth using the Trezor Suite desktop app. Trezor Suite is also available on:"
     - list:
       - listitem: Trezor Suite desktop app
       - listitem: Trezor Suite for web
