@@ -15,18 +15,16 @@ import {
     TradingExchangeKycFilter,
     TradingExchangeRateFilter,
     TradingExchangeRateType,
-    enabledTradingCurrencies,
+    buildTradingBaseCurrencyOptionFromFiat,
+    buildTradingFiatOption,
+    getSupportedFiatCurrencyWithFallback,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    buildTradingFiatOption,
-    resolveAddressAndToken,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
 
@@ -37,11 +35,7 @@ export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryp
         () =>
             // Here, we are using BaseCurrency as a way how to determine the users preferred Sell/Buy currency,
             // however, they may not be available (or it is 'btc'). In that case, we fall back to 'usd'
-            buildTradingFiatOption(
-                isArrayMember(baseCurrencyCode, typedObjectValues(enabledTradingCurrencies))
-                    ? baseCurrencyCode
-                    : 'usd',
-            ),
+            buildTradingFiatOption(getSupportedFiatCurrencyWithFallback(baseCurrencyCode)),
         [baseCurrencyCode],
     );
     const { account, defaultAsset } = useTradingDefaultSellAsset({ accountKey, cryptoId });
@@ -50,7 +44,7 @@ export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryp
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,
-            currency: defaultCurrency,
+            currency: buildTradingBaseCurrencyOptionFromFiat(defaultCurrency.value),
             address,
             token,
         }),

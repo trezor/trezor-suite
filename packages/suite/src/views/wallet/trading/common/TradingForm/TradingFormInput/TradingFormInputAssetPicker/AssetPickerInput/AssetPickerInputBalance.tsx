@@ -1,8 +1,6 @@
 import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { FiatCurrencyCode } from 'invity-api';
-
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeFormProps,
@@ -53,7 +51,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     const fiatValues = useTradingFiatValues({
         amount,
         cryptoId: value?.id,
-        fiatCurrency: getValues('outputs')?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: getValues('outputs')?.[0]?.currency?.value || undefined,
     });
 
     if (!fiatValues || !value) {

@@ -1,25 +1,24 @@
 import { useMemo } from 'react';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     TradingCountryCode,
     type TradingPaymentMethodListProps,
-    enabledTradingCurrencies,
+    buildTradingFiatOption,
     getDefaultCountry,
     getDefaultCountrySubdivision,
+    getSupportedFiatCurrencyWithFallback,
     regional,
     useTradingAssets,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (
     cryptoId: CryptoId | undefined,
@@ -51,16 +50,10 @@ export const useTradingBuyFormDefaultValues = (
     );
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const isEnabledTradingCurrency = isArrayMember(
-        baseCurrencyCode,
-        typedObjectValues(enabledTradingCurrencies),
-    );
-    const suggestedFiatCurrency = (
-        isEnabledTradingCurrency ? baseCurrencyCode : 'usd'
-    ) as FiatCurrencyCode;
+    const suggestedFiatCurrency = getSupportedFiatCurrencyWithFallback(baseCurrencyCode);
     const defaultCurrency = useMemo(
-        () => buildTradingFiatOption(isEnabledTradingCurrency ? baseCurrencyCode : 'usd'),
-        [isEnabledTradingCurrency, baseCurrencyCode],
+        () => buildTradingFiatOption(suggestedFiatCurrency),
+        [suggestedFiatCurrency],
     );
     const defaultValues = useMemo(
         () => ({

@@ -5,8 +5,11 @@ import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TradingFiatCurrencyOption,
+    buildTradingFiatOption,
+    isSupportedFiatCurrency,
 } from '@suite-common/trading';
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
+import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -18,7 +21,6 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
 
@@ -35,13 +37,17 @@ export const TradingFormInputCurrency = ({
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
     const { areSatsDisplayed } = useBitcoinAmountUnit(context.network.symbol);
+    const selectedBaseCurrency = buildCurrencyShortOption({
+        currency: isBaseCurrencyCode(currentCurrency.value) ? currentCurrency.value : '',
+        areSatsDisplayed,
+    });
 
     const options = useMemo(
         () =>
             currencies
                 ? [...currencies].map(currency => buildTradingFiatOption(currency))
-                : buildCurrencyOptions({ selected: currentCurrency, areSatsDisplayed }),
-        [currencies, currentCurrency, areSatsDisplayed],
+                : buildCurrencyOptions({ selected: selectedBaseCurrency, areSatsDisplayed }),
+        [currencies, selectedBaseCurrency, areSatsDisplayed],
     );
 
     const onChangeAdditional = (option: TradingFiatCurrencyOption) => {
@@ -60,27 +66,35 @@ export const TradingFormInputCurrency = ({
             name={name}
             defaultValue={defaultCurrency}
             control={control as Control<TradingAllFormProps>}
-            render={({ field: { onChange, value } }) => (
-                <Select
-                    value={buildCurrencyShortOption({
-                        currency: value.value,
-                        areSatsDisplayed: false,
-                    })}
-                    onChange={(selected: TradingFiatCurrencyOption) => {
-                        onChange(selected);
-                        setAmountLimits(undefined);
+            render={({ field: { onChange, value } }) => {
+                const selectedCurrencyCode =
+                    typeof value === 'object' && value !== null && 'value' in value
+                        ? value.value
+                        : value;
 
-                        onChangeAdditional(selected);
-                    }}
-                    options={options}
-                    data-testid="@trading/form/fiat-currency-select"
-                    isClearable={false}
-                    size="small"
-                    isSearchable
-                    width={width}
-                    isClean={isClean}
-                />
-            )}
+                return (
+                    <Select
+                        value={
+                            selectedCurrencyCode && isSupportedFiatCurrency(selectedCurrencyCode)
+                                ? buildTradingFiatOption(selectedCurrencyCode)
+                                : defaultCurrency
+                        }
+                        onChange={(selected: TradingFiatCurrencyOption) => {
+                            onChange(selected);
+                            setAmountLimits(undefined);
+
+                            onChangeAdditional(selected);
+                        }}
+                        options={options}
+                        data-testid="@trading/form/fiat-currency-select"
+                        isClearable={false}
+                        size="small"
+                        isSearchable
+                        width={width}
+                        isClean={isClean}
+                    />
+                );
+            }}
         />
     );
 };

@@ -36,7 +36,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/invity-api": "^1.1.14",
+        "@types/invity-api": "^1.1.15",
         "expo-system-ui": "~6.0.9",
         "react": "19.1.0",
         "react-native": "0.81.5",

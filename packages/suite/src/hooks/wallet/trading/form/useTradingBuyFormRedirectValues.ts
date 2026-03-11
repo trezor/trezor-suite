@@ -1,14 +1,14 @@
-import { BuyTradeQuoteRequest, FiatCurrencyCode } from 'invity-api';
+import { BuyTradeQuoteRequest } from 'invity-api';
 
 import {
     TradingBuyFormProps,
     TradingCountryCode,
+    buildTradingFiatOption,
     getDefaultCountry,
     getDefaultCountrySubdivision,
+    getSupportedFiatCurrencyWithFallback,
     useTradingAssets,
 } from '@suite-common/trading';
-
-import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormRedirectValues = (
     isFromRedirect: boolean,
@@ -21,7 +21,9 @@ export const useTradingBuyFormRedirectValues = (
     return {
         amountInCrypto: quotesRequest.wantCrypto,
         cryptoSelect: createAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
-        currencySelect: buildTradingFiatOption(quotesRequest.fiatCurrency as FiatCurrencyCode),
+        currencySelect: buildTradingFiatOption(
+            getSupportedFiatCurrencyWithFallback(quotesRequest.fiatCurrency),
+        ),
         countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
         countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
 

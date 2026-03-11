@@ -32,7 +32,11 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
+import {
+    BaseCurrencyCode,
+    baseCurrencies,
+    isBaseCurrencyCode,
+} from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
     EthereumTransaction,
@@ -527,7 +531,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 });
 
 type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode | '';
+    currency: BaseCurrencyCode | '' | undefined;
     areSatsDisplayed: boolean;
 };
 
@@ -535,7 +539,7 @@ export const buildCurrencyShortOption = ({
     currency,
     areSatsDisplayed,
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    if (currency === '') return { value: '', label: '' };
+    if (!currency || !isBaseCurrencyCode(currency)) return { value: '', label: '' };
 
     return {
         value: currency,
@@ -550,7 +554,7 @@ export const buildCurrencyLongOption = ({
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
     const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
 
-    if (currency === '') return shortOption;
+    if (!currency || !isBaseCurrencyCode(currency)) return shortOption;
     else {
         return {
             value: shortOption.value,
