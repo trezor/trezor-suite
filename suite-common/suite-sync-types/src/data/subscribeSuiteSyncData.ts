@@ -41,5 +41,5 @@ export type SubscribeSuiteSyncData = (
 >;
 
 export type SubscribeSuiteSyncDataDep = {
-    ensureSuiteSyncData: SubscribeSuiteSyncData;
+    ensureSubscribeSuiteSyncData: SubscribeSuiteSyncData;
 };
