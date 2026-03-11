@@ -136,7 +136,7 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
     });
 
-    const subscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
+    const ensureSubscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
         subscriptionStorage,
         ensureStorage,
         suiteSyncListener,
@@ -147,7 +147,7 @@ export const createSuiteSyncCompositionRoot = (
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
             getState: deps.getState,
             refreshSuiteSyncKeys,
-            ensureSuiteSyncData: subscribeSuiteSyncData,
+            ensureSubscribeSuiteSyncData,
             subscriptionStorage,
         }),
     });
