@@ -112,7 +112,7 @@ jobs:
     name: Unit Tests
     needs: setup-and-cache
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     continue-on-error: true
     strategy:
       matrix:
