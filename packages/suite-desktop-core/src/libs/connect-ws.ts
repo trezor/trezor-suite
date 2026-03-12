@@ -1,4 +1,4 @@
-import { ipcMain, nativeImage } from 'electron';
+import { nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
@@ -12,9 +12,9 @@ import {
 import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
-import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
-import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
 
+import { addMessage, setAppInit } from './connect-popup-messages';
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
 import { app } from '../typed-electron';
@@ -98,8 +98,6 @@ export const exposeConnectWs = ({
     store: Dependencies['store'];
 }) => {
     const { logger } = global;
-    const messages: Record<string, Deferred<any, number>> = {};
-    let appInit: Deferred<void> | undefined;
 
     const wss = new WebSocketServer({
         noServer: true,
@@ -199,7 +197,7 @@ export const exposeConnectWs = ({
 
                 const { method, ...rest } = message.payload;
 
-                messages[message.id] = createDeferred();
+                const deferred = addMessage(message.id);
                 connectionPendingMessages.add(message.id);
 
                 try {
@@ -207,11 +205,12 @@ export const exposeConnectWs = ({
                     if (!mainWindowProxy.getInstance()) {
                         mainThreadEmitter.emit('app/show');
                         logger.info(LOG_PREFIX, 'waiting for window to start');
-                        appInit = createDeferred();
+                        const appInitDeferred = createDeferred<void>();
+                        setAppInit(appInitDeferred);
                         // todo: do we actually need to clean this timeout?
                         const appInitTimeout = resolveAfter(10000);
-                        await Promise.race([appInit.promise, appInitTimeout]);
-                        appInit = undefined;
+                        await Promise.race([appInitDeferred.promise, appInitTimeout]);
+                        setAppInit(undefined);
                     }
 
                     // send call to renderer
@@ -238,7 +237,7 @@ export const exposeConnectWs = ({
                     });
 
                     // wait for response
-                    const response = await messages[message.id].promise;
+                    const response = await deferred.promise;
 
                     ws.send(
                         JSON.stringify({
@@ -277,23 +276,4 @@ export const exposeConnectWs = ({
         }
     });
 
-    ipcMain.handle('connect-popup/response', (_, response: ConnectPopupResponse) => {
-        logger.info(LOG_PREFIX, 'received response from popup ' + JSON.stringify(response));
-        if (!response || typeof response.id !== 'string') {
-            logger.error(LOG_PREFIX, 'invalid response from popup');
-
-            return;
-        }
-
-        if (!messages[response.id]) {
-            logger.error(LOG_PREFIX, 'no deferred message found');
-
-            return;
-        }
-
-        messages[response.id].resolve(response);
-    });
-    ipcMain.handle('connect-popup/ready', () => {
-        appInit?.resolve();
-    });
 };
