@@ -66,6 +66,7 @@ export class WalletPage {
     readonly discoveryWarning: Locator;
     readonly usedAddress = (index: number) =>
         this.page.getByTestId(`@wallet/receive/used-address/${index}`);
+    readonly sendToMyselfButton: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -120,6 +121,7 @@ export class WalletPage {
             .getByTestId('@menu/switch-device')
             .getByTestId('@deviceStatus-disconnected');
         this.discoveryWarning = this.page.getByTestId('@warning/trezorDiscovery');
+        this.sendToMyselfButton = this.page.getByTestId('@wallet/send/debug-sent-to-myself-button');
     }
 
     accountButton = ({

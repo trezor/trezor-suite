@@ -61,6 +61,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         walletPage,
         metadataPage,
         page,
+        devicePrompt,
     }) => {
         await test.step('Change account label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
@@ -75,16 +76,16 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
                 .toHaveText(expectedAccount.label, { timeout: 30_000 });
 
-            await page.getByTestId('@wallet/menu/wallet-receive').click();
-            await page.getByTestId('@wallet/receive/reveal-address-button').click();
+            await walletPage.receiveButton.click();
+            await walletPage.revealAddressButton.click();
 
-            await expect(page.getByTestId('@modal/header-paragraph')).toHaveText(
+            await expect(devicePrompt.headerParagraph).toHaveText(
                 expectedAccount.label,
             );
-            await page.getByTestId('@modal/close-button').click();
+            await devicePrompt.modalCloseButton.click();
             await page.getByTestId('@account-subpage/back').click();
-            await page.getByTestId('@wallet/menu/wallet-send').click();
-            await page.getByTestId('@wallet/send/debug-sent-to-myself-button').click();
+            await walletPage.openSendFormButton.click();
+            await walletPage.sendToMyselfButton.click();
             await expect(page.getByTestId('outputs.0.address/bottom-text')).toHaveText(
                 expectedAccount.label,
             );
@@ -117,42 +118,46 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .soft(metadataPage.address.label(expectedAddress.address))
                 .toHaveText(expectedAddress.label);
         });
-        // TODO: we need to move this test to a wallet with funds for coinjoin address verification
-        await page.pause();
-        await page.getByTestId('@wallet/receive/reveal-address-button/1').click();
-        await expect(
-            page.getByTestId('@modal/output-address').getByTestId('@metadata/input'),
-        ).toContainText('Evolu write BTC address');
-        await page.getByTestId('@modal/close-button').click();
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        // TODO: we need to move this test to a wallet with funds for coin control address verification
+        await test.step('Check show full address label', async () => {
+            await page.pause();
+            await page.getByTestId('@wallet/receive/reveal-address-button/1').click();
+            await expect(
+                page.getByTestId('@modal/output-address').getByTestId('@metadata/input'),
+            ).toContainText(expectedAddress.label);
+            await page.getByTestId('@modal/close-button').click();
+        })
 
-        // we need money for coin control verification
-        // need to have ETH or anything else enabled to be able to check address label in buy/sell/swap
-        // await page.getByTestId('@wallet/menu/wallet-send').click();
-        // await page.getByTestId('coin-control-button').click();
-        await page.getByTestId('@suite/menu/suite-index').click();
-        await page.getByTestId('@wallet/menu/wallet-trading-buy').click();
-        await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
-            'Evolu write BTC account',
-        );
-        await page.getByTestId('@trading/form/select-crypto-for-buy/input').click();
-        await page
-            .getByTestId('@trading/form/select-crypto-for-buy/top-assets')
-            .getByRole('button', { name: 'BTC' })
-            .click();
-        await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
-            'Evolu write BTC account',
-        );
-        await page.getByTestId('@trading/selected-receive-account').click();
-        await page
-            .getByTestId('@trading/receive-account-modal/option/suite')
-            .getByText('Evolu write BTC account')
-            .click();
-        // we are asserting address instead of label because its not implemented yet
-        await expect(page.getByTestId('@trading/bitcoin-receive-address-modal')).toContainText(
-            'bc1q kkr2 ... qfxy fa',
-        );
+        await test.step('Check in buy form receive account label and address label', async () => {
+            await page.getByTestId('@account-menu/btc/normal/0').click();
 
+            // we need money for coin control verification
+            // need to have ETH or anything else enabled to be able to check address label in buy/sell/swap
+            // await page.getByTestId('@wallet/menu/wallet-send').click();
+            // await page.getByTestId('coin-control-button').click();
+            await page.getByTestId('@suite/menu/suite-index').click();
+            await page.getByTestId('@wallet/menu/wallet-trading-buy').click();
+            await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
+                expectedAccount.label,
+            );
+            await page.getByTestId('@trading/form/select-crypto-for-buy/input').click();
+            await page
+                .getByTestId('@trading/form/select-crypto-for-buy/top-assets')
+                .getByRole('button', { name: 'BTC' })
+                .click();
+            await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
+                expectedAccount.label,
+            );
+            await page.getByTestId('@trading/selected-receive-account').click();
+            await page
+                .getByTestId('@trading/receive-account-modal/option/suite')
+                .getByText(expectedAccount.label)
+                .click();
+            // we are asserting address instead of label because its not implemented yet
+            await expect(page.getByTestId('@trading/bitcoin-receive-address-modal')).toContainText(
+                'bc1q kkr2 ... qfxy fa',
+            );
+        })
         await test.step('Change output label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
             await metadataPage.output.changeLabel({
