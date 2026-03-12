@@ -6,8 +6,8 @@ import {
     getRoute,
     getRouteHash,
     stripPrefixedURL,
-} from '../src/router';
-import type { RouteParams } from '../src/routes';
+} from '../router';
+import type { RouteParams } from '../routes';
 
 const OLD_ENV = { ...process.env };
 

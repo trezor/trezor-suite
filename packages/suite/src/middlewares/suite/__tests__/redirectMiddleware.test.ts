@@ -2,7 +2,7 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { routerAppChanged, routerReducer } from '@suite/router';
+import { routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
@@ -32,20 +32,20 @@ const getInitialState = (
     modal?: Partial<ModalState>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, routerAppChanged('unknown')),
+        ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
     locks: locksInitialState,
     device: {
-        ...deviceReducer(undefined, routerAppChanged('unknown')),
+        ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
     },
     router: {
-        ...routerReducer(undefined, routerAppChanged('unknown')),
+        ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
     },
     modal: {
-        ...modalReducer(undefined, routerAppChanged('unknown')),
+        ...modalReducer(undefined, { type: 'foo' } as any),
         ...modal,
     },
     messageSystem: {},

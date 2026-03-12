@@ -12,9 +12,9 @@
             "path": "../../suite-common/geolocation"
         },
         { "path": "../../suite-common/icons" },
-        { "path": "../router" },
         { "path": "../../suite-common/trading" },
         { "path": "../intl" },
+        { "path": "../router" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/product-components"

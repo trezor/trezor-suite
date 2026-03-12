@@ -14875,9 +14875,9 @@ __metadata:
   dependencies:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/icons": "workspace:*"
-    "@suite/router": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"

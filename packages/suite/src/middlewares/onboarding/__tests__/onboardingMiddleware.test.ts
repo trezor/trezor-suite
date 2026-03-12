@@ -27,18 +27,18 @@ const getInitialState = (
     onboarding?: Partial<OnboardingState>,
 ) => ({
     suite: {
-        ...suiteReducer(undefined, routerAppChanged('unknown')),
+        ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
     router: {
-        ...routerReducer(undefined, routerAppChanged('unknown')),
+        ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
     },
     onboarding: {
-        ...onboardingReducer(undefined, routerAppChanged('unknown')),
+        ...onboardingReducer(undefined, { type: 'foo' } as any),
         ...onboarding,
     },
-    modal: modalReducer(undefined, routerAppChanged('unknown')),
+    modal: modalReducer(undefined, { type: 'foo' } as any),
 });
 
 type State = ReturnType<typeof getInitialState>;

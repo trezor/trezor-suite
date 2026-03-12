@@ -9,6 +9,7 @@ import {
     createSuiteRouterHistory,
     routerAppChanged,
     routerLocationChange,
+    routerMiddleware,
     routerReducer,
 } from '@suite/router';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
@@ -66,7 +67,7 @@ global.fetch = jest.fn().mockImplementation(() =>
     }),
 );
 
-const EMPTY_ACTION = routerAppChanged('unknown');
+const EMPTY_ACTION = { type: 'foo' } as any;
 
 const getInitialState = (initialRun?: boolean) => {
     const initialSuiteState = suiteReducer(undefined, EMPTY_ACTION);
@@ -83,7 +84,8 @@ const getInitialState = (initialRun?: boolean) => {
                   }
                 : {}),
         },
-        locks: locksInitialState,router: routerReducer(undefined, EMPTY_ACTION),
+        locks: locksInitialState,
+        router: routerReducer(undefined, EMPTY_ACTION),
         analytics: analyticsReducer(undefined, EMPTY_ACTION),
         modal: modalReducer(undefined, EMPTY_ACTION),
         wallet: walletReducers(undefined, EMPTY_ACTION),
@@ -299,7 +301,10 @@ const initStore = (state: State) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
     const mockStore = configureStore<State, any>(
-        [prepareSuiteMiddleware(() => extraDependenciesCommonMock)],
+        [
+            prepareSuiteMiddleware(() => extraDependenciesCommonMock),
+            routerMiddleware(() => extraDependenciesCommonMock),
+        ],
         {
             services: {
                 suiteRouterHistory,
@@ -312,7 +317,7 @@ const initStore = (state: State) => {
         const { suite, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router, action as UnknownAction);
-        store.getState().locks = locksReducer(locks, action);
+        store.getState().locks = locksReducer(locks, action as UnknownAction);
     });
 
     return {
