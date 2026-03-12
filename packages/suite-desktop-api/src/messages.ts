@@ -138,6 +138,8 @@ export type ConnectPopupCall = {
     id: string;
     method: string;
     payload: any;
+    sourceType?: string;
+    silent?: boolean;
     process?: {
         name: string;
         warning: boolean;
