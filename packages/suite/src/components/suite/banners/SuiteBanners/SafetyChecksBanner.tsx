@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Banner } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -21,8 +21,11 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                     <Banner.Button
                         onClick={() =>
                             dispatch(
-                                goto({ routeName: 'settings-device', preserveParams: true,
-                                    anchor: SettingsAnchor.SafetyChecks, }),
+                                goto({
+                                    routeName: 'settings-device',
+                                    preserveParams: true,
+                                    anchor: SettingsAnchor.SafetyChecks,
+                                }),
                             )
                         }
                         data-testid="@banner/safety-checks/button"

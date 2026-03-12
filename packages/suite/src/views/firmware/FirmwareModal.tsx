@@ -49,7 +49,7 @@ export const FirmwareModal = ({
             dispatch(acquireDevice({ requestedDevice: device }));
         }
         dispatch(closeModal());
-        dispatch(closeModalApp(undefined));
+        dispatch(closeModalApp());
         resetReducer();
     };
 

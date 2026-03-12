@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Box, Column, Icon } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

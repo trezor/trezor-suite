@@ -79,11 +79,14 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto({ routeName: 'wallet-trading-buy', params: {
+            goto({
+                routeName: 'wallet-trading-buy',
+                params: {
                     symbol: networkSymbol,
                     accountIndex,
                     accountType,
-                }, }),
+                },
+            }),
         );
     };
 
@@ -113,11 +116,14 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto({ routeName: 'earn-supply', params: getEarnRouteParams({
+            goto({
+                routeName: 'earn-supply',
+                params: getEarnRouteParams({
                     account: opportunity.account,
                     yieldId: opportunity.vault.id,
                     contractAddress: opportunity.vault.token.address ?? undefined,
-                }), }),
+                }),
+            }),
         );
     };
 
@@ -127,11 +133,14 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto({ routeName: 'earn-withdraw', params: getEarnRouteParams({
+            goto({
+                routeName: 'earn-withdraw',
+                params: getEarnRouteParams({
                     account: opportunity.account,
                     yieldId: opportunity.vault.id,
                     contractAddress: opportunity.vault.token.address ?? undefined,
-                }), }),
+                }),
+            }),
         );
     };
 

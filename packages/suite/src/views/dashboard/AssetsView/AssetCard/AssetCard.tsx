@@ -103,11 +103,14 @@ export const AssetCard = ({
 
     const handleCardClick = () => {
         dispatch(
-            goto({ routeName: 'wallet-index', params: {
+            goto({
+                routeName: 'wallet-index',
+                params: {
                     symbol,
                     accountIndex: 0,
                     accountType: 'normal',
-                }, }),
+                },
+            }),
         );
     };
 

@@ -1,5 +1,4 @@
-import { lockRouter, selectIsRouterLocked, selectIsRouterOrUiLocked } from '@suite/locks';
-import { selectHasActiveModal } from '@suite/modal';
+import { lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
 
@@ -15,23 +14,13 @@ import {
 import {
     anchorChange,
     routerLocationChange,
+    selectCanNavigate,
     selectRouter,
     selectRouterApp,
     selectRouterHash,
 } from './routerReducer';
 import { RouteParams } from './routes';
 import { asSuiteRouterHistoryService } from './suiteRouterHistory';
-
-export const selectCanNavigate = (state: any) =>
-    !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);
-
-/**
- * Handle Router.beforePopState action (back)
- * Called from ./support/RouterHandler
- */
-export const onBeforePopState = createThunk('@router/onBeforePopState', (_, { getState }) =>
-    selectCanNavigate(getState()),
-);
 
 /**
  * Handle changes of history.location and history.location.hash
@@ -48,16 +37,11 @@ export const onLocationChange = createThunk(
             return null;
         }
 
+        // TODO: check if the view is not locked by the device request
         const appWithParams = getAppWithParams(location);
 
         return dispatch(routerLocationChange({ ...location, ...appWithParams }));
     },
-);
-
-// if anchor param is not set, it works as reset
-export const onAnchorChange = createThunk(
-    '@router/onAnchorChange',
-    (anchor: AnchorType | undefined, { dispatch }) => dispatch(anchorChange(anchor)),
 );
 
 /**
@@ -65,6 +49,7 @@ export const onAnchorChange = createThunk(
  * Called from `@suite-middlewares/suiteMiddleware`
  */
 export const routerInit = createThunk('@router/init', (_, { dispatch, getState, extra }) => {
+    // check if location was not already changed by initialRedirection
     if (selectRouterApp(getState()) === 'unknown') {
         const location = asSuiteRouterHistoryService(
             extra.services,
@@ -80,7 +65,6 @@ type GotoPayload = {
     anchor?: AnchorType;
 };
 
-// links inside of application
 export const goto = createThunk(
     '@router/goto',
     ({ routeName, params, preserveParams, anchor }: GotoPayload, { dispatch, getState, extra }) => {
@@ -89,6 +73,7 @@ export const goto = createThunk(
         if (hasRouterLock) {
             dispatch(lockRouter(false));
         }
+
         const unlocked = selectCanNavigate(getState());
 
         if (!unlocked) return;
@@ -99,8 +84,10 @@ export const goto = createThunk(
         const hash = preserveParams ? selectRouterHash(getState()) : (newHash ?? '');
 
         if (isEqualLocation(selectRouter(getState()), { pathname, hash, search: '' })) {
+            // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
-                setTimeout(() => dispatch(onAnchorChange(anchor)), 0);
+                // postpone propagation to allow clearing anchor in redux state by click listener
+                setTimeout(() => dispatch(anchorChange(anchor)), 0);
             }
 
             return;
@@ -110,6 +97,9 @@ export const goto = createThunk(
         if (route?.isForegroundApp) {
             dispatch(lockRouter(true));
 
+            // NOTE: this is useful eg. on welcome screen / logged out screen
+            // where we want to have suite-start router clearing the URL to ensure
+            // that there isn't a state stuck
             if (route.clearUrl) {
                 asSuiteRouterHistoryService(extra.services).suiteRouterHistory.navigate({
                     pathname,
@@ -131,10 +121,9 @@ export const goto = createThunk(
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const closeModalApp = createThunk(
+export const closeModalApp = createThunk<void, boolean | undefined>(
     '@router/closeModalApp',
-    (preserveParams: boolean | undefined, { dispatch, extra }) => {
-        const shouldPreserveParams = preserveParams ?? true;
+    (preserveParams = true, { dispatch, extra }) => {
         dispatch(lockRouter(false));
 
         const location = asSuiteRouterHistoryService(
@@ -143,15 +132,43 @@ export const closeModalApp = createThunk(
         const route = findRoute(location.pathname);
 
         if (route && route.isForegroundApp) {
-            return dispatch(goto({ routeName: 'suite-index' }));
+            dispatch(goto({ routeName: 'suite-index' }));
+
+            return;
         }
 
-        if (!shouldPreserveParams && location.hash.length > 0) {
+        if (!preserveParams && location.hash.length > 0) {
             asSuiteRouterHistoryService(extra.services).suiteRouterHistory.navigate({
                 pathname: location.pathname,
             });
         } else {
             dispatch(onLocationChange(location));
+        }
+    },
+);
+
+/**
+ * Called from `@suite-middlewares/suiteMiddleware`
+ * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
+ */
+export const initialRedirection = createThunk(
+    '@suite/initial-redirection',
+    ({ isInitialRun = true }: { isInitialRun?: boolean }, { dispatch, extra }) => {
+        const location = asSuiteRouterHistoryService(
+            extra.services,
+        ).suiteRouterHistory.getLocation();
+        const route = findRoute(location.pathname);
+
+        // only do initial redirection of route is valid
+        // otherwise do nothing -> just show 404 page
+        if (!route) {
+            return;
+        }
+
+        if (route.isForegroundApp) {
+            dispatch(goto({ routeName: route.name }));
+        } else if (isInitialRun) {
+            dispatch(goto({ routeName: 'suite-start' }));
         }
     },
 );

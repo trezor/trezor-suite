@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { goto , selectRouteName } from '@suite/router';
+import { goto, selectRouteName } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -62,19 +62,25 @@ export const CoinProtocolRenderer = ({
                 if (networkAccounts.length === 1) {
                     const account = networkAccounts[0];
                     dispatch(
-                        goto({ routeName: 'wallet-send', params: {
+                        goto({
+                            routeName: 'wallet-send',
+                            params: {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
                                 accountType: account.accountType,
-                            }, }),
+                            },
+                        }),
                     );
                 } else {
                     dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto({ routeName: 'suite-index', params: {
+                        goto({
+                            routeName: 'suite-index',
+                            params: {
                                 modal: 'send',
                                 networkSymbol,
-                            }, }),
+                            },
+                        }),
                     );
                 }
             }

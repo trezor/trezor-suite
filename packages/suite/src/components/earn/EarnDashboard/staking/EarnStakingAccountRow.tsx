@@ -117,11 +117,14 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
 
     const navigateToStaking = () => {
         dispatch(
-            goto({ routeName: 'wallet-staking', params: {
+            goto({
+                routeName: 'wallet-staking',
+                params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,
-                }, }),
+                },
+            }),
         );
 
         analytics.report({

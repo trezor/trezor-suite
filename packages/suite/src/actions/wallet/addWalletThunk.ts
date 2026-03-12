@@ -1,9 +1,8 @@
-import { findRoute , goto } from '@suite/router';
+import { findRoute, goto } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { asSuiteServices } from 'src/support/extraDependencies';
-
 
 export const redirectAfterWalletSelectedThunk = createThunk<
     void,

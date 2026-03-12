@@ -40,7 +40,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     }) => {
         onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
-        dispatch(closeModalApp(undefined));
+        dispatch(closeModalApp());
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
             startDiscoveryThunk({

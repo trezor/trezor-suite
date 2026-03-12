@@ -54,7 +54,10 @@ export const HeaderDropdown = ({
                   {
                       id: 'wallet-sign-verify',
                       callback: () => {
-                          goToWithAnalytics({ routeName: 'wallet-sign-verify', preserveParams: true });
+                          goToWithAnalytics({
+                              routeName: 'wallet-sign-verify',
+                              preserveParams: true,
+                          });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: 'pencilLine' as const,

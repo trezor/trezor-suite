@@ -289,7 +289,10 @@ export const TokenRow = ({
                                     label: <Translation id="TR_BUY" />,
                                     'data-testid': '@trading/tokens/buy-button',
                                     icon: 'currencyCircleDollar',
-                                    onClick: () => onTradeButtonClick('buy', { routeName: 'wallet-trading-buy' }),
+                                    onClick: () =>
+                                        onTradeButtonClick('buy', {
+                                            routeName: 'wallet-trading-buy',
+                                        }),
                                     isDisabled: !canBuyToken,
                                 },
                                 {
@@ -297,7 +300,9 @@ export const TokenRow = ({
                                     'data-testid': '@trading/tokens/sell-button',
                                     icon: 'currencyCircleDollar',
                                     onClick: () =>
-                                        onTradeButtonClick('sell', { routeName: 'wallet-trading-sell' }),
+                                        onTradeButtonClick('sell', {
+                                            routeName: 'wallet-trading-sell',
+                                        }),
                                     isDisabled: token.balance === '0' || !canSellToken,
                                 },
                                 {
@@ -305,7 +310,9 @@ export const TokenRow = ({
                                     'data-testid': '@trading/tokens/swap-button',
                                     icon: 'arrowsLeftRight',
                                     onClick: () =>
-                                        onTradeButtonClick('exchange', { routeName: 'wallet-trading-exchange' }),
+                                        onTradeButtonClick('exchange', {
+                                            routeName: 'wallet-trading-exchange',
+                                        }),
                                     isHidden: !isBelowTablet,
                                     isDisabled: !canSwapToken,
                                 },
@@ -417,7 +424,9 @@ export const TokenRow = ({
                                     priority="secondary"
                                     icon="arrowsLeftRight"
                                     onClick={() =>
-                                        onTradeButtonClick('exchange', { routeName: 'wallet-trading-exchange' })
+                                        onTradeButtonClick('exchange', {
+                                            routeName: 'wallet-trading-exchange',
+                                        })
                                     }
                                 />
                             </Tooltip>

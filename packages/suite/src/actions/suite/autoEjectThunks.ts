@@ -5,7 +5,6 @@ import { setDeviceAutoEjectThunk } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 
-
 const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
 type SetAutoEjectEnabledThunkProps = { shouldEnable: boolean };

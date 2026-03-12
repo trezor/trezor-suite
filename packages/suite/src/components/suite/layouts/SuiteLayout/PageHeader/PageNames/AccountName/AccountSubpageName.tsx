@@ -1,4 +1,4 @@
-import { goto , selectSettingsBackRoute } from '@suite/router';
+import { goto, selectSettingsBackRoute } from '@suite/router';
 import { Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 

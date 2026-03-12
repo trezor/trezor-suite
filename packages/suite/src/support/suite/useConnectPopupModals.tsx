@@ -11,7 +11,7 @@ import {
     removePreserveModal,
     selectModalType,
 } from '@suite/modal';
-import { goto , selectRouteName } from '@suite/router';
+import { goto, selectRouteName } from '@suite/router';
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -113,9 +113,12 @@ export const useConnectPopupModals = () => {
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                     dispatch(
-                        goto({ routeName: 'suite-switch-device', params: {
+                        goto({
+                            routeName: 'suite-switch-device',
+                            params: {
                                 cancelable: true,
-                            }, }),
+                            },
+                        }),
                     );
                 }
 

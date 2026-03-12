@@ -47,7 +47,7 @@ type ForegroundAppModalProps = {
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(closeModalApp(undefined));
+    const onCancel = () => dispatch(closeModalApp());
 
     // check if current route is a "foreground application" marked as isForegroundApp in router config
     // display it above requested physical route (route in url) or as fullscreen app

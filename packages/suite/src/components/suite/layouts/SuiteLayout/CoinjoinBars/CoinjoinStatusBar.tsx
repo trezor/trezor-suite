@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { goto , selectRouterParams } from '@suite/router';
+import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
@@ -103,11 +103,14 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         }
 
         dispatch(
-            goto({ routeName: 'wallet-index', params: {
+            goto({
+                routeName: 'wallet-index',
+                params: {
                     symbol,
                     accountIndex: index,
                     accountType,
-                }, }),
+                },
+            }),
         );
     };
 

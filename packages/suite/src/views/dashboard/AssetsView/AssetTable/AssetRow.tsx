@@ -66,11 +66,14 @@ export const AssetRow = memo(
 
         const handleRowClick = () => {
             dispatch(
-                goto({ routeName: 'wallet-index', params: {
+                goto({
+                    routeName: 'wallet-index',
+                    params: {
                         symbol,
                         accountIndex: 0,
                         accountType: 'normal',
-                    }, }),
+                    },
+                }),
             );
         };
         const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));

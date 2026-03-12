@@ -1,4 +1,3 @@
-import type { UnknownAction } from '@reduxjs/toolkit';
 import { createMemoryHistory } from 'history';
 
 import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
@@ -7,7 +6,11 @@ import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
 import {
     createSuiteRouterHistory,
+    goto,
+    initialRedirection,
+    onLocationChange,
     routerAppChanged,
+    routerInit,
     routerLocationChange,
     routerMiddleware,
     routerReducer,
@@ -52,9 +55,7 @@ import windowReducer from 'src/reducers/suite/windowReducer';
 import walletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
-import type { Action, AppState } from 'src/types/suite';
-
-import { initialRedirection } from '../routerActions';
+import type { AppState } from 'src/types/suite';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
@@ -126,10 +127,14 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirection.pending.type,
+            goto.pending.type,
+            onLocationChange.pending.type,
             routerAppChanged.type,
             routerLocationChange.type,
             lockRouter.type,
             connectInitThunk.pending.type,
+            onLocationChange.fulfilled.type,
+            goto.fulfilled.type,
             initialRedirection.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
@@ -151,6 +156,7 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
+            routerInit.pending.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
             // ETH calls both PoolStats and ValidatorsQueue, SOL/ADA each call StakingInfo
@@ -202,6 +208,8 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
+            routerInit.pending.type,
+            onLocationChange.pending.type,
             routerAppChanged.type,
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
@@ -254,6 +262,8 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
+            routerInit.pending.type,
+            onLocationChange.pending.type,
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
@@ -284,10 +294,14 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirection.pending.type,
+            goto.pending.type,
+            onLocationChange.pending.type,
             routerAppChanged.type,
             routerLocationChange.type,
             lockRouter.type,
             connectInitThunk.pending.type,
+            onLocationChange.fulfilled.type,
+            goto.fulfilled.type,
             initialRedirection.fulfilled.type,
             connectInitThunk.rejected.type,
             SUITE.ERROR,
@@ -313,11 +327,11 @@ const initStore = (state: State) => {
     );
     const store = mockStore(state);
     store.subscribe(() => {
-        const action = store.getActions().slice(-1)[0] as Action;
+        const action = store.getActions().slice(-1)[0];
         const { suite, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action as UnknownAction);
-        store.getState().locks = locksReducer(locks, action as UnknownAction);
+        store.getState().router = routerReducer(router, action);
+        store.getState().locks = locksReducer(locks, action);
     });
 
     return {

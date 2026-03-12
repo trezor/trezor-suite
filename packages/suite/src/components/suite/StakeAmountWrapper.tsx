@@ -32,7 +32,8 @@ interface StakeAmountWrapperProps {
 
 export const StakeAmountWrapper = ({ children }: StakeAmountWrapperProps) => {
     const dispatch = useDispatch();
-    const goToStakingTab = () => dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
+    const goToStakingTab = () =>
+        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
 
     return (
         <Tooltip

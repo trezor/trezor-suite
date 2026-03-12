@@ -9,7 +9,6 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/compone
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     if (device?.features === undefined) {
         return false;

@@ -54,7 +54,7 @@ export type ModalState =
           payload: UserContextPayload;
       };
 
-type ModalRootState = {
+export type ModalRootState = {
     modal: ModalState;
 };
 

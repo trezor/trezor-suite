@@ -10,7 +10,7 @@ import { routerReducer } from '../routerReducer';
 import {
     closeModalApp,
     goto,
-    onBeforePopState,
+    initialRedirection,
     onLocationChange,
     routerInit,
 } from '../routerThunks';
@@ -80,15 +80,6 @@ describe('Router thunks', () => {
         });
     });
 
-    fixtures.onBeforePopState.forEach(f => {
-        it(`onBeforePopState: ${f.description}`, async () => {
-            const state = getInitialState(f.state);
-            const { store } = initStore(state);
-            const result = await store.dispatch(onBeforePopState()).unwrap();
-            expect(result).toEqual(f.result);
-        });
-    });
-
     fixtures.goto.forEach(f => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state);
@@ -131,8 +122,23 @@ describe('Router thunks', () => {
             pathname: '/accounts/send',
         });
 
-        store.dispatch(closeModalApp(undefined));
+        store.dispatch(closeModalApp());
         expect(store.getState().router.app).toEqual('wallet');
         expect(store.getState().router.pathname).toEqual('/accounts/send');
+    });
+
+    fixtures.initialRedirection.forEach(f => {
+        it(`initialRedirection: ${f.description}`, () => {
+            const state = getInitialState(f.state);
+            const { store, suiteRouterHistory } = initStore(state);
+
+            suiteRouterHistory.navigate({
+                ...defaultLocation,
+                pathname: f.pathname || '/',
+            });
+
+            store.dispatch(initialRedirection({ isInitialRun: f.isInitialRun }));
+            expect(store.getState().router.app).toEqual(f.app);
+        });
     });
 });

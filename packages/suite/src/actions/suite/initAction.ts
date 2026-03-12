@@ -1,7 +1,7 @@
 import { metadataLabelingActions } from '@suite/metadata';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
-import { routerInit } from '@suite/router';
+import { initialRedirection, routerInit } from '@suite/router';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -20,7 +20,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import { initialRedirection } from 'src/actions/suite/routerActions';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
 
@@ -69,7 +68,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     // 5. redirecting user into welcome screen (if needed)
-    dispatch(initialRedirection());
+    dispatch(initialRedirection({ isInitialRun: getState().suite.flags.initialRun }));
 
     // 6. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx

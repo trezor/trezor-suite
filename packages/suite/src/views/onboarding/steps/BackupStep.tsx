@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { exhaustive } from '@trezor/type-utils';
 

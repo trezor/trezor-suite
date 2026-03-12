@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { METADATA } from '@suite/metadata';
 import { recoveryActions } from '@suite/recovery';
-import { goto , routerAppChanged } from '@suite/router';
+import { goto, routerAppChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -81,7 +81,12 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
                         state.wallet.accounts.length > 0 &&
                         !isModalActive
                     ) {
-                        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+                        dispatch(
+                            goto({
+                                routeName: 'suite-switch-device',
+                                params: { cancelable: true },
+                            }),
+                        );
                     }
                 }, 1000);
             }

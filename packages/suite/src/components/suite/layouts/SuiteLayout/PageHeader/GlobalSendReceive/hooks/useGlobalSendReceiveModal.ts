@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { goto , selectRouterParams } from '@suite/router';
+import { goto, selectRouterParams } from '@suite/router';
 import { yup } from '@suite-common/validators';
 import { Account, GlobalSendReceiveType } from '@suite-common/wallet-types';
 
