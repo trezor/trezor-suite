@@ -16,10 +16,12 @@ describe('useProviderConfirmationStatus', () => {
         });
 
     beforeEach(() => {
+        jest.useFakeTimers();
         ({ store } = initStore());
     });
 
     afterEach(() => {
+        jest.runOnlyPendingTimers();
         jest.useRealTimers();
     });
 
@@ -41,7 +43,6 @@ describe('useProviderConfirmationStatus', () => {
 
     it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_incomplete" is set', () => {
         renderUseProviderConfirmationStatus();
-        jest.useFakeTimers();
 
         act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
@@ -61,7 +62,6 @@ describe('useProviderConfirmationStatus', () => {
 
     it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_with_success" is set', () => {
         renderUseProviderConfirmationStatus();
-        jest.useFakeTimers();
 
         act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
@@ -81,7 +81,6 @@ describe('useProviderConfirmationStatus', () => {
 
     it('should not set tradingProviderConfirmationStatus to "confirmation_failed" when status changes', () => {
         renderUseProviderConfirmationStatus();
-        jest.useFakeTimers();
 
         act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));

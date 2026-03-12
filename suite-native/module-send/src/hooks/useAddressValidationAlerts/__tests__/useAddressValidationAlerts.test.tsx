@@ -61,7 +61,7 @@ jest.mock('@suite-native/alerts', () => ({
 const mockedUseRoute = useRoute as jest.MockedFunction<any>;
 const mockedUseAlert = useAlert as jest.MockedFunction<any>;
 
-const getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
+let getAccountInfoSpy: jest.SpyInstance;
 
 describe('useAddressValidationAlerts', () => {
     let mockShowAlert: jest.Mock;
@@ -112,8 +112,6 @@ describe('useAddressValidationAlerts', () => {
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
-
         mockShowAlert = jest.fn();
         mockSetValue = jest.fn();
         mockWatch = jest.fn();
@@ -121,6 +119,7 @@ describe('useAddressValidationAlerts', () => {
         mockedUseRoute.mockReturnValue(mockRoute);
         mockedUseAlert.mockReturnValue({ showAlert: mockShowAlert });
 
+        getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
         getAccountInfoSpy.mockResolvedValue(mockAccountInfoResponses.unusedAddress as any);
     });
 

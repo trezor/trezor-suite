@@ -2,7 +2,7 @@ const baseConfig = require('../../jest.config.native');
 
 module.exports = {
     ...baseConfig,
-    workerIdleMemoryLimit: '1024MB',
+    setupFiles: [...baseConfig.setupFiles, '<rootDir>/src/jest.setup.tsx'],
     coverageThreshold: {
         global: {
             statements: 80,

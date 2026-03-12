@@ -26,6 +26,9 @@ module.exports = {
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
+    restoreMocks: true,
+    workerIdleMemoryLimit: '512MB',
+    ...(process.env.CI ? { maxWorkers: '50%' } : {}),
 
     transform: {
         '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
@@ -44,10 +47,8 @@ module.exports = {
         '<rootDir>/../../suite-native/connection-status/src/jestSetup.js',
         '<rootDir>/../../suite-native/react-native-graph/src/jestSetup.js',
         '<rootDir>/../../suite-native/atoms/src/jestSetup.jsx',
-        '<rootDir>/../../suite-native/module-trading/src/jest.setup.tsx',
-        '<rootDir>/../../suite-native/module-connect-popup/src/jest.setup.ts',
-        '<rootDir>/../../suite-native/module-device-onboarding/src/jest.setup.ts',
         '<rootDir>/../../suite-native/config/src/jest.setup.ts',
         '<rootDir>/../../suite-native/intl/src/jest.setup.ts',
     ],
+    setupFilesAfterEnv: ['<rootDir>/../../suite-native/test-utils/src/globalTestCleanup.ts'],
 };

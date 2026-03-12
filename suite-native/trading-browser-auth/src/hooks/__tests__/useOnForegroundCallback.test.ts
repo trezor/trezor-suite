@@ -12,13 +12,14 @@ jest.mock('@suite-native/sentry', () => ({
 
 describe('useOnForegroundCallback', () => {
     const mockCallback = jest.fn();
-    const appStateSpy = jest.spyOn(AppState, 'addEventListener');
+    let appStateSpy: jest.SpyInstance;
 
     const renderUseOnFocusCallback = () =>
         renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
 
     beforeEach(() => {
         jest.clearAllMocks();
+        appStateSpy = jest.spyOn(AppState, 'addEventListener');
     });
 
     afterEach(() => {
