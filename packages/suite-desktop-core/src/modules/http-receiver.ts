@@ -5,6 +5,7 @@ import { isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { restartApp } from '../libs/app-utils';
+import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
 import { app, ipcMain } from '../typed-electron';
@@ -101,6 +102,11 @@ export const initBackground: ModuleInitBackground = ({
             store.setConnectSettings({ disableWs: !enabled });
             restartApp();
         });
+        // Initialize the shared connect-popup response handler. This must be called
+        // before any connect-popup calls are made, regardless of whether WS is enabled,
+        // so that MCP and other transports can also use the connect-popup flow.
+        initConnectPopupResponseHandler();
+
         if (connectPopupEnabled()) {
             exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy, store });
         }
