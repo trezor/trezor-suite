@@ -25,7 +25,7 @@ jobs:
       COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download crypto icons
         run: |

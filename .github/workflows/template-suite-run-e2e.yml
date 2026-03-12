@@ -93,7 +93,7 @@ jobs:
           private-key: ${{ secrets.trezor-bot-private-key }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Download build artifact
         if: inputs.download-artifact-name != ''
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.download-artifact-name }}
 

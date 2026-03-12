@@ -9,7 +9,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
@@ -47,7 +47,7 @@ jobs:
         run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop build dist
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: desktop-app-build-e2e
           path: app-build.tar.gz

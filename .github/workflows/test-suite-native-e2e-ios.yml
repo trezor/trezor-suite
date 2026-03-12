@@ -33,7 +33,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -89,7 +89,7 @@ jobs:
         run: npx detox build --configuration ios.sim.release
 
       - name: Store build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-test-build
           path: |
@@ -104,7 +104,7 @@ jobs:
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -165,7 +165,7 @@ jobs:
         working-directory: ./suite-native/app
 
       - name: Download app build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-test-build
           path: |
@@ -189,7 +189,7 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts

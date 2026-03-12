@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -103,7 +103,7 @@ jobs:
           docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
       - name: Download Android build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
@@ -161,7 +161,7 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts

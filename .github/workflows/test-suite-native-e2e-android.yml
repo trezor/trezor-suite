@@ -40,7 +40,7 @@ jobs:
       skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v2

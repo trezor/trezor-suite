@@ -20,7 +20,7 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Checkout develop
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: develop
           fetch-depth: 0

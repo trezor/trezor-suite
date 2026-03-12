@@ -19,7 +19,7 @@ jobs:
     name: Setup and Cache Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install node and yarn
         uses: actions/setup-node@v4
         with:
@@ -47,7 +47,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -97,7 +97,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -118,7 +118,7 @@ jobs:
         test-task: [suite, native]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check releases.json files changes
         uses: dorny/paths-filter@v3
         id: changes
