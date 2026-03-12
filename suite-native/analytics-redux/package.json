@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.0",
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
