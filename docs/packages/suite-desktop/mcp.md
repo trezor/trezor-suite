@@ -77,3 +77,14 @@ The MCP server exposes the following tools:
 | `trezor_verify_message`   | Verify a signed message                         |
 
 All tool calls require user confirmation on the Trezor device for security.
+
+## Claude Code Skill
+
+A ready-made [Claude Code skill](skills/trezor-mcp/) is available that teaches Claude how to use the MCP tools effectively — including coin/path conventions, transaction auto-fill behavior, and common workflows.
+
+To install it, download the [`skills/trezor-mcp`](skills/trezor-mcp/) folder and copy it into Claude Code's skills directory on your machine:
+
+- **macOS / Linux**: `~/.claude/skills/trezor-mcp/`
+- **Windows**: `%USERPROFILE%\.claude\skills\trezor-mcp\`
+
+Make sure the folder contains `SKILL.md` and the `references/` subfolder. Once in place, Claude Code will automatically trigger the skill when you mention Trezor wallet operations.
