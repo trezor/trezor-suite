@@ -79,7 +79,9 @@ export class DataManager {
                 isRemote: false,
             };
         } else {
-            firmwareReleaseConfig = await getFirmwareReleaseConfig();
+            firmwareReleaseConfig = await getFirmwareReleaseConfig(
+                this.getSettings('firmwareChannel'),
+            );
         }
         const { config, isRemote } = firmwareReleaseConfig;
         const firmwareConfig = await initializeFirmwareConfig(config, isRemote);

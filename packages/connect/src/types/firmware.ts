@@ -7,6 +7,11 @@ import type {
 } from '@trezor/device-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
+export type CurrentVersion = {
+    bootloaderVersion: VersionArray | null;
+    firmwareVersion: VersionArray | null;
+};
+
 export type FirmwareRange = Record<
     DeviceModelInternal,
     {

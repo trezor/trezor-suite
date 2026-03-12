@@ -15,8 +15,9 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
+import { getFirmwareBaseUrl } from './firmwareBaseUrl';
 import { Features, StrictFeatures } from '../types/device';
-import { FirmwareChannel, FirmwareReleaseConfigInfo } from '../types/firmware';
+import { CurrentVersion, FirmwareReleaseConfigInfo } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {
@@ -28,46 +29,6 @@ import {
     isStrictFeatures,
 } from '../utils/firmwareUtils';
 
-interface RemoteBaseInfo {
-    BASE_URL: string;
-    MIDDLE_PATH: string;
-}
-const RELEASES_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'firmware',
-};
-const UNSIGNED_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'dev/firmware/releases/unsigned',
-};
-const UNSIGNED_STABLE_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
-};
-const SIGNED_URL_REMOTE_BASE = {
-    BASE_URL: 'https://suite.corp.sldev.cz',
-    MIDDLE_PATH: 'firmware/signed',
-};
-const SIGNED_LOCALHOST = {
-    BASE_URL: 'http://localhost:3000',
-    MIDDLE_PATH: 'firmware/signed',
-};
-const UNSIGNED_LOCALHOST = {
-    BASE_URL: 'http://localhost:3000',
-    MIDDLE_PATH: 'firmware/unsigned',
-};
-const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
-    production: RELEASES_URL_REMOTE_BASE,
-    'production-early-access': RELEASES_URL_REMOTE_BASE,
-    'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
-    'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
-    'test-signed': SIGNED_URL_REMOTE_BASE,
-    'localhost-unsigned': UNSIGNED_LOCALHOST,
-    'localhost-signed': SIGNED_LOCALHOST,
-};
-
-type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel };
-
 /**
  * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
  * Examples:
@@ -76,22 +37,8 @@ type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel
  *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', firmwareChannel: 'test-signed' }
  *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
  */
-export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
-    const firmwareChannel = DataManager.getSettings('firmwareChannel');
-
-    if (!firmwareChannel) {
-        // If for some reason `firmwareChannel` settings is not set we return production one.
-        return {
-            ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            firmwareChannel: 'production' as FirmwareChannel,
-        };
-    }
-
-    return {
-        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
-        firmwareChannel,
-    };
-};
+export const getOnlineFirmwareBaseUrl = () =>
+    getFirmwareBaseUrl(DataManager.getSettings('firmwareChannel'));
 
 // We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
 const getBundledFirmwareVersion = (
@@ -354,11 +301,6 @@ export const getLanguage = (languageBinPath: string) => {
     const url = `${baseUrl.BASE_URL}/${languageBinPath}`;
 
     return httpRequest(url, 'binary');
-};
-
-export type CurrentVersion = {
-    bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray | null;
 };
 
 const getCurrentVersion = (features: Features): CurrentVersion => {

@@ -4,7 +4,7 @@ import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
-import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
+import { getFirmwareBaseUrl } from '../data/firmwareBaseUrl';
 import { FirmwareChannel } from '../types/firmware';
 
 const JWS_CONFIG = {
@@ -24,9 +24,9 @@ const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
     'production-early-access': 'config-early-access/',
 };
 
-const fetchRemoteJws = async (): Promise<JwsInfo> => {
-    const { BASE_URL, MIDDLE_PATH, firmwareChannel } = getOnlineFirmwareBaseUrl();
-    const configPath = CONFIG_PATH_BY_CHANNEL[firmwareChannel] ?? '';
+const fetchRemoteJws = async (firmwareChannel: FirmwareChannel | null | undefined): Promise<JwsInfo> => {
+    const { BASE_URL, MIDDLE_PATH, firmwareChannel: channel } = getFirmwareBaseUrl(firmwareChannel);
+    const configPath = CONFIG_PATH_BY_CHANNEL[channel] ?? '';
     const path = `${MIDDLE_PATH}/${configPath}${JWS_CONFIG.REMOTE_FILENAME}`;
     const remoteReleasesUrl = new URL(path, BASE_URL);
 
@@ -50,7 +50,7 @@ const fetchRemoteJws = async (): Promise<JwsInfo> => {
             throw new Error('Invalid response format: "jws" property missing or not a string.');
         }
 
-        return { jws: data.jws, firmwareChannel };
+        return { jws: data.jws, firmwareChannel: channel };
     } catch (error) {
         throw new Error(
             `Failed to fetch remote JWS: ${error instanceof Error ? error.message : String(error)}`,
@@ -82,12 +82,14 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
     return parsedPayload;
 };
 
-export const getFirmwareReleaseConfig = async () => {
+export const getFirmwareReleaseConfig = async (
+    firmwareChannel: FirmwareChannel | null | undefined,
+) => {
     try {
-        const { jws, firmwareChannel } = await fetchRemoteJws();
+        const { jws, firmwareChannel: channel } = await fetchRemoteJws(firmwareChannel);
 
         const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(
-            firmwareChannel,
+            channel,
         );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
         const remoteConfig = verifyAndDecodeJws(jws, publicKey);
