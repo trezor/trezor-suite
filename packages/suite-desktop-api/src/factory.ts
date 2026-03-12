@@ -208,6 +208,16 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         safeStoreEncrypt: ({ value }) => ipcRenderer.invoke('safe-storage/encrypt', { value }),
         safeStoreDecrypt: ({ value }) => ipcRenderer.invoke('safe-storage/decrypt', { value }),
 
+        // MCP server
+        mcpGetSettings: () => ipcRenderer.invoke('mcp/get-settings'),
+        mcpSetEnabled: (enabled: boolean) => {
+            if (validation.isPrimitive('boolean', enabled)) {
+                return ipcRenderer.invoke('mcp/set-enabled', enabled);
+            }
+
+            return Promise.resolve();
+        },
+
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
     };
