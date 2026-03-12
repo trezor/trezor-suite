@@ -12,11 +12,12 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {
-    DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+    DEFAULT_DEVICE_SIZE_QUOTA,
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
-import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectLeftDeviceQuota, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { transferStorageThunk } from './storage/transferStorageThunk';
+import { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
 type AllocateMoreOwnerQuotaParams = {
@@ -33,6 +34,12 @@ export const increaseOwnerQuotaThunk =
         }
         const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
+
+        const leftDeviceQuota = selectLeftDeviceQuota(getState(), device.id);
+
+        const sizeToAllocate = getAccountIncrementSizeQuota({
+            unspendStorage: leftDeviceQuota ?? DEFAULT_DEVICE_SIZE_QUOTA,
+        });
 
         const delegatedKey = await extra.services.ensureDelegatedIdentityKey({ device });
         if (!delegatedKey.success) {
@@ -55,7 +62,7 @@ export const increaseOwnerQuotaThunk =
             appendMessageBuffer: prepareMessageBufferEvoluAddSpaceToOwner({
                 ownerId,
                 challenge: sessionChallenge.payload.challenge,
-                size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                size: sizeToAllocate,
                 publicKey: delegatedPublicKey,
             }),
         });
@@ -66,10 +73,11 @@ export const increaseOwnerQuotaThunk =
 
         dispatch(
             transferStorageThunk({
+                deviceId: device.id,
                 walletDescriptor,
                 params: {
                     ownerId,
-                    size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                    size: sizeToAllocate,
                     proof: proof.payload,
                     sessionId: sessionChallenge.payload.sessionId,
                     challenge: sessionChallenge.payload.challenge,
