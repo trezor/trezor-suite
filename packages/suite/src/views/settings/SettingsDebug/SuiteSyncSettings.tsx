@@ -15,6 +15,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
+import { FillSuiteSyncQuota } from './FillSuiteSyncQuota';
+
 export const SuiteSyncSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -92,6 +94,7 @@ export const SuiteSyncSettings = () => {
                     />
                 </ActionColumn>
             </SectionItem>
+            <FillSuiteSyncQuota />
         </SettingsSection>
     );
 };
