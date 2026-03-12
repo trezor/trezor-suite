@@ -2,8 +2,6 @@ import { Alice } from '../../src/client/Alice';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import {
-    AliceGenerator,
-    CoinjoinRoundGenerator,
     getAccountCandidates,
     getRoundCandidates,
     getUnregisteredAccounts,
@@ -12,6 +10,8 @@ import {
 } from '../../src/client/round/selectRound';
 import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
+import { AliceGenerator } from '../../src/types/alice';
+import { CoinjoinRoundGenerator } from '../../src/types/round';
 import {
     DEFAULT_ROUND,
     ROUND_CREATION_EVENT,

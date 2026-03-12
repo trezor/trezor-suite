@@ -1,19 +1,19 @@
 import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
-import { Network } from '@trezor/utxo-lib';
 
 import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
 import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
 import { Account } from './Account';
 import { Alice } from './Alice';
-import { CoinjoinPrison } from './CoinjoinPrison';
-import { CoinjoinClientEvents, Logger } from '../types';
+import { Logger } from '../types';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
-import { AffiliationId, CoinjoinRoundParameters, Round } from '../types/coordinator';
+import { CoinjoinRoundParameters, Round } from '../types/coordinator';
+import { CoinjoinPrisonShape } from '../types/prison';
 import {
     BroadcastedTransactionDetails,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
     CoinjoinRoundEvent,
+    CoinjoinRoundOptions,
     CoinjoinTransactionData,
     CoinjoinTransactionLiquidityClue,
     SerializedCoinjoinRound,
@@ -29,17 +29,6 @@ import {
     getCommitmentData,
     getRoundParameters,
 } from '../utils/roundUtils';
-
-export interface CoinjoinRoundOptions {
-    network: Network;
-    signal: AbortSignal;
-    coordinatorName: string;
-    coordinatorUrl: string;
-    middlewareUrl: string;
-    logger: Logger;
-    affiliationId?: AffiliationId;
-    setSessionPhase: (event: CoinjoinClientEvents['session-phase']) => void;
-}
 
 interface Events {
     ended: CoinjoinRoundEvent;
@@ -80,7 +69,7 @@ interface CreateRoundProps {
     accounts: Account[];
     statusRounds: Round[];
     coinjoinRounds: CoinjoinRound[];
-    prison: CoinjoinPrison;
+    prison: CoinjoinPrisonShape;
     options: CoinjoinRoundOptions;
     runningAffiliateServer: boolean;
 }
@@ -90,7 +79,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     private options: CoinjoinRoundOptions;
     private logger: Logger;
     private signed = false; // set after successful transactionSigning
-    readonly prison: CoinjoinPrison;
+    readonly prison: CoinjoinPrisonShape;
 
     // partial coordinator.Round
     id: string;
@@ -115,7 +104,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
 
-    constructor(round: Round, prison: CoinjoinPrison, options: CoinjoinRoundOptions) {
+    constructor(round: Round, prison: CoinjoinPrisonShape, options: CoinjoinRoundOptions) {
         super();
         this.id = round.Id;
         this.blameOf = round.BlameOf;
@@ -172,7 +161,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             prison,
             options,
             runningAffiliateServer,
-        });
+        }) as Promise<CoinjoinRound | undefined>;
     }
 
     async onPhaseChange(changed: Round) {
