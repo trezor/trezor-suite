@@ -9,12 +9,13 @@ import {
     UNQUARANTINE_FAILURE_RATE,
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
-import type { Action, SlackEvent, TestExplorerItem } from './types';
+import type { SlackEvent } from './types';
 import {
     deleteAction,
     getLastNResults,
     getLastNResultsFromDistinctBranches,
 } from '../currentsApi/api';
+import type { Action, TestExplorerItem } from '../currentsApi/types';
 
 export async function quarantineFailingTests(
     projectId: string,

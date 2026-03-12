@@ -104,3 +104,66 @@ export interface TestResultsResponse {
     has_more: boolean;
     data: TestResultItem[];
 }
+
+export interface RunTest {
+    testId: string | undefined;
+    /** Title parts as returned by Currents: [describe, ..., test-name]. */
+    title: string[];
+    state: 'passed' | 'failed' | 'pending' | 'skipped';
+}
+
+/**
+ * Raw test shape returned by GET /v1/instances/{instanceId}.
+ * Currents uses short/minified field names; `_s` is the test state.
+ */
+export interface RawInstanceTest {
+    _s: 'passed' | 'failed' | 'pending' | 'skipped';
+    testId: string | undefined;
+    title: string[];
+    spec: string;
+}
+
+export interface RunSpec {
+    instanceId: string;
+    spec: string;
+    /** Aggregate stats returned directly by the run endpoint. */
+    results?: {
+        stats?: { failures?: number; passes?: number };
+        tests?: RunTest[];
+    };
+}
+
+export interface RunData {
+    runId: string;
+    projectId: string;
+    specs: RunSpec[];
+}
+
+export interface RunResponse {
+    status: string;
+    data: RunData;
+}
+
+export interface RunListItem {
+    runId: string;
+    projectId: string;
+}
+
+export interface RunsListResponse {
+    status: string;
+    data: RunListItem[];
+}
+
+/**
+ * Controls which spec instances are fetched when loading a run.
+ * Only specs matching the filter have their individual test results hydrated;
+ * the rest are left with stats only (reducing API calls).
+ */
+export enum SpecFetchMode {
+    /** Fetch instances only for specs with ≥1 failure (used by manual quarantine). */
+    FailuresOnly = 'failures-only',
+    /** Fetch instances only for specs with ≥1 pass (used by nightly unquarantine). */
+    PassesOnly = 'passes-only',
+    /** Fetch every instance regardless. */
+    All = 'all',
+}

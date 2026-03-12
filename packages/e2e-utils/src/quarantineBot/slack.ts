@@ -42,12 +42,17 @@ function currentsActionUrl(projectId: string, actionId: string): string {
 export function buildSlackSummary(
     projects: Array<{ id: string; label: string }>,
     events: SlackEvent[],
+    options: { headerNote?: string } = {},
 ): string | null {
     if (events.length === 0) {
         return null;
     }
 
     const sections: string[] = [];
+
+    if (options.headerNote) {
+        sections.push(`:information_source: ${options.headerNote}`);
+    }
 
     for (const { id: projectId, label: projectLabel } of projects) {
         const projectEvents = events.filter(e => e.projectId === projectId);
@@ -63,10 +68,12 @@ export function buildSlackSummary(
         if (quarantinedEvents.length > 0) {
             lines.push(`:warning: *Quarantined (${quarantinedEvents.length})*`);
             for (const event of quarantinedEvents) {
-                const testUrl = currentsTestUrl(projectId, event.signature);
                 const actionUrl = currentsActionUrl(projectId, event.actionId);
+                const testLink = event.signature
+                    ? ` · <${currentsTestUrl(projectId, event.signature)}|results>`
+                    : '';
                 lines.push(
-                    `• ${truncateTitle(event.titlePath)} — ${event.failures}/${event.executions} failed · <${actionUrl}|action> · <${testUrl}|results>`,
+                    `• ${truncateTitle(event.titlePath)} — ${event.failures}/${event.executions} failed · <${actionUrl}|action>${testLink}`,
                 );
             }
         }
@@ -74,9 +81,11 @@ export function buildSlackSummary(
         if (unquarantinedEvents.length > 0) {
             lines.push(`:white_check_mark: *Restored (${unquarantinedEvents.length})*`);
             for (const event of unquarantinedEvents) {
-                const testUrl = currentsTestUrl(projectId, event.signature);
+                const resultsLink = event.signature
+                    ? ` · <${currentsTestUrl(projectId, event.signature)}|results>`
+                    : '';
                 lines.push(
-                    `• ${truncateTitle(event.titlePath)} — ${event.passes}/${event.executions} passed · <${testUrl}|results>`,
+                    `• ${truncateTitle(event.titlePath)} — ${event.passes}/${event.executions} passed${resultsLink}`,
                 );
             }
         }
