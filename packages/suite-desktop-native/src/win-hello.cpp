@@ -8,7 +8,6 @@
 #include <chrono>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Security.Credentials.UI.h>
-#include <tlhelp32.h>
 
 #pragma comment(lib, "runtimeobject.lib")
 #pragma comment(lib, "ole32.lib")
@@ -24,13 +23,13 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
         std::exception_ptr threadException = nullptr;
         std::string errorMessage;
         UserConsentVerifierAvailability availabilityStatus = UserConsentVerifierAvailability::DeviceNotPresent;
-        
+
         std::thread staThread([&isAvailable, &threadCompleted, &threadException, &errorMessage, &availabilityStatus]() {
             try {
                 winrt::init_apartment(winrt::apartment_type::single_threaded);
                 availabilityStatus = UserConsentVerifier::CheckAvailabilityAsync().get();
                 isAvailable = (availabilityStatus == UserConsentVerifierAvailability::Available);
-                
+
                 if (!isAvailable) {
                     switch (availabilityStatus) {
                         case UserConsentVerifierAvailability::DeviceNotPresent:
@@ -47,7 +46,7 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
                             break;
                     }
                 }
-                
+
                 winrt::uninit_apartment();
                 threadCompleted = true;
             }
@@ -67,19 +66,19 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
                 try { winrt::uninit_apartment(); } catch (...) {}
             }
         });
-        
+
         staThread.join();
-        
+
         if (!threadCompleted) {
             Napi::Error::New(info.Env(), "Thread did not complete successfully").ThrowAsJavaScriptException();
             return info.Env().Undefined();
         }
-        
+
         if (!isAvailable) {
             Napi::Error::New(info.Env(), errorMessage).ThrowAsJavaScriptException();
             return info.Env().Undefined();
         }
-        
+
         return Napi::Boolean::New(info.Env(), true);
     }
     catch (const winrt::hresult_error& ex) {
@@ -102,24 +101,25 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
         if (info.Length() > 0 && info[0].IsString()) {
             message = info[0].As<Napi::String>();
         }
-        
+
         winrt::hstring promptMessage = winrt::to_hstring(message);
         std::string resultString = "Error";
         std::atomic<bool> threadCompleted(false);
         std::exception_ptr threadException = nullptr;
-        
-        // Grant broad foreground permission
+
+        // Grant broad permission for any other process to bring its window to the front, because the Windows Hello dialog
+        // is created by a different process and needs to be able to set itself as the foreground window to receive user input.
         AllowSetForegroundWindow(ASFW_ANY);
-        
+
         // Bring the Windows Hello dialog to front once it appears.
         // Because this code runs inside a child process (not the foreground
         // process), Windows blocks ordinary SetForegroundWindow calls.
         // The keybd_event Alt-key trick is the standard workaround: it makes
         // Windows believe this process is handling user input, which lifts the
-        // foreground lock. We deliberately avoid HWND_TOPMOST because that
-        // breaks the PIN input field inside the credential dialog.
+        // foreground lock.
         std::thread foregroundThread([]() {
             HWND helloWindow = NULL;
+            // Effectively a 5-second timeout waiting for the dialog to appear, else nothing happens. The dialog is usually very fast to appear.
             for (int i = 0; i < 50; i++) {
                 Sleep(100);
                 helloWindow = FindWindowW(L"Credential Dialog Xaml Host", NULL);
@@ -128,43 +128,47 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                 }
             }
             if (helloWindow == NULL) return;
-            
+
             // Let the dialog fully initialise its input controls
             Sleep(300);
-            
+
             // Simulate Alt press/release – this is consumed by the window
             // manager and allows the subsequent SetForegroundWindow to succeed
             // even from a background process. It does NOT inject a character
             // into the PIN field.
             keybd_event(VK_MENU, 0, 0, 0);
             keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0);
-            
-            // Use HWND_TOPMOST to bring above Electron, WITHOUT SWP_NOACTIVATE.
-            // The original code used SWP_NOACTIVATE which prevented the dialog
-            // from being properly activated – that was the root cause of the
-            // PIN input not accepting keyboard input.
+
+            // Use HWND_TOPMOST to bring above Electron.
             SetWindowPos(helloWindow, HWND_TOPMOST, 0, 0, 0, 0,
                         SWP_NOMOVE | SWP_NOSIZE);
             Sleep(50);
             SetWindowPos(helloWindow, HWND_NOTOPMOST, 0, 0, 0, 0,
                         SWP_NOMOVE | SWP_NOSIZE);
-            
+
             // Final SetForegroundWindow to ensure the dialog has proper
             // foreground status and keyboard focus after Z-order change
-            SetForegroundWindow(helloWindow);
-            
+            if (!SetForegroundWindow(helloWindow)) {
+                return;
+            }
+
             // Simulate a Tab key press to move focus into the PIN input
-            // field if it is present in the dialog.
+            // field if it is present in the dialog, but only after the
+            // dialog actually becomes the foreground window.
             Sleep(50);
+            if (GetForegroundWindow() != helloWindow) {
+                return;
+            }
+
             keybd_event(VK_TAB, 0, 0, 0);
             keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
         });
-        
+
         std::thread staThread([promptMessage, &resultString, &threadCompleted, &threadException]() {
             try {
                 winrt::init_apartment(winrt::apartment_type::single_threaded);
                 auto availabilityResult = UserConsentVerifier::CheckAvailabilityAsync().get();
-                
+
                 if (availabilityResult != UserConsentVerifierAvailability::Available) {
                     switch (availabilityResult) {
                         case UserConsentVerifierAvailability::DeviceNotPresent:
@@ -182,9 +186,9 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                     }
                 }
                 else {
-                    UserConsentVerificationResult verificationResult = 
+                    UserConsentVerificationResult verificationResult =
                         UserConsentVerifier::RequestVerificationAsync(promptMessage).get();
-                    
+
                     switch (verificationResult) {
                         case UserConsentVerificationResult::Verified:
                             resultString = "Success";
@@ -212,7 +216,7 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                             break;
                     }
                 }
-                
+
                 winrt::uninit_apartment();
                 threadCompleted = true;
             }
@@ -225,10 +229,10 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                 threadException = std::current_exception();
             }
         });
-        
+
         staThread.join();
         foregroundThread.join();
-        
+
         if (threadException) {
             try {
                 std::rethrow_exception(threadException);
@@ -243,11 +247,11 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                 return Napi::String::New(info.Env(), "Unknown error");
             }
         }
-        
+
         if (!threadCompleted) {
             return Napi::String::New(info.Env(), "Thread did not complete successfully");
         }
-        
+
         return Napi::String::New(info.Env(), resultString);
     }
     catch (const std::exception& ex) {
