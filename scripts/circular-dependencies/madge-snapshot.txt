@@ -1,10 +1,6 @@
 
 
 packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
-packages/coinjoin/src/backend/CoinjoinAddressController.ts > packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
-packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts
-packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts
-packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
 packages/coinjoin/src/client/CoinjoinClient.ts > packages/coinjoin/src/client/analyzeTransactions.ts
 packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/connectionConfirmation.ts
 packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/endedRound.ts
@@ -13,10 +9,6 @@ packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/rou
 packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/outputRegistration.ts > packages/coinjoin/src/client/round/outputDecomposition.ts
 packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/selectRound.ts
 packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/transactionSigning.ts
-packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts
-packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts > packages/coinjoin/src/types/index.ts
-packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinFilterController.ts
-packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
 packages/connect/src/core/AbstractMethod.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
 packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
 packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
