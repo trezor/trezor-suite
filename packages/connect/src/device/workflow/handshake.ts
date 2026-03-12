@@ -3,14 +3,14 @@ import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
+import type { IDevice } from '../../types/idevice';
 import { Log } from '../../utils/debug';
-import type { Device } from '../Device';
 
 const CANCEL_TIMEOUT = 1_000;
 const ATTEMPTS_LIMIT = 10;
 
 type Context = {
-    device: Device;
+    device: IDevice;
     signal: AbortSignal;
     logger?: Log;
 };
