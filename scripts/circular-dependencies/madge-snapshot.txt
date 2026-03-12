@@ -17,8 +17,9 @@ packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinB
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts > packages/coinjoin/src/types/index.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinFilterController.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
-packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts
-packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts > packages/connect/src/utils/firmwareReleaseConfigUtils.ts
+packages/connect/src/core/AbstractMethod.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
+packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
+packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCommands.ts > packages/connect/src/device/DeviceCurrentSession.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts
@@ -30,13 +31,6 @@ packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/che
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts > packages/connect/src/core/AbstractMethod.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCommands.ts > packages/connect/src/device/DeviceCurrentSession.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts > packages/connect/src/device/thp/thpCall.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/pairing.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
-packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts > packages/connect/src/core/AbstractMethod.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts

@@ -61,6 +61,7 @@ import {
     KnownDevice,
     UnavailableCapabilities,
 } from '../types';
+import { DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';
@@ -74,17 +75,6 @@ import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
 
 // custom log
 const _log = initLog('Device');
-
-type RunOptions = {
-    // skipFinalReload - normally, after action, features are reloaded again
-    //                   because some actions modify the features
-    //                   but sometimes, you don't need that and can skip that
-    skipFinalReload?: boolean;
-    keepSession?: boolean;
-    useCardanoDerivation?: boolean;
-    skipFirmwareChecks?: boolean;
-    skipLanguageChecks?: boolean;
-};
 
 type Result<T> = { success: true; payload: T } | { success: false; error: Error };
 
@@ -115,21 +105,13 @@ export interface DeviceEvents {
     [DEVICE.THP_PAIRING_STATUS_CHANGED]: DeviceThpPairingStatus;
 }
 
-interface DeviceLifecycleEvents {
-    [DEVICE.CONNECT]: void;
-    [DEVICE.CONNECT_UNACQUIRED]: void;
-    [DEVICE.CHANGED]: void;
-    [DEVICE.DISCONNECT]: void;
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification;
-}
-
 type DeviceParams = {
     id: DeviceUniquePath;
     transport: Transport;
     descriptor: Descriptor;
 };
 
-export class Device extends TypedEmitter<DeviceEvents> {
+export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
     public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path' | 'model'>;
