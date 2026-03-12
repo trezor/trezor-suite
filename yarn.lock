@@ -15060,7 +15060,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    xrpl: "npm:4.5.0"
+    xrpl: "npm:4.6.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15096,7 +15096,7 @@ __metadata:
     tiny-worker: "npm:^2.3.0"
     viem: "npm:^2.45.0"
     webpack: "npm:5.104.1"
-    xrpl: "npm:4.5.0"
+    xrpl: "npm:4.6.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -41484,14 +41484,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripple-binary-codec@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "ripple-binary-codec@npm:2.6.0"
+"ripple-binary-codec@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "ripple-binary-codec@npm:2.7.0"
   dependencies:
     "@xrplf/isomorphic": "npm:^1.0.1"
     bignumber.js: "npm:^9.0.0"
     ripple-address-codec: "npm:^5.0.0"
-  checksum: 10/4ac9a5cb3c942c5cedadc7f500678eaa7d37bc0dfe9c70885c9e2e6d2c7cda0f9c4b03ff30a2dd563b888e59af35e4b756051bee74222bc1c66c8ed5ab4807ed
+  checksum: 10/6d3d71a1b9d1eee41139b25128f113cade954432550382eef1304f9ffec5fe66561345013da0ac610a0fe272c19f0df1d275fb0821939db280c37c9208e83410
   languageName: node
   linkType: hard
 
@@ -47687,9 +47687,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xrpl@npm:4.5.0":
-  version: 4.5.0
-  resolution: "xrpl@npm:4.5.0"
+"xrpl@npm:4.6.0":
+  version: 4.6.0
+  resolution: "xrpl@npm:4.6.0"
   dependencies:
     "@scure/bip32": "npm:^1.3.1"
     "@scure/bip39": "npm:^1.2.1"
@@ -47699,9 +47699,9 @@ __metadata:
     eventemitter3: "npm:^5.0.1"
     fast-json-stable-stringify: "npm:^2.1.0"
     ripple-address-codec: "npm:^5.0.0"
-    ripple-binary-codec: "npm:^2.6.0"
+    ripple-binary-codec: "npm:^2.7.0"
     ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/ec8a93b7088a2f3d6d0a6f6494463932b63b8e21b64a7c2cbcd29c7f7268af267fc3438685e6fd9ba2132c1967f62fe3e3d83dfd9f70dacbd3fe694b28192f84
+  checksum: 10/4e6564b82c98b9530ce9ecd490d917290c83461d04cc516840300e2c101dc33ddaf27934a17ab6f8487bb816b7555b83d73c741ed88c787185e32517644f1f55
   languageName: node
   linkType: hard
 
