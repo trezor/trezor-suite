@@ -4,8 +4,8 @@ import { versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from '../data/DataManager';
-import type { CurrentVersion } from '../data/firmwareInfo';
 import type { Features, StrictFeatures } from '../types/device';
+import type { CurrentVersion } from '../types/firmware';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
