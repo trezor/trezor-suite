@@ -157,6 +157,9 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
     }
 };
 
+export const selectHasActiveModal = (state: ModalRootState) =>
+    state.modal.context !== MODAL_CONTEXT_NONE;
+
 export const selectModalType = (state: ModalRootState) => {
     if ('payload' in state.modal) {
         return state.modal.payload.type;
