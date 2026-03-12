@@ -3,6 +3,7 @@ import { mocked } from 'jest-mock';
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
@@ -34,6 +35,8 @@ const createGetState = (statePatch?: Partial<SuiteSyncQuotaManagerState>) => () 
 
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
+const deviceId = 'device-123';
+const deviceSessionId = `${walletDescriptor}@${deviceId}` as StaticSessionId;
 
 const prepareChallengeSessionMock = mocked(prepareChallengeSession);
 const checkStorageByOwnerIdMock = mocked(checkStorageByOwnerId);
@@ -54,7 +57,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceSessionId,
             isWriteMode: false,
         })(dispatch, getState);
 
@@ -86,7 +89,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceSessionId,
             isWriteMode: false,
         })(dispatch, getState);
 
@@ -115,7 +118,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceSessionId,
             isWriteMode: true,
         })(dispatch, getState);
 
@@ -133,6 +136,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
                 sessionId: 'session-123',
             },
             walletDescriptor,
+            deviceId,
         });
         expect(transferThunkInner).toHaveBeenCalled();
     });

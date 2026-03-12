@@ -72,7 +72,7 @@ export const createEnsureQuota =
 
         const allocatedQuota = await deps.dispatch(
             ensureOwnerHasAllocatedQuotaThunk({
-                walletDescriptor,
+                deviceSessionId: deviceStaticSessionId,
                 ownerId: owner.ownerId,
                 delegatedKey,
                 isWriteMode,

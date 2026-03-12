@@ -12,17 +12,19 @@ import {
     ProofOfDelegatedIdentityFailedErrType,
     WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {
-    DEFAULT_ACCOUNT_SIZE_QUOTA,
+    DEFAULT_DEVICE_SIZE_QUOTA,
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
 import { quotaManagerOwnerFetched } from './quotaManagerActions';
-import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectLeftDeviceQuota, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
 import { transferStorageThunk } from './storage/transferStorageThunk';
+import { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
 export const WriteModeRequiredForAllocation = (): WriteModeRequiredForAllocationErrType => ({
@@ -42,13 +44,9 @@ export const ProofOfDelegatedIdentityFailed = (): ProofOfDelegatedIdentityFailed
 });
 
 export const ensureOwnerHasAllocatedQuotaThunk =
-    ({
-        ownerId,
-        walletDescriptor,
-        delegatedKey,
-        isWriteMode,
-    }: EnsureOwnerHasAllocatedQuotaParams) =>
+    ({ ownerId, deviceSessionId, delegatedKey, isWriteMode }: EnsureOwnerHasAllocatedQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any): ReturnType<EnsureOwnerHasAllocatedQuota> => {
+        const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceSessionId);
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
 
         const hasOwnerStorage = await checkStorageByOwnerId({
@@ -87,6 +85,12 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             return err(HttpError());
         }
 
+        const leftDeviceQuota = selectLeftDeviceQuota(getState(), deviceId);
+
+        const sizeToAllocate = getAccountIncrementSizeQuota({
+            unspendStorage: leftDeviceQuota ?? DEFAULT_DEVICE_SIZE_QUOTA,
+        });
+
         const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
@@ -94,7 +98,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                 publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                 ownerId,
                 challenge: sessionChallenge.payload.challenge,
-                size: DEFAULT_ACCOUNT_SIZE_QUOTA,
+                size: sizeToAllocate,
             }),
         });
 
@@ -108,11 +112,12 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                     ownerId,
                     publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                     proof: proofOfDelegatedIdentity.payload,
-                    size: DEFAULT_ACCOUNT_SIZE_QUOTA,
+                    size: sizeToAllocate,
                     challenge: sessionChallenge.payload.challenge,
                     sessionId: sessionChallenge.payload.sessionId,
                 },
                 walletDescriptor,
+                deviceId,
             }),
         );
 

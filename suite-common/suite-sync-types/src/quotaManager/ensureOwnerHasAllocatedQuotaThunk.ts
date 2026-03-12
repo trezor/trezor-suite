@@ -1,6 +1,6 @@
 import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
 import { WriteModeRequiredForAllocationErrType } from './quotaManagerTypes';
@@ -13,7 +13,7 @@ export type ProofOfDelegatedIdentityFailedErrType = { type: 'ProofOfDelegatedIde
 
 export type EnsureOwnerHasAllocatedQuotaParams = {
     ownerId: SuiteSyncOwnerId;
-    walletDescriptor: WalletDescriptor;
+    deviceSessionId: StaticSessionId;
     delegatedKey: DelegatedIdentityKey;
     isWriteMode: boolean;
 };
