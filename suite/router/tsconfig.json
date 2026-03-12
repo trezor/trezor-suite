@@ -3,12 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../locks"
-        },
-        {
-            "path": "../modal"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -29,6 +23,8 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../locks" },
+        { "path": "../modal" },
         { "path": "../../packages/type-utils" }
     ]
 }

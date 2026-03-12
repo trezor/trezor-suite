@@ -13,8 +13,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite/locks": "workspace:*",
-        "@suite/modal": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -22,6 +20,8 @@
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite/locks": "workspace:*",
+        "@suite/modal": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "history": "^5.3.0"
     }

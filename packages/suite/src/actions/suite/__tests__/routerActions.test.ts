@@ -61,20 +61,20 @@ const initStore = (state: State) => {
     })(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        if (!action) {
-            return;
-        }
 
         const { suite, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router, action);
         store.getState().locks = locksReducer(locks, action);
+        // add action back to stack
         store.getActions().push(action);
     });
 
     return { store, suiteRouterHistory };
 };
 
+// Note: Most router actions have been moved to @suite/router. These stay here just because there is still dependency on suite.flags,
+// but once that is separated from suite state into it's own package, these actions should move to @suite/router too.
 describe('Suite Router Actions', () => {
     fixtures.initialRedirection.forEach(f => {
         it(`initialRedirection: ${f.description}`, () => {

@@ -20,10 +20,7 @@ import {
     selectRouterHash,
 } from './routerReducer';
 import { RouteParams } from './routes';
-import { SuiteRouterHistoryDep } from './suiteRouterHistory';
-
-const asSuiteRouterHistory = (services: Record<string, unknown>): SuiteRouterHistoryDep =>
-    services as SuiteRouterHistoryDep;
+import { asSuiteRouterHistoryService } from './suiteRouterHistory';
 
 export const selectCanNavigate = (state: any) =>
     !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);
@@ -69,7 +66,9 @@ export const onAnchorChange = createThunk(
  */
 export const routerInit = createThunk('@router/init', (_, { dispatch, getState, extra }) => {
     if (selectRouterApp(getState()) === 'unknown') {
-        const location = asSuiteRouterHistory(extra.services).suiteRouterHistory.getLocation();
+        const location = asSuiteRouterHistoryService(
+            extra.services,
+        ).suiteRouterHistory.getLocation();
         dispatch(onLocationChange(location));
     }
 });
@@ -112,13 +111,18 @@ export const goto = createThunk(
             dispatch(lockRouter(true));
 
             if (route.clearUrl) {
-                asSuiteRouterHistory(extra.services).suiteRouterHistory.navigate({ pathname });
+                asSuiteRouterHistoryService(extra.services).suiteRouterHistory.navigate({
+                    pathname,
+                });
             }
 
             return;
         }
 
-        asSuiteRouterHistory(extra.services).suiteRouterHistory.navigate({ pathname, hash });
+        asSuiteRouterHistoryService(extra.services).suiteRouterHistory.navigate({
+            pathname,
+            hash,
+        });
     },
 );
 
@@ -133,7 +137,9 @@ export const closeModalApp = createThunk(
         const shouldPreserveParams = preserveParams ?? true;
         dispatch(lockRouter(false));
 
-        const location = asSuiteRouterHistory(extra.services).suiteRouterHistory.getLocation();
+        const location = asSuiteRouterHistoryService(
+            extra.services,
+        ).suiteRouterHistory.getLocation();
         const route = findRoute(location.pathname);
 
         if (route && route.isForegroundApp) {
@@ -141,7 +147,7 @@ export const closeModalApp = createThunk(
         }
 
         if (!shouldPreserveParams && location.hash.length > 0) {
-            asSuiteRouterHistory(extra.services).suiteRouterHistory.navigate({
+            asSuiteRouterHistoryService(extra.services).suiteRouterHistory.navigate({
                 pathname: location.pathname,
             });
         } else {
