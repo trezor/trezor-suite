@@ -3,7 +3,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import type { CardanoNativeScript } from '../../../types/api/cardano';
@@ -15,7 +15,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',
     PROTO.CardanoGetNativeScriptHash
 > {
-    constructor(message: { id?: number; payload: Payload<'cardanoGetNativeScriptHash'> }) {
+    constructor(message: MethodMessage<'cardanoGetNativeScriptHash'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(

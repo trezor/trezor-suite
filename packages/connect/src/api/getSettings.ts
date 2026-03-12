@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetSettings.js
 
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 
 export default class GetSettings extends AbstractMethod<'getSettings'> {
-    constructor(message: { id?: number; payload: Payload<'getSettings'> }) {
+    constructor(message: MethodMessage<'getSettings'>) {
         super(message);
         this.useDevice = false;
         this.useUi = false;

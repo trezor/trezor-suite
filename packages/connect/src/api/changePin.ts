@@ -3,11 +3,11 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {
-    constructor(message: { id?: number; payload: Payload<'changePin'> }) {
+    constructor(message: MethodMessage<'changePin'>) {
         super(message);
         this.useDeviceState = false;
         this.skipFinalReload = false;

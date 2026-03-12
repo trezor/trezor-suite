@@ -32,7 +32,7 @@ import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
 import type { PROTO } from '../../../constants';
-import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
@@ -45,7 +45,7 @@ import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 type Params = PROTO.SolanaSignTx & { serialize: boolean };
 
 export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
-    constructor(message: { id?: number; payload: Payload<'solanaSignTransaction'> }) {
+    constructor(message: MethodMessage<'solanaSignTransaction'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(

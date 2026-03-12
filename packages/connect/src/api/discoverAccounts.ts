@@ -9,7 +9,7 @@ import {
     DEFAULT_TXS_PER_PAGE,
     SOLANA_TXS_PER_PAGE,
 } from '../constants/paging';
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
@@ -78,7 +78,7 @@ export default class DiscoverAccounts extends AbstractMethod<
 > {
     disposed = false;
 
-    constructor(message: { id?: number; payload: Payload<'discoverAccounts'> }) {
+    constructor(message: MethodMessage<'discoverAccounts'>) {
         super(message);
         this.useDevice = true;
         this.useDeviceState = true;

@@ -4,7 +4,11 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type { PROTO } from '../../../constants';
-import type { MethodPermission, MethodReturnType, Payload } from '../../../core/AbstractMethod';
+import type {
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
@@ -21,7 +25,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'rippleGetAddress'> }) {
+    constructor(message: MethodMessage<'rippleGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ripple'];

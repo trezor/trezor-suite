@@ -1,10 +1,10 @@
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { UI_REQUEST } from '../events';
 
 export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials'> {
-    constructor(message: { id?: number; payload: Payload<'thpRemoveCredentials'> }) {
+    constructor(message: MethodMessage<'thpRemoveCredentials'>) {
         super(message);
         this.useDevice = this.payload.device !== undefined;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];

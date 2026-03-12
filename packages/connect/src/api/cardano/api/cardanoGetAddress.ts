@@ -4,7 +4,11 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import type { MethodPermission, MethodReturnType, Payload } from '../../../core/AbstractMethod';
+import type {
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
@@ -27,7 +31,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'cardanoGetAddress'> }) {
+    constructor(message: MethodMessage<'cardanoGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Cardano'];

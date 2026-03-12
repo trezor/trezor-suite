@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { findBackend, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
@@ -16,7 +16,7 @@ type Params = {
 };
 
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
-    constructor(message: { id?: number; payload: Payload<'blockchainDisconnect'> }) {
+    constructor(message: MethodMessage<'blockchainDisconnect'>) {
         super(message);
 
         this.useDevice = false;

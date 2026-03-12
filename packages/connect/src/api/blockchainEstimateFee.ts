@@ -2,7 +2,12 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type { MethodPermission, MethodReturnType, Payload } from '../core/AbstractMethod';
+import type {
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+    Payload,
+} from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -17,7 +22,7 @@ type Params = {
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
-    constructor(message: { id?: number; payload: Payload<'blockchainEstimateFee'> }) {
+    constructor(message: MethodMessage<'blockchainEstimateFee'>) {
         super(message);
         this.useDevice = false;
         this.useUi = false;
