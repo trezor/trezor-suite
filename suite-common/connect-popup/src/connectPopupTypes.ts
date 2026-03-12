@@ -13,6 +13,19 @@ export type ManifestPartial = {
 
 export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
 export const CALL_SOURCE_MCP = 'mcp';
+
+/**
+ * Methods that are safe to execute silently (no user confirmation needed).
+ * Only MCP calls with these methods are allowed to bypass the connect-popup UX.
+ * Restricted to read-only data-fetching methods that do not interact with the device.
+ */
+export const SILENT_CALL_ALLOWED_METHODS = ['getAccountInfo', 'blockchainEstimateFee'] as const;
+export type SilentCallAllowedMethod = (typeof SILENT_CALL_ALLOWED_METHODS)[number];
+
+/** Type guard: returns true when `method` is a valid silent-call method. */
+export const isSilentCallAllowedMethod = (method: string): method is SilentCallAllowedMethod =>
+    (SILENT_CALL_ALLOWED_METHODS as readonly string[]).includes(method);
+
 export const CALL_SOURCE_WEB = 'web';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';

@@ -12,6 +12,7 @@ import {
 import {
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    isSilentCallAllowedMethod,
 } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { CallMethodKeys, CallMethodPayload } from '@trezor/connect';
@@ -39,7 +40,13 @@ export const useConnectPopupDesktop = () => {
                 // TrezorConnect directly. Used for data-fetching methods like
                 // getAccountInfo and blockchainEstimateFee that don't need
                 // device interaction or user confirmation.
-                if (params.silent) {
+                // Security: only honored for MCP-sourced calls, and only for
+                // the explicitly allowed read-only methods.
+                if (
+                    params.silent &&
+                    params.sourceType === CALL_SOURCE_MCP &&
+                    isSilentCallAllowedMethod(params.method)
+                ) {
                     try {
                         const device = selectedDeviceRef.current;
                         const deviceParams = device
