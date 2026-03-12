@@ -7,6 +7,7 @@ import { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -27,8 +28,8 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'getAddress'>) {
-        super(message);
+    constructor(message: MethodMessage<'getAddress'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
     }
 

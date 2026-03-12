@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -21,8 +22,8 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'solanaGetPublicKey'>) {
-        super(message);
+    constructor(message: MethodMessage<'solanaGetPublicKey'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(

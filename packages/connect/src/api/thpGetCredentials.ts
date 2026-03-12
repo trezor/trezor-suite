@@ -1,13 +1,13 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { getThpCredentials } from '../device/thp';
 import { DEVICE, UI_REQUEST } from '../events';
 
 export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials'> {
-    constructor(message: MethodMessage<'thpGetCredentials'>) {
-        super(message);
+    constructor(message: MethodMessage<'thpGetCredentials'>, context: MethodContext) {
+        super(message, context);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }

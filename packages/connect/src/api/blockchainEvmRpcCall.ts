@@ -1,7 +1,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
 import { CoinInfo } from '../types';
 import { validateParams } from './common/paramsValidator';
 import { getCoinInfo } from '../data/coinInfo';
@@ -13,8 +13,8 @@ type Params = {
 };
 
 export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
-    constructor(message: MethodMessage<'blockchainEvmRpcCall'>) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainEvmRpcCall'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

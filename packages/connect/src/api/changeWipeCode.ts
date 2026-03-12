@@ -1,11 +1,11 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 
 export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PROTO.ChangeWipeCode> {
-    constructor(message: MethodMessage<'changeWipeCode'>) {
-        super(message);
+    constructor(message: MethodMessage<'changeWipeCode'>, context: MethodContext) {
+        super(message, context);
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }

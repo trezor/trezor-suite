@@ -1,14 +1,14 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UnlockPathParams } from '../types/api/unlockPath';
 
 export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.UnlockPath> {
-    constructor(message: MethodMessage<'unlockPath'>) {
-        super(message);
+    constructor(message: MethodMessage<'unlockPath'>, context: MethodContext) {
+        super(message, context);
         this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
     }
 

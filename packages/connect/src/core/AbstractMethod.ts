@@ -46,7 +46,7 @@ export type MethodContext = {
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: number;
     payload: Payload<Name>;
-} & MethodContext;
+};
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
@@ -169,13 +169,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public initAsync?(): Promise<void>;
 
-    constructor(message: MethodMessage<Name>) {
+    constructor(message: MethodMessage<Name>, context: MethodContext) {
         const { payload } = message;
         this.name = payload.method;
         this.payload = payload;
         this.responseID = message.id || 0;
-        this.postMessage = message.postMessage;
-        this.createUiPromise = message.createUiPromise;
+        this.postMessage = context.postMessage;
+        this.createUiPromise = context.createUiPromise;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;

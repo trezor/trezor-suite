@@ -31,7 +31,7 @@ export const getMethod = async (message: CoreCallMessage, context: MethodContext
     const MethodConstructor = methods[method];
 
     if (MethodConstructor) {
-        return new MethodConstructor({ ...message, ...context } as any);
+        return new MethodConstructor(message, context);
     }
 
     throw TypedError('Method_InvalidParameter', `Method ${method} not found`);

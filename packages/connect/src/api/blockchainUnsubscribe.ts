@@ -2,7 +2,7 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -16,8 +16,8 @@ type Params = {
 };
 
 export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
-    constructor(message: MethodMessage<'blockchainUnsubscribe'>) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainUnsubscribe'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

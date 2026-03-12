@@ -4,6 +4,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -23,8 +24,8 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'solanaGetAddress'>) {
-        super(message);
+    constructor(message: MethodMessage<'solanaGetAddress'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(

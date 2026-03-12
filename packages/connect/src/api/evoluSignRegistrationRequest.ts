@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluSignRegistrationRequest extends AbstractMethod<
@@ -10,8 +10,8 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'evoluSignRegistrationRequest'>) {
-        super(message);
+    constructor(message: MethodMessage<'evoluSignRegistrationRequest'>, context: MethodContext) {
+        super(message, context);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
     }

@@ -7,6 +7,7 @@ import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -27,8 +28,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     hasBundle?: boolean;
     discovery?: Discovery;
 
-    constructor(message: MethodMessage<'getAccountInfo'>) {
-        super(message);
+    constructor(message: MethodMessage<'getAccountInfo'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = true;
         this.useUi = true;
     }

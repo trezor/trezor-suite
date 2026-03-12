@@ -2,7 +2,7 @@ import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
@@ -14,8 +14,8 @@ export default class CardanoComposeTransaction extends AbstractMethod<
     'cardanoComposeTransaction',
     CardanoComposeTransactionParams
 > {
-    constructor(message: MethodMessage<'cardanoComposeTransaction'>) {
-        super(message);
+    constructor(message: MethodMessage<'cardanoComposeTransaction'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useDeviceState = false;
         this.useUi = false;

@@ -6,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -35,8 +36,8 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'ethereumGetAddress'>) {
-        super(message);
+    constructor(message: MethodMessage<'ethereumGetAddress'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

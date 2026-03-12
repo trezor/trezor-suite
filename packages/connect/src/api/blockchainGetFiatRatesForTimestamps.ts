@@ -2,7 +2,7 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -20,8 +20,8 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
     'blockchainGetFiatRatesForTimestamps',
     Params
 > {
-    constructor(message: MethodMessage<'blockchainGetFiatRatesForTimestamps'>) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainGetFiatRatesForTimestamps'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

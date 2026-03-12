@@ -3,11 +3,11 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 
 export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.ApplyFlags> {
-    constructor(message: MethodMessage<'applyFlags'>) {
-        super(message);
+    constructor(message: MethodMessage<'applyFlags'>, context: MethodContext) {
+        super(message, context);
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }

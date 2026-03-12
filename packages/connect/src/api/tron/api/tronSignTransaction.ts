@@ -1,7 +1,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import {
     TronContractsParameters,
     TronContractsTypes,
@@ -19,8 +19,8 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'tronSignTransaction'>) {
-        super(message);
+    constructor(message: MethodMessage<'tronSignTransaction'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
     }
 

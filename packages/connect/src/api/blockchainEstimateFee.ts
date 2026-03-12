@@ -4,6 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -22,8 +23,8 @@ type Params = {
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
-    constructor(message: MethodMessage<'blockchainEstimateFee'>) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainEstimateFee'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

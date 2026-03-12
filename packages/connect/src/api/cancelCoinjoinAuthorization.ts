@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
@@ -9,8 +9,8 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     'cancelCoinjoinAuthorization',
     PROTO.CancelAuthorization
 > {
-    constructor(message: MethodMessage<'cancelCoinjoinAuthorization'>) {
-        super(message);
+    constructor(message: MethodMessage<'cancelCoinjoinAuthorization'>, context: MethodContext) {
+        super(message, context);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
 

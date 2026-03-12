@@ -3,7 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     StellarSignTransaction as StellarSignTransactionSchema,
@@ -28,8 +28,8 @@ export default class StellarSignTransaction extends AbstractMethod<
     'stellarSignTransaction',
     Params
 > {
-    constructor(message: MethodMessage<'stellarSignTransaction'>) {
-        super(message);
+    constructor(message: MethodMessage<'stellarSignTransaction'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.firmwareRange = getFirmwareRange(
             this.name,

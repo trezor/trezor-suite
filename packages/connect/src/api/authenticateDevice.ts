@@ -8,7 +8,7 @@ import {
 } from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
@@ -17,8 +17,8 @@ export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
     AuthenticateDeviceParams
 > {
-    constructor(message: MethodMessage<'authenticateDevice'>) {
-        super(message);
+    constructor(message: MethodMessage<'authenticateDevice'>, context: MethodContext) {
+        super(message, context);
         this.useEmptyPassphrase = true;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.skipFinalReload = false;

@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -21,8 +22,8 @@ export default class TezosGetPublicKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'tezosGetPublicKey'>) {
-        super(message);
+    constructor(message: MethodMessage<'tezosGetPublicKey'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,

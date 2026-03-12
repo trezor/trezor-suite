@@ -12,6 +12,7 @@ import {
 import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
+    MethodContext,
     MethodMessage,
     MethodPermission,
 } from '../core/AbstractMethod';
@@ -83,8 +84,8 @@ export default class DiscoverAccounts extends AbstractMethod<
 > {
     disposed = false;
 
-    constructor(message: MethodMessage<'discoverAccounts'>) {
-        super(message);
+    constructor(message: MethodMessage<'discoverAccounts'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = false;

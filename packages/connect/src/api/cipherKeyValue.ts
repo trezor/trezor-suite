@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
@@ -16,8 +16,8 @@ export default class CipherKeyValue extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'cipherKeyValue'>) {
-        super(message);
+    constructor(message: MethodMessage<'cipherKeyValue'>, context: MethodContext) {
+        super(message, context);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {

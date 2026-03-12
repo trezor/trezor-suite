@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
 import { messageToHex, stripHexPrefix } from '../../../utils/formatUtils';
@@ -13,8 +13,8 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
     PROTO.EthereumVerifyMessage
 > {
-    constructor(message: MethodMessage<'ethereumVerifyMessage'>) {
-        super(message);
+    constructor(message: MethodMessage<'ethereumVerifyMessage'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }

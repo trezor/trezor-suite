@@ -3,7 +3,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
-import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
 import { CoinInfo } from '../../../types';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '../../../types/api/solana';
@@ -22,8 +22,8 @@ export default class SolanaComposeTransaction extends AbstractMethod<
     'solanaComposeTransaction',
     SolanaComposeTransactionParams
 > {
-    constructor(message: MethodMessage<'solanaComposeTransaction'>) {
-        super(message);
+    constructor(message: MethodMessage<'solanaComposeTransaction'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

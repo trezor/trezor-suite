@@ -5,6 +5,7 @@ import { getFirmwareRange } from './common/paramsValidator';
 import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -28,8 +29,8 @@ export default class GetAccountDescriptor extends AbstractMethod<
     disposed = false;
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'getAccountDescriptor'>) {
-        super(message);
+    constructor(message: MethodMessage<'getAccountDescriptor'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = true;
         this.useUi = true;
     }

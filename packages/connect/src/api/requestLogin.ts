@@ -3,15 +3,15 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { DataManager } from '../data/DataManager';
 import type { ConnectSettings } from '../types';
 import { RequestLoginSchema } from '../types/api/requestLogin';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
-    constructor(message: MethodMessage<'requestLogin'>) {
-        super(message);
+    constructor(message: MethodMessage<'requestLogin'>, context: MethodContext) {
+        super(message, context);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
     }

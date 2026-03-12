@@ -1,12 +1,12 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { DEVICE, createDeviceMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
-    constructor(message: MethodMessage<'setBusy'>) {
-        super(message);
+    constructor(message: MethodMessage<'setBusy'>, context: MethodContext) {
+        super(message, context);
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.overridePreviousCall = true;

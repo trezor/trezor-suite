@@ -6,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -25,8 +26,8 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'rippleGetAddress'>) {
-        super(message);
+    constructor(message: MethodMessage<'rippleGetAddress'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(

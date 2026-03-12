@@ -1,10 +1,10 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 
 export default class GetNonce extends AbstractMethod<'getNonce', PROTO.GetNonce> {
-    constructor(message: MethodMessage<'getNonce'>) {
-        super(message);
+    constructor(message: MethodMessage<'getNonce'>, context: MethodContext) {
+        super(message, context);
         this.useDeviceState = false;
         // TODO should nonce really be always used with useEmptyPassphrase (as it currently is)?
         this.useEmptyPassphrase = true;

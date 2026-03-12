@@ -26,7 +26,7 @@ export const getMethod = async (
     const MethodConstructor = methods[method];
 
     if (MethodConstructor) {
-        return new MethodConstructor({ ...message, ...context });
+        return new MethodConstructor(message, context);
     }
 
     throw TypedError('Method_InvalidParameter', `Method ${method} not found`);

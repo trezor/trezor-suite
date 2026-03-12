@@ -3,7 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { CoinInfo, CoinObj } from '../types';
 
@@ -12,8 +12,8 @@ type Params = {
 };
 
 export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
-    constructor(message: MethodMessage<'getCoinInfo'>) {
-        super(message);
+    constructor(message: MethodMessage<'getCoinInfo'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

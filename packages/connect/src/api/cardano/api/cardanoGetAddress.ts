@@ -6,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -31,8 +32,8 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: MethodMessage<'cardanoGetAddress'>) {
-        super(message);
+    constructor(message: MethodMessage<'cardanoGetAddress'>, context: MethodContext) {
+        super(message, context);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(

@@ -2,7 +2,7 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -18,8 +18,8 @@ export default class BlockchainGetTransactions extends AbstractMethod<
     'blockchainGetTransactions',
     Params
 > {
-    constructor(message: MethodMessage<'blockchainGetTransactions'>) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainGetTransactions'>, context: MethodContext) {
+        super(message, context);
         this.useDevice = false;
         this.useUi = false;
     }

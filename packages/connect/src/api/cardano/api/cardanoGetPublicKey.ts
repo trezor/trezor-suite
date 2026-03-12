@@ -5,6 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -22,8 +23,8 @@ interface Params extends PROTO.CardanoGetPublicKey {
 export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    constructor(message: MethodMessage<'cardanoGetPublicKey'>) {
-        super(message);
+    constructor(message: MethodMessage<'cardanoGetPublicKey'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(
             this.name,

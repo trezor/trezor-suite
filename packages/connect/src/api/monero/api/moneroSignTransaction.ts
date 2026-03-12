@@ -3,6 +3,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -61,8 +62,8 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         rsig_parts: [],
     };
 
-    constructor(message: MethodMessage<'moneroSignTransaction'>) {
-        super(message);
+    constructor(message: MethodMessage<'moneroSignTransaction'>, context: MethodContext) {
+        super(message, context);
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.firmwareRange = getFirmwareRange(
             this.name,

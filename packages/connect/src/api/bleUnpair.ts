@@ -3,12 +3,12 @@ import { Assert } from '@trezor/schema-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { PROTO } from '../constants';
-import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod, MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 
 export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpair> {
-    constructor(message: MethodMessage<'bleUnpair'>) {
-        super(message);
+    constructor(message: MethodMessage<'bleUnpair'>, context: MethodContext) {
+        super(message, context);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }
