@@ -18,7 +18,6 @@
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
         { "path": "../transaction-search" },
         { "path": "../wallet-config" },
@@ -26,6 +25,7 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
