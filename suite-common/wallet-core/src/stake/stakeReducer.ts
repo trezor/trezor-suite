@@ -1,52 +1,14 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    CardanoPoolsStats,
-    EthereumValidatorsQueue,
-    SolanaStakeRewardsByAccount,
-    SolanaStakingInfo,
-    SolanaTotalStakeRewardsByAccount,
-} from '@suite-common/wallet-api';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
+import type { Timestamp } from '@suite-common/wallet-types';
 import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
-import { VotingDelegationOption, stakeActions } from './stakeActions';
+import { stakeActions } from './stakeActions';
+import type { StakeRootState, StakeState } from './stakeReducerTypes';
 import {
     fetchEverstakeData,
     fetchEverstakeRewards,
     fetchEverstakeStakingInfo,
 } from './stakeThunks';
-import { SerializedTx } from '../send/sendFormTypes';
-
-type ApiRequest<T> = {
-    error: boolean | string;
-    isLoading: boolean;
-    lastSuccessfulFetchTimestamp: Timestamp;
-    data: T | null;
-};
-
-export interface StakeState {
-    precomposedTx?: PrecomposedTransactionFinal;
-    precomposedForm?: StakeFormState;
-    serializedTx?: SerializedTx; // payload for TrezorConnect.pushTransaction
-    votingDelegation: VotingDelegationOption;
-    data: {
-        [key in NetworkSymbol]?: {
-            poolStats?: ApiRequest<{
-                ethApy: number;
-                nextRewardPayout: number;
-            }>;
-            validatorsQueue?: ApiRequest<EthereumValidatorsQueue>;
-            stakingInfo?: ApiRequest<SolanaStakingInfo | CardanoPoolsStats>;
-            stakingRewards?: ApiRequest<{
-                rewardsHistory: SolanaStakeRewardsByAccount;
-                totalRewards: SolanaTotalStakeRewardsByAccount;
-            }>;
-        };
-    };
-}
-
-export type StakeRootState = { wallet: { stake: StakeState } };
 
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,

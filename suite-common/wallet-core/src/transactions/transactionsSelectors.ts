@@ -7,7 +7,7 @@ import {
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
+import type {
     Account,
     AccountKey,
     Timestamp,
@@ -26,18 +26,18 @@ import {
     isUnstakeTx,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { TransactionsRootState } from './transactionsReducer';
-import { AccountsRootState } from '../accounts/accountsReducer';
+import type { TransactionsRootState } from './transactionsReducerTypes';
+import type { AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
-    BlockchainRootState,
+    type BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
 import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
-import { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
+import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { isAccountStakingActive } from '../stake/stakeUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<

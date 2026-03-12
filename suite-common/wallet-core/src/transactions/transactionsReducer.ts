@@ -1,55 +1,22 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 
 import { transactionsActions } from './transactionsActions';
+import type { TransactionsState } from './transactionsReducerTypes';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
 } from './transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { AccountsRootState } from '../accounts/accountsReducer';
-
-export type AccountTransactionsFetchStatusDetail =
-    | {
-          status: 'loading' | 'idle';
-          error: null;
-      }
-    | {
-          status: 'error';
-          error: string;
-      };
-
-export type AccountTransactionsFetchAllStatus = {
-    areAllTransactionsLoaded: boolean;
-};
-
-export interface TransactionsState {
-    transactions: { [key: AccountKey]: WalletAccountTransaction[] };
-    phishing: { [key: AccountKey]: string[] };
-    fetchStatusDetail: {
-        [key: AccountKey]: AccountTransactionsFetchStatusDetail &
-            Partial<AccountTransactionsFetchAllStatus>;
-    };
-}
 
 export const transactionsInitialState: TransactionsState = {
     transactions: {},
     phishing: {},
     fetchStatusDetail: {},
 };
-
-export type TransactionsRootState = {
-    wallet: {
-        transactions: TransactionsState & {
-            // We need to override types because there could be nulls/undefined in transactions array because of pagination
-            // This should be fixed in TransactionsState but it will throw lot of errors then in desktop Suite
-            transactions: { [key: AccountKey]: (WalletAccountTransaction | null | undefined)[] };
-        };
-    };
-} & AccountsRootState;
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
