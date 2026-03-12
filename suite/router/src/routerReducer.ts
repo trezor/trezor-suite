@@ -1,5 +1,7 @@
 import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
+import { LocksRootState, selectIsRouterOrUiLocked } from '@suite/locks';
+import { ModalRootState, selectHasActiveModal } from '@suite/modal';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';
@@ -29,13 +31,14 @@ export type RouterRootState = {
     router: RouterState;
 };
 
-type LocationChangePayload = RouterPathOptional & {
+export type LocationChangePayload = RouterPathOptional & {
     anchor?: AnchorType;
     settingsBackRoute?: SettingsBackRoute;
 } & RouterAppWithParams;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
 
+// This action is meant only as an event. Actually no state changes here, it's used as an event and middlewares react to it throughout suite packages.
 export const routerAppChanged = createAction(
     '@router/appChanged',
     (payload: RouterAppWithParams['app']) => ({
@@ -72,10 +75,6 @@ export const routerSlice = createSlice({
 
 export const routerReducer = routerSlice.reducer;
 export const { routerLocationChange, anchorChange } = routerSlice.actions;
-export type RouterAction =
-    | ReturnType<typeof routerLocationChange>
-    | ReturnType<typeof anchorChange>
-    | ReturnType<typeof routerAppChanged>;
 
 export const selectRouter = (state: RouterRootState) => state.router;
 export const selectRouterLoaded = (state: RouterRootState) => state.router.loaded;
@@ -99,3 +98,20 @@ export const selectIsAccountTabPage = (state: RouterRootState) => {
 };
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
+
+export const selectCanNavigate = (state: LocksRootState & ModalRootState) =>
+    !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);
+
+export type RouterAction =
+    | {
+          type: typeof routerLocationChange.type;
+          payload: RouterPathOptional & {
+              anchor?: AnchorType;
+              settingsBackRoute?: SettingsBackRoute;
+          } & RouterAppWithParams;
+      }
+    | {
+          type: typeof anchorChange.type;
+          payload: AnchorType | undefined;
+      }
+    | ReturnType<typeof routerAppChanged>;

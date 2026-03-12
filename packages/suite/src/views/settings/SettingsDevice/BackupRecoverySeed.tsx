@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -16,7 +16,8 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
 
     const needsBackup = device?.features?.backup_availability === 'Required';
 
-    const handleClick = () => dispatch(goto({ routeName: 'backup-index', params: { cancelable: true } }));
+    const handleClick = () =>
+        dispatch(goto({ routeName: 'backup-index', params: { cancelable: true } }));
 
     if (!needsBackup) return null;
 

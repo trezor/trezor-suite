@@ -182,7 +182,11 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingSellActions.saveTransactionId(orderId));
-        dispatch(goto({ routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers' }));
+        dispatch(
+            goto({
+                routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers',
+            }),
+        );
     };
 
     const redirectToExchangeOffers = (params: ExchangeOfferRedirectParams) => {

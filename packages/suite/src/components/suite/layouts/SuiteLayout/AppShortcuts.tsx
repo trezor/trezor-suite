@@ -26,7 +26,7 @@ export const AppShortcuts = () => {
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
-            dispatch(closeModalApp(undefined));
+            dispatch(closeModalApp());
             e.preventDefault();
             dispatch(
                 startDiscoveryThunk({

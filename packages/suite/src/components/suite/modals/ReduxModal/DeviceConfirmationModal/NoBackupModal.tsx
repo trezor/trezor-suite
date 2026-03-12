@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { onReceiveConfirmation } from '@suite/modal';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

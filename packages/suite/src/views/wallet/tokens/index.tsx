@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { goto , selectRouteName } from '@suite/router';
+import { goto, selectRouteName } from '@suite/router';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';

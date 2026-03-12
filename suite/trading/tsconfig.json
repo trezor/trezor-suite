@@ -12,6 +12,9 @@
             "path": "../../suite-common/geolocation"
         },
         { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../../suite-common/trading" },
         { "path": "../intl" },
         { "path": "../router" },

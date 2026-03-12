@@ -13,7 +13,6 @@ import { spacings } from '@trezor/theme';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;
     setIsChecked: (isChecked: boolean) => void;
@@ -124,7 +123,11 @@ export const StepCheckSeed = ({
                         priority="secondary"
                         onClick={() => {
                             resetReducer();
-                            dispatch(goto({ routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index' }));
+                            dispatch(
+                                goto({
+                                    routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index',
+                                }),
+                            );
                         }}
                     >
                         <Translation id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'} />

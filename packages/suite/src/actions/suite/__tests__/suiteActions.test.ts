@@ -1,7 +1,5 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
-import type { UnknownAction } from '@reduxjs/toolkit';
-
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -113,7 +111,7 @@ const initStore = (state: State) => {
         const { suite, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().device = deviceReducer(device, action);
-        store.getState().router = routerReducer(router, action as UnknownAction);
+        store.getState().router = routerReducer(router, action);
         // add action back to stack
         store.getActions().push(action);
     });

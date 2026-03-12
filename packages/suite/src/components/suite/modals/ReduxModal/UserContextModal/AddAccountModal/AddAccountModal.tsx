@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { goto , selectRouterApp } from '@suite/router';
+import { goto, selectRouterApp } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Network,
@@ -179,11 +179,14 @@ export const AddAccountModal = ({
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(
-                    goto({ routeName: 'wallet-index', params: {
+                    goto({
+                        routeName: 'wallet-index',
+                        params: {
                             symbol: selectedNetwork.symbol,
                             accountIndex: 0,
                             accountType: 'normal',
-                        }, }),
+                        },
+                    }),
                 );
             }
         }
@@ -224,11 +227,14 @@ export const AddAccountModal = ({
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(
-                goto({ routeName: 'wallet-index', params: {
+                goto({
+                    routeName: 'wallet-index',
+                    params: {
                         symbol: account.symbol,
                         accountIndex: account.index,
                         accountType: account.accountType,
-                    }, }),
+                    },
+                }),
             );
         }
     };

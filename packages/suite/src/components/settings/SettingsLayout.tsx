@@ -33,28 +33,32 @@ const SettingsHeader = () => {
                 title: <Translation id="TR_GENERAL" />,
                 position: 'primary',
                 'data-testid': '@settings/menu/general',
-                callback: () => dispatch(goto({ routeName: 'settings-index', preserveParams: true })),
+                callback: () =>
+                    dispatch(goto({ routeName: 'settings-index', preserveParams: true })),
             },
             {
                 id: 'settings-device',
                 title: <Translation id="TR_DEVICE" />,
                 position: 'primary',
                 'data-testid': '@settings/menu/device',
-                callback: () => dispatch(goto({ routeName: 'settings-device', preserveParams: true })),
+                callback: () =>
+                    dispatch(goto({ routeName: 'settings-device', preserveParams: true })),
             },
             {
                 id: 'settings-coins',
                 title: <Translation id="TR_COINS" />,
                 position: 'primary',
                 'data-testid': '@settings/menu/wallet',
-                callback: () => dispatch(goto({ routeName: 'settings-coins', preserveParams: true })),
+                callback: () =>
+                    dispatch(goto({ routeName: 'settings-coins', preserveParams: true })),
             },
             {
                 id: 'settings-connected-apps',
                 title: <Translation id="TR_CONNECTED_APPS" />,
                 position: 'primary',
                 'data-testid': '@settings/menu/connected-apps',
-                callback: () => dispatch(goto({ routeName: 'settings-connected-apps', preserveParams: true })),
+                callback: () =>
+                    dispatch(goto({ routeName: 'settings-connected-apps', preserveParams: true })),
             },
             {
                 id: 'settings-debug',
@@ -62,7 +66,8 @@ const SettingsHeader = () => {
                 position: 'primary',
                 isHidden: !isDebugModeActive,
                 'data-testid': '@settings/menu/debug',
-                callback: () => dispatch(goto({ routeName: 'settings-debug', preserveParams: true })),
+                callback: () =>
+                    dispatch(goto({ routeName: 'settings-debug', preserveParams: true })),
             },
         ],
         [dispatch, isDebugModeActive],

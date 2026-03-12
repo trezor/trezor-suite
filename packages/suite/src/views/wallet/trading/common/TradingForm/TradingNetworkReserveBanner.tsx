@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
@@ -21,8 +21,11 @@ export const TradingNetworkReserveBanner = ({
 
     const onManageClick = () => {
         dispatch(
-            goto({ routeName: 'settings-index', preserveParams: true,
-                anchor: SettingsAnchor.NetworkReserve, }),
+            goto({
+                routeName: 'settings-index',
+                preserveParams: true,
+                anchor: SettingsAnchor.NetworkReserve,
+            }),
         );
     };
 

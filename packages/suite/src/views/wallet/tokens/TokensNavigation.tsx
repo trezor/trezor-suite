@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto , selectRouteName } from '@suite/router';
+import { goto, selectRouteName } from '@suite/router';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';

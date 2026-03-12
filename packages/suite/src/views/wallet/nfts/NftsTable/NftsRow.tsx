@@ -154,11 +154,14 @@ const NftsRow = ({
                                         });
                                         if (account) {
                                             dispatch(
-                                                goto({ routeName: 'wallet-index', params: {
+                                                goto({
+                                                    routeName: 'wallet-index',
+                                                    params: {
                                                         symbol: account.symbol,
                                                         accountIndex: account.index,
                                                         accountType: account.accountType,
-                                                    }, }),
+                                                    },
+                                                }),
                                             );
                                         }
                                     },

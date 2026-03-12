@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Action } from 'history';
 
-import { onBeforePopState , onLocationChange, selectRouterLoaded } from '@suite/router';
+import { onLocationChange, selectCanNavigate, selectRouterLoaded } from '@suite/router';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -12,6 +12,7 @@ export const RouterHandler = () => {
     const dispatch = useDispatch();
     const routerLoaded = useSelector(selectRouterLoaded);
     const { suiteRouterHistory } = useSuiteServices();
+    const canGoBack = useSelector(selectCanNavigate);
 
     useEffect(() => {
         const emitLocation = () => {
@@ -27,7 +28,6 @@ export const RouterHandler = () => {
         const unlisten = suiteRouterHistory.listen(update => {
             // If back navigation is blocked, re-go forward by 1 to cancel it
             if (update.action === Action.Pop) {
-                const canGoBack = dispatch(onBeforePopState());
                 if (!canGoBack) {
                     history.go(1);
 
@@ -38,7 +38,7 @@ export const RouterHandler = () => {
         });
 
         return unlisten;
-    }, [dispatch, routerLoaded, suiteRouterHistory]);
+    }, [canGoBack, dispatch, routerLoaded, suiteRouterHistory]);
 
     return null;
 };

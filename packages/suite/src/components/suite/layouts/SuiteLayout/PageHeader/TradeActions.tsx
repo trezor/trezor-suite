@@ -1,6 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto, selectIsAccountTabPage , selectRouteName } from '@suite/router';
+import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';

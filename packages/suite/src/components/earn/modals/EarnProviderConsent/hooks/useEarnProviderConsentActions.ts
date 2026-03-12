@@ -58,11 +58,14 @@ export const useEarnProviderConsentActions = ({
             case EarnFlow.Yield:
                 if (yieldContext) {
                     dispatch(
-                        goto({ routeName: 'earn-supply', params: getEarnRouteParams({
+                        goto({
+                            routeName: 'earn-supply',
+                            params: getEarnRouteParams({
                                 account,
                                 yieldId: yieldContext.id,
                                 contractAddress: yieldContext.tokenContractAddress,
-                            }), }),
+                            }),
+                        }),
                     );
                 }
                 break;

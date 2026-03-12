@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getTxAnchor, goto , selectRouteName } from '@suite/router';
+import { getTxAnchor, goto, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -73,12 +73,15 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
         const txAnchor = getTxAnchor(tx?.txid);
         dispatch(
-            goto({ routeName: destinationRoute, params: {
+            goto({
+                routeName: destinationRoute,
+                params: {
                     accountIndex: account.index,
                     accountType: account.accountType,
                     symbol: account.symbol,
                 },
-                anchor: txAnchor, }),
+                anchor: txAnchor,
+            }),
         );
 
         if (tx?.txid) {

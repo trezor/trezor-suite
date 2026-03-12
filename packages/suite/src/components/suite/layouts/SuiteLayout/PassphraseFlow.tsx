@@ -55,7 +55,7 @@ type ForegroundAppModalProps = {
 const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(closeModalApp(undefined));
+    const onCancel = () => dispatch(closeModalApp());
 
     // IMPORTANT: This is the place where all the modals that need to rendered OVER
     //            Wallet-Switch needs to be.

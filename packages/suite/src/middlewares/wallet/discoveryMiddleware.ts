@@ -12,8 +12,6 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
-import { SUITE } from 'src/actions/suite/constants';
-
 // todo: this is crazy. needs some consideration
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {

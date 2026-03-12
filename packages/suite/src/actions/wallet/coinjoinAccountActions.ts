@@ -1,6 +1,6 @@
 import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
-import { goto , selectRouteName } from '@suite/router';
+import { goto, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -637,11 +637,14 @@ export const createCoinjoinAccount =
 
         // switch to account
         dispatch(
-            goto({ routeName: 'wallet-index', params: {
+            goto({
+                routeName: 'wallet-index',
+                params: {
                     symbol: network.symbol,
                     accountType: account.accountType,
                     accountIndex: 0,
-                }, }),
+                },
+            }),
         );
 
         // start discovery

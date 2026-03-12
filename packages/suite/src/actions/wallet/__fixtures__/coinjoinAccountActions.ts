@@ -1,3 +1,4 @@
+import { goto } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -135,8 +136,10 @@ export const createCoinjoinAccount = [
                 accountsActions.createAccount.type,
                 COINJOIN.ACCOUNT_DISCOVERY_RESET,
                 COINJOIN.ACCOUNT_PRELOADING,
+                goto.pending.type,
                 accountsActions.startCoinjoinAccountSync.type,
                 COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
+                goto.fulfilled.type,
                 COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
                 accountsActions.updateAccount.type,
                 accountsActions.endCoinjoinAccountSync.type,
@@ -203,6 +206,7 @@ export const startCoinjoinSession = [
                 COINJOIN.SESSION_STARTING,
                 COINJOIN.ACCOUNT_AUTHORIZE,
                 COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+                goto.pending.type,
                 COINJOIN.SESSION_STARTING,
             ],
         },

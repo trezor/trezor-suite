@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';

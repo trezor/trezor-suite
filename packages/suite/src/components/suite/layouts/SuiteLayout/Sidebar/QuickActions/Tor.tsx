@@ -1,5 +1,5 @@
 import { Translation, TranslationKey } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Column, Icon, IconName, UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -62,7 +62,9 @@ export const Tor = () => {
                         </Column>
                     ),
                 }}
-                onClick={() => dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))}
+                onClick={() =>
+                    dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))
+                }
                 iconName="torBrowser"
                 subIconIntent={torIntentMap[torStatus]}
                 subIconName={iconName}

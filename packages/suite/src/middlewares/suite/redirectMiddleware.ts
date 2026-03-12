@@ -1,7 +1,13 @@
 import { MiddlewareAPI } from 'redux';
 
 import { selectIsRouterLocked } from '@suite/locks';
-import { closeModalApp, goto, selectRouteName , selectRouterApp, selectRouterParams } from '@suite/router';
+import {
+    closeModalApp,
+    goto,
+    selectRouteName,
+    selectRouterApp,
+    selectRouterParams,
+} from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 
 import { Action, AppState, Dispatch, TrezorDevice } from 'src/types/suite';
@@ -69,7 +75,7 @@ const redirect =
                 !action.payload &&
                 selectRouterApp(api.getState()) === 'switch-device'
             ) {
-                api.dispatch(closeModalApp(undefined));
+                api.dispatch(closeModalApp());
             }
 
             return action;

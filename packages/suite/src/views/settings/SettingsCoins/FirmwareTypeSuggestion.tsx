@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor , goto } from '@suite/router';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 

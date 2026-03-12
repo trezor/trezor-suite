@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { goto , selectRouterParams } from '@suite/router';
+import { goto, selectRouterParams } from '@suite/router';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -29,11 +29,14 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const navigateToRelatedAccount = () => {
         dispatch(closeModal());
         dispatch(
-            goto({ routeName: 'wallet-index', params: {
+            goto({
+                routeName: 'wallet-index',
+                params: {
                     symbol,
                     accountIndex: index,
                     accountType,
-                }, }),
+                },
+            }),
         );
     };
 

@@ -1,5 +1,3 @@
-import type { UnknownAction } from '@reduxjs/toolkit';
-
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { recoveryActions, recoveryReducer } from '../src';
@@ -7,7 +5,7 @@ import { recoveryActions, recoveryReducer } from '../src';
 const initStore = () =>
     configureMockStore({
         preloadedState: {
-            recovery: recoveryReducer(undefined, {} as UnknownAction),
+            recovery: recoveryReducer(undefined, { type: 'foo' }),
         },
         reducer: (state: any, action: any) => ({
             ...state,

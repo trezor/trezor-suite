@@ -1,5 +1,3 @@
-import type { UnknownAction } from '@reduxjs/toolkit';
-
 import { modalReducer } from '@suite/modal';
 import { routerAppChanged, routerReducer } from '@suite/router';
 
@@ -51,7 +49,7 @@ const initStore = (state: State) => {
         const action = store.getActions().pop();
         const { suite, router, onboarding } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action as UnknownAction);
+        store.getState().router = routerReducer(router, action);
         store.getState().onboarding = onboardingReducer(onboarding, action);
 
         // add action back to stack

@@ -1,9 +1,14 @@
-import { UnknownAction } from '@reduxjs/toolkit';
 import { CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
 import { MODAL_CONTEXT_NONE, State as ModalState, modalReducer } from '@suite/modal';
-import { RouterState, getRoute, routerLocationChange, routerReducer } from '@suite/router';
+import {
+    LocationChangePayload,
+    RouterState,
+    getRoute,
+    routerLocationChange,
+    routerReducer,
+} from '@suite/router';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -45,8 +50,6 @@ interface Args {
     modal?: ModalState;
 }
 
-type LocationChangePayload = Parameters<typeof routerLocationChange>[0];
-
 const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route']>['name']>(
     name: TName,
 ) => {
@@ -80,10 +83,8 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
             },
         },
     },
-    router:
-        router ??
-        routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, { type: 'init' } as UnknownAction),
-    modal: modalReducer({ context: MODAL_CONTEXT_NONE }, { type: 'init' } as UnknownAction),
+    router: router ?? routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, { type: 'init' }),
+    modal: modalReducer({ context: MODAL_CONTEXT_NONE }, { type: 'init' }),
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -156,7 +157,7 @@ describe('tradingMiddleware', () => {
                 },
                 router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {
                     type: 'init',
-                } as UnknownAction),
+                }),
             }),
         );
 
@@ -167,14 +168,13 @@ describe('tradingMiddleware', () => {
         expect(store.getState().wallet.trading.modalAccountKey).toEqual(result);
     });
 
-    it.each<
-        [
-            string,
-            { cryptoId: CryptoId | undefined; key: AccountKey | undefined },
-            RouterState,
-            LocationChangePayload,
-        ]
-    >([
+    type TradingRouterTestFixture = [
+        string,
+        { cryptoId: CryptoId | undefined; key: AccountKey | undefined },
+        RouterState,
+        LocationChangePayload,
+    ];
+    it.each<TradingRouterTestFixture>([
         [
             'should keep prefilledFromAccount when route is changed from sell to buy',
             {
@@ -221,7 +221,7 @@ describe('tradingMiddleware', () => {
                         key: 'descriptor' as AccountKey, // Todo: create properly via `createAccountKey()`
                     },
                 },
-                router: routerReducer(routeDefault, { type: 'init' } as UnknownAction),
+                router: routerReducer(routeDefault, { type: 'init' }),
             }),
         );
 

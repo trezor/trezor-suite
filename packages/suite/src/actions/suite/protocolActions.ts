@@ -1,5 +1,11 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { AnchorSettingSection, SettingsAnchor, goto , mapAnchorToRoute, onLocationChange } from '@suite/router';
+import {
+    AnchorSettingSection,
+    SettingsAnchor,
+    goto,
+    mapAnchorToRoute,
+    onLocationChange,
+} from '@suite/router';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -70,9 +76,7 @@ export const handleProtocolRequest =
                 }),
             );
         } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
-            dispatch(
-                goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }),
-            );
+            dispatch(goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }));
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
             const parsedUri = parseUri(uri);
             const wcUri = parsedUri?.searchParams?.get('uri');
