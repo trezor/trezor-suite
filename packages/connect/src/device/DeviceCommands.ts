@@ -5,10 +5,10 @@ import { MessagesSchema as Messages } from '@trezor/protobuf';
 
 import { PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
-import type { TypedCallProvider } from '../device/DeviceCurrentSession';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types/coinInfo';
+import type { TypedCallProvider } from '../types/typed-call-provider';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
