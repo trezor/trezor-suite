@@ -15,8 +15,9 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
-import { Features, StrictFeatures } from '../types/device';
+import type { Features, StrictFeatures } from '../types/device';
 import { FirmwareChannel, FirmwareReleaseConfigInfo } from '../types/firmware';
+import type { CurrentVersion } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {
@@ -356,10 +357,7 @@ export const getLanguage = (languageBinPath: string) => {
     return httpRequest(url, 'binary');
 };
 
-export type CurrentVersion = {
-    bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray | null;
-};
+export type { CurrentVersion } from '../types/firmware';
 
 const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {
