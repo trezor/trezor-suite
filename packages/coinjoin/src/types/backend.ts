@@ -9,16 +9,73 @@ import type {
 import type {
     Transaction as BlockbookTransaction,
     FilterResponse,
+    ServerInfo,
     VinVout,
 } from '@trezor/blockchain-link-types/src/blockbook';
 import type { Network } from '@trezor/utxo-lib';
 
-import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
-import type { FilterController } from '../backend/CoinjoinFilterController';
-import type { MempoolController } from '../backend/CoinjoinMempoolController';
+import type { RequestOptions } from '../utils/http';
 
 export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };
+
+// shape of src/backend/CoinjoinBackendClient.ts
+export interface CoinjoinBackendClientShape {
+    fetchNetworkInfo(options?: RequestOptions): Promise<ServerInfo>;
+    fetchBlock(height: number, options?: RequestOptions): Promise<{ txs: BlockbookTransaction[] }>; // BlockbookBlock
+    fetchBlockFilters(
+        bestKnownBlockHash: string,
+        pageSize: number,
+        options?: RequestOptions,
+    ): Promise<BlockFilterResponse>;
+    fetchMempoolFilters(): Promise<MempoolFilterResponse>;
+    fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction>;
+    subscribeMempoolTxs(
+        listener: (tx: BlockbookTransaction) => void,
+        onDisconnect?: () => void,
+    ): Promise<void>;
+    unsubscribeMempoolTxs(
+        listener: (tx: BlockbookTransaction) => void,
+        onDisconnect?: () => void,
+    ): Promise<void>;
+}
+
+// shape of src/backend/CoinjoinFilterController.ts
+export interface FilterControllerShape {
+    getFilterIterator(
+        params: FilterControllerParams,
+        ctx: FilterControllerContext,
+    ): AsyncGenerator<any, void, unknown>;
+}
+
+// shape of src/backend/CoinjoinAddressController.ts
+export type AddressControllerShape = {
+    readonly receive: PrederivedAddress[];
+    readonly change: PrederivedAddress[];
+    analyze: <T>(
+        getTxs: (address: AccountAddress) => T[],
+        onTxs?: ((txs: T[]) => void) | undefined,
+    ) => {
+        receive: PrederivedAddress[];
+        change: PrederivedAddress[];
+    };
+};
+
+// shape of src/backend/CoinjoinMempoolController.ts
+export type MempoolStatus = 'stopped' | 'running';
+
+export interface MempoolControllerShape {
+    readonly status: MempoolStatus;
+    start(): Promise<void>;
+    stop(): Promise<void>;
+    init(
+        addressController?: AddressControllerShape,
+        onProgressInfo?: OnProgressInfo,
+    ): Promise<BlockbookTransaction[]>;
+    update(force?: boolean): Promise<void>;
+    getTransactions(addressController?: AddressControllerShape): BlockbookTransaction[];
+    removeTransactions(txids: string[]): void;
+}
 
 export type BlockbookBlock = {
     page: number;
@@ -44,11 +101,11 @@ export type MempoolFilterResponse = Partial<FilterResponse> & {
 };
 
 export type ScanAccountContext = {
-    client: CoinjoinBackendClient;
+    client: CoinjoinBackendClientShape;
     network: Network;
     abortSignal?: AbortSignal;
-    filters: FilterController;
-    mempool?: MempoolController;
+    filters: FilterControllerShape;
+    mempool?: MempoolControllerShape;
     onProgress: (progress: ScanAccountProgress) => void;
     onProgressInfo: OnProgressInfo;
 };
@@ -108,10 +165,13 @@ export type FilterControllerContext = {
     onProgressInfo?: OnProgressInfo;
 };
 
-export type FilterClient = Pick<CoinjoinBackendClient, 'fetchNetworkInfo' | 'fetchBlockFilters'>;
+export type FilterClient = Pick<
+    CoinjoinBackendClientShape,
+    'fetchNetworkInfo' | 'fetchBlockFilters'
+>;
 
 export type MempoolClient = Pick<
-    CoinjoinBackendClient,
+    CoinjoinBackendClientShape,
     'fetchMempoolFilters' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
 >;
 

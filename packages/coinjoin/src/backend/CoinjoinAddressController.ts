@@ -5,11 +5,14 @@ import type { Network } from '@trezor/utxo-lib';
 import { deriveAddresses } from './backendUtils';
 import { getAddressScript } from './filters';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
-import type { AccountAddress, AccountCache, ScanAccountCheckpoint } from '../types/backend';
+import type {
+    AccountAddress,
+    AccountCache,
+    AddressControllerShape,
+    ScanAccountCheckpoint,
+} from '../types/backend';
 
-export type AddressController = Pick<CoinjoinAddressController, 'receive' | 'change' | 'analyze'>;
-
-export class CoinjoinAddressController {
+export class CoinjoinAddressController implements AddressControllerShape {
     private readonly xpub;
     private readonly network;
     private readonly lookouts;
