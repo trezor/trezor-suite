@@ -27,24 +27,35 @@ import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/stora
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
-import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-const bridgeTransport = new BridgeTransport({ messages, port: 21328, id: 'bridge' });
+// Lazily initialize transports to avoid loading the 243 KB messages.json at module-import
+// time, which would otherwise slow down every test that imports this module.
+let _transports: readonly unknown[] | undefined;
+const getTransports = () => {
+    if (!_transports) {
+        const messages = require('@trezor/protobuf/messages.json');
+        const bridgeTransport = new BridgeTransport({
+            messages,
+            port: 21328,
+            id: 'bridge',
+        });
 
-const transportsPerDeviceType = {
-    device: Platform.select({
-        ios: [bridgeTransport, NativeBluetoothTransport],
-        android: [NativeUsbTransport, NativeBluetoothTransport],
-    }),
-    emulator: [bridgeTransport],
-} as const;
+        _transports =
+            deviceType === 'device'
+                ? (Platform.select({
+                      ios: [bridgeTransport, NativeBluetoothTransport],
+                      android: [NativeUsbTransport, NativeBluetoothTransport],
+                  }) ?? [bridgeTransport])
+                : [bridgeTransport];
+    }
 
-const transports = transportsPerDeviceType[deviceType];
+    return _transports;
+};
 
 type NativeAppDeps = {
     getState: () => any;
@@ -107,7 +118,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({
-            transports,
+            transports: getTransports(),
         }),
         selectTradingEnvironment,
         // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
