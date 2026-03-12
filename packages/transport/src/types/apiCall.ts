@@ -33,4 +33,9 @@ export type BridgeProtocolMessage = {
     thpState?: ThpChannelState;
 };
 
+export type BridgeCommonErrors =
+    | typeof ERRORS.HTTP_ERROR
+    | typeof ERRORS.WRONG_RESULT_TYPE
+    | typeof ERRORS.UNEXPECTED_ERROR;
+
 export type MessageResponse = Messages.MessageResponse | protocolThp.ThpMessageResponse;

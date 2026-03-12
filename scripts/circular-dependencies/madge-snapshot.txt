@@ -37,7 +37,6 @@ packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.ts
 packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
 packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
 packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx
-packages/transport/src/transports/abstract.ts > packages/transport/src/transports/bridge.ts
 suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
 suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src/stake/stakeSelectors.ts > suite-common/wallet-core/src/stake/stakeReducer.ts
 suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts
