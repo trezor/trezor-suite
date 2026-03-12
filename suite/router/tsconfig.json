@@ -3,6 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../locks"
+        },
+        {
+            "path": "../modal"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
