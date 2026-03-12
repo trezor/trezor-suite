@@ -13,7 +13,7 @@ jobs:
       UPDATE_FILE: packages/suite-data/files/bin/tor/update.sh
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

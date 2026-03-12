@@ -20,7 +20,7 @@ jobs:
         team: ["Suite-Growth 🎨", "Suite-Wallet 📈", "Suite-Foundation 🧑‍🚀", "Suite-Trade 💹"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Generate GitHub App token
         id: trezor-bot-token
