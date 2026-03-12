@@ -1,11 +1,11 @@
 import { DeviceMetadata } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
+import type {
     AuthenticateDeviceResult,
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
-    type EntropyCheckResult,
+    EntropyCheckResult,
     Features,
     KnownDevice,
     PROTO,

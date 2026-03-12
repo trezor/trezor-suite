@@ -14,8 +14,8 @@ import {
     WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { AccountUtxo, Device, Features, FirmwareType, TrezorConnect } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { AccountUtxo, Device, Features, TrezorConnect } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 /**
  * device.firmwareReleaseConfigInfo property
