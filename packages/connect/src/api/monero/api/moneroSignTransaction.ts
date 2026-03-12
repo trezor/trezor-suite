@@ -1,7 +1,11 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { PROTO } from '../../../constants';
-import type { MethodPermission, MethodReturnType, Payload } from '../../../core/AbstractMethod';
+import type {
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
@@ -57,7 +61,7 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         rsig_parts: [],
     };
 
-    constructor(message: { id?: number; payload: Payload<'moneroSignTransaction'> }) {
+    constructor(message: MethodMessage<'moneroSignTransaction'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.firmwareRange = getFirmwareRange(

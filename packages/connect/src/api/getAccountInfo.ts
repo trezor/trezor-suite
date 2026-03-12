@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodPermission, MethodReturnType, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
@@ -22,7 +22,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     hasBundle?: boolean;
     discovery?: Discovery;
 
-    constructor(message: { id?: number; payload: Payload<'getAccountInfo'> }) {
+    constructor(message: MethodMessage<'getAccountInfo'>) {
         super(message);
         this.useDevice = true;
         this.useUi = true;

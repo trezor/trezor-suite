@@ -3,11 +3,11 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
-    constructor(message: { id?: number; payload: Payload<'setBrightness'> }) {
+    constructor(message: MethodMessage<'setBrightness'>) {
         super(message);
         this.skipFinalReload = false;
         this.useDeviceState = false;

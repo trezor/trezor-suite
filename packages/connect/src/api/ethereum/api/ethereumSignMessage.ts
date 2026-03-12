@@ -3,7 +3,7 @@
 import type { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
@@ -21,7 +21,7 @@ type Params = PROTO.EthereumSignMessage & {
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
-    constructor(message: { id?: number; payload: Payload<'ethereumSignMessage'> }) {
+    constructor(message: MethodMessage<'ethereumSignMessage'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

@@ -4,7 +4,7 @@ import { hexToBytes } from '@noble/hashes/utils.js';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { PROTO } from '../../../constants';
-import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import type { MoneroExportedKeyImage, MoneroKeyImageSyncResult } from '../../../types/api/monero';
@@ -31,7 +31,7 @@ type Params = {
 };
 
 export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyImageSync', Params> {
-    constructor(message: { id?: number; payload: Payload<'moneroKeyImageSync'> }) {
+    constructor(message: MethodMessage<'moneroKeyImageSync'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.firmwareRange = getFirmwareRange(

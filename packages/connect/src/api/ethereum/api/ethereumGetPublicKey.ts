@@ -3,7 +3,11 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission, MethodReturnType, Payload } from '../../../core/AbstractMethod';
+import type {
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
@@ -20,7 +24,7 @@ type Params = PROTO.EthereumGetPublicKey & {
 export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'ethereumGetPublicKey'> }) {
+    constructor(message: MethodMessage<'ethereumGetPublicKey'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

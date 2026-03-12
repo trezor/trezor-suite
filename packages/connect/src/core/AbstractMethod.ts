@@ -38,6 +38,11 @@ export type MethodInfo = {
     confirmation?: UiRequestConfirmation['payload'];
 };
 
+export type MethodMessage<Name extends CallMethodPayload['method']> = {
+    id?: number;
+    payload: Payload<Name>;
+};
+
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
     T1B1: { min: '1.0.0', max: '0' },
@@ -160,7 +165,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public initAsync?(): Promise<void>;
 
-    constructor(message: { id?: number; payload: Payload<Name> }) {
+    constructor(message: MethodMessage<Name>) {
         const { payload } = message;
         this.name = payload.method;
         this.payload = payload;
