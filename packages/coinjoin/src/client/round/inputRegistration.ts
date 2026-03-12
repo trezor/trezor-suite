@@ -1,12 +1,12 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
 
-import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import type { Alice } from '../Alice';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
+import type { AliceShape } from '../../types/alice';
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
+import * as coordinator from '../coordinator';
 
 /**
  * RoundPhase: 0, InputRegistration
@@ -19,10 +19,10 @@ import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
  */
 
 const registerInput = async (
-    round: CoinjoinRound,
-    input: Alice,
+    round: CoinjoinRoundShape,
+    input: AliceShape,
     options: CoinjoinRoundOptions,
-): Promise<Alice> => {
+): Promise<AliceShape> => {
     const { logger } = options;
     if (input.error) {
         logger.warn(`Trying to register input with error ${input.error}`);
@@ -189,7 +189,10 @@ const registerInput = async (
     }
 };
 
-export const inputRegistration = async (round: CoinjoinRound, options: CoinjoinRoundOptions) => {
+export const inputRegistration = async (
+    round: CoinjoinRoundShape,
+    options: CoinjoinRoundOptions,
+) => {
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
     options.logger.info(`inputRegistration: ~~${round.id}~~`);

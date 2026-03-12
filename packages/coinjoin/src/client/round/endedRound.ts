@@ -1,8 +1,8 @@
 import { enumUtils, getWeakRandomNumberInRange } from '@trezor/utils';
 
 import { EndRoundState, WabiSabiProtocolErrorCode } from '../../enums';
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { getBroadcastedTxDetails } from '../../utils/roundUtils';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
  * RoundPhase: 4, Ending
@@ -13,7 +13,7 @@ import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
  * - catch transaction broadcasted
  */
 
-export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOptions) => {
+export const ended = (round: CoinjoinRoundShape, { logger, network }: CoinjoinRoundOptions) => {
     const { id, endRoundState, inputs, addresses, prison } = round;
     const endRoundKey = enumUtils.getKeyByValue(EndRoundState, round.endRoundState);
     logger.info(`Ending round ~~${round.id}~~. End state: ${endRoundKey}`);

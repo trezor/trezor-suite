@@ -1,5 +1,5 @@
-import { CoinjoinPrisonInmate } from './client';
-import { AffiliationId } from './coordinator';
+import type { AffiliationId } from './coordinator';
+import type { CoinjoinPrisonInmate } from './prison';
 
 interface BaseSettings {
     network: 'btc' | 'test' | 'regtest';
@@ -26,6 +26,8 @@ export interface CoinjoinClientSettings extends BaseSettings {
 export type { ScanAccountProgress, ScanAccountCheckpoint, ScanProgressInfo } from './backend';
 
 export * from './account';
+export * from './alice';
 export * from './client';
+export * from './prison';
 export * from './round';
 export * from './logger';

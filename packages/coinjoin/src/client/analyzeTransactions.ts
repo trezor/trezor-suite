@@ -1,15 +1,15 @@
 import { arrayPartition } from '@trezor/utils';
 import { Network, address as addressBjs } from '@trezor/utxo-lib';
 
-import type { CoinjoinClient } from './CoinjoinClient';
 import * as middleware from './middleware';
 import { EnhancedVinVout, Transaction } from '../types/backend';
+import { Logger } from '../types/logger';
 import { AnalyzeExternalVinVout, AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;
     middlewareUrl: string;
-    logger: CoinjoinClient['logger'];
+    logger: Logger;
     signal: AbortSignal;
 }
 
