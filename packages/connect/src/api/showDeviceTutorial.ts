@@ -1,6 +1,6 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
@@ -8,7 +8,7 @@ export default class ShowDeviceTutorial extends AbstractMethod<
     'showDeviceTutorial',
     PROTO.ShowDeviceTutorial
 > {
-    constructor(message: { id?: number; payload: Payload<'showDeviceTutorial'> }) {
+    constructor(message: MethodMessage<'showDeviceTutorial'>) {
         super(message);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;

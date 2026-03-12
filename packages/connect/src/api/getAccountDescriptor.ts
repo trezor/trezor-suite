@@ -5,9 +5,9 @@ import { getFirmwareRange } from './common/paramsValidator';
 import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../events';
@@ -28,7 +28,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
     disposed = false;
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'getAccountDescriptor'> }) {
+    constructor(message: MethodMessage<'getAccountDescriptor'>) {
         super(message);
         this.useDevice = true;
         this.useUi = true;

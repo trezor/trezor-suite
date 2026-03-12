@@ -2,7 +2,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import type { MoneroWatchKey } from '../../../types/api/monero';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
@@ -13,7 +13,7 @@ type Params = PROTO.MoneroGetWatchKey & {
 };
 
 export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWatchKey', Params> {
-    constructor(message: { id?: number; payload: Payload<'moneroGetWatchKey'> }) {
+    constructor(message: MethodMessage<'moneroGetWatchKey'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Monero'];
         this.firmwareRange = getFirmwareRange(

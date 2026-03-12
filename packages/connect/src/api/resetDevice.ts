@@ -6,7 +6,7 @@ import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { PROTO } from '../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
@@ -15,7 +15,7 @@ import { calculateXPubHashes } from './firmware/calculateXPubHash';
 type XPubsPerBip43Path = Record<string, string>; // used only internally, not exported
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
-    constructor(message: { id?: number; payload: Payload<'resetDevice'> }) {
+    constructor(message: MethodMessage<'resetDevice'>) {
         super(message);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;

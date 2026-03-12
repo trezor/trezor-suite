@@ -2,7 +2,7 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -18,7 +18,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
     'blockchainGetAccountBalanceHistory',
     Params
 > {
-    constructor(message: { id?: number; payload: Payload<'blockchainGetAccountBalanceHistory'> }) {
+    constructor(message: MethodMessage<'blockchainGetAccountBalanceHistory'>) {
         super(message);
         this.useDevice = false;
         this.useUi = false;

@@ -2,8 +2,8 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import type { Payload as PayloadType } from '../core/AbstractMethod';
+import type { Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -17,7 +17,7 @@ type Params = {
 };
 
 export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubscribe', Params> {
-    constructor(message: { id?: number; payload: PayloadType<'blockchainSubscribe'> }) {
+    constructor(message: MethodMessage<'blockchainSubscribe'>) {
         super(message);
         this.useDevice = false;
         this.useUi = false;

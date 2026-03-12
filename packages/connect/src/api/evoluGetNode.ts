@@ -1,13 +1,13 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.EvoluGetNode> {
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'evoluGetNode'> }) {
+    constructor(message: MethodMessage<'evoluGetNode'>) {
         super(message);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }

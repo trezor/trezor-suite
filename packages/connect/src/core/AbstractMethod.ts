@@ -38,6 +38,11 @@ export type MethodInfo = {
     confirmation?: UiRequestConfirmation['payload'];
 };
 
+export type MethodMessage<Name extends CallMethodPayload['method']> = {
+    id?: number;
+    payload: Payload<Name>;
+} & MethodContext;
+
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
     T1B1: { min: '1.0.0', max: '0' },
