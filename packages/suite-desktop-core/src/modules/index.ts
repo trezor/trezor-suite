@@ -21,6 +21,7 @@ import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
+import * as mcpServer from './mcp-server';
 import * as menu from './menu';
 import * as metadata from './metadata';
 import { Dependencies, ModuleInit, ModuleInitBackground, ModuleLoad, ModuleQuit } from './module';
@@ -71,6 +72,7 @@ const MODULES: Module[] = [
     bluetooth,
     firmware,
     powerMonitor,
+    mcpServer,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp]),
 ];

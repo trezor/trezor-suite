@@ -23,6 +23,7 @@ export class Store {
         traySettings: TraySettings;
         connectSettings: ConnectSettings;
         bioAuthSettings: BioAuthSettings;
+        mcpSettings: McpSettings;
     }>;
 
     private constructor() {
@@ -138,6 +139,20 @@ export class Store {
 
     public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>): Unsubscribe {
         return this.store.onDidChange('bioAuthSettings', callback);
+    }
+
+    public getMcpSettings() {
+        return this.store.get('mcpSettings', {
+            enabled: false,
+            port: 21340,
+        });
+    }
+
+    public setMcpSettings(mcpSettings: Partial<McpSettings>) {
+        this.store.set('mcpSettings', {
+            ...this.getMcpSettings(),
+            ...mcpSettings,
+        });
     }
 
     /** Deletes all items from the store. */
