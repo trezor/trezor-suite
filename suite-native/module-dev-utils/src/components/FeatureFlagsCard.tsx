@@ -19,6 +19,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
     [FeatureFlagEnum.IsEarnEnabled]: 'Earn',
     [FeatureFlagEnum.IsStablecoinYieldEnabled]: 'Stablecoin Yield',
+    [FeatureFlagEnum.IsN4w1BackupEnabled]: 'N4W1 Backup',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

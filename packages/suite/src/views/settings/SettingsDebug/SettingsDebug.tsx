@@ -22,6 +22,7 @@ import { GithubIssue } from './GithubIssue';
 import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
 import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
+import { N4w1Backup } from './N4w1Backup';
 import { OAuthApi } from './OAuthApi';
 import { PlatformEncrypton } from './PlatformEncrypton';
 import { PreField } from './PreField';
@@ -69,6 +70,7 @@ export const SettingsDebug = () => {
                 <Devkit />
                 <CheckFirmwareAuthenticity />
                 <ClearDevicePersistentData />
+                <N4w1Backup />
             </SettingsSection>
             <SettingsSection title="Testing">
                 <ThrowTestingError />

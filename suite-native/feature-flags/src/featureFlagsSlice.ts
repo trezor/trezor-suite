@@ -15,6 +15,7 @@ export const FeatureFlag = {
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsEarnEnabled: 'isEarnEnabled',
     IsStablecoinYieldEnabled: 'isStablecoinYieldEnabled',
+    IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -48,6 +49,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsEarnEnabled]: process.env.EXPO_PUBLIC_FF_IS_EARN_ENABLED === 'true',
     [FeatureFlag.IsStablecoinYieldEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_STABLECOIN_YIELD_DEBUG_ENABLED === 'true',
+    [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -62,6 +64,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsEarnEnabled,
     FeatureFlag.IsStablecoinYieldEnabled,
+    FeatureFlag.IsN4w1BackupEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
