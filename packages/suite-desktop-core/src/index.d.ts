@@ -144,3 +144,8 @@ declare type ConnectSettings = {
 declare type BioAuthSettings = {
     enabled?: boolean;
 };
+
+declare type McpSettings = {
+    enabled: boolean;
+    port: number;
+};
