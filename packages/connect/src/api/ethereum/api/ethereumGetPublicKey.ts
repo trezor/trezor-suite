@@ -5,9 +5,9 @@ import { Assert } from '@trezor/schema-utils';
 
 import {
     AbstractMethod,
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
@@ -24,7 +24,7 @@ type Params = PROTO.EthereumGetPublicKey & {
 export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPublicKey', Params[]> {
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'ethereumGetPublicKey'> }) {
+    constructor(message: MethodMessage<'ethereumGetPublicKey'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

@@ -4,9 +4,9 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
@@ -23,7 +23,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'solanaGetAddress'> }) {
+    constructor(message: MethodMessage<'solanaGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];

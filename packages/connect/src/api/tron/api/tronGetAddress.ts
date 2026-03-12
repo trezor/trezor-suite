@@ -4,9 +4,9 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import {
     AbstractMethod,
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../../../core/AbstractMethod';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
@@ -21,7 +21,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'tronGetAddress'> }) {
+    constructor(message: MethodMessage<'tronGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Tron'];

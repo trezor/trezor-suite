@@ -2,7 +2,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { Address } from '../../../types/params';
 import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
@@ -16,7 +16,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'moneroGetAddress'> }) {
+    constructor(message: MethodMessage<'moneroGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Monero'];

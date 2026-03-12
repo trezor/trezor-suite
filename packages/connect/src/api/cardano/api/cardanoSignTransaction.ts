@@ -8,7 +8,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     type CardanoAuxiliaryDataSupplement,
@@ -77,7 +77,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     'cardanoSignTransaction',
     CardanoSignTransactionParams
 > {
-    constructor(message: { id?: number; payload: Payload<'cardanoSignTransaction'> }) {
+    constructor(message: MethodMessage<'cardanoSignTransaction'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(

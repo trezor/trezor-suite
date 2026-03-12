@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetFeatures.js
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 
 export default class GetFeatures extends AbstractMethod<'getFeatures'> {
-    constructor(message: { id?: number; payload: Payload<'getFeatures'> }) {
+    constructor(message: MethodMessage<'getFeatures'>) {
         super(message);
 
         this.useUi = false;

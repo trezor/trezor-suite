@@ -7,9 +7,9 @@ import { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import {
     AbstractMethod,
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../events';
@@ -27,7 +27,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'getAddress'> }) {
+    constructor(message: MethodMessage<'getAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
     }

@@ -3,7 +3,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { RippleSignTransaction as RippleSignTransactionSchema } from '../../../types/api/ripple';
 import { validatePath } from '../../../utils/pathUtils';
@@ -13,7 +13,7 @@ export default class RippleSignTransaction extends AbstractMethod<
     'rippleSignTransaction',
     PROTO.RippleSignTx
 > {
-    constructor(message: { id?: number; payload: Payload<'rippleSignTransaction'> }) {
+    constructor(message: MethodMessage<'rippleSignTransaction'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(

@@ -3,10 +3,10 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 
 export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.BackupDevice> {
-    constructor(message: { id?: number; payload: Payload<'backupDevice'> }) {
+    constructor(message: MethodMessage<'backupDevice'>) {
         super(message);
         this.skipFinalReload = false;
         this.useDeviceState = false;

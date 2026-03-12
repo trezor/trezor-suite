@@ -12,8 +12,8 @@ import {
 import {
     AbstractMethod,
     DEFAULT_FIRMWARE_RANGE,
+    MethodMessage,
     MethodPermission,
-    Payload,
 } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
@@ -83,7 +83,7 @@ export default class DiscoverAccounts extends AbstractMethod<
 > {
     disposed = false;
 
-    constructor(message: { id?: number; payload: Payload<'discoverAccounts'> }) {
+    constructor(message: MethodMessage<'discoverAccounts'>) {
         super(message);
         this.useDevice = true;
         this.useDeviceState = true;
