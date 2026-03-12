@@ -2950,6 +2950,11 @@ export const messages = defineMessages({
         defaultMessage: 'Perform a simulated recovery to verify your wallet backup.',
         id: 'TR_CHECK_RECOVERY_SEED_DESCRIPTION',
     },
+    TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT: {
+        id: 'TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT',
+        defaultMessage:
+            "Biometrics is not currently available on this device. Try restarting your device or opening Trezor Suite on the primary device display. If these steps don't help, reinstall the application and reconnect your Trezor devices.",
+    },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
             'Both methods are secure. Choose advanced recovery if you prefer entering your wallet backup on your Trezor’s screen.',
