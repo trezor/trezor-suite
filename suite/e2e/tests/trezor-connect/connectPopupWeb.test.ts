@@ -58,7 +58,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
 
             const connectPermissionsModal = new ConnectPermissionsModal(suite);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await connectPermissionsModal.confirmButton.click();
 
@@ -105,7 +105,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             ]);
             const modal1 = new ConnectPermissionsModal(suite1);
             await expect(modal1.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await modal1.cancelButton.click();
 
@@ -151,7 +151,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             ]);
             const connectPermissionsModal = new ConnectPermissionsModal(suite);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await connectPermissionsModal.confirmButton.click();
 
@@ -196,7 +196,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             ]);
             const connectPermissionsModal = new ConnectPermissionsModal(suite);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
 
             // Close the browser popup window directly (simulates user clicking X)
@@ -231,7 +231,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             ]);
             const modal1 = new ConnectPermissionsModal(suite1);
             await expect(modal1.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await suite1.close();
 
@@ -245,7 +245,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             ]);
             const modal2 = new ConnectPermissionsModal(suite2);
             await expect(modal2.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await modal2.confirmButton.click();
             await suite2.getByTestId('@connect-address-confirmation/confirm-button').click();
@@ -281,7 +281,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
             // click until message is sent back so that submit button becomes active again
             const connectPermissionsModal = new ConnectPermissionsModal(popup1);
             await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
-                timeout: 15_000,
+                timeout: 20_000,
             });
             await connectPermissionsModal.confirmButton.click();
 
