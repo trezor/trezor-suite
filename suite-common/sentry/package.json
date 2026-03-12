@@ -10,6 +10,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@sentry/core": "10.38.0"
+        "@sentry/core": "10.40.0"
     }
 }

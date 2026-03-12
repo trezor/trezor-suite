@@ -12,7 +12,7 @@
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc"
     },
     "dependencies": {
-        "@sentry/electron": "^7.7.1",
+        "@sentry/electron": "^7.8.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/intl": "workspace:*",

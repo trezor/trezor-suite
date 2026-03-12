@@ -46,7 +46,7 @@
     "devDependencies": {
         "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
-        "@sentry/webpack-plugin": "^4.8.0",
+        "@sentry/webpack-plugin": "^5.1.1",
         "@trezor/eslint": "workspace:*",
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.7",
