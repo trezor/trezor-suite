@@ -28,7 +28,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "ajv": "^8.17.1",
+        "ajv": "^8.18.0",
         "jws": "^4.0.1",
         "toml": "^3.0.0"
     }
