@@ -1,7 +1,7 @@
 import { CardanoPoolStats, EthereumPoolStats, SolanaStakingInfo } from '@suite-common/wallet-api';
 import { Timestamp } from '@suite-common/wallet-types';
 
-import type { StakeState } from '../stakeReducer';
+import type { StakeState } from '../stakeReducerTypes';
 
 export const fetchEverstakeDataPending: {
     description: string;

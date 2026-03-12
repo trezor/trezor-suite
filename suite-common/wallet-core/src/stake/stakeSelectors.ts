@@ -1,14 +1,14 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_APY_MIN_THRESHOLD } from '@suite-common/wallet-constants';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
 
-import { VotingDelegationOption } from './stakeActions';
-import { StakeRootState } from './stakeReducer';
+import type { VotingDelegationOption } from './stakeActions';
+import type { StakeRootState } from './stakeReducerTypes';
 
 export const selectEverstakeData = (
     state: StakeRootState,
