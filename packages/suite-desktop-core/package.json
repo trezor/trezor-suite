@@ -19,6 +19,8 @@
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/connect": "workspace:*",
