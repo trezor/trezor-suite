@@ -7,29 +7,32 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import { type CombinedLabelingState, selectAccountLabel } from '../selectors';
 
-type AccountLabelProps = {
-    deviceStaticSessionId: StaticSessionId;
-    accountDescriptor: AccountDescriptor;
-    networkSymbol: NetworkSymbol;
+type AccountLabelStyleProps = {
     color?: TextProps['color'];
+    variant?: TextProps['variant'];
 };
 
-type AccountLabelPropsWithAccount =
-    | AccountLabelProps
-    | { account: Account; color?: TextProps['color'] };
+type AccountLabelProps =
+    | ({ account: Account } & AccountLabelStyleProps)
+    | ({
+          deviceStaticSessionId: StaticSessionId;
+          accountDescriptor: AccountDescriptor;
+          networkSymbol: NetworkSymbol;
+      } & AccountLabelStyleProps);
 
-const normalizeProps = (props: AccountLabelPropsWithAccount): AccountLabelProps =>
+const normalizeProps = (props: AccountLabelProps) =>
     'account' in props
         ? {
               deviceStaticSessionId: props.account.deviceState,
               networkSymbol: props.account.symbol,
               accountDescriptor: props.account.descriptor,
               color: props.color,
+              variant: props.variant,
           }
         : props;
 
-export const AccountLabel = (props: AccountLabelPropsWithAccount) => {
-    const { accountDescriptor, deviceStaticSessionId, networkSymbol, color } =
+export const AccountLabel = (props: AccountLabelProps) => {
+    const { accountDescriptor, deviceStaticSessionId, networkSymbol, color, variant } =
         normalizeProps(props);
 
     // This selector already handles the Suite Sync Feature & Legacy Label fallback
@@ -37,5 +40,9 @@ export const AccountLabel = (props: AccountLabelPropsWithAccount) => {
         selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, networkSymbol),
     );
 
-    return accountLabel ? <Text color={color}>{accountLabel}</Text> : null;
+    return accountLabel ? (
+        <Text color={color} variant={variant}>
+            {accountLabel}
+        </Text>
+    ) : null;
 };

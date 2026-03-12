@@ -32,7 +32,7 @@ export const StakingManagementScreenHeader = () => {
     return (
         <ScreenHeader
             customContent={
-                <HStack style={applyStyle(headerStyle)}>
+                <HStack spacing="sp12" style={applyStyle(headerStyle)}>
                     <CryptoIcon symbol={networkSymbol} size="small" />
                     <Box style={applyStyle(textColumnStyle)}>
                         <Text variant="body-md-strong" ellipsizeMode="tail" numberOfLines={1}>
@@ -44,6 +44,7 @@ export const StakingManagementScreenHeader = () => {
                                 networkSymbol={networkSymbol}
                                 deviceStaticSessionId={deviceStaticSessionId}
                                 color="textSubdued"
+                                variant="body-sm"
                             />
                         </Text>
                     </Box>

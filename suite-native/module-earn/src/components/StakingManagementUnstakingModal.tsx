@@ -1,6 +1,7 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     BottomSheetModalRef,
@@ -20,9 +21,10 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { StakingDetailModalStep } from '../types';
-import { getStakingModalStepStatus } from '../utils';
-import { StakingManagementModalStepIndicator } from './StakingManagementModalStepIndicator';
+import {
+    StakingDetailModalStep,
+    StakingManagementModalStepIndicator,
+} from './StakingManagementModalStepIndicator';
 
 type StakingManagementUnstakingModalProps = {
     ref: BottomSheetModalRef;
@@ -60,24 +62,11 @@ export const StakingManagementUnstakingModal = ({
     );
 
     const currentStep: StakingDetailModalStep = (() => {
-        if (parseFloat(claimableAmount) > 0) return StakingDetailModalStep.Completed;
-        if (parseFloat(unstakingBalance) > 0) return StakingDetailModalStep.InProgress;
+        if (isPositiveBalance(claimableAmount)) return StakingDetailModalStep.Completed;
+        if (isPositiveBalance(unstakingBalance)) return StakingDetailModalStep.InProgress;
 
         return StakingDetailModalStep.TransactionConfirmed;
     })();
-
-    const transactionConfirmedStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.TransactionConfirmed,
-        currentStep,
-    );
-    const inProgressStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.InProgress,
-        currentStep,
-    );
-    const completedStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.Completed,
-        currentStep,
-    );
 
     const inProgressLabel = (
         <Translation
@@ -114,21 +103,24 @@ export const StakingManagementUnstakingModal = ({
                             color="textDefault"
                             variant="body-sm"
                         />
-                        <CryptoToFiatAmountFormatter
-                            value={unstakingBalance}
-                            symbol={symbol}
-                            color="textSubdued"
-                            variant="body-sm"
-                            isBalance
-                        />
+                        <HStack spacing="sp2">
+                            <Text color="textSubdued" variant="body-sm">
+                                ≈
+                            </Text>
+                            <CryptoToFiatAmountFormatter
+                                value={unstakingBalance}
+                                symbol={symbol}
+                                color="textSubdued"
+                                variant="body-sm"
+                                isBalance
+                            />
+                        </HStack>
                     </VStack>
                 )}
             </HStack>
 
             <StakingManagementModalStepIndicator
-                transactionConfirmedStatus={transactionConfirmedStatus}
-                inProgressStatus={inProgressStatus}
-                completedStatus={completedStatus}
+                currentStep={currentStep}
                 inProgressLabel={inProgressLabel}
                 completedLabel={completedLabel}
             />

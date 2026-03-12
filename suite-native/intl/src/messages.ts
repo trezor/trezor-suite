@@ -2376,6 +2376,27 @@ export const messages = {
             unstakeButton: 'Unstake',
             stakeMoreButton: 'Stake more',
             stakingHistory: 'Staking history',
+            pendingActions: 'Pending actions',
+            claim: {
+                readyToClaim: '{amount} unstaked, ready to be claimed',
+                claimButton: 'Claim',
+            },
+            unstakingItem: {
+                label: 'Unstaking (~{days} days)',
+                modalTitle: 'Unstaking',
+            },
+            pendingStakesItem: {
+                label: 'Pending stakes',
+                modalTitle: 'Pending stake',
+            },
+            pendingItemModal: {
+                gotIt: 'Got it',
+                stepTransactionConfirmed: 'Transaction confirmed',
+                stepEntryPeriod: 'Entry period (~{days} days)',
+                stepStakedReceivingRewards: 'Staked & receiving rewards',
+                stepWithdrawalPeriod: 'Withdrawal period (~{days} days)',
+                stepReadyToClaim: 'Ready to claim',
+            },
         },
         earnScreen: {
             title: 'Earn',

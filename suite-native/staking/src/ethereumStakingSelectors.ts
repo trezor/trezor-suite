@@ -103,3 +103,21 @@ export const selectEthereumCanClaimByAccountKey = (
 
     return stakingPool?.canClaim ?? false;
 };
+
+export const selectEthereumUnstakingBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
+
+    return stakingPool?.withdrawTotalAmount ?? '0';
+};
+
+export const selectEthereumPendingDepositedBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
+
+    return stakingPool?.pendingDepositedBalance ?? '0';
+};

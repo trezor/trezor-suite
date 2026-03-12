@@ -1,5 +1,4 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -52,7 +51,6 @@ export const StakingManagementReadyToClaimCard = ({
                             id="earn.stakingManagementScreen.claim.readyToClaim"
                             values={{
                                 amount: formattedAmount,
-                                symbol: getNetworkDisplaySymbol(symbol),
                             }}
                         />
                     </Text>

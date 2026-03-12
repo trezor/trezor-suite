@@ -21,19 +21,16 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { StakingDetailModalStep } from '../types';
-import { getStakingModalStepStatus } from '../utils';
-import { StakingManagementModalStepIndicator } from './StakingManagementModalStepIndicator';
+import {
+    StakingDetailModalStep,
+    StakingManagementModalStepIndicator,
+} from './StakingManagementModalStepIndicator';
 
 type StakingManagementPendingStakeModalProps = {
     ref: BottomSheetModalRef;
     accountKey: AccountKey;
     onClose: () => void;
 };
-
-const elementStyle = prepareNativeStyle(utils => ({
-    marginVertical: utils.spacings.sp8,
-}));
 
 const gotItButtonStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp24,
@@ -74,19 +71,6 @@ export const StakingManagementPendingStakeModal = ({
         return StakingDetailModalStep.Completed;
     })();
 
-    const transactionConfirmedStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.TransactionConfirmed,
-        currentStep,
-    );
-    const inProgressStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.InProgress,
-        currentStep,
-    );
-    const completedStatus = getStakingModalStepStatus(
-        StakingDetailModalStep.Completed,
-        currentStep,
-    );
-
     const inProgressLabel = (
         <Translation
             id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
@@ -103,11 +87,7 @@ export const StakingManagementPendingStakeModal = ({
             ref={ref}
             bottomSheetCustomProps={{ backgroundStyle: applyStyle(backgroundStyle) }}
         >
-            <HStack
-                justifyContent="space-between"
-                alignItems="center"
-                style={applyStyle(elementStyle)}
-            >
+            <HStack justifyContent="space-between" alignItems="center" marginVertical="sp8">
                 <Text variant="headline-sm">
                     <Translation id="earn.stakingManagementScreen.pendingStakesItem.modalTitle" />
                 </Text>
@@ -120,21 +100,24 @@ export const StakingManagementPendingStakeModal = ({
                             color="textDefault"
                             variant="body-sm"
                         />
-                        <CryptoToFiatAmountFormatter
-                            value={pendingDepositedBalance}
-                            symbol={symbol}
-                            color="textSubdued"
-                            variant="body-sm"
-                            isBalance
-                        />
+                        <HStack spacing="sp2">
+                            <Text color="textSubdued" variant="body-sm">
+                                ≈
+                            </Text>
+                            <CryptoToFiatAmountFormatter
+                                value={pendingDepositedBalance}
+                                symbol={symbol}
+                                color="textSubdued"
+                                variant="body-sm"
+                                isBalance
+                            />
+                        </HStack>
                     </VStack>
                 )}
             </HStack>
 
             <StakingManagementModalStepIndicator
-                transactionConfirmedStatus={transactionConfirmedStatus}
-                inProgressStatus={inProgressStatus}
-                completedStatus={completedStatus}
+                currentStep={currentStep}
                 inProgressLabel={inProgressLabel}
                 completedLabel={completedLabel}
             />
