@@ -57,7 +57,10 @@ const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
-            partialState: { device: { devices }, wallet: { accounts, coinjoin } },
+            partialState: {
+                ...(devices !== undefined ? { device: { devices } } : {}),
+                wallet: { accounts, coinjoin },
+            },
         }),
     });
 
