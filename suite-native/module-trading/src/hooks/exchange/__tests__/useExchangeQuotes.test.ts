@@ -7,13 +7,8 @@ import {
 } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     ethAsset,

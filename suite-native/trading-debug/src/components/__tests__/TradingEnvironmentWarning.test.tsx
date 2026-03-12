@@ -1,4 +1,4 @@
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { TradingState } from '@suite-native/trading-types';
 

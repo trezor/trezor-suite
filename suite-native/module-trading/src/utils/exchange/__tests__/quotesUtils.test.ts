@@ -4,7 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     ethAsset,

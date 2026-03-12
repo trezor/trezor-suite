@@ -1,11 +1,7 @@
 import { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProvider, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';

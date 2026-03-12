@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,

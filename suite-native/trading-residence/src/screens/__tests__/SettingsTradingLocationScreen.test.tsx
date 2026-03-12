@@ -3,7 +3,8 @@ import { RouteProp } from '@react-navigation/native';
 import { events } from '@suite-native/analytics';
 import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
+import { screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 

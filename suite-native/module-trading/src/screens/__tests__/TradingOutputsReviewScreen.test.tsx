@@ -6,7 +6,7 @@ import type {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import {

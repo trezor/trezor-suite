@@ -2,13 +2,8 @@ import type { CryptoId } from 'invity-api';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
-import {
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     getBtcAccount,
     getEthAccount,

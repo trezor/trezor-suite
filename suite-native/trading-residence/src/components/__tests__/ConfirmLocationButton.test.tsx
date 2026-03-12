@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
 import { useFormContext } from '@suite-native/forms';
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingLocationFormValues } from '../../types/tradingLocationForm';

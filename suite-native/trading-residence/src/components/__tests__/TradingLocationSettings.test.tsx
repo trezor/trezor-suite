@@ -1,5 +1,6 @@
 import { Text } from '@suite-native/atoms';
-import { TestStore, initStore, renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { TradingLocationSettings, TradingLocationSettingsProps } from '../TradingLocationSettings';
 

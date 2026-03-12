@@ -1,13 +1,8 @@
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from '../Header';

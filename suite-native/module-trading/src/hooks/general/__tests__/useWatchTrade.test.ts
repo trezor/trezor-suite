@@ -2,11 +2,7 @@ import React from 'react';
 
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useWatchTrade } from '../useWatchTrade';

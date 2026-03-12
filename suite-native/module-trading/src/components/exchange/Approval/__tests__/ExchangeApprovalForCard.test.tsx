@@ -1,5 +1,5 @@
 import { AccountKey } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalForCard } from '../ExchangeApprovalForCard';

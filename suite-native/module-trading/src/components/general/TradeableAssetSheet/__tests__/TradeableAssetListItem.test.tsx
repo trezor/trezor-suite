@@ -1,4 +1,5 @@
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
 import { TradeableAssetListItem, TradeableAssetListItemProps } from '../TradeableAssetListItem';

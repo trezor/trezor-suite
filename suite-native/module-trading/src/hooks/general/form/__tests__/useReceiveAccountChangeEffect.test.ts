@@ -1,11 +1,7 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
 

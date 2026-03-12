@@ -24,14 +24,20 @@ This skill enforces Test-Driven Development (TDD) practices for suite-native pac
 
 - **REQUIRED**: Use `@suite-native/test-utils` for all suite-native testing.
 - **NEVER** import directly from `@testing-library/react-native`.
-- The test-utils package provides all necessary utilities and proper test setup.
+- The test-utils package has two entry points:
+    - `@suite-native/test-utils` — basic providers, render helpers (`renderWithBasicProvider`,
+      `renderHookWithBasicProvider`), and re-exports from `@testing-library/react-native`.
+    - `@suite-native/test-utils/store` — store-related utilities (`initStore`, `renderWithStoreProvider`,
+      `renderHookWithStoreProvider`, `PreloadedState`, `TestStore`). Only import from here when the
+      test actually needs a Redux store; this avoids loading `@suite-native/state` in tests that don't
+      need it.
 
 ## Checklist
 
 Before submitting code, ensure:
 
 - [ ] Tests were written BEFORE implementation
-- [ ] Using `@suite-native/test-utils` (not direct `@testing-library/react-native`)
+- [ ] Using `@suite-native/test-utils` or `@suite-native/test-utils/store` (not direct `@testing-library/react-native`)
 - [ ] Correct render function used (renderWithStoreProvider, renderWithBasicProvider, render)
 - [ ] Translation IDs used instead of literal strings
 - [ ] Fixtures are properly typed

@@ -1,11 +1,7 @@
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
 

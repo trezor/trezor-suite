@@ -1,4 +1,5 @@
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { ProviderSheetHandle, ProviderSheetHandleProps } from '../ProviderSheetHandle';
 

@@ -1,9 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 

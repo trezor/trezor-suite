@@ -1,4 +1,5 @@
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { useWaitForButtonRequest } from '../useWaitForButtonRequest';
 

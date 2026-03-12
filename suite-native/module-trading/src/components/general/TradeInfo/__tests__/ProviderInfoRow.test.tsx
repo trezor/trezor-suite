@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { ProviderInfoRow, ProviderInfoRowProps } from '../ProviderInfoRow';

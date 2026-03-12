@@ -2,12 +2,8 @@ import type { CryptoId } from 'invity-api';
 
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import {
-    type FullAppState,
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type FullAppState, type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     createMockRate,

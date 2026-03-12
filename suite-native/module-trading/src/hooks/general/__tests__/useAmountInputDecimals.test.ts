@@ -1,5 +1,5 @@
 import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { TokensRootState } from '@suite-native/tokens';
 
 import { useAmountInputDecimals } from '../useAmountInputDecimals';

@@ -1,7 +1,7 @@
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';

@@ -1,12 +1,7 @@
 import { useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { act, fireEvent, screen } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';

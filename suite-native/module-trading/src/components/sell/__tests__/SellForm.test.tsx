@@ -1,13 +1,8 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { act, screen } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     getBtcAccount,

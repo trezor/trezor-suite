@@ -1,5 +1,5 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { TradingStackNavigator } from '../TradingStackNavigator';
 

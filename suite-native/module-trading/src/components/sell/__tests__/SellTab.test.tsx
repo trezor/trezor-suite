@@ -1,5 +1,6 @@
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, act, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { SellTab } from '../SellTab';
 

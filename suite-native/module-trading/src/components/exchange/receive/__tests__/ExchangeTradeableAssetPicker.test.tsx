@@ -1,12 +1,8 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 
 import { Form } from '@suite-native/forms';
-import {
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+import { initStore, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';

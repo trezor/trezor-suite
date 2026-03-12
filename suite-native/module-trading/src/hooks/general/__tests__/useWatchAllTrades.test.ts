@@ -1,9 +1,4 @@
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,

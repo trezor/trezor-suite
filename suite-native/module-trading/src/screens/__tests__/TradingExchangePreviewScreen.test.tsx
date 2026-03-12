@@ -6,14 +6,8 @@ import { events } from '@suite-native/analytics';
 import { getTranslation } from '@suite-native/intl';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-    waitFor,
-} from '@suite-native/test-utils';
+import { userEvent, waitFor } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
 import {

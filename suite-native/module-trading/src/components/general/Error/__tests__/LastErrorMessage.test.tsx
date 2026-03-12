@@ -1,5 +1,5 @@
 import { tradingBuyActions } from '@suite-common/trading';
-import { TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { LastErrorMessage, LastErrorMessageProps } from '../LastErrorMessage';
 

@@ -1,11 +1,6 @@
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-    within,
-} from '@suite-native/test-utils';
+import { userEvent, within } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { LimitPicker } from '../LimitPicker';

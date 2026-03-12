@@ -3,7 +3,8 @@ import React from 'react';
 import { TradingExchangeType, TradingSellType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { FeePickerCard } from '../FeePickerCard';
 

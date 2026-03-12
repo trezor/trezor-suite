@@ -1,11 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { act, userEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

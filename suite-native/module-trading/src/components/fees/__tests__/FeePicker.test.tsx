@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { FEE_PICKER_TEST_ID, FeePicker } from '../FeePicker';
 

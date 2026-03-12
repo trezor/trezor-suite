@@ -1,5 +1,5 @@
 import { AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { ReviewSummaryOutput, StatefulReviewOutput } from '../../../types';

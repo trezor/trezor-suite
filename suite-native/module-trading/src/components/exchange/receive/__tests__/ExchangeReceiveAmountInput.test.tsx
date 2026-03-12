@@ -1,11 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act, fireEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     exchangeQuotes,
     getInitializedTradingState,

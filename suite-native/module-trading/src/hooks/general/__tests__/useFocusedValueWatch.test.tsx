@@ -1,10 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { BuyFormType } from '@suite-native/trading-types';
 

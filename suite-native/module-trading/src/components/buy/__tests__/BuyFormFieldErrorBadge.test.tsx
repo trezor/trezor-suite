@@ -2,12 +2,8 @@ import type { CryptoId } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProvider, renderWithStoreProvider } from '@suite-native/test-utils/store';
 import { btcAsset, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

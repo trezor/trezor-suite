@@ -1,12 +1,7 @@
 import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useExchangeData } from '../useExchangeData';

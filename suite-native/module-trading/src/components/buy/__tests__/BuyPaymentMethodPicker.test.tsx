@@ -4,15 +4,8 @@ import { tradingBuyActions } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    act,
-    fireEvent,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { act, fireEvent, screen } from '@suite-native/test-utils';
+import { type PreloadedState, initStore, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { buyQuotes, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 

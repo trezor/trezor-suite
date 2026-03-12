@@ -1,10 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { act, screen } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     exchangeQuotes,

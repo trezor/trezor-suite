@@ -1,6 +1,7 @@
 import { TradingTradeType, TradingType } from '@suite-common/trading';
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { buyQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ProviderSheet, ProviderSheetProps } from '../ProviderSheet';

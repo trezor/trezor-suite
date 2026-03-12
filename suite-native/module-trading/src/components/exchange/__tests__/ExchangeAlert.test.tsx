@@ -1,9 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
+import { act, renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';

@@ -1,10 +1,5 @@
 import { SupportedLocaleCode } from '@suite-native/intl';
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { AmountUnit } from '@trezor/protobuf/src/messages';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';

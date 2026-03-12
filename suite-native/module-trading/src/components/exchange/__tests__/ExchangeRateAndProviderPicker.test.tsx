@@ -1,14 +1,8 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import { act, screen, userEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 

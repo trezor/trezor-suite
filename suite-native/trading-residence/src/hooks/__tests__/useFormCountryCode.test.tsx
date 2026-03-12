@@ -1,10 +1,7 @@
 import { TradingCountryCode } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithBasicProvider,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { TradingLocationFormType } from '../../types/tradingLocationForm';
 import { useFormCountryCode } from '../useFormCountryCode';

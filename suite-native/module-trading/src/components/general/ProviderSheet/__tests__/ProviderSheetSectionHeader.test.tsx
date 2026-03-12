@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { QuotesCategory } from '@suite-native/trading-types';
 
 import {

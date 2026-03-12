@@ -2,11 +2,7 @@ import React from 'react';
 
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     getBtcAccount,
     getEthAccount,

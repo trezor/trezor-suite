@@ -1,4 +1,4 @@
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 
 import { useDelayedReviewOutputListDisplayFlag } from '../useDelayedReviewOutputListDisplayFlag';
 

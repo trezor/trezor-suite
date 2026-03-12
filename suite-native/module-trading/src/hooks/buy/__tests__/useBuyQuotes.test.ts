@@ -1,12 +1,7 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     bnbAsset,
     buyQuotes,

@@ -1,4 +1,5 @@
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,

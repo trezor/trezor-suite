@@ -2,12 +2,8 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useSellFlow } from '../useSellFlow';

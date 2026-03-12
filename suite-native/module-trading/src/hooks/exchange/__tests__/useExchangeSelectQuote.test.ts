@@ -4,13 +4,8 @@ import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/tr
 import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     exchangeQuotes,

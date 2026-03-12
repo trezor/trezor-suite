@@ -4,16 +4,8 @@ import { tradingSellActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHook,
-    renderHookWithStoreProvider,
-    screen,
-    waitFor,
-} from '@suite-native/test-utils';
+import { act, renderHook, screen, waitFor } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     getBtcAccount,

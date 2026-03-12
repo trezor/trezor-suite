@@ -4,13 +4,8 @@ import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-co
 import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     btcAsset,
     exchangeCexdirect,

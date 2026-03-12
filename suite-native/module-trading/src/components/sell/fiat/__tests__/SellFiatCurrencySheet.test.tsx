@@ -1,4 +1,5 @@
-import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { screen } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellFiatCurrencySheet } from '../SellFiatCurrencySheet';

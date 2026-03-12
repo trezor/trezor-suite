@@ -1,12 +1,7 @@
 import { tradingActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+import { waitFor } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useEvmApprovalFees } from '../useEvmApprovalFees';

@@ -1,6 +1,6 @@
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import {
     accounts,
     btc1NormalAccount,

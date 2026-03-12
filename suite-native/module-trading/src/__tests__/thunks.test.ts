@@ -6,7 +6,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { AccountKey, TokenAddress, TokenInfoBranded } from '@suite-common/wallet-types';
-import { type PreloadedState, TestStore, initStore } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils/store';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 

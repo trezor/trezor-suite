@@ -5,6 +5,16 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "exports": {
+        ".": {
+            "types": "./src/index.tsx",
+            "default": "./src/index"
+        },
+        "./store": {
+            "types": "./src/store.ts",
+            "default": "./src/store"
+        }
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
@@ -19,6 +29,7 @@
         "@suite-native/formatters-config": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/state": "workspace:*",
         "@testing-library/react-native": "13.3.3",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

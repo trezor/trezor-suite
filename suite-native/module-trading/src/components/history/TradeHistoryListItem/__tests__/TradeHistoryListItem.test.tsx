@@ -1,5 +1,5 @@
 import { TradingTransaction } from '@suite-common/trading';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradeHistoryListItem } from '../TradeHistoryListItem';

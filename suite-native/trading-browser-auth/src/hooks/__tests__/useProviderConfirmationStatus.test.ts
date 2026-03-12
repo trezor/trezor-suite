@@ -1,5 +1,6 @@
 import { sendFormActions } from '@suite-common/wallet-core';
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 import {
     selectTradingProviderConfirmationStatus,
     tradingActions,

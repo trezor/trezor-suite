@@ -55,7 +55,7 @@ export const localRulesConfig = [
                 'error',
                 {
                     packageScopes: ['@suite-native', '@suite', '@suite-common', '@trezor'],
-                    ignoredPackages: publishableTrezorPackages,
+                    ignoredPackages: publishableTrezorPackages.concat('@suite-native/test-utils'),
                 },
             ],
             'local-rules/analytics-event-name': 'error',

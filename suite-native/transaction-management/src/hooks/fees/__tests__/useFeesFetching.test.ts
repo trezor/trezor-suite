@@ -1,11 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FeesStatus } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesFetching } from '../useFeesFetching';

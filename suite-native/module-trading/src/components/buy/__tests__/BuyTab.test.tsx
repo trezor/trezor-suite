@@ -1,10 +1,5 @@
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import { act, screen, userEvent } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
 import { BuyTab } from '../BuyTab';

@@ -1,11 +1,7 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton, ApprovalButtonProps } from '../ApprovalButton';

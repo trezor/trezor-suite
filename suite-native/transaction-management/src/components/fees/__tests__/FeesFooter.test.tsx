@@ -2,7 +2,8 @@ import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
-import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils/store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesFooter } from '../FeesFooter';

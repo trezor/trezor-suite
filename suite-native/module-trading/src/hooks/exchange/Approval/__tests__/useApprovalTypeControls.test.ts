@@ -1,12 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite-common/trading';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils/store';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useApprovalTypeControls } from '../useApprovalTypeControls';
