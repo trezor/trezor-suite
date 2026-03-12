@@ -77,7 +77,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
             await page.getByTestId('@wallet/menu/wallet-receive').click();
             await page.getByTestId('@wallet/receive/reveal-address-button').click();
-            await page.pause();
+
             await expect(page.getByTestId('@modal/header-paragraph')).toHaveText(
                 expectedAccount.label,
             );
@@ -102,7 +102,6 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await dashboardPage.deviceSwitchingCloseButton.click();
             // TODO: we want to add this to different test - probably multi-wallet test, its a bug but will take some time to fix because its not prio
             // await expect(page.getByTestId('@deviceStatus-connected')).toHaveText(expectedWallet.label);
-            await page.pause();
         });
 
         // TODO: we want to expand this section to also verify every possible place (receive modal, tx history, coin control, buy sell swap) where wallet label is displayed, same thing with outpul labels as well.
@@ -119,7 +118,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 .toHaveText(expectedAddress.label);
         });
         // TODO: we need to move this test to a wallet with funds for coinjoin address verification
-
+        await page.pause();
         await page.getByTestId('@wallet/receive/reveal-address-button/1').click();
         await expect(
             page.getByTestId('@modal/output-address').getByTestId('@metadata/input'),
@@ -144,7 +143,12 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
             'Evolu write BTC account',
         );
-        await page.getByText('Evolu write BTC account0 BTC$').click();
+        await page.getByTestId('@trading/selected-receive-account').click();
+        await page
+            .getByTestId('@trading/receive-account-modal/option/suite')
+            .getByText('Evolu write BTC account')
+            .click();
+        // we are asserting address instead of label because its not implemented yet
         await expect(page.getByTestId('@trading/bitcoin-receive-address-modal')).toContainText(
             'bc1q kkr2 ... qfxy fa',
         );
