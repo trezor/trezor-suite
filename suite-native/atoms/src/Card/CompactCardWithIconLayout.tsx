@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -13,6 +12,7 @@ import { Loader } from '../Loader';
 import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
+import { useTapGesture } from '../useTapGesture';
 import { AnimatedCard, CardProps } from './Card';
 
 export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
@@ -79,33 +79,13 @@ export const CompactCardWithIconLayout = ({
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
-    const isPressed = useSharedValue(false);
     const { caretColor, iconColor, titleColor, subtitleColor, iconWrapperBackgroundColor } =
         cardVariantToColorsMap[variant];
 
-    const tap = Gesture.Tap()
-        .maxDuration(5000)
-        .onBegin(() => {
-            isPressed.value = true;
-        })
-        .onFinalize(() => {
-            isPressed.value = false;
-        })
-        .onTouchesCancelled(() => {
-            isPressed.value = false;
-        })
-        .onEnd(() => {
-            if (onPress) {
-                runOnJS(onPress)();
-            }
-        });
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        opacity: withTiming(isPressed.value ? 0.5 : 1, { duration: 100 }),
-    }));
+    const { tapGesture, animatedStyle } = useTapGesture(onPress);
 
     return (
-        <GestureDetector gesture={tap}>
+        <GestureDetector gesture={tapGesture}>
             <View collapsable={false} testID={testID}>
                 <AnimatedCard
                     noPadding
