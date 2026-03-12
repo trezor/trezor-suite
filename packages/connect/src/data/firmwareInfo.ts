@@ -236,7 +236,10 @@ export const getReleaseByVersion = async (
     const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
 
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(releaseName)) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        firmwareList.includes(releaseName)
+    ) {
         const localReleasePath = `${firmwareDir}${releaseName}`;
         const localReleaseBuffer = await httpRequest(localReleasePath, 'json');
 
@@ -694,7 +697,10 @@ export const getFirmwareLocation = ({
     }
 
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(firmwareName)) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        firmwareList.includes(firmwareName)
+    ) {
         return {
             baseUrl: firmwareDir,
             path: firmwareName,
