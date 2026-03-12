@@ -96,7 +96,7 @@ jobs:
       - name: Generate GitHub App token
         if: steps.check_crx.outputs.new_crx == 'true' || steps.check_arm.outputs.new_arm == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}

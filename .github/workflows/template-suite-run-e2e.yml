@@ -87,7 +87,7 @@ jobs:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.trezor-bot-app-id }}
           private-key: ${{ secrets.trezor-bot-private-key }}
