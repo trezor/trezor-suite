@@ -7,7 +7,8 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "generate-package": "tsx generatePackage.ts"
+        "generate-package": "tsx generatePackage.ts",
+        "analyze-issues": "tsx analyze-issues.ts"
     },
     "devDependencies": {
         "@babel/cli": "7.28.6",
