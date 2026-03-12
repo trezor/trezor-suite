@@ -1,1 +1,1 @@
-../../../skills/naming.md
+../../../skills/naming/SKILL.md

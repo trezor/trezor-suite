@@ -148,4 +148,5 @@ declare type BioAuthSettings = {
 declare type McpSettings = {
     enabled: boolean;
     port: number;
+    token?: string;
 };

@@ -9,13 +9,16 @@
 import * as crypto from 'crypto';
 import * as http from 'http';
 
+import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { addMessage } from '../libs/connect-popup-messages';
+import { getProcessIcon } from '../libs/process-icon';
 import { ipcMain } from '../typed-electron';
-import { ModuleInit } from './module';
+import { type ModuleInit } from './module';
 
 export const SERVICE_NAME = 'mcp-server';
 
@@ -30,6 +33,8 @@ const MCP_MANIFEST = {
 // Incrementing message ID counter, prefixed to avoid collisions with connect-ws
 let messageIdCounter = 0;
 const nextMessageId = () => `mcp-${++messageIdCounter}`;
+
+const generateToken = () => crypto.randomBytes(32).toString('hex');
 
 const getNetworkTypeForCoin = (coin: string) => getNetworkOptional(coin.toLowerCase())?.networkType;
 const isEvmCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'ethereum';
@@ -95,12 +100,13 @@ const MCP_TOOLS = [
             destructiveHint: false,
         },
         toConnectCall: (params: { coin: string; path: string; showOnTrezor?: boolean }) => {
-            const isEthereum = isEvmCoin(params.coin);
+            const coin = params.coin.toLowerCase();
+            const isEthereum = isEvmCoin(coin);
 
             return {
                 method: isEthereum ? 'ethereumGetAddress' : 'getAddress',
                 payload: {
-                    coin: params.coin,
+                    ...(!isEthereum && { coin }),
                     path: params.path,
                     showOnTrezor: params.showOnTrezor ?? false,
                 },
@@ -150,7 +156,7 @@ const MCP_TOOLS = [
         }) => ({
             method: 'getAccountInfo',
             payload: {
-                coin: params.coin,
+                coin: params.coin.toLowerCase(),
                 ...(params.path ? { path: params.path } : {}),
                 ...(params.descriptor ? { descriptor: params.descriptor } : {}),
                 details: params.details ?? 'basic',
@@ -184,7 +190,7 @@ const MCP_TOOLS = [
         toConnectCall: (params: { coin: string; path: string }) => ({
             method: 'getPublicKey',
             payload: {
-                coin: params.coin,
+                coin: params.coin.toLowerCase(),
                 path: params.path,
             },
         }),
@@ -218,12 +224,13 @@ const MCP_TOOLS = [
             destructiveHint: false,
         },
         toConnectCall: (params: { coin: string; path: string; message: string }) => {
-            const isEthereum = isEvmCoin(params.coin);
+            const coin = params.coin.toLowerCase();
+            const isEthereum = isEvmCoin(coin);
 
             return {
                 method: isEthereum ? 'ethereumSignMessage' : 'signMessage',
                 payload: {
-                    coin: params.coin,
+                    ...(!isEthereum && { coin }),
                     path: params.path,
                     message: params.message,
                 },
@@ -267,15 +274,78 @@ const MCP_TOOLS = [
             message: string;
             signature: string;
         }) => {
-            const isEthereum = isEvmCoin(params.coin);
+            const coin = params.coin.toLowerCase();
+            const isEthereum = isEvmCoin(coin);
 
             return {
                 method: isEthereum ? 'ethereumVerifyMessage' : 'verifyMessage',
                 payload: {
-                    coin: params.coin,
+                    ...(!isEthereum && { coin }),
                     address: params.address,
                     message: params.message,
                     signature: params.signature,
+                },
+            };
+        },
+    },
+    {
+        name: 'trezor_sign_typed_data',
+        description:
+            'Sign EIP-712 typed structured data using the Trezor device (EVM chains only). ' +
+            'EIP-712 is used for token permits (EIP-2612), NFT marketplace orders, ' +
+            'DAO governance votes, and gasless meta-transactions. ' +
+            'The user must review and confirm the structured data on the device screen.',
+        inputSchema: {
+            type: 'object' as const,
+            properties: {
+                path: {
+                    type: 'string',
+                    description:
+                        "BIP44 derivation path (e.g., \"m/44'/60'/0'/0/0\"). Auto-derived from accountIndex if omitted.",
+                },
+                accountIndex: {
+                    type: 'number',
+                    description:
+                        'Account index (0 = first account). Defaults to 0. Ignored if "path" is provided.',
+                    default: 0,
+                },
+                data: {
+                    type: 'object',
+                    description:
+                        'EIP-712 typed data object containing "types", "primaryType", "domain", and "message".',
+                },
+                metamask_v4_compat: {
+                    type: 'boolean',
+                    description:
+                        'Use MetaMask V4 compatibility mode for hashing. Defaults to true.',
+                    default: true,
+                },
+            },
+            required: ['data'],
+        },
+        annotations: {
+            readOnlyHint: false,
+            destructiveHint: false,
+        },
+        toConnectCall: (params: {
+            path?: string;
+            accountIndex?: number;
+            data: Record<string, unknown>;
+            metamask_v4_compat?: boolean;
+        }) => {
+            const accountIndex = params.accountIndex ?? 0;
+            const network = getNetworkOptional('eth');
+            const defaultPath = network
+                ? substituteBip43Path(network.bip43Path, accountIndex)
+                : "m/44'/60'/0'/0/0";
+            const path = params.path ?? defaultPath;
+
+            return {
+                method: 'ethereumSignTypedData',
+                payload: {
+                    path,
+                    data: params.data,
+                    metamask_v4_compat: params.metamask_v4_compat ?? true,
                 },
             };
         },
@@ -404,7 +474,7 @@ const MCP_TOOLS = [
         toConnectCall: (params: { coin: string; tx: string }) => ({
             method: 'pushTransaction',
             payload: {
-                coin: params.coin,
+                coin: params.coin.toLowerCase(),
                 tx: params.tx,
             },
         }),
@@ -533,14 +603,14 @@ const handleEvmSend = async (
                 error: `Failed to get account info for nonce: ${JSON.stringify(accountResult.error)}`,
             };
         }
-        nonce = accountResult.payload?.misc?.nonce ?? '0';
+        nonce = String(accountResult.payload?.misc?.nonce ?? '0');
     }
 
     // Build transaction object
     const transaction: Record<string, unknown> = {
         to,
         value: '0x' + BigInt(coinToSmallestUnit(value, coin)).toString(16),
-        nonce: toHex(nonce),
+        nonce: toHex(nonce ?? '0'),
         chainId,
         data: (params.data as string) ?? '0x',
     };
@@ -681,10 +751,10 @@ const handleUtxoSend = (
     const to = params.to as string;
     const value = params.value as string;
     if (!to || !value) {
-        return {
+        return Promise.resolve({
             success: false,
             error: 'BTC/UTXO transactions require "to" and "value" fields.',
-        };
+        });
     }
 
     return callPopup(sendPopupCall, 'composeTransaction', {
@@ -907,14 +977,30 @@ const handleJsonRpcRequest = async (
     };
 };
 
+const MAX_BODY_SIZE = 1024 * 1024; // 1 MB
+
 /**
  * Read and parse JSON body from an HTTP request.
  */
 const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
     new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
-        req.on('data', (chunk: Buffer) => chunks.push(chunk));
+        let size = 0;
+        let rejected = false;
+        req.on('data', (chunk: Buffer) => {
+            if (rejected) return;
+            size += chunk.length;
+            if (size > MAX_BODY_SIZE) {
+                rejected = true;
+                req.resume(); // Drain remaining data without buffering
+                reject(new Error('Payload too large'));
+
+                return;
+            }
+            chunks.push(chunk);
+        });
         req.on('end', () => {
+            if (rejected) return;
             try {
                 const body = Buffer.concat(chunks).toString();
                 resolve(body ? JSON.parse(body) : {});
@@ -929,8 +1015,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const { logger } = global;
     let server: http.Server | null = null;
     let sessionId: string | null = null;
+    let sessionProcessInfo: ConnectProcessInfo | undefined;
+    let sessionManifest: typeof MCP_MANIFEST = MCP_MANIFEST;
 
     const startServer = (port: number) => {
+        if (server) {
+            logger.info(LOG_PREFIX, 'MCP server is already running');
+
+            return;
+        }
+
         const sendPopupCall = (call: {
             id: string;
             method: string;
@@ -945,17 +1039,27 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             };
             manifest: typeof MCP_MANIFEST;
         }) => {
+            const mainWindow = mainWindowProxy.getInstance();
+            if (!mainWindow) {
+                logger.error(LOG_PREFIX, 'Main window is not available for MCP call');
+
+                return Promise.resolve({
+                    success: false,
+                    error: 'Trezor Suite window is not available.',
+                });
+            }
+
             const deferred = addMessage(call.id);
 
-            mainWindowProxy.getInstance()?.webContents.send('connect-popup/call', {
+            mainWindow.webContents.send('connect-popup/call', {
                 id: call.id,
                 method: call.method,
                 payload: call.payload,
                 silent: call.silent,
-                sourceType: 'mcp',
+                sourceType: CALL_SOURCE_MCP,
                 origin: call.origin,
-                process: call.process,
-                manifest: call.manifest,
+                process: call.process ?? sessionProcessInfo,
+                manifest: sessionManifest,
             });
 
             return deferred.promise;
@@ -964,7 +1068,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         server = http.createServer(async (req, res) => {
             // Only allow localhost connections
             const { remoteAddress } = req.socket;
-            if (remoteAddress !== '127.0.0.1' && remoteAddress !== '::1') {
+            if (remoteAddress !== '127.0.0.1') {
                 logger.error(LOG_PREFIX, `Rejected connection from ${remoteAddress}`);
                 res.writeHead(403);
                 res.end();
@@ -972,14 +1076,39 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 return;
             }
 
-            // CORS headers for local agent access
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Mcp-Session-Id');
-
+            // No CORS headers — this server is for local native MCP clients only,
+            // not for browser-based access. Rejecting CORS prevents cross-origin
+            // data exfiltration from malicious webpages.
             if (req.method === 'OPTIONS') {
-                res.writeHead(204);
+                res.writeHead(405);
                 res.end();
+
+                return;
+            }
+
+            // Validate Bearer token authentication
+            const { token } = store.getMcpSettings();
+            if (!token) {
+                logger.error(LOG_PREFIX, 'Rejected request: no authentication token configured');
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Server misconfiguration: no auth token' }));
+
+                return;
+            }
+            const authHeader = req.headers.authorization;
+            const expected = Buffer.from(`Bearer ${token}`);
+            const received = Buffer.from(authHeader ?? '');
+            if (
+                expected.length !== received.length ||
+                !crypto.timingSafeEqual(expected, received)
+            ) {
+                logger.error(LOG_PREFIX, 'Rejected request: invalid or missing Bearer token');
+                res.writeHead(401, { 'Content-Type': 'application/json' });
+                res.end(
+                    JSON.stringify({
+                        error: 'Unauthorized. A valid Authorization: Bearer <token> header is required. Copy the token from Trezor Suite: Settings → Debug → MCP Server config snippet.',
+                    }),
+                );
 
                 return;
             }
@@ -999,6 +1128,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 // DELETE /mcp is for session termination
                 if (req.method === 'DELETE') {
                     sessionId = null;
+                    sessionProcessInfo = undefined;
+                    sessionManifest = MCP_MANIFEST;
                     res.writeHead(200);
                     res.end();
 
@@ -1013,9 +1144,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 return;
             }
 
-            // Validate session ID if one has been assigned
+            // Per MCP spec, clients MUST include Mcp-Session-Id once assigned.
             const requestSessionId = req.headers['mcp-session-id'] as string | undefined;
-            if (sessionId && requestSessionId && requestSessionId !== sessionId) {
+            if (sessionId && requestSessionId !== sessionId) {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Session not found' }));
 
@@ -1032,9 +1163,58 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
                 logger.debug(LOG_PREFIX, `Request: ${jsonRpcRequest.method}`);
 
-                // Assign session ID on initialize
+                // Assign session ID and resolve calling process on initialize
                 if (jsonRpcRequest.method === 'initialize') {
                     sessionId = crypto.randomUUID();
+
+                    // Identify the calling process via TCP port lookup + MCP clientInfo
+                    const clientInfo = (
+                        jsonRpcRequest.params as {
+                            clientInfo?: { name?: string; version?: string };
+                        }
+                    )?.clientInfo;
+
+                    const { remotePort } = req.socket;
+                    if (remotePort) {
+                        const processInfo = await findProcessFromIncomingPort(
+                            remotePort,
+                            true,
+                        ).catch(() => {
+                            logger.warn(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+
+                            return undefined;
+                        });
+
+                        if (processInfo) {
+                            sessionProcessInfo = {
+                                name: processInfo.name,
+                                fullPath: processInfo.fullPath,
+                                warning: !!processInfo.warning,
+                                icon: await getProcessIcon(processInfo.fullPath),
+                            };
+                        } else if (clientInfo?.name) {
+                            sessionProcessInfo = {
+                                name: clientInfo.name,
+                                fullPath: clientInfo.name,
+                                warning: true,
+                            };
+                        }
+                    } else if (clientInfo?.name) {
+                        sessionProcessInfo = {
+                            name: clientInfo.name,
+                            fullPath: clientInfo.name,
+                            warning: true,
+                        };
+                    }
+
+                    if (clientInfo?.name) {
+                        sessionManifest = { ...MCP_MANIFEST, appName: clientInfo.name };
+                    }
+
+                    logger.info(
+                        LOG_PREFIX,
+                        `Session initialized for process: ${sessionProcessInfo?.name ?? 'unknown'}`,
+                    );
                 }
 
                 const response = await handleJsonRpcRequest(jsonRpcRequest, sendPopupCall);
@@ -1058,11 +1238,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 res.end(JSON.stringify(response));
             } catch (error) {
                 logger.error(LOG_PREFIX, `Request error: ${error}`);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
+                const isPayloadTooLarge =
+                    error instanceof Error && error.message === 'Payload too large';
+                const statusCode = isPayloadTooLarge ? 413 : 400;
+                const errorPayload = isPayloadTooLarge
+                    ? { code: -32600, message: 'Payload too large' }
+                    : { code: -32700, message: 'Parse error' };
+                res.writeHead(statusCode, { 'Content-Type': 'application/json' });
                 res.end(
                     JSON.stringify({
                         jsonrpc: '2.0',
-                        error: { code: -32700, message: 'Parse error' },
+                        error: errorPayload,
                     }),
                 );
             }
@@ -1074,6 +1260,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
         server.on('error', error => {
             logger.error(LOG_PREFIX, `Server error: ${error}`);
+            server = null;
+            sessionId = null;
+            sessionProcessInfo = undefined;
+            sessionManifest = MCP_MANIFEST;
         });
     };
 
@@ -1082,6 +1272,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             server.close();
             server = null;
             sessionId = null;
+            sessionProcessInfo = undefined;
+            sessionManifest = MCP_MANIFEST;
             logger.info(LOG_PREFIX, 'MCP server stopped');
         }
     };
@@ -1095,14 +1287,30 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         return {
             ...settings,
             running: server !== null,
-            url: settings.enabled ? `http://127.0.0.1:${settings.port}/mcp` : null,
+            url: server ? `http://127.0.0.1:${settings.port}/mcp` : null,
+            token: settings.token ?? null,
         };
+    });
+
+    ipcMain.handle('mcp/regenerate-token', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
+        const newToken = generateToken();
+        store.setMcpSettings({ token: newToken });
+
+        return { token: newToken };
     });
 
     ipcMain.handle('mcp/set-enabled', (ipcEvent, enabled: boolean) => {
         validateIpcMessage({ ipcEvent });
 
-        store.setMcpSettings({ enabled });
+        if (typeof enabled !== 'boolean') return;
+
+        const currentSettings = store.getMcpSettings();
+        if (enabled && !currentSettings.token) {
+            store.setMcpSettings({ enabled, token: generateToken() });
+        } else {
+            store.setMcpSettings({ enabled });
+        }
 
         if (enabled) {
             const { port } = store.getMcpSettings();
@@ -1113,9 +1321,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     });
 
     const onLoad = () => {
-        const { enabled, port } = store.getMcpSettings();
-        if (enabled) {
-            startServer(port);
+        const settings = store.getMcpSettings();
+        if (settings.enabled) {
+            if (!settings.token) {
+                store.setMcpSettings({ token: generateToken() });
+            }
+            startServer(settings.port);
         }
     };
 

@@ -3,16 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_MCP,
     connectPopupCallThunk,
     connectPopupCancelThunk,
     getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import {
-    CALL_SOURCE_DESKTOP_WS,
-    CALL_SOURCE_MCP,
-} from '@suite-common/connect-popup/src/connectPopupTypes';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { type CallMethodKeys, type CallMethodPayload } from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -34,12 +32,17 @@ export const useConnectPopupDesktop = () => {
         const init = async () => {
             if (lifecycle.status !== 'ready') return;
             if (!desktopApi.available || !(await desktopApi.connectPopupEnabled())) return;
+            // Only these methods are allowed to bypass the connect-popup UI.
+            // Everything else must go through the full approval flow to prevent
+            // a caller from silently signing transactions or extracting keys.
+            const SILENT_ALLOWED_METHODS = new Set(['getAccountInfo', 'blockchainEstimateFee']);
+
             desktopApi.on('connect-popup/call', async params => {
                 // Silent calls bypass the connect-popup flow entirely and call
                 // TrezorConnect directly. Used for data-fetching methods like
                 // getAccountInfo and blockchainEstimateFee that don't need
                 // device interaction or user confirmation.
-                if (params.silent) {
+                if (params.silent && SILENT_ALLOWED_METHODS.has(params.method)) {
                     try {
                         const device = selectedDeviceRef.current;
                         const deviceParams = device
@@ -52,10 +55,11 @@ export const useConnectPopupDesktop = () => {
                                   },
                               }
                             : {};
+                        const { method: _m, device: _d, ...safePayload } = params.payload ?? {};
                         const response = await TrezorConnect.call({
                             method: params.method,
                             ...deviceParams,
-                            ...params.payload,
+                            ...safePayload,
                         } as CallMethodPayload);
                         desktopApi.connectPopupResponse({
                             ...response,
@@ -65,8 +69,7 @@ export const useConnectPopupDesktop = () => {
                         desktopApi.connectPopupResponse({
                             success: false,
                             error: error instanceof Error ? error.message : String(error),
-                            payload:
-                                error instanceof Error ? error.message : String(error),
+                            payload: error instanceof Error ? error.message : String(error),
                             id: params.id,
                         });
                     }
@@ -76,7 +79,7 @@ export const useConnectPopupDesktop = () => {
 
                 await queuePopupCall();
                 const deferred = getPopupCallDeferred(true);
-                const isMcp = params.sourceType === 'mcp';
+                const isMcp = params.sourceType === CALL_SOURCE_MCP;
                 dispatch(
                     connectPopupCallThunk({
                         method: params.method as CallMethodKeys,

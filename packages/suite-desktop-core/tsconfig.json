@@ -4,6 +4,9 @@
     "include": ["src", "e2e", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/connect-popup"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../suite-common/sentry" },
@@ -12,6 +15,12 @@
         },
         {
             "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../../suite/sentry" },
         { "path": "../coinjoin" },

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Switch } from '@trezor/components';
+import { Button, Modal, Switch } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -25,11 +25,51 @@ const ConfigSnippet = styled.pre`
 const CopyButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
+    gap: ${spacings.xs}px;
     margin-top: ${spacings.xs}px;
 `;
 
-const getConfigSnippet = (url: string) =>
-    JSON.stringify({ mcpServers: { 'trezor-suite': { url } } }, null, 4);
+const getConfigSnippet = (url: string, token: string | null) => {
+    const config: Record<string, unknown> = { url };
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+
+    return JSON.stringify({ mcpServers: { 'trezor-suite': config } }, null, 4);
+};
+
+const RegenerateTokenModal = ({
+    onCancel,
+    onSubmit,
+}: {
+    onCancel: () => void;
+    onSubmit: () => void;
+}) => (
+    <Modal
+        heading="Regenerate MCP Token"
+        onCancel={onCancel}
+        intent="warning"
+        width={600}
+        bottomContent={
+            <>
+                <Modal.Button
+                    onClick={() => {
+                        onSubmit();
+                        onCancel();
+                    }}
+                >
+                    Regenerate
+                </Modal.Button>
+                <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
+                    Cancel
+                </Modal.Button>
+            </>
+        }
+    >
+        This will invalidate the current token. All connected MCP clients will be disconnected and
+        you will need to update their configuration with the new token.
+    </Modal>
+);
 
 export const McpServer = () => {
     const [settings, setSettings] = useState<{
@@ -37,7 +77,9 @@ export const McpServer = () => {
         port: number;
         running: boolean;
         url: string | null;
+        token: string | null;
     } | null>(null);
+    const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
 
     useEffect(() => {
         if (desktopApi.available) {
@@ -57,7 +99,14 @@ export const McpServer = () => {
 
     const handleCopyConfig = () => {
         if (!settings?.url) return;
-        copyToClipboard(getConfigSnippet(settings.url));
+        copyToClipboard(getConfigSnippet(settings.url, settings.token));
+    };
+
+    const handleRegenerateToken = async () => {
+        if (!desktopApi.available) return;
+        await desktopApi.mcpRegenerateToken();
+        const updated = await desktopApi.mcpGetSettings();
+        setSettings(updated);
     };
 
     if (!settings) return null;
@@ -81,12 +130,22 @@ export const McpServer = () => {
                     />
                     <ActionColumn>
                         <ConfigBox>
-                            <ConfigSnippet>{getConfigSnippet(settings.url)}</ConfigSnippet>
+                            <ConfigSnippet>
+                                {getConfigSnippet(settings.url, settings.token)}
+                            </ConfigSnippet>
                             <CopyButtonWrapper>
                                 <Button
-                                    variant="tertiary"
+                                    size="small"
+                                    iconLeft="arrowsClockwise"
+                                    intent="neutral"
+                                    onClick={() => setIsRegenerateModalOpen(true)}
+                                >
+                                    Regenerate token
+                                </Button>
+                                <Button
                                     size="small"
                                     iconLeft="copy"
+                                    intent="neutral"
                                     onClick={handleCopyConfig}
                                 >
                                     Copy
@@ -95,6 +154,12 @@ export const McpServer = () => {
                         </ConfigBox>
                     </ActionColumn>
                 </SectionItem>
+            )}
+            {isRegenerateModalOpen && (
+                <RegenerateTokenModal
+                    onCancel={() => setIsRegenerateModalOpen(false)}
+                    onSubmit={handleRegenerateToken}
+                />
             )}
         </>
     );
