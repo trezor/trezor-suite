@@ -217,6 +217,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
             return Promise.resolve();
         },
+        mcpRegenerateToken: () => ipcRenderer.invoke('mcp/regenerate-token'),
 
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),

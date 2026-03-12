@@ -1,1 +1,1 @@
-../../../skills/basic-syntax.md
+../../../skills/basic-syntax/SKILL.md

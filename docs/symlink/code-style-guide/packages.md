@@ -1,1 +1,1 @@
-../../../skills/packages.md
+../../../skills/packages/SKILL.md

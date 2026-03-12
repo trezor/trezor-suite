@@ -13,7 +13,7 @@ import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { addMessage, setAppInit } from './connect-popup-messages';
+import { addMessage, deleteMessage, setAppInit } from './connect-popup-messages';
 import { type createHttpReceiver } from './http-receiver';
 import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
@@ -186,8 +186,29 @@ export const exposeConnectWs = ({
                         setAppInit(undefined);
                     }
 
+                    const mainWindow = mainWindowProxy.getInstance();
+                    if (!mainWindow) {
+                        logger.error(
+                            LOG_PREFIX,
+                            'Main window not available after initialization timeout',
+                        );
+                        deleteMessage(message.id);
+                        connectionPendingMessages.delete(message.id);
+                        ws.send(
+                            JSON.stringify({
+                                id: message.id,
+                                success: false,
+                                payload: {
+                                    error: 'Main window not available',
+                                },
+                            }),
+                        );
+
+                        return;
+                    }
+
                     // send call to renderer
-                    mainWindowProxy.getInstance()?.webContents.send('connect-popup/call', {
+                    mainWindow.webContents.send('connect-popup/call', {
                         id: message.id,
                         method,
                         payload: rest,
@@ -232,6 +253,11 @@ export const exposeConnectWs = ({
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: 'Connection closed',
                 });
+
+                for (const id of connectionPendingMessages) {
+                    deleteMessage(id);
+                }
+                connectionPendingMessages.clear();
             }
         });
     });
@@ -248,5 +274,4 @@ export const exposeConnectWs = ({
             });
         }
     });
-
 };
