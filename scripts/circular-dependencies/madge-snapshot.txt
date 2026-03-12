@@ -3,7 +3,6 @@
 packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
 packages/connect/src/core/AbstractMethod.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
 packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
-packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCurrentSession.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts

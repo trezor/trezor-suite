@@ -11,6 +11,7 @@ import {
     uploadFirmware,
 } from '../api/firmware';
 import { PROTO } from '../constants';
+import { DataManager } from '../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
@@ -494,7 +495,10 @@ export const onCallFirmwareUpdate = async ({
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
     // We also check if `BinaryInfo.release` is present, otherwise it is custom FW, not to store.
-    if (isFirmwareCacheUsedForSelectedSource() && finalBinaryInfo.release) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        finalBinaryInfo.release
+    ) {
         const message = createUiMessage(UI_REQUEST.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
