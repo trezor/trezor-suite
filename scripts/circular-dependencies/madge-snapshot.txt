@@ -1,6 +1,6 @@
 
 
-packages/blockchain-link-types/src/blockbook.ts > packages/blockchain-link-types/src/common.ts
+packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
 packages/coinjoin/src/backend/CoinjoinAddressController.ts > packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
 packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts
 packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts
@@ -28,7 +28,7 @@ packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts
 packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
-packages/product-components/src/components/SelectAssetModal/AssetItem.tsx > packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx
+packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts

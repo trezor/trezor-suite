@@ -24,7 +24,9 @@ const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
     'production-early-access': 'config-early-access/',
 };
 
-const fetchRemoteJws = async (firmwareChannel: FirmwareChannel | null | undefined): Promise<JwsInfo> => {
+const fetchRemoteJws = async (
+    firmwareChannel: FirmwareChannel | null | undefined,
+): Promise<JwsInfo> => {
     const { BASE_URL, MIDDLE_PATH, firmwareChannel: channel } = getFirmwareBaseUrl(firmwareChannel);
     const configPath = CONFIG_PATH_BY_CHANNEL[channel] ?? '';
     const path = `${MIDDLE_PATH}/${configPath}${JWS_CONFIG.REMOTE_FILENAME}`;
