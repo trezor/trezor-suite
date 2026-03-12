@@ -35,6 +35,8 @@ export const selectTorOnionLinks = (state: SuiteRootState) => state.suite.settin
 // TODO: use this selector in all places where we need to check if debug mode is active
 export const selectIsDebugModeActive = (state: SuiteRootState) =>
     state.suite.settings.debug.showDebugMenu;
+export const selectIsN4w1BackupEnabled = (state: SuiteRootState) =>
+    state.suite.settings.debug.isN4w1BackupEnabled;
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 export const selectAutodetectLanguage = (state: SuiteRootState) =>
     state.suite.settings.autodetect.language;
