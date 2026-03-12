@@ -4,7 +4,7 @@ import { PersistedState, getStoredState } from 'redux-persist';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { WalletSettings } from '@suite-common/wallet-types';
 import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { MMKVStorageDep } from '../../mmkvStorage';
 

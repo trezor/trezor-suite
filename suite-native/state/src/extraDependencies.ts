@@ -35,7 +35,9 @@ const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 // Lazily initialize transports to avoid loading the 243 KB messages.json at module-import
 // time, which would otherwise slow down every test that imports this module.
-let _transports: readonly unknown[] | undefined;
+let _transports:
+    | ReadonlyArray<BridgeTransport | typeof NativeBluetoothTransport | typeof NativeUsbTransport>
+    | undefined;
 const getTransports = () => {
     if (!_transports) {
         const messages = require('@trezor/protobuf/messages.json');

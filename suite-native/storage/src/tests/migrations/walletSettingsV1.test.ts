@@ -1,7 +1,7 @@
 import { getStoredState } from 'redux-persist';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { PROTO } from '@trezor/connect';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';
