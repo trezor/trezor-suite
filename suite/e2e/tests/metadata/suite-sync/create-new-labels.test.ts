@@ -62,6 +62,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         metadataPage,
         page,
         devicePrompt,
+        tradingPage,
     }) => {
         await test.step('Change account label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
@@ -79,9 +80,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await walletPage.receiveButton.click();
             await walletPage.revealAddressButton.click();
 
-            await expect(devicePrompt.headerParagraph).toHaveText(
-                expectedAccount.label,
-            );
+            await expect(devicePrompt.headerParagraph).toHaveText(expectedAccount.label);
             await devicePrompt.modalCloseButton.click();
             await page.getByTestId('@account-subpage/back').click();
             await walletPage.openSendFormButton.click();
@@ -125,22 +124,22 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await expect(
                 page.getByTestId('@modal/output-address').getByTestId('@metadata/input'),
             ).toContainText(expectedAddress.label);
-            await page.getByTestId('@modal/close-button').click();
-        })
+            await devicePrompt.modalCloseButton.click();
+        });
 
         await test.step('Check in buy form receive account label and address label', async () => {
-            await page.getByTestId('@account-menu/btc/normal/0').click();
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
 
             // we need money for coin control verification
             // need to have ETH or anything else enabled to be able to check address label in buy/sell/swap
             // await page.getByTestId('@wallet/menu/wallet-send').click();
             // await page.getByTestId('coin-control-button').click();
-            await page.getByTestId('@suite/menu/suite-index').click();
-            await page.getByTestId('@wallet/menu/wallet-trading-buy').click();
-            await expect(page.getByTestId('@trading/selected-receive-account')).toContainText(
+            await dashboardPage.dashboardMenuButton.click();
+            await walletPage.openTradingGlobalButton.click();
+            await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
                 expectedAccount.label,
             );
-            await page.getByTestId('@trading/form/select-crypto-for-buy/input').click();
+            await tradingPage.assets.buyAssetPickerInput.click();
             await page
                 .getByTestId('@trading/form/select-crypto-for-buy/top-assets')
                 .getByRole('button', { name: 'BTC' })
@@ -157,7 +156,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await expect(page.getByTestId('@trading/bitcoin-receive-address-modal')).toContainText(
                 'bc1q kkr2 ... qfxy fa',
             );
-        })
+        });
         await test.step('Change output label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
             await metadataPage.output.changeLabel({
