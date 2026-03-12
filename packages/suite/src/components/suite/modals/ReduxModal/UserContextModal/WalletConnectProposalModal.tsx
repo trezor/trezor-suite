@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -30,7 +31,6 @@ import {
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -81,7 +81,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     };
     const handleGoToCoinSettings = async () => {
         await dispatch(closeModal());
-        dispatch(goto('settings-coins'));
+        dispatch(goto({ routeName: 'settings-coins' }));
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {

@@ -7,6 +7,7 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import { goto } from '@suite/router';
 import {
     parseCryptoId,
     tradingActions,
@@ -17,7 +18,6 @@ import {
 import { selectAccounts } from '@suite-common/wallet-core';
 import { FeeLevel, TokenInfo } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
@@ -129,7 +129,7 @@ export const useTradingRedirect = () => {
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
         dispatch(tradingBuyActions.setIsFromRedirect(true));
-        dispatch(goto('wallet-trading-buy-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-buy-offers' }));
     };
 
     const redirectToSellOffers = (params: SellOfferRedirectParams) => {
@@ -182,7 +182,7 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingSellActions.saveTransactionId(orderId));
-        dispatch(goto(orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers'));
+        dispatch(goto({ routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers' }));
     };
 
     const redirectToExchangeOffers = (params: ExchangeOfferRedirectParams) => {
@@ -223,7 +223,7 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(orderId));
-        dispatch(goto('wallet-trading-exchange-confirm'));
+        dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
     };
 
     const redirectToBuyDetail = (params: DetailRedirectParams) => {
@@ -231,7 +231,7 @@ export const useTradingRedirect = () => {
 
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveTransactionId(transactionId));
-        dispatch(goto('wallet-trading-buy-detail'));
+        dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
     };
 
     return {

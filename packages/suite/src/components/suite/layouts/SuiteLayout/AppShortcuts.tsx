@@ -1,10 +1,10 @@
 import { useEvent } from 'react-use';
 
+import { closeModalApp, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 
-import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -26,7 +26,7 @@ export const AppShortcuts = () => {
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
-            dispatch(closeModalApp());
+            dispatch(closeModalApp(undefined));
             e.preventDefault();
             dispatch(
                 startDiscoveryThunk({
@@ -40,7 +40,7 @@ export const AppShortcuts = () => {
         // press ALT + D to show SwitchDevice
         if (altKey && e.code === KEYBOARD_CODE.KEY_D && isDeviceSelected) {
             if (!discoveryInProgress) {
-                dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+                dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
             }
 
             // Firefox has default ALT+D shortcut to open address bar so we want to prevent that
@@ -50,7 +50,7 @@ export const AppShortcuts = () => {
 
         // press CMD + , to show Settings
         if (metaKey && e.code === KEYBOARD_CODE.COMMA && isDeviceSelected) {
-            dispatch(goto('settings-index'));
+            dispatch(goto({ routeName: 'settings-index' }));
             e.preventDefault();
         }
     });

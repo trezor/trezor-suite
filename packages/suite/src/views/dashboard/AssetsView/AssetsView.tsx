@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { AssetFiatBalance } from '@suite-common/assets';
 import {
     type Network,
@@ -33,7 +34,6 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -173,7 +173,7 @@ export const AssetsView = () => {
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
+    const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
     const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
     const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
 

@@ -29,7 +29,8 @@ global.ResizeObserver = class MockedResizeObserver {
 // do not mock
 jest.unmock('@trezor/connect');
 
-jest.mock('src/actions/suite/routerActions', () => ({
+jest.mock('@suite/router', () => ({
+    ...jest.requireActual('@suite/router'),
     goto: () => ({ type: 'mock-redirect' }),
 }));
 

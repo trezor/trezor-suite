@@ -2,6 +2,7 @@ import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     TradingTradeMapProps,
     getTagAndInfoNote,
@@ -14,7 +15,6 @@ import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -121,17 +121,17 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
         switch (context.type) {
             case 'exchange':
                 dispatch(tradingExchangeActions.savePreselectedQuote(quote as ExchangeTrade));
-                dispatch(goto('wallet-trading-exchange'));
+                dispatch(goto({ routeName: 'wallet-trading-exchange' }));
                 break;
 
             case 'buy':
                 dispatch(tradingBuyActions.savePreselectedQuote(quote as BuyTrade));
-                dispatch(goto('wallet-trading-buy'));
+                dispatch(goto({ routeName: 'wallet-trading-buy' }));
                 break;
 
             case 'sell':
                 dispatch(tradingSellActions.savePreselectedQuote(quote as SellFiatTrade));
-                dispatch(goto('wallet-trading-sell'));
+                dispatch(goto({ routeName: 'wallet-trading-sell' }));
                 break;
         }
     };

@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
@@ -18,7 +17,7 @@ export const FirmwareTypeSuggestion = () => {
     const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
 
     const goToFirmwareType = () =>
-        dispatch(goto('settings-device', { anchor: SettingsAnchor.FirmwareType }));
+        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.FirmwareType }));
 
     return (
         <Banner

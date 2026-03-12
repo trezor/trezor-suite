@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 
-import { goto } from '../../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../../hooks/suite';
 
 type SuiteSyncFirmwareUpgradeNeededModalProps = {
@@ -35,7 +35,7 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
         // Update will disconnect device in the process and our Firmware Update
         // flow won't allow us to navigate back. So we just redirect the user
         // and close the modal.
-        dispatch(goto('firmware-index', { params: { cancelable: true } }));
+        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
         onClose();
     };
 

@@ -1,12 +1,12 @@
 import { ReactNode, useState } from 'react';
 
 import { closeModal } from '@suite/modal';
+import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
 import { ThpPairingStep } from 'src/components/firmware/ThpPairingStep/ThpPairingStep';
 import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
@@ -49,7 +49,7 @@ export const FirmwareModal = ({
             dispatch(acquireDevice({ requestedDevice: device }));
         }
         dispatch(closeModal());
-        dispatch(closeModalApp());
+        dispatch(closeModalApp(undefined));
         resetReducer();
     };
 

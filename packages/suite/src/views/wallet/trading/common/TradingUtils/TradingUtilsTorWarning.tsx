@@ -1,10 +1,9 @@
 import { Translation, TranslationKey } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
@@ -41,7 +40,7 @@ export const TradingUtilsTorWarning = ({
     if (!isTorEnabled) return null;
 
     const handleGoToSettings = () => {
-        dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }));
+        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
     };
 
     const translationId = getTorWarningTranslationId(tradingType, noOffer);

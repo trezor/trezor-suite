@@ -65,7 +65,8 @@ export const AccountItem = ({
             return;
         }
 
-        goToWithAnalytics(getRoute(type), {
+        goToWithAnalytics({
+            routeName: getRoute(type),
             params: {
                 symbol,
                 accountIndex: index,

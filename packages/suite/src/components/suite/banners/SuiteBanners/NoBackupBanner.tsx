@@ -1,7 +1,7 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 export const NoBackup = () => {
@@ -18,7 +18,7 @@ export const NoBackup = () => {
             intent="critical"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto('backup-index'))}
+                    onClick={() => dispatch(goto({ routeName: 'backup-index' }))}
                     data-testid="@notification/no-backup/button"
                 >
                     <Translation id="TR_CREATE_BACKUP" />

@@ -1,5 +1,5 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { AnchorSettingSection, SettingsAnchor, mapAnchorToRoute } from '@suite/router';
+import { AnchorSettingSection, SettingsAnchor, goto , mapAnchorToRoute, onLocationChange } from '@suite/router';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -13,8 +13,6 @@ import {
 } from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
-import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -73,7 +71,7 @@ export const handleProtocolRequest =
             );
         } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
             dispatch(
-                routerActions.goto('suite-bridge-requested', { params: { cancelable: true } }),
+                goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }),
             );
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
             const parsedUri = parseUri(uri);
@@ -98,7 +96,7 @@ export const handleProtocolRequest =
 
                 const targetRoute =
                     mapAnchorToRoute[domain.replace(/^@/, '') as AnchorSettingSection];
-                dispatch(goto(targetRoute, { anchor }));
+                dispatch(goto({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
             const parsedUri = parseUri(decodeURIComponent(uri));
@@ -110,7 +108,7 @@ export const handleProtocolRequest =
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
                     asSuiteServices(extra.services).suiteRouterHistory.navigate(path);
-                    dispatch(routerActions.onLocationChange(path));
+                    dispatch(onLocationChange(path));
                 }
             }
         }

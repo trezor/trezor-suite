@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -32,7 +33,6 @@ import {
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { Address, HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -154,13 +154,11 @@ const NftsRow = ({
                                         });
                                         if (account) {
                                             dispatch(
-                                                goto('wallet-index', {
-                                                    params: {
+                                                goto({ routeName: 'wallet-index', params: {
                                                         symbol: account.symbol,
                                                         accountIndex: account.index,
                                                         accountType: account.accountType,
-                                                    },
-                                                }),
+                                                    }, }),
                                             );
                                         }
                                     },

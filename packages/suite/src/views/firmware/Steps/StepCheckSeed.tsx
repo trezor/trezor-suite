@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
@@ -12,7 +13,6 @@ import { spacings } from '@trezor/theme';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { goto } from '../../../actions/suite/routerActions';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;
@@ -124,7 +124,7 @@ export const StepCheckSeed = ({
                         priority="secondary"
                         onClick={() => {
                             resetReducer();
-                            dispatch(goto(isDeviceBackedUp ? 'recovery-index' : 'backup-index'));
+                            dispatch(goto({ routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index' }));
                         }}
                     >
                         <Translation id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'} />

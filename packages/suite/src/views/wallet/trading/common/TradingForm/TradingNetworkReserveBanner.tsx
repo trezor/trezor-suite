@@ -1,11 +1,10 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 interface TradingNetworkReserveBannerProps {
@@ -22,10 +21,8 @@ export const TradingNetworkReserveBanner = ({
 
     const onManageClick = () => {
         dispatch(
-            goto('settings-index', {
-                preserveParams: true,
-                anchor: SettingsAnchor.NetworkReserve,
-            }),
+            goto({ routeName: 'settings-index', preserveParams: true,
+                anchor: SettingsAnchor.NetworkReserve, }),
         );
     };
 

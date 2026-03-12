@@ -2,13 +2,13 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
+import * as suiteRouter from '@suite/router';
 import { routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
-import * as routerActions from 'src/actions/suite/routerActions';
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -81,7 +81,7 @@ describe('redirectMiddleware', () => {
         let goto: any;
 
         beforeEach(() => {
-            goto = jest.spyOn(routerActions, 'goto');
+            goto = jest.spyOn(suiteRouter, 'goto');
         });
 
         afterEach(() => {
@@ -97,7 +97,7 @@ describe('redirectMiddleware', () => {
             const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
             store.dispatch({ type: deviceActions.selectDevice.type, payload: device });
 
-            expect(goto).toHaveBeenNthCalledWith(1, 'suite-start');
+            expect(goto).toHaveBeenNthCalledWith(1, { routeName: 'suite-start' });
         });
 
         it('DEVICE.CONNECT firmware=required', () => {
@@ -109,7 +109,7 @@ describe('redirectMiddleware', () => {
             const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
             store.dispatch({ type: deviceActions.selectDevice.type, payload: device });
 
-            expect(goto).toHaveBeenNthCalledWith(1, 'firmware-index');
+            expect(goto).toHaveBeenNthCalledWith(1, { routeName: 'firmware-index' });
         });
 
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
@@ -152,7 +152,7 @@ describe('redirectMiddleware', () => {
                 type: deviceActions.selectDevice.type,
                 payload: mockSuiteDevice(),
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');
+            expect(goto).toHaveBeenNthCalledWith(1, { routeName: 'wallet-index' });
         });
     });
 });

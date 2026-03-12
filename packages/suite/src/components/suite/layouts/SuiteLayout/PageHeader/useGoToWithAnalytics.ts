@@ -1,9 +1,9 @@
 import { events } from '@suite/analytics';
+import { goto } from '@suite/router';
 import { Account } from '@suite-common/wallet-types';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { goto } from '../../../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
 
@@ -13,13 +13,13 @@ export const useGoToWithAnalytics = (account?: Account) => {
     const accountToUse = account ?? selectedAccount;
     const dispatch = useDispatch();
 
-    return (...[routeName, options]: Parameters<typeof goto>) => {
+    return (...[payload]: Parameters<typeof goto>) => {
         if (accountToUse?.symbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: accountToUse.symbol, action: routeName },
+                payload: { symbol: accountToUse.symbol, action: payload.routeName },
             });
         }
-        dispatch(goto(routeName, options));
+        dispatch(goto(payload));
     };
 };

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { goto } from '@suite/router';
 import {
     ContextDomain,
     messageSystemActions,
@@ -7,7 +8,6 @@ import {
 } from '@suite-common/message-system';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectLanguage,
@@ -47,7 +47,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
         const onClick =
             action === 'internal-link'
                 ? // @ts-expect-error: impossible to add all href options to the message system config json schema
-                  () => dispatch(goto(link, { anchor, preserveParams: true }))
+                  () => dispatch(goto({ routeName: link, anchor, preserveParams: true }))
                 : () =>
                       window.open(
                           isTorEnabled && torOnionLinks ? getTorUrlIfAvailable(link) : link,

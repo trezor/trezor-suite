@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { selectRouterParams } from '@suite/router';
+import { goto , selectRouterParams } from '@suite/router';
 import { yup } from '@suite-common/validators';
 import { Account, GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Route } from 'src/types/suite';
 
@@ -46,14 +45,15 @@ export function useGlobalSendReceiveModal() {
 
     const openModal = (modal: NonNullable<GlobalSendReceiveType>) => {
         setActiveModal(modal);
-        dispatch(goto('suite-index', { params: { modal } }));
+        dispatch(goto({ routeName: 'suite-index', params: { modal } }));
     };
 
     const closeModal = (routeName?: Route['name'], account?: Account) => {
         setActiveModal(null);
 
         if (routeName && account) {
-            goToWithAnalytics(routeName, {
+            goToWithAnalytics({
+                routeName,
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -61,7 +61,7 @@ export function useGlobalSendReceiveModal() {
                 },
             });
         } else {
-            dispatch(goto('suite-index'));
+            dispatch(goto({ routeName: 'suite-index' }));
         }
     };
 

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectRouterApp } from '@suite/router';
+import { goto , selectRouterApp } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Network,
@@ -23,7 +23,6 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { CoinList } from 'src/components/suite/CoinList/CoinList';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -180,13 +179,11 @@ export const AddAccountModal = ({
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(
-                    goto('wallet-index', {
-                        params: {
+                    goto({ routeName: 'wallet-index', params: {
                             symbol: selectedNetwork.symbol,
                             accountIndex: 0,
                             accountType: 'normal',
-                        },
-                    }),
+                        }, }),
                 );
             }
         }
@@ -227,13 +224,11 @@ export const AddAccountModal = ({
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(
-                goto('wallet-index', {
-                    params: {
+                goto({ routeName: 'wallet-index', params: {
                         symbol: account.symbol,
                         accountIndex: account.index,
                         accountType: account.accountType,
-                    },
-                }),
+                    }, }),
             );
         }
     };

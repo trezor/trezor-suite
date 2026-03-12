@@ -5,6 +5,7 @@ import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
+import { goto } from '@suite/router';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -31,7 +32,6 @@ import { Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
@@ -185,7 +185,7 @@ export const useTradingBuyForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(goto('wallet-trading-buy-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-buy-offers' }));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -213,7 +213,7 @@ export const useTradingBuyForm = ({
                 if (response.trade.paymentId) {
                     dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
                 }
-                dispatch(goto('wallet-trading-buy-detail'));
+                dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
             }
         };
 
@@ -448,7 +448,7 @@ export const useTradingBuyForm = ({
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
         if (!quotesRequest && !isFormPage && !isOffersPage) {
-            dispatch(goto('wallet-trading-buy'));
+            dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
             return;
         }
@@ -456,7 +456,7 @@ export const useTradingBuyForm = ({
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            dispatch(goto('wallet-trading-buy-confirm'));
+            dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
 

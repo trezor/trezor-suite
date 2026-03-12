@@ -1,8 +1,7 @@
 import { RefObject, useEffect } from 'react';
 
-import { selectRouterAnchor } from '@suite/router';
+import { onAnchorChange , selectRouterAnchor } from '@suite/router';
 
-import { onAnchorChange } from 'src/actions/suite/routerActions';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';

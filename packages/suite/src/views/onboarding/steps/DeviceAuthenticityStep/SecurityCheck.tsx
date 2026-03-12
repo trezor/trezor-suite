@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
+import { goto } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
@@ -29,8 +30,6 @@ import {
     TREZOR_URL,
 } from '@trezor/urls';
 
-import { goto } from 'src/actions/suite/routerActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
@@ -183,9 +182,9 @@ const SecurityCheckContent = ({
         } else if (isOnboardingActive) {
             goToNextStep('firmware');
             // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(routerActions.goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         } else {
-            dispatch(goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         }
     };
 

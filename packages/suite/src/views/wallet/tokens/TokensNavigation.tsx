@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { selectRouteName } from '@suite/router';
+import { goto , selectRouteName } from '@suite/router';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
@@ -11,7 +11,6 @@ import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -112,7 +111,7 @@ export const TokensNavigation = ({
     };
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto({ routeName: route, preserveParams: true }));
     };
 
     useEffect(() => {

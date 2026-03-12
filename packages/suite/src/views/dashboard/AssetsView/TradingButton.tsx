@@ -1,12 +1,12 @@
 import { MouseEvent, ReactNode } from 'react';
 
+import { goto } from '@suite/router';
 import { Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
-import * as routerActions from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 
 type TradingButtonProps = {
@@ -43,7 +43,7 @@ export const TradingButton = ({
             );
         }
 
-        dispatch(routerActions.goto(routeName));
+        dispatch(goto({ routeName }));
         toggleCoinFilter(symbol);
         setSearchString(undefined);
 

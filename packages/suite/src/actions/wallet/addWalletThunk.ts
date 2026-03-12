@@ -1,10 +1,9 @@
-import { findRoute } from '@suite/router';
+import { findRoute , goto } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { asSuiteServices } from 'src/support/extraDependencies';
 
-import { goto } from '../suite/routerActions';
 
 export const redirectAfterWalletSelectedThunk = createThunk<
     void,
@@ -20,7 +19,7 @@ export const redirectAfterWalletSelectedThunk = createThunk<
         // when you switch to other device (wallet), there might not be /btc/4, but just /btc/1
         // this causes Account not found error, so we allow this option
         if (options?.forceDeviceDashboard) {
-            dispatch(goto('suite-index'));
+            dispatch(goto({ routeName: 'suite-index' }));
 
             return;
         }
@@ -28,14 +27,14 @@ export const redirectAfterWalletSelectedThunk = createThunk<
         const isWalletOrDashboardContext =
             backgroundRoute && ['wallet', 'dashboard'].includes(backgroundRoute.app);
         if (!isWalletOrDashboardContext) {
-            await dispatch(goto('suite-index'));
+            await dispatch(goto({ routeName: 'suite-index' }));
         }
 
         // Subpaths of wallet are not available to all account types (e.g. Tokens tab not available to BTC accounts).
         const isWalletSubpath =
             backgroundRoute?.app === 'wallet' && backgroundRoute?.name !== 'wallet-index';
         if (isWalletSubpath) {
-            await dispatch(goto('wallet-index'));
+            await dispatch(goto({ routeName: 'wallet-index' }));
         }
     },
 );
@@ -43,6 +42,6 @@ export const redirectAfterWalletSelectedThunk = createThunk<
 export const openSwitchDeviceDialog = createThunk<void, void, void>(
     `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
     (_, { dispatch }) => {
-        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     },
 );

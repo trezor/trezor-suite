@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { feedbackRequested } from '@suite/experimental-feedback';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -54,7 +54,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     };
     const handleClick = () => {
         if (!config.routeName) return;
-        dispatch(goto(config.routeName));
+        dispatch(goto({ routeName: config.routeName }));
     };
 
     return (
