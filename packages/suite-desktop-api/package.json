@@ -21,6 +21,6 @@
     "dependencies": {
         "@suite-common/platform-encryption": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "electron": "40.1.0"
+        "electron": "40.6.1"
     }
 }
