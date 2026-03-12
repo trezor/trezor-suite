@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -24,7 +24,7 @@ export const UnecoCoinjoinModal = () => {
 
     const handleContinue = () => {
         dispatch(closeModal());
-        dispatch(goto('wallet-anonymize', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-anonymize', preserveParams: true }));
     };
 
     const handleCancel = () => {

@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
 import { onReceiveConfirmation } from '@suite/modal';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 export const NoBackupModal = () => {
@@ -14,7 +13,7 @@ export const NoBackupModal = () => {
     const close = () => dispatch(onReceiveConfirmation(false));
     const goToSettings = () => {
         close();
-        dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupRecoverySeed }));
+        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.BackupRecoverySeed }));
     };
 
     return (

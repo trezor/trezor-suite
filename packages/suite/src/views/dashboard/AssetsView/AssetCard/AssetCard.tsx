@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
@@ -22,7 +23,6 @@ import {
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -103,13 +103,11 @@ export const AssetCard = ({
 
     const handleCardClick = () => {
         dispatch(
-            goto('wallet-index', {
-                params: {
+            goto({ routeName: 'wallet-index', params: {
                     symbol,
                     accountIndex: 0,
                     accountType: 'normal',
-                },
-            }),
+                }, }),
         );
     };
 

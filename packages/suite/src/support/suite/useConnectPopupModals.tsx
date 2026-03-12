@@ -11,13 +11,12 @@ import {
     removePreserveModal,
     selectModalType,
 } from '@suite/modal';
-import { selectRouteName } from '@suite/router';
+import { goto , selectRouteName } from '@suite/router';
 import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupModals = () => {
@@ -114,11 +113,9 @@ export const useConnectPopupModals = () => {
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                     dispatch(
-                        goto('suite-switch-device', {
-                            params: {
+                        goto({ routeName: 'suite-switch-device', params: {
                                 cancelable: true,
-                            },
-                        }),
+                            }, }),
                     );
                 }
 

@@ -1,10 +1,9 @@
 import { RefObject, useEffect, useMemo, useState } from 'react';
 
-import { parseDashboardParams, selectRouterParams } from '@suite/router';
+import { goto, parseDashboardParams , selectRouterParams } from '@suite/router';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
@@ -42,12 +41,10 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
         dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkFilter));
 
         dispatch(
-            goto('suite-index', {
-                params: {
+            goto({ routeName: 'suite-index', params: {
                     modal,
                     ...(networkFilter ? { networkSymbol: networkFilter } : {}),
-                },
-            }),
+                }, }),
         );
 
         requestAnimationFrame(() => {

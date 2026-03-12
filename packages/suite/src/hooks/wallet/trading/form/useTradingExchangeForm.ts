@@ -6,6 +6,7 @@ import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { events } from '@suite/analytics';
 import { TranslationKey, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -46,7 +47,6 @@ import {
 import { Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -344,7 +344,7 @@ export const useTradingExchangeForm = ({
                 quote,
                 timer,
                 nextStep: () => {
-                    dispatch(goto('wallet-trading-exchange-confirm'));
+                    dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
             }),
         );
@@ -375,7 +375,7 @@ export const useTradingExchangeForm = ({
             };
 
             const nextStep = () => {
-                dispatch(goto('wallet-trading-exchange-detail'));
+                dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
             };
 
             return {
@@ -505,7 +505,7 @@ export const useTradingExchangeForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(goto('wallet-trading-exchange-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-exchange-offers' }));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -776,7 +776,7 @@ export const useTradingExchangeForm = ({
 
     useEffect(() => {
         if (!quotesRequest && !isFormPage) {
-            dispatch(goto('wallet-trading-exchange'));
+            dispatch(goto({ routeName: 'wallet-trading-exchange' }));
 
             return;
         }

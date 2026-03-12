@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
+import { closeModalApp } from '@suite/router';
+
 import { useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';
@@ -46,7 +47,7 @@ type ForegroundAppModalProps = {
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(closeModalApp());
+    const onCancel = () => dispatch(closeModalApp(undefined));
 
     // check if current route is a "foreground application" marked as isForegroundApp in router config
     // display it above requested physical route (route in url) or as fullscreen app

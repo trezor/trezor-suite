@@ -1,6 +1,7 @@
 import { metadataLabelingActions } from '@suite/metadata';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import { routerInit } from '@suite/router';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -19,7 +20,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { initialRedirection } from 'src/actions/suite/routerActions';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
 
@@ -68,7 +69,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     // 5. redirecting user into welcome screen (if needed)
-    dispatch(routerActions.initialRedirection());
+    dispatch(initialRedirection());
 
     // 6. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx
@@ -128,7 +129,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
     // 11. dispatch initial location change
-    dispatch(routerActions.init());
+    dispatch(routerInit());
 
     // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them

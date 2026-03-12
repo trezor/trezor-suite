@@ -1,11 +1,11 @@
 import { Translation, TranslationKey } from '@suite/intl';
+import { goto } from '@suite/router';
 import { DeviceStatus as ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';
-import { goto } from '../../../actions/suite/routerActions';
 import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from '../../../types/suite';
@@ -105,7 +105,7 @@ export const NeedsAttentionBanner = ({
                 return () => {
                     onCancel?.(false);
                     dispatch(selectDeviceThunk({ device }));
-                    dispatch(goto('firmware-index'));
+                    dispatch(goto({ routeName: 'firmware-index' }));
                 };
             // If onboarding is pending, then it should pass through Manual Device Check.
             case 'initialize': // Wiped device with firmware present.
@@ -113,7 +113,7 @@ export const NeedsAttentionBanner = ({
                 // but we cannot tell (device.features.initialized is null)
                 return () => {
                     selectDevice();
-                    dispatch(goto('suite-start'));
+                    dispatch(goto({ routeName: 'suite-start' }));
                 };
 
             case 'seedless':

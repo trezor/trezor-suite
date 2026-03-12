@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useExternalLink, useLayout } from 'src/hooks/suite';
 
@@ -17,7 +17,7 @@ export const BridgeDeprecated = () => {
     useLayout('Bridge');
 
     const onClose = () => {
-        dispatch(goto('wallet-index'));
+        dispatch(goto({ routeName: 'wallet-index' }));
     };
 
     return (

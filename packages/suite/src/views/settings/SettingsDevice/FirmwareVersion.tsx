@@ -1,10 +1,9 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -44,7 +43,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
 
     const handleUpdate = () => {
-        dispatch(goto('firmware-index', { params: { cancelable: true } }));
+        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
 
     return (

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
@@ -21,7 +21,7 @@ export const BridgeUnavailable = () => {
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
-    const goToWallet = () => dispatch(goto('wallet-index'));
+    const goToWallet = () => dispatch(goto({ routeName: 'wallet-index' }));
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here

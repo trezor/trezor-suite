@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { selectRouteName } from '@suite/router';
+import { goto , selectRouteName } from '@suite/router';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
@@ -32,7 +31,7 @@ export const Tokens = () => {
             !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
             routeName !== 'wallet-index'
         ) {
-            dispatch(goto('wallet-index', { preserveParams: true }));
+            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch, routeName]);
 

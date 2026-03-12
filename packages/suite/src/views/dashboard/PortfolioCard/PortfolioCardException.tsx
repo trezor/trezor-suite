@@ -1,6 +1,7 @@
 import { ComponentProps, JSX } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
+import { goto } from '@suite/router';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
@@ -8,7 +9,6 @@ import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/com
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { DiscoveryStatusType } from 'src/types/wallet';
 
@@ -132,7 +132,7 @@ export const PortfolioCardException = ({
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => dispatch(goto('settings-coins')),
+                            action: () => dispatch(goto({ routeName: 'settings-coins' })),
                             isDisabled: false,
                             icon: 'gear',
                             label: 'TR_COIN_SETTINGS',

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { SettingsAnchor , goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -9,7 +9,6 @@ import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
     setFlag,
@@ -136,9 +135,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(
-                                                        goto('settings-index', {
-                                                            anchor: SettingsAnchor.AutoEject,
-                                                        }),
+                                                        goto({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject, }),
                                                     );
                                                 }}
                                             >

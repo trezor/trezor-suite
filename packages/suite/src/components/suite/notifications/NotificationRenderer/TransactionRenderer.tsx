@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getTxAnchor, selectRouteName } from '@suite/router';
+import { getTxAnchor, goto , selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -20,7 +20,6 @@ import {
 import { Row } from '@trezor/components';
 import { TransactionNotification } from '@trezor/product-components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
@@ -74,14 +73,12 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
         const txAnchor = getTxAnchor(tx?.txid);
         dispatch(
-            goto(destinationRoute, {
-                params: {
+            goto({ routeName: destinationRoute, params: {
                     accountIndex: account.index,
                     accountType: account.accountType,
                     symbol: account.symbol,
                 },
-                anchor: txAnchor,
-            }),
+                anchor: txAnchor, }),
         );
 
         if (tx?.txid) {

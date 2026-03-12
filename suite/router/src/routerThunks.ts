@@ -4,7 +4,14 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
 
 import { AnchorType } from './anchors';
-import { findRoute, getAppWithParams, getRoute, getRouteHash, isEqualLocation } from './router';
+import {
+    RouterPathOptional,
+    findRoute,
+    getAppWithParams,
+    getRoute,
+    getRouteHash,
+    isEqualLocation,
+} from './router';
 import {
     anchorChange,
     routerLocationChange,
@@ -35,14 +42,7 @@ export const onBeforePopState = createThunk('@router/onBeforePopState', (_, { ge
  */
 export const onLocationChange = createThunk(
     '@router/onLocationChange',
-    (
-        location: { anchor?: AnchorType } & Partial<{
-            pathname: string;
-            hash: string;
-            search: string;
-        }>,
-        { dispatch, getState },
-    ) => {
+    (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState }) => {
         const unlocked = selectCanNavigate(getState());
         const router = selectRouter(getState());
         if (!unlocked && router.loaded) return;

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -11,7 +12,6 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -79,13 +79,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto('wallet-trading-buy', {
-                params: {
+            goto({ routeName: 'wallet-trading-buy', params: {
                     symbol: networkSymbol,
                     accountIndex,
                     accountType,
-                },
-            }),
+                }, }),
         );
     };
 
@@ -115,13 +113,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto('earn-supply', {
-                params: getEarnRouteParams({
+            goto({ routeName: 'earn-supply', params: getEarnRouteParams({
                     account: opportunity.account,
                     yieldId: opportunity.vault.id,
                     contractAddress: opportunity.vault.token.address ?? undefined,
-                }),
-            }),
+                }), }),
         );
     };
 
@@ -131,13 +127,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         dispatch(
-            goto('earn-withdraw', {
-                params: getEarnRouteParams({
+            goto({ routeName: 'earn-withdraw', params: getEarnRouteParams({
                     account: opportunity.account,
                     yieldId: opportunity.vault.id,
                     contractAddress: opportunity.vault.token.address ?? undefined,
-                }),
-            }),
+                }), }),
         );
     };
 

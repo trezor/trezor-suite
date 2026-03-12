@@ -1,4 +1,5 @@
-import { goto } from 'src/actions/suite/routerActions';
+import { goto } from '@suite/router';
+
 import { useDispatch } from 'src/hooks/suite';
 
 import { NavBackends } from './NavBackends';
@@ -11,7 +12,7 @@ export const CustomBackend = () => {
     const isCustomBackendIconVisible = enabledBackends.length > 0;
 
     const handleClick = () => {
-        dispatch(goto('settings-coins'));
+        dispatch(goto({ routeName: 'settings-coins' }));
     };
 
     return (

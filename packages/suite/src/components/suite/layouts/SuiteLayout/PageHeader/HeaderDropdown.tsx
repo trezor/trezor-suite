@@ -54,7 +54,7 @@ export const HeaderDropdown = ({
                   {
                       id: 'wallet-sign-verify',
                       callback: () => {
-                          goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
+                          goToWithAnalytics({ routeName: 'wallet-sign-verify', preserveParams: true });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: 'pencilLine' as const,
@@ -73,7 +73,7 @@ export const HeaderDropdown = ({
                     );
                 }
 
-                goToWithAnalytics('wallet-trading-buy');
+                goToWithAnalytics({ routeName: 'wallet-trading-buy' });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -100,9 +100,7 @@ export const HeaderDropdown = ({
                     );
                 }
 
-                goToWithAnalytics('wallet-trading-exchange', {
-                    preserveParams: false,
-                });
+                goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,

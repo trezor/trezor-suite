@@ -1,6 +1,7 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { closeModal } from '@suite/modal';
 import { recoveryRerunThunk } from '@suite/recovery';
+import { closeModalApp, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
@@ -20,7 +21,6 @@ import {
 } from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
-import * as routerActions from '../suite/routerActions';
 import * as suiteActions from '../suite/suiteActions';
 
 export type OnboardingAction =
@@ -118,7 +118,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
 
     dispatch(suiteActions.initialRunCompleted());
     dispatch(resetOnboarding());
-    dispatch(routerActions.closeModalApp(true));
+    dispatch(closeModalApp(true));
 
     dispatch(startDiscoveryThunk({ device }));
 
@@ -209,10 +209,10 @@ const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
 
     if (initialized) {
-        dispatch(routerActions.goto('recovery-index'));
+        dispatch(goto({ routeName: 'recovery-index' }));
     } else {
         if (router.app !== 'onboarding') {
-            dispatch(routerActions.goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         }
         dispatch(goToStep('recovery'));
         dispatch(addPath('recovery'));

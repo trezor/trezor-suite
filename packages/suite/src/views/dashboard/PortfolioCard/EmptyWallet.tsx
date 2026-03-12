@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectIsDeviceUsingPassphrase } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -41,7 +41,7 @@ export const EmptyWallet = () => {
                         iconLeft="plus"
                         size="small"
                         onClick={() => {
-                            dispatch(goto('settings-coins'));
+                            dispatch(goto({ routeName: 'settings-coins' }));
                         }}
                     >
                         <Translation id="TR_ADD" />

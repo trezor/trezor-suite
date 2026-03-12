@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
@@ -22,7 +23,6 @@ import {
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -102,7 +102,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto('wallet-trading-buy'));
+        dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
@@ -117,13 +117,11 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
 
     const navigateToStaking = () => {
         dispatch(
-            goto('wallet-staking', {
-                params: {
+            goto({ routeName: 'wallet-staking', params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,
-                },
-            }),
+                }, }),
         );
 
         analytics.report({

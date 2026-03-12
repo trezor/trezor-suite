@@ -46,7 +46,7 @@ export const HeaderActions = () => {
                             key="wallet-send"
                             icon="arrowUp"
                             onClick={() => {
-                                goToWithAnalytics('wallet-send', { preserveParams: true });
+                                goToWithAnalytics({ routeName: 'wallet-send', preserveParams: true });
                             }}
                             data-testid="@wallet/menu/wallet-send"
                         >
@@ -58,7 +58,7 @@ export const HeaderActions = () => {
                         key="wallet-receive"
                         icon="arrowDown"
                         onClick={() => {
-                            goToWithAnalytics('wallet-receive', { preserveParams: true });
+                            goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
                         }}
                         data-testid="@wallet/menu/wallet-receive"
                     >

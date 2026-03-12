@@ -1,5 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
     getNetwork,
@@ -7,7 +8,6 @@ import {
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -27,7 +27,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const networkName = getNetwork(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
-        dispatch(goto('wallet-receive', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));
         analytics.report({
             type: events.accountsEmptyAccountReceiveEvent.name,
             payload: {
@@ -41,7 +41,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto('wallet-trading-buy'));
+        dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

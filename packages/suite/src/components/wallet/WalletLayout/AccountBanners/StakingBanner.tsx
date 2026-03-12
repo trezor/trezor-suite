@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -17,7 +18,6 @@ import { Banner } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -91,7 +91,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const goToStakingTab = () => {
-        dispatch(goto('wallet-staking', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
 
         analytics.report({
             type: events.stakingNavigateEvent.name,

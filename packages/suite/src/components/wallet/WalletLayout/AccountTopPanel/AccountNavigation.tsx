@@ -24,7 +24,7 @@ export const AccountNavigation = () => {
         {
             id: 'wallet-index',
             callback: () => {
-                goToWithAnalytics('wallet-index', { preserveParams: true });
+                goToWithAnalytics({ routeName: 'wallet-index', preserveParams: true });
             },
             title: <Translation id="TR_NAV_TRANSACTIONS" />,
             isHidden: false,
@@ -33,7 +33,7 @@ export const AccountNavigation = () => {
         {
             id: 'wallet-tokens',
             callback: () => {
-                goToWithAnalytics('wallet-tokens', { preserveParams: true });
+                goToWithAnalytics({ routeName: 'wallet-tokens', preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !hasNetworkFeatures(account, 'tokens'),
@@ -43,7 +43,7 @@ export const AccountNavigation = () => {
         {
             id: 'wallet-nfts',
             callback: () => {
-                goToWithAnalytics('wallet-nfts', { preserveParams: true });
+                goToWithAnalytics({ routeName: 'wallet-nfts', preserveParams: true });
             },
             title: <Translation id="TR_NAV_NFTS" />,
             isHidden: !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
@@ -53,7 +53,7 @@ export const AccountNavigation = () => {
         {
             id: 'wallet-staking',
             callback: () => {
-                goToWithAnalytics('wallet-staking', { preserveParams: true });
+                goToWithAnalytics({ routeName: 'wallet-staking', preserveParams: true });
 
                 analytics.report({
                     type: events.stakingNavigateEvent.name,
@@ -71,7 +71,7 @@ export const AccountNavigation = () => {
         {
             id: 'wallet-details',
             callback: () => {
-                goToWithAnalytics('wallet-details', { preserveParams: true });
+                goToWithAnalytics({ routeName: 'wallet-details', preserveParams: true });
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             'data-testid': `@wallet/menu/wallet-details`,

@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
+import { goto } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
@@ -23,7 +24,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
 import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
@@ -284,7 +284,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             setLoading(false);
             if (result?.success) {
                 resetContext();
-                dispatch(goto('wallet-index', { preserveParams: true }));
+                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);

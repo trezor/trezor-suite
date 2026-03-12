@@ -3,11 +3,11 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
+import { closeModalApp, goto } from '@suite/router';
 import { selectDeviceThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 
-import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
@@ -40,7 +40,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     }) => {
         onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
-        dispatch(closeModalApp());
+        dispatch(closeModalApp(undefined));
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
             startDiscoveryThunk({
@@ -49,7 +49,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 isAddingExistingWallet: isExisting,
             }),
         );
-        dispatch(goto('suite-index'));
+        dispatch(goto({ routeName: 'suite-index' }));
     };
 
     const ExpandedPassphraseContainer = () => (

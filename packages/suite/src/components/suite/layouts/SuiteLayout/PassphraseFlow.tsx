@@ -1,8 +1,8 @@
 import { MODAL_CONTEXT_DEVICE, MODAL_CONTEXT_NONE } from '@suite/modal';
+import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
-import { closeModalApp } from '../../../../actions/suite/routerActions';
 import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
 import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
@@ -55,7 +55,7 @@ type ForegroundAppModalProps = {
 const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(closeModalApp());
+    const onCancel = () => dispatch(closeModalApp(undefined));
 
     // IMPORTANT: This is the place where all the modals that need to rendered OVER
     //            Wallet-Switch needs to be.

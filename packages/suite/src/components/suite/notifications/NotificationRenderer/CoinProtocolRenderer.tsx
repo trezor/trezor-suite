@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectRouteName } from '@suite/router';
+import { goto , selectRouteName } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -16,7 +16,6 @@ import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
 import type { NotificationRendererProps } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
@@ -63,23 +62,19 @@ export const CoinProtocolRenderer = ({
                 if (networkAccounts.length === 1) {
                     const account = networkAccounts[0];
                     dispatch(
-                        goto('wallet-send', {
-                            params: {
+                        goto({ routeName: 'wallet-send', params: {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
                                 accountType: account.accountType,
-                            },
-                        }),
+                            }, }),
                     );
                 } else {
                     dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto('suite-index', {
-                            params: {
+                        goto({ routeName: 'suite-index', params: {
                                 modal: 'send',
                                 networkSymbol,
-                            },
-                        }),
+                            }, }),
                     );
                 }
             }

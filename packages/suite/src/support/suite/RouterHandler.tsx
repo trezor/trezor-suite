@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 
 import { Action } from 'history';
 
-import { selectRouterLoaded } from '@suite/router';
+import { onBeforePopState , onLocationChange, selectRouterLoaded } from '@suite/router';
 
-import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useSuiteServices } from '../SuiteServicesProvider';
