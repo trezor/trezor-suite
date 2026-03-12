@@ -220,6 +220,7 @@ export type UnreadableDevice = BaseDevice & {
 };
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
+
 export type Features = PROTO.Features;
 
 export type DisplayRotation = PROTO.DisplayRotation;
