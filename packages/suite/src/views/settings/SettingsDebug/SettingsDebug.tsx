@@ -22,6 +22,7 @@ import { Devkit } from './Devkit';
 import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSelect';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
+import { McpServer } from './McpServer';
 import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
 import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
@@ -121,6 +122,7 @@ export const SettingsDebug = () => {
             <SettingsSection isBelowLaptop={isBelowLaptop} title="TrezorConnect">
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
+                {isDesktop() && <McpServer />}
             </SettingsSection>
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
