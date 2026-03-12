@@ -10,6 +10,7 @@ on:
         default: false
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   IS_CODESIGN_BUILD: "true"
   DESKTOP_APP_NAME: "Trezor-Suite"
   APPLEID: ${{ secrets.APPLEID }}
@@ -58,7 +59,7 @@ jobs:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 
@@ -129,7 +130,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
@@ -175,12 +176,12 @@ jobs:
         with:
           lfs: true
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -234,7 +235,7 @@ jobs:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 

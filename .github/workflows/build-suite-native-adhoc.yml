@@ -12,6 +12,9 @@ on:
         description: Select platform to run build
         required: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   adhoc-build:
     if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
@@ -29,7 +32,7 @@ jobs:
         run: |
           echo "Selected platform: ${{ github.event.inputs.PLATFORM }}"
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn

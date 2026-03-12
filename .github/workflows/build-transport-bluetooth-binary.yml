@@ -8,6 +8,9 @@ on:
         type: boolean
         default: false
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-bluetooth-binary:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
           submodules: true
 
       - name: Setup Docker
-        uses: docker/setup-docker-action@v4
+        uses: docker/setup-docker-action@v5
 
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth

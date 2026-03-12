@@ -19,6 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 

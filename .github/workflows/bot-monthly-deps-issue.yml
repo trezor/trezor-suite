@@ -10,6 +10,9 @@ on:
     - cron: "0 2 1 * *"
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   create_deps_issues:
     if: github.repository == 'trezor/trezor-suite'

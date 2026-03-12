@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release-coin-icons:
     if: github.repository == 'trezor/trezor-suite'
@@ -34,7 +37,7 @@ jobs:
           yarn download-crypto-icons
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_icons
           aws-region: ${{ env.AWS_REGION }}

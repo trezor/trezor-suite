@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   code-ql-analyze:
     if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'

@@ -75,7 +75,7 @@ runs:
 
     - name: Find skipped tests comment
       if: ${{ steps.check-previous-runs.outputs.skip_tests == 'true' }}
-      uses: peter-evans/find-comment@v3
+      uses: peter-evans/find-comment@v4
       id: find-comment
       with:
         token: ${{ inputs.github_token }}
@@ -85,7 +85,7 @@ runs:
 
     - name: Post skipped tests comment
       if: ${{ steps.check-previous-runs.outputs.skip_tests == 'true' }}
-      uses: peter-evans/create-or-update-comment@v4
+      uses: peter-evans/create-or-update-comment@v5
       with:
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
         token: ${{ inputs.github_token }}

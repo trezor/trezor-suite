@@ -22,6 +22,7 @@ permissions:
   contents: read
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NODE_ENV: "test"
   DETOX_BINARY_PATH: ../../node_modules/.bin/detox
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -38,13 +39,13 @@ jobs:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Setup node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -71,14 +72,14 @@ jobs:
         run: yarn sign-config
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: suite-native/app/ios/Pods
           key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
           restore-keys: pods-
 
       - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: suite-native/app/ios/build
           key: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-${{ github.sha }}
@@ -109,13 +110,13 @@ jobs:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -155,7 +156,7 @@ jobs:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Cache Detox framework
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Library/Detox
           key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}

@@ -7,6 +7,9 @@ permissions:
 on:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   rollback-connect-production:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
@@ -17,7 +20,7 @@ jobs:
       LATEST_VERSION: 9
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1

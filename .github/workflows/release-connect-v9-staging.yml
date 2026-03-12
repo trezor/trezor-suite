@@ -7,6 +7,9 @@ permissions:
 on:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
   extract-version:
@@ -21,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 
@@ -55,7 +58,7 @@ jobs:
           ref: release/connect/${{  needs.extract-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 
@@ -84,7 +87,7 @@ jobs:
           ref: release/connect/${{  needs.extract-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 

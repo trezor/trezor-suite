@@ -19,6 +19,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release-suite-definitions:
     environment: ${{ github.event.inputs.environment }}
@@ -32,7 +35,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ github.event.inputs.environment == 'develop-definitions' && 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_definitions' || 'arn:aws:iam::538326561891:role/gh_actions_suite_production_definitions' }}
           aws-region: ${{ env.AWS_REGION }}

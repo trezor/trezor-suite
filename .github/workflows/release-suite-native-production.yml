@@ -21,6 +21,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   ios:
     if: ${{ (github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'iOS & Android') && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
@@ -31,7 +34,7 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -61,7 +64,7 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -92,7 +95,7 @@ jobs:
       EXPO_PUBLIC_ENVIRONMENT: production
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -102,7 +105,7 @@ jobs:
           eas-version: 16.24.1
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_mobile_prod_deploy
           aws-region: eu-central-1

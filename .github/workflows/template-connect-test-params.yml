@@ -45,6 +45,9 @@ on:
         type: "string"
         required: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     name: "${{ inputs.testDescription }}"
@@ -55,7 +58,7 @@ jobs:
         with:
           submodules: true
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn

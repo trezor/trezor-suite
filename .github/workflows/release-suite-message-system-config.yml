@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release-config:
     if: ${{ github.repository == 'trezor/trezor-suite' && (github.ref == 'refs/heads/release-message-system-production' || github.ref == 'refs/heads/release-message-system-develop') }}
@@ -26,7 +29,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ env.ROLE_TO_ASSUME  }}
           aws-region: ${{ env.AWS_REGION }}

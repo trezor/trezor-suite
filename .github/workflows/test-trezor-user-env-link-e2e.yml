@@ -16,6 +16,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   e2e-test-trezor-user-env-link:
     if: github.repository == 'trezor/trezor-suite'
@@ -27,7 +30,7 @@ jobs:
           ref: ${{github.event.after}}
           fetch-depth: 2
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn

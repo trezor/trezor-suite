@@ -13,6 +13,9 @@ concurrency:
   group: manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   run-e2e-manual-test-publisher:
     if: github.repository == 'trezor/trezor-suite'
@@ -32,13 +35,13 @@ jobs:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules/${{ github.ref }}/${{github.run_id}}

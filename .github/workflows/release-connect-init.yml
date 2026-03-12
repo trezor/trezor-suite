@@ -12,6 +12,9 @@ on:
         required: true
         type: string
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
   extract-version:
@@ -28,7 +31,7 @@ jobs:
           ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
 

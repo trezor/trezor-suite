@@ -35,6 +35,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
@@ -115,7 +116,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
       - name: Generate GitHub App token

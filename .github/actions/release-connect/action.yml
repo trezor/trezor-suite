@@ -48,13 +48,13 @@ runs:
       run: git lfs pull --include "packages/connect-data/files/**/*"
 
     - name: Configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v5
       with:
         role-to-assume: ${{ inputs.awsRoleToAssume }}
         aws-region: ${{ inputs.awsRegion }}
 
     - name: Setup node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version-file: ".nvmrc"
         cache: yarn
