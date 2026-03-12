@@ -44,7 +44,7 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "react": "19.1.0",
-        "react-hook-form": "^7.71.1",
+        "react-hook-form": "^7.71.2",
         "react-redux": "^9.2.0",
         "web3-utils": "^4.3.2",
         "zod": "4.3.6"
