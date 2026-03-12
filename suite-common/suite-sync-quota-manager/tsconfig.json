@@ -14,7 +14,6 @@
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" },
