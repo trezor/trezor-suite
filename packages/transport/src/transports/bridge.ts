@@ -16,9 +16,10 @@ import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { ping } from '../pinger/ping';
 import { parseThpMessage } from '../thp/receive';
-import {
+import type {
     AnyError,
     AsyncResultWithTypedError,
+    BridgeCommonErrors,
     BridgeProtocolMessage,
     Descriptor,
     Session,
@@ -42,11 +43,6 @@ type BridgeEndpoint =
     | '/enumerate'
     | '/release'
     | '/read';
-
-export type BridgeCommonErrors =
-    | typeof ERRORS.HTTP_ERROR
-    | typeof ERRORS.WRONG_RESULT_TYPE
-    | typeof ERRORS.UNEXPECTED_ERROR;
 
 type R = Extract<
     ReturnType<
