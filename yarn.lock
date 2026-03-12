@@ -14929,6 +14929,8 @@ __metadata:
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/locks": "workspace:*"
+    "@suite/modal": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     history: "npm:^5.3.0"
   languageName: unknown

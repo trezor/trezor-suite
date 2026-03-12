@@ -10,6 +10,7 @@ import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-web
 import {
     HistoryDep,
     SuiteRouterHistoryDep,
+    asSuiteRouterHistoryService,
     createSuiteRouterHistory,
     selectRoute,
     selectRouterApp,
@@ -318,4 +319,4 @@ export const extraDependencies: ExtraDependenciesStatic = {
 // extra.services do contain all the needed services, but in order to make the typing work properly,
 // we'd need to define dispatch() for each platform separately
 export const asSuiteServices = (services: CommonServices): SuiteServices =>
-    services as SuiteServices;
+    asSuiteRouterHistoryService(services) as SuiteServices;
