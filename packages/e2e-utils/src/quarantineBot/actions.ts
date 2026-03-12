@@ -1,4 +1,4 @@
-import type { Action, TestExplorerItem, TestResultItem } from './types';
+import type { Action, TestExplorerItem, TestResultItem } from '../currentsApi/types';
 
 /**
  * Normalise a test's title path into individual parts.

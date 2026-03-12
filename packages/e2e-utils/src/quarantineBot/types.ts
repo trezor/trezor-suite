@@ -1,23 +1,9 @@
-export type {
-    Action,
-    ActionsListResponse,
-    TestExplorerItem,
-    TestExplorerMetrics,
-    TestResultCommit,
-    TestResultItem,
-    TestResultsResponse,
-    TestsExplorerResponse,
-    RuleMatcherCondition,
-    RuleMatcher,
-    RuleAction,
-} from '../currentsApi/types';
-
 export type SlackEvent =
     | {
           kind: 'quarantined';
           projectId: string;
           titlePath: string[];
-          signature: string;
+          signature: string | undefined;
           actionId: string;
           failures: number;
           executions: number;
@@ -26,7 +12,12 @@ export type SlackEvent =
           kind: 'unquarantined';
           projectId: string;
           titlePath: string[];
-          signature: string;
+          signature: string | undefined;
           passes: number;
           executions: number;
       };
+
+export interface FailedTestFromRun {
+    titlePath: string[];
+    spec: string;
+}

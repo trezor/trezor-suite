@@ -1,7 +1,12 @@
 import { CURRENTS_API_BASE, DEVELOP_BRANCH, TEST_RESULTS_PAGE_SIZE } from './config';
+import { SpecFetchMode } from './types';
 import type {
     Action,
     ActionsListResponse,
+    RawInstanceTest,
+    RunData,
+    RunResponse,
+    RunTest,
     TestExplorerItem,
     TestResultItem,
     TestResultsResponse,
@@ -56,7 +61,7 @@ export async function currentsRequest<T>(
  * Pending results are stripped — they represent incomplete runs and would
  * skew failure-rate calculations.
  */
-async function* paginateTestResults(
+export async function* paginateTestResults(
     signature: string,
     lookbackDays: number,
 ): AsyncGenerator<TestResultItem[]> {
@@ -205,4 +210,100 @@ export function createAction(
         method: 'POST',
         body: JSON.stringify(body),
     });
+}
+
+/**
+ * Fetch the individual test results for a spec instance.
+ * Currents stores them separately under GET /instances/{instanceId};
+ * the run endpoint only exposes aggregate stats per spec.
+ * Normalises the minified `_s` status field into a readable `state`.
+ */
+async function getInstanceTests(instanceId: string): Promise<RunTest[]> {
+    const response = await currentsRequest<{
+        status: string;
+        data: { results?: { tests?: RawInstanceTest[] } };
+    }>(`/instances/${instanceId}`);
+    const tests = response.data.results?.tests ?? [];
+
+    return tests.map(t => ({
+        testId: t.testId,
+        title: t.title,
+        state: t._s,
+    }));
+}
+
+/**
+ * Fetch a single run by its ID.
+ * Only fetches individual instances for specs that match `mode`, reducing
+ * the number of API calls for large runs:
+ *  - `SpecFetchMode.FailuresOnly` – only specs with ≥1 failure  (default for manual quarantine)
+ *  - `SpecFetchMode.PassesOnly`   – only specs with ≥1 pass     (default for nightly unquarantine)
+ *  - `SpecFetchMode.All`          – fetch every instance
+ */
+export async function getRunById(runId: string, mode: SpecFetchMode): Promise<RunData> {
+    const response = await currentsRequest<RunResponse>(`/runs/${runId}`);
+    const run = response.data;
+
+    const specsToFetch = run.specs.filter(spec => {
+        const stats = spec.results?.stats;
+        if (mode === SpecFetchMode.FailuresOnly) return (stats?.failures ?? 0) > 0;
+        if (mode === SpecFetchMode.PassesOnly) return (stats?.passes ?? 0) > 0;
+
+        return true;
+    });
+
+    await Promise.all(
+        specsToFetch.map(async spec => {
+            const tests = await getInstanceTests(spec.instanceId);
+            spec.results = { ...spec.results, tests };
+        }),
+    );
+
+    return run;
+}
+
+/**
+ * Fetch just the run ID for the latest completed run on the specified branch,
+ * without loading any spec instance details. Returns null if no run exists.
+ */
+export async function getLatestRunIdOnBranch(
+    projectId: string,
+    branch: string,
+): Promise<string | null> {
+    const query = [`projectId=${projectId}`, `branch=${encodeURIComponent(branch)}`].join('&');
+    try {
+        const response = await currentsRequest<RunResponse>(`/runs/find?${query}`);
+
+        return response.data.runId;
+    } catch (err) {
+        if (err instanceof Error && err.message.includes('→ 404:')) {
+            return null;
+        }
+        throw err;
+    }
+}
+
+/**
+ * Fetch all individual test-result entries for `signature` that belong to
+ * the given `runId`. Paginates within the lookback window and stops as soon
+ * as a full page contains no entries from the target run (results are
+ * newest-first and run entries cluster together in time).
+ */
+export async function getResultsFromRun(
+    signature: string,
+    runId: string,
+    lookbackDays: number,
+): Promise<TestResultItem[]> {
+    const results: TestResultItem[] = [];
+    for await (const page of paginateTestResults(signature, lookbackDays)) {
+        const matching = page.filter(r => r.runId === runId);
+        results.push(...matching);
+        // Once we see a non-empty page with no matching entries the run has
+        // scrolled out of view — no need to paginate further.
+        if (page.length > 0 && matching.length === 0) {
+            break;
+        }
+    }
+
+    return results;
 }

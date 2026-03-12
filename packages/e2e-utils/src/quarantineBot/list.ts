@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { extractKeyFromAction } from './actions';
 import { AUTO_QUARANTINE_PREFIX, PROJECTS } from './config';
-import type { Action } from './types';
 import { getAllQuarantineActions } from '../currentsApi/api';
+import type { Action } from '../currentsApi/types';
 
 interface QuarantinedTestEntry {
     name: string;
