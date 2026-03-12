@@ -67,10 +67,12 @@ export class MetadataPage {
         await this.settingsPage.experimentalFeaturesSwitch.click();
         await this.settingsPage.suiteSyncCheckbox.click();
 
-        // Configure Suite Sync relay URL in Debug settings
+        // Configure Suite Sync relay and quota manager URLs in Debug settings
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncUrlInput.fill(RELAY_URL);
         await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();
+        await this.settingsPage.debugTab.quotaManagerUrlInput.fill(QUOTA_URL);
+        await this.settingsPage.debugTab.quotaManagerUrlSaveButton.click();
 
         // Select Suite Sync as the labeling method
         await this.settingsPage.navigateTo('application');
