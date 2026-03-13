@@ -9,9 +9,9 @@ type ElementAttributes = {
     value?: string;
 };
 
-type ElementOrMatcher = Detox.IndexableNativeElement | Detox.NativeMatcher;
+type ElementOrMatcher = Detox.NativeElement | Detox.NativeMatcher;
 
-const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.IndexableNativeElement => {
+const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.NativeElement => {
     const anyV = v as any;
 
     return !!anyV && (typeof anyV.tap === 'function' || typeof anyV.atIndex === 'function');

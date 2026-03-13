@@ -6,7 +6,8 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { onTabBar } from './tabBarActions';
 import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
-const DEV_EVOLU_URL = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
+// On Android emulator, the host machine is reachable at 10.0.2.2, an alias for localhost.
+const LOCAL_RELAY_URL = 'http://10.0.2.2:4000';
 
 type SettingsOptions =
     | 'preferences'
@@ -94,11 +95,11 @@ class SettingsActions {
         await ejectWalletElement.tap();
     }
 
-    async enableSuiteSync(url = DEV_EVOLU_URL) {
+    async enableSuiteSync(url = LOCAL_RELAY_URL) {
         await this.openSection('dev-utils');
         const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
         await scrollUntilVisible(saveSuiteSyncUrl);
-        await element(by.id('@suiteSync/custom-relay-url-input')).typeText(url);
+        await element(by.id('@suiteSync/custom-relay-url-input')).replaceText(url);
         // Workaround close keyboard by clicking on section header
         await element(by.id('@suiteSync/header')).tap();
         await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
@@ -119,8 +120,12 @@ class SettingsActions {
         await onTabBar.tapBackButton();
 
         await this.openSection('suite-sync');
+        await wait(1000);
         await element(by.id('settings/suite-sync-touchable-row')).tap();
+        await wait(1000);
+        await waitForVisible(by.id('@continue-on-trezor'));
         await TrezorUserEnvLink.pressYes();
+        await waitForVisible(by.id('settings/suite-sync-touchable-row'));
     }
 }
 

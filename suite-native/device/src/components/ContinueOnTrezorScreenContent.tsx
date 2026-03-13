@@ -43,7 +43,7 @@ export const ContinueOnTrezorScreenContent = ({
     const deviceModel = useSelector(selectDeviceModel);
 
     return (
-        <VStack flex={1} spacing="sp24">
+        <VStack testID="@continue-on-trezor" flex={1} spacing="sp24">
             <Text variant="headline-md" style={applyStyle(titleStyle)}>
                 <Translation id={titleTxKey} />
             </Text>

@@ -155,7 +155,12 @@ export const TransactionListItemContainer = ({
             onPress={handleNavigateToTransactionDetail}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
-            <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+            <Box
+                testID={`@transactions/item/${txid}`}
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+            >
                 <Box style={applyStyle(descriptionBoxStyle)}>
                     <TransactionIcon
                         symbol={coinSymbol}
