@@ -435,6 +435,23 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
     },
 );
 
+export const forgetDeviceThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/forgetDevice`,
+    async (_, { dispatch, getState }) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+
+        const devices = selectDevices(getState());
+        const deviceInstances = getDeviceInstances(device, devices);
+
+        await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device.id }));
+
+        deviceInstances.forEach(instance => {
+            dispatch(deviceActions.forgetDevice({ device: instance }));
+        });
+    },
+);
+
 /**
  * Handles the necessary cleanup after a device has been wiped.
  * This includes forgetting old/new device instances, clearing persistent data,
