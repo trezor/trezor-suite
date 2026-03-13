@@ -52,6 +52,8 @@ const PRODUCTION_SECURITY_HEADERS = {
         'style-src': ['self', 'unsafe-inline'],
         'style-src-elem': ['self', 'unsafe-inline'],
         'img-src': ['self', 'blob:', 'data:', 'https://*.trezor.io'],
+        // connect-src is permissive because custom backends need arbitrary domains.
+        // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
         'script-src': ['self', 'unsafe-eval'],
