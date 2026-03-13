@@ -6,6 +6,7 @@ import { AnalyticsLogging } from '../components/AnalyticsLogging';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
 import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
+import { FillSuiteSyncQuota } from '../components/FillSuiteSyncQuota';
 import { FirmwareSourceCard } from '../components/FirmwareSourceCard';
 import { InfoCard } from '../components/InfoCard';
 import { MessageSystemCard } from '../components/MessageSystemCard';
@@ -33,6 +34,7 @@ export const DevUtilsScreen = () => (
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />
             <SuiteSyncQuotaManager />
+            <FillSuiteSyncQuota />
             <DebuggingCard />
             <DangerZoneCard />
         </VStack>
