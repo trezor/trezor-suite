@@ -1,9 +1,9 @@
 import { thp as protocolThp } from '@trezor/protocol';
 
-import type { Device } from '../Device';
 import { thpCall } from './thpCall';
+import type { IDevice } from '../../types/idevice';
 
-export const createThpSession = async (device: Device, deriveCardano: boolean) => {
+export const createThpSession = async (device: IDevice, deriveCardano: boolean) => {
     let passphrase: protocolThp.ThpCreateNewSession;
     if (device.features.passphrase_protection === false) {
         passphrase = { passphrase: '' };

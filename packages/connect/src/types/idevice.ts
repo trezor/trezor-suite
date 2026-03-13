@@ -1,4 +1,5 @@
 import { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     DecodedTrezorPushNotification,
     TransportProtocol,
@@ -20,6 +21,20 @@ import type {
 } from './device';
 import type { FirmwareReleaseConfigInfo } from './firmware';
 import type { TypedCallProvider } from './typed-call-provider';
+import type { DeviceCommands } from '../device/DeviceCommands';
+import type {
+    DeviceButtonRequestPayload,
+    DeviceThpCredentialsChangedPayload,
+    DeviceThpPairingPayload,
+    DeviceThpPairingStatus,
+    DeviceVersionChanged,
+} from '../events/device';
+import type {
+    UiResponsePassphrase,
+    UiResponsePin,
+    UiResponseThpPairingTag,
+    UiResponseWord,
+} from '../events/ui-response';
 
 /**
  * Events emitted on the `device.lifecycle` emitter (separate from the main device TypedEmitter).
@@ -36,6 +51,45 @@ export interface DeviceLifecycleEvents {
     'device-changed': void;
     'device-disconnect': void;
     'device-trezor_push_notification': DecodedTrezorPushNotification;
+}
+
+/**
+ * Result type for device prompt callbacks.
+ */
+export type PromptResult<T> = { success: true; payload: T } | { success: false; error: Error };
+
+/**
+ * Events emitted on the main device TypedEmitter (not the lifecycle emitter).
+ *
+ * String literal keys MUST match the corresponding `DEVICE.*` constants in `events/device.ts`.
+ * Defined here so that `IDevice.emit` / `IDevice.prompt` can be typed without importing
+ * from the device/Device.ts module, which would create circular dependencies.
+ */
+export interface DeviceEvents {
+    pin: {
+        type: PROTO.PinMatrixRequestType | undefined;
+        callback: (response: PromptResult<UiResponsePin['payload']>) => void;
+    };
+    word: {
+        type: PROTO.WordRequestType;
+        callback: (response: PromptResult<UiResponseWord['payload']>) => void;
+    };
+    passphrase: {
+        callback: (response: PromptResult<UiResponsePassphrase['payload']>) => void;
+    };
+    passphrase_on_device: void;
+    button: { device: IDevice; payload: DeviceButtonRequestPayload };
+    'device-firmware_version_changed': DeviceVersionChanged['payload'];
+    'device-trezor_push_notification': {
+        device: Device;
+        payload: DecodedTrezorPushNotification;
+    };
+    thp_pairing: {
+        payload: DeviceThpPairingPayload;
+        callback: (response: PromptResult<UiResponseThpPairingTag['payload']>) => void;
+    };
+    'device-thp_credentials_changed': DeviceThpCredentialsChangedPayload;
+    'device-thp_pairing_status_changed': DeviceThpPairingStatus;
 }
 
 /**
@@ -103,6 +157,7 @@ export interface IDevice {
     getAuthenticityChecks(): KnownDevice['authenticityChecks'];
     setAuthenticityChecks(firmwareHash: FirmwareHashCheckResult | null): void;
     getCurrentSession(): TypedCallProvider;
+    getCommands(): ReturnType<typeof DeviceCommands>;
 
     // ─── Status predicates ──────────────────────────────────────────────────────
     isUnacquired(): boolean;
@@ -119,4 +174,12 @@ export interface IDevice {
 
     // ─── Serialization ──────────────────────────────────────────────────────────
     toMessageObject(): Device;
+
+    // ─── Event methods ──────────────────────────────────────────────────────────
+    emit: TypedEmitter<DeviceEvents>['emit'];
+    prompt<T extends 'pin' | 'passphrase' | 'word' | 'thp_pairing'>(
+        type: T,
+        args: Omit<DeviceEvents[T], 'callback'>,
+    ): Promise<Parameters<DeviceEvents[T]['callback']>[0]>;
+    getFeatures(): Promise<void>;
 }

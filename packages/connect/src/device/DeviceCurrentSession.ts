@@ -7,8 +7,8 @@ import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transpor
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { scheduleAction } from '@trezor/utils';
 
-import { Device } from './Device';
 import { DEVICE } from '../events';
+import type { IDevice } from '../types/idevice';
 import type { TypedCallProvider } from '../types/typed-call-provider';
 import { initLog } from '../utils/debug';
 
@@ -67,7 +67,7 @@ const fail = (msg: string) =>
 export type { TypedCallProvider } from '../types/typed-call-provider';
 
 export class DeviceCurrentSession implements TypedCallProvider {
-    private readonly device: Device;
+    private readonly device: IDevice;
     private readonly transport: Transport;
     private readonly session: Session;
 
@@ -75,7 +75,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
-    constructor(device: Device, transport: Transport, session: Session) {
+    constructor(device: IDevice, transport: Transport, session: Session) {
         this.device = device;
         this.transport = transport;
         this.session = session;

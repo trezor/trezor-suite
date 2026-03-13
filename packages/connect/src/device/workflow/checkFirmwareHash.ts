@@ -6,9 +6,9 @@ import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../
 import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
 import { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
+import type { IDevice } from '../../types/idevice';
 import { Log } from '../../utils/debug';
 import { getFirmwareType } from '../../utils/firmwareUtils';
-import type { Device } from '../Device';
 
 const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
     success: false,
@@ -17,7 +17,7 @@ const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown)
 });
 
 type Context = {
-    device: Device;
+    device: IDevice;
     logger: Log;
 };
 
