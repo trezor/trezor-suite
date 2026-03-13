@@ -78,6 +78,20 @@ describe('ExchangePreviewContinueButton', () => {
         expect(getByText('Continue')).toBeDisabled();
     });
 
+    it('should keep continue button enabled when dex quote approval prefetch is loading', async () => {
+        const preloadedState = getPreloadedState();
+        preloadedState!.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
+            exchangeQuotes[0].quoteId;
+
+        const { getByTestId, queryByTestId } = await renderExchangePreviewContinueButton(
+            {},
+            preloadedState,
+        );
+
+        expect(getByTestId('@trading/exchange-preview/continue-button')).not.toBeDisabled();
+        expect(queryByTestId('@trading/exchange-preview/continue-button/loading')).toBeNull();
+    });
+
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
