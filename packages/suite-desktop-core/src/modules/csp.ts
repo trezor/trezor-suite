@@ -17,7 +17,9 @@ const createCspRules = ({ nonce }: CreateCspRulesParams) => [
     "default-src 'self'",
     "script-src 'self'",
     `style-src 'self' 'nonce-${nonce}'`,
-    // Allow all API calls (Can't be restricted bc of custom backends)
+    // connect-src is permissive because custom backends need arbitrary domains.
+    // The request-filter module provides additional domain-level allowlisting.
+    // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
     'connect-src data: *',
     // Allow images from trezor.io
     "img-src 'self' blob: data: https://*.trezor.io",
