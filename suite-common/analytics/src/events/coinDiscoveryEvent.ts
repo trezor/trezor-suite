@@ -12,6 +12,7 @@ type Attributes = {
     tokenSymbols: AttributeDef<TokenSymbol[]>;
     tokenAddresses: AttributeDef<TokenAddress[]>;
     numberOfStakedAccounts: AttributeDef<number>;
+    stakingProviders: AttributeDef<string[]>;
 };
 
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
@@ -71,6 +72,13 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.2.3', notes: 'added on mobile' },
             ],
             description: 'Number of staked accounts',
+        },
+        stakingProviders: {
+            changelog: [
+                { version: '26.4.1', notes: 'added on desktop' },
+                { version: '26.4.1', notes: 'added on mobile' },
+            ],
+            description: 'Staking providers detected for the coin',
         },
     },
 };

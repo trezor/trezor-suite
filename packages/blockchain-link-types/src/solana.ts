@@ -8,6 +8,7 @@ export type SolanaStakingAccount = {
     status: string;
     stake?: string;
     rentExemptReserve: string;
+    voterPubkey?: string;
 };
 
 export const StakeState = {
