@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { STEP } from '@suite/onboarding';
+import { STEP, updateOnboardingAnalytics, updateOnboardingBackupType } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { goToNextStep, goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';
@@ -26,7 +27,6 @@ export const ResetDeviceStep = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
-    const { goToPreviousStep, goToNextStep, updateOnboardingAnalytics, updateOnboardingBackupType } = useOnboarding();
 
     const dispatch = useDispatch();
 
@@ -46,10 +46,10 @@ export const ResetDeviceStep = () => {
             setSubmitted(true);
 
             if (result?.success) {
-                goToNextStep(STEP.ID_SECURITY_STEP);
+                dispatch(goToNextStep(STEP.ID_SECURITY_STEP));
             }
         },
-        [dispatch, goToNextStep],
+        [dispatch],
     );
 
     const handleSubmit = useCallback(
@@ -75,10 +75,10 @@ export const ResetDeviceStep = () => {
                     break;
             }
 
-            updateOnboardingBackupType(type);
-            updateOnboardingAnalytics({ seedType: type });
+            dispatch(updateOnboardingBackupType(type));
+            dispatch(updateOnboardingAnalytics({ seedType: type }));
         },
-        [updateOnboardingBackupType, updateOnboardingAnalytics, onResetDevice],
+        [dispatch, onResetDevice],
     );
 
     useEffect(() => {
@@ -139,7 +139,9 @@ export const ResetDeviceStep = () => {
             outerActions={
                 !isWaitingOnDevice && (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
-                    <OnboardingCard.SecondaryButton onClick={() => goToPreviousStep()}>
+                    <OnboardingCard.SecondaryButton
+                        onClick={() => dispatch(goToPreviousStep())}
+                    >
                         <Translation id="TR_BACK" />
                     </OnboardingCard.SecondaryButton>
                 )
@@ -148,7 +150,9 @@ export const ResetDeviceStep = () => {
             {!isWaitingOnDevice && canChoseBackupType && (
                 <SelectBackupType
                     selected={backupType}
-                    onOpen={() => updateOnboardingAnalytics({ wasSelectTypeOpened: true })}
+                    onOpen={() =>
+                        dispatch(updateOnboardingAnalytics({ wasSelectTypeOpened: true }))
+                    }
                     onSelect={setBackupType}
                     isDisabled={isDeviceLocked}
                     data-testid="@onboarding/select-seed-type-open-dialog"

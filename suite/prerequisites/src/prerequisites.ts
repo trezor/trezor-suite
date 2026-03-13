@@ -1,10 +1,5 @@
 import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
-import { type RouterState } from '@suite/router';
-
-import type {  TrezorDevice } from 'src/types/suite';
-
-
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 export const prerequisiteTypes = [
     'no-transport',

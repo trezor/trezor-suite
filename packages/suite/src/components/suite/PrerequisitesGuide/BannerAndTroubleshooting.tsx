@@ -1,3 +1,4 @@
+import { type PrerequisiteType } from '@suite/prerequisites';
 import { Box } from '@trezor/components';
 
 import { DeviceAcquire } from './DeviceAcquire';
@@ -16,7 +17,6 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { NoTransport } from './NoTransport';
-import { type PrerequisiteType } from '../../../utils/suite/prerequisites';
 
 type BannerAndTroubleshootingProps = {
     prerequisite: PrerequisiteType | null;

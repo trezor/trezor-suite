@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { events } from '@suite/analytics';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { selectIsOnboardingActive } from '@suite/onboarding';
+import { selectIsOnboardingActive, updateOnboardingAnalytics } from '@suite/onboarding';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
 import {
@@ -41,11 +41,12 @@ import { TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { type SecurityChecklistItem } from './types';
+import { goToNextStep, goToSuite, recoveryRerun } from '../../../../actions/onboarding/onboardingActions';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
@@ -143,7 +144,6 @@ const SecurityCheckContent = ({
     const { contentWidth } = useResponsiveContext();
     const [isFailed, setIsFailed] = useState(false);
 
-    const { goToNextStep, rerun, updateOnboardingAnalytics } = useOnboarding();
     const dispatch = useDispatch();
 
     const initialized = !!device?.features?.initialized;
@@ -182,9 +182,9 @@ const SecurityCheckContent = ({
         });
 
         if (isRecoveryInProgress) {
-            rerun();
+            dispatch(recoveryRerun());
         } else if (isOnboardingActive) {
-            goToNextStep('firmware');
+            dispatch(goToNextStep('firmware'));
             // ensure that we are not stuck in the 'start' FullscreenApp
             dispatch(goto({ routeName: 'onboarding-index' }));
         } else {
@@ -195,11 +195,11 @@ const SecurityCheckContent = ({
     // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
     useEffect(() => {
         if (!initialized && !isRecoveryInProgress) {
-            updateOnboardingAnalytics({
+            dispatch(updateOnboardingAnalytics({
                 startTime: Date.now(),
-            });
+            }));
         }
-    }, [initialized, isRecoveryInProgress, updateOnboardingAnalytics]);
+    }, [initialized, isRecoveryInProgress, dispatch]);
 
     const humanizedModelColor = useMemo(
         () =>
@@ -308,7 +308,6 @@ export const SecurityCheck = () => {
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
     const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
     const dispatch = useDispatch();
-    const { goToSuite } = useOnboarding();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const [checkedDevices, setCheckedDevices] = useState<string[]>([]);
 
@@ -333,7 +332,7 @@ export const SecurityCheck = () => {
             setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
             dispatch(deviceActions.selectDevice(nextDeviceToCheck));
         } else {
-            goToSuite();
+            dispatch(goToSuite());
         }
     };
 

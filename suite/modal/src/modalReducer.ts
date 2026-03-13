@@ -185,4 +185,8 @@ export const selectRecoveryWordRequestInputType = (state: ModalRootState) => {
     }
 };
 
+export const selectShowPinMatrix = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_DEVICE &&
+    state.modal.windowType === UI_REQUEST.REQUEST_PIN;
+
 export { modalReducer };

@@ -2,15 +2,18 @@ import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
+    isStepCategoryUsed,
+    selectOnboardingActiveStepCategory,
+    selectOnboardingPath,
+    stepCategories,
+} from '@suite/onboarding';
+import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
 import { BulletList, type BulletListItemState, Text } from '@trezor/components';
 
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-
-import { stepCategories } from '../../config/onboarding/steps';
-import { isStepCategoryUsed } from '../../utils/onboarding/steps';
+import { useDevice, useSelector } from 'src/hooks/suite';
 
 /**
  * Returns stepCategories that have at least one currently relevant step
@@ -18,7 +21,7 @@ import { isStepCategoryUsed } from '../../utils/onboarding/steps';
  * */
 const useOnboardingStepCategoriesInPath = () => {
     const { device } = useDevice();
-    const { path: onboardingPath } = useOnboarding();
+    const onboardingPath = useSelector(selectOnboardingPath);
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
     const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
 
@@ -45,7 +48,7 @@ const getState = (index: number, indexOfActiveStep: number): BulletListItemState
 
 export const OnboardingProgressBar = () => {
     const stepCategoriesInPath = useOnboardingStepCategoriesInPath();
-    const { activeStepCategory } = useOnboarding();
+    const activeStepCategory = useSelector(selectOnboardingActiveStepCategory);
     const indexOfActiveStep = stepCategoriesInPath.findIndex(
         ({ id }) => id === activeStepCategory?.id,
     );

@@ -1,14 +1,16 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { updateOnboardingAnalytics } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 
+import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { useOnboarding } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const SecurityStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const { goToNextStep, updateOnboardingAnalytics } = useOnboarding();
+    const dispatch = useDispatch();
 
     return (
         <>
@@ -23,7 +25,7 @@ export const SecurityStep = () => {
                     <OnboardingCard.Button
                         data-testid="@onboarding/create-backup-button"
                         onClick={() => {
-                            goToNextStep();
+                            dispatch(goToNextStep());
                         }}
                     >
                         <Translation id="TR_CONTINUE_TO_BACKUP" />
@@ -34,7 +36,7 @@ export const SecurityStep = () => {
                         data-testid="@onboarding/skip-backup"
                         onClick={() => {
                             setShowSkipConfirmation(true);
-                            updateOnboardingAnalytics({ backup: 'skip' });
+                            dispatch(updateOnboardingAnalytics({ backup: 'skip' }));
                         }}
                     >
                         <Translation id="TR_SKIP_BACKUP" />

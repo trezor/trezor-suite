@@ -2,7 +2,8 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { goToSuite } from 'src/actions/onboarding/onboardingActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 
 import { CoinsStepBox } from './CoinsStepBox';
@@ -10,7 +11,7 @@ import { CoinsStepBox } from './CoinsStepBox';
 export const CoinsStep = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const torStatus = useSelector(state => state.suite.torStatus);
-    const { goToSuite } = useOnboarding();
+    const dispatch = useDispatch();
 
     const noNetworkEnabled = !enabledNetworks.length;
     const isTorLoading = getIsTorLoading(torStatus);
@@ -22,7 +23,7 @@ export const CoinsStep = () => {
             innerActions={
                 <OnboardingCard.Button
                     data-testid="@onboarding/complete-onboarding"
-                    onClick={goToSuite}
+                    onClick={() => dispatch(goToSuite())}
                     isLoading={isTorLoading}
                     isDisabled={noNetworkEnabled}
                 >

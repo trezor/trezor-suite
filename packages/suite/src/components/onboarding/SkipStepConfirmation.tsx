@@ -1,11 +1,15 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { type AnyStepId, STEP } from '@suite/onboarding';
+import { type AnyStepId, STEP, selectActiveStepId } from '@suite/onboarding';
 import { Modal } from '@trezor/components';
 
-
-import { useOnboarding } from 'src/hooks/suite';
+import {
+    goToNextStep,
+    resolveNextAfterSkipped,
+} from 'src/actions/onboarding/onboardingActions';
+import { useDispatch } from 'src/hooks/suite';
 
 type SkipStepConfirmationProps = {
     onCancel: () => void;
@@ -20,7 +24,7 @@ type SkipModalContent = {
 
 const getModalContent = (
     activeStepId: AnyStepId,
-    resolveNextAfterSkipped: (stepId: AnyStepId) => AnyStepId | undefined,
+    resolveNext: (stepId: AnyStepId) => AnyStepId | undefined,
 ): SkipModalContent => {
     switch (activeStepId) {
         case STEP.ID_FIRMWARE_STEP:
@@ -35,7 +39,7 @@ const getModalContent = (
                 heading: <Translation id="TR_SKIP_BACKUP" />,
                 secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,
                 body: <Translation id="TR_SKIP_BACKUP_DESCRIPTION" />,
-                nextStep: resolveNextAfterSkipped(STEP.ID_SET_PIN_STEP),
+                nextStep: resolveNext(STEP.ID_SET_PIN_STEP),
             };
         case STEP.ID_SET_PIN_STEP:
             return {
@@ -49,16 +53,17 @@ const getModalContent = (
 };
 
 export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
-    const { activeStepId, goToNextStep, resolveNextAfterSkipped } = useOnboarding();
+    const activeStepId = useSelector(selectActiveStepId);
+    const dispatch = useDispatch();
     const { heading, secondaryButtonText, body, nextStep } = getModalContent(
         activeStepId,
-        resolveNextAfterSkipped,
+        (stepId: AnyStepId) => dispatch(resolveNextAfterSkipped(stepId)),
     );
 
     if (!heading) return;
 
     const handleSkipStepConfirm = () => {
-        goToNextStep(nextStep);
+        dispatch(goToNextStep(nextStep));
     };
 
     return (

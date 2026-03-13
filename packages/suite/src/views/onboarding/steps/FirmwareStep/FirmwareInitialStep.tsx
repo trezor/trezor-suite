@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { selectIsOnboardingActive, updateOnboardingAnalytics } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
@@ -9,11 +10,12 @@ import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezo
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
+
 import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
@@ -91,7 +93,8 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
         showLowBatteryModal,
         switchFirmwareType,
     } = useFirmwareDesktopUpdate();
-    const { isActive: isOnboarding, updateOnboardingAnalytics } = useOnboarding();
+    const isOnboardingActive = useSelector(selectIsOnboardingActive);
+    const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -116,7 +119,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
     const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
 
     // The first condition is a defensive measure against https://github.com/trezor/trezor-suite/issues/17246, I could not reproduce the error.
-    const shouldCheckSeed = !isOnboarding && device?.mode !== 'initialize';
+    const shouldCheckSeed = !isOnboardingActive && device?.mode !== 'initialize';
 
     let content;
 
@@ -126,7 +129,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
 
     const installFirmware = (firmwareType: FirmwareType) => {
         firmwareUpdate({ firmwareType });
-        updateOnboardingAnalytics({ firmware: 'install' });
+        dispatch(updateOnboardingAnalytics({ firmware: 'install' }));
     };
 
     if (showLowBatteryModal) {
@@ -284,7 +287,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                     <OnboardingCard.SecondaryButton
                         onClick={() => {
                             setShowSkipConfirmation(true);
-                            updateOnboardingAnalytics({ firmware: 'skip' });
+                            dispatch(updateOnboardingAnalytics({ firmware: 'skip' }));
                         }}
                         data-testid="@firmware/skip-button"
                     >

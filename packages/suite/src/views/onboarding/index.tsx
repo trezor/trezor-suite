@@ -1,13 +1,14 @@
 import { useEffect, useMemo } from 'react';
 
+import { STEP, selectActiveStepId } from '@suite/onboarding';
 import { goto } from '@suite/router';
-import { STEP } from '@suite/onboarding';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
 
+import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
 import { BackupStep } from 'src/views/onboarding/steps/BackupStep';
 import { CoinsStep } from 'src/views/onboarding/steps/CoinsStep';
@@ -22,8 +23,7 @@ import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
     const dispatch = useDispatch();
-
-    const { activeStepId, goToNextStep } = useOnboarding();
+    const activeStepId = useSelector(selectActiveStepId);
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
 
@@ -43,7 +43,9 @@ export const Onboarding = () => {
                 return FirmwareStep;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return () => <DeviceAuthenticityStep goToNext={() => goToNextStep()} />;
+                return () => (
+                    <DeviceAuthenticityStep goToNext={() => dispatch(goToNextStep())} />
+                );
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
                 return DeviceTutorialStep;
@@ -71,7 +73,7 @@ export const Onboarding = () => {
             default:
                 return exhaustive(activeStepId);
         }
-    }, [activeStepId, goToNextStep]);
+    }, [activeStepId, dispatch]);
 
     return (
         <OnboardingLayout>

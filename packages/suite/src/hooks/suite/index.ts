@@ -6,7 +6,6 @@ export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
 export { useSelector } from './useSelector';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
-export { useOnboarding } from './useOnboarding';
 export { useExternalLink } from './useExternalLink';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';

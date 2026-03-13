@@ -2,15 +2,18 @@ import { useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import { updateOnboardingAnalytics } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+
+import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
@@ -21,16 +24,16 @@ import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnected
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
-    const { goToNextStep, updateOnboardingAnalytics } = useOnboarding();
+    const dispatch = useDispatch();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = useCallback(() => {
-        goToNextStep();
+        dispatch(goToNextStep());
         resetReducer();
-    }, [goToNextStep, resetReducer]);
+    }, [dispatch, resetReducer]);
 
     const showFingerprintCheck =
         modal.context === MODAL_CONTEXT_DEVICE &&
@@ -107,8 +110,8 @@ export const FirmwareStep = () => {
                     <OnboardingCard.Button
                         data-testid="@firmware/continue-button"
                         onClick={() => {
-                            goToNextStep();
-                            updateOnboardingAnalytics({ firmware: 'up-to-date' });
+                            dispatch(goToNextStep());
+                            dispatch(updateOnboardingAnalytics({ firmware: 'up-to-date' }));
                         }}
                     >
                         <Translation id="TR_CONTINUE" />

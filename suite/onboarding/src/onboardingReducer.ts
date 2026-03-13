@@ -4,6 +4,7 @@ import { type OnboardingAnalytics } from '@suite/analytics';
 import { type BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 
+import { parseStepId } from './onboardingStepUtils';
 import * as STEP from './onboardingSteps';
 import { type AnyPath, type AnyStepId } from './types';
 
@@ -86,7 +87,24 @@ export const onboardingReducer = onboardingSlice.reducer;
 
 type OnboardingRootState = { onboarding: OnboardingState };
 
+export const selectOnboardingState = (state: OnboardingRootState) => state.onboarding;
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
-
 export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
     state.onboarding.onboardingAnalytics;
+export const selectActiveStepId = (state: OnboardingRootState) => state.onboarding.activeStepId;
+
+export const selectOnboardingActiveStep = (state: OnboardingRootState) => {
+    const { activeStep } = parseStepId(state.onboarding.activeStepId);
+
+    return activeStep;
+};
+
+export const selectOnboardingPath = (state: OnboardingRootState) => state.onboarding.path;
+export const selectOnboardingPrevDeviceId = (state: OnboardingRootState) =>
+    state.onboarding.prevDeviceId;
+
+export const selectOnboardingActiveStepCategory = (state: OnboardingRootState) => {
+    const { activeStepCategory } = parseStepId(state.onboarding.activeStepId);
+
+    return activeStepCategory;
+};

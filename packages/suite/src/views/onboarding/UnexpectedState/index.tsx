@@ -1,8 +1,14 @@
 import { type JSX } from 'react';
 
+import { selectShowPinMatrix } from '@suite/modal';
+import {
+    selectActiveStepId,
+    selectOnboardingActiveStep,
+    selectOnboardingPrevDeviceId,
+} from '@suite/onboarding';
 import { selectSelectedDevice } from '@suite-common/device';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferentStep } from './DeviceDifferentStep';
@@ -19,8 +25,10 @@ type UnexpectedStateProps = {
 export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
-
-    const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+    const activeStep = useSelector(selectOnboardingActiveStep);
+    const activeStepId = useSelector(selectActiveStepId);
+    const prevDeviceId = useSelector(selectOnboardingPrevDeviceId);
+    const showPinMatrix = useSelector(selectShowPinMatrix);
 
     // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.

@@ -1,13 +1,16 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
+import { STEP, addOnboardingPath, updateOnboardingAnalytics } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { STEP } from '@suite/onboarding';
 import { Grid } from '@trezor/components';
 
+import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
-import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 export const CreateOrRecoverStep = () => {
-    const { goToNextStep, addOnboardingPath, updateOnboardingAnalytics } = useOnboarding();
+    const dispatch = useDispatch();
     const { isBelowTablet } = useLayoutSize();
 
     return (
@@ -18,9 +21,9 @@ export const CreateOrRecoverStep = () => {
             <Grid gap={24} columns={isBelowTablet ? 1 : 2}>
                 <OnboardingOption
                     onClick={() => {
-                        addOnboardingPath(STEP.PATH_CREATE);
-                        goToNextStep();
-                        updateOnboardingAnalytics({ seed: 'create' });
+                        dispatch(addOnboardingPath(STEP.PATH_CREATE));
+                        dispatch(goToNextStep());
+                        dispatch(updateOnboardingAnalytics({ seed: 'create' }));
                     }}
                     data-testid="@onboarding/path-create-button"
                     iconName="plusCircle"
@@ -28,9 +31,9 @@ export const CreateOrRecoverStep = () => {
                 />
                 <OnboardingOption
                     onClick={() => {
-                        addOnboardingPath(STEP.PATH_RECOVERY);
-                        goToNextStep();
-                        updateOnboardingAnalytics({ seed: 'recovery' });
+                        dispatch(addOnboardingPath(STEP.PATH_RECOVERY));
+                        dispatch(goToNextStep());
+                        dispatch(updateOnboardingAnalytics({ seed: 'recovery' }));
                     }}
                     data-testid="@onboarding/path-recovery-button"
                     iconName="trezorBackup"
