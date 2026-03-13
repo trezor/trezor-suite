@@ -2,7 +2,7 @@ import { type MouseEvent } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { enableOnboardingReducer, resetOnboarding, updateAnalytics } from '@suite/onboarding';
+import { enableOnboardingReducer, resetOnboarding, updateOnboardingAnalytics } from '@suite/onboarding';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
@@ -25,7 +25,7 @@ export const DeviceInitialize = () => {
         // and resetting state disables onboarding reducer so we need to enable it again
         dispatch(enableOnboardingReducer(true));
 
-        dispatch(updateAnalytics({ startTime: Date.now() }));
+        dispatch(updateOnboardingAnalytics({ startTime: Date.now() }));
 
         const device = selectSelectedDevice(getState());
 

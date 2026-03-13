@@ -19,7 +19,6 @@
         "@suite/prerequisites": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "immer": "11.0.0"
+        "@trezor/utils": "workspace:*"
     }
 }

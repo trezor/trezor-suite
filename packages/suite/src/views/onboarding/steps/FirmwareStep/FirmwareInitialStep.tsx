@@ -91,7 +91,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
         showLowBatteryModal,
         switchFirmwareType,
     } = useFirmwareDesktopUpdate();
-    const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
+    const { isActive: isOnboarding, updateOnboardingAnalytics } = useOnboarding();
     const { translationString } = useTranslation();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -126,7 +126,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
 
     const installFirmware = (firmwareType: FirmwareType) => {
         firmwareUpdate({ firmwareType });
-        updateAnalytics({ firmware: 'install' });
+        updateOnboardingAnalytics({ firmware: 'install' });
     };
 
     if (showLowBatteryModal) {
@@ -284,7 +284,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                     <OnboardingCard.SecondaryButton
                         onClick={() => {
                             setShowSkipConfirmation(true);
-                            updateAnalytics({ firmware: 'skip' });
+                            updateOnboardingAnalytics({ firmware: 'skip' });
                         }}
                         data-testid="@firmware/skip-button"
                     >

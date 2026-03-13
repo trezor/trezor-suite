@@ -26,7 +26,7 @@ export const ResetDeviceStep = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
-    const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
+    const { goToPreviousStep, goToNextStep, updateOnboardingAnalytics, updateOnboardingBackupType } = useOnboarding();
 
     const dispatch = useDispatch();
 
@@ -75,10 +75,10 @@ export const ResetDeviceStep = () => {
                     break;
             }
 
-            updateBackupType(type);
-            updateAnalytics({ seedType: type });
+            updateOnboardingBackupType(type);
+            updateOnboardingAnalytics({ seedType: type });
         },
-        [updateBackupType, updateAnalytics, onResetDevice],
+        [updateOnboardingBackupType, updateOnboardingAnalytics, onResetDevice],
     );
 
     useEffect(() => {
@@ -148,7 +148,7 @@ export const ResetDeviceStep = () => {
             {!isWaitingOnDevice && canChoseBackupType && (
                 <SelectBackupType
                     selected={backupType}
-                    onOpen={() => updateAnalytics({ wasSelectTypeOpened: true })}
+                    onOpen={() => updateOnboardingAnalytics({ wasSelectTypeOpened: true })}
                     onSelect={setBackupType}
                     isDisabled={isDeviceLocked}
                     data-testid="@onboarding/select-seed-type-open-dialog"

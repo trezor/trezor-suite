@@ -21,7 +21,7 @@ import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnected
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
-    const { goToNextStep, updateAnalytics } = useOnboarding();
+    const { goToNextStep, updateOnboardingAnalytics } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
@@ -108,7 +108,7 @@ export const FirmwareStep = () => {
                         data-testid="@firmware/continue-button"
                         onClick={() => {
                             goToNextStep();
-                            updateAnalytics({ firmware: 'up-to-date' });
+                            updateOnboardingAnalytics({ firmware: 'up-to-date' });
                         }}
                     >
                         <Translation id="TR_CONTINUE" />

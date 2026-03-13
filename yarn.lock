@@ -15063,7 +15063,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    immer: "npm:11.0.0"
   languageName: unknown
   linkType: soft
 
@@ -15089,6 +15088,9 @@ __metadata:
 "@suite/prerequisites@workspace:*, @suite/prerequisites@workspace:suite/prerequisites":
   version: 0.0.0-use.local
   resolution: "@suite/prerequisites@workspace:suite/prerequisites"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite/recovery": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -8,9 +8,9 @@ import {
     selectBackupStatus,
 } from '@suite/backup';
 import { Translation } from '@suite/intl';
-import { resetOnboarding, updateAnalytics } from '@suite/onboarding';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { resetOnboarding, updateOnboardingAnalytics } from '@suite/onboarding';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { exhaustive } from '@trezor/type-utils';
@@ -31,7 +31,7 @@ export const BackupStep = () => {
     const { backupType } = useSelector(state => state.onboarding);
 
     const handleBackup = () => {
-        dispatch(updateAnalytics({ backup: 'create' }));
+        dispatch(updateOnboardingAnalytics({ backup: 'create' }));
 
         const params: BackupDeviceParams =
             backupType === 'shamir-single'
@@ -45,7 +45,7 @@ export const BackupStep = () => {
     };
 
     const handleSkip = () => {
-        dispatch(updateAnalytics({ backup: 'skip' }));
+        dispatch(updateOnboardingAnalytics({ backup: 'skip' }));
         setShowSkipConfirmation(true);
     };
 

@@ -4,13 +4,13 @@ import { typeOnboardingAnalytics } from '@suite/analytics';
 import {
    type AnyPath,
    type AnyStepId,
-    addPath,
+    addOnboardingPath,
     enableOnboardingReducer,
-    goToStep,
+    goToOnboardingStep,
     parseStepId,
     resetOnboarding,
-    updateAnalytics,
-    updateBackupType,
+    updateOnboardingAnalytics,
+    updateOnboardingBackupType,
 } from '@suite/onboarding';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
@@ -35,16 +35,18 @@ export const useOnboarding = () => {
 
     const actions = useMemo(
         () => ({
-            goToStep: (stepId: AnyStepId) => dispatch(goToStep(stepId)),
+            goToOnboardingStep: (stepId: AnyStepId) => dispatch(goToOnboardingStep(stepId)),
             goToNextStep: (stepId?: AnyStepId) => dispatch(goToNextStep(stepId)),
             goToPreviousStep: () => dispatch(goToPreviousStep()),
             resetOnboarding: () => dispatch(resetOnboarding()),
-            enableOnboardingReducer: (enabled: boolean) => dispatch(enableOnboardingReducer(enabled)),
+            enableOnboardingReducer: (enabled: boolean) =>
+                dispatch(enableOnboardingReducer(enabled)),
             rerun: () => dispatch(recoveryRerun()),
-            updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
-                dispatch(updateAnalytics(payload)),
-            addPath: (payload: AnyPath) => dispatch(addPath(payload)),
-            updateBackupType: (payload: BackupType) => dispatch(updateBackupType(payload)),
+            updateOnboardingAnalytics: (payload: Partial<OnboardingAnalytics>) =>
+                dispatch(updateOnboardingAnalytics(payload)),
+            addOnboardingPath: (payload: AnyPath) => dispatch(addOnboardingPath(payload)),
+            updateOnboardingBackupType: (payload: BackupType) =>
+                dispatch(updateOnboardingBackupType(payload)),
             goToSuite: () => dispatch(goToSuite()),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
                 dispatch(resolveNextAfterSkipped(requestedStepId)),

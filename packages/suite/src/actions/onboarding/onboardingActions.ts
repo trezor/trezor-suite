@@ -4,12 +4,12 @@ import { closeModal } from '@suite/modal';
 import {
    type AnyStepId,
     STEP,
-    addPath,
+    addOnboardingPath,
     findNextStep,
     findPrevStep,
-    goToStep,
+    goToOnboardingStep,
     isStepUsed,
-    removePath,
+    removeOnboardingPath,
     resetOnboarding,
     resolveNextAvailableStep,
     selectOnboardingAnalytics,
@@ -41,9 +41,11 @@ const getAllStepsInPath = (getState: GetState) => {
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
 };
 
+// TODO: Replace direct state.onboarding.* access above with selectors in the createThunk migration step
+
 const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
-        return dispatch(goToStep(stepId));
+        return dispatch(goToOnboardingStep(stepId));
     }
     const stepsInPath = getAllStepsInPath(getState);
     const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
@@ -51,13 +53,13 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     // to remove saved paths from reducers to let user change it again.
     switch (prevStep.id) {
         case STEP.ID_CREATE_OR_RECOVER:
-            dispatch(removePath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
+            dispatch(removeOnboardingPath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
             break;
         default:
         // nothing
     }
 
-    dispatch(goToStep(prevStep.id));
+    dispatch(goToOnboardingStep(prevStep.id));
 };
 
 const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
@@ -96,7 +98,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
 
 const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (nextStepId) {
-        return dispatch(goToStep(nextStepId));
+        return dispatch(goToOnboardingStep(nextStepId));
     }
     const device = selectSelectedDevice(getState());
     const stepsInPath = getAllStepsInPath(getState);
@@ -107,7 +109,7 @@ const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: 
 
         return;
     }
-    dispatch(goToStep(nextStep.id));
+    dispatch(goToOnboardingStep(nextStep.id));
 };
 
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -147,8 +149,8 @@ const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
         if (router.app !== 'onboarding') {
             dispatch(goto({ routeName: 'onboarding-index' }));
         }
-        dispatch(goToStep('recovery'));
-        dispatch(addPath('recovery'));
+        dispatch(goToOnboardingStep('recovery'));
+        dispatch(addOnboardingPath('recovery'));
     }
 };
 

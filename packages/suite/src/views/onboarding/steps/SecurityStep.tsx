@@ -8,7 +8,7 @@ import { useOnboarding } from 'src/hooks/suite';
 
 export const SecurityStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const { goToNextStep, updateAnalytics } = useOnboarding();
+    const { goToNextStep, updateOnboardingAnalytics } = useOnboarding();
 
     return (
         <>
@@ -34,7 +34,7 @@ export const SecurityStep = () => {
                         data-testid="@onboarding/skip-backup"
                         onClick={() => {
                             setShowSkipConfirmation(true);
-                            updateAnalytics({ backup: 'skip' });
+                            updateOnboardingAnalytics({ backup: 'skip' });
                         }}
                     >
                         <Translation id="TR_SKIP_BACKUP" />

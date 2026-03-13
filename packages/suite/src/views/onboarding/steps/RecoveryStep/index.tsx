@@ -1,6 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { updateAnalytics } from '@suite/onboarding';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
+import { updateOnboardingAnalytics } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import {
     isStandardRecoveryDisabled,
@@ -63,7 +63,7 @@ export const RecoveryStep = () => {
 
                             if (shouldSkipSelection) {
                                 dispatch(recoveryActions.setAdvancedRecovery(true));
-                                dispatch(updateAnalytics({ recoveryType: 'advanced' }));
+                                dispatch(updateOnboardingAnalytics({ recoveryType: 'advanced' }));
                                 dispatch(recoverDeviceThunk());
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
@@ -94,7 +94,7 @@ export const RecoveryStep = () => {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
         const handleSelect = (type: 'standard' | 'advanced') => {
             dispatch(recoveryActions.setAdvancedRecovery(type === 'advanced'));
-            dispatch(updateAnalytics({ recoveryType: type }));
+            dispatch(updateOnboardingAnalytics({ recoveryType: type }));
             dispatch(recoverDeviceThunk());
         };
 

@@ -7,7 +7,7 @@ import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
-import type { OnboardingAction } from '@suite/onboarding';
+import { onboardingActions } from '@suite/onboarding';
 import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
@@ -124,6 +124,7 @@ type SuiteSettingsAction = ReturnType<
 >;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
+type OnboardingAction = ReturnType<(typeof onboardingActions)[keyof typeof onboardingActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =

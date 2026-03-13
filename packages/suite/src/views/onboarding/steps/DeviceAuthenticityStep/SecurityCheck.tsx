@@ -143,7 +143,7 @@ const SecurityCheckContent = ({
     const { contentWidth } = useResponsiveContext();
     const [isFailed, setIsFailed] = useState(false);
 
-    const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
+    const { goToNextStep, rerun, updateOnboardingAnalytics } = useOnboarding();
     const dispatch = useDispatch();
 
     const initialized = !!device?.features?.initialized;
@@ -195,11 +195,11 @@ const SecurityCheckContent = ({
     // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
     useEffect(() => {
         if (!initialized && !isRecoveryInProgress) {
-            updateAnalytics({
+            updateOnboardingAnalytics({
                 startTime: Date.now(),
             });
         }
-    }, [initialized, isRecoveryInProgress, updateAnalytics]);
+    }, [initialized, isRecoveryInProgress, updateOnboardingAnalytics]);
 
     const humanizedModelColor = useMemo(
         () =>

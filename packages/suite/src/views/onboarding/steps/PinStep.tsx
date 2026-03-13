@@ -22,7 +22,7 @@ export const PinStep = () => {
     const modal = useSelector(state => state.modal);
     const dispatch = useDispatch();
 
-    const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
+    const { goToNextStep, showPinMatrix, updateOnboardingAnalytics } = useOnboarding();
 
     const setPinAndSkipSuccessToast = () => dispatch(changePin({}, true));
     const onTryAgain = () => {
@@ -31,11 +31,11 @@ export const PinStep = () => {
     };
     const createPin = () => {
         setPinAndSkipSuccessToast();
-        updateAnalytics({ pin: 'create' });
+        updateOnboardingAnalytics({ pin: 'create' });
     };
     const skipPin = () => {
         setShowSkipConfirmation(true);
-        updateAnalytics({ pin: 'skip' });
+        updateOnboardingAnalytics({ pin: 'skip' });
     };
 
     const handlePinSubmit = () => {

@@ -7,7 +7,7 @@ import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 
 export const CreateOrRecoverStep = () => {
-    const { goToNextStep, addPath, updateAnalytics } = useOnboarding();
+    const { goToNextStep, addOnboardingPath, updateOnboardingAnalytics } = useOnboarding();
     const { isBelowTablet } = useLayoutSize();
 
     return (
@@ -18,9 +18,9 @@ export const CreateOrRecoverStep = () => {
             <Grid gap={24} columns={isBelowTablet ? 1 : 2}>
                 <OnboardingOption
                     onClick={() => {
-                        addPath(STEP.PATH_CREATE);
+                        addOnboardingPath(STEP.PATH_CREATE);
                         goToNextStep();
-                        updateAnalytics({ seed: 'create' });
+                        updateOnboardingAnalytics({ seed: 'create' });
                     }}
                     data-testid="@onboarding/path-create-button"
                     iconName="plusCircle"
@@ -28,9 +28,9 @@ export const CreateOrRecoverStep = () => {
                 />
                 <OnboardingOption
                     onClick={() => {
-                        addPath(STEP.PATH_RECOVERY);
+                        addOnboardingPath(STEP.PATH_RECOVERY);
                         goToNextStep();
-                        updateAnalytics({ seed: 'recovery' });
+                        updateOnboardingAnalytics({ seed: 'recovery' });
                     }}
                     data-testid="@onboarding/path-recovery-button"
                     iconName="trezorBackup"

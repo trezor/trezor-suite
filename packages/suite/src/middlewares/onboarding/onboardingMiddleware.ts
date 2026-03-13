@@ -1,6 +1,6 @@
 import { type MiddlewareAPI } from 'redux';
 
-import { enableOnboardingReducer, updateAnalytics } from '@suite/onboarding';
+import { enableOnboardingReducer, updateOnboardingAnalytics } from '@suite/onboarding';
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
@@ -47,7 +47,7 @@ const onboardingMiddleware =
             selectRecoveryStatus(api.getState()) !== 'in-progress'
         ) {
             api.dispatch(
-                updateAnalytics({
+                updateOnboardingAnalytics({
                     startTime: Date.now(),
                     seed: 'recovery-in-progress',
                 }),

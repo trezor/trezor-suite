@@ -160,7 +160,6 @@
         { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
         { "path": "../../suite/onboarding" },
-        { "path": "../../suite/prerequisites" },
         {
             "path": "../../suite/onboarding-components"
         },
@@ -170,6 +169,7 @@
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
+        { "path": "../../suite/prerequisites" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },
