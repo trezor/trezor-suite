@@ -31,6 +31,7 @@ import { Account, DiscoveryStatus, TokenSymbol, toTokenAddress } from '@suite-co
 import {
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
+    getStakingProvidersForAnalytics,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
@@ -305,6 +306,7 @@ const trackCompleteDiscoveryResult = (
                     numberOfStakedAccounts: accounts.filter(account =>
                         new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
                     ).length,
+                    stakingProviders: getStakingProvidersForAnalytics(accounts),
                 },
             });
         }

@@ -5,6 +5,9 @@ import {
     STAKING_TYPES,
     StakingNetworkSymbol,
     StakingNetworkType,
+    getStakingProviderByCardanoPoolId,
+    getStakingProviderByEthereumPoolName,
+    getStakingProviderBySolanaVoterPubkey,
 } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
@@ -71,7 +74,7 @@ const STAKING_BALANCE_BY_TYPE = {
 
 export const getAccountTotalStakingBalance = (account: Account) =>
     isStakingNetworkType(account.networkType)
-        ? STAKING_BALANCE_BY_TYPE[account.networkType](account)
+        ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(account)
         : null;
 
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
@@ -230,6 +233,66 @@ export const calculateRewards = (amount: string, apyPercent: number | null, days
     const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
 
     return currentRewards;
+};
+
+export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] => {
+    const providers = new Set<string>();
+
+    accounts.forEach(account => {
+        const stakingBalance = getAccountTotalStakingBalance(account);
+        if (!stakingBalance || new BigNumber(stakingBalance).lte(0)) {
+            return;
+        }
+
+        switch (account.networkType) {
+            case 'ethereum':
+                account.misc?.stakingPools?.forEach(pool => {
+                    const provider = getStakingProviderByEthereumPoolName(pool.name);
+                    if (provider) {
+                        providers.add(provider.id);
+                    } else {
+                        // Account is staked but provider is unknown
+                        providers.add('unknown');
+                    }
+                });
+                break;
+            case 'solana':
+                [
+                    ...(account.misc?.solStakingAccounts ?? []),
+                    ...(account.misc?.solExternalStakingAccounts ?? []),
+                ].forEach(stakingAccount => {
+                    if (stakingAccount.voterPubkey) {
+                        const provider = getStakingProviderBySolanaVoterPubkey(
+                            stakingAccount.voterPubkey,
+                        );
+                        if (provider) {
+                            providers.add(provider.id);
+                        } else {
+                            // Account is staked but provider is unknown
+                            providers.add('unknown');
+                        }
+                    }
+                });
+                break;
+            case 'cardano': {
+                const poolId = account.misc?.staking?.poolId;
+                if (!poolId) break;
+
+                const provider = getStakingProviderByCardanoPoolId(poolId);
+                if (provider) {
+                    providers.add(provider.id);
+                } else {
+                    // Account is staked but provider is unknown
+                    providers.add('unknown');
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    });
+
+    return Array.from(providers);
 };
 
 export const getTxStakeType = (tx: WalletAccountTransaction) => {

@@ -113,6 +113,7 @@ export const getSolanaStakingData = async (
                     stake: fields[1]?.delegation?.stake.toString(),
                     status: stakeState,
                     isEverStake,
+                    voterPubkey,
                 };
             }
         })

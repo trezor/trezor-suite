@@ -1,7 +1,12 @@
 import { address } from '@solana/kit';
 
-export const MAINNET_VALIDATOR_ADDRESS = address('9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF');
-export const DEVNET_VALIDATOR_ADDRESS = address('GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN');
+import {
+    EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
+    EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
+} from '@suite-common/wallet-config';
+
+export const MAINNET_VALIDATOR_ADDRESS = address(EVERSTAKE_SOLANA_MAINNET_VALIDATOR);
+export const DEVNET_VALIDATOR_ADDRESS = address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR);
 
 export const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
 export const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');

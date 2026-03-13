@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/earn-api": "workspace:*",
+        "@suite-common/wallet-constants": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
