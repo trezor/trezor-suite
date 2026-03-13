@@ -258,10 +258,6 @@ export const messages = defineMessages({
             'Lock in your price instantly. Funds typically arrive the next business day.',
         id: 'TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION',
     },
-    TR_TRADING_CONCIERGE_COUNTRY_OF_RESIDENCE: {
-        defaultMessage: 'Country of residence',
-        id: 'TR_TRADING_CONCIERGE_COUNTRY_OF_RESIDENCE',
-    },
     TR_TRADING_DETAIL_PROCESSING: {
         defaultMessage: '{providerName} is processing your {type}',
         id: 'TR_TRADING_DETAIL_PROCESSING',
