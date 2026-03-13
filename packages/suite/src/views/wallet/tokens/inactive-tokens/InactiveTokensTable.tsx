@@ -33,7 +33,7 @@ const DashedText = ({ children, ...props }: React.ComponentProps<typeof Text>) =
     </DashedTextWrapper>
 );
 
-interface StellarTokenInfo extends TokenInfo {
+export interface StellarTokenInfo extends TokenInfo {
     homeDomain?: string;
     rating?: number;
 }
@@ -41,7 +41,7 @@ interface StellarTokenInfo extends TokenInfo {
 /**
  * Get the list of inactive Stellar tokens for the user account
  */
-const getInactiveStellarTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
+export const getInactiveStellarTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
     if (account.symbol !== 'xlm') return [];
 
     const allTokens: TokenDetailByMint = await getTokenMetadata();

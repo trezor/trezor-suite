@@ -14,7 +14,8 @@ export const commonQueryKeys = {
 export const desktopQueryKeys = {
     defaultUrls: (symbol: string) => ['default-urls', symbol],
     proxyImage: (src?: string) => ['proxy-image', src],
-    inactiveTokens: (symbol: string) => ['inactive-tokens', symbol],
+    inactiveTokens: (symbol: string, accountKey?: string) =>
+        accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
     yieldOpportunities: (pagination: any) => ['yield-opportunities', pagination],
 } as const satisfies Record<string, AllowedQueryKey>;
 

@@ -17,6 +17,7 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
@@ -89,6 +90,8 @@ export const useTradingReceiveAddress = ({
     const [selectedAccount, setSelectedAccount] = useState<Account | null | undefined>(undefined);
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
+
+    const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -263,7 +266,7 @@ export const useTradingReceiveAddress = ({
     const receiveAddressValue = methods.watch('address');
     const extraFieldValue = methods.watch('extraField');
 
-    const addressDictionary = useAccountAddressDictionary(selectedAccount ?? undefined);
+    const addressDictionary = useAccountAddressDictionary(receiveAccount ?? undefined);
     const accountAddress = receiveAddressValue ? addressDictionary[receiveAddressValue] : undefined;
 
     const receiveAddress = useMemo(() => {
@@ -306,20 +309,20 @@ export const useTradingReceiveAddress = ({
         if (pageType === 'retry') return;
 
         if (type === 'exchange') {
-            dispatch(tradingExchangeActions.setReceiveAccountKey(selectedAccount?.key));
+            dispatch(tradingExchangeActions.setReceiveAccountKey(receiveAccount?.key));
         }
 
         if (type === 'buy') {
-            dispatch(tradingBuyActions.setReceiveAccountKey(selectedAccount?.key));
+            dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount?.key));
         }
-    }, [selectedAccount, pageType, type, dispatch]);
+    }, [receiveAccount, pageType, type, dispatch]);
 
     return {
         form: {
             ...methods,
         },
         suiteReceiveAccounts,
-        selectedAccount,
+        selectedAccount: receiveAccount,
         accountAddress,
         isMenuOpen,
         onChangeAccount,

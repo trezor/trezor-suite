@@ -18,9 +18,11 @@ import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
+import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingStellarActivateToken } from 'src/hooks/wallet/trading/useTradingStellarActivateToken';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
@@ -110,6 +112,8 @@ export const TradingFormOffer = () => {
         isTradingExchangeContext(context) || isTradingBuyContext(context)
             ? context.tradingReceiveAddress
             : undefined;
+
+    const isReceiveAddressSelected = !!tradingReceiveAddress?.receiveAddress;
 
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
@@ -257,9 +261,11 @@ export const TradingFormOffer = () => {
             ? receiveCurrency
             : (selectedCryptoId ?? undefined);
 
-    const isReceiveAddressSelected =
-        (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&
-        !!context.tradingReceiveAddress.receiveAddress;
+    const { inactiveToken: stellarInactiveToken, modal: stellarActivateTokenModal } =
+        useTradingStellarActivateToken({
+            account: tradingReceiveAddress?.selectedAccount ?? undefined,
+            receiveCryptoId: selectedAssetCryptoId,
+        });
 
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
 
@@ -349,48 +355,84 @@ export const TradingFormOffer = () => {
                     !isLoading ? (
                         <TradingFormApproval />
                     ) : (
-                        <Button
-                            onClick={onSelectQuote}
-                            intent="brand"
-                            margin={{
-                                top: 16,
-                            }}
-                            size="large"
-                            isDisabled={isButtonDisabled || isLoading}
-                            isLoading={
-                                areFeesLoading ||
-                                (preselectedQuote && state.isFormLoading) ||
-                                (state.isFormLoading &&
-                                    !isAmountEmpty &&
-                                    (type === 'sell' || isReceiveAddressSelected))
-                            }
-                            data-testid={`@trading/form/${type}-button`}
-                            minWidth={160}
-                            width={isContentBelowBreakpoint ? undefined : '100%'}
-                        >
-                            <Translation
-                                id={
-                                    state.isFormLoading &&
-                                    !isAmountEmpty &&
-                                    (type === 'sell' || isReceiveAddressSelected)
-                                        ? 'TR_TRADING_OFFER_LOOKING'
-                                        : tradingGetSectionActionLabel(type)
-                                }
-                            />
-                        </Button>
+                        <>
+                            {stellarInactiveToken ? (
+                                <Button
+                                    intent="brand"
+                                    margin={{
+                                        top: 16,
+                                    }}
+                                    size="large"
+                                    minWidth={160}
+                                    width={isContentBelowBreakpoint ? undefined : '100%'}
+                                    onClick={stellarActivateTokenModal.onOpen}
+                                    isDisabled={!tradingReceiveAddress?.selectedAccount?.symbol}
+                                >
+                                    <Translation
+                                        id="TR_ACTIVATE_TOKEN"
+                                        values={{ token: stellarInactiveToken.symbol }}
+                                    />
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={onSelectQuote}
+                                    intent="brand"
+                                    margin={{
+                                        top: 16,
+                                    }}
+                                    size="large"
+                                    isDisabled={isButtonDisabled || isLoading}
+                                    isLoading={
+                                        areFeesLoading ||
+                                        (preselectedQuote && state.isFormLoading) ||
+                                        (state.isFormLoading &&
+                                            !isAmountEmpty &&
+                                            (type === 'sell' || isReceiveAddressSelected))
+                                    }
+                                    data-testid={`@trading/form/${type}-button`}
+                                    minWidth={160}
+                                    width={isContentBelowBreakpoint ? undefined : '100%'}
+                                >
+                                    <Translation
+                                        id={
+                                            state.isFormLoading &&
+                                            !isAmountEmpty &&
+                                            (type === 'sell' || isReceiveAddressSelected)
+                                                ? 'TR_TRADING_OFFER_LOOKING'
+                                                : tradingGetSectionActionLabel(type)
+                                        }
+                                    />
+                                </Button>
+                            )}
+                        </>
                     )}
                 </>
             )}
+
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
+
             {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
                 <TradingApproveModal
                     amount={amount}
                     cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId}
                 />
             )}
+
             {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
                 <TradingRevokeModal cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId} />
             )}
+
+            {stellarActivateTokenModal.isOpen &&
+                stellarInactiveToken &&
+                tradingReceiveAddress?.selectedAccount?.symbol && (
+                    <StellarManageTokenModal
+                        mode="activate"
+                        account={tradingReceiveAddress.selectedAccount}
+                        symbol={tradingReceiveAddress.selectedAccount.symbol}
+                        contractAddress={stellarInactiveToken.contract}
+                        onCancel={stellarActivateTokenModal.onClose}
+                    />
+                )}
         </Column>
     );
 };

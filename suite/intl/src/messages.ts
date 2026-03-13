@@ -4353,6 +4353,14 @@ export const messages = defineMessages({
         id: 'TR_INACTIVE_COINS',
         defaultMessage: 'Available assets to activate',
     },
+    TR_ACTIVATION_IN_PROGRESS_BANNER: {
+        id: 'TR_ACTIVATION_IN_PROGRESS_BANNER',
+        defaultMessage: 'Activation transaction is being processed.',
+    },
+    TR_DEACTIVATION_IN_PROGRESS_BANNER: {
+        id: 'TR_DEACTIVATION_IN_PROGRESS_BANNER',
+        defaultMessage: 'Deactivation transaction is being processed.',
+    },
     TR_ACTIVATE: {
         id: 'TR_ACTIVATE',
         defaultMessage: 'Activate',
