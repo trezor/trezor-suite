@@ -1,7 +1,8 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UnlockPathParams } from '../types/api/unlockPath';

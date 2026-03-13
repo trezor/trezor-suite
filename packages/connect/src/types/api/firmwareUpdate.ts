@@ -1,4 +1,5 @@
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import type { Params, Response } from '../params';

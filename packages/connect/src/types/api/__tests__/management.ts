@@ -1,4 +1,5 @@
-import { PROTO, TrezorConnect } from '../../..';
+import type { TrezorConnect } from '../../..';
+import { PROTO } from '../../..';
 
 export const management = async (api: TrezorConnect) => {
     const reset = await api.resetDevice({

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { BundleProgress, UI_REQUEST } from '@trezor/connect';
+import TrezorConnect, { type BundleProgress, UI_REQUEST } from '@trezor/connect';
 import type { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 
 import { getController, initTrezorConnect, setup } from '../../common.setup';

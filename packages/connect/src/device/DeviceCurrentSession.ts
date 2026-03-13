@@ -3,7 +3,8 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transport';
+import type { MessageResponse, Session, Transport } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { scheduleAction } from '@trezor/utils';
 

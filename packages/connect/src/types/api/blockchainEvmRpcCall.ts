@@ -1,4 +1,4 @@
-import { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
+import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
 
 import type { CommonParamsWithCoin, Response } from '../params';
 

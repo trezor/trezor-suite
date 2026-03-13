@@ -3,12 +3,8 @@ import karma from 'karma';
 import path from 'path';
 import webpack from 'webpack';
 
-import {
-    EmuStartOptsType,
-    Firmwares,
-    Model,
-    TrezorUserEnvLink,
-} from '@trezor/trezor-user-env-link';
+import type { EmuStartOptsType, Firmwares } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';
 
 import argv from './jest.config';

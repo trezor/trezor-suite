@@ -1,15 +1,15 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { Transport } from '@trezor/transport';
 import {
     BridgeTransport,
     NodeUsbTransport,
-    Transport,
     UdpTransport,
     WebUsbTransport,
     isTransportInstance,
 } from '@trezor/transport';
 import type { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
 
-import { ConnectSettingsTransport } from '../types';
+import type { ConnectSettingsTransport } from '../types';
 
 type Params = AbstractTransportParams & { sessionsBackgroundUrl?: string | null };
 

@@ -1,17 +1,17 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Capability } from '@trezor/protobuf/src/messages';
+import type { Capability } from '@trezor/protobuf/src/messages';
 import { versionUtils } from '@trezor/utils';
 
 import type { Device } from '../device/Device';
-import {
+import type {
     CallMethodPayload,
     CallMethodResponse,
     CoreEventMessage,
-    UI_REQUEST,
     UiPromiseCreator,
     UiRequestButtonData,
     UiRequestConfirmation,
 } from '../events';
+import { UI_REQUEST } from '../events';
 import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
 import type { DeviceState, StaticSessionId } from '../types/device';
 import type { FirmwareRange } from '../types/firmware';

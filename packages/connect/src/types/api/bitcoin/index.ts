@@ -1,10 +1,12 @@
 import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { Static, Type } from '@trezor/schema-utils';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import type { AccountTransaction } from '../../account';
-import { DerivationPath, ProtoWithDerivationPath } from '../../params';
+import type { ProtoWithDerivationPath } from '../../params';
+import { DerivationPath } from '../../params';
 
 // signMessage
 

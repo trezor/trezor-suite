@@ -4,10 +4,10 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
+import type { CardanoPoolOwner } from '../../types/api/cardano';
 import {
     CardanoCertificate,
     CardanoDRep,
-    CardanoPoolOwner,
     CardanoPoolParameters,
     CardanoPoolRelay,
 } from '../../types/api/cardano';

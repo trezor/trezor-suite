@@ -1,4 +1,5 @@
-import { SerializedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
 
 import type { CORE_CALL } from './core-call';
 import type { TrezorConnect } from '../types/api';

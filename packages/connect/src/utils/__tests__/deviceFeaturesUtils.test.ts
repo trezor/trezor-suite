@@ -3,7 +3,7 @@ import coinsJSON from '@trezor/connect-data/files/coins.json';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { getAllNetworks, parseCoinsJson } from '../../data/coinInfo';
-import { CoinInfo, Features } from '../../types';
+import type { CoinInfo, Features } from '../../types';
 import {
     getUnavailableCapabilities,
     parseCapabilities,

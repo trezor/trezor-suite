@@ -9,25 +9,20 @@ import {
     DEFAULT_TXS_PER_PAGE,
     SOLANA_TXS_PER_PAGE,
 } from '../constants/paging';
-import {
-    AbstractMethod,
-    DEFAULT_FIRMWARE_RANGE,
-    MethodPermission,
-    Payload,
-} from '../core/AbstractMethod';
+import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { checkXPubWithHashes } from './firmware';
 import type { CoinInfo, EntropyCheckResult, FirmwareRange } from '../types';
-import {
-    ACCOUNT_TYPES,
+import type {
     AccountTypeItem,
     AccountTypeKey,
     AdditionalParams,
-    CARDANO_DERIVATIONS,
     DiscoverAccountsProgress,
 } from '../types/api/discoverAccounts';
+import { ACCOUNT_TYPES, CARDANO_DERIVATIONS } from '../types/api/discoverAccounts';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';

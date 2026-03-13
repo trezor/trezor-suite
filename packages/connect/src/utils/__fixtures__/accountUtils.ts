@@ -7,7 +7,7 @@ import {
     getMiscNetwork,
     parseCoinsJson,
 } from '../../data/coinInfo';
-import { getAccountLabel, isUtxoBased } from '../accountUtils';
+import type { getAccountLabel, isUtxoBased } from '../accountUtils';
 
 parseCoinsJson({
     ...coinsJSON,

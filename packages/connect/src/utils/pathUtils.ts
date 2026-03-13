@@ -2,7 +2,7 @@
 // TODO: There might be other issues with side-effects https://github.com/trezor/trezor-suite/issues/15559
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { PROTO } from '../constants';
+import type { PROTO } from '../constants';
 import type { CoinInfo } from '../types/coinInfo';
 import type { DerivationPath, ProtoWithAddressN, ProtoWithDerivationPath } from '../types/params';
 

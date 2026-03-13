@@ -1,10 +1,12 @@
 import { FetchError } from 'node-fetch';
 
-import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { FirmwareRevisionCheckResult } from '../../types/device';
+import type { FirmwareRevisionCheckResult } from '../../types/device';
 import * as utilsAssets from '../../utils/assets';
-import { CheckFirmwareRevisionParams, checkFirmwareRevision } from '../checkFirmwareRevision';
+import type { CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
+import { checkFirmwareRevision } from '../checkFirmwareRevision';
 
 const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
     required: false,

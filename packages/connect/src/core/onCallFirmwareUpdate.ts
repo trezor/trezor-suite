@@ -14,22 +14,12 @@ import { PROTO } from '../constants';
 import { DataManager } from '../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
-import { DeviceList } from '../device/DeviceList';
-import {
-    CoreEventMessage,
-    UI_REQUEST,
-    UI_RESPONSE,
-    UiPromiseCreator,
-    createUiMessage,
-} from '../events';
-import {
-    BinaryInfo,
-    CommonParams,
-    DeviceUniquePath,
-    FirmwareType,
-    FirmwareUpdateFlowType,
-} from '../types';
-import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
+import type { DeviceList } from '../device/DeviceList';
+import type { CoreEventMessage, UiPromiseCreator } from '../events';
+import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
+import type { BinaryInfo, CommonParams, DeviceUniquePath, FirmwareUpdateFlowType } from '../types';
+import { FirmwareType } from '../types';
+import type { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
 import { isFirmwareCacheUsedForSelectedSource } from '../utils/firmwareUtils';
 

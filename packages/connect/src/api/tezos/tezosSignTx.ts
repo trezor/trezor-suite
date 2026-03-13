@@ -3,7 +3,7 @@ import bs58check from 'bs58check';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
 import { TezosOperation } from '../../types/api/tezos';
 
 const PREFIX = {

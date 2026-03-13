@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { ConnectSettings, Device, UiEvent } from '@trezor/connect';
+import TrezorConnect, { type ConnectSettings, type Device, type UiEvent } from '@trezor/connect';
 
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 

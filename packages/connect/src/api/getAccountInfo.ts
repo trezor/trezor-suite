@@ -4,13 +4,8 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import {
-    AbstractMethod,
-    DEFAULT_FIRMWARE_RANGE,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
+import type { MethodPermission, MethodReturnType, Payload } from '../core/AbstractMethod';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';

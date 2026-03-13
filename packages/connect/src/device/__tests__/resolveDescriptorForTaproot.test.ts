@@ -1,6 +1,6 @@
-import { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 
-import { HDNodeResponse } from '../../types/api/getPublicKey';
+import type { HDNodeResponse } from '../../types/api/getPublicKey';
 import { resolveDescriptorForTaproot } from '../resolveDescriptorForTaproot';
 
 const originalResponse: HDNodeResponse = {

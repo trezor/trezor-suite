@@ -1,13 +1,15 @@
-import BlockchainLink, {
+import type {
     BlockchainLinkParams,
     ServerInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
+import BlockchainLink from '@trezor/blockchain-link';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { BLOCKCHAIN, CoreEventMessage, createBlockchainMessage } from '../events';
+import type { CoreEventMessage } from '../events';
+import { BLOCKCHAIN, createBlockchainMessage } from '../events';
 import type { CoinInfo, Proxy } from '../types';
-import { PushTransaction } from '../types/api/pushTransaction';
+import type { PushTransaction } from '../types/api/pushTransaction';
 import {
     BlockbookWorker,
     BlockfrostWorker,

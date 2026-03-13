@@ -1,7 +1,8 @@
 // Stellar types from stellar-sdk
 // https://github.com/stellar/js-stellar-base
 
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { DerivationPath } from '../../params';

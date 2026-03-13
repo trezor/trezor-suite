@@ -15,6 +15,10 @@ export default [
                 { additionalTestBlockFunctions: ['conditionalTest'] },
             ],
             'import/no-default-export': 'off', // Todo: shall be solved one day, but now its heavily used
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
+            ],
             '@typescript-eslint/no-restricted-imports': [
                 'error',
                 {

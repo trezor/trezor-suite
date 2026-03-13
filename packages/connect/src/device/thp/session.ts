@@ -1,4 +1,4 @@
-import { thp as protocolThp } from '@trezor/protocol';
+import type { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
 import type { IDevice } from '../../types/idevice';

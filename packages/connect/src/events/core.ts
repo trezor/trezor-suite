@@ -1,9 +1,9 @@
-import {
+import type {
     ErrorCode,
     SerializedError,
     TrezorError,
 } from '@trezor/connect-common/src/constants/errors';
-import { Err } from '@trezor/type-utils';
+import type { Err } from '@trezor/type-utils';
 
 import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallMessage, MethodResponseMessage } from './call';
