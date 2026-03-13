@@ -20,7 +20,7 @@ type CardStepperItemProps = {
     isOpened: boolean;
     icon: IconName;
     primaryButtonText: ReactNode;
-    secondaryButtonText: ReactNode;
+    secondaryButtonText?: ReactNode;
     onPressConfirmButton: () => void;
     onPressSecondaryButton: () => void;
     buttonsActionType?: CardStepperButtonsActionType;
@@ -108,20 +108,17 @@ export const CardStepperItem = ({
                         exiting={EXITING_ANIMATION}
                     >
                         <Text variant="body-md-strong">{description}</Text>
-                        <HStack
-                            flex={1}
-                            spacing="sp12"
-                            justifyContent="space-between"
-                            paddingBottom="sp4"
-                        >
-                            <Button
-                                size="small"
-                                style={applyStyle(buttonStyle)}
-                                colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
-                                onPress={onPressSecondaryButton}
-                            >
-                                {secondaryButtonText}
-                            </Button>
+                        <HStack flex={1} spacing="sp12" paddingBottom="sp4">
+                            {secondaryButtonText && (
+                                <Button
+                                    size="small"
+                                    style={applyStyle(buttonStyle)}
+                                    colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
+                                    onPress={onPressSecondaryButton}
+                                >
+                                    {secondaryButtonText}
+                                </Button>
+                            )}
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}
