@@ -1,4 +1,4 @@
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 
 import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
 

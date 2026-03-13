@@ -1,6 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
-import { UI_REQUEST, UiRequestDeviceAction } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect/src/exports';
+import type { UiRequestDeviceAction } from '@trezor/connect/src/exports';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const pinButtonRequestCodes = [

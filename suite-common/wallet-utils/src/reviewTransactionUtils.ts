@@ -12,7 +12,7 @@ import {
     StakeFormState,
     StakeType,
 } from '@suite-common/wallet-types';
-import { CardanoOutput } from '@trezor/connect';
+import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 

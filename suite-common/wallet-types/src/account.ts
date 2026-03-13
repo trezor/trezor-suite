@@ -6,7 +6,7 @@ import {
     StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
-import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
+import type { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 import { Branded } from '@trezor/type-utils';
 
 export type MetadataItem = string;
