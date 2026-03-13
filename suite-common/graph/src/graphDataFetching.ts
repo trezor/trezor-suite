@@ -25,7 +25,7 @@ import {
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
-import {
+import type {
     AccountBalanceHistoryWithTokens,
     AccountHistoryBalancePoint,
     AccountHistoryMovementItem,
@@ -33,6 +33,7 @@ import {
     AccountWithBalanceHistory,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,
+    FiatRatesItem,
 } from './types';
 
 export const addBalanceForAccountMovementHistory = (
@@ -282,13 +283,6 @@ const getAccountBalanceHistory = async ({
     accountBalanceHistoryCache[cacheKey] = result;
 
     return result;
-};
-
-export type FiatRatesItem = {
-    time: number;
-    rates: {
-        [key: string]: number | undefined;
-    };
 };
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};

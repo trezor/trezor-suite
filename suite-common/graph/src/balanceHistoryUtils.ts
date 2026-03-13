@@ -1,8 +1,8 @@
-import { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { LocalBalanceHistoryCoin } from './constants';
-import { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
+import type { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
 
 /*
 Logic for calculating account history movement (BTC + ETH) from transactions is nearly identical as we use on blockbook

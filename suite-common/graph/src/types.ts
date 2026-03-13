@@ -85,3 +85,10 @@ export type AccountWithBalanceHistory = {
     descriptor: string;
     contractId?: TokenAddress;
 } & { balanceHistory: AccountHistoryBalancePoint[] };
+
+export type FiatRatesItem = {
+    time: number;
+    rates: {
+        [key: string]: number | undefined;
+    };
+};
