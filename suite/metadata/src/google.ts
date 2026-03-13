@@ -96,18 +96,18 @@ class Client {
     static initPromise: Promise<Client> | undefined;
     static accessToken: string;
     static refreshToken: string;
-    static authServerUrl: string;
+    static authServerUrl: (typeof Client.servers)[keyof typeof Client.servers];
     static servers = {
         production: 'https://suite-auth.trezor.io',
         staging: 'https://staging-suite-auth.trezor.io',
         localhost: 'http://localhost:3005',
-    };
+    } as const satisfies Record<OAuthServerEnvironment, string>;
 
-    public static setEnvironment(environment: OAuthServerEnvironment) {
+    public static setEnvironment(environment: keyof typeof Client.servers) {
         Client.authServerUrl = Client.servers[environment];
     }
 
-    static init({ accessToken, refreshToken }: Tokens, environment: OAuthServerEnvironment) {
+    static init({ accessToken, refreshToken }: Tokens, environment: keyof typeof Client.servers) {
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.setEnvironment(environment);
@@ -178,36 +178,32 @@ class Client {
 
     static async authorize() {
         await Client.initPromise;
+
         const redirectUri = await getOauthReceiverUrl();
+
         if (!redirectUri) return;
 
-        const random = getCodeChallenge();
+        const url = new URL(`https://accounts.google.com/o/oauth2/v2/auth`);
 
-        const options = {
-            client_id: Client.clientId,
-            redirect_uri: redirectUri,
-            scope: SCOPES,
-        };
+        url.searchParams.set('client_id', Client.clientId);
+        url.searchParams.set('redirect_uri', redirectUri);
+        url.searchParams.set('scope', SCOPES);
+
+        const challenge = getCodeChallenge();
 
         if (Client.flow === 'code') {
             // authorization code flow with PKCE
-            Object.assign(options, {
-                code_challenge: random,
-                code_challenge_method: 'plain',
-                response_type: 'code',
-            });
+            url.searchParams.set('code_challenge', challenge);
+            url.searchParams.set('code_challenge_method', 'plain');
+            url.searchParams.set('response_type', 'code');
         } else {
             // implicit flow
-            Object.assign(options, {
-                response_type: 'token',
-            });
+            url.searchParams.set('response_type', 'token');
         }
 
-        const url = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams(
-            options,
-        ).toString()}`;
-        const response = await extractCredentialsFromAuthorizationFlow(url);
-        const { access_token, code } = response;
+        url.searchParams.set('state', getCodeChallenge());
+
+        const { access_token, code } = await extractCredentialsFromAuthorizationFlow(url);
 
         if (access_token) {
             // implicit flow returns short lived access_token directly
@@ -220,7 +216,7 @@ class Client {
                     body: JSON.stringify({
                         clientId: Client.clientId,
                         code,
-                        codeVerifier: random,
+                        codeVerifier: challenge,
                         redirectUri,
                     }),
                     headers: {
@@ -229,6 +225,7 @@ class Client {
                 });
 
                 const json = await res.json();
+
                 if (!json?.access_token || !json?.refresh_token) {
                     throw new Error('Could not retrieve the tokens.');
                 }

@@ -51,7 +51,15 @@ export interface MainChannels {
 // Handled by DesktopApi.on/once (see ./main)
 export interface RendererChannels {
     // oauth
-    'oauth/response': { [key: string]: string };
+    'oauth/response':
+        | {
+              key: 'trezor-oauth';
+              search: string;
+          }
+        | {
+              key: 'trezor-oauth';
+              hash: string;
+          };
 
     // Update events
     'update/checking': void;

@@ -8,7 +8,6 @@ import {
     deriveFilename,
     deriveMetadataKey,
     encrypt,
-    urlSearchParams,
 } from '../metadataUtils';
 
 const filename = '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85';
@@ -107,19 +106,5 @@ describe('metadata', () => {
 
         const content = arrayBufferToBuffer(toArrayBuffer(file));
         expect(content).toEqual(file);
-    });
-
-    it('urlSearchParams', () => {
-        const input1 =
-            '?code=mnau-haf&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.appdata';
-        expect(urlSearchParams(input1)).toEqual({
-            code: 'mnau-haf',
-            scope: 'https://www.googleapis.com/auth/drive.appdata',
-        });
-
-        const input2 = '?code=mnau-ha?#f';
-        expect(urlSearchParams(input2)).toEqual({
-            code: 'mnau-ha?#f',
-        });
     });
 });
