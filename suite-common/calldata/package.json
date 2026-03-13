@@ -16,6 +16,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "viem": "^2.39.0"
+        "viem": "^2.46.3"
     }
 }
