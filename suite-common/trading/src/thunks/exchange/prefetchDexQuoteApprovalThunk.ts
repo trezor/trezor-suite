@@ -1,7 +1,7 @@
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -20,12 +20,12 @@ export type PrefetchDexQuoteApprovalThunkProps = {
 export const prefetchDexQuoteApprovalThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/prefetchDexQuoteApproval`,
     async ({ trade, account }: PrefetchDexQuoteApprovalThunkProps, { dispatch, getState }) => {
+        dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade?.quoteId));
+
         try {
             if (!trade?.quoteId) {
                 return undefined;
             }
-
-            dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade.quoteId));
 
             const { address: fromAddress } = getUnusedAddressFromAccount(account);
 
@@ -47,11 +47,10 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
                 return undefined;
             }
 
+            const quotes = selectTradingExchangeQuotes(getState());
             if (response.error) {
                 return undefined;
             }
-
-            const quotes = selectTradingExchangeQuotes(getState());
             const updatedQuotes = quotes.map(quote =>
                 quote.quoteId === quoteToProcess.quoteId ? { ...quote, ...response } : quote,
             );
@@ -64,7 +63,9 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
                 selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId(getState());
 
             if (currentLoadingQuoteId === trade?.quoteId) {
-                dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(undefined));
+                dispatch(
+                    tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(undefined),
+                );
             }
         }
     },
