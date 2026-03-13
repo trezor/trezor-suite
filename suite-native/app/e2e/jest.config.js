@@ -5,6 +5,14 @@ const nativeJestConfig = require('../../../jest.config.native');
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+// Remove Evolu module mocks from native jest config so e2e tests can use the real packages.
+const {
+    '^@evolu/common$': _evoluCommon,
+    '^@evolu/common/evolu$': _evoluCommonEvolu,
+    '^@evolu/react-native/expo-sqlite$': _evoluReactNative,
+    ...restModuleNameMapper
+} = nativeJestConfig.moduleNameMapper ?? {};
+
 const projectName = process.env.TDR_PROJECT_NAME;
 if (!projectName) {
     throw new Error('TDR_PROJECT_NAME environment variable is not defined');
@@ -30,6 +38,7 @@ const reporters =
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
     ...nativeJestConfig,
+    moduleNameMapper: restModuleNameMapper,
     rootDir: process.cwd(),
     testTimeout: 120000,
     globalSetup: 'detox/runners/jest/globalSetup',

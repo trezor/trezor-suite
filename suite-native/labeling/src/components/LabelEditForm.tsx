@@ -44,8 +44,18 @@ export const LabelEditForm = ({ label, onSubmit }: LabelEditFormParam) => {
         <VStack spacing="sp16">
             <Form form={form}>
                 <VStack spacing="sp8">
-                    <TextInputField ref={inputRef} name="label" asBottomSheetInput />
-                    <Button onPress={onConfirm} size="large" isDisabled={!isValid}>
+                    <TextInputField
+                        ref={inputRef}
+                        name="label"
+                        asBottomSheetInput
+                        testID="@label-edit-form/input"
+                    />
+                    <Button
+                        onPress={onConfirm}
+                        size="large"
+                        isDisabled={!isValid}
+                        testID="@label-edit-form/confirm-button"
+                    >
                         <Translation id="generic.buttons.confirm" />
                     </Button>
                 </VStack>

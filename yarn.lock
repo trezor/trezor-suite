@@ -11680,6 +11680,7 @@ __metadata:
     "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/react-native": "npm:^10.2.1"
     "@suite-common/device": "workspace:*"
+    "@suite-common/e2e-evolu-client": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/react-query": "workspace:^"
@@ -11746,6 +11747,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/lodash": "npm:^4"
     "@types/minimist": "npm:^1.2.5"
     "@types/node": "npm:22.13.10"
     "@types/xml2js": "npm:^0.4.14"
@@ -11785,8 +11787,10 @@ __metadata:
     expo-web-browser: "npm:~55.0.9"
     https-browserify: "npm:^1.0.0"
     jest: "npm:29.7.0"
+    jest-diff: "npm:^30.2.0"
     jest-junit: "npm:^16.0.0"
     jotai: "npm:2.17.1"
+    lodash: "npm:^4.17.23"
     lottie-react-native: "npm:7.3.5"
     metro-config: "npm:^0.83.0"
     minimist: "npm:^1.2.8"
@@ -17023,6 +17027,13 @@ __metadata:
   version: 5.0.0
   resolution: "@types/linkify-it@npm:5.0.0"
   checksum: 10/c3919044d4876f9d71d037e861745cd2485c95ac8c36a4fa67b132d4e60eb1d067e123cc7965c9cf5110eea351517d767f0d306af5e9147d6d0af87bc374ddcf
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4":
+  version: 4.17.24
+  resolution: "@types/lodash@npm:4.17.24"
+  checksum: 10/0f2082565f60f9787eefc046edc38458054512be5a8b3584ef0bad5fd9e85d0ab55ec5a1fbfae1ed6ba015cf1f9e837d5fb4da1f99fc60b8f74b2a46146fb00f
   languageName: node
   linkType: hard
 
@@ -30436,7 +30447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-diff@npm:^30.0.2":
+"jest-diff@npm:^30.0.2, jest-diff@npm:^30.2.0":
   version: 30.2.0
   resolution: "jest-diff@npm:30.2.0"
   dependencies:

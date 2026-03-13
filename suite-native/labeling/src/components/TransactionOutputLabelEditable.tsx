@@ -63,7 +63,10 @@ export const TransactionOutputLabelEditable = ({
     };
 
     return (
-        <EditableLabelLayout label={label}>
+        <EditableLabelLayout
+            label={label}
+            testID={`@transactions/output-label/${txId}/${txTargetId}`}
+        >
             {({ onClose }) => (
                 <LabelEditForm
                     label={label ?? ''}
