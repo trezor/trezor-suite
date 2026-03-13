@@ -66,7 +66,7 @@
         "bitcoin-ops": "^1.4.1",
         "blake-hash": "^2.0.0",
         "blakejs": "^1.2.1",
-        "bn.js": "^5.2.2",
+        "bn.js": "^5.2.3",
         "bs58": "^6.0.0",
         "bs58check": "^4.0.0",
         "cashaddrjs": "0.4.4",
