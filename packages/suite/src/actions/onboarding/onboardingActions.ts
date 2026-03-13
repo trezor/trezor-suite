@@ -125,6 +125,13 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // only to satisfy typescript, there must be a device to progress with onboarding
     if (device?.features === undefined) return;
     const reportAnalytics = () => {
+        // Only report if the device was actually set up in this session.
+        // `seed` is set when the user goes through the seed creation/recovery step,
+        // so its presence reliably indicates a completed device setup flow.
+        // Without this guard, the event fires with an incomplete payload for
+        // returning users (already-initialized devices) who skip onboarding on Desktop.
+        if (!onboardingAnalytics.seed) return;
+
         const payload = {
             ...onboardingAnalytics,
             duration: Date.now() - onboardingAnalytics.startTime!,
