@@ -50,8 +50,8 @@ export class TradingAssetPicker {
         );
 
     constructor(private readonly page: Page) {
-        this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker/input');
-        this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker/input');
+        this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker');
+        this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker');
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
         this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
         this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');

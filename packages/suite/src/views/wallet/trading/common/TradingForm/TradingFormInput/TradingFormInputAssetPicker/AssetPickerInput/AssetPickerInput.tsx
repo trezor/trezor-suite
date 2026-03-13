@@ -1,9 +1,8 @@
 import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import styled from 'styled-components';
-
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { FakeSelect } from '@suite/trading';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -13,26 +12,13 @@ import {
     type TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
-import { Icon, Input, type InputProps, Spinner, Text } from '@trezor/components';
+import { type InputProps, Spinner, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 
 type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps | TradingSellFormProps;
-
-const OpenModalButton = styled.button`
-    border: unset;
-    background: unset;
-    box-shadow: unset;
-    font-size: inherit;
-
-    cursor: pointer;
-
-    & input {
-        cursor: pointer;
-    }
-`;
 
 export interface AssetPickerInputProps {
     name:
@@ -76,36 +62,23 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     }, [value, isLoading, name]);
 
     return (
-        <OpenModalButton
-            onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (!disabled) {
-                    onClick();
-                }
-            }}
-        >
-            <Input
-                name={name}
-                placeholder={
-                    !value && !isLoading && placeholder ? translationString(placeholder) : undefined
-                }
-                isDisabled={disabled}
-                data-testid={`${dataTestId ?? '@asset-picker'}/input`}
-                labelLeft={
-                    label && (
-                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation id={label} />
-                        </Text>
-                    )
-                }
-                rightContent={<Icon name="caretDown" size={20} />}
-                leftContent={leftContent}
-                bottomText={bottomText}
-                // Disable the blinking cursor when the input is focused
-                readOnly
-            />
-        </OpenModalButton>
+        <FakeSelect
+            name={name}
+            placeholder={
+                !value && !isLoading && placeholder ? translationString(placeholder) : undefined
+            }
+            isDisabled={disabled}
+            onClick={onClick}
+            labelLeft={
+                label && (
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                        <Translation id={label} />
+                    </Text>
+                )
+            }
+            leftContent={leftContent}
+            bottomText={bottomText}
+            data-testid={dataTestId}
+        />
     );
 });
