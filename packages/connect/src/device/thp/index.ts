@@ -1,6 +1,7 @@
+import { DEVICE } from '@trezor/connect-common/src/events/device';
+
 import { createThpChannel, thpHandshake } from './handshake';
 import { thpPairing } from './pairing';
-import { DEVICE } from '../../events/device';
 import type { IDevice } from '../../types/idevice';
 
 export { abortThpWorkflow } from './thpCall';

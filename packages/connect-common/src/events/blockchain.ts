@@ -1,9 +1,5 @@
-import type {
-    BlockEvent,
-    FiatRatesBySymbol,
-    NotificationEvent,
-    ServerInfo,
-} from '@trezor/blockchain-link';
+import type { FiatRatesBySymbol, ServerInfo } from '@trezor/blockchain-link-types';
+import type { BlockEvent, NotificationEvent } from '@trezor/blockchain-link-types/src/responses';
 
 import type { CoinInfo } from '../types/coinInfo';
 import type { MessageFactoryFn } from '../types/utils';

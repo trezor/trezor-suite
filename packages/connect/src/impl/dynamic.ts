@@ -1,4 +1,5 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import { getSynchronize } from '@trezor/utils';
 
 import { parseManifest, parseVersion } from '../data/connectSettings';
@@ -6,7 +7,6 @@ import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
-import { ConnectEmitter } from '../types/emitter';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;

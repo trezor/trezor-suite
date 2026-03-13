@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CipherKeyValue.js
 
+import { Bundle } from '@trezor/connect-common/src/types/params';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -7,7 +8,6 @@ import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMetho
 import { UI_REQUEST, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
-import { Bundle } from '../types/params';
 import { validatePath } from '../utils/pathUtils';
 
 export default class CipherKeyValue extends AbstractMethod<

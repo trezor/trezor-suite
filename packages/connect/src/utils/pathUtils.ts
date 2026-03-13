@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 // TODO: There might be other issues with side-effects https://github.com/trezor/trezor-suite/issues/15559
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo } from '@trezor/connect-common/src/types/coinInfo';
+import type { DerivationPath, ProtoWithAddressN, ProtoWithDerivationPath } from '@trezor/connect-common/src/types/params';
 
 import { PROTO } from '../constants';
-import type { CoinInfo } from '../types/coinInfo';
-import type { DerivationPath, ProtoWithAddressN, ProtoWithDerivationPath } from '../types/params';
 
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;

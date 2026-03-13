@@ -1,11 +1,30 @@
-import { serializeError } from '@trezor/connect-common/src/constants/errors';
 import type { Transport } from '@trezor/transport';
-import { TRANSPORT } from '@trezor/transport/src/constants';
 
-import { ConnectSettings } from '../types/settings';
+import { serializeError } from '../constants/errors';
+import type { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
-export { TRANSPORT } from '@trezor/transport/src/constants';
+// Transport constants defined locally to avoid a runtime dependency on @trezor/transport
+// (which pulls in native USB modules). These values MUST stay in sync with
+// TRANSPORT in packages/transport/src/constants.ts.
+export const TRANSPORT = {
+    /* events */
+    START: 'transport-start',
+    ERROR: 'transport-error',
+    STOPPED: 'transport-stopped',
+    DEVICE_CONNECTED: 'transport-device_connected',
+    DEVICE_DISCONNECTED: 'transport-device_disconnected',
+    DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
+    DEVICE_REQUEST_RELEASE: 'transport-device_request_release',
+    SEND_MESSAGE_PROGRESS: 'transport-send_message_progress',
+    TREZOR_PUSH_NOTIFICATION: 'trezor-push-notification',
+    BATTERY_LEVEL: 'battery-level',
+    /* messages */
+    DISABLE_WEBUSB: 'transport-disable_webusb',
+    REQUEST_DEVICE: 'transport-request_device',
+    GET_INFO: 'transport-get_info',
+    SET_TRANSPORTS: 'transport-set_transports',
+} as const;
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 

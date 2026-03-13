@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
+import type { BitcoinNetworkInfo, EthereumNetworkInfo, MiscNetworkInfo } from '@trezor/connect-common/src/types/coinInfo';
+import type { DerivationPath } from '@trezor/connect-common/src/types/params';
 import { cloneObject } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
-import type { BitcoinNetworkInfo, EthereumNetworkInfo, MiscNetworkInfo } from '../types/coinInfo';
-import type { DerivationPath } from '../types/params';
 import { fromHardened, toHardened } from '../utils/pathUtils';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];

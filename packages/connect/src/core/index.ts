@@ -7,7 +7,7 @@ import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/
 
 import { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
-import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { type Params as FirmwareParams, onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { parseLocalFirmwares } from '../data/connectSettings';
@@ -18,13 +18,13 @@ import * as workflows from '../device/workflow';
 import {
     CORE_CALL,
     CORE_EVENT,
-    CoreCallMessage,
     CoreEventMessage,
     CoreRequestMessage,
     DEVICE,
     POPUP,
     RESPONSE_EVENT,
     TransportInfo,
+    TypedCoreCallMessage,
     UI_REQUEST,
     UI_RESPONSE,
     createDeviceMessage,
@@ -148,7 +148,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onCall = async (context: CoreContext, message: CoreCallMessage) => {
+const onCall = async (context: CoreContext, message: TypedCoreCallMessage) => {
     if (!message.id || !message.payload || message.type !== CORE_CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -217,7 +217,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
 
 const onCallDevice = async (
     context: CoreContext,
-    message: CoreCallMessage,
+    message: TypedCoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
@@ -802,7 +802,7 @@ export class Core extends EventEmitter {
 
                     const coreContext = this.getCoreContext();
                     onCallFirmwareUpdate({
-                        params: message.payload,
+                        params: message.payload as FirmwareParams,
                         context: {
                             deviceList: this.deviceList,
                             postMessage: this.sendCoreMessage.bind(this),
@@ -823,7 +823,7 @@ export class Core extends EventEmitter {
                             _log.error('onCallFirmwareUpdate', error);
                         });
                 } else {
-                    onCall(this.getCoreContext(), message).catch(error => {
+                    onCall(this.getCoreContext(), message as TypedCoreCallMessage).catch(error => {
                         _log.error('onCall', error);
                     });
                 }

@@ -15183,8 +15183,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/protobuf": "workspace:^"
-    "@trezor/protocol": "workspace:^"
+    "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
+    "@trezor/protocol": "workspace:*"
+    "@trezor/schema-utils": "workspace:*"
+    "@trezor/transport": "workspace:^"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
@@ -15613,7 +15618,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/protocol@workspace:*, @trezor/protocol@workspace:^, @trezor/protocol@workspace:packages/protocol":
+"@trezor/protocol@workspace:*, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   peerDependencies:

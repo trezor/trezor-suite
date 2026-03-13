@@ -1,4 +1,5 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import { cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';
@@ -22,7 +23,6 @@ import {
 import { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, ConnectSettingsTransport } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
-import { ConnectEmitter } from '../types/emitter';
 import { initLog } from '../utils/debug';
 
 export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {

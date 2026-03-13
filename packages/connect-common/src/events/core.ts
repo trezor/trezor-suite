@@ -1,8 +1,3 @@
-import {
-    ErrorCode,
-    SerializedError,
-    TrezorError,
-} from '@trezor/connect-common/src/constants/errors';
 import { Err } from '@trezor/type-utils';
 
 import type { BlockchainEventMessage } from './blockchain';
@@ -18,6 +13,11 @@ import type {
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
+import {
+    ErrorCode,
+    SerializedError,
+    TrezorError,
+} from '../constants/errors';
 
 export const CORE_EVENT = 'CORE_EVENT';
 

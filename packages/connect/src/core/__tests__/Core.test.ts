@@ -1,6 +1,7 @@
+import { ConnectSettings } from '@trezor/connect-common/src/types/settings';
+
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
-import { ConnectSettings } from '../../types/settings';
 import { initCoreState } from '../index';
 
 // import { createTestTransport } from '../../device/__tests__/DeviceList.test';

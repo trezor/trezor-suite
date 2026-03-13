@@ -1,4 +1,4 @@
-import type { ConnectSettings, ThpSettings } from '../types/settings';
+import type { ConnectSettings, ThpSettings } from '@trezor/connect-common/src/types/settings';
 
 export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): ThpSettings => {
     const settings: ThpSettings = {
