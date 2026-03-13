@@ -1,1 +1,6 @@
-export { WebsocketClient, type WebsocketRequest, type WebsocketResponse } from './client';
+export {
+    WebsocketClient,
+    type WebsocketRequest,
+    type WebsocketResponse,
+    WebsocketError,
+} from './client';
