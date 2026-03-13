@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
@@ -64,10 +65,6 @@ import {
     useSelector,
 } from 'src/hooks/suite';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import {
-    selectIsCopyAddressModalShown,
-    selectIsUnhideTokenModalShown,
-} from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 

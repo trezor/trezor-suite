@@ -1,4 +1,5 @@
 import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import { recoveryRerunThunk } from '@suite/recovery';
 import { closeModalApp, goto } from '@suite/router';
@@ -21,7 +22,6 @@ import {
 } from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
-import * as suiteActions from '../suite/suiteActions';
 
 export type OnboardingAction =
     | {
@@ -116,7 +116,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
     dispatch(closeModal());
 
-    dispatch(suiteActions.initialRunCompleted());
+    dispatch(initialRunCompleted());
     dispatch(resetOnboarding());
     dispatch(closeModalApp(true));
 

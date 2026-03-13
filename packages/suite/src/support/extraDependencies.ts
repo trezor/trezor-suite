@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
@@ -297,7 +298,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
             payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
-
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
@@ -312,6 +312,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
 
             return state;
         },
+        storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
+            payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
     },
 };
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import {
     DefinitionType,
@@ -9,7 +10,6 @@ import {
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -29,7 +29,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
 
     const onUnhide = () => {
         if (checked) {
-            dispatch(setFlag('showUnhideTokenModal', false));
+            dispatch(setFlag({ key: 'showUnhideTokenModal', value: false }));
         }
         dispatch(
             tokenDefinitionsActions.setTokenStatus({

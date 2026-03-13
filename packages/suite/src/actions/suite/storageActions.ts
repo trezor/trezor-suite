@@ -102,7 +102,7 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
         'suiteSettings',
         {
             settings,
-            flags: state.suite.flags,
+            flags: state.flags,
             evmSettings: state.suite.evmSettings,
             seenDisconnectNotificationForDeviceIds:
                 state.suite.seenDisconnectNotificationForDeviceIds,
@@ -391,7 +391,7 @@ export const saveSuiteSettings =
     () =>
     (_dispatch: Dispatch, getState: GetState): Promise<void> => {
         if (!db.isAccessible()) return Promise.resolve();
-        const { suite } = getState();
+        const { suite, flags } = getState();
 
         const result = db.addItem(
             'suiteSettings',
@@ -403,7 +403,7 @@ export const saveSuiteSettings =
                         e => e !== 'password-manager',
                     ),
                 },
-                flags: suite.flags,
+                flags,
                 evmSettings: suite.evmSettings,
                 seenDisconnectNotificationForDeviceIds:
                     suite.seenDisconnectNotificationForDeviceIds,

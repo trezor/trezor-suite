@@ -1,17 +1,15 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { Checkbox } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-
-import { setFlag } from '../../../actions/suite/suiteActions';
 
 export const ShowBluetoothDebugInfo = () => {
-    const { showBluetoothDebugInfo } = useSelector(selectSuiteFlags);
+    const { showBluetoothDebugInfo } = useSelector(selectFlags);
     const dispatch = useDispatch();
 
     const handleOnClick = () => {
-        dispatch(setFlag('showBluetoothDebugInfo', !showBluetoothDebugInfo));
+        dispatch(setFlag({ key: 'showBluetoothDebugInfo', value: !showBluetoothDebugInfo }));
     };
 
     return (

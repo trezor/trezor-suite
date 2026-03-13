@@ -1,9 +1,9 @@
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const FirmwareTypeSuggestion = () => {
@@ -14,7 +14,7 @@ export const FirmwareTypeSuggestion = () => {
         ? 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION'
         : 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION';
 
-    const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
+    const handleClose = () => dispatch(setFlag({ key: 'firmwareTypeBannerClosed', value: true }));
 
     const goToFirmwareType = () =>
         dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.FirmwareType }));

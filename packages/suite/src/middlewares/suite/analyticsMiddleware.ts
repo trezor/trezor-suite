@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { setFlag } from '@suite/flags';
 import { anchorChange, routerLocationChange, selectRouterUrl } from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
@@ -30,7 +31,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import {
@@ -289,8 +289,8 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                if (!state.suite.flags.discreetModeCompleted) {
-                    dispatch(setFlag('discreetModeCompleted', true));
+                if (!state.flags.discreetModeCompleted) {
+                    dispatch(setFlag({ key: 'discreetModeCompleted', value: true }));
                 }
                 asTypedDesktopAnalytics(analytics).report({
                     type: events.menuToggleDiscreetEvent.name,

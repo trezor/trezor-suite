@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import {
     selectIsHideSuspiciousTransactions,
@@ -20,9 +21,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-
 const options = [
     {
         id: 0,
@@ -36,14 +34,14 @@ const options = [
 ] as const;
 
 export const FilterAction = () => {
-    const { suspiciousTransactionsTooltipClosed } = useSelector(selectSuiteFlags);
+    const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
     const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
     const dispatch = useDispatch();
 
     const isOpen = !suspiciousTransactionsTooltipClosed;
 
     const handleClose = () => {
-        dispatch(setFlag('suspiciousTransactionsTooltipClosed', true));
+        dispatch(setFlag({ key: 'suspiciousTransactionsTooltipClosed', value: true }));
     };
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 

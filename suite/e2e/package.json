@@ -44,6 +44,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:^",
         "@suite/metadata": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:^",

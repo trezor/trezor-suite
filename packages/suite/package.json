@@ -75,6 +75,7 @@
         "@suite/analytics": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@suite/experimental-feedback": "workspace:*",
+        "@suite/flags": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/locks": "workspace:*",

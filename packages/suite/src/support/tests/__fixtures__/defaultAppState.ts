@@ -1,4 +1,5 @@
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
+import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
 import { RouterState } from '@suite/router';
 import { FirmwareUpdateState } from '@suite-common/firmware';
@@ -21,6 +22,7 @@ import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktop
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    flags: flagsInitialState,
     locks: locksInitialState,
     device: initialState,
     bluetooth: initialDesktopBluetoothState,

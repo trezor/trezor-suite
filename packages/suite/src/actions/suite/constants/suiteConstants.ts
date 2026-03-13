@@ -5,7 +5,6 @@ export const DESKTOP_HANDSHAKE = '@suite/desktop-handshake';
 export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@suite/toggle-bio-auth-validation-requested';
 export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
-export const SET_FLAG = '@suite/set-flag';
 export const SET_RECENTLY_CONNECTED_DEVICE = '@suite/set-recently-connected-device';
 export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnected-device';
 export const ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION =

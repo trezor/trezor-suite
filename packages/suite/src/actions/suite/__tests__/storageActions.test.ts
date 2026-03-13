@@ -1,5 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
@@ -33,12 +34,12 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { AcquiredDevice, AppState } from 'src/types/suite';
 
 import * as storageActions from '../storageActions';
-import * as suiteActions from '../suiteActions';
 
 const { getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
+const flagsReducer = prepareFlagsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
@@ -90,7 +91,10 @@ const tx2 = getWalletTransaction({
     symbol: 'btc',
 });
 
-type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager'> & {
+type PartialState = Pick<
+    AppState,
+    'suite' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager' | 'flags'
+> & {
     wallet: Partial<
         Pick<
             AppState['wallet'],
@@ -109,6 +113,10 @@ type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSync' | 'suiteSync
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
+        action || ({ type: 'foo' } as any),
+    ),
+    flags: flagsReducer(
+        prevState ? prevState.flags : undefined,
         action || ({ type: 'foo' } as any),
     ),
     suiteSync: suiteSyncReducer(
@@ -172,6 +180,7 @@ const updateStore = (store: mockStoreType) => {
         const action = store.getActions().pop();
         const prevState = store.getState();
         store.getState().suite = getInitialState(prevState, action).suite;
+        store.getState().flags = getInitialState(prevState, action).flags;
         store.getState().suiteSync = getInitialState(prevState, action).suiteSync;
         store.getState().device = getInitialState(prevState, action).device;
         store.getState().wallet = getInitialState(prevState, action).wallet;
@@ -215,10 +224,10 @@ describe('Storage actions', () => {
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
-        await store.dispatch(suiteActions.initialRunCompleted());
+        await store.dispatch(initialRunCompleted());
         store.dispatch(await preloadStore());
 
-        expect(store.getState().suite.flags.initialRun).toEqual(false);
+        expect(store.getState().flags.initialRun).toEqual(false);
         global.fetch = f;
     });
 

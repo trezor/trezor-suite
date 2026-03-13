@@ -49,11 +49,6 @@ export type SuiteAction =
     | { type: typeof SUITE.TOGGLE_DEVICE_META_CHECKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | {
-          type: typeof SUITE.SET_FLAG;
-          key: keyof AppState['suite']['flags'];
-          value: boolean;
-      }
-    | {
           type: typeof SUITE.SET_RECENTLY_CONNECTED_DEVICE;
           payload: string | null;
       }
@@ -128,12 +123,6 @@ export const setAutodetect = (payload: Partial<AutodetectSettings>): SuiteAction
     payload,
 });
 
-export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): SuiteAction => ({
-    type: SUITE.SET_FLAG,
-    key,
-    value,
-});
-
 export const setRecentlyConnectedDevicePath = (payload: string | null): SuiteAction => ({
     type: SUITE.SET_RECENTLY_CONNECTED_DEVICE,
     payload,
@@ -146,12 +135,6 @@ export const addDeviceIdToSeenDisconnectNotification = (deviceId: string): Suite
     type: SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION,
     payload: { deviceId },
 });
-
-export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {
-    if (getState().suite.flags.initialRun) {
-        dispatch(setFlag('initialRun', false));
-    }
-};
 
 export const setSidebarWidth = (payload: { width: number }): SuiteAction => ({
     type: SUITE.SET_SIDEBAR_WIDTH,
