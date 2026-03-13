@@ -1,7 +1,7 @@
 const { createServer } = require('./server');
 
 // Change all "blockchain_link" urls to localhost.
-// This method is used in karma.plugin.js and jest.setup.js
+// This method is used in vitest.globalSetup.ts and vitest.setup.ts
 const transformCoinsJson = json => {
     Object.keys(json).forEach(key => {
         json[key].forEach(coin => {

@@ -1,13 +1,8 @@
-import { getVersion as getJestVersion, runCLI } from 'jest';
-import karma from 'karma';
 import path from 'path';
-import webpack from 'webpack';
 
 import type { EmuStartOptsType, Firmwares } from '@trezor/trezor-user-env-link';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';
-
-import argv from './jest.config';
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
@@ -84,6 +79,11 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
 };
 
 (async () => {
+    const mode = process.argv[2];
+    if (mode !== 'node' && mode !== 'web') {
+        throw new Error('no env specified (web or node)');
+    }
+
     // Before actual tests start, establish connection with trezor-user-env
     await TrezorUserEnvLink.connect();
 
@@ -94,67 +94,49 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     }
     const emulatorStartOpts = getEmulatorOptions(TrezorUserEnvLink.firmwares);
 
-    argv.globals = {
-        emulatorStartOpts,
-    };
+    // Pass emulator options to tests via environment variable (read by vitest.config.ts define)
+    process.env.EMULATOR_START_OPTS = JSON.stringify(emulatorStartOpts);
 
-    // @ts-expect-error there is some mismatch between jest implementation and definitely typed package.
-    argv.runInBand = true;
+    // Set the project type for vitest.config.ts to determine browser vs node mode
+    process.env.VITEST_PROJECT = mode === 'web' ? 'browser' : 'node';
 
-    if (process.env.TESTS_PATTERN) {
-        // @ts-expect-error
-        argv.testMatch = process.env.TESTS_PATTERN.split(' ').map(p => `**/${p}*`);
+    // eslint-disable-next-line no-console
+    console.log(`Running @trezor/connect e2e tests in ${mode} mode...`);
+    // eslint-disable-next-line no-console
+    console.log('FW:', process.env.TESTS_FIRMWARE);
+    // eslint-disable-next-line no-console
+    console.log('Methods:', process.env.TESTS_INCLUDED_METHODS || 'All');
+    // eslint-disable-next-line no-console
+    console.log('Pattern:', process.env.TESTS_PATTERN || '*');
+
+    const { startVitest } = await import('vitest/node');
+
+    const vitest = await startVitest('test', [], {
+        config: path.resolve(__dirname, './vitest.config.ts'),
+        watch: false,
+        sequence: {
+            shuffle: process.env.TESTS_RANDOM === 'true',
+        },
+    });
+
+    if (!vitest) {
+        console.error('Failed to start vitest');
+        process.exit(1);
     }
 
-    if (process.argv[2] === 'node') {
-        // eslint-disable-next-line no-console
-        console.log('jest version: ', getJestVersion());
+    await vitest.close();
 
-        if (process.env.TESTS_RANDOM === 'true') {
-            // @ts-expect-error
-            argv.showSeed = true;
-            // @ts-expect-error
-            argv.randomize = true;
-        }
+    const files = vitest.state.getFiles();
+    const hasFailedTests = files.some(f => f.result?.state === 'fail');
+    const hasUnhandledErrors = vitest.state.getUnhandledErrors().length > 0;
+    const noTestsRan = files.length === 0 || files.every(f => !f.result);
 
-        // @ts-expect-error
-        const { results } = await runCLI(argv, [__dirname]).catch(err => {
-            console.error(err);
-            process.exit(1);
-        });
-
-        process.exit(results.numFailedTestSuites);
-    } else if (process.argv[2] === 'web') {
-        const { parseConfig } = karma.config;
-        const { Server } = karma;
-
-        parseConfig(
-            path.join(__dirname, 'karma.config.js'),
-            { port: 8099 },
-            { promiseConfig: true, throwErrors: true },
-        ).then(
-            karmaConfig => {
-                // @ts-expect-error
-                karmaConfig.webpack.plugins.push(
-                    new webpack.DefinePlugin({
-                        'process.env.emulatorStartOpts': JSON.stringify(
-                            // @ts-expect-error
-                            argv.globals.emulatorStartOpts,
-                        ),
-                    }),
-                );
-                const server = new Server(karmaConfig, exitCode => {
-                    process.exit(exitCode);
-                });
-                server.start();
-            },
-            rejectReason => {
-                // eslint-disable-next-line no-console
-                console.log('reject reason', rejectReason);
-                process.exit(1);
-            },
-        );
-    } else {
-        throw new Error('no env specified (web or node)');
+    if (hasUnhandledErrors) {
+        console.error('Vitest encountered unhandled errors');
     }
+    if (noTestsRan) {
+        console.error('No tests were executed');
+    }
+
+    process.exit(hasFailedTests || hasUnhandledErrors || noTestsRan ? 1 : 0);
 })();

@@ -9,7 +9,6 @@ export default [
             camelcase: 'off', // camelcase is used
             'no-console': 'warn',
             'no-await-in-loop': 'off', // used in legacy trezor-connect codebase
-            'jest/no-jasmine-globals': 'off', // Because of the Karma tests that uses Jasmine
             'jest/no-standalone-expect': [
                 'error',
                 { additionalTestBlockFunctions: ['conditionalTest'] },

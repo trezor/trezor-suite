@@ -16,7 +16,6 @@
 @types/flexsearch
 @types/git-url-parse
 @types/jws
-@types/karma
 @types/lodash
 @types/node
 @types/node-fetch
@@ -52,13 +51,6 @@ html-inline-script-webpack-plugin
 intersection-observer
 json5
 jssha
-karma
-karma-babel-preprocessor
-karma-chrome-launcher
-karma-jasmine
-karma-jasmine-async
-karma-sourcemap-loader
-karma-webpack
 lodash
 long
 match-sorter
@@ -92,3 +84,6 @@ version-bump-prompt
 ws
 xvfb-maybe
 zod
+@types/cors
+@vitest/browser
+vitest
