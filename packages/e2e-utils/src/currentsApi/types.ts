@@ -33,12 +33,18 @@ export interface TestsExplorerResponse {
 }
 
 export type RuleMatcherConditionOp =
+    // Primitive types (title, testId, project, file, git_*, …)
     | 'eq'
+    | 'neq'
+    | 'any'
+    | 'empty'
     | 'in'
+    | 'notIn'
+    // Complex types (titlePath, error_message, annotation, tag)
+    | 'inc'
+    | 'notInc'
     | 'incAll'
-    | 'contains'
-    | 'startsWith'
-    | 'endsWith';
+    | 'notIncAll';
 
 export interface RuleMatcherCondition {
     type: string;

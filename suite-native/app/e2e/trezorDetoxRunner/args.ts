@@ -51,10 +51,7 @@ Arguments:
         process.exit(1);
     }
 
-    const { shard } = argv;
-    const { totalShards } = argv;
-    const { headless } = argv;
-    const quarantine = !!argv.quarantine;
+    const { shard, totalShards, headless, quarantine } = argv;
     const projects = getProjectsFromCmdlineArgs(argv.project);
     const testFiles = argv._;
 
@@ -87,7 +84,7 @@ Arguments:
         configPath,
         shard,
         totalShards,
-        headless: !!headless,
+        headless,
         quarantine,
         projects,
         testFiles,

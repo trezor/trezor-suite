@@ -28,11 +28,14 @@ export const getTitlePath = (suiteName: string, tc: any): string[] => {
 /**
  * Evaluate a single condition against the test identity.
  * Supports:
- *   - type "title"     — matches against the flat JUnit `name` string
- *   - type "titlePath" — matches against the reconstructed path array (joined with " > " for string ops)
- * Supported ops: "eq", "contains", "startsWith", "endsWith", "incAll" (titlePath only).
+ *   - type "title"     — matches against the flat test name string
+ *   - type "titlePath" — matches against the reconstructed path array
  *
- * Note: "incAll" is the op produced by the auto-quarantine bot and checks that every
+ * Operators per the Currents API spec:
+ *   Primitive (title):  eq, neq, any, empty, in, notIn
+ *   Complex (titlePath): eq, neq, any, empty, in, notIn, inc, notInc, incAll, notIncAll
+ *
+ * Note: "incAll" is the op produced by the auto-quarantine bot — it checks that every
  * element of the condition value array is present somewhere in the titlePath array.
  */
 export const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIdentity): boolean => {
@@ -42,13 +45,17 @@ export const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIden
 
         switch (cond.op) {
             case 'eq':
-                return values.some(v => v === testTitle);
-            case 'contains':
-                return values.some(v => testTitle.includes(v));
-            case 'startsWith':
-                return values.some(v => testTitle.startsWith(v));
-            case 'endsWith':
-                return values.some(v => testTitle.endsWith(v));
+                return testTitle === cond.value;
+            case 'neq':
+                return testTitle !== cond.value;
+            case 'any':
+                return testTitle != null && testTitle !== '';
+            case 'empty':
+                return testTitle == null || testTitle === '';
+            case 'in':
+                return values.includes(testTitle);
+            case 'notIn':
+                return !values.includes(testTitle);
             default:
                 return false;
         }
@@ -60,10 +67,6 @@ export const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIden
         const values = Array.isArray(cond.value) ? cond.value : [cond.value];
 
         switch (cond.op) {
-            // incAll: every element in the condition value must be present in titlePath.
-            // This is the op created by the auto-quarantine bot.
-            case 'incAll':
-                return values.every(v => titlePath.includes(v));
             case 'eq':
                 if (Array.isArray(cond.value)) {
                     return (
@@ -72,13 +75,36 @@ export const evaluateCondition = (cond: RuleMatcherCondition, identity: TestIden
                     );
                 }
 
-                return values.some(v => v === titlePathStr);
-            case 'contains':
-                return values.some(v => titlePathStr.includes(v));
-            case 'startsWith':
-                return values.some(v => titlePathStr.startsWith(v));
-            case 'endsWith':
-                return values.some(v => titlePathStr.endsWith(v));
+                return titlePathStr === cond.value;
+            case 'neq':
+                if (Array.isArray(cond.value)) {
+                    return !(
+                        cond.value.length === titlePath.length &&
+                        cond.value.every((v, i) => v === titlePath[i])
+                    );
+                }
+
+                return titlePathStr !== cond.value;
+            case 'any':
+                return titlePath.length > 0;
+            case 'empty':
+                return titlePath.length === 0;
+            case 'in':
+                return values.includes(titlePathStr);
+            case 'notIn':
+                return !values.includes(titlePathStr);
+            // inc: any of the condition values is present as an element in titlePath.
+            // This is the op produced by the auto-quarantine bot for single-value checks.
+            case 'inc':
+                return values.some(v => titlePath.includes(v));
+            case 'notInc':
+                return values.every(v => !titlePath.includes(v));
+            // incAll: every condition value must be present as an element in titlePath.
+            // This is the op produced by the auto-quarantine bot for multi-value checks.
+            case 'incAll':
+                return values.every(v => titlePath.includes(v));
+            case 'notIncAll':
+                return !values.every(v => titlePath.includes(v));
             default:
                 return false;
         }
