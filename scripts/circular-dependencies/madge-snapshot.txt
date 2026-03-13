@@ -1,6 +1,5 @@
 
 
-packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
