@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountUtxo, FeeLevel } from '@trezor/connect';
+import type { AccountUtxo, FeeLevel } from '@trezor/connect';
 
 import { AccountKey } from './account';
 import { Output, RbfTransactionParams } from './transaction';

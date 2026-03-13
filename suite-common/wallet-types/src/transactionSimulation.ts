@@ -1,4 +1,4 @@
-import { EthereumSignTransaction, EthereumSignTypedData } from '@trezor/connect';
+import type { EthereumSignTransaction, EthereumSignTypedData } from '@trezor/connect';
 
 type TxSimulationActionBase = {
     sourceOrigin: string;
