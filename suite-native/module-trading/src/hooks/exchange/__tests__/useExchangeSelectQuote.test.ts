@@ -70,7 +70,13 @@ describe('useExchangeSelectQuote', () => {
     let exchangeForm: ExchangeFormType;
     let store: TestStore;
 
-    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
+    const getInitializedStore = ({
+        isLoading,
+        dexQuoteApprovalPrefetchLoadingQuoteId,
+    }: {
+        isLoading?: boolean;
+        dexQuoteApprovalPrefetchLoadingQuoteId?: string;
+    }) => {
         const btcAccount = getBtcAccount(
             'btc-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
@@ -87,6 +93,10 @@ describe('useExchangeSelectQuote', () => {
 
         if (isLoading !== undefined) {
             preloadedState.wallet!.trading!.exchange!.isLoading = isLoading;
+        }
+        if (dexQuoteApprovalPrefetchLoadingQuoteId !== undefined) {
+            preloadedState.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
+                dexQuoteApprovalPrefetchLoadingQuoteId;
         }
 
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
@@ -125,6 +135,69 @@ describe('useExchangeSelectQuote', () => {
         it('should canProceed be false when loading', () => {
             const { result } = renderUseExchangeSelectQuote();
             expect(result.current.canProceed).toBe(false);
+        });
+    });
+
+    describe('while prefetching dex quote approval info', () => {
+        beforeEach(async () => {
+            store = await getInitializedStore({
+                isLoading: false,
+                dexQuoteApprovalPrefetchLoadingQuoteId: exchangeQuotes[3].quoteId!,
+            });
+
+            const { result } = await renderExchangeForm();
+            exchangeForm = result.current;
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[3]);
+            });
+        });
+
+        it('should canProceed be false while prefetch is loading for approval-required quote', async () => {
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(false);
+        });
+
+        it('should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            dispatchSpy.mockClear();
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalled();
+        });
+
+        it('should canProceed be true while prefetch is loading for quote without approval', async () => {
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(true);
+        });
+
+        it('should canProceed be true when another approval-required quote is currently prefetched', async () => {
+            act(() => {
+                exchangeForm.setValue('quote', {
+                    ...exchangeQuotes[3],
+                    quoteId: 'another-dex-quote-id',
+                });
+            });
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(true);
         });
     });
 
@@ -228,6 +301,8 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangePreview when nextStep callback is executed', () => {
+            mockGetApprovalStatus.mockReturnValue('approved');
+
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             const { result } = renderUseExchangeSelectQuote();

@@ -7,6 +7,8 @@ import {
     exchangeThunks,
     getApprovalStatus,
     parseCryptoId,
+    requiresTokenApproval,
+    selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
     selectTradingMaxSlippagePercentage,
     tokenSupportsIncreasingAllowance,
@@ -39,19 +41,30 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
     const timer = useNullTimer();
+    const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
+    const isDexQuoteApprovalPrefetchLoadingForCandidateQuote = useSelector(
+        (state: TradingRootState) =>
+            selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId(
+                state,
+                candidateQuote?.quoteId,
+            ),
+    );
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
 
     const navigation = useNavigation<NavigationProps>();
 
-    const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
-
     const analyticsReportCallback = useExchangeAnalyticReportCallback(candidateQuote);
+    const isCandidateQuotePrefetchBlocked =
+        !!candidateQuote &&
+        requiresTokenApproval(candidateQuote) &&
+        isDexQuoteApprovalPrefetchLoadingForCandidateQuote;
 
-    const canProceed = !isLoading && !!candidateQuote && !!sendAccount;
+    const canProceed =
+        !isLoading && !isCandidateQuotePrefetchBlocked && !!candidateQuote && !!sendAccount;
 
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
@@ -64,7 +77,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     };
 
     const selectQuote = async () => {
-        if (!candidateQuote || isLoading) {
+        if (!candidateQuote || isLoading || isCandidateQuotePrefetchBlocked) {
             return;
         }
 

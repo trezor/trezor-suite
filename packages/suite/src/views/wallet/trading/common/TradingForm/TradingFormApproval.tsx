@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     type TradingExchangeType,
-    type requiresTokenApproval,
+    requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
     useApprovalStep,
     useTradingUtils,

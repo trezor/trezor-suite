@@ -30,6 +30,7 @@ export interface TradingExchangeState {
     preselectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
+    dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
     amountLimits: TradingExchangeAmountLimitProps | undefined;
     formStep: TradingExchangeStepType;
     transactionId?: string;
@@ -49,6 +50,7 @@ export const exchangeInitialState: TradingExchangeState = {
     preselectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
+    dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
     amountLimits: undefined,
     formStep: 'RECEIVING_ADDRESS',
 };
@@ -95,6 +97,12 @@ const tradingExchangeSlice = createSlice({
         },
         setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
+        },
+        setDexQuoteApprovalPrefetchLoadingQuoteId(
+            state,
+            action: PayloadAction<string | undefined>,
+        ) {
+            state.dexQuoteApprovalPrefetchLoadingQuoteId = action.payload;
         },
         setAmountLimits(state, action: PayloadAction<TradingExchangeAmountLimitProps | undefined>) {
             state.amountLimits = action.payload;
