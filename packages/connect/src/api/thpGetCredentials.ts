@@ -1,6 +1,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { getThpCredentials } from '../device/thp';
 import { DEVICE, UI_REQUEST } from '../events';

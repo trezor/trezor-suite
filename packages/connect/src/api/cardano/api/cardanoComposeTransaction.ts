@@ -2,7 +2,8 @@ import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,

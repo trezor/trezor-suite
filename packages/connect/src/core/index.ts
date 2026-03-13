@@ -5,7 +5,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
-import { AbstractMethod } from './AbstractMethod';
+import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
@@ -13,18 +13,21 @@ import { DataManager } from '../data/DataManager';
 import { parseLocalFirmwares } from '../data/connectSettings';
 import { initializeFirmwareConfig } from '../data/firmwareInfo';
 import type { Device, DeviceEvents } from '../device/Device';
-import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
+import type { IDeviceList } from '../device/DeviceList';
+import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import * as workflows from '../device/workflow';
-import {
-    CORE_CALL,
-    CORE_EVENT,
+import type {
     CoreCallMessage,
     CoreEventMessage,
     CoreRequestMessage,
+    TransportInfo,
+} from '../events';
+import {
+    CORE_CALL,
+    CORE_EVENT,
     DEVICE,
     POPUP,
     RESPONSE_EVENT,
-    TransportInfo,
     UI_REQUEST,
     UI_RESPONSE,
     createDeviceMessage,
@@ -33,7 +36,8 @@ import {
     createUiMessage,
 } from '../events';
 import type { ConnectSettings, DeviceIdentity } from '../types';
-import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
+import type { LogWriter } from '../utils/debug';
+import { enableLog, initLog, setLogWriter } from '../utils/debug';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 // custom log

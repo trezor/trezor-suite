@@ -1,5 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { FeeLevel } from './fees';
 

@@ -3,23 +3,25 @@ import { cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 import { parseConnectSettings } from '../data/connectSettings';
-import {
-    BLOCKCHAIN_EVENT,
-    CORE_CALL,
+import type {
     CallMethodPayload,
     CoreEventMessage,
     CoreRequestMessage,
-    DEVICE_EVENT,
     MethodResponseMessage,
+    UiResponseEvent,
+} from '../events';
+import {
+    BLOCKCHAIN_EVENT,
+    CORE_CALL,
+    DEVICE_EVENT,
     POPUP,
     RESPONSE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
 } from '../events';
-import { ConnectFactoryDependencies } from '../factory';
+import type { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, ConnectSettingsTransport } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';

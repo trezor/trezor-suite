@@ -1,4 +1,5 @@
-import { PROTO, TrezorConnect, asDeviceUniquePath } from '../../..';
+import type { TrezorConnect } from '../../..';
+import { PROTO, asDeviceUniquePath } from '../../..';
 
 const {
     CardanoAddressType,

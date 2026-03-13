@@ -1,12 +1,10 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
-import {
-    TronContractsParameters,
-    TronContractsTypes,
-    TronSignTransaction as TronSignTransactionSchema,
-} from '../../../types/api/tron';
+import type { PROTO } from '../../../constants';
+import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import type { TronContractsParameters, TronContractsTypes } from '../../../types/api/tron';
+import { TronSignTransaction as TronSignTransactionSchema } from '../../../types/api/tron';
 import { validatePath } from '../../../utils/pathUtils';
 
 type Params = {

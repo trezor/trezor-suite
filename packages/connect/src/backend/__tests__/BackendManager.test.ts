@@ -1,7 +1,7 @@
 import BlockchainLink from '@trezor/blockchain-link';
 
 import type { CoreEventMessage } from '../../events';
-import { CoinInfo } from '../../types';
+import type { CoinInfo } from '../../types';
 import { BackendManager } from '../BackendManager';
 
 const coinInfo = {

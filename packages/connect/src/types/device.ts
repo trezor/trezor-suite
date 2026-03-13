@@ -1,8 +1,8 @@
-import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
-import { Descriptor } from '@trezor/transport';
-import { Branded } from '@trezor/type-utils';
+import type { Descriptor } from '@trezor/transport';
+import type { Branded } from '@trezor/type-utils';
 
 import type { FirmwareReleaseConfigInfo } from './firmware';
 

@@ -2,7 +2,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { SignTxHelperParams, SignTxHelperProps } from './signtx';
-import { PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
 import type { SignedTransaction } from '../../types/api/bitcoin';
 
 const requestPrevTxInfo = ({

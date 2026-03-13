@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoInputs.js
 
-import { Assert, Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Assert, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
 import { DerivationPath } from '../../types';

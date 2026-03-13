@@ -1,7 +1,7 @@
 import coinsJSON from '@trezor/connect-data/files/coins.json';
 
 import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
-import { formatAmount } from '../formatUtils';
+import type { formatAmount } from '../formatUtils';
 
 parseCoinsJson(coinsJSON);
 

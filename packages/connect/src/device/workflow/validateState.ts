@@ -1,8 +1,8 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '../../events';
-import { StaticSessionId } from '../../types';
-import { WorkflowContext } from '../../types/workflow';
+import type { StaticSessionId } from '../../types';
+import type { WorkflowContext } from '../../types/workflow';
 import { toHardened } from '../../utils/pathUtils';
 import { createThpSession } from '../thp';
 

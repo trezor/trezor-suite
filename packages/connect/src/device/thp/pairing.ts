@@ -6,7 +6,8 @@ import { createDeferred } from '@trezor/utils';
 
 import { abortThpWorkflow, thpCall } from './thpCall';
 import { DataManager } from '../../data/DataManager';
-import { DEVICE, UiResponseThpPairingTag } from '../../events';
+import type { UiResponseThpPairingTag } from '../../events';
+import { DEVICE } from '../../events';
 import type { IDevice } from '../../types/idevice';
 
 const processQrCodeTag = async (device: IDevice, value: string) => {

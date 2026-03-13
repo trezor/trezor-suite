@@ -6,7 +6,8 @@ import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { PROTO } from '../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodPermission, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';

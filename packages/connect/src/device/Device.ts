@@ -1,27 +1,26 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { FirmwareRelease } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
-    FirmwareRelease,
     getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
-import {
-    TransportProtocol,
-    thp as protocolThp,
-    v1 as protocolV1,
-    v2 as protocolV2,
-} from '@trezor/protocol';
-import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { type Descriptor, type Transport } from '@trezor/transport';
-import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import type { TransportProtocol } from '@trezor/protocol';
+import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
+import type { Descriptor, Session, Transport } from '@trezor/transport';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import type { Deferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceCommands } from './DeviceCommands';
-import { FIRMWARE, PROTO } from '../constants';
-import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
+import type { PROTO } from '../constants';
+import { FIRMWARE } from '../constants';
+import type { TypedCallProvider } from './DeviceCurrentSession';
+import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { changeLanguage } from './workflow/changeLanguage';
@@ -33,7 +32,7 @@ import {
     getReleaseByVersion,
 } from '../data/firmwareInfo';
 import { DEVICE, UI_REQUEST } from '../events';
-import {
+import type {
     DeviceBusyStatus,
     DeviceFirmwareStatus,
     DeviceState,
@@ -48,7 +47,7 @@ import {
     KnownDevice,
     UnavailableCapabilities,
 } from '../types';
-import { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
+import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';

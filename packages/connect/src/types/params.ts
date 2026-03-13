@@ -1,10 +1,11 @@
 // API params
 
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Static, TSchema, Type } from '@trezor/schema-utils';
-import { Err, Ok } from '@trezor/type-utils';
+import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import type { Static, TSchema } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
+import type { Err, Ok } from '@trezor/type-utils';
 
-import { DeviceState, DeviceUniquePath } from './device';
+import type { DeviceState, DeviceUniquePath } from './device';
 
 export interface DeviceIdentity {
     path?: DeviceUniquePath;

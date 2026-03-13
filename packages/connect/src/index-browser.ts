@@ -4,7 +4,7 @@ import { config } from './data/config';
 import { TRANSPORT } from './events';
 import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';
-import { UpdateConnectSettings } from './types/api/updateConnectSettings';
+import type { UpdateConnectSettings } from './types/api/updateConnectSettings';
 
 class CoreInModuleWeb extends CoreInModule {
     protected get defaultTransports() {

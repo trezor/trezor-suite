@@ -1,5 +1,5 @@
 import { HttpRequestError, tryLocalAssetRequire } from './assetUtils';
-import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
+import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 /**
  * Http requesst wrapper for suite-native, that first tries to read files locally (unless forced to skip),

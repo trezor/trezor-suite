@@ -3,7 +3,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type { BitcoinNetworkInfo } from '../../types';
-import { Blockchain } from '../Blockchain';
+import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 

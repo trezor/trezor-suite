@@ -1,3 +1,4 @@
+import type { TrezorConnect } from '../../..';
 import {
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
@@ -5,7 +6,6 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
     ThpPairingMethod,
-    TrezorConnect,
     UI_EVENT,
     UI_REQUEST,
 } from '../../..';

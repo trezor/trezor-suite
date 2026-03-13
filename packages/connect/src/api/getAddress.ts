@@ -3,17 +3,14 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
+import type { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import {
-    AbstractMethod,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
+import type { MethodPermission, MethodReturnType, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../events';
-import { type BitcoinNetworkInfo, Bundle } from '../types';
+import type { BitcoinNetworkInfo } from '../types';
+import { Bundle } from '../types';
 import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 

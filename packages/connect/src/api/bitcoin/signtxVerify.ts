@@ -8,7 +8,7 @@ import {
     bip32,
 } from '@trezor/utxo-lib';
 
-import { PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { Network } from '../../types';
 

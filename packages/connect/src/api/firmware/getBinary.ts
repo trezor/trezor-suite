@@ -1,9 +1,9 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { FirmwareRelease } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
 import { removeTrailingSlashes } from '@trezor/utils';
 
 import { parseFirmwareHeaders } from './parseFirmwareHeaders';
-import { BinaryInfo } from '../../types';
+import type { BinaryInfo } from '../../types';
 import { httpRequest } from '../../utils/assets';
 
 const MIN_FIRMWARE_SIZE_BYTES = 200;

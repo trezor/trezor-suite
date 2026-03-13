@@ -1,5 +1,6 @@
 import { firmwareAssets } from '@trezor/connect-data';
-import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 

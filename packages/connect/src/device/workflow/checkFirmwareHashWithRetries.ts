@@ -3,7 +3,7 @@ import { isArrayMember } from '@trezor/utils';
 import { checkFirmwareHash } from './checkFirmwareHash';
 import { FIRMWARE } from '../../constants';
 import type { IDevice } from '../../types/idevice';
-import { Log } from '../../utils/debug';
+import type { Log } from '../../utils/debug';
 
 type Context = {
     device: IDevice;

@@ -1,10 +1,10 @@
 import { decode, verify } from 'jws';
 
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
-import { FirmwareReleaseConfig } from '@trezor/device-utils';
+import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
-import { FirmwareChannel } from '../types/firmware';
+import type { FirmwareChannel } from '../types/firmware';
 
 interface RemoteBaseInfo {
     BASE_URL: string;

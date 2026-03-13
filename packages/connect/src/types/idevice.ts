@@ -1,12 +1,12 @@
-import { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     DecodedTrezorPushNotification,
     TransportProtocol,
     thp as protocolThp,
 } from '@trezor/protocol';
-import { Descriptor, type Transport } from '@trezor/transport';
-import { type TypedEmitter, type VersionArray } from '@trezor/utils';
+import type { Descriptor, Transport } from '@trezor/transport';
+import type { TypedEmitter, VersionArray } from '@trezor/utils';
 
 import type {
     Device,
