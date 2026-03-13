@@ -70,8 +70,7 @@ describe('passphrase flow [@androidOnly @smoke @T3T1 @T3W1]', () => {
         });
     });
 
-    // TODO #16495 - currently not working
-    describe.skip('with passphrase not allowed on Trezor', () => {
+    describe('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });

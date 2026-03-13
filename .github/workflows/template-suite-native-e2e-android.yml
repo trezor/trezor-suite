@@ -25,6 +25,8 @@ on:
         required: true
       CURRENTS_RECORD_KEY:
         required: true
+      CURRENTS_API_KEY:
+        required: true
       SLACK_MOBILE_E2E_WEBHOOK:
         required: true
       E2E_TEST_PASSPHRASE:
@@ -125,6 +127,7 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
