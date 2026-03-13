@@ -6,6 +6,7 @@ import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendFeesForm } from '../components/SendFeesForm';
 
+// TODO(#25541): Phase 7 - Remove SendFeesScreen from send flow (unused after Phase 1).
 export const SendFeesScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendFees>) => {

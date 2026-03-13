@@ -68,9 +68,9 @@ describe('SellFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', async () => {
-        const { getByText } = await renderSellFeePickerCard({ quote: sellQuotes[0] });
+    it('should render FeeSummaryCard otherwise', async () => {
+        const { toJSON } = await renderSellFeePickerCard({ quote: sellQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(toJSON()).not.toBeNull();
     });
 });

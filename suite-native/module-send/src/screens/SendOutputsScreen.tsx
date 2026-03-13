@@ -1,10 +1,14 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { updateSelectedFeeLevelThunk } from '@suite-native/send';
+import { FeeSummaryCard } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';
@@ -19,6 +23,10 @@ export const SendOutputsScreen = ({
     const { accountKey, tokenContract } = params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
+
+    const sendFormDraft = useSelector((state: SendRootState) =>
+        selectSendFormDraftByKey(state, accountKey, tokenContract),
+    );
 
     if (!sendForm) {
         return null;
@@ -47,16 +55,9 @@ export const SendOutputsScreen = ({
                             />
                         </Box>
                     </Animated.View>
-                ) : (
-                    isValid && (
-                        <SendOutputsScreenFooter
-                            isSubmitting={isSubmitting}
-                            handleNavigateToReviewScreen={handleSubmitSendForm}
-                        />
-                    )
-                )
+                ) : null
             }
-            focusedInputBottomOffset={148} // space below the main amount input + button height with vertical margin
+            focusedInputBottomOffset={148}
         >
             <>
                 <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
@@ -64,10 +65,27 @@ export const SendOutputsScreen = ({
                 <Box marginTop="sp32">
                     <Form form={form}>
                         <SendOutputFields accountKey={accountKey} tokenContract={tokenContract} />
+                        {isValid && (
+                            <Box marginTop="sp24">
+                                <FeeSummaryCard
+                                    accountKey={accountKey}
+                                    tokenContract={tokenContract}
+                                    updateThunk={updateSelectedFeeLevelThunk}
+                                    formDraft={sendFormDraft}
+                                    testID="@moduleSend/fee-summary-card"
+                                />
+                            </Box>
+                        )}
                         {network?.networkType === 'bitcoin' && (
                             <Box flexDirection="row" justifyContent="center" marginTop="sp24">
                                 <SwitchCoinControlButton amount={amount} accountKey={accountKey} />
                             </Box>
+                        )}
+                        {isValid && (
+                            <SendOutputsScreenFooter
+                                isSubmitting={isSubmitting}
+                                handleNavigateToReviewScreen={handleSubmitSendForm}
+                            />
                         )}
                     </Form>
                 </Box>

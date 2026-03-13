@@ -62,6 +62,7 @@ export * from './Skeleton/ListItemSkeleton';
 export * from './IconListItem';
 export * from './BulletListItem';
 export * from './NumberedListItem';
+export * from './SegmentedControl';
 export * from './SelectableItem';
 export * from './constants';
 export * from './useBannerAwareSafeAreaInsets';

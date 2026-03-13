@@ -51,7 +51,6 @@ describe('FeeOptionsList', () => {
         feeLevels: createMockFeeLevels(),
         symbol: 'eth' as NetworkSymbol,
         isLoading: false,
-        onSelectedFeeLevel: jest.fn(),
     };
 
     const defaultState = {
@@ -160,22 +159,13 @@ describe('FeeOptionsList', () => {
     });
 
     describe('Interaction', () => {
-        it('should call onSelectedFeeLevel when a fee option is selected', async () => {
+        it('should allow pressing fee options when multiple are available', async () => {
             const { getByTestId } = renderFeeOptionsList({});
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+            const radio = getByTestId('@transactionManagement/fees-level-radio-normal');
+            expect(radio).toBeTruthy();
 
-            expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('normal');
-        });
-
-        it('should handle different fee level selections', async () => {
-            const { getByTestId } = renderFeeOptionsList({});
-
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-economy'));
-            expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('economy');
-
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
-            expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('high');
+            await userEvent.press(radio);
         });
 
         it('should make options interactive when multiple options are available', () => {

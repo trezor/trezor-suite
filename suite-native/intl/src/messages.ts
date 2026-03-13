@@ -2941,6 +2941,10 @@ export const messages = {
             buttonTitle: 'Manage',
         },
         fees: {
+            tabs: {
+                standard: 'Standard fee',
+                custom: 'Custom fee',
+            },
             levels: {
                 low: 'Low',
                 normal: 'Normal',
@@ -2997,6 +3001,7 @@ export const messages = {
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
             total: 'Total fee',
+            confirmButton: 'Confirm',
         },
         review: {
             outputs: {

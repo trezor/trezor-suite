@@ -24,7 +24,13 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountKey,
+    GeneralPrecomposedTransactionFinal,
+    TokenAddress,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
@@ -32,21 +38,29 @@ import {
 } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     FeeLevelsMaxAmount,
+    NativeSendRootState,
     calculateFeeLevelsMaxAmountThunk,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
+import { selectDestinationTagFromDraft } from '../selectors';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
+import { useHandleOnDeviceTransactionReview } from './useHandleOnDeviceTransactionReview';
+import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 import { useUtxoSelection } from './useUtxoSelection';
 
 const getDefaultValues = ({
@@ -82,8 +96,13 @@ const getRippleReserve = (account: Account, networkType: NetworkType) => {
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
-    const navigation =
-        useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
+    const navigation = useNavigation<
+        StackToStackCompositeNavigationProps<
+            SendStackParamList,
+            SendStackRoutes.SendOutputs,
+            RootStackParamList
+        >
+    >();
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -108,6 +127,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
+    );
+    const destinationTag = useSelector((state: NativeSendRootState) =>
+        selectDestinationTagFromDraft(state, accountKey, tokenContract),
     );
 
     const excludedUtxos = useMemo(
@@ -185,8 +207,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             );
 
             if (isFulfilled(response)) {
+                const feeLevels = response.payload;
+
                 const isReserveError = pipe(
-                    response.payload,
+                    feeLevels,
                     D.filter(
                         feeLevel =>
                             feeLevel.type === 'error' &&
@@ -200,6 +224,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                         message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
                     });
                 }
+
+                dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
                 const normalFeeLevel = networkFeeInfo?.levels.find(
                     level => level.label === 'normal',
@@ -296,8 +322,19 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         if (account) dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
     }, [account, dispatch]);
 
+    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({
+        accountKey,
+        tokenContract,
+        transaction: null,
+    });
+    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
+        accountKey,
+        tokenContract,
+    });
+
     if (!account || !networkFeeInfo) return null;
 
+    // TODO(#25541): Phase 2-7 - Fee composition, default 'normal' fee, and navigation flow may change when collapsed fee card and bottom sheet are added to Send Outputs.
     const handleSubmitSendForm = handleSubmit(async values => {
         // Keyboard has to be dismissed here before navigating, so it's animation is not interfering with the animations on the FeesScreen.
         Keyboard.dismiss();
@@ -317,10 +354,73 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         );
 
         if (isFulfilled(response)) {
-            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
-            navigation.navigate(SendStackRoutes.SendFees, {
-                accountKey,
-                tokenContract,
+            const feeLevels = response.payload;
+            const normalFeeLevel = networkFeeInfo?.levels.find(
+                level => level.label === 'normal',
+            );
+
+            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
+            dispatch(
+                sendFormActions.storeDraft({
+                    accountKey,
+                    tokenContract,
+                    formState: constructFormDraft({
+                        formValues: values,
+                        tokenContract,
+                        feeLevel: normalFeeLevel,
+                        selectedUtxos,
+                    }),
+                }),
+            );
+            dispatch(
+                updateSelectedFeeLevelThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevelLabel: 'normal',
+                }),
+            );
+
+            const transaction = (feeLevels as Record<string, unknown>).normal as
+                | GeneralPrecomposedTransactionFinal
+                | undefined;
+            if (!transaction || !isFinalPrecomposedTransaction(transaction)) {
+                return;
+            }
+
+            const { networkType } = network;
+
+            const tag = values.destinationTag ?? destinationTag;
+            if (networkType === 'ripple' && tag) {
+                navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
+                    destinationTag: tag,
+                    accountKey,
+                    tokenContract,
+                    transaction,
+                });
+            } else if (networkType === 'stellar') {
+                // The first review entry of Stellar is neither a destination address nor a destination tag.
+                // We need to wait for device button requests before navigating to the review screen.
+                handleOnDeviceTransactionReview(transaction);
+                requestDelayedNavigationToOutputsReview();
+            } else {
+                navigation.navigate(SendStackRoutes.SendAddressReview, {
+                    accountKey,
+                    tokenContract,
+                    transaction,
+                });
+            }
+
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+                params: {
+                    onCancelNavigationTarget: {
+                        name: RootStackRoutes.SendStack,
+                        params: {
+                            screen: SendStackRoutes.SendOutputs,
+                            params: { accountKey, tokenContract },
+                        },
+                    },
+                },
             });
 
             return;

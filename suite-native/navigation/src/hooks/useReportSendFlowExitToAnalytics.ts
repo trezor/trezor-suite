@@ -9,8 +9,10 @@ import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
 type AnalyticsRelevantSendRoute = Exclude<`${SendStackRoutes}`, `${SendStackRoutes.SendAccounts}`>;
 
 // Analytics don't care about the accounts list step, so we filter it out.
+// SendFees is excluded (Phase 1: skip fee screen). TODO(#25541) Phase 7: remove SendFees entirely when screen is removed.
 const orderedRelevantScreensForAnalytics = Object.values<string>(SendStackRoutes).filter(
-    screen => screen != SendStackRoutes.SendAccounts,
+    screen =>
+        screen !== SendStackRoutes.SendAccounts && screen !== SendStackRoutes.SendFees,
 );
 
 const screenNameToAnalyticsLabelMap = {

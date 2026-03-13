@@ -13,7 +13,7 @@ export type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;
     symbol: NetworkSymbol;
     isLoading?: boolean;
-    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
+    onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 // User is not able to enter the fees screen if there is not normal fee or at least the economy fee (in final state) present.

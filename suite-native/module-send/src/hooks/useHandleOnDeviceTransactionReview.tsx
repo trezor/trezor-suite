@@ -32,7 +32,7 @@ import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
-    SendStackRoutes.SendOutputsReview,
+    SendStackRoutes.SendOutputs,
     RootStackParamList
 >;
 
@@ -76,29 +76,39 @@ export const useHandleOnDeviceTransactionReview = ({
         return unsubscribe;
     }, [navigation, isTransactionReviewInProgress, showReviewCancellationAlert, dispatch]);
 
-    const handleOnDeviceTransactionReview = useCallback(async () => {
-        if (!transaction) {
-            return;
-        }
+    // TODO(#25541): Phase 5-7 - May be refactored when fee bottom sheet moves to Send Outputs and SendFees is removed.
+    const handleOnDeviceTransactionReview = useCallback(
+        async (transactionOverride?: GeneralPrecomposedTransactionFinal) => {
+            const txToSign = transactionOverride ?? transaction;
+            if (!txToSign) return;
 
-        const response = await dispatch(
-            signTransactionNativeThunk({
-                accountKey,
-                tokenContract,
-                feeLevel: transaction,
-            }),
-        );
+            const response = await dispatch(
+                signTransactionNativeThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevel: txToSign,
+                }),
+            );
 
-        if (isRejected(response)) {
+            if (!isRejected(response)) {
+                navigation.navigate(RootStackRoutes.AccountDetail, {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                });
+
+                return;
+            }
+
             const errorCode = response.payload?.errorCode;
             const message = response.payload?.message;
 
             if (
-                errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
-                errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
-                errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
+                errorCode === 'Failure_PinCancelled' ||
+                errorCode === 'Method_Cancel' ||
+                errorCode === 'Failure_ActionCancelled'
             ) {
-                navigation.popTo(SendStackRoutes.SendFees, {
+                navigation.popTo(SendStackRoutes.SendOutputs, {
                     accountKey,
                     tokenContract,
                 });
@@ -106,10 +116,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            if (
-                errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
-                errorCode === 'Method_Interrupted' // Passphrase modal closed.
-            ) {
+            if (errorCode === 'Device_InvalidState' || errorCode === 'Method_Interrupted') {
                 showAlert({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
                     pictogramVariant: 'critical',
@@ -120,42 +127,30 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            // Device disconnected during the review.
             if (
                 message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
                 message === TRANSPORT_ERROR.UNEXPECTED_ERROR
             ) {
                 if (isViewOnlyDevice) {
-                    navigation.popTo(SendStackRoutes.SendFees, {
+                    navigation.popTo(SendStackRoutes.SendOutputs, {
                         accountKey,
                         tokenContract,
                     });
                 }
-
-                // Timeout needed so the navigation back to home screen of not remembered device is not interrupted by the alert.
-                setTimeout(() => {
-                    showDeviceDisconnectedAlert();
-                }, 1500);
-
-                return;
+                setTimeout(() => showDeviceDisconnectedAlert(), 1500);
             }
-
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey,
-                tokenContract,
-                closeActionType: 'back',
-            });
-        }
-    }, [
-        accountKey,
-        tokenContract,
-        transaction,
-        isViewOnlyDevice,
-        navigation,
-        showDeviceDisconnectedAlert,
-        dispatch,
-        showAlert,
-    ]);
+        },
+        [
+            accountKey,
+            tokenContract,
+            transaction,
+            isViewOnlyDevice,
+            navigation,
+            showDeviceDisconnectedAlert,
+            dispatch,
+            showAlert,
+        ],
+    );
 
     return handleOnDeviceTransactionReview;
 };

@@ -28,6 +28,7 @@ import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTr
 import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
 import { selectDestinationTagFromDraft } from '../selectors';
 
+// TODO(#25541): Phase 7 - SendFeesForm and SendFeesScreen will be removed from the send flow.
 type SendFormProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;

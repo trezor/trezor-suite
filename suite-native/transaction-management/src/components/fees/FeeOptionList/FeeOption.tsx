@@ -34,6 +34,7 @@ import { Color } from '@trezor/theme';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
 import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import { prefillCustomFeeFields } from '../../../utils';
 
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;
@@ -42,7 +43,8 @@ export type FeeOptionProps = {
     transactionBytes: number;
     isInteractive?: boolean;
     isLoading?: boolean;
-    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
+    /** @deprecated Used by old FeesContent flow. New FeesBottomSheet applies fees on confirm. */
+    onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 const feeLabelsMap = {
@@ -162,16 +164,9 @@ export const FeeOption = ({
             shouldValidate: true,
         });
 
-        onSelectedFeeLevel(feeKey);
+        prefillCustomFeeFields(setValue, feeLevel, networkType);
 
-        // Update also custom fee form so user can see the current values there.
-        setValue('customFeePerUnit', feePerUnit, {
-            shouldValidate: true,
-        });
-
-        setValue('customFeeLimit', feeLevel.feeLimit, {
-            shouldValidate: true,
-        });
+        onSelectedFeeLevel?.(feeKey);
     };
 
     return (

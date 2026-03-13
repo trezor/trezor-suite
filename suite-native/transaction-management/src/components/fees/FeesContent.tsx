@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 
 import { CustomFee } from './CustomFee/CustomFee';
 import { FeeOptionsList, FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
+import { getFeeLabelTranslationId } from './feesLabelUtils';
 import { CustomFeeParams } from '../../hooks';
 
 export type FeesContentProps = {
@@ -17,15 +18,6 @@ export type FeesContentProps = {
     onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     formDraft: FormState | null | undefined;
     networkType: NetworkType;
-};
-
-const getFeeLabelTranslationId = (networkType: NetworkType) => {
-    switch (networkType) {
-        case 'ethereum':
-            return 'transactionManagement.fees.description.title.ethereum';
-        default:
-            return 'transactionManagement.fees.description.title.general';
-    }
 };
 
 export const FeesContent = ({

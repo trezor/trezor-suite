@@ -260,7 +260,6 @@ export enum TradingStackRoutes {
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
     TradingSellPreview = 'TradingSellPreview',
-    TradingFees = 'TradingFees',
     TradingSellOutputsReview = 'TradingSellOutputsReview',
     TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
 }

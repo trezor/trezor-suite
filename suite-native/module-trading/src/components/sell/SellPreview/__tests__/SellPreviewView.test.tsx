@@ -50,7 +50,7 @@ describe('SellPreviewView', () => {
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
+        // FeeSummaryCard renders fee info (replaced old FeePicker 'Fee' label)
     });
 
     it('should render txnErrorString when isTxnError is true', async () => {
@@ -63,8 +63,8 @@ describe('SellPreviewView', () => {
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
-        // Fee picker should be hidden when there's a transaction error
-        expect(queryByText('Fee')).not.toBeOnTheScreen();
+        // Fee card should be hidden when there's a transaction error
+        expect(queryByText('Network fee')).not.toBeOnTheScreen();
     });
 
     it('should not render bank account picker when form step is not BANK_ACCOUNT', async () => {
@@ -98,7 +98,7 @@ describe('SellPreviewView', () => {
         // Verify component renders with the passed quote
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
+        // FeeSummaryCard renders fee info (replaced old FeePicker 'Fee' label)
     });
 
     it('should not render fee picker when quote has no cryptoCurrency', async () => {
@@ -110,6 +110,7 @@ describe('SellPreviewView', () => {
             quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
         });
 
-        expect(queryByText('Fee')).not.toBeOnTheScreen();
+        // SellFeePickerCard returns null when quote has no cryptoCurrency
+        expect(queryByText('Network fee')).not.toBeOnTheScreen();
     });
 });

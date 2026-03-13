@@ -11,9 +11,10 @@ import {
 } from '@suite-native/navigation';
 import { useWaitForButtonRequest } from '@suite-native/transaction-management';
 
+// TODO(#25541): Phase 5-7 - May be refactored when fee bottom sheet moves to Send Outputs.
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
-    SendStackRoutes.SendFees,
+    SendStackRoutes.SendOutputs,
     RootStackParamList
 >;
 

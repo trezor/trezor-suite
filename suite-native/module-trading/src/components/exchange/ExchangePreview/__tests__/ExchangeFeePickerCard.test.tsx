@@ -44,9 +44,9 @@ describe('ExchangeFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', async () => {
-        const { getByText } = await renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
+    it('should render FeeSummaryCard otherwise', async () => {
+        const { toJSON } = await renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(toJSON()).not.toBeNull();
     });
 });

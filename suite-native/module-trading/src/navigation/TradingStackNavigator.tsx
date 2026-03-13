@@ -9,7 +9,6 @@ import {
 import { TradingExchangeApprovalScreen } from '../screens/TradingExchangeApprovalScreen';
 import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';
 import { TradingExchangeRevokeScreen } from '../screens/TradingExchangeRevokeScreen';
-import { TradingFeesScreen } from '../screens/TradingFeesScreen';
 import { TradingHistoryScreen } from '../screens/TradingHistoryScreen';
 import {
     TradingExchangeOutputsReviewScreen,
@@ -60,11 +59,6 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.TradingSellPreview }}
             name={TradingStackRoutes.TradingSellPreview}
             component={TradingSellPreviewScreen}
-        />
-        <TradingStack.Screen
-            options={{ title: TradingStackRoutes.TradingFees }}
-            name={TradingStackRoutes.TradingFees}
-            component={TradingFeesScreen}
         />
         <TradingStack.Screen
             options={{ title: TradingStackRoutes.TradingSellOutputsReview }}

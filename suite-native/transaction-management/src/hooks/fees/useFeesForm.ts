@@ -52,17 +52,23 @@ export const useFeesForm = ({
         symbol: account?.symbol,
     });
 
-    const minimalFeeLimit =
-        'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
+    const normalFeeLevel = feeLevels.normal;
 
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? (feeLevels.normal as PrecomposedTransactionFinal)
+    const minimalFeeLimit =
+        normalFeeLevel &&
+        typeof normalFeeLevel === 'object' &&
+        'estimatedFeeLimit' in normalFeeLevel
+            ? normalFeeLevel.estimatedFeeLimit
+            : undefined;
+
+    const normalFee = isFinalPrecomposedTransaction(normalFeeLevel)
+        ? (normalFeeLevel as PrecomposedTransactionFinal)
         : undefined;
 
     return useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
         defaultValues: {
-            feeLevel: defaultFeeLevel,
+            feeLevel: defaultFeeLevel ?? 'normal',
             customFeePerUnit: trimmedFeePerUnit,
             customFeeLimit: normalFee?.feeLimit,
             customMaxFeePerGas: normalFee?.maxFeePerGas,

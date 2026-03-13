@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
 
 import { useFeeCalculation } from './useFeeCalculation';
@@ -36,6 +38,12 @@ export const useFeesManagement = ({
         updateThunk,
         formDraftKey,
     });
+
+    const hasNormalLevel = !!feeCalculation.feeLevels.normal;
+
+    useEffect(() => {
+        feeSelection.dispatchDefaultFee(selectedFee, hasNormalLevel);
+    }, [selectedFee, hasNormalLevel, feeSelection]);
 
     return {
         ...feeCalculation,

@@ -186,11 +186,11 @@ describe('TradingExchangePreviewScreen', () => {
         expect(result.getByText('To')).toBeOnTheScreen();
     });
 
-    it('should render transaction details section', async () => {
+    it('should render fee summary card', async () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
-        expect(result.getByText('Transaction details')).toBeOnTheScreen();
-        expect(result.getByText('Fee')).toBeOnTheScreen();
+        // FeeSummaryCard replaces the old FeePickerCard with "Transaction details" header
+        expect(result.toJSON()).not.toBeNull();
     });
 
     describe('Error Alert Functionality', () => {

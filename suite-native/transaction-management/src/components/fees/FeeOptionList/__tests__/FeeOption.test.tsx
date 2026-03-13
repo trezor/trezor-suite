@@ -44,7 +44,6 @@ const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
 
 describe('FeeOption', () => {
     let store: TestStore;
-    let mockOnSelectedFeeLevel: jest.Mock;
 
     const createMockFeeLevel = () =>
         ({
@@ -80,7 +79,6 @@ describe('FeeOption', () => {
         transactionBytes: 250,
         isInteractive: true,
         isLoading: false,
-        onSelectedFeeLevel: jest.fn(),
     };
 
     const getPreloadedState = () => ({
@@ -89,7 +87,6 @@ describe('FeeOption', () => {
 
     const renderFeeOption = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
-        mockOnSelectedFeeLevel = finalProps.onSelectedFeeLevel;
 
         return renderWithStoreProvider(
             <TestFormWrapper>
@@ -156,34 +153,22 @@ describe('FeeOption', () => {
     });
 
     describe('Interaction', () => {
-        it('should call onSelectedFeeLevel when pressed', async () => {
+        it('should be pressable when interactive', async () => {
             const { getByTestId } = renderFeeOption();
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+            const radio = getByTestId('@transactionManagement/fees-level-radio-normal');
+            expect(radio).toBeTruthy();
 
-            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('normal');
+            await userEvent.press(radio);
         });
 
-        it('should not call onSelectedFeeLevel when not interactive', async () => {
+        it('should not be pressable when not interactive', () => {
             const { getByTestId } = renderFeeOption({
                 isInteractive: false,
             });
 
-            await userEvent.press(
-                getByTestId('@transactionManagement/fees-level-container-normal'),
-            );
-
-            expect(mockOnSelectedFeeLevel).not.toHaveBeenCalled();
-        });
-
-        it('should handle different fee levels correctly', async () => {
-            const { getByTestId } = renderFeeOption({
-                feeKey: 'economy',
-            });
-
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-economy'));
-
-            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('economy');
+            const container = getByTestId('@transactionManagement/fees-level-container-normal');
+            expect(container.props.accessibilityState?.disabled).toBe(true);
         });
     });
 

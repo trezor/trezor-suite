@@ -437,10 +437,6 @@ export type TradingStackParamList = {
         shouldIncreaseLimit?: boolean;
     };
     [TradingStackRoutes.TradingSellPreview]: undefined;
-    [TradingStackRoutes.TradingFees]: {
-        accountKey: AccountKey;
-        tradingType: Exclude<TradingType, 'buy'>;
-    };
     [TradingStackRoutes.TradingSellOutputsReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
