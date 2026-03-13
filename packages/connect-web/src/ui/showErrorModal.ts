@@ -31,7 +31,7 @@ const INLINE_STYLES = `
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
 }
 .trezorconnect-head {
-    text-align: left;
+    text-align: left !important;
     padding: 20px 24px !important;
     display: flex !important;
     align-items: center !important;
@@ -176,20 +176,20 @@ export const showErrorModal = (
         host.remove();
     };
 
-    const retryBtn = shadowRoot.querySelector('.trezorconnect-open') as HTMLButtonElement | null;
+    const retryBtn = shadowRoot.querySelector('.trezorconnect-open');
     if (retryBtn) {
-        retryBtn.onclick = () => {
+        retryBtn.addEventListener('click', () => {
             remove();
             callbacks.onRetry();
-        };
+        });
     }
 
-    const closeBtn = shadowRoot.querySelector('.trezorconnect-close') as HTMLDivElement | null;
+    const closeBtn = shadowRoot.querySelector('.trezorconnect-close');
     if (closeBtn) {
-        closeBtn.onclick = () => {
+        closeBtn.addEventListener('click', () => {
             remove();
             callbacks.onCancel();
-        };
+        });
     }
 
     return remove;

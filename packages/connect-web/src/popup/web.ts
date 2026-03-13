@@ -25,12 +25,20 @@ export class WebPopup extends Popup {
     protected open(): void {
         const url = this.buildPopupUrl(this.popupSrc);
 
+        if (!this.tryOpenPopup(url)) {
+            this.showPopupBlockedModal(url);
+        }
+    }
+
+    /**
+     * Attempt to open the popup window and wire up the channel.
+     * @returns `true` when the popup was successfully opened.
+     */
+    private tryOpenPopup(url: string): boolean {
         const windowResult = window.open(url, 'modal');
 
         if (!windowResult) {
-            this.showPopupBlockedModal(url);
-
-            return;
+            return false;
         }
 
         this.popupWindow = windowResult;
@@ -40,6 +48,8 @@ export class WebPopup extends Popup {
         }
 
         this.startCloseMonitoring();
+
+        return true;
     }
 
     /**
@@ -54,21 +64,10 @@ export class WebPopup extends Popup {
             {
                 onRetry: () => {
                     this.removeErrorModal = undefined;
-                    const retryResult = window.open(url, 'modal');
 
-                    if (!retryResult) {
-                        this.handleOpenFailure('Popup window blocked by browser');
-
-                        return;
+                    if (!this.tryOpenPopup(url)) {
+                        this.showPopupBlockedModal(url);
                     }
-
-                    this.popupWindow = retryResult;
-
-                    if (!this.channel.isConnected) {
-                        this.channel.connect();
-                    }
-
-                    this.startCloseMonitoring();
                 },
                 onCancel: () => {
                     this.removeErrorModal = undefined;
