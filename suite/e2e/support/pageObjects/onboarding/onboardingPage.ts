@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { setFlag } from '@suite/flags';
 import { BackupType } from '@suite-common/suite-types';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 import { Model } from '@trezor/trezor-user-env-link';
@@ -215,11 +216,10 @@ export class OnboardingPage {
     @step()
     async disableDisconnectPrompt() {
         await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_FLAG,
-            key: 'hasSeenDisconnectTooltip',
-            value: true,
-        });
+        await this.page.evaluate(
+            action => window.store.dispatch(action),
+            setFlag({ key: 'hasSeenDisconnectTooltip', value: true }),
+        );
     }
 
     @step()

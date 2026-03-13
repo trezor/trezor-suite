@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { AssetFiatBalance } from '@suite-common/assets';
@@ -34,7 +35,6 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -90,7 +90,7 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
-    const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
+    const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const dispatch = useDispatch();
@@ -174,8 +174,8 @@ export const AssetsView = () => {
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
     const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
-    const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
-    const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
+    const setTable = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
+    const setGrid = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: true }));
 
     const showCards = isBelowTablet || dashboardAssetsGridMode;
 

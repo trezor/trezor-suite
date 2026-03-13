@@ -7,7 +7,6 @@ import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, TorStatus } from 'src/types/suite';
 
-import { SuiteState } from '../../../reducers/suite/suiteReducer';
 import * as suiteActions from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
@@ -134,41 +133,6 @@ const reducerActions = [
                 },
             },
         ],
-    },
-];
-
-const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = [
-    {
-        description: `initialRunCompleted (initialRun = true)`,
-    },
-    {
-        description: `initialRunCompleted (initialRun = false)`,
-        state: {
-            flags: {
-                initialRun: false,
-                discreetModeCompleted: false,
-                taprootBannerClosed: false,
-                firmwareTypeBannerClosed: false,
-                dashboardGraphHidden: false,
-                securityStepsHidden: false,
-                dashboardAssetsGridMode: true,
-                showTEXDashboardPromoBanner: true,
-                showTS7DashboardPromoBanner: true,
-                showSettingsDesktopAppPromoBanner: true,
-                stakeEthBannerClosed: false,
-                stakeSolBannerClosed: false,
-                stakeCardanoBannerClosed: false,
-                suspiciousTransactionsTooltipClosed: false,
-                showDashboardStakingPromoBanner: true,
-                showCopyAddressModal: true,
-                showUnhideTokenModal: true,
-                enableAutoupdateOnNextRun: false,
-                showBluetoothDebugInfo: false,
-                stellarLimitedHistoryBannerClosed: false,
-                solanaLimitedHistoryBannerClosed: false,
-                hasSeenDisconnectTooltip: false,
-            },
-        },
     },
 ];
 
@@ -760,7 +724,6 @@ const acquireDevice = [
 
 export default {
     reducerActions,
-    initialRun,
     selectDevice,
     markDeviceAsRecentlyConnected,
     handleDeviceDisconnect,

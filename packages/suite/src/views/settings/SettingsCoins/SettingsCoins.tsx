@@ -1,6 +1,7 @@
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
@@ -22,7 +23,7 @@ import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
@@ -73,7 +74,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 });
 
 export const SettingsCoins = () => {
-    const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
+    const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
         useNetworkSupport();

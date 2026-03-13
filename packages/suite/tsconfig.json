@@ -149,6 +149,7 @@
         {
             "path": "../../suite/experimental-feedback"
         },
+        { "path": "../../suite/flags" },
         {
             "path": "../../suite/idb-migration-utils"
         },

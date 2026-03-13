@@ -275,12 +275,15 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 settings: { debug: {}, theme: { variant: 'light' } },
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
                 prefillFields: { sendForm: '', transactionHistory: '' },
-                flags: { stakeEthBannerClosed: false, stakeSolBannerClosed: false },
                 countryCode: null,
             },
             () => ({}),
         ),
         locks: locksReducer,
+        flags: createReducer(
+            { stakeEthBannerClosed: false, stakeSolBannerClosed: false },
+            () => {},
+        ),
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,

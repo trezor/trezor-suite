@@ -77,7 +77,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
-                        !state.suite.flags.hasSeenDisconnectTooltip &&
+                        !state.flags.hasSeenDisconnectTooltip &&
                         state.wallet.accounts.length > 0 &&
                         !isModalActive
                     ) {

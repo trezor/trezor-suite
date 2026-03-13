@@ -14804,6 +14804,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/flags@workspace:*, @suite/flags@workspace:suite/flags":
+  version: 0.0.0-use.local
+  resolution: "@suite/flags@workspace:suite/flags"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/idb-migration-utils@workspace:*, @suite/idb-migration-utils@workspace:suite/idb-migration-utils":
   version: 0.0.0-use.local
   resolution: "@suite/idb-migration-utils@workspace:suite/idb-migration-utils"
@@ -16138,6 +16148,7 @@ __metadata:
     "@sentry/electron": "npm:^7.8.0"
     "@suite-common/suite-types": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -16202,6 +16213,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:^"
     "@suite/metadata": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
@@ -16333,6 +16345,7 @@ __metadata:
     "@suite/analytics": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/experimental-feedback": "workspace:*"
+    "@suite/flags": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/locks": "workspace:*"

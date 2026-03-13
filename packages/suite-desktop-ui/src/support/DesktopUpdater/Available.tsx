@@ -1,13 +1,12 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { download } from 'src/actions/suite/desktopUpdateActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { MarkdownWithComponents } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { getVersionName } from './getVersionName';
 
@@ -18,7 +17,7 @@ interface AvailableProps {
 
 export const Available = ({ onCancel, latest }: AvailableProps) => {
     const dispatch = useDispatch();
-    const { enableAutoupdateOnNextRun } = useSelector(selectSuiteFlags);
+    const { enableAutoupdateOnNextRun } = useSelector(selectFlags);
 
     const downloadUpdate = () => {
         dispatch(download());
@@ -32,7 +31,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
     });
 
     const handleToggleAutoUpdateClick = () =>
-        dispatch(setFlag('enableAutoupdateOnNextRun', !enableAutoupdateOnNextRun));
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: !enableAutoupdateOnNextRun }));
 
     return (
         <Modal

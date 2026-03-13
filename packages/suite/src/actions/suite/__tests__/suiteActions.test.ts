@@ -1,5 +1,6 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -30,6 +31,7 @@ import * as suiteActions from '../suiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const flagsReducer = prepareFlagsReducer(extraDependencies);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
@@ -75,6 +77,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    flags: flagsInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
@@ -108,8 +111,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, device, router } = store.getState();
+        const { suite, flags, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
+        store.getState().flags = flagsReducer(flags, action);
         store.getState().device = deviceReducer(device, action);
         store.getState().router = routerReducer(router, action);
         // add action back to stack
@@ -128,15 +132,6 @@ describe('Suite Actions', () => {
                 store.dispatch(action);
                 expect(store.getState().suite).toMatchObject(f.result[i]);
             });
-        });
-    });
-
-    fixtures.initialRun.forEach(f => {
-        it(f.description, () => {
-            const state = getInitialState(f.state);
-            const store = initStore(state);
-            store.dispatch(suiteActions.initialRunCompleted());
-            expect(store.getState().suite.flags.initialRun).toBe(false);
         });
     });
 

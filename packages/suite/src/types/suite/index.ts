@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { experimentalFeedbackSlice } from '@suite/experimental-feedback';
+import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
@@ -107,6 +108,7 @@ type DeviceActionDesktop = ReturnType<
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
+type FlagsAction = ReturnType<(typeof flagsActions)[keyof typeof flagsActions]>;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 
 // all actions from all apps used to properly type Dispatch.
@@ -123,6 +125,7 @@ export type Action =
     | DiscoveryAction
     | FeeAction
     | FirmwareAction
+    | FlagsAction
     | GeolocationAction
     | GuideAction
     | LockAction

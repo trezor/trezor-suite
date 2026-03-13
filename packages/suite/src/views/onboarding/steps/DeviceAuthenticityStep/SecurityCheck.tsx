@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
@@ -37,7 +38,6 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
@@ -300,7 +300,7 @@ const SecurityCheckContent = ({
 export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
-    const { initialRun } = useSelector(selectSuiteFlags);
+    const { initialRun } = useSelector(selectFlags);
     const isDeviceAuthenticityCheckEnabled = useSelector(
         state => state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
     );

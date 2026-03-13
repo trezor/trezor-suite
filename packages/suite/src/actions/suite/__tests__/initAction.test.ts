@@ -1,5 +1,6 @@
 import { createMemoryHistory } from 'history';
 
+import { prepareFlagsReducer } from '@suite/flags';
 import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
@@ -60,6 +61,7 @@ import type { AppState } from 'src/types/suite';
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
+const flagsReducer = prepareFlagsReducer(extraDependencies);
 
 global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
@@ -71,19 +73,14 @@ global.fetch = jest.fn().mockImplementation(() =>
 const EMPTY_ACTION = { type: 'foo' } as any;
 
 const getInitialState = (initialRun?: boolean) => {
-    const initialSuiteState = suiteReducer(undefined, EMPTY_ACTION);
+    const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
 
     return {
-        suite: {
-            ...initialSuiteState,
+        suite: suiteReducer(undefined, EMPTY_ACTION),
+        flags: {
             ...(initialRun !== undefined
-                ? {
-                      flags: {
-                          ...initialSuiteState.flags,
-                          initialRun,
-                      },
-                  }
-                : {}),
+                ? { ...initialFlagsState, initialRun }
+                : { ...initialFlagsState }),
         },
         locks: locksInitialState,
         router: routerReducer(undefined, EMPTY_ACTION),

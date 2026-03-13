@@ -1,3 +1,4 @@
+import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Context } from '@suite-common/message-system';
 import { isDesktop } from '@trezor/env-utils';
@@ -6,7 +7,6 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
 import { Backends } from './Backends';
@@ -40,7 +40,7 @@ import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
-    const flags = useSelector(selectSuiteFlags);
+    const flags = useSelector(selectFlags);
 
     return (
         <SettingsLayout>

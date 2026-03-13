@@ -1,3 +1,4 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { metadataLabelingActions } from '@suite/metadata';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
@@ -24,19 +25,19 @@ import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDevic
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
-import { onSuiteReady, setFlag } from './suiteActions';
+import { onSuiteReady } from './suiteActions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
             settings: { language },
             lifecycle: { status },
-            flags: { enableAutoupdateOnNextRun },
         },
         wallet: {
             settings: { localCurrency },
         },
     } = getState();
+    const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
     if (status !== 'initial') return;
 
@@ -63,12 +64,12 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 4. turn on auto updates if needed
     if (isDesktop() && enableAutoupdateOnNextRun) {
-        dispatch(setFlag('enableAutoupdateOnNextRun', false));
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
         desktopApi.setAutomaticUpdateEnabled(true);
     }
 
     // 5. redirecting user into welcome screen (if needed)
-    dispatch(initialRedirection({ isInitialRun: getState().suite.flags.initialRun }));
+    dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
 
     // 6. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx

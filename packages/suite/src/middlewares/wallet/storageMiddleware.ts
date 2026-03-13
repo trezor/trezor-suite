@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/experimental-feedback';
+import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -330,7 +331,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                     break;
                 case SUITE.SET_LANGUAGE:
-                case SUITE.SET_FLAG:
+                case setFlag.type:
                 case SUITE.SET_DEBUG_MODE:
                 case SUITE.SET_EXPERIMENTAL_FEATURES:
                 case SUITE.ONION_LINKS:

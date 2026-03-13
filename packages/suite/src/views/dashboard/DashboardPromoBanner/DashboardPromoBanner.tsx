@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
 import { events } from '@suite/analytics';
+import {
+    selectIsTEXDashboardPromoBannerShown,
+    selectIsTS7DashboardPromoBannerShown,
+} from '@suite/flags';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { Feature as MessageFeature } from '@suite-common/suite-types';
@@ -8,10 +12,6 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectIsTEXDashboardPromoBannerShown,
-    selectIsTS7DashboardPromoBannerShown,
-} from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { TS7Banner } from './TS7Banner';

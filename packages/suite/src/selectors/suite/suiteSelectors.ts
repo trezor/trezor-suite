@@ -68,18 +68,6 @@ export const selectPrerequisite = (
     return prerequisite;
 };
 
-export const selectIsTEXDashboardPromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showTEXDashboardPromoBanner;
-export const selectIsTS7DashboardPromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showTS7DashboardPromoBanner;
-export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showSettingsDesktopAppPromoBanner;
-export const selectIsUnhideTokenModalShown = (state: SuiteRootState) =>
-    state.suite.flags.showUnhideTokenModal;
-export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
-    state.suite.flags.showCopyAddressModal;
-export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
-export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
