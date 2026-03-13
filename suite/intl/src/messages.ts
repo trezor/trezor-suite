@@ -2877,6 +2877,22 @@ export const messages = defineMessages({
         defaultMessage: 'Commodities',
         id: 'TR_BASE_CURRENCY_VALUABLES',
     },
+    TR_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_CURRENCY',
+    },
+    TR_SEARCH_CURRENCY_PLACEHOLDER: {
+        defaultMessage: 'Search currency or ticker',
+        id: 'TR_SEARCH_CURRENCY_PLACEHOLDER',
+    },
+    TR_CURRENCY_NOT_FOUND: {
+        defaultMessage: 'Currency not found',
+        id: 'TR_CURRENCY_NOT_FOUND',
+    },
+    TR_CURRENCY_NOT_FOUND_DESCRIPTION: {
+        defaultMessage: 'Try a different search or select a currency from the list.',
+        id: 'TR_CURRENCY_NOT_FOUND_DESCRIPTION',
+    },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
             "You may be asked to type some words that aren't part of your wallet backup as an additional security measure.",

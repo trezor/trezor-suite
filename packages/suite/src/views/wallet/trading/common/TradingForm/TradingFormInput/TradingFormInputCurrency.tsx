@@ -2,15 +2,19 @@ import { useMemo } from 'react';
 import { type Control, Controller } from 'react-hook-form';
 
 import {
+    CurrencyPicker,
+    mapCurrenciesToCurrencyPickerOptions,
+    mapCurrencyToCurrencyPickerOption,
+} from '@suite/trading';
+import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingFiatCurrencyOption,
     buildTradingFiatOption,
-    isSupportedFiatCurrency,
+    isTradingFiatCurrencyOption,
 } from '@suite-common/trading';
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -69,35 +73,21 @@ export const TradingFormInputCurrency = ({
             name={name}
             defaultValue={defaultCurrency}
             control={control as Control<TradingAllFormProps>}
-            render={({ field: { onChange, value } }) => {
-                const selectedCurrencyCode =
-                    typeof value === 'object' && value !== null && 'value' in value
-                        ? value.value
-                        : value;
-
-                return (
-                    <Select
-                        value={
-                            selectedCurrencyCode && isSupportedFiatCurrency(selectedCurrencyCode)
-                                ? buildTradingFiatOption(selectedCurrencyCode)
-                                : defaultCurrency
+            render={({ field: { onChange, value } }) => (
+                <CurrencyPicker
+                    options={mapCurrenciesToCurrencyPickerOptions(options)}
+                    onSelect={option => {
+                        onChange(option);
+                        setAmountLimits(undefined);
+                        if (isTradingFiatCurrencyOption(option)) {
+                            onChangeAdditional(option);
                         }
-                        onChange={(selected: TradingFiatCurrencyOption) => {
-                            onChange(selected);
-                            setAmountLimits(undefined);
-
-                            onChangeAdditional(selected);
-                        }}
-                        options={options}
-                        data-testid="@trading/form/fiat-currency-select"
-                        isClearable={false}
-                        size="small"
-                        isSearchable
-                        width={width}
-                        isClean={isClean}
-                    />
-                );
-            }}
+                    }}
+                    value={mapCurrencyToCurrencyPickerOption(value)}
+                    width={width}
+                    isClean={isClean}
+                />
+            )}
         />
     );
 };

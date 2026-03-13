@@ -23,9 +23,13 @@ const FakeSelectContainer = styled.button<{ $isDisabled?: boolean }>`
 `;
 
 export type FakeSelectProps = Omit<FormCellProps, 'children'> &
-    Pick<InputProps, 'value' | 'placeholder' | 'size' | 'name' | 'leftContent' | 'bottomText'> & {
+    Pick<
+        InputProps,
+        'value' | 'placeholder' | 'size' | 'name' | 'leftContent' | 'bottomText' | 'width'
+    > & {
         isLoading?: boolean;
         onClick: () => void;
+        isClean?: boolean;
     };
 
 export const FakeSelect = (props: FakeSelectProps) => {
@@ -38,6 +42,7 @@ export const FakeSelect = (props: FakeSelectProps) => {
         onClick,
         'data-testid': dataTestId,
         leftContent,
+        isClean = false,
         ...rest
     } = props;
 
@@ -57,6 +62,7 @@ export const FakeSelect = (props: FakeSelectProps) => {
                     <Icon name="caretDown" size={20} intent="neutral" priority="secondary" />
                 }
                 data-testid={dataTestId}
+                isClean={isClean}
                 readOnly
             />
         </FakeSelectContainer>

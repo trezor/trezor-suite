@@ -268,7 +268,7 @@ export const TradingFormInputFiat = ({
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
-            rightContent={<TradingFormInputCurrency isClean />}
+            rightContent={<TradingFormInputCurrency isClean width={70} />}
             data-testid="@trading/form/fiat-input"
         />
     );

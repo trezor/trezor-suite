@@ -19,9 +19,9 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
 export class TradingFormInputs {
     readonly fiatAmount: Locator;
     readonly cryptoAmount: Locator;
-    readonly currencyDropdown: Locator;
+    readonly currencySelect: Locator;
     readonly currencyOption = (currency: BaseCurrencyCode) =>
-        this.page.getByTestId(`@trading/form/fiat-currency-select/option/${currency}`);
+        this.page.getByTestId(`@trading/form/currency-picker/option/${currency}`);
     readonly fiatCryptoSwitchButton: Locator;
     readonly fractionButtons: Locator;
     readonly bottomText: Locator;
@@ -38,7 +38,7 @@ export class TradingFormInputs {
     constructor(private readonly page: Page) {
         this.fiatAmount = this.page.getByTestId('@trading/form/fiat-input');
         this.cryptoAmount = this.page.getByTestId('@trading/form/crypto-input');
-        this.currencyDropdown = this.page.getByTestId('@trading/form/fiat-currency-select/input');
+        this.currencySelect = this.page.getByTestId('@trading/form/currency-picker/input');
         this.fiatCryptoSwitchButton = this.page.getByTestId('@trading/form/switch-crypto-fiat');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.bottomText = this.page.getByTestId('@trading/form/crypto-input/bottom-text');
@@ -69,14 +69,15 @@ export class TradingFormInputs {
 
     @step()
     async selectFiatCurrency(currencyCode: BaseCurrencyCode) {
-        const currentCurrency = await this.currencyDropdown.textContent();
+        await expect(this.currencySelect).not.toBeEmpty();
+        const currentCurrency = (await this.currencySelect.inputValue())?.trim();
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
-        await this.page.selectDropdownOptionWithRetry(
-            this.currencyDropdown,
-            this.currencyOption(currencyCode),
-        );
+        await this.currencySelect.click();
+        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation('TR_CURRENCY');
+        await this.currencyOption(currencyCode).click();
+        await expect(this.currencySelect).toHaveValue(currencyCode.toUpperCase());
     }
 
     @step()
