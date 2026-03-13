@@ -3,9 +3,11 @@ import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageC
 import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
 
 import { Popup } from './abstract';
+import { showErrorModal } from '../ui/showErrorModal';
 
 export class WebPopup extends Popup {
     private popupWindow: Window | undefined;
+    private removeErrorModal: (() => void) | undefined;
 
     protected createChannel(origin: string): AbstractMessageChannel<CoreEventMessage> {
         return new WindowWindowChannel<CoreEventMessage>({
@@ -26,7 +28,7 @@ export class WebPopup extends Popup {
         const windowResult = window.open(url, 'modal');
 
         if (!windowResult) {
-            this.handleOpenFailure('Popup window blocked by browser');
+            this.showPopupBlockedModal(url);
 
             return;
         }
@@ -38,6 +40,42 @@ export class WebPopup extends Popup {
         }
 
         this.startCloseMonitoring();
+    }
+
+    /**
+     * Display an error overlay on the caller's page when the browser blocks
+     * the popup window.  The overlay offers a "Try again" button so the user
+     * can retry (the click counts as a user-gesture, which most browsers
+     * require for `window.open`).
+     */
+    private showPopupBlockedModal(url: string): void {
+        this.removeErrorModal = showErrorModal(
+            'Popup window was blocked by your browser. Please click the button below to try again.',
+            {
+                onRetry: () => {
+                    this.removeErrorModal = undefined;
+                    const retryResult = window.open(url, 'modal');
+
+                    if (!retryResult) {
+                        this.handleOpenFailure('Popup window blocked by browser');
+
+                        return;
+                    }
+
+                    this.popupWindow = retryResult;
+
+                    if (!this.channel.isConnected) {
+                        this.channel.connect();
+                    }
+
+                    this.startCloseMonitoring();
+                },
+                onCancel: () => {
+                    this.removeErrorModal = undefined;
+                    this.handleOpenFailure('Popup window blocked by browser');
+                },
+            },
+        );
     }
 
     protected focusPopup(): void {
@@ -53,5 +91,8 @@ export class WebPopup extends Popup {
         return Promise.resolve(this.popupWindow !== undefined && !this.popupWindow.closed);
     }
 
-    protected onReset(): void {}
+    protected onReset(): void {
+        this.removeErrorModal?.();
+        this.removeErrorModal = undefined;
+    }
 }
