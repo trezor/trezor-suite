@@ -13,6 +13,6 @@
     "dependencies": {
         "@tanstack/react-query": "5.90.21",
         "@tanstack/react-query-devtools": "5.91.3",
-        "react": "19.1.0"
+        "react": "19.2.4"
     }
 }

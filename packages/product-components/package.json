@@ -32,7 +32,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^12.33.0",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-hook-form": "^7.71.2",
         "react-intl": "^8.1.3",
         "react-svg": "16.4.2",
