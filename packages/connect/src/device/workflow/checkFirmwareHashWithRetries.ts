@@ -1,12 +1,12 @@
 import { isArrayMember } from '@trezor/utils';
 
-import { FIRMWARE } from '../../constants';
-import { Log } from '../../utils/debug';
-import type { Device } from '../Device';
 import { checkFirmwareHash } from './checkFirmwareHash';
+import { FIRMWARE } from '../../constants';
+import type { IDevice } from '../../types/idevice';
+import { Log } from '../../utils/debug';
 
 type Context = {
-    device: Device;
+    device: IDevice;
     logger: Log;
 };
 

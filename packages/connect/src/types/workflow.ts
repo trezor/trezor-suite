@@ -1,13 +1,24 @@
-import type { AbstractMethod } from '../core/AbstractMethod';
-import type { Device } from '../device/Device';
+import type { IDevice } from './idevice';
+import type { CoreEventMessage } from '../events/core';
+
+/**
+ * Minimal method interface for device workflows.
+ * Avoids importing AbstractMethod (which would create a circular dependency
+ * through AbstractMethod → Device → handshake → types/workflow).
+ */
+export interface WorkflowMethod {
+    preauthorized?: boolean;
+    useCardanoDerivation: boolean;
+    postMessage: (message: CoreEventMessage) => void;
+}
 
 export type WorkflowContext = {
-    device: Device;
-    method: AbstractMethod<any>;
+    device: IDevice;
+    method: WorkflowMethod;
     signal: AbortSignal;
 };
 
 export type TpnWorkflowContext = {
-    device: Device;
+    device: IDevice;
     message: number[];
 };

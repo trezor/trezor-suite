@@ -1,18 +1,7 @@
 
 
 packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
-packages/connect/src/core/AbstractMethod.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
 packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCurrentSession.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts > packages/connect/src/device/thp/thpCall.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/pairing.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/session.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
-packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts

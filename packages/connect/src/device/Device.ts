@@ -8,7 +8,6 @@ import {
     models,
 } from '@trezor/device-utils';
 import {
-    type DecodedTrezorPushNotification,
     TransportProtocol,
     thp as protocolThp,
     v1 as protocolV1,
@@ -33,19 +32,7 @@ import {
     getFirmwareStatus,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
-import {
-    DEVICE,
-    DeviceButtonRequestPayload,
-    DeviceThpCredentialsChangedPayload,
-    DeviceThpPairingPayload,
-    DeviceThpPairingStatus,
-    DeviceVersionChanged,
-    UI_REQUEST,
-    UiResponsePassphrase,
-    UiResponsePin,
-    UiResponseThpPairingTag,
-    UiResponseWord,
-} from '../events';
+import { DEVICE, UI_REQUEST } from '../events';
 import {
     DeviceBusyStatus,
     DeviceFirmwareStatus,
@@ -61,7 +48,7 @@ import {
     KnownDevice,
     UnavailableCapabilities,
 } from '../types';
-import { DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
+import { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';
@@ -76,34 +63,7 @@ import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
 // custom log
 const _log = initLog('Device');
 
-type Result<T> = { success: true; payload: T } | { success: false; error: Error };
-
-export interface DeviceEvents {
-    [DEVICE.PIN]: {
-        type: PROTO.PinMatrixRequestType | undefined;
-        callback: (response: Result<UiResponsePin['payload']>) => void;
-    };
-    [DEVICE.WORD]: {
-        type: PROTO.WordRequestType;
-        callback: (response: Result<UiResponseWord['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE]: {
-        callback: (response: Result<UiResponsePassphrase['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE_ON_DEVICE]: void;
-    [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
-    [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: {
-        device: DeviceTyped;
-        payload: DecodedTrezorPushNotification;
-    };
-    [DEVICE.THP_PAIRING]: {
-        payload: DeviceThpPairingPayload;
-        callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
-    };
-    [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
-    [DEVICE.THP_PAIRING_STATUS_CHANGED]: DeviceThpPairingStatus;
-}
+export { type DeviceEvents } from '../types/idevice';
 
 type DeviceParams = {
     id: DeviceUniquePath;
