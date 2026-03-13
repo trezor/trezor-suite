@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 
