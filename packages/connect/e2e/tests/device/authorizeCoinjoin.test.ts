@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
 
@@ -239,7 +241,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         } as const;
 
         // watch for button requests
-        const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
+        const spy = vi.fn();
         TrezorConnect.on('button', spy);
 
         // authorize no passphrase wallet

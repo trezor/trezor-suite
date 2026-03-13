@@ -14,11 +14,11 @@ let controller: ReturnType<typeof getController> | undefined;
 
 // After the removal bip69, we sort inputs and outputs randomly
 // So we need to mock the source of randomness for all tests, so the fixtures are deterministic.
+// The deterministic getRandomInt is injected via resolve.alias in vitest.config.ts,
+// which redirects the @trezor/utils/src/getRandomInt module to a mock returning min + (4 % max).
 
-// However, we run those test both in Node.js and in browser environment,
-// so we need to mock the source of randomness in both environments
-
-// This is mock of randomnes for Karma (web environment)
+// This is mock of randomness for browser environment (overrides window.crypto.getRandomValues
+// so that the real getRandomInt — if somehow loaded — also produces deterministic output).
 if (typeof window !== 'undefined') {
     window.crypto.getRandomValues = array => {
         if (array instanceof Uint32Array) {
@@ -28,17 +28,6 @@ if (typeof window !== 'undefined') {
         return array;
     };
 }
-
-// In Karma web environment, there is no `jest`, so we fake one
-if (typeof jest === 'undefined') {
-    globalThis.jest = { mock: () => undefined } as any;
-}
-
-// Jest.mock() MUST be called in global scope, if we put it into condition it won't work.
-jest.mock('@trezor/utils', () => ({
-    ...jest.requireActual('@trezor/utils'),
-    getRandomInt: (min: number, max: number) => min + (4 % max), // 4 is truly random number, I rolled the dice
-}));
 
 const getFixtures = () => {
     const includedMethods = process.env.TESTS_INCLUDED_METHODS;
@@ -107,8 +96,8 @@ describe(`TrezorConnect methods`, () => {
                     t.skip,
                     t.description,
                     async () => {
-                        // print current test case, `jest` default reporter doesn't log this. see https://github.com/facebook/jest/issues/4471
-                        if (typeof jest !== 'undefined' && process.stderr) {
+                        // print current test case for better debugging visibility
+                        if (typeof process !== 'undefined' && process.stderr) {
                             process.stderr.write(`\n${testCase.method}: ${t.description}\n`);
                         }
 
