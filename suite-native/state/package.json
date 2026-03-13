@@ -60,9 +60,9 @@
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/transport-native-usb": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "expo-device": "8.0.10",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-device": "~55.0.9",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-redux": "9.2.0",
         "redux-logger": "^3.0.6",
         "redux-persist": "6.0.0"

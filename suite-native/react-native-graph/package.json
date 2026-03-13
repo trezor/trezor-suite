@@ -12,13 +12,13 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "2.2.12",
+        "@shopify/react-native-skia": "2.4.18",
         "@trezor/utils": "workspace:*",
-        "@types/react": "19.1.6",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "@types/react": "19.2.14",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-native-gesture-handler": "2.30.0",
-        "react-native-reanimated": "~4.1.5"
+        "react-native-reanimated": "~4.2.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

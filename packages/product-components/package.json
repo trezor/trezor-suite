@@ -47,7 +47,7 @@
         "@storybook/react": "^10.2.8",
         "@storybook/react-webpack5": "^10.2.8",
         "@trezor/eslint": "workspace:*",
-        "@types/react": "19.1.6",
+        "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
         "babel-loader": "^10.0.0",
         "postcss-styled-syntax": "^0.7.1",

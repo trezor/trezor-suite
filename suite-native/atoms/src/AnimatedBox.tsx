@@ -2,5 +2,6 @@ import Animated from 'react-native-reanimated';
 
 import { Box } from './Box';
 
-export const AnimatedBox = Animated.createAnimatedComponent(Box);
-AnimatedBox.displayName = 'AnimatedBox';
+export const AnimatedBox = Object.assign(Animated.createAnimatedComponent(Box), {
+    displayName: 'AnimatedBox',
+});

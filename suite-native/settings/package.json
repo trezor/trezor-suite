@@ -15,6 +15,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.1.0"
+        "react": "19.2.4"
     }
 }
