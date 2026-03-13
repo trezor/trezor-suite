@@ -16,7 +16,7 @@ import {
     fetchAndUpdateAccountThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { type FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
@@ -35,12 +35,14 @@ type StellarManageTokenModalProps =
           mode: 'activate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           onCancel: () => void;
       }
     | {
           mode: 'deactivate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           tokenBalance: string;
           onCancel: () => void;
       };
@@ -50,7 +52,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
     const dispatch = useDispatch();
-    const account = useSelector(selectSelectedAccount);
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const account = props.account ?? selectedAccount;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const { translationString } = useTranslation();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -231,7 +234,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     return (
         <Modal
             width={600}
-            onCancel={onCancel}
+            onCancel={!isProcessing ? onCancel : undefined}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={
                 <Row gap={spacings.xs}>
@@ -293,6 +296,22 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                         required: insufficientBalanceInfo.required,
                                         available: insufficientBalanceInfo.available,
                                     }}
+                                />
+                            }
+                        />
+                    )}
+
+                    {isProcessing && (
+                        <Banner
+                            intent="info"
+                            icon="spinner"
+                            description={
+                                <Translation
+                                    id={
+                                        mode === 'activate'
+                                            ? 'TR_ACTIVATION_IN_PROGRESS_BANNER'
+                                            : 'TR_DEACTIVATION_IN_PROGRESS_BANNER'
+                                    }
                                 />
                             }
                         />
