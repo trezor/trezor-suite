@@ -15,7 +15,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-native/config": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "react-native": "0.81.5",
+        "react-native": "0.83.2",
         "react-redux": "9.2.0"
     }
 }

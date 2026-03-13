@@ -13,7 +13,7 @@
     "dependencies": {
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-native-mmkv": "~4.1.2"
     }
 }
