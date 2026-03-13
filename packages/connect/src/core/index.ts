@@ -11,6 +11,7 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { parseLocalFirmwares } from '../data/connectSettings';
+import { initializeFirmwareConfig } from '../data/firmwareInfo';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import * as workflows from '../device/workflow';
@@ -871,7 +872,7 @@ export class Core extends EventEmitter {
             throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
-            await DataManager.load(settings);
+            await DataManager.load(settings, true, false, initializeFirmwareConfig);
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {

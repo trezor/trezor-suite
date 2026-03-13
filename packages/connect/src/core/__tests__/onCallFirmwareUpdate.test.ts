@@ -7,7 +7,7 @@ import { Log } from '@trezor/utils';
 import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
-import { getBundledRelease } from '../../data/firmwareInfo';
+import { getBundledRelease, initializeFirmwareConfig } from '../../data/firmwareInfo';
 import { DeviceList } from '../../device/DeviceList';
 // mocks
 import * as mockAssets from '../../utils/assets';
@@ -232,7 +232,7 @@ const setupTest = () => {
 
 describe('onCallFirmwareUpdate', () => {
     beforeAll(async () => {
-        await DataManager.load(parseConnectSettings({}), true, true);
+        await DataManager.load(parseConnectSettings({}), true, true, initializeFirmwareConfig);
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

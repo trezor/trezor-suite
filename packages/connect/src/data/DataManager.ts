@@ -13,12 +13,19 @@ import {
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { initializeFirmwareConfig } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import {
     getFirmwareReleaseConfig,
     getOnlyLocalFirmwareReleaseConfig,
 } from '../utils/firmwareReleaseConfigUtils';
+
+export type InitializeFirmwareConfig = (
+    config: FirmwareReleaseConfig,
+    isRemote: boolean,
+) => Promise<{
+    releases: ReleasesConfig;
+    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+}>;
 
 type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
 type AssetCollection = {
@@ -40,12 +47,17 @@ export class DataManager {
         | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
         | undefined;
     private static localFirmwareReleaseConfig: FirmwareReleaseConfig;
+    private static initializeFirmwareConfig: InitializeFirmwareConfig;
 
     public static async load(
         settings: ConnectSettings,
         withAssets = true,
         onlyLocalFirmwareConfig = false,
+        initializeFirmwareConfig?: InitializeFirmwareConfig,
     ) {
+        if (initializeFirmwareConfig) {
+            this.initializeFirmwareConfig = initializeFirmwareConfig;
+        }
         this.settings = settings;
 
         if (!withAssets) return;
@@ -79,10 +91,10 @@ export class DataManager {
                 isRemote: false,
             };
         } else {
-            firmwareReleaseConfig = await getFirmwareReleaseConfig();
+            firmwareReleaseConfig = await getFirmwareReleaseConfig(this.settings?.firmwareChannel);
         }
         const { config, isRemote } = firmwareReleaseConfig;
-        const firmwareConfig = await initializeFirmwareConfig(config, isRemote);
+        const firmwareConfig = await this.initializeFirmwareConfig(config, isRemote);
         this.setFirmwareReleaseConfig(firmwareConfig.releases);
         this.setFirmwareIntermediaryReleaseConfig(firmwareConfig.intermediaries);
     }

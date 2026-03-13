@@ -1,5 +1,6 @@
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
+import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import { DeviceList } from '../DeviceList';
 
 const { createTestTransport, createTestTransportClass } = global.JestMocks;
@@ -28,6 +29,7 @@ describe('DeviceList', () => {
             },
             true,
             true,
+            initializeFirmwareConfig,
         );
     });
 
