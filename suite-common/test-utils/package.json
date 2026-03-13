@@ -28,7 +28,7 @@
         "@trezor/utils": "workspace:*",
         "core-js": "^3.48.0",
         "fake-indexeddb": "^6.2.5",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0"
