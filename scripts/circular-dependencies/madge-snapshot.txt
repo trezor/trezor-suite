@@ -2,10 +2,6 @@
 
 packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
-packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
-packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
-packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts
-packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/process.ts
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
 packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal.tsx

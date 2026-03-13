@@ -23,7 +23,13 @@ import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as menu from './menu';
 import * as metadata from './metadata';
-import { Dependencies, ModuleInit, ModuleInitBackground, ModuleLoad, ModuleQuit } from './module';
+import type {
+    Dependencies,
+    ModuleInit,
+    ModuleInitBackground,
+    ModuleLoad,
+    ModuleQuit,
+} from './module';
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';

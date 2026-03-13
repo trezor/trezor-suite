@@ -1,5 +1,5 @@
 import { hasSwitch } from '../../libs/process-switches';
-import type { ModuleInit } from '../index';
+import type { ModuleInit } from '../module';
 
 const logUI = hasSwitch('log-ui');
 
