@@ -20,6 +20,7 @@ import {
 import addressValidator from '@trezor/address-validator';
 import { type TokenInfo } from '@trezor/connect';
 
+import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import {
     type TradingAssetOption,
     type TradingAssetOptionNativeToken,
@@ -33,7 +34,6 @@ import {
     testnetToProdCryptoId,
 } from '../utils';
 import { useCoinsAndPlatforms } from './useCoinsAndPlatforms';
-import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import {
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,

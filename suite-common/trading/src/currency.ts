@@ -1,6 +1,6 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
-import { typedObjectKeys } from '@trezor/utils';
+import { type TradingFiatCurrencyOption } from './types';
 
 export const supportedFiatCurrenciesMap: Record<FiatCurrencyCode, string> = {
     aed: 'United Arab Emirates Dirham',
@@ -74,6 +74,18 @@ export const supportedFiatCurrenciesMap: Record<FiatCurrencyCode, string> = {
 export const isSupportedFiatCurrency = (currency: string): currency is FiatCurrencyCode =>
     currency in supportedFiatCurrenciesMap;
 
-export const supportedFiatCurrencies = typedObjectKeys(supportedFiatCurrenciesMap);
+export const isTradingFiatCurrencyOption = (
+    currency: unknown,
+): currency is TradingFiatCurrencyOption => {
+    if (typeof currency !== 'object' || currency === null) return false;
+
+    const maybe = currency as { value?: unknown; label?: unknown };
+
+    return (
+        typeof maybe.value === 'string' &&
+        typeof maybe.label === 'string' &&
+        isSupportedFiatCurrency(maybe.value)
+    );
+};
 
 export const DEFAULT_FIAT_CURRENCY_FALLBACK = 'usd' as const;

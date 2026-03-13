@@ -8,9 +8,15 @@ import {
 
 describe('currencyUtils', () => {
     describe('buildTradingFiatOption', () => {
-        it('should return option with value and uppercase label', () => {
-            expect(buildTradingFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-            expect(buildTradingFiatOption('usd')).toStrictEqual({ value: 'usd', label: 'USD' });
+        it('should return option with value and full currency-name label', () => {
+            expect(buildTradingFiatOption('czk')).toStrictEqual({
+                value: 'czk',
+                label: 'Czech Koruna',
+            });
+            expect(buildTradingFiatOption('usd')).toStrictEqual({
+                value: 'usd',
+                label: 'United States Dollar',
+            });
         });
     });
 

@@ -14995,6 +14995,7 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
     "@trezor/components": "workspace:*"

@@ -77,7 +77,7 @@ export const TradingBuyFormInputs = () => {
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.label}
+                            currencySelectLabel={currencySelect.value.toUpperCase()}
                             cryptoCurrencyLabel={cryptoSelect.id}
                         />
 
