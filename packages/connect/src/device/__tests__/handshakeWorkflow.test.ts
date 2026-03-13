@@ -1,5 +1,6 @@
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
+import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import { Device } from '../Device';
 import { handshakeCancel } from '../workflow/handshake';
 
@@ -50,6 +51,7 @@ describe('workflow/handshake', () => {
             },
             true,
             true,
+            initializeFirmwareConfig,
         );
     });
 
