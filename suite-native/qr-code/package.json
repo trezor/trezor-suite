@@ -24,10 +24,10 @@
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-camera": "~17.0.10",
-        "expo-image-picker": "~17.0.10",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-camera": "~55.0.9",
+        "expo-image-picker": "~55.0.10",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-qr-code": "2.0.18",
         "react-redux": "9.2.0"
     }

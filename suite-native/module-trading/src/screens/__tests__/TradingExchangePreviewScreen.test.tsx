@@ -21,6 +21,13 @@ import {
     TradingExchangePreviewScreenProps,
 } from '../TradingExchangePreviewScreen';
 
+// useDebounce adds a 300ms real setTimeout before calling the function. Mocking it to be
+// immediate makes tests deterministic and avoids flaky failures in slow CI environments.
+jest.mock('@trezor/react-utils', () => ({
+    ...jest.requireActual('@trezor/react-utils'),
+    useDebounce: () => (fn: () => unknown) => fn(),
+}));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({

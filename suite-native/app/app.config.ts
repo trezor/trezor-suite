@@ -205,7 +205,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '47',
+        runtimeVersion: '48',
         ...(buildType === 'production'
             ? {}
             : {

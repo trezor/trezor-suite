@@ -54,8 +54,9 @@ export const Stack = React.forwardRef<View, StackProps>(
 export const VStack = Stack;
 export const HStack = (props: StackProps) => <Stack {...props} orientation="horizontal" />;
 
-const AnimatedStack = Animated.createAnimatedComponent(Stack);
-AnimatedStack.displayName = 'AnimatedStack';
+const AnimatedStack = Object.assign(Animated.createAnimatedComponent(Stack), {
+    displayName: 'AnimatedStack',
+});
 export const AnimatedVStack = AnimatedStack;
 export const AnimatedHStack = (props: AnimatedProps<StackProps>) => (
     <AnimatedStack {...props} orientation="horizontal" />

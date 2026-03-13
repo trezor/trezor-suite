@@ -9,6 +9,7 @@ type DeviceEvents = {
 };
 
 declare class ReactNativeUsbModuleDeclaration extends NativeModule<DeviceEvents> {
+    getDevices: () => Promise<NativeDevice[]>;
     open: (deviceName: string) => Promise<void>;
     reset: (deviceName: string) => Promise<void>;
     close: (deviceName: string) => Promise<void>;
