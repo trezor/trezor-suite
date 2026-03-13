@@ -74,6 +74,9 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
               }
             : {}),
         webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true,
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
