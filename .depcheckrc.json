@@ -2,7 +2,6 @@
     "ignore-patterns": ["libDev", "lib", "libESM"],
     "ignores": [
         "babel*",
-        "karma*",
         "@babel/*",
         "@playwright/*",
         "webpack*",

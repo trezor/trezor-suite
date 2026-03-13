@@ -8,8 +8,11 @@ import { versionUtils } from '@trezor/utils';
 // import TrezorConnect from '../src';
 import { UI_REQUEST, UI_RESPONSE } from '../src/events';
 
-const emulatorStartOpts: EmuStartOptsType =
-    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
+// Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
+// In browser mode, Vite's `define` replaces process.env.EMULATOR_START_OPTS at build time.
+const emulatorStartOpts: EmuStartOptsType = process.env.EMULATOR_START_OPTS
+    ? JSON.parse(process.env.EMULATOR_START_OPTS)
+    : {};
 
 const emuStartType = emulatorStartOpts.type;
 const firmware: string | null =
@@ -290,16 +293,14 @@ export const skipTest = (rules: string[]) => {
 };
 
 export const conditionalTest = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? it.skip : xit;
-    const testMethod = skipTest(rules) ? skipMethod : it;
+    const testMethod = skipTest(rules) ? it.skip : it;
 
     // @ts-expect-error
     return testMethod(...args);
 };
 
 export const conditionalDescribe = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? describe.skip : xdescribe;
-    const testMethod = skipTest(rules) ? skipMethod : describe;
+    const testMethod = skipTest(rules) ? describe.skip : describe;
 
     // @ts-expect-error
     return testMethod(...args);

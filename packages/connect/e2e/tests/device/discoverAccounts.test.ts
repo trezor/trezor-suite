@@ -37,8 +37,8 @@ describe(`TrezorConnect.discoverAccounts`, () => {
     });
 
     it('TEST', async () => {
-        // print current test case, `jest` default reporter doesn't log this. see https://github.com/facebook/jest/issues/4471
-        if (typeof jest !== 'undefined' && process.stderr) {
+        // print current test case for better debugging visibility
+        if (typeof process !== 'undefined' && process.stderr) {
             process.stderr.write(`\n${'TrezorConnect.discoverAccounts'}: ${'test'}\n`);
         }
 

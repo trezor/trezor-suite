@@ -65,6 +65,9 @@ jobs:
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/connect-web
           yarn && yarn build:libs
+      - name: Install Playwright chromium
+        if: ${{ inputs.testEnv == 'web' }}
+        run: npx playwright install --with-deps chromium
       - if: ${{ inputs.disable_cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}

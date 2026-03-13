@@ -58,8 +58,7 @@ export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> 
     async connect() {
         if (this.isConnected()) return Promise.resolve();
 
-        // workaround for karma... proper fix: set allow origin headers in trezor-user-env server. but we are going
-        // to get rid of karma anyway, so this does not matter
+        // Only wait for trezor-user-env in Node.js environment (not in browser).
         if (typeof window === 'undefined') {
             await this.waitForTrezorUserEnv();
         }
@@ -128,7 +127,7 @@ export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> 
             } catch (err) {
                 error = err.message;
                 // using process.stdout.write instead of console.log since the latter always prints also newline
-                // but in karma, this code runs in browser and process is not available.
+                // In browser environment, process is not available.
                 if (typeof process !== 'undefined') {
                     process.stdout.write('.');
                 } else {

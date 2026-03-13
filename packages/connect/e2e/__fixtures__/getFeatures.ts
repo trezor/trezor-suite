@@ -2,8 +2,9 @@
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
-// @ts-expect-error (here might be bug)
+const emulatorStartOpts = process.env.EMULATOR_START_OPTS
+    ? JSON.parse(process.env.EMULATOR_START_OPTS)
+    : {};
 const firmware = emulatorStartOpts.version;
 
 let major;
