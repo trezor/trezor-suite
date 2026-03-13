@@ -1,6 +1,5 @@
 
 
-packages/blockchain-link-types/src/common.ts > packages/blockchain-link-types/src/blockbook.ts
 packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx

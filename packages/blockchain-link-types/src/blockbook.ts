@@ -1,7 +1,9 @@
 import type { OptionalKey, RequiredKey } from '@trezor/type-utils';
 
+import type { BaseCurrencyCode } from './baseCurrency';
 import type {
     AvailableVsCurrencies,
+    BalanceHistory,
     Address as BlockbookAddress,
     Block as BlockbookBlock,
     Token as BlockbookToken,
@@ -20,7 +22,6 @@ import type {
     WsInfoRes,
     WsMempoolFiltersReq,
 } from './blockbook-api';
-import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
 import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,
@@ -127,6 +128,33 @@ export type AccountInfo = Omit<
 };
 
 export type AccountUtxoParams = WsAccountUtxoReq;
+
+export type TokenStandard =
+    | 'TRC10'
+    | 'ERC20'
+    | 'TRC20'
+    | 'BEP20'
+    | 'ERC721'
+    | 'TRC721'
+    | 'BEP721'
+    | 'ERC1155'
+    | 'TRC1155'
+    | 'BEP1155'
+    | 'SPL'
+    | 'SPL-2022'
+    | 'BLOCKFROST'
+    | 'STELLAR-CLASSIC';
+
+export type FiatRatesBySymbol = {
+    [K in BaseCurrencyCode]?: number | undefined;
+};
+
+export type AccountBalanceHistory = Omit<
+    OptionalKey<BalanceHistory, 'sentToSelf'>,
+    'txid' | 'rates'
+> & {
+    rates: FiatRatesBySymbol;
+};
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
