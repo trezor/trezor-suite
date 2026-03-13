@@ -16307,7 +16307,7 @@ __metadata:
     bitcoin-ops: "npm:^1.4.1"
     blake-hash: "npm:^2.0.0"
     blakejs: "npm:^1.2.1"
-    bn.js: "npm:^5.2.2"
+    bn.js: "npm:^5.2.3"
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
     cashaddrjs: "npm:0.4.4"
