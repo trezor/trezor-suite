@@ -138,7 +138,7 @@ jobs:
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
           script: |
-            yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-android-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless
+            yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-android-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless --quarantine
 
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
