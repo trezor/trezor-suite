@@ -25,7 +25,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0"
     }
 }
