@@ -326,20 +326,17 @@ test.describe(
     { tag: ['@smoke', '@T3T1', '@webOnly'] },
     () => {
         test(
-            'popup blocked by browser returns handshake failed error',
+            'popup blocked by browser shows error overlay and returns error on close',
             {
-                // note: we may use this test (after small changes) to test missing browser permissions
-                // as proposed in https://github.com/trezor/trezor-suite/pull/23468
                 annotation: createTestAnnotation({
                     testCase:
-                        'Suite Web Connect: When popup is blocked, returns handshake failed error',
+                        'Suite Web Connect: When popup is blocked, shows error overlay with close option',
                 }),
             },
             async ({ page }) => {
-                // When window.open returns null (popup blocked), the handshake
-                // times out and returns { success: false, error: "handshake failed" }.
-                // Note: PopupManager still leaves `locked = true` after this, which
-                // means subsequent calls will try to focus a non-existent window.
+                // When window.open returns null (popup blocked), an error overlay
+                // is displayed on the caller's page. Closing the overlay propagates
+                // the error back to the caller.
 
                 await gotoConnectExplorer(page, 'bitcoin/getAddress');
                 await page.getByTestId('@api-playground/collapsible-box').click();
@@ -350,11 +347,73 @@ test.describe(
                 });
 
                 await page.getByTestId('@submit-button').click();
+
+                // The error overlay should appear (Playwright pierces shadow DOM)
+                const overlay = page.locator('#TrezorConnectInteractionLayer');
+                await expect(overlay).toBeVisible({ timeout: 5_000 });
+
+                // Verify error message content inside the shadow DOM
+                const errorMessage = page.locator('.trezorconnect-body p');
+                await expect(errorMessage).toContainText('Popup window was blocked');
+
+                // Verify the title
+                const title = page.locator('.trezorconnect-body h3');
+                await expect(title).toHaveText('Something went wrong');
+
+                // Click the close button to dismiss the overlay
+                await page.locator('.trezorconnect-close').click();
+
+                // The overlay should be removed
+                await expect(overlay).not.toBeVisible();
+
+                // The response should show an error
                 const response = page.getByTestId('@response');
-                // todo: there is quite big  timeout before handshake failed appears. Maybe we could detect that popup
-                // did not open earlier and return error faster?
                 await expect(response).toHaveText(/success: false/, { timeout: 15_000 });
-                await expect(response).toHaveText(/handshake failed/i);
+            },
+        );
+
+        test(
+            'popup blocked retry shows modal again when popup is still blocked',
+            {
+                annotation: createTestAnnotation({
+                    testCase:
+                        'Suite Web Connect: Retrying blocked popup re-shows error overlay if still blocked',
+                }),
+            },
+            async ({ page }) => {
+                // When "Try again" is clicked but the popup is still blocked,
+                // the error overlay should reappear, giving the user another
+                // chance to retry or dismiss.
+
+                await gotoConnectExplorer(page, 'bitcoin/getAddress');
+                await page.getByTestId('@api-playground/collapsible-box').click();
+
+                // Block popups
+                await page.evaluate(() => {
+                    window.open = () => null;
+                });
+
+                await page.getByTestId('@submit-button').click();
+
+                // Wait for the error overlay to appear
+                const overlay = page.locator('#TrezorConnectInteractionLayer');
+                await expect(overlay).toBeVisible({ timeout: 5_000 });
+
+                // Click "Try again" — popup is still blocked, modal should reappear
+                await page.locator('.trezorconnect-open').click();
+
+                // Modal should reappear (old one removed, new one created)
+                await expect(overlay).toBeVisible({ timeout: 5_000 });
+                await expect(page.locator('.trezorconnect-body p')).toContainText(
+                    'Popup window was blocked',
+                );
+
+                // Now close it
+                await page.locator('.trezorconnect-close').click();
+                await expect(overlay).not.toBeVisible();
+
+                const response = page.getByTestId('@response');
+                await expect(response).toHaveText(/success: false/, { timeout: 15_000 });
             },
         );
     },
