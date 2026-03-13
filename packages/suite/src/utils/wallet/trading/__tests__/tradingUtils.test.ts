@@ -1,5 +1,3 @@
-import { buildTradingFiatOption } from '@suite-common/trading';
-
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     getCountryLabelParts,
@@ -16,10 +14,6 @@ jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
 }));
 
 describe('trading utils', () => {
-    it('buildFiatOption', () => {
-        expect(buildTradingFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-    });
-
     it('getCountryLabelParts', () => {
         expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
             flag: '🇨🇿',

@@ -141,7 +141,7 @@ export const TradingExchangeFormInputs = () => {
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.label}
+                        currencySelectLabel={currencySelect.value.toUpperCase()}
                         cryptoCurrencyLabel={sendCryptoSelect?.id}
                     />
                     {amountInCrypto && (

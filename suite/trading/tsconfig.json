@@ -16,6 +16,9 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
