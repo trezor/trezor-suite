@@ -4,7 +4,14 @@ export const fixtures = [
         path: '/oauth',
         search: '?code=meow',
         result: {
-            emit: ['oauth/response', { search: '?code=meow' }],
+            emit: [
+                'oauth/response',
+                {
+                    key: 'trezor-oauth',
+                    hash: null,
+                    search: '?code=meow',
+                },
+            ],
             response: {
                 status: 200,
             },

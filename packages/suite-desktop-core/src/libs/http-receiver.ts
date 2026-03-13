@@ -2,6 +2,7 @@ import * as url from 'url';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { HttpServer, allowReferers } from '@trezor/node-utils';
+import { type RendererChannels } from '@trezor/suite-desktop-api';
 import { xssFilters } from '@trezor/utils';
 
 import { convertILoggerToLog } from '../utils/IloggerToLog';
@@ -14,7 +15,7 @@ type TemplateOptions = {
  * Events that may be emitted or listened to by HttpReceiver
  */
 interface Events {
-    'oauth/response': (response: { [key: string]: string }) => void;
+    'oauth/response': (response: RendererChannels['oauth/response']) => void;
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
     'sell/redirect': (url: string) => void;
@@ -64,10 +65,10 @@ const applyTemplate = (content = 'You may now close this window.', options?: Tem
     return template;
 };
 
-export const createHttpReceiver = () => {
+export const createHttpReceiver = (options?: { port?: number }) => {
     const httpReceiver = new HttpServer<Events>({
         logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
-        port: 21335,
+        port: options?.port ?? 21335,
     });
 
     httpReceiver.use([
@@ -80,22 +81,16 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/oauth', [
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
-            const { search } = url.parse(request.url, true);
-            if (search) {
-                // send data back to main window
-                httpReceiver.emit('oauth/response', { search });
-            }
+            const { search, hash } = url.parse(request.url, true);
 
-            // replace # with ? so that query parameters can be read by renderer
-            const script = `
-                <script>
-                    if (window.location.href.includes('#')) {
-                        fetch(window.location.href.replace('#', '?'))
-                    }
-                </script>
-            `;
-            const template = applyTemplate(undefined, { script });
-            response.end(template);
+            // send data back to main window
+            httpReceiver.emit('oauth/response', {
+                key: 'trezor-oauth',
+                hash: hash!,
+                search: search!,
+            });
+
+            response.end(applyTemplate());
         },
     ]);
     httpReceiver.deactivateRoute('/oauth');
