@@ -14922,6 +14922,7 @@ __metadata:
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     styled-components: "npm:^6.1.19"
+    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 

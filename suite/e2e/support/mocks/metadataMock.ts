@@ -18,9 +18,15 @@ const stubOpen = `
     Math.random = () => 0.4;
 
     window.open = (url, target, features) => {
-        console.log('Intercepted window.open call:', url);
+        console.log('Intercepted window.open call:', url.toString());
+        const urlObj = typeof url === 'string' ? new URL(url) : url;
+        const state = urlObj.searchParams?.get('state') || new Array(128).fill('Y').join('');
         window.postMessage(
-            { search: '?code=chicken-cho-cha&state=YYYYYYYYYY', key: 'trezor-oauth' });
+            { 
+              search: '?' + new URLSearchParams({ state, code: 'chicken-cho-cha', }).toString(),
+              key: 'trezor-oauth' 
+            },
+        );
     };
 `;
 
