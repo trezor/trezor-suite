@@ -364,7 +364,7 @@ test.describe(
                 await page.locator('.trezorconnect-close').click();
 
                 // The overlay should be removed
-                await expect(overlay).not.toBeVisible();
+                await expect(overlay).toBeHidden();
 
                 // The response should show an error
                 const response = page.getByTestId('@response');
@@ -410,7 +410,7 @@ test.describe(
 
                 // Now close it
                 await page.locator('.trezorconnect-close').click();
-                await expect(overlay).not.toBeVisible();
+                await expect(overlay).toBeHidden();
 
                 const response = page.getByTestId('@response');
                 await expect(response).toHaveText(/success: false/, { timeout: 15_000 });

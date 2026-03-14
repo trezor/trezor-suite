@@ -118,7 +118,7 @@ const CLOSE_SVG = `<svg x="0px" y="0px" viewBox="24 24 60 60" width="24px" heigh
 
 const buildHtml = (errorText: string) => `
     <style>${INLINE_STYLES}</style>
-    <div class="trezorconnect-container" id="${LAYER_ID}">
+    <div class="trezorconnect-container">
         <div class="trezorconnect-window">
             <div class="trezorconnect-head">
                 ${TREZOR_LOGO_SVG}
