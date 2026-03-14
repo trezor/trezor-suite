@@ -1,7 +1,7 @@
 const LAYER_ID = 'TrezorConnectInteractionLayer';
 
 const INLINE_STYLES = `
-.trezorconnect-container {
+:host {
     position: fixed !important;
     display: flex !important;
     flex-direction: column !important;
@@ -118,19 +118,17 @@ const CLOSE_SVG = `<svg x="0px" y="0px" viewBox="24 24 60 60" width="24px" heigh
 
 const buildHtml = (errorText: string) => `
     <style>${INLINE_STYLES}</style>
-    <div class="trezorconnect-container">
-        <div class="trezorconnect-window">
-            <div class="trezorconnect-head">
-                ${TREZOR_LOGO_SVG}
-                <div class="trezorconnect-close">
-                    ${CLOSE_SVG}
-                </div>
+    <div class="trezorconnect-window">
+        <div class="trezorconnect-head">
+            ${TREZOR_LOGO_SVG}
+            <div class="trezorconnect-close">
+                ${CLOSE_SVG}
             </div>
-            <div class="trezorconnect-body">
-                <h3>Something went wrong</h3>
-                <p>${errorText}</p>
-                <button class="trezorconnect-open">Try again</button>
-            </div>
+        </div>
+        <div class="trezorconnect-body">
+            <h3>Something went wrong</h3>
+            <p>${errorText}</p>
+            <button class="trezorconnect-open">Try again</button>
         </div>
     </div>
 `;
