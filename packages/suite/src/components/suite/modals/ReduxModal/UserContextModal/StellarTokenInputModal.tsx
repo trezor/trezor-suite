@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
+import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-stellar/src/utils';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -6,9 +6,6 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../env-utils"
-        },
-        {
             "path": "../utils"
         },
         {
@@ -16,9 +13,6 @@
         },
         {
             "path": "../eslint"
-        },
-        {
-            "path": "../type-utils"
         }
     ]
 }

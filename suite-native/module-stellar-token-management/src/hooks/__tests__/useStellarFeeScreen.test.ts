@@ -11,7 +11,7 @@ import {
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+import { BASE_INFO } from '@trezor/blockchain-link-stellar/src/utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useStellarFeeScreen } from '../useStellarFeeScreen';

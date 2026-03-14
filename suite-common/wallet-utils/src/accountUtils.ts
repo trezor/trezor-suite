@@ -28,8 +28,8 @@ import {
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
+import * as solanaUtils from '@trezor/blockchain-link-solana/src/solanaUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     AccountAddress,
     AccountAddresses,

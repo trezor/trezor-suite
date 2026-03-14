@@ -31,20 +31,11 @@
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
-        "@stellar/stellar-sdk": "14.5.0",
-        "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "xrpl": "4.6.0"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@solana/addresses": "^2.3.0",
-        "@solana/keys": "^2.3.0",
-        "@solana/rpc-api": "^2.3.0",
-        "@solana/rpc-types": "^2.3.0",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/eslint": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/eslint": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

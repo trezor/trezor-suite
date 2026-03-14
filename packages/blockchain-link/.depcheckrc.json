@@ -1,4 +1,13 @@
 {
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["@trezor/blockchain-link"]
+    "ignore-patterns": ["libDev", "lib", "libESM"],
+    "ignores": [
+        "@trezor/blockchain-link",
+        "@trezor/blockchain-link-blockbook",
+        "@trezor/blockchain-link-blockfrost",
+        "@trezor/blockchain-link-electrum",
+        "@trezor/blockchain-link-evm-rpc",
+        "@trezor/blockchain-link-ripple",
+        "@trezor/blockchain-link-solana",
+        "@trezor/blockchain-link-stellar"
+    ]
 }

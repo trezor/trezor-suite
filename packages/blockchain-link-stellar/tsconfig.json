@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "lib": ["webworker"],
+        "types": ["jest", "node", "web"]
+    },
+    "references": [
+        { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../env-utils" },
+        { "path": "../utils" },
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
+    ]
+}

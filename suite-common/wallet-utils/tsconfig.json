@@ -17,10 +17,13 @@
             "path": "../../packages/address-validator"
         },
         {
-            "path": "../../packages/blockchain-link-types"
+            "path": "../../packages/blockchain-link-blockfrost"
         },
         {
-            "path": "../../packages/blockchain-link-utils"
+            "path": "../../packages/blockchain-link-solana"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { TokenAddress } from '@suite-common/wallet-types';
-import { STELLAR_DECIMALS } from '@trezor/blockchain-link-utils/src/stellar';
+import { STELLAR_DECIMALS } from '@trezor/blockchain-link-stellar/src/utils';
 
 import { StellarTokenInfo, lazyTokenMetadata } from './useInactiveStellarTokens';
 

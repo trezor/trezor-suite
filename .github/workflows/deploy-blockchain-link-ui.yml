@@ -1,0 +1,79 @@
+name: "[Deploy] blockchain-link-ui"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  push:
+    branches: [develop, release/**]
+    paths:
+      - "packages/blockchain-link-ui/**"
+      - "packages/blockchain-link/**"
+      - "packages/blockchain-link-types/**"
+      - "packages/blockchain-link-blockbook/**"
+      - "packages/blockchain-link-blockfrost/**"
+      - "packages/blockchain-link-evm-rpc/**"
+      - "packages/blockchain-link-ripple/**"
+      - "packages/blockchain-link-solana/**"
+      - "packages/blockchain-link-stellar/**"
+  pull_request:
+    paths:
+      - "packages/blockchain-link-ui/**"
+      - "packages/blockchain-link/**"
+      - "packages/blockchain-link-types/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+  build-deploy:
+    needs: [extract-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/blockchain-link-ui
+
+      - name: Build blockchain-link-ui
+        run: |
+          yarn workspace @trezor/blockchain-link-ui build
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Upload blockchain-link-ui
+        shell: bash
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/blockchain-link/${{ needs.extract-branch.outputs.branch }}
+        run: |
+          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
+          aws s3 sync --delete ./packages/blockchain-link-ui/build/ "${DEPLOY_PATH}"

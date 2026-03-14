@@ -1,0 +1,4 @@
+{
+    "ignore-patterns": ["libDev"],
+    "ignores": ["@trezor/blockchain-link-ui", "tslib"]
+}

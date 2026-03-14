@@ -7,6 +7,13 @@ import pluginLocalRules from 'eslint-plugin-local-rules';
 // Instead of that, we're going to ignore the deep-import rule for these packages.
 const publishableTrezorPackages = [
     '@trezor/blockchain-link',
+    '@trezor/blockchain-link-blockbook',
+    '@trezor/blockchain-link-blockfrost',
+    '@trezor/blockchain-link-electrum',
+    '@trezor/blockchain-link-evm-rpc',
+    '@trezor/blockchain-link-ripple',
+    '@trezor/blockchain-link-solana',
+    '@trezor/blockchain-link-stellar',
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
     '@trezor/connect',

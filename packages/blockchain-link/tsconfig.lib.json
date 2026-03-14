@@ -11,16 +11,7 @@
             "path": "../blockchain-link-types"
         },
         {
-            "path": "../blockchain-link-utils"
-        },
-        {
-            "path": "../env-utils"
-        },
-        {
             "path": "../utils"
-        },
-        {
-            "path": "../utxo-lib"
         },
         {
             "path": "../websocket-client"

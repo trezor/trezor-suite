@@ -17,7 +17,7 @@ import {
     networkAmountToSmallestUnit,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
+import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-stellar/src/utils';
 import TrezorConnect, {
     FeeLevel,
     RipplePayment,

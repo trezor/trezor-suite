@@ -7,9 +7,9 @@ import {
     type TransactionMessage,
 } from '@solana/kit';
 
+import * as SolanaBlockchainLinkUtils from '@trezor/blockchain-link-solana/src/solanaUtils';
+import type { TokenProgramName } from '@trezor/blockchain-link-solana/src/solanaUtils';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
-import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
-import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Blockchain } from '../../backend/Blockchain';

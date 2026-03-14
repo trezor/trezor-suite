@@ -383,3 +383,10 @@ export type {
     TransactionDetail,
     Utxo,
 } from '@trezor/blockchain-link-types/src/common';
+
+// Worker infrastructure - used by backend packages
+export { BaseWorker, CONTEXT } from './workers/baseWorker';
+export type { ContextType } from './workers/baseWorker';
+export { BaseWebsocket } from './workers/baseWebsocket';
+export { WorkerState } from './workers/state';
+export { prioritizeEndpoints } from './workers/utils';

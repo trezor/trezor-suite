@@ -170,8 +170,11 @@
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../blockchain-link" },
+        {
+            "path": "../blockchain-link-blockfrost"
+        },
+        { "path": "../blockchain-link-stellar" },
         { "path": "../blockchain-link-types" },
-        { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },

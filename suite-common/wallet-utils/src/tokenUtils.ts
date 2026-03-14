@@ -6,8 +6,8 @@ import {
     getExplorerUrl,
     getNetworkType,
 } from '@suite-common/wallet-config';
+import { parseAsset } from '@trezor/blockchain-link-blockfrost/src/utils';
 import { TokenInfo, TokenStandard, TokenTransfer } from '@trezor/blockchain-link-types';
-import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,

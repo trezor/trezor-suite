@@ -5,7 +5,10 @@
         {
             "path": "../../suite-common/suite-constants"
         },
-        { "path": "../blockchain-link" },
+        {
+            "path": "../blockchain-link-blockbook"
+        },
+        { "path": "../blockchain-link-electrum" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../eslint" },

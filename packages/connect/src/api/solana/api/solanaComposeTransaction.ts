@@ -1,4 +1,4 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-solana/src/solanaUtils';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 

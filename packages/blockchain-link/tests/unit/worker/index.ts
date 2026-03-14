@@ -1,6 +1,6 @@
-import Blockbook from '../../../src/workers/blockbook';
-import Blockfrost from '../../../src/workers/blockfrost';
-import Ripple from '../../../src/workers/ripple';
+import Blockbook from '@trezor/blockchain-link-blockbook';
+import Blockfrost from '@trezor/blockchain-link-blockfrost';
+import Ripple from '@trezor/blockchain-link-ripple';
 
 export default [
     { name: 'blockbook', worker: Blockbook },

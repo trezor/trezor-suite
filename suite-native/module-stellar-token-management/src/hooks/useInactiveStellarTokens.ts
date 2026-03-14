@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { TokenDefinitionsRootState, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-stellar/src/utils';
 import { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { createLazy } from '@trezor/utils';
 
 export interface StellarTokenInfo extends TokenInfo {

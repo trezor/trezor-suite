@@ -1,0 +1,78 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
+const { SRC, BUILD, PORT } = require('./constants');
+
+module.exports = {
+    target: 'web',
+    mode: 'development',
+    devtool: 'source-map',
+    entry: {
+        indexUI: [`${SRC}/index.ui.ts`],
+    },
+    output: {
+        filename: '[name]-[hash].js',
+        path: BUILD,
+    },
+    stats: {
+        children: true,
+    },
+    devServer: {
+        static: {
+            directory: SRC,
+        },
+        hot: false,
+        port: PORT,
+    },
+    module: {
+        rules: [
+            !process.env.USE_MODULES
+                ? {
+                      test: [/workers.*\/index.ts$/],
+                      loader: 'worker-loader',
+                      options: {
+                          filename: './worker.[contenthash].js',
+                      },
+                  }
+                : {},
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-typescript'],
+                    },
+                },
+            },
+        ],
+    },
+    resolve: {
+        modules: [SRC, 'node_modules'],
+        extensions: ['.ts', '.js'],
+        fallback: {
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
+    },
+    performance: {
+        hints: false,
+    },
+    plugins: [
+        // provide fallback plugins
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser.js',
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['indexUI'],
+            template: `${SRC}/index.html`,
+            filename: 'index.html',
+            inject: true,
+        }),
+    ],
+    optimization: {
+        emitOnErrors: true,
+        moduleIds: 'named',
+    },
+};

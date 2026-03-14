@@ -22,7 +22,6 @@
     "files": [
         "lib/",
         "libESM/",
-        "!lib/ui",
         "CHANGELOG.md"
     ],
     "main": "src/index.ts",
@@ -52,50 +51,30 @@
         }
     },
     "scripts": {
-        "dev": "webpack serve --config ./webpack/dev.js",
-        "dev:electrum": "yarn g:tsx watch ./src/workers/electrum/devrun.ts",
-        "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
-        "build:workers-web": "webpack --config ./webpack/workers.web.js",
-        "build:workers-module": "webpack --config ./webpack/workers.module.js",
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "depcheck": "yarn g:depcheck"
     },
     "devDependencies": {
+        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
-        "html-webpack-plugin": "5.6.6",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.104.1"
+        "xrpl": "4.6.0"
     },
     "dependencies": {
-        "@solana-program/compute-budget": "^0.8.0",
-        "@solana-program/stake": "^0.2.1",
-        "@solana-program/token": "^0.5.1",
-        "@solana-program/token-2022": "^0.4.2",
-        "@solana/kit": "^2.3.0",
-        "@solana/rpc-types": "^2.3.0",
-        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.197",
-        "crypto-browserify": "3.12.0",
-        "socks-proxy-agent": "8.0.5",
-        "stream-browserify": "^3.0.0",
-        "viem": "^2.46.3",
-        "xrpl": "4.6.0"
+        "socks-proxy-agent": "8.0.5"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

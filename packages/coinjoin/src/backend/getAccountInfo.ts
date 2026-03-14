@@ -1,4 +1,4 @@
-import { sumAddressValues } from '@trezor/blockchain-link/src/workers/electrum/methods/getAccountInfo';
+import { sumAddressValues } from '@trezor/blockchain-link-electrum/src/methods/getAccountInfo';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import type { Network } from '@trezor/utxo-lib';
 

@@ -1,4 +1,4 @@
-import { blockfrostUtils } from '@trezor/blockchain-link-utils';
+import * as blockfrostUtils from '@trezor/blockchain-link-blockfrost/src/utils';
 
 import { getContractAddress } from '../fetchCoins';
 
