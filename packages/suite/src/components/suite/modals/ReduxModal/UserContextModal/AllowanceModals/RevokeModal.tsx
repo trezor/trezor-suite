@@ -1,26 +1,27 @@
 import { FormProvider } from 'react-hook-form';
 
-import { type CryptoId, type ProviderMetadata } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { parseCryptoId } from '@suite-common/trading';
+import { getDisplaySymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDevice } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
+import type { AllowanceProvider } from './types';
 
 interface RevokeModalProps {
     cryptoId: CryptoId;
     account: Account;
-    provider: ProviderMetadata;
+    provider: AllowanceProvider;
     spender: string;
     preapprovedAmount?: string;
     onConfirm?: () => void;
@@ -51,6 +52,17 @@ export const RevokeModal = (props: RevokeModalProps) => {
     if (!token?.symbol) return null;
 
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const { networkId, contractAddress } = parseCryptoId(cryptoId);
+    const networkSymbol = getNetworkByCoingeckoId(networkId)?.symbol;
+    const tokenLogo = (
+        <AssetLogo
+            size={24}
+            coingeckoId={networkId}
+            symbol={networkSymbol}
+            contractAddress={contractAddress}
+            placeholder={token.symbol ?? networkId.toUpperCase()}
+        />
+    );
 
     return (
         <FormProvider {...methods}>
@@ -106,7 +118,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                         <Translation id="TR_EXCHANGE_APPROVAL_CURRENT_LIMIT" />
                                     </Text>
                                     <Row gap={12}>
-                                        <TradingCoinLogo cryptoId={cryptoId} size={24} />
+                                        {tokenLogo}
                                         <Text>
                                             {preapprovedAmount ?? '∞'} {displaySymbol}
                                         </Text>
@@ -122,7 +134,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                         <Translation id="TR_EXCHANGE_APPROVAL_NEW_LIMIT" />
                                     </Text>
                                     <Row gap={12}>
-                                        <TradingCoinLogo cryptoId={cryptoId} size={24} />
+                                        {tokenLogo}
                                         <Text>0 {displaySymbol}</Text>
                                     </Row>
                                 </Column>

@@ -16,6 +16,7 @@ export const desktopQueryKeys = {
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string) => ['inactive-tokens', symbol],
     yieldOpportunities: (pagination: any) => ['yield-opportunities', pagination],
+    yieldProvider: (providerId?: string) => ['yield-provider', providerId],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const mobileQueryKeys = {} as const satisfies Record<string, AllowedQueryKey>;

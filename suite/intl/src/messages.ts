@@ -9053,6 +9053,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAW_ASSET',
         defaultMessage: 'Withdraw {symbol}',
     },
+    TR_EARN_YIELD_WITHDRAW: {
+        id: 'TR_EARN_YIELD_WITHDRAW',
+        defaultMessage: 'Withdraw',
+    },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
         defaultMessage: 'Supply now',
@@ -9060,6 +9064,58 @@ export const messages = defineMessages({
     TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
         defaultMessage: 'Select amount & approve',
+    },
+    TR_EARN_YIELD_SUPPLY: {
+        id: 'TR_EARN_YIELD_SUPPLY',
+        defaultMessage: 'Supply',
+    },
+    TR_EARN_YIELD_AMOUNT_TO_SUPPLY: {
+        id: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
+        defaultMessage: 'Amount to supply',
+    },
+    TR_EARN_YIELD_AMOUNT_TO_WITHDRAW: {
+        id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
+        defaultMessage: 'Withdrawal amount',
+    },
+    TR_EARN_YIELD_APPROVED_AMOUNT: {
+        id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
+        defaultMessage: 'Approved amount',
+    },
+    TR_EARN_YIELD_SUPPLY_COMPLETE: {
+        id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
+        defaultMessage: 'Supply complete',
+    },
+    TR_EARN_YIELD_WITHDRAW_COMPLETE: {
+        id: 'TR_EARN_YIELD_WITHDRAW_COMPLETE',
+        defaultMessage: 'Withdrawal complete',
+    },
+    TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Your deposit is now earning yield in the vault.',
+    },
+    TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION',
+        defaultMessage: '{displaySymbol} is now available in your account.',
+    },
+    TR_EARN_YIELD_STATUS: {
+        id: 'TR_EARN_YIELD_STATUS',
+        defaultMessage: 'Status',
+    },
+    TR_EARN_YIELD_COMPLETED: {
+        id: 'TR_EARN_YIELD_COMPLETED',
+        defaultMessage: 'Completed',
+    },
+    TR_EARN_YIELD_SUPPLIED: {
+        id: 'TR_EARN_YIELD_SUPPLIED',
+        defaultMessage: 'Supplied',
+    },
+    TR_EARN_YIELD_RECEIPT_TOKEN: {
+        id: 'TR_EARN_YIELD_RECEIPT_TOKEN',
+        defaultMessage: 'Receipt token',
+    },
+    TR_EARN_YIELD_BACK_TO_OVERVIEW: {
+        id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
+        defaultMessage: 'Back to overview',
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',

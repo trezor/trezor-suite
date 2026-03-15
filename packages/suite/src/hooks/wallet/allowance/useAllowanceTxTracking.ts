@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 
 import { selectTransactionByAccountKeyAndTxid } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 interface UseAllowanceTxTrackingParams {
-    accountKey: AccountKey;
+    accountKey?: AccountKey;
 }
 
 interface TransactionStatus {
@@ -20,7 +20,9 @@ export const useAllowanceTxTracking = ({ accountKey }: UseAllowanceTxTrackingPar
     const [approvalTxid, setApprovalTxid] = useState<string | null>(null);
 
     const transaction = useSelector(state =>
-        approvalTxid ? selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid) : null,
+        approvalTxid && accountKey
+            ? selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid)
+            : null,
     );
 
     const status = useMemo<TransactionStatus>(() => {

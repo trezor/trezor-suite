@@ -25,7 +25,7 @@ const verifyApproval = (
 ): TransactionVerificationStatus =>
     toStatus(Verifier.evm.erc20.approve(calldata, { spender, amount }).isValid);
 
-const verifySupply = (
+const verifyErc4626Deposit = (
     calldata: `0x${string}`,
     to: `0x${string}`,
     vaultAddress: `0x${string}`,
@@ -36,6 +36,24 @@ const verifySupply = (
 
     return toStatus(Verifier.evm.erc4626.deposit(calldata, { assets, receiver }).isValid);
 };
+
+const verifySupply = (
+    calldata: `0x${string}`,
+    to: `0x${string}`,
+    vaultAddress: `0x${string}`,
+    receiver: `0x${string}`,
+    assets: bigint,
+): TransactionVerificationStatus =>
+    verifyErc4626Deposit(calldata, to, vaultAddress, receiver, assets);
+
+const verifyDeposit = (
+    calldata: `0x${string}`,
+    to: `0x${string}`,
+    vaultAddress: `0x${string}`,
+    receiver: `0x${string}`,
+    assets: bigint,
+): TransactionVerificationStatus =>
+    verifyErc4626Deposit(calldata, to, vaultAddress, receiver, assets);
 
 const getTransactionStatus = (
     tx: EnterYieldResponseSuccess['data']['transactions'][number],
@@ -52,6 +70,8 @@ const getTransactionStatus = (
             return verifyApproval(parsed.data, vaultAddress, amountBigInt);
         case TransactionDtoType.SUPPLY:
             return verifySupply(parsed.data, parsed.to, vaultAddress, address, amountBigInt);
+        case TransactionDtoType.DEPOSIT:
+            return verifyDeposit(parsed.data, parsed.to, vaultAddress, address, amountBigInt);
         default:
             return 'skipped';
     }

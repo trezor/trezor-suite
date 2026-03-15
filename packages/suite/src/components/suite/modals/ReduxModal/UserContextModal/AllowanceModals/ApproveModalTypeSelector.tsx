@@ -1,17 +1,20 @@
-import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
+import type { CryptoId, DexApprovalType } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { parseCryptoId } from '@suite-common/trading';
+import { getDisplaySymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, CollapsibleBox, Column, Paragraph, RadioCard, Row, Text } from '@trezor/components';
+import { AssetLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
+
+import type { AllowanceProvider } from './types';
 
 interface ApproveModalTypeSelectorProps {
     approvalType: DexApprovalType;
@@ -19,7 +22,7 @@ interface ApproveModalTypeSelectorProps {
     data: string;
     cryptoId: CryptoId;
     onSelect: (type: DexApprovalType) => void;
-    provider: ProviderMetadata;
+    provider: AllowanceProvider;
     token: TokenInfo;
     displayAmount: AmountSubunit;
 }
@@ -39,12 +42,25 @@ export const ApproveModalTypeSelector = ({
     displayAmount,
 }: ApproveModalTypeSelectorProps) => {
     const isDebug = useSelector(selectIsDebugModeActive);
+    const { networkId, contractAddress } = parseCryptoId(cryptoId);
+    const networkSymbol = getNetworkByCoingeckoId(networkId)?.symbol;
 
     const translationValues = {
         value: subunitsToUnits({ value: displayAmount, decimals: token.decimals }).toString(),
         send: token.symbol ? getDisplaySymbol(token.symbol) : '',
         provider: provider.name,
     };
+
+    const tokenLogo = (
+        <AssetLogo
+            size={20}
+            margin={{ right: 4 }}
+            coingeckoId={networkId}
+            symbol={networkSymbol}
+            contractAddress={contractAddress}
+            placeholder={token.symbol ?? networkId.toUpperCase()}
+        />
+    );
 
     return (
         <Box borderWidth={borders.widths.large} padding={12} borderRadius={borders.radii.sm}>
@@ -58,7 +74,7 @@ export const ApproveModalTypeSelector = ({
                     onClick={() => onSelect('INFINITE')}
                 >
                     <Row>
-                        <TradingCoinLogo cryptoId={cryptoId} size={20} margin={{ right: 4 }} />
+                        {tokenLogo}
                         <Text>
                             <Translation id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE" />
                         </Text>
@@ -81,7 +97,7 @@ export const ApproveModalTypeSelector = ({
                     onClick={() => onSelect('MINIMAL')}
                 >
                     <Row>
-                        <TradingCoinLogo cryptoId={cryptoId} size={20} margin={{ right: 4 }} />
+                        {tokenLogo}
                         <Text>
                             <Translation
                                 id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL"

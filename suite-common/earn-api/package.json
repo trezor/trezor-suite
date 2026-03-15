@@ -17,6 +17,7 @@
         "test:unit": "yarn g:jest"
     },
     "devDependencies": {
+        "@types/invity-api": "^1.1.15",
         "orval": "8.5.0",
         "prettier": "3.8.1"
     },

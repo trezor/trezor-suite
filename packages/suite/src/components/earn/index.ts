@@ -11,6 +11,10 @@ export { StakeModal } from './modals/StakeModal/StakeModal';
 export { UnstakeModal } from './modals/UnstakeModal/UnstakeModal';
 export { EarnDashboard } from './EarnDashboard/EarnDashboard';
 
+export { YieldPageHeader } from './yield/common/YieldPageHeader';
+
+export { YieldSupply } from './yield/supply/YieldSupply';
+export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';
 export { EarnWithdrawingInfo } from './modals/EarnInANutshell/components/EarnWithdrawingInfo';
 

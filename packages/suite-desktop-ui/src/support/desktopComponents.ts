@@ -5,7 +5,7 @@ import { type PageName } from '@suite/router';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
-import { EarnSupply } from 'src/views/earn/supply';
+import { EarnSupplyPage } from 'src/views/earn/supply';
 import { EarnWithdraw } from 'src/views/earn/withdraw';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
@@ -42,7 +42,7 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
-    'earn-supply': EarnSupply,
+    'earn-supply': EarnSupplyPage,
     'earn-withdraw': EarnWithdraw,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,

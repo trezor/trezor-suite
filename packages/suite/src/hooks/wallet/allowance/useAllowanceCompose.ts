@@ -32,6 +32,7 @@ interface UseAllowanceComposeParams {
     spender: string;
     amount: string;
     token?: TokenInfo;
+    defaultFeeLevel?: FeeLevelLabel;
 }
 
 export const useAllowanceCompose = ({
@@ -40,6 +41,7 @@ export const useAllowanceCompose = ({
     spender,
     amount,
     token,
+    defaultFeeLevel = 'normal',
 }: UseAllowanceComposeParams) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
@@ -51,11 +53,19 @@ export const useAllowanceCompose = ({
         () => getConvertedOrDefaultFeeInfo({ networkType, feeInfo: rawFeeInfo }),
         [networkType, rawFeeInfo],
     );
+    const resolvedDefaultFeeLevel = useMemo<FeeLevelLabel>(
+        () =>
+            feeInfo.levels.some(level => level.label === defaultFeeLevel)
+                ? defaultFeeLevel
+                : 'normal',
+        [defaultFeeLevel, feeInfo.levels],
+    );
 
     const methods = useForm<FormState>({
         mode: 'onChange',
         defaultValues: {
             ...DEFAULT_VALUES,
+            selectedFee: resolvedDefaultFeeLevel,
             outputs: [],
             options: ['broadcast'],
         },
@@ -77,7 +87,8 @@ export const useAllowanceCompose = ({
             const currentRequestId = composeRequestIdRef.current;
 
             const formValues = methods.getValues();
-            const feeLevel = (formValues.selectedFee ?? 'normal') satisfies FeeLevelLabel;
+            const feeLevel = (formValues.selectedFee ??
+                resolvedDefaultFeeLevel) satisfies FeeLevelLabel;
 
             const customFee =
                 feeLevel === 'custom'
@@ -153,13 +164,33 @@ export const useAllowanceCompose = ({
 
     const { changeFeeLevel, selectedFee: formSelectedFee } = useFees({
         ...methods,
-        defaultValue: 'normal',
+        defaultValue: resolvedDefaultFeeLevel,
         feeInfo,
         onChange: onFeeLevelChange,
         composeRequest,
         composedLevels,
     });
-    const selectedFee = formSelectedFee ?? ('normal' satisfies FeeLevelLabel);
+    const selectedFee = formSelectedFee ?? resolvedDefaultFeeLevel;
+
+    useEffect(() => {
+        const selectedFee = methods.getValues('selectedFee');
+
+        if (!selectedFee) {
+            methods.setValue('selectedFee', resolvedDefaultFeeLevel, { shouldDirty: false });
+
+            return;
+        }
+
+        const shouldPromoteToPreferredFeeLevel =
+            defaultFeeLevel !== 'normal' &&
+            resolvedDefaultFeeLevel === defaultFeeLevel &&
+            selectedFee === 'normal';
+
+        if (shouldPromoteToPreferredFeeLevel) {
+            methods.setValue('selectedFee', defaultFeeLevel, { shouldDirty: false });
+            composeRequestRef.current();
+        }
+    }, [methods, defaultFeeLevel, resolvedDefaultFeeLevel, composeRequestRef]);
 
     const composedTransaction = useMemo(() => {
         if (!composedLevels) return undefined;

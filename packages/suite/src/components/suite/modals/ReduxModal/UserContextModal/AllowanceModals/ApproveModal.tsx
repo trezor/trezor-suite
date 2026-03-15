@@ -1,10 +1,10 @@
 import { FormProvider } from 'react-hook-form';
 
-import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
+import type { CryptoId, DexApprovalType } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import type { Account, FeeLevelLabel } from '@suite-common/wallet-types';
 import { Box, Column, Modal, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
@@ -16,22 +16,24 @@ import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
 import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
 import { ApproveModalTypeSelector } from './ApproveModalTypeSelector';
+import type { AllowanceProvider } from './types';
 
 interface ApproveModalProps {
     amount: string;
     cryptoId: CryptoId;
     account: Account;
-    provider: ProviderMetadata;
+    provider: AllowanceProvider;
     spender: string;
+    defaultFeeLevel?: FeeLevelLabel;
     onSelectApprovalType?: (type: DexApprovalType) => void;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const ApproveModal = (props: ApproveModalProps) => {
-    const { account, provider, spender, cryptoId } = props;
+    const { account, provider, spender, cryptoId, defaultFeeLevel } = props;
     const { device } = useDevice();
-    const context = useAllowanceModal({ ...props, type: 'APPROVE' });
+    const context = useAllowanceModal({ ...props, type: 'APPROVE', defaultFeeLevel });
 
     const {
         inputAmount,

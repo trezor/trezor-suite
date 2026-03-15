@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { type EarnProviderId, earnProviderInfo } from '@suite-common/earn-api';
 import { Image, Row, Text } from '@trezor/components';
-
-import { type EarnProviderId, earnProviderMetadata } from './providerMetadata';
 
 const ImageWrapper = styled.div`
     filter: ${({ theme }) => (theme.variant === 'dark' ? 'invert(1)' : 'none')};
@@ -20,7 +19,7 @@ export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
                 <Translation id="TR_STAKE_PROVIDED_BY" />
             </Text>
             <ImageWrapper>
-                <Image image={earnProviderMetadata[provider].logo} width={100} height={40} />
+                <Image image={earnProviderInfo[provider].logo} width={100} height={40} />
             </ImageWrapper>
         </Row>
     );
