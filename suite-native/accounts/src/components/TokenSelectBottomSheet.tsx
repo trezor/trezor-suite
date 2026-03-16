@@ -5,7 +5,8 @@ import { WritableAtom, useAtom } from 'jotai';
 
 import { Account } from '@suite-common/wallet-types';
 
-import { NativeAccountsRootState, selectAccountListSections } from '../selectors';
+import { NativeAccountsRootState } from '../selectors/common';
+import { selectAccountListSections } from '../selectors/selectAccountListSections';
 import { OnSelectAccount } from '../types';
 import { AccountSelectBottomSheet } from './AccountSelectBottomSheet';
 

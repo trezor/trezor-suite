@@ -23,7 +23,8 @@ import {
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
-import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
+import { NativeAccountsRootState } from '../../selectors/common';
+import { selectAccountFiatBalance } from '../../selectors/selectAccountFiatBalance';
 import { OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {

@@ -9,10 +9,8 @@ import { Card, VStack } from '@suite-native/atoms';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
-import {
-    NativeAccountsRootState,
-    selectFilteredDeviceAccountsGroupedByNetworkAccountType,
-} from '../../selectors';
+import { NativeAccountsRootState } from '../../selectors/common';
+import { selectFilteredDeviceAccountsGroupedByNetworkAccountType } from '../../selectors/selectFilteredDeviceAccountsGroupedByNetworkAccountType';
 import { OnSelectAccount } from '../../types';
 import { TokenSelectBottomSheet } from '../TokenSelectBottomSheet';
 import { AccountsListItem } from './AccountsListItem';
