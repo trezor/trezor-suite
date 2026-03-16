@@ -1,12 +1,12 @@
-import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
-import { SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { Account, asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
 import {
-    NativeAccountsRootState,
+    type NativeAccountsRootState,
     selectFilteredDeviceAccountsGroupedByNetworkAccountType,
 } from '../selectors';
 
