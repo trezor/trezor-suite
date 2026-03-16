@@ -177,8 +177,9 @@ export const PassphraseFormScreen = () => {
                                 </VStack>
                                 <Button
                                     size="small"
-                                    colorScheme="blueBold"
-                                    viewLeft="arrowLineUpRight"
+                                    intent="info"
+                                    priority="primary"
+                                    iconLeft="arrowLineUpRight"
                                     onPress={handleOpenLink}
                                 >
                                     <Translation id="modulePassphrase.alertCard.button" />

@@ -176,7 +176,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                 />
             ),
             primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: () => {
                 dispatch(
                     cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: false }),
@@ -200,7 +200,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                     }),
                 );
             },
-            secondaryButtonVariant: 'redElevation1',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
         });
         setIsSendInProgress(false);
     };

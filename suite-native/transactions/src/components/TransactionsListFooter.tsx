@@ -33,7 +33,8 @@ export const TransactionsListFooter = ({
         return (
             <Box paddingTop="sp32" paddingHorizontal="sp16">
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onButtonPress}
                     testID="@transactions/list/more-button"
                 >

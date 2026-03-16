@@ -59,7 +59,8 @@ export const EarnFormScreenFooter = ({
         });
     }, [amountValue, apy, CryptoAmountFormatter, symbol]);
 
-    const buttonColorScheme = isDisabled ? 'tertiaryElevation0' : 'primary';
+    const buttonIntent = isDisabled ? 'neutral' : 'brand';
+    const buttonPriority = isDisabled ? 'secondary' : 'primary';
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
@@ -77,10 +78,11 @@ export const EarnFormScreenFooter = ({
                         </Text>
                     </VStack>
                     <Button
-                        key={buttonColorScheme}
+                        key={`${buttonIntent}-${buttonPriority}`}
                         accessibilityRole="button"
                         accessibilityLabel={translate('generic.validateForm')}
-                        colorScheme={buttonColorScheme}
+                        intent={buttonIntent}
+                        priority={buttonPriority}
                         onPress={onPress}
                         isDisabled={isDisabled}
                     >

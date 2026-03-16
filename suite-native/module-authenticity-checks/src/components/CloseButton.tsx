@@ -6,7 +6,7 @@ type CloseButtonProps = {
 };
 
 export const CloseButton = ({ handleClose }: CloseButtonProps) => (
-    <Button colorScheme="redElevation0" onPress={handleClose}>
+    <Button intent="critical" priority="secondary" onPress={handleClose}>
         <Translation id="generic.buttons.close" />
     </Button>
 );

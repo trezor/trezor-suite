@@ -59,7 +59,12 @@ export const WalletConnectPairBottomSheet = ({
             {isPairing ? (
                 <Loader />
             ) : (
-                <Button colorScheme="tertiaryElevation0" onPress={handlePaste} viewLeft="clipboard">
+                <Button
+                    intent="neutral"
+                    priority="secondary"
+                    onPress={handlePaste}
+                    iconLeft="clipboard"
+                >
                     <Translation id="moduleConnectPopup.walletConnect.pasteFromClipboard" />
                 </Button>
             )}

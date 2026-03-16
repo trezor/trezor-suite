@@ -60,7 +60,7 @@ export const useFirmwareLanguage = () => {
                         title: translate('firmware.changeLanguage.failure.title'),
                         description: translate('firmware.changeLanguage.failure.description'),
                         primaryButtonTitle: translate('generic.buttons.gotIt'),
-                        primaryButtonVariant: 'redBold',
+                        primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                         onPressPrimaryButton: navigation.goBack,
                     });
                 }

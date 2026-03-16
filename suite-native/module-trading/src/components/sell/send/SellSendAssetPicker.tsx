@@ -49,7 +49,7 @@ export const SellSendAssetPicker = () => {
                 <SelectTradeableAssetButton
                     onPress={showSheet}
                     selectedAsset={selectedValue}
-                    colorScheme="primary"
+                    buttonColorProps={{ intent: 'brand', priority: 'primary' }}
                     testID={ASSET_PICKER_TEST_ID}
                     caret
                 />

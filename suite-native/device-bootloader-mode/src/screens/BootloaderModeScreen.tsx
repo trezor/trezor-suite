@@ -74,7 +74,11 @@ export const BootloaderModeScreen = () => {
                             <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.description" />
                         </Text>
                         <VStack style={applyStyle(buttonWrapperStyle)}>
-                            <Button colorScheme="redBold" onPress={handleRedirectToFactoryReset}>
+                            <Button
+                                intent="critical"
+                                priority="primary"
+                                onPress={handleRedirectToFactoryReset}
+                            >
                                 <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.buttonTitle" />
                             </Button>
                         </VStack>

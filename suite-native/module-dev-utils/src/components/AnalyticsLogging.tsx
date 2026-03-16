@@ -97,7 +97,8 @@ export const AnalyticsLogging = () => {
                         )}
                         {customUrl && (
                             <Button
-                                colorScheme="tertiaryElevation0"
+                                intent="neutral"
+                                priority="secondary"
                                 size="small"
                                 onPress={handleResetToDefault}
                             >

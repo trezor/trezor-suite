@@ -54,7 +54,7 @@ export const TokenDetailBottomSheet = ({
                 </VStack>
             </VStack>
 
-            <Button colorScheme="primary" onPress={onClose}>
+            <Button intent="brand" priority="primary" onPress={onClose}>
                 <Translation id="generic.buttons.goBack" />
             </Button>
         </VStack>

@@ -77,9 +77,8 @@ export const AddressConfirmation = () => {
                             </Text>
                             <IconButton
                                 size="small"
-                                colorScheme={
-                                    item.validated === 'valid' ? 'primary' : 'tertiaryElevation0'
-                                }
+                                intent={item.validated === 'valid' ? 'brand' : 'neutral'}
+                                priority={item.validated === 'valid' ? 'primary' : 'secondary'}
                                 iconName={
                                     item.validated === 'valid' ? 'checkCircle' : 'trezorDevices'
                                 }

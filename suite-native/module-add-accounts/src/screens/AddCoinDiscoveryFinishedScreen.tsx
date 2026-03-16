@@ -93,7 +93,8 @@ export const AddCoinDiscoveryFinishedScreen = ({
                 />
                 <Box paddingTop="sp8" paddingHorizontal="sp16">
                     <Button
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         onPress={handleAddAccount}
                         testID="@add-account/after-discovery/button-add-new"
                     >

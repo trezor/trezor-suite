@@ -39,10 +39,10 @@ export const ShowAddressViewOnlyBottomSheet = ({
                     </Text>
                 </VStack>
                 <VStack spacing="sp16" style={applyStyle(buttonWrapperStyle)}>
-                    <Button colorScheme="yellowBold" onPress={onShowAddress}>
+                    <Button intent="warning" priority="primary" onPress={onShowAddress}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton" />
                     </Button>
-                    <Button colorScheme="yellowElevation1" onPress={onClose}>
+                    <Button intent="warning" priority="secondary" onPress={onClose}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton" />
                     </Button>
                 </VStack>

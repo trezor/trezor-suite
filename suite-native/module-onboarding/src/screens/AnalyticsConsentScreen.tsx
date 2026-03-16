@@ -145,7 +145,8 @@ export const AnalyticsConsentScreen = ({
                         <Translation id="generic.buttons.confirm" />
                     </Button>
                     <Button
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         testID="@onboarding/AnalyticsConsent/learMoreBtn"
                         onPress={handleClickOnLearMoreLink}
                     >

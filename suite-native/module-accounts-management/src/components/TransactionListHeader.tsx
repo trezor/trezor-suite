@@ -180,7 +180,7 @@ export const TransactionListHeader = memo(
                             {isReceiveButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button
-                                        viewLeft="arrowLineDown"
+                                        iconLeft="arrowLineDown"
                                         onPress={handleReceive}
                                         testID="@account-detail/receive-button"
                                     >
@@ -191,7 +191,7 @@ export const TransactionListHeader = memo(
                             {isSendButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button
-                                        viewLeft="arrowLineUp"
+                                        iconLeft="arrowLineUp"
                                         onPress={handleSend}
                                         isDisabled={isViewOnlySymbol(account.symbol)}
                                         testID="@account-detail/send-button"

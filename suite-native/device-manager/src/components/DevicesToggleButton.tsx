@@ -1,6 +1,4 @@
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-
-import { Button, ButtonIcon, Text } from '@suite-native/atoms';
+import { Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type DevicesToggleButtonProps = {
@@ -8,34 +6,17 @@ type DevicesToggleButtonProps = {
     onDeviceButtonTap: () => void;
 };
 
-const CHEVRON_ANIMATION_DURATION = 300;
-
-export const DevicesToggleButton = ({ isOpened, onDeviceButtonTap }: DevicesToggleButtonProps) => {
-    const animatedChevronStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                rotate: withTiming(`${isOpened ? -180 : 0}deg`, {
-                    duration: CHEVRON_ANIMATION_DURATION,
-                }),
-            },
-        ],
-    }));
-
-    return (
-        <Button
-            size="small"
-            colorScheme="tertiaryElevation0"
-            viewRight={
-                <Animated.View style={animatedChevronStyle}>
-                    <ButtonIcon iconName="caretDown" />
-                </Animated.View>
-            }
-            onPress={onDeviceButtonTap}
-            testID="@device-manager/devices/toggle"
-        >
-            <Text variant="body-sm">
-                <Translation id="deviceManager.deviceButtons.devices" />
-            </Text>
-        </Button>
-    );
-};
+export const DevicesToggleButton = ({ isOpened, onDeviceButtonTap }: DevicesToggleButtonProps) => (
+    <Button
+        size="small"
+        intent="neutral"
+        priority="secondary"
+        iconRight={isOpened ? 'caretUp' : 'caretDown'}
+        onPress={onDeviceButtonTap}
+        testID="@device-manager/devices/toggle"
+    >
+        <Text variant="body-sm">
+            <Translation id="deviceManager.deviceButtons.devices" />
+        </Text>
+    </Button>
+);

@@ -64,7 +64,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                         flex={1}
                                         testID="@home/portfolio/receive-button"
                                         onPress={handleReceive}
-                                        viewLeft="arrowDown"
+                                        iconLeft="arrowDown"
                                     >
                                         <Translation id="moduleHome.buttons.receive" />
                                     </Button>
@@ -74,7 +74,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                         flex={1}
                                         testID="@home/portfolio/send-button"
                                         onPress={handleSend}
-                                        viewLeft="arrowUp"
+                                        iconLeft="arrowUp"
                                     >
                                         <Translation id="moduleHome.buttons.send" />
                                     </Button>

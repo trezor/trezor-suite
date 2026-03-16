@@ -39,12 +39,18 @@ export const SwitchCoinControlButton = ({ accountKey, amount }: SwitchCoinContro
         });
     };
 
-    const colorScheme = useMemo(() => {
+    const buttonColorProps = useMemo(() => {
         if (isCoinControlEnabled) {
-            return isMissingUtxos ? 'yellowBold' : 'primary';
+            return {
+                intent: isMissingUtxos ? 'warning' : 'brand',
+                priority: 'primary',
+            } as const;
         }
 
-        return 'tertiaryElevation0';
+        return {
+            intent: 'neutral',
+            priority: 'secondary',
+        } as const;
     }, [isCoinControlEnabled, isMissingUtxos]);
 
     const textColor = isCoinControlEnabled && !isMissingUtxos ? 'textOnPrimary' : 'textOnTertiary';
@@ -53,8 +59,8 @@ export const SwitchCoinControlButton = ({ accountKey, amount }: SwitchCoinContro
         <Button
             testID="switch-coin-control-button"
             onPress={openCoinControlScreen}
-            colorScheme={colorScheme}
-            viewLeft="coins"
+            {...buttonColorProps}
+            iconLeft="coins"
         >
             <Text color={textColor}>
                 <Translation id="moduleSend.coinControl.cta" />

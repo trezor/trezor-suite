@@ -71,7 +71,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         screen: AuthorizeDeviceStackRoutes.PassphraseForm,
                     });
                 },
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.secondaryButton" />
                 ),
@@ -85,7 +85,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
                     });
                 },
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 pictogramVariant: 'critical',
             });
         }

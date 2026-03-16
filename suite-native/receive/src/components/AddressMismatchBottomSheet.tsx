@@ -48,8 +48,9 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
                 <Box flex={1}>
                     <VStack spacing="sp16">
                         <Button
-                            viewLeft="warning"
-                            colorScheme="tertiaryElevation0"
+                            iconLeft="warning"
+                            intent="neutral"
+                            priority="secondary"
                             onPress={handleOpenSupportLink}
                         >
                             <Translation id="moduleReceive.bottomSheets.addressMismatch.reportIssueButton" />

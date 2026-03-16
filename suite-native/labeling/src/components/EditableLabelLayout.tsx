@@ -32,7 +32,7 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
                     Keyboard.dismiss();
                     handleAddLabel(openModal);
                 }}
-                viewRight="pencil"
+                iconRight="pencil"
                 testID={testID}
             >
                 {label ?? <Translation id="suiteSync.addLabel" />}

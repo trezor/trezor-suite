@@ -36,7 +36,7 @@ export const PickQRFromGalleryButton = ({
     };
 
     return (
-        <Button onPress={handlePickImage} viewLeft="image" colorScheme="tertiaryElevation0">
+        <Button onPress={handlePickImage} iconLeft="image" intent="neutral" priority="secondary">
             <Translation id="qrCode.pickImageButton" />
         </Button>
     );

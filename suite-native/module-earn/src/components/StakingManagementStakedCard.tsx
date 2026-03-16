@@ -123,11 +123,11 @@ export const StakingManagementStakedCard = ({
             </HStack>
             <HStack style={applyStyle(buttonsRowStyle)}>
                 {hasStakedBalance && (
-                    <Button flex={1} colorScheme="primaryElevation0" onPress={handleUnstake}>
+                    <Button flex={1} priority="secondary" onPress={handleUnstake}>
                         <Translation id="earn.stakingManagementScreen.unstakeButton" />
                     </Button>
                 )}
-                <Button flex={1} colorScheme="primaryElevation0" onPress={handleStake}>
+                <Button flex={1} priority="secondary" onPress={handleStake}>
                     <Translation
                         id={
                             hasStakedBalance

@@ -56,10 +56,10 @@ export const DeviceDisconnectedScreen = ({
                 'moduleDeviceOnboarding.deviceDisconnectedAlert.reconnectButton',
             ),
             pictogramVariant: 'critical',
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: () => setIsAlertDismissed(true),
             secondaryButtonTitle: translate('generic.buttons.cancel'),
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: () => {
                 setWasDeviceOnboardingCancelled(true);
                 navigateToHome();

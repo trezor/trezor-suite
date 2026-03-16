@@ -9,8 +9,9 @@ export const FirmwareChangelogButton = () => {
     return (
         <>
             <TextButton
-                viewLeft="question"
-                variant="tertiary"
+                iconLeft="question"
+                intent="neutral"
+                priority="secondary"
                 size="small"
                 isUnderlined
                 onPress={openModal}

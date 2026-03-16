@@ -51,10 +51,10 @@ export const MayBeStuckedBottomSheet = ({
                         </VStack>
 
                         <VStack spacing="sp16">
-                            <Button onPress={handleContinue} colorScheme="yellowBold">
+                            <Button onPress={handleContinue} intent="warning" priority="primary">
                                 <Translation id="firmware.stuckedBottomSheet.part1.continueButton" />
                             </Button>
-                            <Button onPress={handleClose} colorScheme="yellowElevation0">
+                            <Button onPress={handleClose} intent="warning" priority="secondary">
                                 <Translation id="firmware.stuckedBottomSheet.part1.closeButton" />
                             </Button>
                         </VStack>
@@ -86,7 +86,7 @@ export const MayBeStuckedBottomSheet = ({
                         </VStack>
 
                         <Box flex={1}>
-                            <Button onPress={handleClose} colorScheme="primary">
+                            <Button onPress={handleClose} intent="brand" priority="primary">
                                 <Translation id="firmware.stuckedBottomSheet.part2.gotItButton" />
                             </Button>
                         </Box>

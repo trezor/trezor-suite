@@ -62,7 +62,8 @@ export const SuiteSyncQuotaManager = () => {
                         />
                         <Button
                             testID="@suiteSyncQuotaManager/save-button"
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
                             onPress={onSubmit}
                         >
@@ -118,7 +119,7 @@ export const SuiteSyncQuotaManager = () => {
                         onChange={onToggleEnforceQuotaManager}
                     />
                 </HStack>
-                <Button colorScheme="redBold" onPress={onEraseFetchedData}>
+                <Button intent="critical" priority="primary" onPress={onEraseFetchedData}>
                     Erase fetched data
                 </Button>
             </VStack>

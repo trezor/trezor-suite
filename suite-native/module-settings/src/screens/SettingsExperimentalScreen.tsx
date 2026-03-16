@@ -23,7 +23,8 @@ export const SettingsExperimentalScreen = () => {
                         <IconButton
                             iconName="info"
                             size="medium"
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             onPress={onInfoPress}
                             accessibilityRole="button"
                             accessibilityLabel="More info"

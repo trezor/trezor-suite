@@ -44,7 +44,7 @@ export const useAddCoinAccountAlerts = () => {
             title: translate('modulePassphrase.featureAuthorizationError'),
             pictogramVariant: 'critical',
             primaryButtonTitle: translate('generic.buttons.close'),
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
         });
 
     return {

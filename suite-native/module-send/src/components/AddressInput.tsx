@@ -104,7 +104,12 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                 )}
             </HStack>
             {isDebugEnv() && (
-                <Button size="small" colorScheme="tertiaryElevation0" onPress={fillSelfAddress}>
+                <Button
+                    size="small"
+                    intent="neutral"
+                    priority="secondary"
+                    onPress={fillSelfAddress}
+                >
                     DEV: self address
                 </Button>
             )}

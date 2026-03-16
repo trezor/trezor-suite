@@ -57,7 +57,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                         <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alert.title" />
                     </Text>
 
-                    <Button onPress={closeModal} colorScheme="blueBold">
+                    <Button onPress={closeModal} intent="info" priority="primary">
                         <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alert.button" />
                     </Button>
                 </VStack>

@@ -124,7 +124,8 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                         <IconButton
                             onPress={handleDelete}
                             iconName="backspace"
-                            colorScheme="tertiaryElevation1"
+                            intent="neutral"
+                            priority="secondary"
                         />
                         <Box flex={1}>
                             <Button onPress={onSubmit}>

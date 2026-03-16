@@ -6,7 +6,7 @@ import {
     type BadgeVariant,
     Box,
     Button,
-    type ButtonColorScheme,
+    type ButtonColorProps,
     type ButtonSize,
     CheckBox,
     Divider,
@@ -22,9 +22,9 @@ import {
     Radio,
     SearchInput,
     Switch,
+    TEXT_BUTTON_SIZES,
     Text,
     TextButton,
-    type TextButtonVariant,
     VStack,
 } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
@@ -71,20 +71,40 @@ export const DemoScreen = () => {
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const demoInputRef = useRef<InputType | null>(null);
 
-    const buttonColorSchemes = [
-        'primary',
-        'secondary',
-        'tertiaryElevation0',
-        'redBold',
-        'redElevation0',
-        'yellowBold',
-        'yellowElevation0',
-        'blueBold',
-        'blueElevation0',
-        'backgroundSurfaceElevation0',
-    ] satisfies ButtonColorScheme[];
+    const buttonColorVariants = [
+        { label: 'brand/primary', buttonColorProps: { intent: 'brand', priority: 'primary' } },
+        { label: 'neutral/primary', buttonColorProps: { intent: 'neutral', priority: 'primary' } },
+        {
+            label: 'neutral/secondary',
+            buttonColorProps: { intent: 'neutral', priority: 'secondary' },
+        },
+        {
+            label: 'critical/primary',
+            buttonColorProps: { intent: 'critical', priority: 'primary' },
+        },
+        {
+            label: 'critical/secondary',
+            buttonColorProps: { intent: 'critical', priority: 'secondary' },
+        },
+        {
+            label: 'warning/primary',
+            buttonColorProps: { intent: 'warning', priority: 'primary' },
+        },
+        {
+            label: 'warning/secondary',
+            buttonColorProps: { intent: 'warning', priority: 'secondary' },
+        },
+        { label: 'info/primary', buttonColorProps: { intent: 'info', priority: 'primary' } },
+        { label: 'info/secondary', buttonColorProps: { intent: 'info', priority: 'secondary' } },
+    ] satisfies { label: string; buttonColorProps: ButtonColorProps }[];
 
-    const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
+    const textButtonColors = [
+        { label: 'brand/primary', buttonColorProps: { intent: 'brand', priority: 'primary' } },
+        {
+            label: 'neutral/secondary',
+            buttonColorProps: { intent: 'neutral', priority: 'secondary' },
+        },
+    ] satisfies { label: string; buttonColorProps: ButtonColorProps }[];
     const badgeVariants = [
         'neutral',
         'green',
@@ -138,9 +158,9 @@ export const DemoScreen = () => {
                 </VStack>
                 <VStack>
                     <Text variant="headline-sm">Button:</Text>
-                    {buttonColorSchemes.map(buttonScheme => (
-                        <VStack key={buttonScheme}>
-                            <Text>{buttonScheme}</Text>
+                    {buttonColorVariants.map(({ label, buttonColorProps }) => (
+                        <VStack key={label}>
+                            <Text>{label}</Text>
                             <Box
                                 flexDirection="row"
                                 justifyContent="space-around"
@@ -150,8 +170,8 @@ export const DemoScreen = () => {
                                 {buttonSizes.map(buttonSize => (
                                     <Button
                                         key={buttonSize}
-                                        colorScheme={buttonScheme}
-                                        viewLeft="calendar"
+                                        {...buttonColorProps}
+                                        iconLeft="calendar"
                                         size={buttonSize}
                                     >
                                         {buttonSize}
@@ -167,8 +187,8 @@ export const DemoScreen = () => {
                                 {buttonSizes.map(buttonSize => (
                                     <Button
                                         key={buttonSize}
-                                        colorScheme={buttonScheme}
-                                        viewRight="calendar"
+                                        {...buttonColorProps}
+                                        iconRight="calendar"
                                         size={buttonSize}
                                     >
                                         {buttonSize}
@@ -188,8 +208,9 @@ export const DemoScreen = () => {
                             {buttonSizes.map(buttonSize => (
                                 <Button
                                     key={buttonSize}
-                                    colorScheme="primary"
-                                    viewLeft="calendar"
+                                    intent="brand"
+                                    priority="primary"
+                                    iconLeft="calendar"
                                     size={buttonSize}
                                     isDisabled
                                 >
@@ -206,8 +227,9 @@ export const DemoScreen = () => {
                             {buttonSizes.map(buttonSize => (
                                 <Button
                                     key={buttonSize}
-                                    colorScheme="primary"
-                                    viewLeft="calendar"
+                                    intent="brand"
+                                    priority="primary"
+                                    iconLeft="calendar"
                                     size={buttonSize}
                                     isDisabled
                                 >
@@ -224,8 +246,9 @@ export const DemoScreen = () => {
                             {buttonSizes.map(buttonSize => (
                                 <Button
                                     key={buttonSize}
-                                    colorScheme="primary"
-                                    viewRight="calendar"
+                                    intent="brand"
+                                    priority="primary"
+                                    iconRight="calendar"
                                     size={buttonSize}
                                     isDisabled
                                 >
@@ -238,9 +261,9 @@ export const DemoScreen = () => {
                 <Divider />
                 <VStack>
                     <Text variant="headline-sm">IconButton:</Text>
-                    {buttonColorSchemes.map(buttonScheme => (
-                        <View key={buttonScheme}>
-                            <Text>{buttonScheme}</Text>
+                    {buttonColorVariants.map(({ label, buttonColorProps }) => (
+                        <View key={label}>
+                            <Text>{label}</Text>
                             <Box
                                 flexDirection="row"
                                 justifyContent="space-around"
@@ -249,7 +272,7 @@ export const DemoScreen = () => {
                                 {buttonSizes.map(buttonSize => (
                                     <IconButton
                                         key={buttonSize}
-                                        colorScheme={buttonScheme}
+                                        {...buttonColorProps}
                                         iconName="calendar"
                                         size={buttonSize}
                                     />
@@ -260,18 +283,18 @@ export const DemoScreen = () => {
                 </VStack>
                 <VStack>
                     <Text variant="headline-sm">TextButton:</Text>
-                    {textButtonVariants.map(variant => (
+                    {textButtonColors.map(({ label, buttonColorProps }) => (
                         <HStack
-                            key={variant}
+                            key={label}
                             flexDirection="row"
                             justifyContent="space-around"
                             alignItems="center"
                         >
-                            {buttonSizes.map(buttonSize => (
+                            {TEXT_BUTTON_SIZES.map(buttonSize => (
                                 <TextButton
-                                    variant={variant}
-                                    key={variant + buttonSize}
-                                    viewLeft="trezorSafe5"
+                                    {...buttonColorProps}
+                                    key={label + buttonSize}
+                                    iconLeft="trezorSafe5"
                                     size={buttonSize}
                                 >
                                     {buttonSize}

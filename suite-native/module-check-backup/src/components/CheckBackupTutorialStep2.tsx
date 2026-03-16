@@ -61,7 +61,8 @@ export const CheckBackupTutorialStep2 = ({
                     </Button>
                     <Button
                         size="medium"
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         onPress={navigateToSupportScreen}
                     >
                         <Translation id="moduleCheckBackup.checkBackupTutorialScreen.step2.noBackupButton" />

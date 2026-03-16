@@ -31,7 +31,8 @@ export const AccountListFooter = ({
             )}
             <Box paddingTop="sp8" paddingHorizontal="sp16">
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onAddAccountTap}
                     testID="@add-account/after-discovery/button-add-new"
                 >

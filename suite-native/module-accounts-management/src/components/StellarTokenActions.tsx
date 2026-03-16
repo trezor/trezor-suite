@@ -108,7 +108,8 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         return (
             <Box paddingHorizontal="sp16">
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={handleDeactivateToken}
                     isLoading={isComposingFees}
                     isDisabled={isComposingFees}
@@ -123,8 +124,9 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
     return (
         <Box paddingHorizontal="sp16">
             <Button
-                colorScheme="tertiaryElevation0"
-                viewLeft="plus"
+                intent="neutral"
+                priority="secondary"
+                iconLeft="plus"
                 onPress={handleActivateToken}
                 testID="@account-detail/activate-token-button"
             >

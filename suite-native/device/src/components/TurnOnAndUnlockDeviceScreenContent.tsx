@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { HStack, Loader, Text, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
+import { HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { selectBluetoothAdapterStatus } from '@suite-native/bluetooth';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -12,8 +12,10 @@ type TurnOnAndUnlockDeviceScreenContentProps = {
     isStatusVisible?: boolean;
 };
 
+const STATUS_HEIGHT = 48;
+
 const statusStyle = prepareNativeStyle((_, { isStatusVisible }: { isStatusVisible: boolean }) => ({
-    height: buttonSizeToDimensionsMap.medium.minHeight,
+    height: STATUS_HEIGHT,
     alignItems: 'center',
     opacity: isStatusVisible ? 1 : 0, // use opacity to prevent layout shifts
 }));

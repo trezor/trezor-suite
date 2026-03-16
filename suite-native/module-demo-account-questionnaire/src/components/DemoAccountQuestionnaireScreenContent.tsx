@@ -114,7 +114,8 @@ export const DemoAccountQuestionnaireScreenContent = ({
                     ))}
                     <HStack justifyContent="center">
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
                             onPress={() => submitOption('none')}
                         >

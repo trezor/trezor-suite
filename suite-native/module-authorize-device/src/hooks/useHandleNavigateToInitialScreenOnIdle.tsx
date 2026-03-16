@@ -29,7 +29,7 @@ export const useHandleNavigateToInitialScreenOnIdle = () => {
                         title: translate('modulePassphrase.featureAuthorizationError'),
                         pictogramVariant: 'critical',
                         primaryButtonTitle: translate('generic.buttons.close'),
-                        primaryButtonVariant: 'redBold',
+                        primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                         onPressPrimaryButton: navigateToInitialScreen,
                     });
                 } else {

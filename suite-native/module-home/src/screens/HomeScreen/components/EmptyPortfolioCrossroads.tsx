@@ -140,7 +140,8 @@ export const EmptyPortfolioCrossroads = () => {
                     <View style={applyStyle(buttonWrapperStyle)}>
                         <Button
                             onPress={secondaryCardConfig.onPress}
-                            colorScheme="tertiaryElevation1"
+                            intent="neutral"
+                            priority="secondary"
                             testID={secondaryCardConfig.testID}
                         >
                             <Translation id={secondaryCardConfig.buttonTranslationId} />

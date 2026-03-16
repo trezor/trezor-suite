@@ -107,7 +107,8 @@ export const SuspiciousDeviceScreen = ({
                 </VStack>
                 <Button
                     testID="@deviceOnboarding/SuspiciousDeviceScreen/contactSupportBtn"
-                    colorScheme="yellowBold"
+                    intent="warning"
+                    priority="primary"
                     onPress={handleContactSupportButtonPress}
                 >
                     <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.contactSupportButton" />

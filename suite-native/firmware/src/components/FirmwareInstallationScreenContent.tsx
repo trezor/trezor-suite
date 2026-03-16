@@ -294,11 +294,15 @@ export const FirmwareInstallationScreenContent = ({
                 {isError && (
                     <VStack spacing="sp12" style={buttonStyle}>
                         {isRetryAllowed && (
-                            <Button onPress={handleRetry} colorScheme="redBold">
+                            <Button onPress={handleRetry} intent="critical" priority="primary">
                                 <Translation id="firmware.firmwareUpdateProgress.retryButton" />
                             </Button>
                         )}
-                        <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
+                        <Button
+                            onPress={handleContactSupport}
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
                         </Button>
                     </VStack>
@@ -312,7 +316,8 @@ export const FirmwareInstallationScreenContent = ({
                     >
                         <Button
                             onPress={openMayBeStuckBottomSheet}
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
                         </Button>

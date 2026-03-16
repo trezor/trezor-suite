@@ -38,7 +38,7 @@ export const PassphraseEnterOnTrezorScreenContent = ({
                         />
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button onPress={onCancel} colorScheme="redElevation1">
+                        <Button onPress={onCancel} intent="critical" priority="secondary">
                             <Translation id="generic.buttons.cancel" />
                         </Button>
                     </Box>

@@ -42,7 +42,7 @@ export const useShowPushTransactionFailedDuringUnstakeReviewAlert = () => {
                 primaryButtonTitle: (
                     <Translation id="earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: handleGoHome,
             }),
         [handleGoHome, showAlert],
@@ -60,7 +60,7 @@ export const useShowPushTransactionFailedDuringUnstakeReviewAlert = () => {
                 primaryButtonTitle: (
                     <Translation id="earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: handleGoHome,
             }),
         [handleGoHome, showAlert],

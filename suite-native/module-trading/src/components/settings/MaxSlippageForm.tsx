@@ -56,7 +56,8 @@ export const MaxSlippageForm = ({ onSubmit }: MaxSlippageFormProps) => {
                     asBottomSheetInput
                 />
                 <Button
-                    colorScheme="primary"
+                    intent="brand"
+                    priority="primary"
                     isDisabled={!isValid}
                     isLoading={isSubmitting}
                     onPress={handleSubmit(submitForm)}

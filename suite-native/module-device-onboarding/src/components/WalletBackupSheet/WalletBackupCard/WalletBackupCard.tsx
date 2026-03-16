@@ -75,7 +75,7 @@ export const WalletBackupCard = memo(
                                     : undefined
                             }
                             primaryButtonProps={{
-                                viewLeft: 'arrowSquareOut',
+                                iconLeft: 'arrowSquareOut',
                             }}
                         />
                     </VStack>
