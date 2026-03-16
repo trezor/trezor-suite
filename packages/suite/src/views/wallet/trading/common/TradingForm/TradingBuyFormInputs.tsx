@@ -25,12 +25,12 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormSection } from './TradingFormSection';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputBuyAsset,
     type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 
 export const TradingBuyFormInputs = () => {
@@ -56,6 +56,8 @@ export const TradingBuyFormInputs = () => {
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
+            setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
+            setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
