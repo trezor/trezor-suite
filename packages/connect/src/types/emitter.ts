@@ -1,6 +1,6 @@
+import type { UnionToIntersection } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
-import type { UnionToIntersection } from './utils';
 import type {
     BLOCKCHAIN_EVENT,
     BlockchainEvent,

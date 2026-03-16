@@ -7,6 +7,20 @@
  *  type U = UnionSubset<T, 'a' | 'c'>; // 'a' | 'c'
  *  ```
  */
+/**
+ * Convert a union type to an intersection type.
+ *
+ * Example:
+ *  ```
+ *  type T = UnionToIntersection<A | B>; // A & B
+ *  ```
+ */
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+    k: infer I,
+) => void
+    ? I
+    : never;
+
 export type UnionSubset<T, U extends T> = U;
 
 /**

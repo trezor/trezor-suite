@@ -36,6 +36,7 @@
     },
     "dependencies": {
         "@sinclair/typebox": "^0.33.7",
+        "@trezor/type-utils": "workspace:*",
         "ts-mixer": "^6.0.3"
     },
     "peerDependencies": {
