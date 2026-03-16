@@ -186,4 +186,11 @@ describe('selectFilteredDeviceAccountsGroupedByNetworkAccountType', () => {
             'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
         });
     });
+
+    it('returns stable results for same inputs', () => {
+        const firstCall = selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '');
+        const secondCall = selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '');
+
+        expect(firstCall).toBe(secondCall);
+    });
 });
