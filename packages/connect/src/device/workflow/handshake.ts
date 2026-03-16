@@ -52,7 +52,9 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
     for (let attempt = 0; attempt < ATTEMPTS_LIMIT; ++attempt) {
         logger?.debug(`handshake Cancel read attempt ${attempt}`);
 
-        const result = await device.getCurrentSession().receive({ signal, timeout });
+        const result = await device
+            .getCurrentSession()
+            .receive({ signal, timeout: CANCEL_TIMEOUT });
 
         // Older T1 don't respond to Cancel message which seems to be recoverable only by reacquiring
         if (!result.success && result.error.message === TRANSPORT_ERROR.ABORTED_BY_TIMEOUT) {
