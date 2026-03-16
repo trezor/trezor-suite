@@ -57,7 +57,12 @@ const PHISHING_WHITELISTED_TX_TYPES: WalletAccountTransaction['type'][] = [
     'contract',
 ];
 
+const isTransactionWhitelisted = (transaction: TransactionWithFiatAmount) =>
+    PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type);
+
 export const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
+    if (isTransactionWhitelisted(transaction)) return false;
+
     const hasFiatAmount =
         !!transaction.amountInFiat &&
         transaction.tokens.every(token => !!token.amountInFiat) &&
@@ -86,6 +91,7 @@ export const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
 };
 
 export const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) =>
+    !isTransactionWhitelisted(transaction) &&
     new BigNumber(transaction.amount).isEqualTo(0) &&
     D.isNotEmpty(transaction.tokens) &&
     transaction.tokens.every(token => new BigNumber(token.amount).isEqualTo(0));
@@ -116,7 +122,7 @@ export const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefi
     }); // there is hidden or unknown token in tx
 
 export const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) =>
-    transaction.type === 'unknown';
+    !isTransactionWhitelisted(transaction) && transaction.type === 'unknown';
 
 const detectors = {
     dustValue: isDustValuePhishing,
@@ -233,8 +239,6 @@ export const isPhishingTransaction = ({
     txsMarkedAsNotScam,
 }: IsPhishingTransactionProps) => {
     if (!transaction) return false;
-
-    if (PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type)) return false;
 
     const { symbol } = transaction;
     const networkFeatures = getNetworkFeatures(symbol);
