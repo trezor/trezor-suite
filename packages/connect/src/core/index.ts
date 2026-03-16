@@ -16,12 +16,7 @@ import type { Device, DeviceEvents } from '../device/Device';
 import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import * as workflows from '../device/workflow';
-import type {
-    CoreEventMessage,
-    CoreRequestMessage,
-    TransportInfo,
-    TypedCoreCallMessage,
-} from '../events';
+import type { CoreCallMessage, CoreEventMessage, CoreRequestMessage, TransportInfo } from '../events';
 import {
     CORE_CALL,
     CORE_EVENT,
@@ -152,7 +147,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onCall = async (context: CoreContext, message: TypedCoreCallMessage) => {
+const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     if (!message.id || !message.payload || message.type !== CORE_CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -221,7 +216,7 @@ const onCall = async (context: CoreContext, message: TypedCoreCallMessage) => {
 
 const onCallDevice = async (
     context: CoreContext,
-    message: TypedCoreCallMessage,
+    message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
@@ -827,7 +822,7 @@ export class Core extends EventEmitter {
                             _log.error('onCallFirmwareUpdate', error);
                         });
                 } else {
-                    onCall(this.getCoreContext(), message as TypedCoreCallMessage).catch(error => {
+                    onCall(this.getCoreContext(), message).catch(error => {
                         _log.error('onCall', error);
                     });
                 }
