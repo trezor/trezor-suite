@@ -8,7 +8,7 @@ import { IntlProviderForTests } from '@suite-native/intl';
 import { NativeServicesProvider } from '@suite-native/services';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { extraDependenciesNativeMock } from '@suite-native/test-utils/src/extraDependenciesNative.mock';
-import { StylesProvider, createRenderer } from '@trezor/styles';
+import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 const renderer = createRenderer();

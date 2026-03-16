@@ -31,6 +31,7 @@ cleanup_generated_tests() {
     -name 'basic*.test.tsx' -o \
     -name 'formatter*.test.tsx' -o \
     -name 'store*.test.tsx' \
+    -name 'testUtils*.test.tsx' \
   \) -delete
 }
 
@@ -96,11 +97,16 @@ main() {
     cp "$TEMPLATES_DIR/basic.test.tsx" "$TESTS_DIR/basic${i}.test.tsx"
     cp "$TEMPLATES_DIR/formatter.test.tsx" "$TESTS_DIR/formatter${i}.test.tsx"
     cp "$TEMPLATES_DIR/store.test.tsx" "$TESTS_DIR/store${i}.test.tsx"
+    cp "$TEMPLATES_DIR/testUtilsBasic.test.tsx" "$TESTS_DIR/testUtilsBasic${i}.test.tsx"
+    cp "$TEMPLATES_DIR/testUtilsStore.test.tsx" "$TESTS_DIR/testUtilsStore${i}.test.tsx"
   done
 
   run_jest_group "$with_brk" "basic"
   run_jest_group "$with_brk" "formatter"
   run_jest_group "$with_brk" "store"
+  run_jest_group "$with_brk" "testUtilsBasic"
+  run_jest_group "$with_brk" "testUtilsStore"
+  run_jest_group "$with_brk" "testUtils"
 }
 
 main "$@"
