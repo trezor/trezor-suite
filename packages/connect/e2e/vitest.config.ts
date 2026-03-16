@@ -157,6 +157,12 @@ export default defineConfig({
                 find: /.*\/getRandomInt$/,
                 replacement: path.resolve(__dirname, './__mocks__/getRandomInt.ts'),
             },
+            {
+                // "usb" package sets event listeners on the top level causing memory leaks.
+                // See: https://github.com/trezor/trezor-suite/pull/25952
+                find: /^usb$/,
+                replacement: nodeRequire.resolve('../../transport/mocks/usb.js'),
+            },
         ],
     },
     plugins: [
