@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { Card, Column, Grid, Icon, type IconName, Paragraph } from '@trezor/components';
 
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';

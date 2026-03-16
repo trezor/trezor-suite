@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { Column, Paragraph } from '@trezor/components';
 
 import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
 import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connection/thp/ThpPairingFailedForFirmwareInstallation';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDispatch } from 'src/hooks/suite';
 
 // reflection of components/firmware/ThpPairing/ThpCodeInvalidStep

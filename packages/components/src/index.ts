@@ -156,4 +156,4 @@ export type { SuiteThemeColors } from './config/colors';
 export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
-export { type UIIntent } from './config/types';
+export { type UIIntent, type UIVariant } from './config/types';
