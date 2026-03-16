@@ -233,6 +233,7 @@ describe('sendTransactionThunk', () => {
         it.each([
             ['when payload is undefined', undefined],
             ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
+            ['when payload contains unexpected type', { type: 'Rejected' }],
             ['when payload is not successful', { success: false }],
         ])('%s', async (_, recomposeAndSignPayload) => {
             const { store, returnUrl, account, trade } = getMocks();

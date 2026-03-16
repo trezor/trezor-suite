@@ -17,6 +17,7 @@ import {
 import { type TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
+import { getSafeRejectedType } from '../common/getSafeRejectedType';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {
@@ -98,7 +99,7 @@ export const sendSellTransactionThunk = createThunk(
             const { payload } = recomposeAndSignTx;
 
             return rejectWithValue({
-                type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
+                type: getSafeRejectedType(payload),
                 error:
                     payload && 'error' in payload
                         ? payload.error

@@ -4,7 +4,6 @@ import { type ExchangeTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
-import { tradingThunks } from '../common';
 import {
     type SendDexTransactionThunkProps,
     sendDexTransactionThunk,
@@ -20,6 +19,8 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { tradingThunks } from '../common';
+import { getSafeRejectedType } from '../common/getSafeRejectedType';
 
 export type SendTransactionThunkProps = {
     trade: ExchangeTrade | undefined;
@@ -126,7 +127,7 @@ export const sendTransactionThunk = createThunk<
             const { payload } = recomposeAndSignTx;
 
             return rejectWithValue({
-                type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
+                type: getSafeRejectedType(payload),
                 error:
                     payload && 'error' in payload && 'id' in payload.error
                         ? payload.error

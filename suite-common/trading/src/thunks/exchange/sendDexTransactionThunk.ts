@@ -17,6 +17,7 @@ import {
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
+import { getSafeRejectedType } from '../common/getSafeRejectedType';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
@@ -121,7 +122,7 @@ export const sendDexTransactionThunk = createThunk<
             console.error('Failed to send dex transaction - sign tx error');
 
             return rejectWithValue({
-                type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
+                type: getSafeRejectedType(payload),
                 error:
                     payload && 'error' in payload && 'id' in payload.error
                         ? payload.error
