@@ -2,6 +2,8 @@ import react from '@vitejs/plugin-react';
 import { type Plugin, defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
+import { analyticsLogPlugin } from './vite-plugin-analytics-log';
+
 // Plugin to transform require() for SVG files in icons.ts to ESM-compatible import.meta.url
 const iconsRequirePlugin = (): Plugin => ({
     name: 'icons-require-plugin',
@@ -29,6 +31,7 @@ export default defineConfig({
     base: process.env.BASE_PATH ?? '/',
     plugins: [
         iconsRequirePlugin(),
+        analyticsLogPlugin(),
         react(),
         nodePolyfills({
             globals: {
