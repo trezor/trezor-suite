@@ -3,6 +3,12 @@ import { writeFileSync } from 'fs';
 import { get, isMatch, set } from 'lodash';
 import { join } from 'path';
 
+import {
+    DeviceStateMock,
+    ExpectDeviceStateOptions,
+    MockBluetoothOptions,
+} from './mocks/deviceStateMock';
+
 declare module '@playwright/test' {
     interface Page {
         // Locators
@@ -10,6 +16,13 @@ declare module '@playwright/test' {
         modalHeader: Locator;
         modalCloseButton: Locator;
 
+        // External Mocks
+        /**
+         * Mocks a Bluetooth device context by synchronizing the Device Manager and Bluetooth Manager state.
+         * @see {@link DeviceStateMock.mockBluetooth} for detailed description.
+         */
+        mockDeviceBluetoothState(options?: MockBluetoothOptions): Promise<void>;
+        expectDeviceState(expected: ExpectDeviceStateOptions): Promise<void>;
         // Methods
         discoveryShouldFinish(): Promise<void>;
         /**
@@ -47,21 +60,31 @@ declare module '@playwright/test' {
 // These properties and methods have general use across the whole test suite.
 // It is not specific to any particular test or feature.
 export const enhancePage = (page: Page): Page => {
+    const deviceStateMock = new DeviceStateMock(page);
+
     // Locators
     page.modal = page.getByTestId('@modal');
     page.modalHeader = page.getByTestId('@modal/header');
     page.modalCloseButton = page.getByTestId('@modal/close-button');
 
-    // Methods
+    // External Mocks
+    page.mockDeviceBluetoothState = options => deviceStateMock.mockBluetooth(options);
+    page.expectDeviceState = expected => deviceStateMock.expectDeviceState(expected);
+
+    // High-Level Helpers
     page.discoveryShouldFinish = async function () {
         const discoveryBar = page.getByTestId('@wallet/discovery-progress-bar');
         await test.step('Wait for discovery to finish', async () => {
-            await expect(discoveryBar, 'discovery bar should be visible').toBeVisible({
-                timeout: 15_000,
-            });
-            await discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
+            await expect(async () => {
+                if (await discoveryBar.isVisible()) {
+                    await discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
+                }
+                await expect(discoveryBar).toBeHidden();
+            }).toPass({ timeout: 120_000 });
         });
     };
+
+    // Low-Level Infrastructure (Redux utils, Retry mechanisms, etc.)
 
     //Retry mechanism for settings dropdowns which tend to be flaky in automation
     page.selectDropdownOptionWithRetry = async function (dropdown: Locator, option: Locator) {

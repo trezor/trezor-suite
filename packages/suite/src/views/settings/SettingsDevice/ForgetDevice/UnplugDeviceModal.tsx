@@ -33,14 +33,23 @@ export const UnplugDeviceModal = ({
     }, [onCancel, onDisconnect]);
 
     return (
-        <Modal width={400} height={420}>
+        <Modal width={400} height={420} data-testid="@settings/device/unplug-device-modal">
             <Column gap={24} alignItems="center">
                 <Illustration name="disconnectTrezor" width={224} />
                 <Column gap={8} alignItems="center">
-                    <Paragraph typographyStyle="headline-md" align="center">
+                    <Paragraph
+                        typographyStyle="headline-md"
+                        align="center"
+                        data-testid="@settings/device/unplug-device-modal/heading"
+                    >
                         <Translation id="TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING" />
                     </Paragraph>
-                    <Paragraph align="center" typographyStyle="body-md" color="contentSecondary">
+                    <Paragraph
+                        align="center"
+                        typographyStyle="body-md"
+                        color="contentSecondary"
+                        data-testid="@settings/device/unplug-device-modal/subtitle"
+                    >
                         <Translation id="TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE" />
                     </Paragraph>
                 </Column>
