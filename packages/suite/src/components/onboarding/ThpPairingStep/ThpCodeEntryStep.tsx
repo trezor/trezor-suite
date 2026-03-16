@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 
 // reflection of components/firmware/ThpPairing/ThpCodeEntryStep
 export const ThpCodeEntryStep = () => {

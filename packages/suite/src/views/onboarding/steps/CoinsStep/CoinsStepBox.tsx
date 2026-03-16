@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Badge, CollapsibleBox, Column, Row, Tooltip } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
-import {
-    OnboardingCard,
-    type OnboardingCardProps,
-} from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { CoinGroup } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
