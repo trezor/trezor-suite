@@ -1500,7 +1500,7 @@
   "TR_NEEDS_ATTENTION_INITIALIZE": "Your Trezor isn't set up.",
   "TR_NEEDS_ATTENTION_NEW_DEVICE": "A new Trezor is connected.",
   "TR_NEEDS_ATTENTION_SEEDLESS": "Your Trezor doesn't have a wallet backup.",
-  "TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT": "Failed to communicate with your Trezor",
+  "TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT": "We can’t connect to your Trezor",
   "TR_NEEDS_ATTENTION_UNACQUIRED": "Your Trezor is already in use in another window.",
   "TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED": "A secure connection isn't set up.",
   "TR_NEEDS_ATTENTION_UNAVAILABLE": "Your Trezor isn't available.",
