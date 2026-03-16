@@ -13,8 +13,8 @@ import {
     Modal,
     Paragraph,
     Row,
+    UIVariant,
 } from '@trezor/components';
-import { type UIVariant } from '@trezor/components/src/config/types';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';

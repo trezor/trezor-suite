@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';

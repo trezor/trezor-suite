@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { exhaustive } from '@trezor/type-utils';
@@ -10,7 +11,6 @@ import { backupDevice } from 'src/actions/backup/backupActions';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { BackupSeedCards } from 'src/components/backup';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupReducer';

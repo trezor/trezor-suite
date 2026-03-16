@@ -1,5 +1,17 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": []
+    "references": [
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/theme" }
+    ]
 }

@@ -1,5 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
+import { OnboardingCard } from '@suite/onboarding-components';
 import {
     isStandardRecoveryDisabled,
     recoverDeviceThunk,
@@ -15,7 +16,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
