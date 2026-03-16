@@ -125,9 +125,10 @@ export const TransactionDetailScreen = ({
                 </VStack>
                 <Button
                     size="large"
-                    viewRight="arrowUpRight"
+                    iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="transactions.detail.exploreButton" />
                 </Button>

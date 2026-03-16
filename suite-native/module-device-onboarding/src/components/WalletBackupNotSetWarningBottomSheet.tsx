@@ -60,10 +60,10 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
                 </Text>
 
                 <VStack spacing="sp12">
-                    <Button colorScheme="yellowElevation0" onPress={handleContinueAnyway}>
+                    <Button intent="warning" priority="secondary" onPress={handleContinueAnyway}>
                         <Translation id="moduleDevice.noBackupModal.continue" />
                     </Button>
-                    <Button colorScheme="yellowBold" onPress={handleCreateBackup}>
+                    <Button intent="warning" priority="primary" onPress={handleCreateBackup}>
                         <Translation id="moduleDevice.noBackupModal.cta" />
                     </Button>
                 </VStack>

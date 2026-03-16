@@ -13,9 +13,10 @@ export const ServerOffline = ({ onRetryPress }: ServerOfflineProps) => (
         description={<Translation id="tradingAtoms.error.serverOfflineDescription" />}
     >
         <Button
-            colorScheme="tertiaryElevation0"
+            intent="neutral"
+            priority="secondary"
             onPress={onRetryPress}
-            viewLeft="arrowsCounterClockwise"
+            iconLeft="arrowsCounterClockwise"
         >
             <Translation id="tradingAtoms.error.serverOfflineRetry" />
         </Button>

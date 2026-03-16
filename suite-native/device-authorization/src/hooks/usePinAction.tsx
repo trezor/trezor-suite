@@ -69,9 +69,9 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
             showAlert({
                 title: <Translation id={titleKey} />,
                 primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: <Translation id="generic.buttons.close" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressPrimaryButton: tryAgainAction,
                 onPressSecondaryButton: () => {
                     navigation.goBack();

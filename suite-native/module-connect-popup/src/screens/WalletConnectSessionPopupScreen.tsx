@@ -269,11 +269,16 @@ export const WalletConnectSessionPopupScreen = () => {
                     />
                 )}
 
-                <Button colorScheme="primary" onPress={handleAccept} isDisabled={isDisabled}>
+                <Button
+                    intent="brand"
+                    priority="primary"
+                    onPress={handleAccept}
+                    isDisabled={isDisabled}
+                >
                     <Translation id="generic.buttons.confirm" />
                 </Button>
 
-                <Button colorScheme="tertiaryElevation0" onPress={handleReject}>
+                <Button intent="neutral" priority="secondary" onPress={handleReject}>
                     <Translation id="generic.buttons.cancel" />
                 </Button>
             </VStack>

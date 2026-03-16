@@ -127,7 +127,7 @@ export const XpubQRCodeBottomSheet = ({
                             <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.copyButton" />
                         </Button>
                     ) : (
-                        <Button size="large" viewLeft="eye" onPress={handleShowXpub}>
+                        <Button size="large" iconLeft="eye" onPress={handleShowXpub}>
                             {showButtonTitle}
                         </Button>
                     )}

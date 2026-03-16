@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Button, type ButtonColorScheme } from '@suite-native/atoms';
+import { Button, type ButtonColorProps } from '@suite-native/atoms';
 import {
     type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
@@ -20,13 +20,16 @@ type NavigationProp = StackNavigationProps<
 type DevicePinActionButtonProps = {
     children: ReactNode;
     type: PinActionType;
-    colorScheme?: ButtonColorScheme;
+    buttonColorProps?: ButtonColorProps;
 };
 
 export const DevicePinActionButton = ({
     children,
     type,
-    colorScheme,
+    buttonColorProps = {
+        intent: 'brand',
+        priority: 'primary',
+    },
 }: DevicePinActionButtonProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
@@ -41,7 +44,7 @@ export const DevicePinActionButton = ({
     return (
         <Button
             onPress={navigateToPinStack}
-            colorScheme={colorScheme}
+            {...buttonColorProps}
             size="medium"
             testID={`@device-pin-protection/${type}-button`}
             isDisabled={isDiscoveryRunning}

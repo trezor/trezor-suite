@@ -16,7 +16,7 @@ export const ReferralButton = () => {
     };
 
     return (
-        <Button onPress={handleOpenLink} colorScheme="tertiaryElevation0" viewLeft="users">
+        <Button onPress={handleOpenLink} intent="neutral" priority="secondary" iconLeft="users">
             <Translation id="moduleHome.buttons.referral" />
         </Button>
     );

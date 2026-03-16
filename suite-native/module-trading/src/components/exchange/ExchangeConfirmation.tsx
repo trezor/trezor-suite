@@ -59,7 +59,8 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
                             <Button
                                 onPress={() => {}}
                                 testID={REVOKE_TEST_ID}
-                                colorScheme="tertiaryElevation0"
+                                intent="neutral"
+                                priority="secondary"
                             >
                                 <Translation id="moduleTrading.tradingScreen.buttons.revoke" />
                             </Button>

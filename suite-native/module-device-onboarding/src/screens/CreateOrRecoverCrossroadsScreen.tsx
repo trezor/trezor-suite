@@ -87,7 +87,8 @@ export const CreateOrRecoverCrossroadsScreen = ({
                         <Button
                             onPress={handleRecoverButtonPress}
                             testID="@deviceOnboarding/CreateOrRecoverCrossroadsScreen/recoverWalletBtn"
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.recover.button" />
                         </Button>

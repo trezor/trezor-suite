@@ -117,7 +117,8 @@ export const HeaderTabs = () => {
                     <IconButton
                         iconName="gear"
                         size="small"
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
                         onPress={openModal}
                     />

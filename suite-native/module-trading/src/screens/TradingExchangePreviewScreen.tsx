@@ -129,13 +129,13 @@ const TradingExchangePreviewScreenContent = ({
                 ),
                 description,
                 primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: () => {
                     handleConfirmTrade();
                     reportToAnalytics('transaction-preview', 'retry');
                 },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => {
                     navigation.popToTop();
                     reportToAnalytics('transaction-preview', 'cancel');

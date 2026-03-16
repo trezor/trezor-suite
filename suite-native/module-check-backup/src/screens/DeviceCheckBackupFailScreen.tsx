@@ -34,12 +34,18 @@ export const DeviceCheckBackupFailScreen = ({
                 </Box>
 
                 <VStack alignSelf="stretch">
-                    <Button onPress={handlePressTryAgain} colorScheme="yellowBold" isFullWidth>
+                    <Button
+                        onPress={handlePressTryAgain}
+                        intent="warning"
+                        priority="primary"
+                        isFullWidth
+                    >
                         <Translation id="generic.buttons.tryAgain" />
                     </Button>
                     <Button
                         onPress={handlePressContactSupport}
-                        colorScheme="yellowElevation0"
+                        intent="warning"
+                        priority="secondary"
                         isFullWidth
                     >
                         <Translation id="moduleCheckBackup.checkBackupFailScreen.supportButton" />

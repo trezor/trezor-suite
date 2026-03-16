@@ -122,7 +122,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                     entering={FadeIn.duration(CHECKBOX_ANIMATION_DURATION)}
                     exiting={FadeOut.duration(CHECKBOX_ANIMATION_DURATION)}
                 >
-                    <Button colorScheme="yellowBold" onPress={handleButtonPress}>
+                    <Button intent="warning" priority="primary" onPress={handleButtonPress}>
                         <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOff" />
                     </Button>
                 </Animated.View>

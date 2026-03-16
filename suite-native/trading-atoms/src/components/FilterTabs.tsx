@@ -21,21 +21,18 @@ export type FilterTabsProps<T = any> = {
     keyExtractor?: (item: FilterItem<T>) => string;
 };
 
-const FilterTab = ({ active, onPress, children }: FilterTabProps) => {
-    const colorScheme = active ? 'tertiaryElevation0' : 'backgroundSurfaceElevation0';
-
-    return (
-        <Button
-            colorScheme={colorScheme}
-            size="small"
-            onPress={onPress}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-        >
-            {children}
-        </Button>
-    );
-};
+const FilterTab = ({ active, onPress, children }: FilterTabProps) => (
+    <Button
+        intent="neutral"
+        priority={active ? 'primary' : 'secondary'}
+        size="small"
+        onPress={onPress}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: active }}
+    >
+        {children}
+    </Button>
+);
 
 export const FilterTabs = <T,>({
     items,

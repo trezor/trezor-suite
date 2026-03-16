@@ -77,12 +77,22 @@ export const ConnectErrorMessage = () => {
 
                     <VStack spacing="sp12">
                         {canRetry && (
-                            <Button testID="@popup/retry" onPress={onResume} colorScheme="redBold">
+                            <Button
+                                testID="@popup/retry"
+                                onPress={onResume}
+                                intent="critical"
+                                priority="primary"
+                            >
                                 <Translation id="moduleConnectPopup.trezorConnect.retry" />
                             </Button>
                         )}
 
-                        <Button testID="@popup/close" onPress={onClose} colorScheme="redElevation0">
+                        <Button
+                            testID="@popup/close"
+                            onPress={onClose}
+                            intent="critical"
+                            priority="secondary"
+                        >
                             <Translation id="generic.buttons.close" />
                         </Button>
                     </VStack>

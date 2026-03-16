@@ -26,7 +26,8 @@ export const TradingDeeplinks = () => {
             </Text>
             <HStack>
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     size="small"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {
@@ -38,7 +39,8 @@ export const TradingDeeplinks = () => {
                     Go to Buy
                 </Button>
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     size="small"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {

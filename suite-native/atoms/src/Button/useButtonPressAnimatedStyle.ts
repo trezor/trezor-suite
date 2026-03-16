@@ -27,6 +27,11 @@ export const useButtonPressAnimatedStyle = (
             [0, 1],
             [utils.colors[backgroundColor], utils.colors[onPressColor]],
         ),
+        transform: [
+            {
+                scale: 1 - (1 - 0.95) * pressAnimationValue.value,
+            },
+        ],
     }));
 
     if (isDisabled) return;

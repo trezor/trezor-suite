@@ -56,7 +56,8 @@ export const AccountAlreadyImportedScreen = ({ account }: AccountAlreadyImported
                     </Button>
                     <Button
                         size="large"
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         onPress={navigateToInitialScreen}
                     >
                         <Translation id="generic.buttons.cancel" />

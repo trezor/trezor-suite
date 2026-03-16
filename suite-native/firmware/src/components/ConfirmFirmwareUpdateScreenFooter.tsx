@@ -26,7 +26,8 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
         <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">
             <Button
                 onPress={onUpdateConfirmation}
-                colorScheme={onSkipUpdate ? 'blueBold' : 'redBold'}
+                intent={onSkipUpdate ? 'info' : 'critical'}
+                priority="primary"
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}
                 testID="@device-firmware/update-button"
@@ -39,7 +40,8 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
                     testID="@firmware/skip-button"
                     isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                     isLoading={isDiscoveryRunning}
-                    colorScheme="blueElevation0"
+                    intent="info"
+                    priority="secondary"
                 >
                     <Translation id="firmware.firmwareUpdateScreen.skipButton" />
                 </Button>

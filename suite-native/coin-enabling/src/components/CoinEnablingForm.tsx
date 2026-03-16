@@ -37,7 +37,7 @@ export const CoinEnablingForm = () => {
                     <Translation id="moduleSettings.coinEnabling.oneNetworkSymbolAlert.description" />
                 ),
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             }),
         [showAlert],
     );

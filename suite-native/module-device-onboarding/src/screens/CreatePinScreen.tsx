@@ -42,11 +42,11 @@ export const CreatePinScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.cancelButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.retryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: tryAgainAction,
                 onPressPrimaryButton: () => {
                     handlePinCreated();

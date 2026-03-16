@@ -73,7 +73,8 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
 
             <Box style={applyStyle(buttonWrapperStyle)}>
                 <Button
-                    colorScheme="yellowBold"
+                    intent="warning"
+                    priority="primary"
                     onPress={handleUpdateProviderPress}
                     isFullWidth
                     size="small"

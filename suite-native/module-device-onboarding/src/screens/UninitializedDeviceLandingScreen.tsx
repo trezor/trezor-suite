@@ -172,7 +172,8 @@ export const UninitializedDeviceLandingScreen = ({
                     </Button>
                     {hasDeviceFirmwareInstalled && (
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             onPress={handleNeverUsedThisDeviceButtonPress}
                             testID="@deviceOnboarding/UninitializedDeviceLandingScreen/declineBtn"
                         >

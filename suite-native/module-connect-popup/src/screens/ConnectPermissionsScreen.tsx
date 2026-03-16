@@ -66,7 +66,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />
-                        <Button onPress={handleDisconnect} colorScheme="tertiaryElevation0">
+                        <Button onPress={handleDisconnect} intent="neutral" priority="secondary">
                             <Translation id="moduleConnectPopup.trezorConnect.forget" />
                         </Button>
                     </VStack>

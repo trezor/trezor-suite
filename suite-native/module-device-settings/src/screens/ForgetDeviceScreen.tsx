@@ -35,7 +35,7 @@ export const ForgetDeviceScreen = () => {
                         <Translation id="moduleDeviceSettings.forgetDevice.info.list.item3" />
                     </ListItem>
                 </VStack>
-                <Button onPress={forgetDevice} colorScheme="yellowBold">
+                <Button onPress={forgetDevice} intent="warning">
                     <Translation id="moduleDeviceSettings.forgetDevice.info.submitButton" />
                 </Button>
             </VStack>

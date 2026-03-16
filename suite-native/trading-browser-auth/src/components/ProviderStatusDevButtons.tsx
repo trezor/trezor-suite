@@ -20,8 +20,9 @@ const ProviderStatusDevButtonsContent = () => {
             </HStack>
             <HStack justifyContent="center" spacing="sp4">
                 <Button
-                    colorScheme="redElevation0"
-                    size="tiny"
+                    intent="critical"
+                    priority="secondary"
+                    size="small"
                     onPress={() => {
                         dispatchHelper('window_closed_incomplete');
                     }}
@@ -29,8 +30,9 @@ const ProviderStatusDevButtonsContent = () => {
                     incomplete
                 </Button>
                 <Button
-                    colorScheme="blueElevation0"
-                    size="tiny"
+                    intent="info"
+                    priority="secondary"
+                    size="small"
                     onPress={() => {
                         dispatchHelper('window_closed_with_success');
                     }}
@@ -38,8 +40,9 @@ const ProviderStatusDevButtonsContent = () => {
                     with_success
                 </Button>
                 <Button
-                    colorScheme="redBold"
-                    size="tiny"
+                    intent="critical"
+                    priority="primary"
+                    size="small"
                     onPress={() => {
                         dispatchHelper('confirmation_failed');
                     }}
@@ -47,7 +50,7 @@ const ProviderStatusDevButtonsContent = () => {
                     failed
                 </Button>
                 <Button
-                    size="tiny"
+                    size="small"
                     onPress={() => {
                         dispatchHelper('confirmation_success');
                     }}
@@ -57,8 +60,9 @@ const ProviderStatusDevButtonsContent = () => {
             </HStack>
             <HStack justifyContent="center">
                 <Button
-                    colorScheme="yellowElevation0"
-                    size="tiny"
+                    intent="warning"
+                    priority="secondary"
+                    size="small"
                     onPress={() => {
                         dispatchHelper('inactive');
                         dispatchHelper('window_opened');

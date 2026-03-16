@@ -49,7 +49,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey 
             </Box>
             {showReceiveButton && (
                 <Button
-                    viewLeft="arrowLineDown"
+                    iconLeft="arrowLineDown"
                     onPress={handleReceive}
                     size="large"
                     testID="@account-detail/receive-button"

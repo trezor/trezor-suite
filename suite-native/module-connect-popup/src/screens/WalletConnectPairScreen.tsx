@@ -83,10 +83,10 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />
-                        <Button onPress={handleDisconnect} colorScheme="tertiaryElevation0">
+                        <Button onPress={handleDisconnect} intent="neutral" priority="secondary">
                             <Translation id="moduleConnectPopup.walletConnect.disconnect" />
                         </Button>
-                        <Button onPress={handleSwitchAccount} colorScheme="tertiaryElevation0">
+                        <Button onPress={handleSwitchAccount} intent="neutral" priority="secondary">
                             <Translation id="moduleConnectPopup.walletConnect.switchAccount" />
                         </Button>
                     </VStack>
@@ -108,7 +108,8 @@ export const WalletConnectPairScreen = () => {
                     title={<Translation id="moduleConnectPopup.walletConnect.title" />}
                     rightIcon={
                         <IconButton
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="medium"
                             iconName="qrCode"
                             onPress={openModal}

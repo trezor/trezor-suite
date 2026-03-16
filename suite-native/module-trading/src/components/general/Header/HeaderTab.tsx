@@ -11,20 +11,17 @@ type HeaderTabProps = {
     testID?: string;
 };
 
-export const HeaderTab = ({ icon, children, onPress, active, testID }: HeaderTabProps) => {
-    const colorScheme = active ? 'tertiaryElevation0' : 'backgroundSurfaceElevation0';
-
-    return (
-        <Button
-            viewLeft={icon}
-            colorScheme={colorScheme}
-            size="small"
-            onPress={onPress}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-            testID={testID}
-        >
-            {children}
-        </Button>
-    );
-};
+export const HeaderTab = ({ icon, children, onPress, active, testID }: HeaderTabProps) => (
+    <Button
+        iconLeft={icon}
+        intent="neutral"
+        priority={active ? 'primary' : 'secondary'}
+        size="small"
+        onPress={onPress}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: active }}
+        testID={testID}
+    >
+        {children}
+    </Button>
+);

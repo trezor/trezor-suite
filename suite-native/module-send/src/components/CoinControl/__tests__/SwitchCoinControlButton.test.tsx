@@ -24,7 +24,7 @@ describe('renders button with correct color scheme', () => {
         ({ colors } = result.current.utils);
     });
 
-    it('should render button with yellowBold color scheme when selected utxos are not enough', () => {
+    it('should render warning primary button when selected utxos are not enough', () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: true,
             selectedUtxos: [
@@ -46,10 +46,10 @@ describe('renders button with correct color scheme', () => {
         );
 
         const button = getByTestId('switch-coin-control-button');
-        expect(button.props.style[1].backgroundColor).toBe(colors.backgroundAlertYellowBold);
+        expect(button.props.style[1].backgroundColor).toBe(colors.elementFillWarningBold);
     });
 
-    it('should render button with primary color scheme when utxos are selected and amount is sufficient', () => {
+    it('should render brand primary button when utxos are selected and amount is sufficient', () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: true,
             selectedUtxos: [
@@ -70,10 +70,10 @@ describe('renders button with correct color scheme', () => {
         );
 
         const button = getByTestId('switch-coin-control-button');
-        expect(button.props.style[1].backgroundColor).toBe(colors.backgroundPrimaryDefault);
+        expect(button.props.style[1].backgroundColor).toBe(colors.elementFillBrandBold);
     });
 
-    it('should render a button with gray color scheme when no utxos are selected and no amount is provided', () => {
+    it('should render neutral secondary button when no utxos are selected and no amount is provided', () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: false,
             selectedUtxos: [],
@@ -85,8 +85,6 @@ describe('renders button with correct color scheme', () => {
         );
 
         const button = getByTestId('switch-coin-control-button');
-        expect(button.props.style[1].backgroundColor).toBe(
-            colors.backgroundTertiaryDefaultOnElevation0,
-        );
+        expect(button.props.style[1].backgroundColor).toBe(colors.elementFillNeutralSoft);
     });
 });

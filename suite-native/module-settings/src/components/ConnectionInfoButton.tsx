@@ -40,7 +40,8 @@ export const ConnectionInfoButton = () => {
     return (
         <>
             <IconButton
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 size="medium"
                 iconName="info"
                 onPress={openBottomSheet}

@@ -34,7 +34,7 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
                 title: <Translation id="thp.codeEntry.invalidCode.title" />,
                 description: <Translation id="thp.codeEntry.invalidCode.description" />,
                 primaryButtonTitle: <Translation id="thp.codeEntry.invalidCode.getNewCodeButton" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: onRetry,
             });
         }

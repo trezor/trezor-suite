@@ -26,8 +26,9 @@ export const NoPassphraseButton = () => {
     return (
         <Button
             onPress={handleSubmitOnDevice}
-            colorScheme="tertiaryElevation0"
-            viewLeft="arrowRight"
+            intent="neutral"
+            priority="secondary"
+            iconLeft="arrowRight"
         >
             <Translation id="modulePassphrase.noPassphrase.button" />
         </Button>

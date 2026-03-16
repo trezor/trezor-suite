@@ -5,7 +5,6 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
@@ -29,9 +28,10 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
     <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
         <Box alignSelf="center">
             <Button
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                viewLeft={<Icon name="plus" size="mediumLarge" />}
+                iconLeft="plus"
                 testID="@transactionManagement/fees-level-custom"
                 onPress={onPress}
             >

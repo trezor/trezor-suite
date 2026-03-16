@@ -85,7 +85,8 @@ export const AccountTypeDecisionBottomSheet = ({
                 </Button>
                 <Button
                     size="medium"
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onTypeSelectionTap}
                     testID="@add-account/button-select-type"
                 >

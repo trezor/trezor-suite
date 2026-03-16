@@ -42,8 +42,9 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
             <IconButton
                 iconName={device.remember ? 'ejectSimple' : 'arrowUUpLeft'}
                 onPress={handleEjectWallet}
-                colorScheme="tertiaryElevation1"
-                size="extraSmall"
+                intent="neutral"
+                priority="secondary"
+                size="medium"
                 testID="@settings/eject-single-wallet"
             />
         </Animated.View>

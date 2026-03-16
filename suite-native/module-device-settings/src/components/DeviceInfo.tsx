@@ -55,9 +55,10 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
                         onPress={navigateToDeviceNameStack}
                         isLoading={isDiscoveryRunning}
                         testID="@device-name/change-button"
-                        size="extraSmall"
+                        size="medium"
                         iconName="pencilSimpleLine"
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                     />
                 )}
             </HStack>

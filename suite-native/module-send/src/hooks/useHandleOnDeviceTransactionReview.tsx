@@ -114,7 +114,7 @@ export const useHandleOnDeviceTransactionReview = ({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
-                    primaryButtonVariant: 'redBold',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 });
 
                 return;

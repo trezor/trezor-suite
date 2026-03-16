@@ -67,12 +67,12 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                     </VStack>
                     <HStack flex={1} justifyContent="space-between">
                         <Box flex={1}>
-                            <Button onPress={onCancel} colorScheme="redElevation1">
+                            <Button onPress={onCancel} intent="critical" priority="secondary">
                                 <Translation id="generic.buttons.cancel" />
                             </Button>
                         </Box>
                         <Box flex={2}>
-                            <Button onPress={onEdit} colorScheme="tertiaryElevation1">
+                            <Button onPress={onEdit} intent="neutral" priority="secondary">
                                 <Translation id="generic.buttons.edit" />
                             </Button>
                         </Box>

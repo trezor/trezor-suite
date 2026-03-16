@@ -3,10 +3,10 @@ import 'intl-pluralrules';
 
 // Polyfill Intl for iOS D(Hermes doesn't support some Intl features natively on iOS)
 // Always required - base polyfills
-import '@formatjs/intl-getcanonicallocales/polyfill';
-import '@formatjs/intl-locale/polyfill';
+import '@formatjs/intl-getcanonicallocales/polyfill.js';
+import '@formatjs/intl-locale/polyfill.js';
 // Intl.ListFormat polyfill and locale data
-import '@formatjs/intl-listformat/polyfill';
+import '@formatjs/intl-listformat/polyfill.js';
 import '@formatjs/intl-listformat/locale-data/en';
 import '@formatjs/intl-listformat/locale-data/cs';
 import '@formatjs/intl-listformat/locale-data/de';

@@ -17,8 +17,8 @@ export const useShowReviewCancellationAlert = () => {
                 showAlert({
                     title: <Translation id="transactionManagement.review.cancelAlert.title" />,
                     primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                    primaryButtonVariant: 'redBold',
-                    secondaryButtonVariant: 'redElevation0',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                    secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                     secondaryButtonTitle: (
                         <Translation id="transactionManagement.review.cancelAlert.continueButton" />
                     ),

@@ -57,7 +57,7 @@ describe('ReviewOutputsFooter', () => {
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
         expect(resolveConsent).toHaveBeenCalledWith(true);
-        expect(getByTestId('TEST_ID/submit-button')).not.toHaveTextContent('Send transaction');
+        expect(getByTestId('TEST_ID/submit-button/loading')).toBeOnTheScreen();
     });
 
     it('should resolveConsent only once', async () => {

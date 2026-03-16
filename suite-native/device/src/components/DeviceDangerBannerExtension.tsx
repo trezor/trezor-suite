@@ -76,7 +76,7 @@ export const DeviceDangerBannerExtension = () => {
             <Text textAlign="center">
                 <Translation id={subtitle} />
             </Text>
-            <Button colorScheme="redBold" onPress={handleCtaPress}>
+            <Button intent="critical" priority="primary" onPress={handleCtaPress}>
                 <Translation id={cta} />
             </Button>
         </VStack>

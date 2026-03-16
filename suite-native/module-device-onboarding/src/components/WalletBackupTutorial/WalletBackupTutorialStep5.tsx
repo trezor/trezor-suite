@@ -10,7 +10,6 @@ import {
     TitleHeader,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -112,15 +111,16 @@ export const WalletBackupTutorialStep5 = ({
                                 />
                             }
                             buttonProps={{
-                                viewLeft: 'arrowSquareOut',
+                                iconLeft: 'arrowSquareOut',
                             }}
                             onButtonPress={handleLearnMorePress}
                         />
                     )}
                 </Card>
                 <Button
-                    viewLeft={<Icon name="caretDown" size="medium" />}
-                    colorScheme="tertiaryElevation0"
+                    iconLeft="caretDown"
+                    intent="neutral"
+                    priority="secondary"
                     size="small"
                     style={applyStyle(moreOptionsStyle)}
                     onPress={openBackupSelection}

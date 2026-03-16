@@ -71,9 +71,10 @@ export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethod
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card1.paragraph1" />
                             </Text>
                             <Button
-                                colorScheme="tertiaryElevation0"
+                                intent="neutral"
+                                priority="secondary"
                                 onPress={handleLearnMorePress}
-                                viewLeft="arrowSquareOut"
+                                iconLeft="arrowSquareOut"
                             >
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card1.cta" />
                             </Button>

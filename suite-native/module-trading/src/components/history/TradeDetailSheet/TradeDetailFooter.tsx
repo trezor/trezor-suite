@@ -37,8 +37,9 @@ export const TradeDetailFooter = ({ orderId }: TradeDetailFooterProps) => {
                 </Box>
 
                 <Button
-                    viewLeft="copy"
-                    colorScheme="tertiaryElevation0"
+                    iconLeft="copy"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={handleCopyOrderIdPress}
                 >
                     <Translation id="generic.buttons.copy" />

@@ -57,8 +57,8 @@ export const useShowDeviceDisconnectedDuringEarnReviewAlert = () => {
                     primaryButtonTitle: (
                         <Translation id="moduleSend.review.deviceDisconnectedAlert.primaryButton" />
                     ),
-                    primaryButtonVariant: 'redBold',
-                    secondaryButtonVariant: 'redElevation0',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                    secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                     secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     onPressPrimaryButton: handleReconnect,
                     onPressSecondaryButton: handleCancel,
