@@ -4,12 +4,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-native/analytics';
-import { ListItemSkeleton, TitleHeader, VStack } from '@suite-native/atoms';
+import { ListItemSkeleton, TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
+import { EarnItemInfoModal, EarnType } from '../components/EarnItemInfoModal';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
@@ -25,6 +26,10 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
 
 export const EarnScreen = () => {
     const analytics = useAnalytics();
+    const { bottomSheetRef: stakingBottomSheetRef, openModal: openStakingModal } =
+        useBottomSheetModal();
+    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
+        useBottomSheetModal();
     const {
         promoListData: stakingPromoItems,
         activeItems: stakingActiveItems,
@@ -44,6 +49,24 @@ export const EarnScreen = () => {
         }, [analytics]),
     );
 
+    const handleInfoRequested = useCallback(
+        (type: EarnType) => {
+            analytics.report({
+                type:
+                    type === 'staking'
+                        ? events.earnStakeTilePressedEvent.name
+                        : events.earnStablecoinYieldTilePressedEvent.name,
+            });
+
+            if (type === 'staking') {
+                openStakingModal();
+            } else {
+                openStablecoinYieldModal();
+            }
+        },
+        [analytics, openStakingModal, openStablecoinYieldModal],
+    );
+
     const renderItem = useCallback(
         ({ item, index }: { item: EarnPromoListDataItem; index: number }) => {
             if (typeof item === 'string') {
@@ -57,9 +80,15 @@ export const EarnScreen = () => {
                 return <ListItemSkeleton />;
             }
 
-            return <EarnPromoListRow item={item} isLastInSection={isLastInSection} />;
+            return (
+                <EarnPromoListRow
+                    item={item}
+                    isLastInSection={isLastInSection}
+                    onInfoPress={handleInfoRequested}
+                />
+            );
         },
-        [earnListData],
+        [earnListData, handleInfoRequested],
     );
 
     return (
@@ -86,6 +115,9 @@ export const EarnScreen = () => {
                     keyExtractor={getEarnListItemKey}
                     renderItem={renderItem}
                 />
+
+                <EarnItemInfoModal ref={stakingBottomSheetRef} type="staking" />
+                <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
             </VStack>
         </Screen>
     );

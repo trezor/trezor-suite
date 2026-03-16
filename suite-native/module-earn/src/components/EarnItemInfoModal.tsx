@@ -14,7 +14,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SUITE_URL } from '@trezor/urls';
 
-type EarnType = 'staking' | 'stablecoin-yield';
+export type EarnType = 'staking' | 'stablecoin-yield';
 type EarnItemInfoModalProps = {
     ref: BottomSheetModalRef;
     type?: EarnType;
