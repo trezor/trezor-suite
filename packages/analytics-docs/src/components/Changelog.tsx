@@ -1,6 +1,6 @@
 import { Badge, Box, Icon, List, Paragraph, Row } from '@trezor/components';
 
-import { NormalizedChangelog } from '../types';
+import { type NormalizedChangelog } from '../types';
 import { Markdown } from './Markdown';
 
 type ChangelogProps = {

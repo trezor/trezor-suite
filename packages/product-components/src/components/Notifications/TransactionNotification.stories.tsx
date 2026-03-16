@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { IconName, Toast, ToastProps } from '@trezor/components';
+import { type IconName, Toast, type ToastProps } from '@trezor/components';
 
 import {
     TransactionNotification,

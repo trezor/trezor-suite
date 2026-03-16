@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';

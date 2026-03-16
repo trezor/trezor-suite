@@ -1,18 +1,18 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { locksReducer } from '@suite/locks';
-import { SuiteSyncDataState, SuiteSyncState } from '@suite-common/suite-sync';
+import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
-    FeesState,
-    FormState,
-    SelectedAccountStatus,
-    SendFormDraftKey,
+    type FeesState,
+    type FormState,
+    type SelectedAccountStatus,
+    type SendFormDraftKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import {
@@ -21,11 +21,11 @@ import {
     networkSpecificDefaultRipple,
 } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { AppState } from '../../../reducers/store';
+import { type AppState } from '../../../reducers/store';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 

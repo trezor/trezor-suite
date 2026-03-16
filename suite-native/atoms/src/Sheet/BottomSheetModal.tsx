@@ -1,21 +1,21 @@
-import { ReactNode, Ref, forwardRef, useCallback, useState } from 'react';
+import { type ReactNode, type Ref, forwardRef, useCallback, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
-    BottomSheetBackdropProps,
+    type BottomSheetBackdropProps,
     BottomSheetFooter,
-    BottomSheetFooterProps,
+    type BottomSheetFooterProps,
     BottomSheetModal as BottomSheetModalBase,
-    BottomSheetModalProps as BottomSheetModalBaseProps,
+    type BottomSheetModalProps as BottomSheetModalBaseProps,
 } from '@gorhom/bottom-sheet';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { useScrollDivider } from '@suite-native/scrollview';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box, BoxProps } from '../Box';
+import { Box, type BoxProps } from '../Box';
 import { BottomSheetHeader } from './BottomSheetHeader';
 import { BottomSheetModalContent } from './BottomSheetModalContent';
 

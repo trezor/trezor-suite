@@ -1,5 +1,5 @@
 import { CardListItem } from './CardListItem';
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Card, type CardProps } from '../Card/Card';
 import { Column } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';

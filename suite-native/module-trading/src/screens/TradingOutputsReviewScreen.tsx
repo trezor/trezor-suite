@@ -1,4 +1,8 @@
-import { StackProps, TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import {
+    type StackProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
+} from '@suite-native/navigation';
 import {
     useExchangeAnalyticReportCallback,
     useSellAnalyticReportCallback,

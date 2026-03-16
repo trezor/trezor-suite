@@ -1,15 +1,15 @@
 import {
-    CompilableTransactionMessage,
-    TransactionMessageWithBlockhashLifetime,
+    type CompilableTransactionMessage,
+    type TransactionMessageWithBlockhashLifetime,
     compileTransaction,
 } from '@solana/kit';
 
 import {
-    PrepareClaimSolTxParams,
-    PrepareStakeSolTxParams,
-    PrepareStakeSolTxResponse,
-    PriorityFees,
-    SolanaTx,
+    type PrepareClaimSolTxParams,
+    type PrepareStakeSolTxParams,
+    type PrepareStakeSolTxResponse,
+    type PriorityFees,
+    type SolanaTx,
 } from '@suite-common/staking-solana-types';
 import {
     SOL_COMPUTE_UNIT_LIMIT,
@@ -17,7 +17,7 @@ import {
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 

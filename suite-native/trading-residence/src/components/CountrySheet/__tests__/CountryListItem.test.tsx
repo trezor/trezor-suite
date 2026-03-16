@@ -1,7 +1,7 @@
 import { nonSanctionedRegional } from '@suite-common/trading';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { CountryListItem, CountryListItemProps } from '../CountryListItem';
+import { CountryListItem, type CountryListItemProps } from '../CountryListItem';
 
 describe('CountryListItem', () => {
     const usData = nonSanctionedRegional.countriesOptionsMap.get('US')!;

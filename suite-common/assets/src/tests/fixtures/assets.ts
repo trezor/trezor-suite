@@ -1,7 +1,7 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { AssetFiatBalance } from '../../utils';
+import { type AssetFiatBalance } from '../../utils';
 
 export const assetsFixtureZeroBalance: AssetFiatBalance[] = [
     {

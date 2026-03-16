@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { COLOR_TOKENS } from '@trezor/theme';
 
-import { Loader as LoaderComponent, LoaderProps } from '../Loader';
+import { Loader as LoaderComponent, type LoaderProps } from '../Loader';
 
 type LoaderStory = StoryObj<LoaderProps>;
 

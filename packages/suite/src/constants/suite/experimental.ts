@@ -1,12 +1,12 @@
 import type { ExperimentalFeature } from '@suite/experimental';
-import { ExtendedMessageDescriptor } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
+import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, type Url } from '@trezor/urls';
 
-import { SuiteServices } from '../../support/extraDependencies';
+import { type SuiteServices } from '../../support/extraDependencies';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,

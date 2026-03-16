@@ -2,10 +2,10 @@ import React from 'react';
 
 import {
     ComponentWithSubIcon,
-    ComponentWithSubIconIntent,
+    type ComponentWithSubIconIntent,
     Icon,
-    IconName,
-    ManagedTooltipProps,
+    type IconName,
+    type ManagedTooltipProps,
     Row,
     Tooltip,
 } from '@trezor/components';

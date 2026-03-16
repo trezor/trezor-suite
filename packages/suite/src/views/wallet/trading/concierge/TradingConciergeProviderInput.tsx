@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
-    OtcProviderType,
-    TradingCountryCode,
+    type OtcProviderType,
+    type TradingCountryCode,
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';

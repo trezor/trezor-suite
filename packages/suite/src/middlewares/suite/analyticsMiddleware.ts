@@ -12,7 +12,7 @@ import {
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
 import { WALLET_SETTINGS, discoveryActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     accumulateAccountCountBySymbolAndType,
     getAccountTotalStakingBalance,
@@ -37,7 +37,7 @@ import {
     selectAnonymityGainToReportByAccountKey,
     selectCoinjoinAccountByKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { Action, AppState } from 'src/types/suite';
+import { type Action, type AppState } from 'src/types/suite';
 import {
     getSuiteReadyPayload,
     redactRouterUrl,

@@ -4,7 +4,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { createReducerWithExtraDeps, createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { tradingThunks } from '../';
 import { accounts } from '../../../reducers/__fixtures__/account';

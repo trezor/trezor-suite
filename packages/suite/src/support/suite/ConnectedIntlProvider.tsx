@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
 import type { Locale } from '@suite-common/suite-types';

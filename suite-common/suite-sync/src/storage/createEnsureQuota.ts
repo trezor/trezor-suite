@@ -1,20 +1,20 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
     WriteModeRequiredForAllocation,
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
-import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
-import { DelegatedIdentityKey } from '@suite-common/suite-types';
+import { type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import { type WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
+import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
-import { Result, err, ok } from '@trezor/type-utils';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull, isNotNullOrUndefined } from '@trezor/utils';
 
-import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { GetDeviceHasAllowance } from '../getDeviceHasAllowance';
+import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
+import { type GetDeviceHasAllowance } from '../getDeviceHasAllowance';
 
 export type EnsureQuotaDeps = {
     dispatch: Dispatch;

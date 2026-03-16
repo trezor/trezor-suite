@@ -8,7 +8,7 @@ import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/comp
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogo } from '@trezor/product-components';
 import {
-    Elevation,
+    type Elevation,
     mapElevationToBackground,
     mapElevationToBorder,
     spacingsPx,

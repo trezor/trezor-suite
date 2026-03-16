@@ -1,8 +1,8 @@
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

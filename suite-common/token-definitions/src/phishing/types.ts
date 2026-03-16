@@ -1,5 +1,5 @@
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { InternalTransfer, TokenTransfer } from '@trezor/blockchain-link-types';
+import { type InternalTransfer, type TokenTransfer } from '@trezor/blockchain-link-types';
 
 import type { TokenDefinitions } from '../tokenDefinitionsTypes';
 

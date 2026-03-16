@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     exchangeMercuryo,

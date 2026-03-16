@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type TokenDetailByMint, type TokenInfo } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { createLazy } from '@trezor/utils';
 

@@ -1,13 +1,13 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
-    Expression,
+    type Expression,
     Node,
     Project,
-    SourceFile,
-    Symbol,
-    Type,
-    VariableDeclaration,
+    type SourceFile,
+    type Symbol,
+    type Type,
+    type VariableDeclaration,
     ts,
 } from 'ts-morph';
 

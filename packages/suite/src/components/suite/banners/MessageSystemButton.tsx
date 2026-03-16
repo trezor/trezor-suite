@@ -1,7 +1,7 @@
 import { goto } from '@suite/router';
 import { resolveMessageContent } from '@suite-common/message-system';
-import { Message } from '@suite-common/suite-types';
-import { Banner, ButtonProps } from '@trezor/components';
+import { type Message } from '@suite-common/suite-types';
+import { Banner, type ButtonProps } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {

@@ -1,13 +1,13 @@
-import { TradingType } from '@suite-common/trading';
-import { FiatRatesState, SendState } from '@suite-common/wallet-core';
+import { type TradingType } from '@suite-common/trading';
+import { type FiatRatesState, type SendState } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountKey,
-    GeneralPrecomposedLevels,
-    RatesByKey,
+    type Account,
+    type AccountKey,
+    type GeneralPrecomposedLevels,
+    type RatesByKey,
     type WalletSettings,
 } from '@suite-common/wallet-types';
-import { PROTO, StaticSessionId } from '@trezor/connect';
+import { PROTO, type StaticSessionId } from '@trezor/connect';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
 import { getInitializedTradingState } from './tradingState';

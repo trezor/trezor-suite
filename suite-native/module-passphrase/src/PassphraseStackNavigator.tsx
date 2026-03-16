@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

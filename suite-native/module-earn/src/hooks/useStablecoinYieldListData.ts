@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useAllYieldOpportunities } from '@suite-common/earn-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 
 import {
     type EarnPromoListDataItem,

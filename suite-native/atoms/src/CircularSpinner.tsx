@@ -11,7 +11,7 @@ import Animated, {
 import { Canvas, Circle, SweepGradient, vec } from '@shopify/react-native-skia';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from './constants';
 

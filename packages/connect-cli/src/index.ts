@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-import TrezorConnect, { Device, ThpPairingMethod, UiRequestThpPairing } from '@trezor/connect';
+import TrezorConnect, {
+    type Device,
+    ThpPairingMethod,
+    type UiRequestThpPairing,
+} from '@trezor/connect';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';

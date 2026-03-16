@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 

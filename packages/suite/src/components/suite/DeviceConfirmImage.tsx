@@ -1,6 +1,6 @@
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { ImageProps } from '@trezor/components';
-import { Device } from '@trezor/connect';
+import { type ImageProps } from '@trezor/components';
+import { type Device } from '@trezor/connect';
 import { DeviceWithScene } from '@trezor/product-components';
 
 type DeviceConfirmImageProps = Omit<ImageProps, 'image'> & {

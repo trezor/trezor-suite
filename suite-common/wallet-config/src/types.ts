@@ -1,6 +1,6 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-api';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { RequiredKey } from '@trezor/type-utils';
+import { type RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
     | 'btc'

@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from '@reduxjs/toolkit';
+import { type MiddlewareAPI } from '@reduxjs/toolkit';
 import { withExtraArgument } from 'redux-thunk';
 
 type CreateStoreWithExtraStoreMiddlewareParams<T> = {

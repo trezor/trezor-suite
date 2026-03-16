@@ -5,19 +5,23 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountNetworkSymbol,
     selectAccountNetworkType,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
-import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type FormState,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
-import { FeesFormValues } from '../../feesFormSchema';
+import { type FeesFormValues } from '../../feesFormSchema';
 import {
     FEE_LIMIT_FIELD_NAME,
     FEE_PER_UNIT_FIELD_NAME,
@@ -25,7 +29,7 @@ import {
     MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
 } from '../../presets';
 import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
-import { NativeSendRootState } from '../../sendFormSlice';
+import { type NativeSendRootState } from '../../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../../thunks';
 
 type UseCustomFeeProps = {

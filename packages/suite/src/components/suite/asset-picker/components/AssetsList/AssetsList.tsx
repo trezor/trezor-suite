@@ -1,6 +1,6 @@
-import { ReactNode, RefObject, memo, useCallback, useState } from 'react';
+import { type ReactNode, type RefObject, memo, useCallback, useState } from 'react';
 
-import { BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
+import { type BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken } from '@trezor/theme';
 
 export interface AssetsListProps<T> {

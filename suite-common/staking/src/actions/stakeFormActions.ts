@@ -1,11 +1,11 @@
-import { EstimatedFee } from '@suite-common/staking-solana-types';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type EstimatedFee } from '@suite-common/staking-solana-types';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    StakeFormState,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import {
     calculateMax,
@@ -13,7 +13,7 @@ import {
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 type StakingParams = {

@@ -1,4 +1,4 @@
-import { TradingTransaction, useTradingUtils } from '@suite-common/trading';
+import { type TradingTransaction, useTradingUtils } from '@suite-common/trading';
 import { Icon, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

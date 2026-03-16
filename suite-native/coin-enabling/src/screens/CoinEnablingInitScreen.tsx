@@ -10,17 +10,20 @@ import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
-import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
+import {
+    type CoinEnablingFormValues,
+    coinEnablingFormValidationSchema,
+} from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

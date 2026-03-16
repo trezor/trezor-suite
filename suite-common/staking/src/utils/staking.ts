@@ -1,5 +1,5 @@
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
-import { Account, StakeType } from '@suite-common/wallet-types';
+import { type Account, type StakeType } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     formatNetworkAmount,
@@ -8,7 +8,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { getEthereumStakingAddressByType } from './ethereumStaking';
-import { StakingTotalRewards } from '../types';
+import { type StakingTotalRewards } from '../types';
 
 export const calculateGains = (amount: string, apy: number | null, days: number) => {
     const rewards = calculateRewards(amount, apy, days);

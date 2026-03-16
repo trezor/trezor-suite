@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { TradeableAssetSheetHeader } from '../TradeableAssetSheetHeader';

@@ -1,8 +1,8 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 

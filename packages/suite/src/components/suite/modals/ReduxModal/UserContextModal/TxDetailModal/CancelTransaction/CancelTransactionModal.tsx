@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
-    ComposeCancelTransactionPartialAccount,
+    type ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    ChainedTransactions,
-    PrecomposedTransactionFinalCancelRbf,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type Account,
+    type ChainedTransactions,
+    type PrecomposedTransactionFinalCancelRbf,
+    type SelectedAccountLoaded,
+    type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import {
-    TradingRootState,
-    TradingType,
+    type TradingRootState,
+    type TradingType,
     selectTradingLastErrorMessageByTradeType,
 } from '@suite-common/trading';
 

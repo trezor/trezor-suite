@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Column } from '@trezor/components';
 import { DataAnalytics } from '@trezor/product-components';

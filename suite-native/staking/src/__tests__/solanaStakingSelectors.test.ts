@@ -1,7 +1,7 @@
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
-import { Account, AccountKey, Timestamp } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type StakeState, stakeInitialState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 
 import {
     selectExpectedRewardsForEpoch,
@@ -14,7 +14,7 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from '../solanaStakingSelectors';
-import { NativeStakingRootState } from '../types';
+import { type NativeStakingRootState } from '../types';
 
 type SolStakeData = NonNullable<StakeState['data']['sol']>;
 

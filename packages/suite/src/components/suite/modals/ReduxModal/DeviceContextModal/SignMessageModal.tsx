@@ -2,10 +2,14 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
-    AccountsRootState,
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkByEvmChainId,
+} from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
     selectAddressByNetworkAndPath,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';

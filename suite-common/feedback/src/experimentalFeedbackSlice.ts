@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type ActionReducerMapBuilder, type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 type UsageCount<T extends string> = Partial<Record<T, number>>;
 

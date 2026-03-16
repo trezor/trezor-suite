@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
 import {
@@ -6,14 +6,14 @@ import {
     cryptoIdToNetworkSymbolAndContractAddress,
     useTradingAssets,
 } from '@suite-common/trading';
-import { NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
 import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
-import { TradingPayGetLabelType } from 'src/types/trading/trading';
+import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
 interface TradingInfoItemProps {

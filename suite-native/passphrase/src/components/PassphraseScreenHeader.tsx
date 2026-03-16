@@ -11,12 +11,12 @@ import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeProps,
+    type StackToTabCompositeProps,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';

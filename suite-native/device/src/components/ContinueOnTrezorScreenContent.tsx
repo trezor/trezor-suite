@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
 import { selectDeviceModel } from '@suite-common/device';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

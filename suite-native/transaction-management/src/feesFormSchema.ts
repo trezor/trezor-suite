@@ -1,9 +1,9 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type FeeInfo, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
-import { Translate } from '@suite-native/intl';
+import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { getFeeDecimals } from './utils';

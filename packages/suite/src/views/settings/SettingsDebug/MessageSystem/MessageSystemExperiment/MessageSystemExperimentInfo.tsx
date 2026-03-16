@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import {
-    ExperimentsItemType,
+    type ExperimentsItemType,
     buildExperimentGroupRanges,
     getInclusionFromInstanceId,
     messageSystemActions,

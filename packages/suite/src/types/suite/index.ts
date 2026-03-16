@@ -1,34 +1,44 @@
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
-import { experimentalFeedbackSlice } from '@suite/experimental-feedback';
+import { type experimentalFeedbackSlice } from '@suite/experimental-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
 import type { recoveryActions } from '@suite/recovery';
-import { RouterAction } from '@suite/router';
-import { analyticsActions } from '@suite-common/analytics-redux';
-import { bluetoothActions } from '@suite-common/bluetooth';
-import { deviceActions } from '@suite-common/device';
-import { firmwareActions } from '@suite-common/firmware';
-import { geolocationActions } from '@suite-common/geolocation';
-import { addLog } from '@suite-common/logger';
-import { messageSystemActions } from '@suite-common/message-system';
+import { type RouterAction } from '@suite/router';
+import { type analyticsActions } from '@suite-common/analytics-redux';
+import { type bluetoothActions } from '@suite-common/bluetooth';
+import { type deviceActions } from '@suite-common/device';
+import { type firmwareActions } from '@suite-common/firmware';
+import { type geolocationActions } from '@suite-common/geolocation';
+import { type addLog } from '@suite-common/logger';
+import { type messageSystemActions } from '@suite-common/message-system';
 import {
-    suiteSyncSlice as suiteSyncCommonSlice,
-    suiteSyncDataSlice,
+    type suiteSyncSlice as suiteSyncCommonSlice,
+    type suiteSyncDataSlice,
 } from '@suite-common/suite-sync';
-import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
+import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import type { Route } from '@suite-common/suite-types';
-import { thpActions } from '@suite-common/thp';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { discoveryActions, feesActions, transactionsActions } from '@suite-common/wallet-core';
-import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
-import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
+import { type thpActions } from '@suite-common/thp';
+import { type notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type discoveryActions,
+    type feesActions,
+    type transactionsActions,
+} from '@suite-common/wallet-core';
+import {
+    type BlockchainEvent,
+    type DEVICE,
+    type DeviceEvent,
+    type TransportEvent,
+    type UiEvent,
+} from '@trezor/connect';
+import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
 import type { BackupAction } from 'src/actions/backup/backupActions';
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { type deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
@@ -37,12 +47,12 @@ import type { ProtocolAction } from 'src/actions/suite/protocolActions';
 import type { StorageAction } from 'src/actions/suite/storageActions';
 import type { SuiteAction } from 'src/actions/suite/suiteActions';
 import type { WindowAction } from 'src/actions/suite/windowActions';
-import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
+import { type suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import type { AppState } from 'src/reducers/store';
-import { GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
+import { type GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { WalletAction } from 'src/types/wallet';
 
-import { bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
+import { type bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
 
 // reexport
 export type {

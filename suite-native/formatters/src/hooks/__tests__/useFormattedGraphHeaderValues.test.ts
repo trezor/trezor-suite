@@ -1,7 +1,7 @@
-import { SupportedLocaleCode } from '@suite-native/intl';
+import { type SupportedLocaleCode } from '@suite-native/intl';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     initStore,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';

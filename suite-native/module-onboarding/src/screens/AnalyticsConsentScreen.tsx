@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -15,13 +15,13 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { Analytics } from '@trezor/analytics-uploader';
+import { type Analytics } from '@trezor/analytics-uploader';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
 

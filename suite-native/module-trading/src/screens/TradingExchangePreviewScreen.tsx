@@ -9,9 +9,9 @@ import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import {

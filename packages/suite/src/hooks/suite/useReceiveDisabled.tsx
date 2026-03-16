@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { type FC, type PropsWithChildren, type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceBackupUnfinished } from '@suite-common/device';

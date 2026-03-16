@@ -1,4 +1,4 @@
-import { GestureResponderEvent, type TextProps } from 'react-native';
+import { type GestureResponderEvent, type TextProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,

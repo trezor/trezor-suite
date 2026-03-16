@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
-import { AssetFiatBalance } from '@suite-common/assets';
-import { RatesByKey } from '@suite-common/wallet-types';
+import { type AssetFiatBalance } from '@suite-common/assets';
+import { type RatesByKey } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { AssetData } from '../AssetsView';
+import { type AssetData } from '../AssetsView';
 import { AssetRow } from './AssetRow';
 import { AssetRowSkeleton } from './AssetRowSkeleton';
 

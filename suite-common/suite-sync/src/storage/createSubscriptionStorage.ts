@@ -1,4 +1,4 @@
-import { StorageId, SubscriptionStorage } from '@suite-common/suite-sync-types';
+import { type StorageId, type SubscriptionStorage } from '@suite-common/suite-sync-types';
 
 export const createSubscriptionStorage = (): SubscriptionStorage => {
     const storage: Record<StorageId, () => void> = {};

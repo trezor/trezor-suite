@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { BleError, BleErrorCode } from '@trezor/transport-native-bluetooth';
+import { type BleError, BleErrorCode } from '@trezor/transport-native-bluetooth';
 
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothAlerts } from './useBluetoothAlerts';

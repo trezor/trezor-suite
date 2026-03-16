@@ -8,9 +8,9 @@ import {
     selectVotingDelegationOption,
 } from '@suite-common/wallet-core';
 import {
-    ChangeDelegateFormState,
-    PrecomposedTransactionFinal,
-    SelectedAccountLoaded,
+    type ChangeDelegateFormState,
+    type PrecomposedTransactionFinal,
+    type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
@@ -20,7 +20,7 @@ import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
-import { ChangeDelegateContextValues } from '../../components/earn/forms/ChangeDelegateFormContext';
+import { type ChangeDelegateContextValues } from '../../components/earn/forms/ChangeDelegateFormContext';
 
 export const ChangeDelegateFormContext = createContext<ChangeDelegateContextValues | null>(null);
 ChangeDelegateFormContext.displayName = 'ChangeDelegateFormContext';

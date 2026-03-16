@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -7,10 +7,10 @@ import {
     selectIsLabelingAvailableForEntity,
     selectMetadata,
 } from '@suite/metadata';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
-import { EditableText, EditableTextProps } from '@trezor/product-components';
+import { type StaticSessionId } from '@trezor/connect';
+import { EditableText, type EditableTextProps } from '@trezor/product-components';
 
 import {
     selectDesktopSuiteSyncInteraction,

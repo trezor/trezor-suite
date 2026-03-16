@@ -1,9 +1,9 @@
 import { Platform } from 'react-native';
 
-import { Text, TextProps } from '@suite-native/atoms';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 
 type AddressFormatterProps = FormatterProps<string> & TextProps;
 

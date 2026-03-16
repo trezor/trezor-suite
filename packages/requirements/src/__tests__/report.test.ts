@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util';
 
-import { ReportDeps, createReport } from '../report';
+import { type ReportDeps, createReport } from '../report';
 import type { RequirementResult } from '../runRequirements';
 
 const createConsoleMock = (journal: string[]): ReportDeps['console'] => ({

@@ -1,18 +1,18 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Column } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
+import { type IconName } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 

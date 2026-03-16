@@ -1,11 +1,15 @@
-import { LayoutChangeEvent, View } from 'react-native';
+import { type LayoutChangeEvent, View } from 'react-native';
 
-import { AccountKey, ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import {
+    type AccountKey,
+    type ReviewOutputType,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemContent } from './ReviewOutputItemContent';
-import { StatefulReviewOutput } from '../../types';
+import { type StatefulReviewOutput } from '../../types';
 
 export type ReviewOutputItemProps = {
     accountKey: AccountKey;

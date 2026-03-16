@@ -1,15 +1,15 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
-    MinimalExchangeFormProps,
+    type MinimalExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProvider,
@@ -23,7 +23,7 @@ import {
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormValues } from '@suite-native/trading-types';
+import { type ExchangeFormValues } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useExchangeForm } from '../useExchangeForm';

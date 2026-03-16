@@ -1,4 +1,4 @@
-import { GuideCategory, GuideNode } from '@suite-common/suite-types';
+import { type GuideCategory, type GuideNode } from '@suite-common/suite-types';
 
 /** @returns title in given language or in english if not available. */
 export const getNodeTitle = (node: GuideNode, language: string): string =>

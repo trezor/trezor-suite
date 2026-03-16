@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { ModalIntent } from './types';
+import { type ModalIntent } from './types';
 
 export const ModalContext = createContext<{
     intent?: ModalIntent;

@@ -1,9 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
 import { VStack } from '../Stack';
-import { CardStepperButtonsActionType, CardStepperItem } from './CardStepperItem';
+import { type CardStepperButtonsActionType, CardStepperItem } from './CardStepperItem';
 
 export type CardStepperMap<ContentIdType = undefined> = Record<
     number,

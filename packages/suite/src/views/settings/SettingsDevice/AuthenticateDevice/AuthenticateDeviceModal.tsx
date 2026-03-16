@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

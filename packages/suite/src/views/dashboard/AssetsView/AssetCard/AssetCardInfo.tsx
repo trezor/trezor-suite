@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { AssetFiatBalance } from '@suite-common/assets';
-import { Network } from '@suite-common/wallet-config';
+import { type AssetFiatBalance } from '@suite-common/assets';
+import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

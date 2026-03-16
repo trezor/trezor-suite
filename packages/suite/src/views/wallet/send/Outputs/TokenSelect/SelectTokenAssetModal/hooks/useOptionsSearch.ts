@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { AssetProps } from '@trezor/product-components';
+import { type AssetProps } from '@trezor/product-components';
 
 function createSearchFilter(search: string) {
     return function searchFor(property?: string) {

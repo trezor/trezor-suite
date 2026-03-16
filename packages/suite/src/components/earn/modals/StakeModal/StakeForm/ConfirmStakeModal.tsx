@@ -7,7 +7,7 @@ import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/sta
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';

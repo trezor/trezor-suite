@@ -1,7 +1,7 @@
 import {
-    FirmwareHashCheckError,
-    FirmwareHashCheckTimeouts,
-    FirmwareRevisionCheckError,
+    type FirmwareHashCheckError,
+    type FirmwareHashCheckTimeouts,
+    type FirmwareRevisionCheckError,
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

@@ -1,9 +1,9 @@
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { buyMercuryo, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
-    QuoteProviderFormWatch,
+    type QuoteProviderFormWatch,
     useProviderMetadataChangeEffect,
 } from '../useProviderMetadataChangeEffect';
 

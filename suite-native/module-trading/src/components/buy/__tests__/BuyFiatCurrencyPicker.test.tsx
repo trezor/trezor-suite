@@ -1,4 +1,4 @@
-import { useListDataFilter } from '@suite-common/trading';
+import { type useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
 import {
     act,

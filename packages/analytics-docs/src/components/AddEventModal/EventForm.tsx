@@ -17,14 +17,12 @@ import {
 import { AttributeEditor } from './AttributeEditor';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
 import { defaultAttribute, platformOptions } from './constants';
-import type { EventFormState } from '../../utils/eventFileUtils';
+import type { EventFormState, getChangelogErrorMessage } from '../../utils/eventFileUtils';
 
 type EventFormProps = {
     formState: EventFormState;
     setFormState: React.Dispatch<React.SetStateAction<EventFormState>>;
-    eventChangelogError: ReturnType<
-        typeof import('../../utils/eventFileUtils').getChangelogErrorMessage
-    > | null;
+    eventChangelogError: ReturnType<typeof getChangelogErrorMessage> | null;
 };
 
 const domainOptions = ANALYTICS_ALLOWED_DOMAINS.map(d => ({ value: d, label: d }));

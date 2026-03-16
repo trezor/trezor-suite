@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { useNativeStyles } from '@trezor/styles';
 
 export const useTradeableAssetDominantColor = (

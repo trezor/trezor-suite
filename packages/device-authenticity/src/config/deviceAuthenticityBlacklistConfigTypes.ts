@@ -1,4 +1,4 @@
-import { Static, Type } from '@trezor/schema-utils';
+import { type Static, Type } from '@trezor/schema-utils';
 
 const CertPubKeysBlacklist = Type.Object({
     blacklistedCaPubKeys: Type.Array(Type.String()),

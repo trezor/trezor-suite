@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
-import { BackendType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { BackendSettings } from '@suite-common/wallet-types';
+import { type BackendSettings } from '@suite-common/wallet-types';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { isUrlWithQuery } from '@trezor/utils';

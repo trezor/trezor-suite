@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
 import { useFormattedGraphHeaderValues } from '../hooks/useFormattedGraphHeaderValues';

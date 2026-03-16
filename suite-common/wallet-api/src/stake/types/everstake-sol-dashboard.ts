@@ -1,6 +1,6 @@
-import z from 'zod';
+import type z from 'zod';
 
-import { SolanaBlockchainInfo } from '../schemas';
+import { type SolanaBlockchainInfo } from '../schemas';
 
 type SolanaBlockchainInfo = z.infer<typeof SolanaBlockchainInfo>;
 

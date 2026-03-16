@@ -1,20 +1,24 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    type RootStackParamList,
+    type RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type TokenAccountDetailScreenHeaderProps = {
     accountKey: AccountKey;

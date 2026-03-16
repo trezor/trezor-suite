@@ -1,16 +1,17 @@
 import { format } from 'date-fns';
+import type PdfMake from 'pdfmake/build/pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
 import { trezorLogo } from '@suite-common/suite-constants';
-import { TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    ExportFileType,
-    RatesByTimestamps,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type ExportFileType,
+    type RatesByTimestamps,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
@@ -23,7 +24,7 @@ import {
     subtypeToStakeTypeMap,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TransactionTarget } from '@trezor/connect';
+import { type TransactionTarget } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
@@ -135,10 +136,8 @@ const loadPdfMake = async () => {
     return pdfMake;
 };
 
-const makePdf = (
-    definitions: TDocumentDefinitions,
-    pdfMake: typeof import('pdfmake/build/pdfmake'),
-): Promise<Blob> => pdfMake.createPdf(definitions).getBlob();
+const makePdf = (definitions: TDocumentDefinitions, pdfMake: typeof PdfMake): Promise<Blob> =>
+    pdfMake.createPdf(definitions).getBlob();
 
 const prepareContent = (
     data: Data,

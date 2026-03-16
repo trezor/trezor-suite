@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
 import { typography } from '@trezor/theme';
 
-import { Icon, IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
+import { Icon, type IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
 import { iconSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';

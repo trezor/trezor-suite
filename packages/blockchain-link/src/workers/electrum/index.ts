@@ -1,11 +1,11 @@
 import type { Response } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { Message } from '@trezor/blockchain-link-types/src/messages';
-import { Without } from '@trezor/type-utils';
-import { AddressCache, createAddressCache } from '@trezor/utxo-lib';
+import { type Message } from '@trezor/blockchain-link-types/src/messages';
+import { type Without } from '@trezor/type-utils';
+import { type AddressCache, createAddressCache } from '@trezor/utxo-lib';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { CachingElectrumClient } from './client/caching';
 import type { ElectrumClient } from './client/electrum';
 import * as L from './listeners';

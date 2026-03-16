@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -8,10 +8,10 @@ import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
 import {
-    TradingTradeMapProps,
-    TradingTransaction,
-    TradingType,
-    TradingWatchTradeResponsePropsMap,
+    type TradingTradeMapProps,
+    type TradingTransaction,
+    type TradingType,
+    type TradingWatchTradeResponsePropsMap,
 } from '../../types';
 
 export type WatchTradeThunk = {

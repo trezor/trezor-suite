@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { AccountSummary } from '@suite-common/tx-simulation';
-import { Network } from '@suite-common/wallet-config';
+import { type AccountSummary } from '@suite-common/tx-simulation';
+import { type Network } from '@suite-common/wallet-config';
 import { Card, Column, H4, Row, Text } from '@trezor/components';
 
 import { TxSimulationAsset } from './TxSimulationAsset/TxSimulationAsset';

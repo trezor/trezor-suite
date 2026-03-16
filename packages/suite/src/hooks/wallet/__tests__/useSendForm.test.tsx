@@ -1,23 +1,23 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { useEffect, useState } from 'react';
-import { DeepPartial } from 'react-hook-form';
+import { type DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
-import { FormState } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
+import { type FormState } from '@suite-common/wallet-types';
+import { type PROTO } from '@trezor/connect';
 
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
-    UserAction,
+    type UserAction,
     actionSequence,
     findByTestId,
     renderWithProviders,
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 
 import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';

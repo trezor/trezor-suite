@@ -6,7 +6,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS } from '@trezor/connect-common/src/constants';
 
 import {
     DEFAULT_PASSPHRASE_PROTECTION,
@@ -14,7 +14,7 @@ import {
     DEFAULT_STRENGTH,
 } from 'src/constants/suite/device';
 import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>

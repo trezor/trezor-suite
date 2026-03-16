@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { InfoItem, Text } from '@trezor/components';

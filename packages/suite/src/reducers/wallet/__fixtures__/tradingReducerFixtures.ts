@@ -1,4 +1,4 @@
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
 export const buyQuotes: BuyTrade[] = [
     {

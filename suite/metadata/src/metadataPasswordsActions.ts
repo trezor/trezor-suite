@@ -1,10 +1,10 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 import crypto from 'crypto';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    LabelableEntityKeys,
-    PasswordEntry,
+    type LabelableEntityKeys,
+    type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
@@ -14,10 +14,10 @@ import * as METADATA from './metadataConstants';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
-import { MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
+import { type MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
 import * as metadataThunks from './metadataThunks';
 import * as metadataUtils from './metadataUtils';
-import { FetchIntervalTrackingId } from './metadataUtils';
+import { type FetchIntervalTrackingId } from './metadataUtils';
 
 export const fetchPasswords =
     (keys: LabelableEntityKeys) =>

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 

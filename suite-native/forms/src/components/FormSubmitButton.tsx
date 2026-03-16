@@ -1,4 +1,4 @@
-import { ComponentProps, PropsWithChildren } from 'react';
+import { type ComponentProps, type PropsWithChildren } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { Button } from '@suite-native/atoms';

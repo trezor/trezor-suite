@@ -5,14 +5,14 @@ import { Translation, useTranslation } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
-    TradingPaymentMethodProps,
+    type TradingPaymentMethodProps,
 } from '@suite-common/trading';
 import { GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
 
 import { PaymentMethodModal } from './PaymentMethodModal';
 

@@ -25,9 +25,9 @@ export interface CoinjoinClientSettings extends BaseSettings {
 
 export type { ScanAccountProgress, ScanAccountCheckpoint, ScanProgressInfo } from './backend';
 
-export * from './account';
-export * from './alice';
-export * from './client';
-export * from './prison';
-export * from './round';
-export * from './logger';
+export type * from './account';
+export type * from './alice';
+export type * from './client';
+export type * from './prison';
+export type * from './round';
+export type * from './logger';

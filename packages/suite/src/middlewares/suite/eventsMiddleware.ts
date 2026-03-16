@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { routerAppChanged } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -7,7 +7,7 @@ import { notificationsActions, removeAccountEventsThunk } from '@suite-common/to
 import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 /*

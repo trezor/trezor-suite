@@ -11,12 +11,12 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    ComposeActionContext,
-    PrecomposedTransactionFinal,
-    StakeFormState,
-    StakeType,
-    WalletAccountTransaction,
+    type Account,
+    type ComposeActionContext,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
+    type StakeType,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
@@ -28,11 +28,11 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Err } from '@trezor/type-utils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 import { setPendingStakeTx } from './cardanoStakingActions';
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';

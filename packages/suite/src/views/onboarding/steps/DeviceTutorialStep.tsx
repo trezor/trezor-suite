@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import { Translation, messages } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { IconName } from '@trezor/components';
+import { type IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

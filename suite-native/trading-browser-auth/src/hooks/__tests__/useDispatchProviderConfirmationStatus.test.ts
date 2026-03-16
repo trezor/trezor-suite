@@ -1,4 +1,9 @@
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    act,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from '../useDispatchProviderConfirmationStatus';

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,

@@ -5,8 +5,8 @@ import { CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNativeServices } from '@suite-native/services';
 import {
-    ExperimentalFeature,
-    SettingsSliceRootState,
+    type ExperimentalFeature,
+    type SettingsSliceRootState,
     disableExperimentalFeature,
     enableExperimentalFeature,
     selectIsExperimentalFeatureEnabled,

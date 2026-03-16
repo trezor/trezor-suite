@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,

@@ -10,7 +10,7 @@ import {
     selectCardanoPoolsInfo,
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
@@ -22,7 +22,7 @@ import {
     Card,
     Column,
     Grid,
-    IconName,
+    type IconName,
     InfoItem,
     Paragraph,
     Row,

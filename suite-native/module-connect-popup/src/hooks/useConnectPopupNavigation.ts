@@ -8,9 +8,9 @@ import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

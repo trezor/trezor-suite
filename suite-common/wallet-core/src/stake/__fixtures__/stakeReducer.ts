@@ -1,5 +1,9 @@
-import { CardanoPoolStats, EthereumPoolStats, SolanaStakingInfo } from '@suite-common/wallet-api';
-import { Timestamp } from '@suite-common/wallet-types';
+import {
+    type CardanoPoolStats,
+    type EthereumPoolStats,
+    type SolanaStakingInfo,
+} from '@suite-common/wallet-api';
+import { type Timestamp } from '@suite-common/wallet-types';
 
 import type { StakeState } from '../stakeReducerTypes';
 

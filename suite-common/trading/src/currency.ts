@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import { typedObjectKeys } from '@trezor/utils';
 

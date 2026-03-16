@@ -5,7 +5,7 @@ import { goto, selectRouteName } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';

@@ -2,7 +2,7 @@ import { Divider, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { StakingEarnItem } from '../types';
+import { type StakingEarnItem } from '../types';
 
 type EarnItemCardanoInfoProps = StakingEarnItem;
 export const EarnItemCardanoInfo = ({ symbol }: EarnItemCardanoInfoProps) => {

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
 import {
-    EarnAnalyticsStep,
+    type EarnAnalyticsStep,
     EarnFlow,
-    EarnModalAction,
-    EarnProvider,
-    EarnYieldContext,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';

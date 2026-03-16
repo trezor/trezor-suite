@@ -4,10 +4,10 @@ import fetch from 'cross-fetch';
 
 import {
     WebsocketClient as WebsocketClientBase,
-    WebsocketResponse as WebsocketResponseData,
+    type WebsocketResponse as WebsocketResponseData,
 } from '@trezor/websocket-client';
 
-import { Firmwares } from './types';
+import { type Firmwares } from './types';
 
 // Making the timeout high because the controller in trezor-user-env
 // must synchronously run actions on emulator and they may take a long time

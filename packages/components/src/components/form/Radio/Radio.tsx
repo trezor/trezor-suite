@@ -1,4 +1,9 @@
-import { EventHandler, MouseEventHandler, ReactNode, SyntheticEvent } from 'react';
+import {
+    type EventHandler,
+    type MouseEventHandler,
+    type ReactNode,
+    type SyntheticEvent,
+} from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -7,8 +12,8 @@ import { borders } from '@trezor/theme';
 import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 import { Row } from '../../Flex/Flex';
 import { Text } from '../../typography/Text/Text';
-import { AllowedCheckboxFrameProps, allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
-import { LabelAlignment, VerticalAlignment } from '../Checkbox/types';
+import { type AllowedCheckboxFrameProps, allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
+import { type LabelAlignment, type VerticalAlignment } from '../Checkbox/types';
 import { commonCheckInputStyles } from '../utils';
 
 const HiddenInput = styled.input`

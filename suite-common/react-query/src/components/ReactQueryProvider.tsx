@@ -1,4 +1,4 @@
-import { PropsWithChildren, Suspense, lazy, useMemo } from 'react';
+import { type PropsWithChildren, Suspense, lazy, useMemo } from 'react';
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 

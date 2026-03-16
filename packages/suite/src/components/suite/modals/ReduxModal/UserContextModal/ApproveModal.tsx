@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     invityAPI,
     tradingExchangeActions,
     useTradingUtils,
@@ -33,7 +33,7 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
+import { type TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 

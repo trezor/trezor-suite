@@ -6,7 +6,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import type { AcquiredDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect from '@trezor/connect';
+import type TrezorConnect from '@trezor/connect';
 import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersion } from '@trezor/device-utils';
 

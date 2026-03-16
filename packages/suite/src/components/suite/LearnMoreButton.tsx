@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Button, ButtonProps } from '@trezor/components';
-import { Url } from '@trezor/urls';
+import { Button, type ButtonProps } from '@trezor/components';
+import { type Url } from '@trezor/urls';
 
 import { useExternalLink } from '../../hooks/suite';
 

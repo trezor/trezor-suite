@@ -5,6 +5,6 @@ export * from './device';
 export * from './core-call';
 export * from './popup';
 export * from './transport';
-export * from './ui-promise';
+export type * from './ui-promise';
 export * from './ui-request';
 export * from './ui-response';

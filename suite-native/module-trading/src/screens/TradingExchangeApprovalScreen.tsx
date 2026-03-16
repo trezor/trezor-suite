@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeActiveQuote,
     selectTradingProviderByNameAndTradeType,
@@ -12,11 +12,11 @@ import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeScreenProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackToStackCompositeScreenProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 

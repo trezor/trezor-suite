@@ -1,8 +1,8 @@
-import { ConnectPopupState } from '@suite-common/connect-popup';
-import { TradingState } from '@suite-common/trading';
+import { type ConnectPopupState } from '@suite-common/connect-popup';
+import { type TradingState } from '@suite-common/trading';
 import {
-    AccountsRootState,
-    SendRootState,
+    type AccountsRootState,
+    type SendRootState,
     accountsActions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';

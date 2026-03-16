@@ -2,10 +2,10 @@ import type { Octokit } from '@octokit/rest';
 
 import { getProjectFields } from './projectRequests';
 import {
-    AddDraftIssueResponse,
-    ProjectField,
-    UpdateProjectItemFieldResponse,
-    ValueOrOptionId,
+    type AddDraftIssueResponse,
+    type ProjectField,
+    type UpdateProjectItemFieldResponse,
+    type ValueOrOptionId,
 } from './types';
 
 export class IssueRequests {

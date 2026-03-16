@@ -1,11 +1,11 @@
 import {
     ETH_NETWORK_ADDRESSES,
-    EthNetworkAddresses,
+    type EthNetworkAddresses,
     Ethereum,
 } from '@everstake/wallet-sdk-ethereum';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
-import { EthereumValidatorsQueue } from '@suite-common/wallet-api';
+import { type EthereumValidatorsQueue } from '@suite-common/wallet-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     DAYS_TO_ADD_TO_POOL_DEFAULT,
@@ -15,7 +15,11 @@ import {
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
-import { PrecomposedLevels, StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type PrecomposedLevels,
+    type StakeType,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getEthereumEstimateFeeParams,
     isPending,
@@ -24,22 +28,22 @@ import {
     secondsToDays,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    InternalTransfer,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type InternalTransfer,
 } from '@trezor/connect';
-import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { Ok, PartialRecord } from '@trezor/type-utils';
+import { type BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { type Ok, type PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    EthNetwork,
-    GetStakeFormsDefaultValuesParams,
-    GetStakeTxGasLimitParams,
-    PrepareClaimEthTxParams,
-    PrepareStakeEthTxParams,
-    PrepareUnstakeEthTxParams,
-    StakeTxBaseArgs,
+    type EthNetwork,
+    type GetStakeFormsDefaultValuesParams,
+    type GetStakeTxGasLimitParams,
+    type PrepareClaimEthTxParams,
+    type PrepareStakeEthTxParams,
+    type PrepareUnstakeEthTxParams,
+    type StakeTxBaseArgs,
 } from '../types';
 
 export const getEthNetworkForWalletSdk = (

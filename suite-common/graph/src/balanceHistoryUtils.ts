@@ -1,7 +1,7 @@
 import type { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { LocalBalanceHistoryCoin } from './constants';
+import { type LocalBalanceHistoryCoin } from './constants';
 import type { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
 
 /*

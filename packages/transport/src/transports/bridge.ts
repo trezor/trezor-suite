@@ -1,7 +1,7 @@
 import {
     PROTOCOL_MALFORMED,
-    ThpState,
-    TransportProtocol,
+    type ThpState,
+    type TransportProtocol,
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
@@ -9,8 +9,8 @@ import { versionUtils } from '@trezor/utils';
 
 import {
     AbstractTransport,
-    AbstractTransportMethodParams,
-    AbstractTransportParams,
+    type AbstractTransportMethodParams,
+    type AbstractTransportParams,
 } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';

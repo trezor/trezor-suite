@@ -1,6 +1,9 @@
 import type { TradingType } from '@suite-common/trading';
 
-import { TradingTradeInfoMapProps, TradingTradeMapProps } from 'src/types/trading/trading';
+import {
+    type TradingTradeInfoMapProps,
+    type TradingTradeMapProps,
+} from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
 
 export interface TradingDetailContextValues<T extends TradingType> {

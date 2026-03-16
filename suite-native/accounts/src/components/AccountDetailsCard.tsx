@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 

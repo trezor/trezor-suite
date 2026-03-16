@@ -1,7 +1,12 @@
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    fireEvent,
+    initStore,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
-import { ReceiveAccountPicker, ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
+import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
 
 const defaultPreloadedState = {
     device: {

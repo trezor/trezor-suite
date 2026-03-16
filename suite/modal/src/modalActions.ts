@@ -1,8 +1,8 @@
-import { Dispatch, createAction } from '@reduxjs/toolkit';
+import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
-import { UserContextPayload } from '@suite-common/suite-types';
-import TrezorConnect, { UI_RESPONSE, UiResponseFee } from '@trezor/connect';
-import { DeferredResponse, createDeferred } from '@trezor/utils';
+import { type UserContextPayload } from '@suite-common/suite-types';
+import TrezorConnect, { UI_RESPONSE, type UiResponseFee } from '@trezor/connect';
+import { type DeferredResponse, createDeferred } from '@trezor/utils';
 
 import {
     MODAL_CLOSE,

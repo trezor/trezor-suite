@@ -1,7 +1,7 @@
 import {
-    Dispatch,
-    ListenerEffectAPI,
-    UnknownAction,
+    type Dispatch,
+    type ListenerEffectAPI,
+    type UnknownAction,
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
@@ -26,13 +26,13 @@ import {
     checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
     DEVICE_CONNECTION_BLACKLISTED_ROUTES,
     DEVICE_DISCONNECTION_BLACKLISTED_ROUTES,
 } from '../deviceNavigationConfig';
-import { NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
+import { type NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
 import { getIsDeviceSetupSupported } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();

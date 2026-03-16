@@ -1,17 +1,17 @@
 import { Translation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
-import { RouteParams, selectRouterParams } from '@suite/router';
+import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
-import { AccountType } from '@suite-common/wallet-config';
+import { type AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from 'src/types/wallet';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';

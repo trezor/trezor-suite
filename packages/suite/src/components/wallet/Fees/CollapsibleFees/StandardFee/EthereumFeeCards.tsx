@@ -4,7 +4,7 @@ import { useFormState } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';

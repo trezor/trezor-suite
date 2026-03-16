@@ -3,8 +3,8 @@ import {
     getTxOperation,
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
-import { TokenTransfer } from '@trezor/connect';
-import { TypographyStyle } from '@trezor/theme';
+import { type TokenTransfer } from '@trezor/connect';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';

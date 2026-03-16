@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type GraphRange, type GraphScale } from 'src/types/wallet/graph';
 
 export const useGraph = () => {
     const dispatch = useDispatch();

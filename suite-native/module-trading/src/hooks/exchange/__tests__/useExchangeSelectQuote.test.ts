@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -18,7 +18,7 @@ import {
     getEthAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';

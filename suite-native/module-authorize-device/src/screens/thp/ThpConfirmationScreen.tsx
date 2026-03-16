@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     Screen,
     useInterceptNativeNavigation,

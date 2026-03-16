@@ -3,7 +3,7 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 

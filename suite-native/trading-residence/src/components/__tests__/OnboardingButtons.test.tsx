@@ -1,11 +1,16 @@
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    fireEvent,
+    initStore,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils';
 import {
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,
 } from '@suite-native/trading-state';
 
 import { LocationForm } from '../LocationForm';
-import { OnboardingButtons, OnboardingButtonsProps } from '../OnboardingButtons';
+import { OnboardingButtons, type OnboardingButtonsProps } from '../OnboardingButtons';
 
 describe('OnboardingButtons', () => {
     let store: TestStore;

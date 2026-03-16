@@ -3,14 +3,14 @@ import { useMemo, useState } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
-    TradingCountryOption,
+    type TradingCountryOption,
 } from '@suite-common/trading';
 import { GhostContainer, Icon, Row, Text } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
 
 import { CountrySubdivisionSelectModal } from './CountrySubdivisionSelectModal';
 

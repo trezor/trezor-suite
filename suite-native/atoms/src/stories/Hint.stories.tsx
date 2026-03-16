@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { HINT_VARIANTS, Hint as HintComponent, HintProps } from '../Hint';
+import { HINT_VARIANTS, Hint as HintComponent, type HintProps } from '../Hint';
 
 type HintStory = StoryObj<HintProps>;
 

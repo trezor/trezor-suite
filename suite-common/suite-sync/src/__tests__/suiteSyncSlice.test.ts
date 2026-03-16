@@ -1,8 +1,8 @@
 import { deviceActions } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { initialSuiteSyncState, suiteSyncReducer } from '../suiteSyncSlice';
 

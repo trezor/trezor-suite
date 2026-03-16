@@ -2,9 +2,9 @@ import { HStack, Text } from '@suite-native/atoms';
 import { TextInputField } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 import { MAX_FEE_PER_GAS_FIELD_NAME, MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME } from '../../../presets';
 
 const getBaseFeePerGas = (feeLevel: FeeLevel, feeUnits: string) => {

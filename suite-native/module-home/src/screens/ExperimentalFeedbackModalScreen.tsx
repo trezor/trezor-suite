@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     EXPERIMENTAL_FEATURES,
@@ -11,8 +11,8 @@ import {
 } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    RootStackRoutes,
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     ScreenHeader,
 } from '@suite-native/navigation';

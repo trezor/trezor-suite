@@ -5,8 +5,8 @@ import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import {
-    ExplorerState,
-    TransactionsRootState,
+    type ExplorerState,
+    type TransactionsRootState,
     selectExplorer,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
@@ -20,12 +20,12 @@ import { useOpenLink } from '@suite-native/link';
 import {
     Screen,
     ScreenHeader,
-    StackProps,
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
+    type StackProps,
+    type TransactionDetailStackParamList,
+    type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';

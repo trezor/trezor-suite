@@ -1,6 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { Account, FeeInfo, FeeLevelLabel, PrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FeeInfo,
+    type FeeLevelLabel,
+    type PrecomposedLevels,
+} from '@suite-common/wallet-types';
 import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
@@ -8,7 +13,7 @@ import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
 import { ALLOWANCE_MODULE_PREFIX } from './allowanceConstants';
 import { buildAllowanceTransaction } from './buildAllowanceTransaction';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '../fees/feesUtils';
-import { ComposeFeeLevelsError } from '../send/sendFormTypes';
+import { type ComposeFeeLevelsError } from '../send/sendFormTypes';
 
 export interface ComposeAllowanceTransactionThunkParams {
     feeInfo: FeeInfo;

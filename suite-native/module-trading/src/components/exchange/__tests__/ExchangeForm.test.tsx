@@ -10,7 +10,7 @@ import {
     exchangeQuotes,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeForm } from '../ExchangeForm';

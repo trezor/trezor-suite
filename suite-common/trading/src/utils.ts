@@ -1,14 +1,14 @@
 import {
-    BuyProviderInfo,
-    BuyTrade,
-    BuyTradeFinalStatus,
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    ExchangeTradeFinalStatus,
-    SellFiatTrade,
-    SellProviderInfo,
-    SellTradeFinalStatus,
+    type BuyProviderInfo,
+    type BuyTrade,
+    type BuyTradeFinalStatus,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type ExchangeTradeFinalStatus,
+    type SellFiatTrade,
+    type SellProviderInfo,
+    type SellTradeFinalStatus,
 } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,7 +23,7 @@ import {
 } from '@suite-common/wallet-config';
 import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -34,20 +34,20 @@ import {
 } from './constants';
 import { regional } from './regional';
 import {
-    TradingCountryCode,
-    TradingCountrySubdivisionOption,
-    TradingExchangeType,
-    TradingParsedCryptoIdProps,
-    TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
-    TradingProviderInfo,
-    TradingSellType,
-    TradingTradeBuySellMapProps,
-    TradingTradeBuySellType,
-    TradingTradeMapProps,
-    TradingTradeStatusType,
-    TradingTradeType,
-    TradingType,
+    type TradingCountryCode,
+    type TradingCountrySubdivisionOption,
+    type TradingExchangeType,
+    type TradingParsedCryptoIdProps,
+    type TradingPaymentMethodListProps,
+    type TradingPaymentMethodProps,
+    type TradingProviderInfo,
+    type TradingSellType,
+    type TradingTradeBuySellMapProps,
+    type TradingTradeBuySellType,
+    type TradingTradeMapProps,
+    type TradingTradeStatusType,
+    type TradingTradeType,
+    type TradingType,
 } from './types';
 import { getCountrySubdivisionByCode } from './utils/countryUtils';
 

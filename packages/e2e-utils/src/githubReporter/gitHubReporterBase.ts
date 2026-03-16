@@ -2,13 +2,13 @@ import type { Octokit } from '@octokit/rest';
 
 import { scheduleAction } from '@trezor/utils';
 
-import { TestReportProviderBase } from './annotationBase';
+import { type TestReportProviderBase } from './annotationBase';
 import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
-import { LoggingFunctions, ProjectField } from './types';
+import { type LoggingFunctions, type ProjectField } from './types';
 import {
     TestOsEmoticons,
-    TestOsMatrix,
+    type TestOsMatrix,
     TestStatus,
     osMatrixAnnotation,
     statusAnnotation,

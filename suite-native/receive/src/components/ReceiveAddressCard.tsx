@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
-import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
+import { Box, Card, type InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';

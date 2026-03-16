@@ -1,7 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, FormDraftWithSendKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type FormDraftWithSendKeyPrefix,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -9,7 +13,7 @@ import { ReviewOutputItem } from './ReviewOutputItem';
 import { ReviewOutputSummaryItem } from './ReviewOutputSummaryItem';
 import { LIST_VERTICAL_SPACING, useActiveStepOffset } from '../../hooks';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsTransactionAlreadySigned,
     selectReviewSummaryOutput,
     selectTransactionReviewActiveStepIndex,

@@ -1,10 +1,10 @@
 import { lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { createThunk } from '@suite-common/redux-utils';
-import { Route } from '@suite-common/suite-types';
+import { type Route } from '@suite-common/suite-types';
 
-import { AnchorType } from './anchors';
+import { type AnchorType } from './anchors';
 import {
-    RouterPathOptional,
+    type RouterPathOptional,
     findRoute,
     getAppWithParams,
     getRoute,
@@ -19,7 +19,7 @@ import {
     selectRouterApp,
     selectRouterHash,
 } from './routerReducer';
-import { RouteParams } from './routes';
+import { type RouteParams } from './routes';
 import { asSuiteRouterHistoryService } from './suiteRouterHistory';
 
 /**

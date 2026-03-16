@@ -1,8 +1,8 @@
 import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
-import { AnyAction } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type AnyAction } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInternalModel,
     getDeviceLanguage,
@@ -12,8 +12,8 @@ import {
 } from '@suite-common/suite-utils';
 import type { AnalyticsNativeEvents } from '@suite-native/analytics';
 import { events } from '@suite-native/analytics';
-import { Analytics } from '@trezor/analytics-uploader';
-import { Device, DeviceEvent } from '@trezor/connect';
+import { type Analytics } from '@trezor/analytics-uploader';
+import { type Device, type DeviceEvent } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,

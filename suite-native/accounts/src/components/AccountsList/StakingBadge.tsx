@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
-import { IconName, IconSize } from '@suite-native/icons';
+import { type IconName, type IconSize } from '@suite-native/icons';
 import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 type CompoundIcon = {
     name: IconName;

@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';

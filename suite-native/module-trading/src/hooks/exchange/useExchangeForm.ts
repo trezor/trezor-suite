@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import {
-    TradingExchangeAmountLimitProps,
+    type TradingExchangeAmountLimitProps,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
@@ -24,7 +24,7 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
-import { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import { type ExchangeFormType, type ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';

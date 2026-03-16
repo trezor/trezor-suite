@@ -1,20 +1,20 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     Box,
     Card,
     Column,
     H2,
     IconCircle,
-    IconName,
+    type IconName,
     Modal,
     Paragraph,
     Row,
 } from '@trezor/components';
-import { UIVariant } from '@trezor/components/src/config/types';
+import { type UIVariant } from '@trezor/components/src/config/types';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';

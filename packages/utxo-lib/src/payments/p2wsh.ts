@@ -7,7 +7,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackElement, StackFunction } from '../types';
+import { type Payment, type PaymentOpts, type StackElement, type StackFunction } from '../types';
 import { BufferNSchema, BufferSchema, Nullable, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;

@@ -1,12 +1,12 @@
-import { PaymentRequestOutput } from 'invity-api';
+import { type PaymentRequestOutput } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { formatSlip24SendAmountByNetwork } from '../../utils/signature/signatureUtils';
 
 export const getPaymentRequestOutputs = createThunk<

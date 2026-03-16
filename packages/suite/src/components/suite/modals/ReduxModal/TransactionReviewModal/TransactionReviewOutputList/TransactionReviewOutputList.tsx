@@ -8,9 +8,10 @@ import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     getEvmTransactionTextSignature,

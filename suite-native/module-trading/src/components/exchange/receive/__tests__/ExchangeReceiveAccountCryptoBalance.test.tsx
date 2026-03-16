@@ -5,7 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {

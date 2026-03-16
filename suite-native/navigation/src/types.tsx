@@ -1,18 +1,18 @@
 import type { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type {
+    CompositeNavigationProp,
     CompositeScreenProps,
     NavigationHelpers,
     ParamListBase,
 } from '@react-navigation/native';
-import { CompositeNavigationProp } from '@react-navigation/native';
 import type {
     NativeStackNavigationProp,
     NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
-import { AppTabsRoutes } from './routes';
+import { type AppTabsRoutes } from './routes';
 
 export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;
 export type TabNavigationProp<

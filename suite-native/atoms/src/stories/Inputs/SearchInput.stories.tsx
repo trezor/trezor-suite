@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { SearchInput as SearchInputComponent, SearchInputProps } from '../../Input/SearchInput';
+import {
+    SearchInput as SearchInputComponent,
+    type SearchInputProps,
+} from '../../Input/SearchInput';
 
 type SearchInputStory = StoryObj<SearchInputProps>;
 

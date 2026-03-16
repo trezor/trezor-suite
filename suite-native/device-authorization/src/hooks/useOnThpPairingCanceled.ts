@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import TrezorConnect, { DEVICE, DeviceThpPairingStatus } from '@trezor/connect';
+import TrezorConnect, { DEVICE, type DeviceThpPairingStatus } from '@trezor/connect';
 
 export const useOnThpPairingCanceled = (callback: () => void) => {
     const onThpPairingStatusChange = useCallback(

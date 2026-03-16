@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { SendContext, UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
+import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
 import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,

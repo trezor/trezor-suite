@@ -1,9 +1,9 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';

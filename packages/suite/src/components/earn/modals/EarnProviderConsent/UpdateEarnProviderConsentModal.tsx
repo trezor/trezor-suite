@@ -1,7 +1,11 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, EarnProvider, EarnYieldContext } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    type EarnProvider,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';

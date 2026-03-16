@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Gesture, PanGesture } from 'react-native-gesture-handler';
-import { SharedValue, useSharedValue } from 'react-native-reanimated';
+import { Gesture, type PanGesture } from 'react-native-gesture-handler';
+import { type SharedValue, useSharedValue } from 'react-native-reanimated';
 
 interface Config {
     enabled: boolean;

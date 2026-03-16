@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Paragraph, Text } from '@trezor/components';
 
 type CurrentDelegateProps = {

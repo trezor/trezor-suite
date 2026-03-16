@@ -1,4 +1,4 @@
-import { RecoveryState } from './recoveryReducer';
+import { type RecoveryState } from './recoveryReducer';
 
 type RecoveryRootState = { recovery: RecoveryState };
 

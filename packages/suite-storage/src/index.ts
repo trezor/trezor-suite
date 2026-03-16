@@ -1,11 +1,11 @@
 import {
-    IDBPDatabase,
-    IDBPTransaction,
-    IndexKey,
-    IndexNames,
-    StoreKey,
-    StoreNames,
-    StoreValue,
+    type IDBPDatabase,
+    type IDBPTransaction,
+    type IndexKey,
+    type IndexNames,
+    type StoreKey,
+    type StoreNames,
+    type StoreValue,
     deleteDB,
     openDB,
 } from 'idb';

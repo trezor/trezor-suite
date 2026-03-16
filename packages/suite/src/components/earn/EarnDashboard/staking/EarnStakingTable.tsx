@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { DashboardAnchor } from '@suite/router';
-import { StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectDeviceSupportedNetworks,

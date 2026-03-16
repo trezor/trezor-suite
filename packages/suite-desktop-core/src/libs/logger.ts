@@ -6,7 +6,7 @@ import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
 import { getSwitchValue, hasSwitch } from './process-switches';

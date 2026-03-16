@@ -1,7 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
-import { IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
-import { SuiteDBSchema } from '../../../definitions';
+import { type SuiteDBSchema } from '../../../definitions';
 import migration from '../25.10.0';
 
 const DB_NAME = 'suite-idb-test-25.10.0';

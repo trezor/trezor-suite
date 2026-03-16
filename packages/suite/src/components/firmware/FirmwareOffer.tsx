@@ -5,7 +5,7 @@ import {
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
 import { Column, H4, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
-import { FirmwareType } from '@trezor/connect';
+import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 

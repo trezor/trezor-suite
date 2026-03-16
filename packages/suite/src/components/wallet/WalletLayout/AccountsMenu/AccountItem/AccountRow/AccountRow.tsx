@@ -1,4 +1,4 @@
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, GhostContainer, Row } from '@trezor/components';
 
 import { type Account, type AccountItemType } from 'src/types/wallet';

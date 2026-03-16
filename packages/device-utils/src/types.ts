@@ -1,7 +1,7 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
-import { DeviceModelInternal } from './deviceModelInternal';
+import { type DeviceModelInternal } from './deviceModelInternal';
 
 export type FirmwareVersionString = `${number}.${number}.${number}`;
 

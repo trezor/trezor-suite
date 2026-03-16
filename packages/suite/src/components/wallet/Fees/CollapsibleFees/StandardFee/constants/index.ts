@@ -1,5 +1,5 @@
-import { TranslationKey } from '@suite/intl';
-import { FeeLevel } from '@trezor/connect';
+import { type TranslationKey } from '@suite/intl';
+import { type FeeLevel } from '@trezor/connect';
 
 export const feeLevelTranslationMap = {
     custom: 'FEE_LEVEL_ADVANCED',

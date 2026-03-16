@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useProviderMetadataChangeEffect } from '@suite-common/trading';

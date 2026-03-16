@@ -1,12 +1,16 @@
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     initStore,
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
 
-import { MaxSlippageForm, MaxSlippageFormProps, SLIPPAGE_INPUT_TEST_ID } from '../MaxSlippageForm';
+import {
+    MaxSlippageForm,
+    type MaxSlippageFormProps,
+    SLIPPAGE_INPUT_TEST_ID,
+} from '../MaxSlippageForm';
 
 describe('MaxSlippageForm', () => {
     const renderMaxSlippageForm = (props: Partial<MaxSlippageFormProps>, store: TestStore) =>

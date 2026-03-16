@@ -5,7 +5,7 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    FirmwareUpdateStackParamList,
+    type FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

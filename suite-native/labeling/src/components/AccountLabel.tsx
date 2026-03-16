@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AccountDescriptor } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type AccountDescriptor } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
-import { CombinedLabelingState, selectAccountLabel } from '../selectors';
+import { type CombinedLabelingState, selectAccountLabel } from '../selectors';
 
 type AccountLabelProps = {
     deviceStaticSessionId: StaticSessionId;

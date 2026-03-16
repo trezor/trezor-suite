@@ -1,7 +1,11 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
-import { EarnAnalyticsStep, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    type EarnAnalyticsStep,
+    EarnFlow,
+    EarnProvider,
+} from '@suite-common/suite-types/src/staking';
 import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';

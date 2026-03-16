@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { NetworkAndAccountCard, NetworkAndAccountCardProps } from '../NetworkAndAccountCard';
+import { NetworkAndAccountCard, type NetworkAndAccountCardProps } from '../NetworkAndAccountCard';
 
 describe('NetworkAndAccountCard', () => {
     const renderNetworkAndAccountCard = (props: Partial<NetworkAndAccountCardProps>) =>

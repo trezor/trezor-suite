@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { useActiveColorScheme } from '@suite-native/theme';
 import { StylesProvider as StylesStyleProvider, createRenderer } from '@trezor/styles';

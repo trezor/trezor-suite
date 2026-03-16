@@ -3,23 +3,28 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
 import {
-    BackendType,
+    type BackendType,
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
-import { State as GraphState } from 'src/reducers/wallet/graphReducer';
-import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
+import {
+    type CommonAggregatedHistory,
+    type GraphData,
+    type GraphRange,
+    type GraphScale,
+} from 'src/types/wallet/graph';
 
-import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import { FiatValueMap } from './utilsWorker';
+import { type ObjectType, type TypeName, sumFiatValueMapInPlace } from './utilsShared';
+import { type FiatValueMap } from './utilsWorker';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;

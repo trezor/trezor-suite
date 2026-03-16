@@ -10,13 +10,13 @@ import {
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,
     sortByBIP44AddressIndex,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
-import { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coinjoin';
+import { type BroadcastedTransactionDetails, type ScanAccountProgress } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
@@ -34,12 +34,12 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import {
-    CoinjoinAccount,
-    CoinjoinConfig,
-    CoinjoinDiscoveryCheckpoint,
-    CoinjoinSessionParameters,
+    type CoinjoinAccount,
+    type CoinjoinConfig,
+    type CoinjoinDiscoveryCheckpoint,
+    type CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
 import {
     getAccountProgressHandle,

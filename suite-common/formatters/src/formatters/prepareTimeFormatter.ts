@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 import { makeFormatter } from '../makeFormatter';
-import { FormatterConfig } from '../types';
+import { type FormatterConfig } from '../types';
 
 export const TIME_FORMAT = {
     HOURS_24: 'HH:mm',

@@ -1,7 +1,7 @@
 import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
-import { LocksRootState, selectIsRouterOrUiLocked } from '@suite/locks';
-import { ModalRootState, selectHasActiveModal } from '@suite/modal';
+import { type LocksRootState, selectIsRouterOrUiLocked } from '@suite/locks';
+import { type ModalRootState, selectHasActiveModal } from '@suite/modal';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';

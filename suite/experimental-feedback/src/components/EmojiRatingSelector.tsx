@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Rating, ratingOptions } from '@suite-common/feedback';
+import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

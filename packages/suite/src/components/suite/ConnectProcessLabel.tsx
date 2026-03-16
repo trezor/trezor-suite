@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

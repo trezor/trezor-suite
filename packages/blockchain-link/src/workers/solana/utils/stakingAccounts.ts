@@ -1,13 +1,18 @@
-import { Rpc, RpcMainnet, SolanaRpcApiMainnet, parseBase64RpcAccount } from '@solana/kit';
+import {
+    type Rpc,
+    type RpcMainnet,
+    type SolanaRpcApiMainnet,
+    parseBase64RpcAccount,
+} from '@solana/kit';
 import type { Base58EncodedBytes } from '@solana/rpc-types';
 import {
     STAKE_PROGRAM_ADDRESS,
-    StakeStateAccount,
-    StakeStateV2,
+    type StakeStateAccount,
+    type StakeStateV2,
     decodeStakeStateAccount,
 } from '@solana-program/stake';
 
-import { SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { type SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
 
 export const STAKE_ACCOUNT_V2_SIZE = 200;
 export const FILTER_DATA_SIZE = 200n;

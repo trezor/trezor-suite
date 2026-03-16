@@ -1,6 +1,6 @@
 import type { SuiteSyncAccount } from './AccountTable';
 import type { SuiteSyncAddress } from './AddressTable';
-import { SuiteSyncOutput } from './OutputTable';
+import { type SuiteSyncOutput } from './OutputTable';
 import type { SuiteSyncWallet } from './WalletTable';
 
 export type SuiteSyncSchema = {

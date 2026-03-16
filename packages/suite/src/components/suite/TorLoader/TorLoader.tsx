@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode, useEffect, useState } from 'react';
+import { type ComponentType, type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';

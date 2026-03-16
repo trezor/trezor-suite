@@ -1,4 +1,4 @@
-import { GhostContainer, Padding, Row } from '@trezor/components';
+import { GhostContainer, type Padding, Row } from '@trezor/components';
 
 import { ASSET_ROW_HEIGHT } from '../../constants';
 

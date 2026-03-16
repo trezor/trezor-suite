@@ -1,11 +1,11 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { FieldError } from 'react-hook-form';
+import { type ChangeEvent, useEffect, useState } from 'react';
+import { type FieldError } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeType,
+    type TradingExchangeType,
     useTradingUtils,
 } from '@suite-common/trading';
 import { Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';

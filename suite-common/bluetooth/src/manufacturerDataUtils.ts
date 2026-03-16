@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { BluetoothFilterPolicy, BluetoothManufacturerData } from './types';
+import { type BluetoothFilterPolicy, type BluetoothManufacturerData } from './types';
 
 // MODEL_BLE_CODE defined in trezor-firmware
 // https://github.com/trezor/trezor-firmware/blob/main/core/embed/models/T3W1/model_T3W1.h#L36

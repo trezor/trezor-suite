@@ -1,9 +1,9 @@
 import {
     Client,
-    ClientOptions,
-    ErrorResponse,
-    LedgerStream,
-    TransactionStream,
+    type ClientOptions,
+    type ErrorResponse,
+    type LedgerStream,
+    type TransactionStream,
     XrplError,
     xrpToDrops,
 } from 'xrpl';
@@ -19,10 +19,10 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
 type Context = ContextType<Client>;
 type Request<T> = T & Context;

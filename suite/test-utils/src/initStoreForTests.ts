@@ -1,7 +1,7 @@
 import { createMemoryHistory } from 'history';
 
 import { createSuiteRouterHistory } from '@suite/router';
-import { PreloadedState, Store, initStore } from '@trezor/suite';
+import { type PreloadedState, type Store, initStore } from '@trezor/suite';
 
 /**
  * Test-friendly wrapper for initStore that provides necessary dependencies like history.

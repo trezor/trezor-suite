@@ -7,7 +7,7 @@ import {
 } from '@suite/flags';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
-import { Feature as MessageFeature } from '@suite-common/suite-types';
+import { type Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -16,7 +16,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { TS7Banner } from './TS7Banner';
 import { TrezorExpertBanner } from './TrezorExpertBanner';
-import { DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
+import { type DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);

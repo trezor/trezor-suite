@@ -1,19 +1,19 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
 import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphData,
+    type AggregatedAccountHistory,
+    type AggregatedDashboardHistory,
+    type GraphData,
 } from 'src/types/wallet/graph';
 
 import { getGraphDataForInterval } from './utils';
-import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
+import { type ObjectType, type TypeName, sumFiatValueMapInPlace } from './utilsShared';
 import type { State as GraphState } from '../../../reducers/wallet/graphReducer';
 
 export type FiatValueMap = { [K in BaseCurrencyCode]?: BaseCurrencyAmount | undefined };

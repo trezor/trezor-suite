@@ -4,8 +4,8 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import {
-    TileStyles,
-    TileVariant,
+    type TileStyles,
+    type TileVariant,
     variantToColorMap,
     variantToIconName,
     variantToLabel,

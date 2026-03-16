@@ -1,15 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
-import { SellInfo, TradingSellState } from '../../../reducers/sellReducer';
+import { type SellInfo, type TradingSellState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
-import { SelectSellQuoteThunkProps } from '../selectSellQuoteThunk';
+import { type SelectSellQuoteThunkProps } from '../selectSellQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 

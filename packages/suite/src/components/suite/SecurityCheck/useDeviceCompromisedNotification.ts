@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import {
-    RevisionCheckErrorWithNotification,
+    type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';

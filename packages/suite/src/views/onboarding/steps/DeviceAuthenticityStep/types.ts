@@ -1,6 +1,6 @@
-import { ReactElement, ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 
-import { Icon, IconProps } from '@trezor/components';
+import { type Icon, type IconProps } from '@trezor/components';
 
 export type SecurityChecklistItem = {
     icon: ReactElement<IconProps, typeof Icon>;

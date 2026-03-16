@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { breakpoints } from '@trezor/theme';

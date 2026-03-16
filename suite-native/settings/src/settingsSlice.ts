@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { isDetoxTestBuild } from '@suite-native/config';

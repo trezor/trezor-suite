@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { TRADING_FORM_AMOUNT_IN_CRYPTO, useTradingUtils } from '@suite-common/trading';
@@ -7,9 +7,9 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    TradingAllFormProps,
-    TradingFormInputFiatCryptoProps,
-    TradingFormInputFiatCryptoWrapProps,
+    type TradingAllFormProps,
+    type TradingFormInputFiatCryptoProps,
+    type TradingFormInputFiatCryptoWrapProps,
 } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';

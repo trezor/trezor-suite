@@ -1,7 +1,7 @@
-import { LayoutChangeEvent, View } from 'react-native';
+import { type LayoutChangeEvent, View } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -9,7 +9,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
-import { ReviewSummaryOutput } from '../../types';
+import { type ReviewSummaryOutput } from '../../types';
 
 export type ReviewOutputSummaryItemProps = {
     accountKey: AccountKey;

@@ -5,8 +5,8 @@ import { reloadAppAsync } from 'expo';
 
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
 import { useAlert } from '@suite-native/alerts';
-import { Select, SelectItemType } from '@suite-native/atoms';
-import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
+import { Select, type SelectItemType } from '@suite-native/atoms';
+import { type FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 const options: SelectItemType<FirmwareChannel>[] = [
     { label: 'Production', value: 'production' },

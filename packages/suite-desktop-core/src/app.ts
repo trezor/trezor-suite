@@ -21,7 +21,7 @@ import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
-import { Store, WinBoundsCoords } from './libs/store';
+import { Store, type WinBoundsCoords } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';

@@ -1,6 +1,6 @@
-import zod from 'zod';
+import type zod from 'zod';
 
-import { ValidatorsQueueResponse } from '../schemas/everstake-eth-b2c';
+import { type ValidatorsQueueResponse } from '../schemas/everstake-eth-b2c';
 
 type ValidatorsQueueResponse = zod.infer<typeof ValidatorsQueueResponse>;
 

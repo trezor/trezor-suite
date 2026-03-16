@@ -1,10 +1,10 @@
 import {
-    NetworkSymbol,
-    NetworkType,
+    type NetworkSymbol,
+    type NetworkType,
     STAKING_SYMBOLS,
     STAKING_TYPES,
-    StakingNetworkSymbol,
-    StakingNetworkType,
+    type StakingNetworkSymbol,
+    type StakingNetworkType,
     getStakingProviderByCardanoPoolId,
     getStakingProviderByEthereumPoolName,
     getStakingProviderBySolanaVoterPubkey,
@@ -30,11 +30,11 @@ import {
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
-    PrecomposedLevels,
-    StakingLimits,
-    StakingPoolExtended,
-    WalletAccountTransaction,
+    type Account,
+    type PrecomposedLevels,
+    type StakingLimits,
+    type StakingPoolExtended,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';

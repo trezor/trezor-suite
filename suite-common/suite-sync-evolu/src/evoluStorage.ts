@@ -1,12 +1,12 @@
-import { Evolu, SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
+import { type Evolu, type SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
 
-import { CreateSuiteStorage, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
-import { CreateEvoluInstanceDep } from './createEvoluInstance';
-import { AccountSchema, EvoluAccountTable } from './data/accountTable';
-import { AddressEvoluTable, AddressLabelSchema } from './data/addressTable';
-import { OutputEvoluTable, OutputLabelSchema } from './data/outputTable';
-import { EvoluWalletTable, WalletLabelSchema } from './data/walletTable';
+import { type CreateEvoluInstanceDep } from './createEvoluInstance';
+import { type AccountSchema, EvoluAccountTable } from './data/accountTable';
+import { AddressEvoluTable, type AddressLabelSchema } from './data/addressTable';
+import { OutputEvoluTable, type OutputLabelSchema } from './data/outputTable';
+import { EvoluWalletTable, type WalletLabelSchema } from './data/walletTable';
 
 export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
 

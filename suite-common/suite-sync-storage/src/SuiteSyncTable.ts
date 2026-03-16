@@ -1,4 +1,4 @@
-import { Result } from '@trezor/type-utils';
+import { type Result } from '@trezor/type-utils';
 
 export type EntityListener<T extends {}> = { onChange: (payload: T[]) => void };
 

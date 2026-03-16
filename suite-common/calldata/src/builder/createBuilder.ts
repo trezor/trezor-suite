@@ -1,15 +1,15 @@
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import {
-    BuildResult,
-    Builder,
-    BuilderConfig,
-    Encoder,
-    ExtractContext,
-    ExtractEncoderOutput,
-    ExtractInputs,
-    ExtractParamNames,
-    ParamsConfig,
+    type BuildResult,
+    type Builder,
+    type BuilderConfig,
+    type Encoder,
+    type ExtractContext,
+    type ExtractEncoderOutput,
+    type ExtractInputs,
+    type ExtractParamNames,
+    type ParamsConfig,
 } from '../types/builder';
 
 export const createBuilder = <

@@ -2,7 +2,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from '../../../../hooks/suite';

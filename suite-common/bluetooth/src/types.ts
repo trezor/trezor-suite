@@ -1,5 +1,5 @@
-import { BluetoothDeviceId } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type BluetoothDeviceId } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type BluetoothAdapterStatus =
     | 'unknown'

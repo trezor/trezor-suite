@@ -1,7 +1,7 @@
-import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { SuiteServices } from '../extraDependencies';
+import { type SuiteServices } from '../extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
 

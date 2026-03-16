@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,

@@ -1,4 +1,4 @@
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 
 export type EarnTokenBalance = {
     value: string;

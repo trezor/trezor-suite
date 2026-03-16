@@ -3,7 +3,7 @@ import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 
 import {
     ATTEMPTS_LIMIT,
-    CommonProps,
+    type CommonProps,
     THP_ACK_DEADLINE,
     THP_ACK_TIMEOUT,
     receiveExpectedMessage,

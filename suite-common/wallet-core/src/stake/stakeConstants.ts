@@ -1,11 +1,11 @@
-import { SupportedSolanaNetworkSymbols } from '@suite-common/staking-solana-types';
+import { type SupportedSolanaNetworkSymbols } from '@suite-common/staking-solana-types';
 import { EVERSTAKE_SOLANA_MAINNET_VALIDATOR } from '@suite-common/wallet-config';
 import {
-    SupportedCardanoNetworkSymbols,
-    SupportedEthereumNetworkSymbol,
+    type SupportedCardanoNetworkSymbols,
+    type SupportedEthereumNetworkSymbol,
 } from '@suite-common/wallet-types';
 
-import { VotingDelegationOption } from './stakeActions';
+import { type VotingDelegationOption } from './stakeActions';
 
 export const EVERSTAKE_ENDPOINT_PREFIX = {
     eth: 'https://eth-api-b2c.everstake.one/api/v1',

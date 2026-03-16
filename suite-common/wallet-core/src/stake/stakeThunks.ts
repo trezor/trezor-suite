@@ -3,29 +3,29 @@ import { ZodError } from 'zod';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    CardanoPoolsStats,
+    type CardanoPoolsStats,
     CardanoStatsResponse,
-    EthereumPoolStats,
-    EthereumValidatorsQueue,
+    type EthereumPoolStats,
+    type EthereumValidatorsQueue,
     PoolStatsResponse,
     SolanaDashboardResponse,
     SolanaStakeAccountRewardsResponse,
-    SolanaStakeRewardsByAccount,
-    SolanaStakingInfo,
-    SolanaTotalStakeRewardsByAccount,
+    type SolanaStakeRewardsByAccount,
+    type SolanaStakingInfo,
+    type SolanaTotalStakeRewardsByAccount,
     SolanaTotalStakeRewardsResponse,
     ValidatorsQueueResponse,
 } from '@suite-common/wallet-api';
-import { NetworkConfig } from '@suite-common/wallet-config';
+import { type NetworkConfig } from '@suite-common/wallet-config';
 import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
-    EverstakeRewardsEndpointType,
+    type EverstakeRewardsEndpointType,
 } from '@suite-common/wallet-types';
 import { isTestnet, requestUrl } from '@suite-common/wallet-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {

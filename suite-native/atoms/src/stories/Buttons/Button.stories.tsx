@@ -6,7 +6,7 @@ import {
     BUTTON_COLOR_SCHEMES,
     BUTTON_SIZES,
     Button as ButtonComponent,
-    ButtonProps,
+    type ButtonProps,
 } from '../../Button/Button';
 
 type ButtonStory = StoryObj<ButtonProps>;

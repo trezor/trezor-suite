@@ -1,10 +1,10 @@
 import { FormProvider } from 'react-hook-form';
 
-import { CryptoId, DexApprovalType, ProviderMetadata } from 'invity-api';
+import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Box, Column, Modal, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';

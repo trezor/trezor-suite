@@ -1,5 +1,5 @@
-import { RouteParams } from '@suite/router';
-import { Account } from '@suite-common/wallet-types';
+import { type RouteParams } from '@suite/router';
+import { type Account } from '@suite-common/wallet-types';
 
 type GetEarnRouteParamsProps = {
     account: Account;

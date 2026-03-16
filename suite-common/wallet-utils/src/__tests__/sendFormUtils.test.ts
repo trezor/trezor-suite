@@ -4,7 +4,7 @@ import {
     networkSpecificDefaultRipple,
     networkSpecificDefaultStellar,
 } from '@suite-common/wallet-types/mocks';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';

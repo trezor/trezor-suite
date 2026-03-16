@@ -1,8 +1,8 @@
-import { DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
+import { type DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
 
 import {
-    RetrieveDelegatedIdentityKeyFromDeviceDeps,
-    RetrieveDelegatedIdentityKeyParams,
+    type RetrieveDelegatedIdentityKeyFromDeviceDeps,
+    type RetrieveDelegatedIdentityKeyParams,
     createRetrieveDelegatedIdentityKeyFromDevice,
 } from '../retrieveDelegatedIdentityKeyFromDevice';
 

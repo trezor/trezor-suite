@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-import { FirmwareSource } from '../definitions';
+import { type FirmwareSource } from '../definitions';
 
 type Attributes = {
     mode: AttributeDef<'normal' | 'bootloader' | 'initialize' | 'seedless'>;

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { Divider as DividerComponent, DividerProps } from '../../Divider';
+import { Divider as DividerComponent, type DividerProps } from '../../Divider';
 import { VStack } from '../../Stack';
 import { Text } from '../../Text';
 

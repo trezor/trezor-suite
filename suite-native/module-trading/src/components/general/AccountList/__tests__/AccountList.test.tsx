@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectTradingBuyReceiveAccountKey } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
@@ -18,10 +18,10 @@ import {
     selectExchangeSelectedReceiveAccount,
     tradingInitialState,
 } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { Address } from '@trezor/blockchain-link-types';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type Address } from '@trezor/blockchain-link-types';
 
-import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
+import { AccountList, type AccountsListProps, keyExtractor } from '../AccountList';
 
 const defaultPreloadedState = {
     device: {

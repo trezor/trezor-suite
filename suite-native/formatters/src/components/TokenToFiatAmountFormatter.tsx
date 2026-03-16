@@ -1,10 +1,10 @@
 import { useFormatters } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { Box, TextProps } from '@suite-native/atoms';
+import { type SignValue } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { Box, type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { SignValueFormatter } from './SignValueFormatter';

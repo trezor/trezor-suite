@@ -4,9 +4,9 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
@@ -17,21 +17,21 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type Account,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Ok } from '@trezor/type-utils';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type Ok } from '@trezor/type-utils';
 import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';

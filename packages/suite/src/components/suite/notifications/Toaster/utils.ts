@@ -1,9 +1,9 @@
-import { TranslationFunction } from '@suite/intl';
-import { ToastAction, ToastIntent } from '@trezor/components';
+import { type TranslationFunction } from '@suite/intl';
+import { type ToastAction, type ToastIntent } from '@trezor/components';
 
-import { ToastNotificationVariant } from 'src/types/suite';
+import { type ToastNotificationVariant } from 'src/types/suite';
 
-import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 export const notificationVariantToIntentMap: Record<ToastNotificationVariant, ToastIntent> = {
     success: 'brand',

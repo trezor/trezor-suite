@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import {
-    TradingAssetOption,
+    type TradingAssetOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
 import {
@@ -18,11 +18,11 @@ import {
     ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
 } from 'src/components/suite/asset-picker/constants';
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { useAssetsContext } from '../../AssetOptionsContext';
 import {
-    AggregatedAccountWithTokens,
+    type AggregatedAccountWithTokens,
     useAgregatedAccountsWithTokens,
 } from '../../hooks/useAgregatedAccountsWithTokens';
 

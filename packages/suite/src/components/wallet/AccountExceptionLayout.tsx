@@ -1,15 +1,15 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import {
     Button,
-    ButtonProps,
+    type ButtonProps,
     Card,
     Column,
     Divider,
     H2,
     IconCircle,
-    IconCircleIntent,
-    IconName,
+    type IconCircleIntent,
+    type IconName,
     Paragraph,
     Row,
 } from '@trezor/components';

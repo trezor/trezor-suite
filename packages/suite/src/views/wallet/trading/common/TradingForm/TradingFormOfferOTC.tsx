@@ -1,15 +1,15 @@
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import {
-    TradingTradeBuySellType,
+    type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 

@@ -2,11 +2,11 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
-import { Message, Variant } from '@suite-common/suite-types';
+import { type Message, type Variant } from '@suite-common/suite-types';
 import { Box, HStack, PressableOpacity, RoundedIcon, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { MessageLink } from './MessageLink';
 

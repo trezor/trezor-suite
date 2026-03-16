@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

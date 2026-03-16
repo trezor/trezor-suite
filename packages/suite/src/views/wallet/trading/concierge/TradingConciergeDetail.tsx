@@ -1,5 +1,5 @@
-import { Translation, TranslationId } from '@suite/intl';
-import { Card, Column, H3, IconCircle, IconName, List, Paragraph } from '@trezor/components';
+import { Translation, type TranslationId } from '@suite/intl';
+import { Card, Column, H3, IconCircle, type IconName, List, Paragraph } from '@trezor/components';
 
 import { TradingFooter } from '../common';
 import { TradingConciergeForm } from './TradingConciergeForm';

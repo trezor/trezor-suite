@@ -5,7 +5,7 @@ import { modalReducer } from '@suite/modal';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 

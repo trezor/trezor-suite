@@ -1,10 +1,10 @@
 import type { SellFiatTrade } from 'invity-api';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getBtcAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
-import { TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,
     selectSellBestQuotesForAvailablePaymentMethods,

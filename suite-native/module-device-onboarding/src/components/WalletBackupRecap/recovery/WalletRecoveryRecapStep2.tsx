@@ -4,7 +4,7 @@ import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import {
     WALLET_RECOVERY_RECAP_STEPS,
-    WalletBackupTutorialNumberedStepProps,
+    type WalletBackupTutorialNumberedStepProps,
 } from './WalletRecoveryRecapStep1';
 import { useOnWalletRecapFinishedNavigation } from '../../../hooks/useOnWalletRecapFinishedNavigation';
 import { WalletRecapStepContent } from '../../WalletBackupRecap/WalletRecapStepContent';

@@ -1,8 +1,8 @@
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { AmountSubunit, asAmountSubunit } from '@suite-common/wallet-utils';
+import { type AmountSubunit, asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { ValidationResult } from '../../../types/validation';
+import { type ValidationResult } from '../../../types/validation';
 
 interface ValidateUint256TestCase {
     description: string;

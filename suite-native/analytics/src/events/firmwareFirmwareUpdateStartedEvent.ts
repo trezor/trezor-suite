@@ -1,8 +1,8 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { FirmwareType } from '@trezor/connect';
+import { type FirmwareType } from '@trezor/connect';
 
 import { EventType } from '../constants';
-import { FirmwareUpdateLocation, FirmwareUpdateStartType } from '../definitions';
+import { type FirmwareUpdateLocation, type FirmwareUpdateStartType } from '../definitions';
 
 type Attributes = {
     model: AttributeDef<string>;

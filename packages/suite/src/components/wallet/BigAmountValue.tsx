@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 

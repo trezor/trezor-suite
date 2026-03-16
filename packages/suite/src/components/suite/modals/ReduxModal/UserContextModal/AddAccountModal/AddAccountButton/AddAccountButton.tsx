@@ -3,12 +3,12 @@ import { useCallback } from 'react';
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Network, NetworkAccount } from '@suite-common/wallet-config';
-import { UnavailableCapability } from '@trezor/connect';
+import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
+import { type UnavailableCapability } from '@trezor/connect';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';

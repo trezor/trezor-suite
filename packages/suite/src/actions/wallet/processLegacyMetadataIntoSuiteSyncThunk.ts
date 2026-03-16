@@ -1,12 +1,12 @@
 import { featureUsed } from '@suite/experimental-feedback';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { Result, exhaustive } from '@trezor/type-utils';
+import { type Result, exhaustive } from '@trezor/type-utils';
 
 type ProcessMetadataMessageThunkParams = {
     deviceStaticSessionId: StaticSessionId;

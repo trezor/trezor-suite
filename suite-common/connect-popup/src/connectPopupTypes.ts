@@ -1,7 +1,7 @@
-import { AccountKey, TxSimulationAction } from '@suite-common/wallet-types';
-import { CallMethodKeys } from '@trezor/connect';
-import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
+import { type CallMethodKeys } from '@trezor/connect';
+import { type MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {
     appName: string;

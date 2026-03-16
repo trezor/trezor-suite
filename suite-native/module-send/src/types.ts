@@ -1,10 +1,10 @@
-import { RefObject } from 'react';
-import { TextInputProps } from 'react-native';
+import { type RefObject } from 'react';
+import { type TextInputProps } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { InputType } from '@suite-native/atoms';
-import { Utxo } from '@trezor/blockchain-link-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type InputType } from '@suite-native/atoms';
+import { type Utxo } from '@trezor/blockchain-link-types';
 
 export type SendAmountInputProps = {
     recipientIndex: number;

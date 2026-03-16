@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';

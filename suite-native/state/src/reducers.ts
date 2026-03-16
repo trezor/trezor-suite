@@ -42,10 +42,10 @@ import { experimentalFeedbackReducer } from '@suite-native/experimental-features
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
-import { TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
+import { type TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
-    MMKVStorageDep,
+    type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
     backfillPortfolioTrackerUnavailableCapabilities,
     blockchainPersistTransform,

@@ -1,4 +1,4 @@
-import { UIIntent } from '../../config/types';
+import { type UIIntent } from '../../config/types';
 
 export const componentWithSubIconIntents = [
     'brand',

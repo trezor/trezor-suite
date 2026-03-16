@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { eraseFetchedDataDebug } from '@suite-common/suite-sync-quota-manager';
 import {
-    SuiteSyncAppReloaderDep,
-    TurnOffSuiteSync,
-    TurnOffSuiteSyncForWalletDep,
+    type SuiteSyncAppReloaderDep,
+    type TurnOffSuiteSync,
+    type TurnOffSuiteSyncForWalletDep,
 } from '@suite-common/suite-sync-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { clearAll } from './data/suiteSyncDataReducer';
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';

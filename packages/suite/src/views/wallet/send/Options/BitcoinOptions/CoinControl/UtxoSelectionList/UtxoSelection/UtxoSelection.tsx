@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { type MouseEventHandler, type ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
@@ -21,14 +21,14 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
-import { AccountUtxo } from '@trezor/connect';
+import { type AccountUtxo } from '@trezor/connect';
 
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;

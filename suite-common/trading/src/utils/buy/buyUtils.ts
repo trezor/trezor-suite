@@ -1,6 +1,6 @@
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
 
-import { TradingAmountLimitProps } from '../../types';
+import { type TradingAmountLimitProps } from '../../types';
 
 type GetAmountLimitsProps = {
     request: BuyTradeQuoteRequest;

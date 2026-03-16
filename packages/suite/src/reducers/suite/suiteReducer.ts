@@ -2,18 +2,18 @@ import { produce } from 'immer';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 import type { CountryCode } from '@suite-common/geolocation';
-import { OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { Locale } from '@suite-common/suite-types';
+import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { ConnectSettings, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { type ConnectSettings, TRANSPORT, type TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
+import { type Action, type TorBootstrap, TorStatus } from 'src/types/suite';
 
 export interface SuiteRootState {
     suite: SuiteState;

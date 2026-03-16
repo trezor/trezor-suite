@@ -1,6 +1,6 @@
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes } from 'react';
+import { type AnchorHTMLAttributes, type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
 
-import { UIIntent, UIPriority, UISize } from '../../config/types';
+import { type UIIntent, type UIPriority, type UISize } from '../../config/types';
 
 export const buttonIntents = [
     'brand',

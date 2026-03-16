@@ -1,9 +1,9 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -14,10 +14,10 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
-import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
+import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
     account: Account;

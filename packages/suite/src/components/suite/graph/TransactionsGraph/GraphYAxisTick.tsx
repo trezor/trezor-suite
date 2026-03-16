@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { useTheme } from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 

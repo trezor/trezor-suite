@@ -9,11 +9,11 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { MyAssetTradeable } from '@suite-native/trading-types';
+import { type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
-import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
+import { MyAssetSheet, type MyAssetSheetProps } from '../MyAssetSheet';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

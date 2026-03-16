@@ -1,22 +1,22 @@
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
-import { RouterState } from '@suite/router';
-import { FirmwareUpdateState } from '@suite-common/firmware';
+import { type RouterState } from '@suite/router';
+import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { MetadataState } from '@suite-common/metadata-types';
+import { type MetadataState } from '@suite-common/metadata-types';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
 import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
-import { BackupState } from 'src/reducers/backup/backupReducer';
-import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { AppState } from 'src/reducers/store';
+import { type BackupState } from 'src/reducers/backup/backupReducer';
+import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import { type AppState } from 'src/reducers/store';
 import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
-import { ProtocolState } from 'src/reducers/suite/protocolReducer';
+import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import WalletReducers from 'src/reducers/wallet';
+import type WalletReducers from 'src/reducers/wallet';
 
 import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktopBluetoothReducer';
 

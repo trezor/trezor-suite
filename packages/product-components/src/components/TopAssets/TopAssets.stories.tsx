@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Asset, TopAssets } from './TopAssets';
+import { type Asset, TopAssets } from './TopAssets';
 
 const meta: Meta<typeof TopAssets> = {
     title: 'TopAssets',

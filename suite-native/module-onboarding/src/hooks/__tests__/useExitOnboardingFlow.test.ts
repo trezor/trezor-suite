@@ -1,7 +1,7 @@
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

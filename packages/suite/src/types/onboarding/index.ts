@@ -1,9 +1,9 @@
-import { TranslationKey } from '@suite/intl';
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
-import { FirmwareVersionString } from '@trezor/device-utils/src/types';
+import { type TranslationKey } from '@suite/intl';
+import { type DeviceModelInternal, type FirmwareType } from '@trezor/device-utils';
+import { type FirmwareVersionString } from '@trezor/device-utils/src/types';
 
-import * as STEP from 'src/constants/onboarding/steps';
-import { PrerequisiteType } from 'src/utils/suite/prerequisites';
+import type * as STEP from 'src/constants/onboarding/steps';
+import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 type ModelWithFirmwareVersion = {
     model: DeviceModelInternal;

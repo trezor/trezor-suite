@@ -5,11 +5,11 @@ import {
     Kind,
     Optional,
     OptionalKind,
-    Static,
-    TObject,
-    TSchema,
+    type Static,
+    type TObject,
+    type TSchema,
 } from '@sinclair/typebox';
-import { Errors, ValueError, ValueErrorType } from '@sinclair/typebox/errors';
+import { Errors, type ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';

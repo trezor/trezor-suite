@@ -11,7 +11,7 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 jest.mock('@suite/router', () => ({

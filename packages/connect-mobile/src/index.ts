@@ -1,7 +1,7 @@
 import { corsValidator, parseManifest } from '@trezor/connect/src/data/connectSettings';
 import { createErrorMessage } from '@trezor/connect/src/events';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { type ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type { Manifest } from '@trezor/connect/src/types';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
@@ -10,7 +10,7 @@ import {
     DEEPLINK_VERSION,
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
-import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
+import { type Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;

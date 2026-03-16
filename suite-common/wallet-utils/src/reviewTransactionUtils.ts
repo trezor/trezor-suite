@@ -1,16 +1,16 @@
 import { fromWei, toWei } from 'web3-utils';
 
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { networks } from '@suite-common/wallet-config';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    ReviewOutput,
-    ReviewOutputState,
-    StakeFormState,
-    StakeType,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type ReviewOutput,
+    type ReviewOutputState,
+    type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

@@ -1,5 +1,5 @@
-import { CoreEventMessage } from '@trezor/connect/src/events';
-import { AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
+import { type CoreEventMessage } from '@trezor/connect/src/events';
+import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
 import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
 
 import { Popup } from './abstract';

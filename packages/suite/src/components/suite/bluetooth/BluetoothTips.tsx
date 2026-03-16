@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Box, Button, Card, Column, H3, Row, Text } from '@trezor/components';
 
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { TroubleshootingTipsList } from '../troubleshooting/TroubleshootingTipsList';
 import { TROUBLESHOOTING_ALL_BLUETOOTH_TIPS } from '../troubleshooting/tips';
 

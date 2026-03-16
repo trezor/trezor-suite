@@ -1,11 +1,11 @@
-import { MouseEventHandler, forwardRef } from 'react';
+import { type MouseEventHandler, forwardRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
 import {
-    AllowedAnimationPrimitiveFrameProps,
+    type AllowedAnimationPrimitiveFrameProps,
     AnimationWrapper,
-    Shape,
+    type Shape,
     allowedAnimationPrimitivesFrameProps,
     pickAndPrepareFrameProps,
 } from '@trezor/components';
@@ -13,10 +13,10 @@ import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/dev
 
 import { Video } from './Video';
 import {
-    AnimationType,
-    ColorsFor,
+    type AnimationType,
+    type ColorsFor,
     DEVICE_ANIMATION_CONFIG,
-    ModelFor,
+    type ModelFor,
 } from './deviceAnimationConfig';
 
 const getThemeVariant = (theme: any) =>

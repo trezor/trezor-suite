@@ -1,6 +1,6 @@
 import { join, resolve } from 'node:path';
 
-import { ExecCliCommandDep } from './execCliCommand';
+import { type ExecCliCommandDep } from './execCliCommand';
 
 const ROOT_WORKSPACE_NAME = 'trezor-suite';
 const REPO_ROOT_FROM_REQUIREMENTS_WORKSPACE = '../..';

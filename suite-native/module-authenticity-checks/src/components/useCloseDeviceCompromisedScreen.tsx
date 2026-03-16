@@ -13,9 +13,9 @@ import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 

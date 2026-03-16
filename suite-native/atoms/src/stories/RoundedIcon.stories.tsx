@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_SIZES, icons } from '@suite-native/icons';
 import { COLOR_TOKENS } from '@trezor/theme';
 
-import { RoundedIcon as RoundedIconComponent, RoundedIconProps } from '../RoundedIcon';
+import { RoundedIcon as RoundedIconComponent, type RoundedIconProps } from '../RoundedIcon';
 
 type RoundedIconStory = StoryObj<RoundedIconProps>;
 

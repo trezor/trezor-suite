@@ -1,4 +1,4 @@
-import { TradingOTC } from '../../types';
+import { type TradingOTC } from '../../types';
 import { getOtcProvidersByCountry } from '../useFetchOtc';
 
 describe('getOtcProvidersByCountry', () => {

@@ -1,6 +1,6 @@
 import { D, G } from '@mobily/ts-belt';
 
-import { StyleObject } from '../types';
+import { type StyleObject } from '../types';
 
 // NOTE: Mutations for maximum performance. Yuck.
 const applyNestedSelectors = (styleObject: StyleObject): StyleObject => {

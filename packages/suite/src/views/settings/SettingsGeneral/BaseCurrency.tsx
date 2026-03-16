@@ -6,7 +6,7 @@ import { SettingsAnchor } from '@suite/router';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
-    BaseCurrencyCode,
+    type BaseCurrencyCode,
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';

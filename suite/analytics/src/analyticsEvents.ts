@@ -1,6 +1,6 @@
 import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics';
 
-import { EventType } from './constants';
+import { type EventType } from './constants';
 import * as desktopEventsData from './events';
 
 export const desktopEvents = desktopEventsData;

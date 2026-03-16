@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { FlagsState, setFlag } from '@suite/flags';
+import { type FlagsState, setFlag } from '@suite/flags';
 import { IconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { Button, ButtonProps } from '@trezor/components';
+import { Button, type ButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 

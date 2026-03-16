@@ -1,9 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import * as fixtures from '../__fixtures__/transactionUtils';
 import {
-    MonthKey,
+    type MonthKey,
     analyzeTransactions,
     enhanceTransaction,
     findChainedTransactions,

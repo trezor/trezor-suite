@@ -16,7 +16,7 @@ import {
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Alert } from '../alertsAtoms';
+import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
 import { useShakeAnimation } from '../useShakeAnimation';
 

@@ -1,8 +1,8 @@
-import { BuyTradeQuoteRequest } from 'invity-api';
+import { type BuyTradeQuoteRequest } from 'invity-api';
 
 import {
-    TradingBuyFormProps,
-    TradingCountryCode,
+    type TradingBuyFormProps,
+    type TradingCountryCode,
     buildTradingFiatOption,
     getDefaultCountry,
     getDefaultCountrySubdivision,

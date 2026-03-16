@@ -2,7 +2,7 @@ import { bufferUtils } from '@trezor/utils';
 
 import type { DeviceAuthenticityBlacklistConfig } from '../config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from '../config/deviceAuthenticityConfigTypes';
-import { VerifyAuthenticityProofParams } from '../types';
+import { type VerifyAuthenticityProofParams } from '../types';
 import { prepareDeviceAuthenticityData, verifyAuthenticityProof } from '../verifyAuthenticityProof';
 
 const CA_CERT_OPTIGA =

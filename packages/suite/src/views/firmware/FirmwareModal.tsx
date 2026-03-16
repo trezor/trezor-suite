@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { closeModal } from '@suite/modal';
 import { closeModalApp } from '@suite/router';

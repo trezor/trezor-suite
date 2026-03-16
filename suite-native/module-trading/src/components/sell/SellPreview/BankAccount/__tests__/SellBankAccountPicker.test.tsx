@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountPicker } from '../SellBankAccountPicker';

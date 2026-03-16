@@ -1,8 +1,8 @@
 import { css } from 'styled-components';
 
-import { SpacingValuesNew, TypographyStyle, borders } from '@trezor/theme';
+import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
 
-import { InputSize } from './types';
+import { type InputSize } from './types';
 import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {

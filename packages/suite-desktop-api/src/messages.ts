@@ -1,5 +1,5 @@
-import { TorStatus } from './enums';
-import { ExtractUndefined } from './methods';
+import { type TorStatus } from './enums';
+import { type ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 

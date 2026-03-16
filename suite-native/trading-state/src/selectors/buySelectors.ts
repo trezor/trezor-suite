@@ -5,8 +5,8 @@ import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
+    type TradingCountryCode,
+    type TradingPaymentMethodProps,
     getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
@@ -20,12 +20,12 @@ import {
     coinInfoToTradeableAsset,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
-import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
+import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { getAssetByEnabledNetworksFilter } from '../utils';
 import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
     createTradingWithFeatureFlagsMemoizedSelector,

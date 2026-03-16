@@ -1,5 +1,5 @@
-import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
     FadeInDown,
@@ -22,9 +22,9 @@ import {
     Group,
     LinearGradient,
     Path,
-    PathCommand,
+    type PathCommand,
     Shadow,
-    SkPath,
+    type SkPath,
     Skia,
     mix,
     vec,

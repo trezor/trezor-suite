@@ -4,16 +4,16 @@ import { getNetworkOptional } from '@suite-common/wallet-config';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 import { transactionsActions } from '@suite-common/wallet-core';
 import { getAccountTransactions, isPending } from '@suite-common/wallet-utils';
-import { BlockchainBlock } from '@trezor/connect';
+import { type BlockchainBlock } from '@trezor/connect';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
-import { Dispatch, GetState } from 'src/types/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { type Dispatch, type GetState } from 'src/types/suite';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import {
-    CardanoNetwork,
-    DRepResponse,
-    PendingStakeTx,
-    PoolsResponse,
+    type CardanoNetwork,
+    type DRepResponse,
+    type PendingStakeTx,
+    type PoolsResponse,
 } from 'src/types/wallet/cardanoStaking';
 
 export type CardanoStakingAction =

@@ -1,12 +1,12 @@
 import {
-    BuyTrade,
-    CryptoId,
-    ExchangeProviderInfo,
-    FiatCurrencyCode,
-    SellFiatTrade,
+    type BuyTrade,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type FiatCurrencyCode,
+    type SellFiatTrade,
 } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -24,8 +24,8 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
-import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
+import { type Account } from '@suite-common/wallet-types';
+import { type AssetLogoProps, type AssetOptionBaseProps } from '@trezor/product-components';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 

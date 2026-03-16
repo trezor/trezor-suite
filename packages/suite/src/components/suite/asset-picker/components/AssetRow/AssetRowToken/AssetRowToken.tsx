@@ -1,9 +1,9 @@
 import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { AssetLogo, shouldShowNetworkIcon } from '@trezor/product-components';
 
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AssetAmount } from './AssetAmount';

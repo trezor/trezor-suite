@@ -1,4 +1,4 @@
-import { UIAlignment, UIIntent } from '../../config/types';
+import { type UIAlignment, type UIIntent } from '../../config/types';
 
 export const modalIntents = [
     'brand',

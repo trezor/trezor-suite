@@ -1,10 +1,10 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,

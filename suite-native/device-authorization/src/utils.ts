@@ -1,4 +1,4 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { UI_REQUEST } from '@trezor/connect/src/exports';
 import type { UiRequestDeviceAction } from '@trezor/connect/src/exports';

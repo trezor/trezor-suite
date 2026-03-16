@@ -1,6 +1,6 @@
-import { WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 import {
     decimalTransformer,

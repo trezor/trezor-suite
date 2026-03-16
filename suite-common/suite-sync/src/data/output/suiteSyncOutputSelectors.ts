@@ -3,7 +3,7 @@ import { createSuiteSyncOutputId } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, TxTargetId, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { selectAllOutputsForWallet } from '../wallet/suiteSyncWalletSelectors';

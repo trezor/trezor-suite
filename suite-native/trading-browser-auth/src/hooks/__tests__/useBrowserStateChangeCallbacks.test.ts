@@ -1,5 +1,10 @@
-import { TradingType } from '@suite-common/trading';
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type TradingType } from '@suite-common/trading';
+import {
+    type TestStore,
+    act,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallbacks';

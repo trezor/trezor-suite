@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { ExchangeTradeStatus } from 'invity-api';
+import { type ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
 import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { isMacOs } from '@trezor/env-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { KeyboardKey, Keys, keyboardKeys } from './keyboardKeys';
+import { type KeyboardKey, type Keys, keyboardKeys } from './keyboardKeys';
 import { addAlphaToHex } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';

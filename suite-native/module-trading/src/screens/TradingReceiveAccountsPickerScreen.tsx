@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
 import {
@@ -9,11 +9,11 @@ import {
     useAddCoinAccount,
 } from '@suite-native/module-add-accounts';
 import {
-    AddCoinFlowType,
+    type AddCoinFlowType,
     Screen,
     ScreenHeader,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectBuySelectedReceiveAccount,
@@ -21,7 +21,7 @@ import {
 } from '@suite-native/trading-state';
 
 import { AccountList } from '../components/general/AccountList/AccountList';
-import { ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
+import { type ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
 
 export const TradingReceiveAccountsPickerScreen = () => {
     const {

@@ -1,14 +1,14 @@
 import { A, D, G } from '@mobily/ts-belt';
 
-import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
-    AccountType,
+    type AccountType,
     getNetwork,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {

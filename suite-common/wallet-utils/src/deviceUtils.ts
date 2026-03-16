@@ -1,4 +1,4 @@
-import { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
+import { type TrezorDevice, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { isNotNullOrUndefined, isNotUndefined } from '@trezor/utils';

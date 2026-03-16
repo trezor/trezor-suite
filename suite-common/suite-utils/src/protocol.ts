@@ -1,5 +1,5 @@
-import { NETWORK_TO_PROTOCOLS, Protocol } from '@suite-common/suite-constants';
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { NETWORK_TO_PROTOCOLS, type Protocol } from '@suite-common/suite-constants';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 
 export type ProtocolToNetwork = {
     [P in Protocol]: NetworkSymbol;

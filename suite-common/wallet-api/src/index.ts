@@ -1,2 +1,2 @@
 export * from './stake/schemas';
-export * from './stake/types';
+export type * from './stake/types';

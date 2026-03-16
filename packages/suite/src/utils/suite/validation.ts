@@ -1,7 +1,7 @@
-import { TranslationFunction } from '@suite/intl';
-import { Formatter } from '@suite-common/formatters';
+import { type TranslationFunction } from '@suite/intl';
+import { type Formatter } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,

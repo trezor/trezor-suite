@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';

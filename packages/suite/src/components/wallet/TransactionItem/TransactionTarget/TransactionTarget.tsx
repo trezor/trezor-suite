@@ -4,12 +4,12 @@ import { useTranslation } from '@suite/intl';
 import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
-    Target,
+    type Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -29,7 +29,7 @@ import {
     Sign,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';

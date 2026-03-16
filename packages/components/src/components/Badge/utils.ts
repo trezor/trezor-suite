@@ -1,7 +1,7 @@
-import { Color, TypographyStyle } from '@trezor/theme';
+import { type Color, type TypographyStyle } from '@trezor/theme';
 
-import { BadgeIntent, BadgeSize } from './types';
-import { Padding } from '../../utils/frameProps';
+import { type BadgeIntent, type BadgeSize } from './types';
+import { type Padding } from '../../utils/frameProps';
 
 export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
     const colorMap: Record<BadgeIntent, Color> = {

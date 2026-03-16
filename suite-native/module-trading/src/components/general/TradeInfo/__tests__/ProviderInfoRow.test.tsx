@@ -1,7 +1,7 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { ProviderInfoRow, ProviderInfoRowProps } from '../ProviderInfoRow';
+import { ProviderInfoRow, type ProviderInfoRowProps } from '../ProviderInfoRow';
 
 describe('ProviderInfoRow', () => {
     const renderProviderInfoRow = (props: Partial<ProviderInfoRowProps> = {}) => {

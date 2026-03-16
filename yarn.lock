@@ -15251,6 +15251,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/jest": "npm:29.5.12"
     "@vitejs/plugin-react": "npm:^4.7.0"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"

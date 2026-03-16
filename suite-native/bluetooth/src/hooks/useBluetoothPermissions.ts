@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import Constants from 'expo-constants';
 
 import { updatePermissionStatus } from '../bluetoothSlice';
-import { BluetoothPermissionStatus } from '../types';
+import { type BluetoothPermissionStatus } from '../types';
 
 type PermissionMethod = typeof check;
 

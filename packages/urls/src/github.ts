@@ -1,4 +1,4 @@
-import { Url } from './types';
+import { type Url } from './types';
 
 const GITHUB_REPO_INFO = {
     owner: 'trezor',

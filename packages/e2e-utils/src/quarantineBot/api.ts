@@ -1,4 +1,4 @@
-import { computeStats, normalizeTitlePath } from './actions';
+import { type computeStats, normalizeTitlePath } from './actions';
 import { AUTO_QUARANTINE_PREFIX, EXPLORER_LOOKBACK_DAYS } from './config';
 import { createAction, currentsRequest, getActions } from '../currentsApi/api';
 import type { Action, TestExplorerItem, TestsExplorerResponse } from '../currentsApi/types';

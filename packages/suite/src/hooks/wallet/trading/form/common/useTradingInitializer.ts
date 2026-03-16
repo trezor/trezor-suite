@@ -1,16 +1,16 @@
 import { useCallback } from 'react';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { Timer, useTimer } from '@trezor/react-utils';
+import { type Timer, useTimer } from '@trezor/react-utils';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { TradingPageType } from 'src/types/trading/trading';
+import { type TradingPageType } from 'src/types/trading/trading';
 
 export type UseTradingCommonProps = {
     pageType: TradingPageType;

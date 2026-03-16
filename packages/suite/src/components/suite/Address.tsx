@@ -1,4 +1,4 @@
-import styled, { RuleSet, css } from 'styled-components';
+import styled, { type RuleSet, css } from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';

@@ -1,7 +1,7 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
 import type { BaseCurrencyOption } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import {
     DEFAULT_FIAT_CURRENCY_FALLBACK,

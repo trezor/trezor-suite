@@ -8,12 +8,12 @@ import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    CloseActionType,
-    NavigateParameters,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
+    type CloseActionType,
+    type NavigateParameters,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import { selectIsCreatingNewPassphraseWallet } from '@suite-native/passphrase';

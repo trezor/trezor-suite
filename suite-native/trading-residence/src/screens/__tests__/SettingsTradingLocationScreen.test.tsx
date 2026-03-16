@@ -1,7 +1,7 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
 import { events } from '@suite-native/analytics';
-import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
+import { type SettingsStackParamList, type SettingsStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 

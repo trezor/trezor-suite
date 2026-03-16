@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { allowedBannerFrameProps } from './Banner';
 import { Banner as BannerComponent, variables } from '../../index';

@@ -1,6 +1,6 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { renderHook } from '@suite-native/test-utils';
-import { useTimer } from '@trezor/react-utils';
+import { type useTimer } from '@trezor/react-utils';
 
 import { MAX_RESET_COUNT, useReloadTimer } from '../useReloadTimer';
 

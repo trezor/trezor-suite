@@ -1,10 +1,10 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
+import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useAnalytics } from 'src/support/useAnalytics';

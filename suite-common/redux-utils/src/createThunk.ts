@@ -1,10 +1,10 @@
 import {
-    AsyncThunkOptions,
-    AsyncThunkPayloadCreator,
+    type AsyncThunkOptions,
+    type AsyncThunkPayloadCreator,
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-import { CustomThunkAPI } from './extraDependenciesType';
+import { type CustomThunkAPI } from './extraDependenciesType';
 
 export const createThunk = <TParams = void, TPayload = void, TThunkAPI = void>(
     typePrefix: string,

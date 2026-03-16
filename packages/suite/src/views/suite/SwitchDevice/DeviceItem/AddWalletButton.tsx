@@ -9,7 +9,7 @@ import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;

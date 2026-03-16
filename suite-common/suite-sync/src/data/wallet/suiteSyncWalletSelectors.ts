@@ -1,13 +1,13 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
 } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet-types';
 import { typedObjectValues } from '@trezor/utils';
 
-import { type SuiteSyncDataRootState, WalletData } from '../suiteSyncDataReducer';
+import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
 

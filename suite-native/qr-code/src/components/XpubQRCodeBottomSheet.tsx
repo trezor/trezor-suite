@@ -3,10 +3,20 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey, showXpubOnDevice } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    showXpubOnDevice,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { BottomSheetModal, BottomSheetModalRef, Box, Button, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Box,
+    Button,
+    VStack,
+} from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';

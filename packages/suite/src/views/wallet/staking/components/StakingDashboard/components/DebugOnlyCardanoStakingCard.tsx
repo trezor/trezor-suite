@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,

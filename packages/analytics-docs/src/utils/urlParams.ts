@@ -1,4 +1,4 @@
-import { AllPlatform, Sort, allPlatforms, sorts } from '../types';
+import { type AllPlatform, type Sort, allPlatforms, sorts } from '../types';
 
 export type UrlParams = {
     query: string;

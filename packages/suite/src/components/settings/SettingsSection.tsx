@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
-import { Card, Column, IconName, InfoItem, Tooltip } from '@trezor/components';
+import { Card, Column, type IconName, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';

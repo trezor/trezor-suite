@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';

@@ -5,23 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Loader, SearchInput, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    StackNavigationProps,
-    StackProps,
-    StellarManageTokenStackParamList,
+    type StackNavigationProps,
+    type StackProps,
+    type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TokenListItem } from '../components/TokenListItem';
-import { StellarTokenInfo, useInactiveStellarTokens } from '../hooks/useInactiveStellarTokens';
+import { type StellarTokenInfo, useInactiveStellarTokens } from '../hooks/useInactiveStellarTokens';
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
 type RouteProps = StackProps<

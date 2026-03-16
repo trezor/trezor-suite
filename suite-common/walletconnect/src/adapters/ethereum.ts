@@ -1,32 +1,32 @@
-import { WalletKitTypes } from '@reown/walletkit';
+import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    CallMethodResponse,
-    EthereumSignTypedData,
-    EthereumSignTypedHash,
+    type CallMethodResponse,
+    type EthereumSignTypedData,
+    type EthereumSignTypedHash,
 } from '@trezor/connect';
 import { isAscii, isHex } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
 import {
-    PendingConnectionProposalNetwork,
-    WalletConnectAdapter,
-    WalletConnectNamespace,
+    type PendingConnectionProposalNetwork,
+    type WalletConnectAdapter,
+    type WalletConnectNamespace,
 } from '../walletConnectTypes';
 
 const methods = [

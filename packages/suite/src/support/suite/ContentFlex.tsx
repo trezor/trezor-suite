@@ -1,4 +1,4 @@
-import { Column, FlexProps, Row } from '@trezor/components';
+import { Column, type FlexProps, Row } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useResponsiveContext } from './ResponsiveContext';

@@ -1,6 +1,6 @@
 import { HEADER_SIZE } from './constants';
 import { PROTOCOL_MALFORMED } from '../errors';
-import { TransportProtocolDecode } from '../types';
+import { type TransportProtocolDecode } from '../types';
 
 /**
  * Reads meta information from buffer

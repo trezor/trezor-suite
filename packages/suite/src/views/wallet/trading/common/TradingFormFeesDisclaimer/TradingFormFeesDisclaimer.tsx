@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     Icon,
     IconCircle,
-    IconName,
+    type IconName,
     Link,
     List,
     Modal,

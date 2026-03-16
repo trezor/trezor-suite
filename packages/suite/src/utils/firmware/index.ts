@@ -1,6 +1,6 @@
 import { satisfies, valid } from 'semver';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 

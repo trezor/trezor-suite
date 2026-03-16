@@ -6,9 +6,9 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getStakingDataForNetwork,

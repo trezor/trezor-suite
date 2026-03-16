@@ -1,16 +1,16 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import {
-    ChallengeFailedErrType,
-    EnsureOwnerHasAllocatedQuota,
-    EnsureOwnerHasAllocatedQuotaParams,
-    HttpErrType,
-    ProofOfDelegatedIdentityFailedErrType,
-    WriteModeRequiredForAllocationErrType,
+    type ChallengeFailedErrType,
+    type EnsureOwnerHasAllocatedQuota,
+    type EnsureOwnerHasAllocatedQuotaParams,
+    type HttpErrType,
+    type ProofOfDelegatedIdentityFailedErrType,
+    type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
 import { err, ok } from '@trezor/type-utils';
 

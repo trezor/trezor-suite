@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
     CALL_SOURCE_WEB,
-    ManifestPartial,
+    type ManifestPartial,
     connectPopupCallThunk,
     connectPopupCancelThunk,
     getPopupCallDeferred,
@@ -11,7 +11,7 @@ import {
 } from '@suite-common/connect-popup';
 import {
     CORE_CALL,
-    CallMethodKeys,
+    type CallMethodKeys,
     POPUP,
     RESPONSE_EVENT,
     createPopupMessage,

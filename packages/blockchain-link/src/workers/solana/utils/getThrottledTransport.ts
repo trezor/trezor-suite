@@ -1,4 +1,4 @@
-import { ClusterUrl, RpcTransportFromClusterUrl } from '@solana/kit';
+import { type ClusterUrl, type RpcTransportFromClusterUrl } from '@solana/kit';
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
 const DEFAULT_INTERVAL = 1000; // Default interval in milliseconds (1 second)

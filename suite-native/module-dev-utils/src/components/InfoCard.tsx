@@ -8,11 +8,11 @@ import { Button, Card, TitleHeader, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import {
-    DevUtilsStackParamList,
+    type DevUtilsStackParamList,
     DevUtilsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 

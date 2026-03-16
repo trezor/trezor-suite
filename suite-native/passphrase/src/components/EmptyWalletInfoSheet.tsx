@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -14,10 +14,10 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

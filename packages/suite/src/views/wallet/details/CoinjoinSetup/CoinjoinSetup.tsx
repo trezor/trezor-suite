@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     Banner,
     Card,
@@ -13,7 +13,7 @@ import {
     motionEasing,
     useElevation,
 } from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { useSelector } from 'src/hooks/suite/useSelector';

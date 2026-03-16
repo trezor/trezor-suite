@@ -1,8 +1,12 @@
-import { TradingCountryCode, TradingCountryOption } from '@suite-common/trading';
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingCountryCode, type TradingCountryOption } from '@suite-common/trading';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
+import { type CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
 
 describe('useCountryChangeEffect', () => {
     let store: TestStore;

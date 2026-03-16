@@ -1,17 +1,17 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
 import {
-    Action,
-    GuideArticle,
-    GuideCategory,
-    GuideNode,
-    MessageSystem,
+    type Action,
+    type GuideArticle,
+    type GuideCategory,
+    type GuideNode,
+    type MessageSystem,
 } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
-    BlockchainNetworks,
-    FeeInfo,
-    WalletAccountTransaction,
+    type BlockchainNetworks,
+    type FeeInfo,
+    type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import type { AccountUtxo, Device, Features, TrezorConnect } from '@trezor/connect';

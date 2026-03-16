@@ -1,4 +1,4 @@
-import { AccountLabels } from '@suite-common/metadata-types';
+import { type AccountLabels } from '@suite-common/metadata-types';
 
 import {
     fromLegacyMetadataToSearchAccountLabels,

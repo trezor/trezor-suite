@@ -1,7 +1,7 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
-import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
@@ -9,47 +9,47 @@ import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
-    HistoryDep,
-    SuiteRouterHistoryDep,
+    type HistoryDep,
+    type SuiteRouterHistoryDep,
     asSuiteRouterHistoryService,
     createSuiteRouterHistory,
     selectRoute,
     selectRouterApp,
 } from '@suite/router';
 import {
-    DisableLegacyMetadataIfNeededDep,
+    type DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
 } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import type { DeviceReducerState } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    CommonServices,
-    ConnectInitSettings,
-    ExtraDependenciesStatic,
+    type CommonServices,
+    type ConnectInitSettings,
+    type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
-    TokenDefinitionsState,
+    type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    BlockchainState,
-    ExplorerConfig,
-    FiatRatesState,
-    SendState,
-    TransactionsState,
-    WalletSettingsState,
+    type BlockchainState,
+    type ExplorerConfig,
+    type FiatRatesState,
+    type SendState,
+    type TransactionsState,
+    type WalletSettingsState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
@@ -58,7 +58,7 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import { createDisableLegacyMetadataIfNeeded } from '../actions/suiteSync/disableLegacyMetadateIfNeeded';
 import type { BioAuthState } from '../reducers/bioAuth';
-import { AppState, TrezorDevice } from '../types/suite';
+import { type AppState, type TrezorDevice } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
     transportReconnect: true,

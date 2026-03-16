@@ -16,11 +16,11 @@ import {
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { SelectedAccountStatus, WalletParams } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch, type GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 // move to selector!!!!

@@ -1,5 +1,10 @@
 import { FeatureFlag, toggleFeatureFlag } from '@suite-native/feature-flags';
-import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { ProviderStatusDevButtons } from '../ProviderStatusDevButtons';

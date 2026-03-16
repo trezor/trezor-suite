@@ -1,10 +1,10 @@
 // fixes bindActionCreators() https://github.com/reduxjs/redux-thunk/blob/e3d452948d5562b9ce871cc9391403219f83b4ff/extend-redux.d.ts#L11
 import {
-    DevToolsEnhancerOptions,
-    Dispatch,
-    Middleware,
-    MiddlewareAPI,
-    Reducer,
+    type DevToolsEnhancerOptions,
+    type Dispatch,
+    type Middleware,
+    type MiddlewareAPI,
+    type Reducer,
     combineReducers,
     configureStore,
 } from '@reduxjs/toolkit';
@@ -12,17 +12,17 @@ import { createLogger } from 'redux-logger';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { recoveryReducer } from '@suite/recovery';
-import { HistoryDep } from '@suite/router';
+import { type HistoryDep } from '@suite/router';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import {
-    ExtraDependencies,
+    type ExtraDependencies,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
 import { suiteSyncDataReducer } from '@suite-common/suite-sync';
-import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';

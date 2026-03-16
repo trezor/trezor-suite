@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
@@ -19,7 +19,7 @@ import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
 

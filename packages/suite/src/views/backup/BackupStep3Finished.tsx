@@ -6,7 +6,7 @@ import { canContinue } from 'src/utils/backup';
 
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
-import { BackupState } from '../../reducers/backup/backupReducer';
+import { type BackupState } from '../../reducers/backup/backupReducer';
 
 export const BackupStep3Finished = ({
     onCancel,

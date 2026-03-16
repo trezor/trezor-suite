@@ -6,7 +6,7 @@ import { useOpenLink } from '@suite-native/link';
 
 import {
     ContactSupportAlertAppendix,
-    ContactSupportAlertAppendixRef,
+    type ContactSupportAlertAppendixRef,
 } from './ContactSupportAlertAppendix';
 
 export const useContactSupportAlert = () => {

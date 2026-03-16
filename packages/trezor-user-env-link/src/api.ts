@@ -2,8 +2,8 @@
 
 import { TypedEmitter } from '@trezor/utils';
 
-import { Firmwares, Model } from './types';
-import { WebsocketClient, WebsocketClientEvents } from './websocket-client';
+import { type Firmwares, Model } from './types';
+import { WebsocketClient, type WebsocketClientEvents } from './websocket-client';
 export interface SetupEmu {
     mnemonic?: string;
     pin?: string;

@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DeviceUniquePath } from '@trezor/connect';
 
 export const DISCOVERY_MODULE_PREFIX = '@common/wallet-core/discovery';
 

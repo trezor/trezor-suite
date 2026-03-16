@@ -1,8 +1,8 @@
 import { isAddress } from 'viem';
 
-import { EvmAddress } from '../../types/evm';
-import { ContextWith } from '../../types/validation';
-import { InspectFn, ValidateFn, createValidator } from '../createValidator';
+import { type EvmAddress } from '../../types/evm';
+import { type ContextWith } from '../../types/validation';
+import { type InspectFn, type ValidateFn, createValidator } from '../createValidator';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as EvmAddress;
 

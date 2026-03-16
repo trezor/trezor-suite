@@ -1,22 +1,22 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TradingType } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TradingType } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { AccountAddress, OverviewRow } from '@suite-native/trading-atoms';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { Color } from '@trezor/theme';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type Color } from '@trezor/theme';
 
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 

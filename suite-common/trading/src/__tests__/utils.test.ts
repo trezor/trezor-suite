@@ -1,6 +1,11 @@
-import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import {
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type SellFiatTrade,
+} from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account, AccountKey } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 

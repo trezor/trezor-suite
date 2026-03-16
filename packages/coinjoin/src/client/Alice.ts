@@ -1,17 +1,17 @@
-import { AccountUtxo } from '../types/account';
+import { type AccountUtxo } from '../types/account';
 import {
-    AliceConfirmationInterval,
-    AlicePendingRequest,
-    AliceShape,
-    SerializedAlice,
+    type AliceConfirmationInterval,
+    type AlicePendingRequest,
+    type AliceShape,
+    type SerializedAlice,
 } from '../types/alice';
 import {
-    AllowedScriptTypes,
-    ConfirmationData,
-    RealCredentials,
-    RegistrationData,
+    type AllowedScriptTypes,
+    type ConfirmationData,
+    type RealCredentials,
+    type RegistrationData,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
+import { type Credentials } from '../types/middleware';
 import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
 
 export class Alice implements AliceShape {

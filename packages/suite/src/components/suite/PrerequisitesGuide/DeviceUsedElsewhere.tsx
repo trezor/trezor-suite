@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
 import { isDesktop } from '@trezor/env-utils';
@@ -11,7 +11,7 @@ import {
 import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
-import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();

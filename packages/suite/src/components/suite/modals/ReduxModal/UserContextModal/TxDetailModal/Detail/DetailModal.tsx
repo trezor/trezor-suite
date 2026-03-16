@@ -1,16 +1,16 @@
 import { Translation } from '@suite/intl';
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
 import {
-    Account,
-    ChainedTransactions,
-    WalletAccountTransaction,
+    type Account,
+    type ChainedTransactions,
+    type WalletAccountTransaction,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
-import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
+import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { useSelector } from '../../../../../../../hooks/suite';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 

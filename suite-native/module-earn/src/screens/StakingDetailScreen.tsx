@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { initStakeDataThunk } from '@suite-common/wallet-core';
-import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
 
 import { StakingDetailScreenHeader } from '../components/StakingDetailScreenHeader';

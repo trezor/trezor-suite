@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FieldErrors, UseControllerProps, useFormContext } from 'react-hook-form';
+import { type FieldErrors, type UseControllerProps, useFormContext } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import {
@@ -7,11 +7,11 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingBuyFormProps,
+    type TradingBuyFormProps,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,
     findToken,
@@ -29,9 +29,9 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
-    TradingAllFormProps,
-    TradingFormInputFiatCryptoProps,
-    TradingSellExchangeFormProps,
+    type TradingAllFormProps,
+    type TradingFormInputFiatCryptoProps,
+    type TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
 import { validateDecimals, validateMin, validateNetworkReserve } from 'src/utils/suite/validation';
 import {

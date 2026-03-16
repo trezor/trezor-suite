@@ -1,8 +1,8 @@
-import { RefObject } from 'react';
+import { type RefObject } from 'react';
 
-import { BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-sheet';
+import { type BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-sheet';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

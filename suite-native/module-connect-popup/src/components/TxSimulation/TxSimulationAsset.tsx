@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
-import { Network, isNetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type Network, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { BigNumber } from '@trezor/utils';

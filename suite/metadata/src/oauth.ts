@@ -1,5 +1,5 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Deferred, createDeferred } from '@trezor/utils';
+import { type Deferred, createDeferred } from '@trezor/utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import { urlHashParams, urlSearchParams } from './metadataUtils';

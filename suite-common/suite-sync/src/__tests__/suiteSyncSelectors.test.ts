@@ -2,12 +2,11 @@ import { deviceReducerInitialState } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import type { UnavailableCapabilities } from '@trezor/connect';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
 import { selectSuiteSyncInteraction } from '../suiteSyncSelectors';
 import type { WithSuiteSyncAndDeviceState } from '../suiteSyncSelectors';
-import { SuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
+import { type SuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

@@ -7,7 +7,7 @@ import { Translation, selectLocale } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import { Underline } from './Underline';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
 import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
 

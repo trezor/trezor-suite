@@ -1,9 +1,10 @@
 import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { sellThunks } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -13,9 +14,7 @@ import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-
 import { useSellFlow } from '../useSellFlow';
 
 // Store captured arguments for testing side effects (processResponseData callback)
-let capturedHandleTradeArgs:
-    | Parameters<typeof import('@suite-common/trading').sellThunks.handleTradeThunk>[0]
-    | null = null;
+let capturedHandleTradeArgs: Parameters<typeof sellThunks.handleTradeThunk>[0] | null = null;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),

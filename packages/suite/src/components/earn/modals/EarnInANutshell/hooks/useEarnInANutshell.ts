@@ -1,12 +1,12 @@
 import { openModal } from '@suite/modal';
 import {
-    EarnFlow,
-    EarnModalAction,
-    EarnProvider,
-    EarnYieldContext,
+    type EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';

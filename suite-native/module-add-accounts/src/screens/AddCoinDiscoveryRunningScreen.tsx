@@ -6,25 +6,25 @@ import { useNavigation } from '@react-navigation/native';
 import type { DeviceRootState } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
+import { type Account } from '@suite-common/wallet-types';
+import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
-    AddCoinAccountStackParamList,
+    type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 
-import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
+import { type AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 export const AddCoinDiscoveryRunningScreen = ({
     route,

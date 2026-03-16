@@ -9,9 +9,9 @@ import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';

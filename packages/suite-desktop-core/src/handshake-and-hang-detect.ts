@@ -1,8 +1,8 @@
-import { BrowserWindow, dialog } from 'electron';
+import { type BrowserWindow, dialog } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/types';
-import { TimerId } from '@trezor/type-utils';
+import { type ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/types';
+import { type TimerId } from '@trezor/type-utils';
 
 import { loadIndex } from './libs/loadIndex';
 import { ipcMain } from './typed-electron';

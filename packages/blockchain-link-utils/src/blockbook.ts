@@ -18,7 +18,7 @@ import type {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
-    Addresses,
+    type Addresses,
     enhanceVinVout,
     filterShadowedPendingTxsByNonce,
     filterTargets,

@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';

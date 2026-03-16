@@ -1,4 +1,4 @@
-import { DesktopApi } from './api';
+import { type DesktopApi } from './api';
 import { factory } from './factory';
 
 export const getDesktopApi = () => {

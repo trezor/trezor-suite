@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { UseFormReturn, useFieldArray } from 'react-hook-form';
+import { type UseFormReturn, type useFieldArray } from 'react-hook-form';
 
 import { DEFAULT_OPRETURN, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 type Props = UseFormReturn<FormState> & {
     outputsFieldArray: ReturnType<typeof useFieldArray<FormState, 'outputs'>>;

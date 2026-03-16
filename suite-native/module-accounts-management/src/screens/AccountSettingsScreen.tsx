@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
@@ -13,11 +13,11 @@ import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { AccountLabel } from '@suite-native/labeling';
 import {
-    RootStackParamList,
-    RootStackRoutes,
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';

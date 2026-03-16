@@ -9,14 +9,14 @@ import type {
 } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DecodedTrezorPushNotification,
-    Device,
-    DeviceState,
+    type DecodedTrezorPushNotification,
+    type Device,
+    type DeviceState,
     type EntropyCheckResult,
-    StaticSessionId,
+    type StaticSessionId,
 } from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Err } from '@trezor/type-utils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err } from '@trezor/type-utils';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 

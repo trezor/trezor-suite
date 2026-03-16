@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { StakingNetworkType } from '@suite-common/wallet-config';
+import { type StakingNetworkType } from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
 interface EarnInANutshellWithdrawalBadgeProps {

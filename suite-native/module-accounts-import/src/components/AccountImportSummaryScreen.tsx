@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box, PictogramTitleHeader, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';

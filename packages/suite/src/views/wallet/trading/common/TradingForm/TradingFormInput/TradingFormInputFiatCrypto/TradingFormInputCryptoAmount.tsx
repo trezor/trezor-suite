@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FieldErrors, UseFormReturn } from 'react-hook-form';
+import { type FieldErrors, type UseFormReturn } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
@@ -7,7 +7,7 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingBuyFormProps,
+    type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
     useTradingUtils,
 } from '@suite-common/trading';
@@ -24,9 +24,9 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
-    TradingAllFormProps,
-    TradingFormInputFiatCryptoProps,
-    TradingSellExchangeFormProps,
+    type TradingAllFormProps,
+    type TradingFormInputFiatCryptoProps,
+    type TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
 import {
     validateCryptoLimits,

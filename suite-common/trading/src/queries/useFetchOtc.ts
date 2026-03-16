@@ -3,7 +3,7 @@ import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
 import { invityAPI } from '../invityAPI';
-import { TradingCountryCode, TradingOTC } from '../types';
+import { type TradingCountryCode, type TradingOTC } from '../types';
 
 const FALLBACK_API_KEY = getWeakRandomId(20);
 

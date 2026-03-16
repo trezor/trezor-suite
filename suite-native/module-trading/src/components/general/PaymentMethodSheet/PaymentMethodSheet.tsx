@@ -5,7 +5,7 @@ import { BottomSheetFlashList } from '@suite-native/atoms';
 import {
     ESTIMATED_HEADER_HEIGHT,
     SimpleSheetHeader,
-    SimpleSheetHeaderProps,
+    type SimpleSheetHeaderProps,
 } from '../SimpleSheetHeader';
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 

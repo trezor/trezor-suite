@@ -2,15 +2,15 @@ import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     Image,
-    ObjectFit,
-    TransientProps,
+    type ObjectFit,
+    type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { borders, paletteV2 } from '@trezor/theme';
 
 import { getLargeModelImagePath } from '../../utils/getModelFrontColor';

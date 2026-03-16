@@ -10,7 +10,7 @@ import {
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
 
-import { EarnPromoListDataItem, StakingEarnItem } from '../types';
+import { type EarnPromoListDataItem, type StakingEarnItem } from '../types';
 
 type UseStakingListDataReturn = {
     activeItems: StakingEarnItem[];

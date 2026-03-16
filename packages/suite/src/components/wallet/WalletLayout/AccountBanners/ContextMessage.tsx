@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { goto } from '@suite/router';
 import {
-    ContextDomain,
+    type ContextDomain,
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';

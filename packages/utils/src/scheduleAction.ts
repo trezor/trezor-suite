@@ -1,4 +1,4 @@
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 export type ScheduledAction<T> = (signal?: AbortSignal) => Promise<T>;
 

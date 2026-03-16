@@ -1,11 +1,11 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore } from '@reduxjs/toolkit';
 
 import { tradingBuyActions } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
     initStore,
@@ -14,7 +14,7 @@ import {
     screen,
 } from '@suite-native/test-utils';
 import { buyQuotes, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';

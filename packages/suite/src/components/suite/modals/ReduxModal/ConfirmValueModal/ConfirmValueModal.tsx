@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -9,7 +9,7 @@ import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-c
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Box,
@@ -22,7 +22,7 @@ import {
     IconCircle,
     Link,
     Modal,
-    ModalProps,
+    type ModalProps,
     Paragraph,
     Row,
     Text,
@@ -39,7 +39,7 @@ import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { ThunkAction } from 'src/types/suite';
+import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {

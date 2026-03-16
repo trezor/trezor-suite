@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';

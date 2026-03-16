@@ -6,7 +6,7 @@ import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-commo
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { CombinedLabelingState } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
 import { TradeDetailAmountStack } from './TradeDetailAmountStack';

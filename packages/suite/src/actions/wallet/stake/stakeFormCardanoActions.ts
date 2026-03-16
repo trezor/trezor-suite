@@ -1,31 +1,31 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
-import { EstimatedFee } from '@suite-common/staking-solana-types';
+import { type EstimatedFee } from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CardanoPoolStats } from '@suite-common/wallet-api';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type CardanoPoolStats } from '@suite-common/wallet-api';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import { VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+import { type VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import {
-    Account,
-    CardanoAction,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    SelectedAccountStatus,
-    StakeFormState,
-    StakeType,
+    type Account,
+    type CardanoAction,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
+    type SelectedAccountStatus,
+    type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -44,10 +44,10 @@ import {
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,

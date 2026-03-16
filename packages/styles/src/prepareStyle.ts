@@ -1,10 +1,10 @@
 import {
-    NativeStyle,
-    NativeStyleObject,
-    NativeStyleUtils,
-    Style,
-    StyleObject,
-    StyleUtils,
+    type NativeStyle,
+    type NativeStyleObject,
+    type NativeStyleUtils,
+    type Style,
+    type StyleObject,
+    type StyleUtils,
 } from './types';
 
 type BasicRecord = Record<string, unknown>;

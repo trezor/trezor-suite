@@ -1,6 +1,6 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { EncryptableBranded, asEncryptedHex } from '@suite-common/platform-encryption';
+import { type EncryptableBranded, asEncryptedHex } from '@suite-common/platform-encryption';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 

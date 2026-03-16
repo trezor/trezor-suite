@@ -5,7 +5,7 @@ import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
-import { TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -34,7 +34,7 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -51,8 +51,8 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
-import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';

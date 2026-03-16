@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Image, Row, Text } from '@trezor/components';
 
-import { EarnProviderId, earnProviderMetadata } from './providerMetadata';
+import { type EarnProviderId, earnProviderMetadata } from './providerMetadata';
 
 const ImageWrapper = styled.div`
     filter: ${({ theme }) => (theme.variant === 'dark' ? 'invert(1)' : 'none')};

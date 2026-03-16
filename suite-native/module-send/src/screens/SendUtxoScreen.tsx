@@ -1,20 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useFilteredUtxos } from '@suite-common/transaction-search';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     fetchUtxoTransactionsForAccountThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { Utxo } from '@trezor/blockchain-link-types';
+import {
+    Screen,
+    type SendStackParamList,
+    type SendStackRoutes,
+    type StackProps,
+} from '@suite-native/navigation';
+import { type Utxo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { SendUtxoScreenFooter } from '../components/CoinControl/SendUtxoScreenFooter';

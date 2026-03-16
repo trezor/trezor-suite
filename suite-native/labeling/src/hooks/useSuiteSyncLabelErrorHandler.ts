@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';

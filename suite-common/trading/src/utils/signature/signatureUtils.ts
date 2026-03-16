@@ -1,13 +1,13 @@
 import {
-    ExchangeProviderInfo,
-    ExchangeTradeSigned,
-    SellFiatTradeSigned,
-    SellProviderInfo,
+    type ExchangeProviderInfo,
+    type ExchangeTradeSigned,
+    type SellFiatTradeSigned,
+    type SellProviderInfo,
 } from 'invity-api';
 
 import type { Network } from '@suite-common/wallet-config';
 import { asAmountUnit, formatBigUintToLE, unitsToSubunits } from '@suite-common/wallet-utils';
-import { PROTO } from '@trezor/connect';
+import { type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 

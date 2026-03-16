@@ -1,12 +1,12 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Box, Column, Icon, Row, Text, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { AnimationWrapper } from '../../AnimationWrapper';
 

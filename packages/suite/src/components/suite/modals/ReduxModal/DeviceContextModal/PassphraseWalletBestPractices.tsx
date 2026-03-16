@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

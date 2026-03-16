@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { Route } from '@suite-common/suite-types';
+import { type Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -16,7 +16,7 @@ import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
     account: Account;

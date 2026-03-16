@@ -1,8 +1,8 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectSuiteSyncOutputLabelsByAccount } from '@suite-common/suite-sync';
-import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 
 import {
     createDeleteLabelsForSuiteSync,

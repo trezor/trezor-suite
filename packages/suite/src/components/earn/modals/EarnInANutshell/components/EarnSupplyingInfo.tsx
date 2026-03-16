@@ -10,7 +10,7 @@ import {
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { BulletList } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

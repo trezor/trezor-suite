@@ -1,4 +1,4 @@
-export * from './coinselect';
+export type * from './coinselect';
 export * from './compose';
-export * from './payments';
+export type * from './payments';
 export * from './validation';

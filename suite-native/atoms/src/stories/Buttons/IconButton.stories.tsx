@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_NAMES } from '@suite-native/icons';
 
 import { BUTTON_COLOR_SCHEMES, BUTTON_SIZES } from '../../Button/Button';
-import { IconButton as IconButtonComponent, IconButtonProps } from '../../Button/IconButton';
+import { IconButton as IconButtonComponent, type IconButtonProps } from '../../Button/IconButton';
 
 type IconButtonStory = StoryObj<IconButtonProps>;
 

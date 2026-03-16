@@ -1,18 +1,18 @@
 import { Translation } from '@suite/intl';
 import {
     EarnFlow,
-    EarnModalAction,
-    EarnProvider,
-    EarnYieldContext,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
-    EarnInANutshellProcess,
+    type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
 import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWithdrawalBadge';

@@ -1,7 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { logErrorThunk } from './logErrorThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';

@@ -3,8 +3,8 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { ServerInfo } from '@trezor/blockchain-link-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';

@@ -1,9 +1,14 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { SpacingValuesNew, typography } from '@trezor/theme';
+import { type SpacingValuesNew, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletListContext';
-import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
+import {
+    type BulletLineWidth,
+    type BulletListDirection,
+    type BulletListItemState,
+    type BulletSize,
+} from './types';
 import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToTextColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';

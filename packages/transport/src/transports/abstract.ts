@@ -1,8 +1,13 @@
 import { loadDefinitions, parseConfigure } from '@trezor/protobuf';
-import { PROTOCOL_MALFORMED, ThpState, TransportProtocol } from '@trezor/protocol';
-import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
+import { type PROTOCOL_MALFORMED, type ThpState, type TransportProtocol } from '@trezor/protocol';
+import {
+    type ScheduleActionParams,
+    type ScheduledAction,
+    TypedEmitter,
+    scheduleAction,
+} from '@trezor/utils';
 
-import { OpenDeviceChannel } from '../api/abstract';
+import { type OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import type {

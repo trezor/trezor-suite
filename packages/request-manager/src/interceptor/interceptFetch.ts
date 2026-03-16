@@ -5,7 +5,7 @@
 import type { RequestOptions } from 'https';
 import nodeFetch, { type RequestInit } from 'node-fetch';
 
-import { Interceptor } from './interceptorTypes';
+import { type Interceptor } from './interceptorTypes';
 import { getIsTorRequired } from './overloadHttpRequest';
 
 export const interceptFetch: Interceptor = ({ context, validateRequest }) => {

@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
-import { SuiteSyncInteraction } from '@suite-common/suite-sync';
+import { type SuiteSyncInteraction } from '@suite-common/suite-sync';
 import { Text, Tooltip } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from '../../../../hooks/suite';

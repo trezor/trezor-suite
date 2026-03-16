@@ -1,8 +1,8 @@
-import { DefaultTheme } from 'styled-components';
+import { type DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color } from '@trezor/theme';
+import { type CSSColor, type Color } from '@trezor/theme';
 
-import { IconIntent, IconPriority } from './types';
+import { type IconIntent, type IconPriority } from './types';
 
 const colorMap: Record<Exclude<IconIntent, 'neutral'>, Color> = {
     brand: 'iconPrimaryDefault',

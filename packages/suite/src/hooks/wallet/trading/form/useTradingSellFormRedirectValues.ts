@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 
-import { SellFiatTradeQuoteRequest } from 'invity-api';
+import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
-    TradingAssetOption,
-    TradingAssetSellOption,
-    TradingCountryCode,
+    type TradingAssetOption,
+    type TradingAssetSellOption,
+    type TradingCountryCode,
     type TradingSellFormProps,
     buildTradingBaseCurrencyOptionFromFiat,
     getDefaultCountry,

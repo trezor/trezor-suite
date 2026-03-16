@@ -7,7 +7,7 @@ import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';

@@ -1,8 +1,8 @@
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import {
-    Target as BlockchainTarget,
-    InternalTransfer,
-    TokenTransfer,
+    type Target as BlockchainTarget,
+    type InternalTransfer,
+    type TokenTransfer,
 } from '@trezor/blockchain-link-types';
 
 import { createTargets } from '../createTargets';

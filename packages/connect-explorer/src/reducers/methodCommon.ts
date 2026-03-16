@@ -1,5 +1,5 @@
 import type { TrezorConnect } from '@trezor/connect-web';
-import { TSchema } from '@trezor/schema-utils';
+import { type TSchema } from '@trezor/schema-utils';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
 
 import type { Field, FieldBasic } from '../types/common';

@@ -2,7 +2,7 @@ import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
 import { TX_SIGNING_DELAY } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import { CoinjoinTransactionData } from '../../types';
+import { type CoinjoinTransactionData } from '../../types';
 import type { AliceShape } from '../../types/alice';
 import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import {

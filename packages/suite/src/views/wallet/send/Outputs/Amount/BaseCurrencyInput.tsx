@@ -6,11 +6,11 @@ import { useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
-    BaseCurrencyOption,
-    FiatRatesResult,
-    Output,
-    Timestamp,
-    TokenAddress,
+    type BaseCurrencyOption,
+    type FiatRatesResult,
+    type Output,
+    type Timestamp,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     buildCurrencyLongOption,

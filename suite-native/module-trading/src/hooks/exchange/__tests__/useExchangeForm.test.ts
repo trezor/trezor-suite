@@ -1,12 +1,12 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProvider,
@@ -20,7 +20,7 @@ import {
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';

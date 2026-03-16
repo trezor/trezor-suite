@@ -1,6 +1,6 @@
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 
-import { Account, WalletParams } from './account';
+import { type Account, type WalletParams } from './account';
 
 // 100% view
 // // Account loaders

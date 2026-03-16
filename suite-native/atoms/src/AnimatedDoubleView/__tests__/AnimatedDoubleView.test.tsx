@@ -1,7 +1,7 @@
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 
 import { Box } from '../../Box';
-import { AnimatedDoubleView, AnimatedDoubleViewProps } from '../AnimatedDoubleView';
+import { AnimatedDoubleView, type AnimatedDoubleViewProps } from '../AnimatedDoubleView';
 
 describe('AnimatedDoubleView', () => {
     const renderAnimatedDoubleView = (props: Partial<AnimatedDoubleViewProps>) =>

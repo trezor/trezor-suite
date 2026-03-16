@@ -1,16 +1,16 @@
-import { HTMLProps } from 'react';
+import { type HTMLProps } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { BorderWidths, Color, Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type BorderWidths, type Color, type Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const getValueWithUnit = (value: string | number) =>

@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { selectDeviceDelegatedIdentityKey } from '@suite-common/device';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
 import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentityKeyFromState';
 import {
-    RetrieveDelegatedIdentityKeyFromDeviceDeps,
+    type RetrieveDelegatedIdentityKeyFromDeviceDeps,
     createRetrieveDelegatedIdentityKeyFromDevice,
 } from './retrieveDelegatedIdentityKeyFromDevice';
 import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';

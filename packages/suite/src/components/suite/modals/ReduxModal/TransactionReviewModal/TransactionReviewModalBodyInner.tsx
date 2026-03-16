@@ -6,19 +6,19 @@ import { closeModal } from '@suite/modal';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
-    SendState,
-    SerializedTx,
-    StakeState,
+    type SendState,
+    type SerializedTx,
+    type StakeState,
     selectIsTxOutputInternal,
     selectSendFormReviewButtonRequestsCount,
     selectSendFormReviewLastButtonCode,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    ReviewOutput,
-    StakeType,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type ReviewOutput,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import {
     getStakeType,
@@ -29,7 +29,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Deferred } from '@trezor/utils';
+import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useDispatch, useSelector } from 'src/hooks/suite';

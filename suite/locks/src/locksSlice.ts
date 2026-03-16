@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export const LOCK_TYPE = {
     ROUTER: 'router', // restricted route changes, all other actions are possible

@@ -1,17 +1,17 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
-    CryptoBaseCurrencyPair,
-    Rate,
-    RateTypeWithoutHistoric,
-    RatesByKey,
-    RatesByTimestamps,
-    TickerId,
-    Timestamp,
+    type CryptoBaseCurrencyPair,
+    type Rate,
+    type RateTypeWithoutHistoric,
+    type RatesByKey,
+    type RatesByTimestamps,
+    type TickerId,
+    type Timestamp,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKeyFromTicker,
@@ -21,7 +21,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
-import { FiatRatesRootState } from './fiatRatesTypes';
+import { type FiatRatesRootState } from './fiatRatesTypes';
 import { selectDeviceAccounts } from '../accounts/accountsSelectors';
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>

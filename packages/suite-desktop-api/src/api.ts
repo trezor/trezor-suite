@@ -1,29 +1,29 @@
-import { DecryptionError, EncryptionError } from '@suite-common/platform-encryption';
-import { Result } from '@trezor/type-utils';
+import { type DecryptionError, type EncryptionError } from '@suite-common/platform-encryption';
+import { type Result } from '@trezor/type-utils';
 
 import {
-    BioAuthSettings,
-    BootstrapTorEvent,
-    BridgeSettings,
-    ConnectPopupCall,
-    ConnectPopupCancel,
-    ConnectPopupResponse,
-    HandshakeClient,
-    HandshakeElectron,
-    HandshakeEvent,
-    HandshakeInit,
-    HandshakeTorModule,
-    InvokeResult,
-    LoggerConfig,
-    Status,
-    SuiteThemeVariant,
-    TorSettings,
-    TorStatusEvent,
-    TraySettings,
-    UpdateInfo,
-    UpdateProgress,
+    type BioAuthSettings,
+    type BootstrapTorEvent,
+    type BridgeSettings,
+    type ConnectPopupCall,
+    type ConnectPopupCancel,
+    type ConnectPopupResponse,
+    type HandshakeClient,
+    type HandshakeElectron,
+    type HandshakeEvent,
+    type HandshakeInit,
+    type HandshakeTorModule,
+    type InvokeResult,
+    type LoggerConfig,
+    type Status,
+    type SuiteThemeVariant,
+    type TorSettings,
+    type TorStatusEvent,
+    type TraySettings,
+    type UpdateInfo,
+    type UpdateProgress,
 } from './messages';
-import { InvokeMethod, ListenerMethod, SendMethod } from './methods';
+import { type InvokeMethod, type ListenerMethod, type SendMethod } from './methods';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)

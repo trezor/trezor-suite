@@ -1,12 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { BluetoothDeviceId } from '@trezor/connect';
+import { type BluetoothDeviceId } from '@trezor/connect';
 
 import {
-    BluetoothAdapterStatus,
-    BluetoothDeviceCommon,
-    BluetoothScanStatus,
-    DeviceBluetoothConnectionStatus,
+    type BluetoothAdapterStatus,
+    type BluetoothDeviceCommon,
+    type BluetoothScanStatus,
+    type DeviceBluetoothConnectionStatus,
 } from './types';
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';

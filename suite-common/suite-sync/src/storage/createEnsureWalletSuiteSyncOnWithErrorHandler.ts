@@ -1,8 +1,8 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
-    EnsureWalletSuiteSyncOn,
-    EnsureWalletSuiteSyncOnDep,
+    type EnsureWalletSuiteSyncOn,
+    type EnsureWalletSuiteSyncOnDep,
 } from '@suite-common/suite-sync-types';
 import { exhaustive } from '@trezor/type-utils';
 

@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { NetworkType, getNetwork } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
@@ -12,7 +12,7 @@ import { spacings } from '@trezor/theme';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useSelector } from 'src/hooks/suite';
-import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { type UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';

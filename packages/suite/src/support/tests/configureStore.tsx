@@ -1,12 +1,12 @@
-import { AnyAction, isFulfilled, isPending } from '@reduxjs/toolkit';
-import { Dispatch } from 'redux';
-import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
+import { type AnyAction, isFulfilled, isPending } from '@reduxjs/toolkit';
+import { type Dispatch } from 'redux';
+import reduxMockStore, { type MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { SuiteServices, extraDependencies } from '../extraDependencies';
+import { type SuiteServices, extraDependencies } from '../extraDependencies';
 import { extraDependenciesDesktopMock } from './extraDependenciesDesktop.mock';
 
 interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {

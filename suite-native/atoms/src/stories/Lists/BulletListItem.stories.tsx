@@ -4,7 +4,7 @@ import { COLOR_TOKENS, nativeTypographyStyles } from '@trezor/theme';
 
 import {
     BulletListItem as BulletListItemComponent,
-    BulletListItemProps,
+    type BulletListItemProps,
 } from '../../BulletListItem';
 
 type BulletListItemStory = StoryObj<BulletListItemProps>;

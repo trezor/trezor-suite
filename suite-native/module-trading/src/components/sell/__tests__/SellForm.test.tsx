@@ -2,7 +2,7 @@ import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
@@ -15,7 +15,7 @@ import {
     residenceCheckDisabledState,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellForm } from '../SellForm';

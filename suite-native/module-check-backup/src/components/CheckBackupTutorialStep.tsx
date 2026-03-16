@@ -2,7 +2,7 @@ import { Box } from '@suite-native/atoms';
 import {
     SwipeableWalkthroughStep,
     SwipeableWalkthroughStepHeader,
-    SwipeableWalkthroughStepProps,
+    type SwipeableWalkthroughStepProps,
 } from '@suite-native/swipeable-walkthrough';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

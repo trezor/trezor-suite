@@ -2,12 +2,12 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    BackupType,
-    FirmwareRevision,
+    type BackupType,
+    type FirmwareRevision,
     LANGUAGES,
-    Locale,
-    TrezorDevice,
-    TrezorDeviceWithState,
+    type Locale,
+    type TrezorDevice,
+    type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
@@ -22,10 +22,15 @@ import {
     getSortedDevicesWithoutInstances,
     getStatus,
 } from '@suite-common/suite-utils';
-import { Device, DeviceState, StaticSessionId, asBluetoothDeviceId } from '@trezor/connect';
+import {
+    type Device,
+    type DeviceState,
+    type StaticSessionId,
+    asBluetoothDeviceId,
+} from '@trezor/connect';
 import {
     DeviceModelInternal,
-    FirmwareVersionString,
+    type FirmwareVersionString,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -38,7 +43,7 @@ import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
-import { DeviceRootState } from './deviceReducer';
+import { type DeviceRootState } from './deviceReducer';
 import { isTrezorDeviceWithState } from './deviceUtils';
 import {
     deviceInvariabilityCheck,

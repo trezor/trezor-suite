@@ -1,16 +1,21 @@
 import styled from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+} from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,

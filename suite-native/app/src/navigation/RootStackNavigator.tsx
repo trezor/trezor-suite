@@ -35,7 +35,7 @@ import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

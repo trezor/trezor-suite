@@ -1,9 +1,9 @@
 import { css } from 'styled-components';
 
-import { TypographyStyle, typography, typographyStyles } from '@trezor/theme';
+import { type TypographyStyle, typography, typographyStyles } from '@trezor/theme';
 
-import { UIAlignment, uiAlignments } from '../../config/types';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { type UIAlignment, uiAlignments } from '../../config/types';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 export const textWraps = ['normal', 'balance', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];

@@ -1,15 +1,19 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type BaseCurrencyAmount,
+    type TokenAddress,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,
@@ -20,7 +24,7 @@ import {
     toFiatCurrency,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { type BigNumber } from '@trezor/utils';
 
 type UseConvertFiatToCryptoParams = {
     symbol: NetworkSymbol | null;

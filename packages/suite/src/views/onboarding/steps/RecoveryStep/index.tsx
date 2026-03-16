@@ -1,4 +1,4 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import {
     isStandardRecoveryDisabled,

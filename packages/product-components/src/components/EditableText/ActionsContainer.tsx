@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled, { css } from 'styled-components';
 
-import { IconButton, IconButtonProps, Spinner, Tooltip } from '@trezor/components';
+import { IconButton, type IconButtonProps, Spinner, Tooltip } from '@trezor/components';
 
 import type { SavingStatus } from './types';
 

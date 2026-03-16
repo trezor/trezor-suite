@@ -1,8 +1,8 @@
 import {
-    ThpCredentials,
-    ThpDeviceProperties,
-    ThpHandshakeCredentials,
-    ThpMessageSyncBit,
+    type ThpCredentials,
+    type ThpDeviceProperties,
+    type ThpHandshakeCredentials,
+    type ThpMessageSyncBit,
     ThpPairingMethod,
 } from './messages';
 

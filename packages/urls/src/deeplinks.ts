@@ -1,4 +1,4 @@
-import { SuiteDeeplink } from './types';
+import { type SuiteDeeplink } from './types';
 
 export const SUITE_BRIDGE_DEEPLINK: SuiteDeeplink = 'trezorsuite://bridge-requested-by-a-3rd-party';
 export const SUITE_WALLETCONNECT_DEEPLINK: SuiteDeeplink = 'trezorsuite://walletconnect';

@@ -4,19 +4,19 @@ import { URL } from 'url';
 
 import {
     HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
-    RequestWithParams,
-    Response,
+    type ParamsValidatorHandler,
+    type RequestHandler,
+    type RequestWithParams,
+    type Response,
     parseBodyJSON,
     parseBodyText,
 } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { type AbstractApi } from '@trezor/transport/src/api/abstract';
 import { SESSION_NOT_FOUND, UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
-import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
+import { type Descriptor, type PathPublic, type Session } from '@trezor/transport/src/types';
 import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { Log, Throttler, arrayPartition } from '@trezor/utils';
+import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 

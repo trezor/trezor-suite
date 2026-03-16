@@ -1,4 +1,4 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import {

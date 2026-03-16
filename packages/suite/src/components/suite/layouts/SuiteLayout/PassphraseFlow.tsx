@@ -1,4 +1,4 @@
-import { MODAL_CONTEXT_DEVICE, MODAL_CONTEXT_NONE } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, type MODAL_CONTEXT_NONE } from '@suite/modal';
 import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';

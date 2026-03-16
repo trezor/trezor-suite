@@ -1,7 +1,7 @@
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { TokenAmountFormatter, TokenAmountFormatterProps } from '../TokenAmountFormatter';
+import { TokenAmountFormatter, type TokenAmountFormatterProps } from '../TokenAmountFormatter';
 
 describe('TokenAmountFormatter', () => {
     const renderTokenAmountFormatter = (props: Partial<TokenAmountFormatterProps>) =>

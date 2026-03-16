@@ -1,5 +1,5 @@
-import { StakeType } from './ethereumStaking';
-import { FormState } from './sendForm';
+import { type StakeType } from './ethereumStaking';
+import { type FormState } from './sendForm';
 
 export interface StakeFormState extends FormState {
     fiatInput?: string;

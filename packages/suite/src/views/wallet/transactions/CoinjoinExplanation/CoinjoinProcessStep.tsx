@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
+import { H3, IconCircle, type IconName, Paragraph, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 const Image = styled.div`

@@ -1,11 +1,11 @@
-import { ReactNode, useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
-import { CloseActionType, Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { type CloseActionType, Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect, { DEVICE } from '@trezor/connect';
 
 type ConnectDeviceScreenProps = {

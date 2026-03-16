@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { type Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
@@ -8,10 +8,10 @@ import { Flag, GhostContainer, Icon, Row, Text, getCountryFlag } from '@trezor/c
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
-    TradingBuySellFormProps,
-    TradingFormInputDefaultProps,
+    type TradingBuySellFormProps,
+    type TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';
 
 import { CountrySelectModal } from './CountrySelectModal';

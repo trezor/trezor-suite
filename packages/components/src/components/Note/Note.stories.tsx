@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Note as NoteComponent, NoteProps, allowedNoteFrameProps } from './Note';
+import { Note as NoteComponent, type NoteProps, allowedNoteFrameProps } from './Note';
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { textIntents, textPriorities } from '../typography/Text/Text';

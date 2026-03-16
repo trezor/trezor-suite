@@ -1,4 +1,4 @@
-import { createMMKVStorage } from './mmkvStorage';
+import { type createMMKVStorage } from './mmkvStorage';
 
 export type MMKVStorageType = ReturnType<typeof createMMKVStorage>;
 

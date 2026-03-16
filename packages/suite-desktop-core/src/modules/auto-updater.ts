@@ -1,18 +1,18 @@
 import { captureMessage } from '@sentry/electron/main';
 import {
     CancellationToken,
-    ProgressInfo,
-    UpdateDownloadedEvent,
-    UpdateInfo,
+    type ProgressInfo,
+    type UpdateDownloadedEvent,
+    type UpdateInfo,
     autoUpdater,
 } from 'electron-updater';
 import { unlinkSync } from 'fs';
 
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { HandshakeElectron } from '@trezor/suite-desktop-api';
+import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
-import { ModuleInit, mainThreadEmitter } from './module';
+import { type ModuleInit, mainThreadEmitter } from './module';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';

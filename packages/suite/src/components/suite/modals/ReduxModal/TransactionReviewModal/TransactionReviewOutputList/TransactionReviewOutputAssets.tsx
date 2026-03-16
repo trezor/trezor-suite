@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
-    FormStateTradingCryptoCurrency,
-    FormStateTradingFiatCurrency,
-    TokenAddress,
+    type FormStateTradingCryptoCurrency,
+    type FormStateTradingFiatCurrency,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
 import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';

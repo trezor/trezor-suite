@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { TradingCountryInputProps } from '@suite/trading';
+import { type TradingCountryInputProps } from '@suite/trading';
 import {
-    OtcProviderType,
+    type OtcProviderType,
     getDefaultCountry,
     isCountryCode,
     useFetchOtc,

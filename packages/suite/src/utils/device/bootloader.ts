@@ -1,5 +1,5 @@
-import { TranslationKey } from '@suite/intl';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type TranslationKey } from '@suite/intl';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 const howToGetFromBootloaderInstructionsMap: Record<DeviceModelInternal, TranslationKey | null> = {
     T1B1: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',

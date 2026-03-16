@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
+import { type ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { CheckItem } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

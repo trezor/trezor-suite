@@ -1,4 +1,4 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { type AnyAction } from '@reduxjs/toolkit';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 import { createExperimentalFeedbackSlice } from '@suite-common/feedback';

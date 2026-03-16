@@ -9,10 +9,10 @@ import { Box } from '@suite-native/atoms';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { nativeFirmwareActions } from '@suite-native/firmware';
 import {
-    FirmwareUpdateStackParamList,
-    FirmwareUpdateStackRoutes,
+    type FirmwareUpdateStackParamList,
+    type FirmwareUpdateStackRoutes,
     Screen,
-    StackNavigationProps,
+    type StackNavigationProps,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';

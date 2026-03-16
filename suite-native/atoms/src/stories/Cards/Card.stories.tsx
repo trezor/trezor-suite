@@ -2,9 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { COLOR_TOKENS } from '@trezor/theme';
 
-import { Card as CardComponent, CardProps } from '../../Card/Card';
-import { InlineAlertBoxProps } from '../../InlineAlertBox/InlineAlertBox';
-import { INLINE_ALERT_BOX_VARIANTS, InlineAlertBoxVariant } from '../../InlineAlertBox/presets';
+import { Card as CardComponent, type CardProps } from '../../Card/Card';
+import { type InlineAlertBoxProps } from '../../InlineAlertBox/InlineAlertBox';
+import {
+    INLINE_ALERT_BOX_VARIANTS,
+    type InlineAlertBoxVariant,
+} from '../../InlineAlertBox/presets';
 import { Text } from '../../Text';
 
 type CardStory = StoryObj<CardProps>;

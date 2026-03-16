@@ -10,8 +10,8 @@ import type {
     CoinjoinRoundShape,
 } from '../../types/round';
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
-import { Account } from '../Account';
-import { Round } from '../coordinator';
+import { type Account } from '../Account';
+import { type Round } from '../coordinator';
 import * as middleware from '../middleware';
 
 export interface SelectRoundProps {

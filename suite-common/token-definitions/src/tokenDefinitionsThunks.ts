@@ -1,11 +1,11 @@
 import { D } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TimerId } from '@trezor/type-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
+import { type DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
 import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AddressType } from '@suite-common/wallet-types';
+import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';

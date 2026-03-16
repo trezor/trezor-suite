@@ -3,7 +3,7 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 

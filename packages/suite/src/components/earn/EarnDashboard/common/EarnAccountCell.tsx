@@ -1,11 +1,11 @@
-import { TokenDto } from '@suite-common/earn-api';
-import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type TokenDto } from '@suite-common/earn-api';
+import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
 import { EarnAccountCellDetails } from './EarnAccountCellDetails';
-import { EarnTokenBalance } from './types';
+import { type EarnTokenBalance } from './types';
 
 type EarnAccountCellProps = {
     account?: Account;

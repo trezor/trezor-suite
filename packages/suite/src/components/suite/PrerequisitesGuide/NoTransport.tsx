@@ -11,7 +11,7 @@ import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../../hooks/suite';
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
-import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 
 const tipItems: TroubleshootingTipsItem[] = [
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,

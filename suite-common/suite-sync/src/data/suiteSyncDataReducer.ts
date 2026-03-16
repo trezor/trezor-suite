@@ -1,10 +1,10 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
-    SuiteSyncWallet,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
+    type SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 

@@ -23,7 +23,7 @@ import { DEVICE } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
-    PendingCoinVisibilityRootState,
+    type PendingCoinVisibilityRootState,
     addPendingCoinVisibility,
     clearPendingCoinVisibility,
     selectPendingCoinVisibilitySymbols,

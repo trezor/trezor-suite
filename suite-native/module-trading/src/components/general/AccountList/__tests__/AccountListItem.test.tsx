@@ -1,13 +1,13 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { AccountListItem } from '../AccountListItem';
 

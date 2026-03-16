@@ -10,12 +10,12 @@ import animationStart from './animationData/refresh-spinner-start.json';
 import type { SpinnerSize, SpinnerVariant } from './types';
 import { getSpinnerColorsReplace } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { recolorLottieAnimation } from '../../animations/recolorLottieAnimation';
 
 export const allowedSpinnerFrameProps = ['margin', 'opacity'] as const satisfies FramePropsKeys[];

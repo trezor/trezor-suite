@@ -1,16 +1,21 @@
 import React from 'react';
-import { PixelRatio, Text as RNText, TextProps as RNTextProps, TextStyle } from 'react-native';
+import {
+    PixelRatio,
+    Text as RNText,
+    type TextProps as RNTextProps,
+    type TextStyle,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
 } from '@trezor/styles';
-import { Color, NativeTypographyStyle } from '@trezor/theme';
+import { type Color, type NativeTypographyStyle } from '@trezor/theme';
 
-import { TestProps } from './types';
+import { type TestProps } from './types';
 
 export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: NativeTypographyStyle;

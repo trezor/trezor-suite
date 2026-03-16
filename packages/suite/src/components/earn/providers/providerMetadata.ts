@@ -1,4 +1,4 @@
-import { ImageType } from '@trezor/components';
+import { type ImageType } from '@trezor/components';
 
 type ProviderMetadata = {
     name: string;

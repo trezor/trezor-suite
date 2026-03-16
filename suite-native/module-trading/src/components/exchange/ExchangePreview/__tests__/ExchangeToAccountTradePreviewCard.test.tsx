@@ -3,7 +3,7 @@ import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     ExchangeToAccountTradePreviewCard,
-    ExchangeToAccountTradePreviewCardProps,
+    type ExchangeToAccountTradePreviewCardProps,
 } from '../ExchangeToAccountTradePreviewCard';
 
 describe('ExchangeToAccountTradePreviewCard', () => {

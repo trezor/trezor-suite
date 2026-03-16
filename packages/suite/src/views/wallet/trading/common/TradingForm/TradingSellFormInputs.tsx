@@ -7,11 +7,11 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
-    TradingSellType,
+    type TradingSellType,
     isCountrySubdivisionRequired,
     selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -32,7 +32,7 @@ import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAsse
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import {
     TradingFormInputSellAsset,
-    TradingFormInputSellAssetProps,
+    type TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';

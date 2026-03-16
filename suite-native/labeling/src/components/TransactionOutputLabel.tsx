@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { Text, TextProps } from '@suite-native/atoms';
+import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { Text, type TextProps } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { selectIsLabellingAllowed } from '../selectors';

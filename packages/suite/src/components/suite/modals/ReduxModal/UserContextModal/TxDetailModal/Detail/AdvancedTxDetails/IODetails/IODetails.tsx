@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,7 +1,7 @@
 import { Card, Checkbox as CheckboxComponent } from '@trezor/components';
 
 import { Row } from './Row';
-import { onFieldChange } from '../../actions/methodActions';
+import { type onFieldChange } from '../../actions/methodActions';
 import type { FieldBasic } from '../../types';
 
 interface CheckboxProps {

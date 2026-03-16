@@ -1,10 +1,10 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
-import { MODAL_CONTEXT_NONE, State as ModalState, modalReducer } from '@suite/modal';
+import { MODAL_CONTEXT_NONE, type State as ModalState, modalReducer } from '@suite/modal';
 import {
-    LocationChangePayload,
-    RouterState,
+    type LocationChangePayload,
+    type RouterState,
     getRoute,
     routerLocationChange,
     routerReducer,
@@ -19,12 +19,12 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { AccountKey, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 jest.mock('@suite-common/trading', () => {

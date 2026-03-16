@@ -1,4 +1,4 @@
-import { UnionToIntersection } from '@trezor/type-utils';
+import { type UnionToIntersection } from '@trezor/type-utils';
 
 type MethodFactory<Union> = UnionToIntersection<Union[keyof Union]>;
 

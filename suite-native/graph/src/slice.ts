@@ -1,12 +1,12 @@
 import { G } from '@mobily/ts-belt';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { createTransform } from 'redux-persist';
 
 import { deviceActions } from '@suite-common/device';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from '@suite-native/storage';
 
-import { TimeframeHoursValue } from './types';
+import { type TimeframeHoursValue } from './types';
 
 // Default is 720 hours (1 month).
 const DEFAULT_GRAPH_TIMEFRAME_HOURS = 720;

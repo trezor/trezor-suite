@@ -27,6 +27,7 @@
         "vite-plugin-node-polyfills": "^0.25.0"
     },
     "devDependencies": {
+        "@types/jest": "29.5.12",
         "tsx": "^4.20.3"
     }
 }

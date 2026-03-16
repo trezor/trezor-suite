@@ -1,22 +1,22 @@
 import { mocked } from 'jest-mock';
 
 import {
-    MetadataRootState,
+    type MetadataRootState,
     initialMetadataState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
 import { deviceReducerInitialState } from '@suite-common/device';
-import { SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
+import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
+import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
 
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 import {
-    DesktopSuiteSyncRootState,
+    type DesktopSuiteSyncRootState,
     initialSuiteSyncDesktopState,
 } from '../../../../actions/suiteSync/suiteSyncSlice';
-import { SuiteRootState, suiteInitialState } from '../../../../reducers/suite/suiteReducer';
+import { type SuiteRootState, suiteInitialState } from '../../../../reducers/suite/suiteReducer';
 
 /**
  * It was really hard to mock the state for metadata. So I statically mocked

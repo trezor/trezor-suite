@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { Account, FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';

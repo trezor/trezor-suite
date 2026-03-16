@@ -1,4 +1,4 @@
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Banner, Paragraph, Text } from '@trezor/components';
 
 export const FirmwareWipeWarning = () => {

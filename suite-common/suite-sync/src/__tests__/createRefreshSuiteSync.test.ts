@@ -1,14 +1,17 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
+import { type EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
 import { mockNotExpected } from '@suite-common/dependency-injection';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
-import { TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { type EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
+import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
-import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSyncKeys';
-import { GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
+import {
+    type RefreshSuiteSyncKeysDeps,
+    createRefreshSuiteSync,
+} from '../createRefreshSuiteSyncKeys';
+import { type GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
 
 const createMockDeps = () =>
     ({

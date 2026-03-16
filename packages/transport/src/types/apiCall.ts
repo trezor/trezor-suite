@@ -1,12 +1,12 @@
-import { Messages } from '@trezor/protobuf';
+import { type Messages } from '@trezor/protobuf';
 import {
-    PROTOCOL_MALFORMED,
-    ThpChannelState,
-    TransportProtocol,
-    thp as protocolThp,
+    type PROTOCOL_MALFORMED,
+    type ThpChannelState,
+    type TransportProtocol,
+    type thp as protocolThp,
 } from '@trezor/protocol';
 
-import * as ERRORS from '../errors';
+import type * as ERRORS from '../errors';
 
 export type AnyError = (typeof ERRORS)[keyof typeof ERRORS] | typeof PROTOCOL_MALFORMED;
 

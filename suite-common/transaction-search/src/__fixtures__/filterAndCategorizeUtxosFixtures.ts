@@ -1,8 +1,8 @@
-import { Utxo } from '@trezor/blockchain-link';
+import { type Utxo } from '@trezor/blockchain-link';
 
 import {
-    FilterAndCategorizeUtxosParams,
-    FilterAndCategorizeUtxosResult,
+    type FilterAndCategorizeUtxosParams,
+    type FilterAndCategorizeUtxosResult,
 } from '../filterAndCategorizeUtxos';
 
 export const baseUtxo: Omit<Utxo, 'address'> = {

@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { StakeFormState, StakeType, Timestamp } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type StakeFormState, type StakeType, type Timestamp } from '@suite-common/wallet-types';
 
 export interface StakingTotalRewards {
     data?: string;

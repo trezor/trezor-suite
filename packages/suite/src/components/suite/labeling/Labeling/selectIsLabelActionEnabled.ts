@@ -1,20 +1,20 @@
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
 import {
-    WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import {
-    DesktopSuiteSyncRootState,
+    type DesktopSuiteSyncRootState,
     selectDesktopSuiteSyncInteraction,
 } from '../../../../actions/suiteSync/suiteSyncSlice';
-import { SuiteRootState } from '../../../../reducers/suite/suiteReducer';
+import { type SuiteRootState } from '../../../../reducers/suite/suiteReducer';
 
 export const selectIsLabelActionEnabled = (
     state: WithSuiteSyncAndDeviceState &

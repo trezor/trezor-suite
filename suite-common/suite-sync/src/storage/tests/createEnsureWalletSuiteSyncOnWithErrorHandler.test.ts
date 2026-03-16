@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import type { CreateEnsureWalletSuiteSyncOnWithFwCheckDeps } from '../createEnsureWalletSuiteSyncOnWithErrorHandler';

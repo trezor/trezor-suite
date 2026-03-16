@@ -7,7 +7,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
     TROUBLESHOOTING_TIP_CABLE,

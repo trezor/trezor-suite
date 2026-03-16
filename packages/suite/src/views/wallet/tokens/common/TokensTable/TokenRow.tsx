@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
@@ -8,22 +8,22 @@ import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
+    type EnhancedTokenInfo,
     TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import {
-    TradingType,
+    type TradingType,
     getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
     selectTradingInfo,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
+import { type Explorer, type Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectExplorer, sendFormActions } from '@suite-common/wallet-core';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,

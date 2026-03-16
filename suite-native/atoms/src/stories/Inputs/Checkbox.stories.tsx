@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { CheckBox as CheckBoxComponent, CheckBoxProps } from '../../CheckBox';
+import { CheckBox as CheckBoxComponent, type CheckBoxProps } from '../../CheckBox';
 
 type CheckBoxStory = StoryObj<CheckBoxProps>;
 

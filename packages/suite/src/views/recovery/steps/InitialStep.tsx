@@ -1,4 +1,4 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';

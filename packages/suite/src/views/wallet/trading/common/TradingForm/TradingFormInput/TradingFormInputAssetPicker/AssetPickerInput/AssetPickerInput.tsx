@@ -3,17 +3,17 @@ import { useFormContext } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
-    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingBuyFormProps,
-    TradingExchangeFormProps,
-    TradingSellFormProps,
+    type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingBuyFormProps,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
-import { Icon, Input, InputProps, Spinner, Text } from '@trezor/components';
+import { Icon, Input, type InputProps, Spinner, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 

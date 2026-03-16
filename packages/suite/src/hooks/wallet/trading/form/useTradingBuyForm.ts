@@ -12,8 +12,8 @@ import {
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    TradingAmountLimitProps,
-    TradingBuyFormProps,
+    type TradingAmountLimitProps,
+    type TradingBuyFormProps,
     type TradingBuyType,
     buyThunks,
     getTradingQuotesByPaymentMethod,
@@ -28,7 +28,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { useFormDraft } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -41,11 +41,11 @@ import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/us
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type Dispatch } from 'src/types/suite';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
-    TradingBuyConfirmTradeProps,
-    TradingBuyFormContextProps,
+    type TradingBuyConfirmTradeProps,
+    type TradingBuyFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 

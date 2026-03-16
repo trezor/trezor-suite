@@ -1,18 +1,18 @@
 import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
-import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { DeviceError } from '@suite-common/device';
 import {
-    CreateSuiteSyncOwner,
-    CreateSuiteSyncOwnerError,
-    SuiteSyncOwner,
+    type CreateSuiteSyncOwner,
+    type CreateSuiteSyncOwnerError,
+    type SuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
 import {
-    DelegatedIdentityKey,
-    DeviceErrorType,
-    TrezorDeviceWithState,
+    type DelegatedIdentityKey,
+    type DeviceErrorType,
+    type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import TrezorConnect from '@trezor/connect';
-import { Result, err } from '@trezor/type-utils';
+import type TrezorConnect from '@trezor/connect';
+import { type Result, err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 

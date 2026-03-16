@@ -1,13 +1,13 @@
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import { testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
 import {
-    AccountsState,
-    BlockchainState,
-    TransactionsState,
+    type AccountsState,
+    type BlockchainState,
+    type TransactionsState,
     feesReducer,
     initBlockchainThunk,
     onBlockMinedThunk,
@@ -17,7 +17,7 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { FeesState } from '@suite-common/wallet-types';
+import { type FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 

@@ -1,15 +1,15 @@
 import {
     Hint,
     JavaScriptTypeBuilder,
-    SchemaOptions,
-    TEnum,
-    TEnumKey,
-    TEnumValue,
-    TLiteral,
-    TUnion,
+    type SchemaOptions,
+    type TEnum,
+    type TEnumKey,
+    type TEnumValue,
+    type TLiteral,
+    type TUnion,
 } from '@sinclair/typebox';
 
-import { UnionToIntersection } from '@trezor/type-utils';
+import { type UnionToIntersection } from '@trezor/type-utils';
 
 // LastInUnion<A | B> = B
 type LastInUnion<U> =

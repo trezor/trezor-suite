@@ -1,9 +1,13 @@
-import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
-import { AbortablePromise } from '@suite-native/trading-types';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
+import { type AbortablePromise } from '@suite-native/trading-types';
 
-import { UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
+import { type UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
 
 describe('useQuotesInvalidator', () => {
     let store: TestStore;

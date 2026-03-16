@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
@@ -7,7 +7,7 @@ import { addLog } from '@suite-common/logger';
 import { redactUserPathFromString } from '@trezor/utils';
 
 import { DESKTOP_UPDATE, PROTOCOL, SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =

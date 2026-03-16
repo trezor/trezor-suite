@@ -1,4 +1,4 @@
-import { BalanceType, YieldBalancesDto } from '@suite-common/earn-api';
+import { BalanceType, type YieldBalancesDto } from '@suite-common/earn-api';
 import { BigNumber } from '@trezor/utils';
 
 export const getYieldAddressKey = (yieldId: string, address: string) =>

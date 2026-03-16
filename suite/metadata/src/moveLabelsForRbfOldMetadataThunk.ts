@@ -1,11 +1,11 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
+import { type AccountLabels, type AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
+import { type RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';

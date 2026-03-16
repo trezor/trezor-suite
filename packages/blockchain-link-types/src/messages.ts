@@ -1,5 +1,5 @@
 import type { BlockchainSettings, ChannelMessage, SubscriptionAccountInfo } from './common';
-import * as MESSAGES from './constants/messages';
+import type * as MESSAGES from './constants/messages';
 import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,

@@ -7,7 +7,7 @@
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
 import { isDevEnv } from '@suite-common/suite-utils';
-import { InterceptedEvent, createInterceptor } from '@trezor/request-manager';
+import { type InterceptedEvent, createInterceptor } from '@trezor/request-manager';
 import { TorStatus } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 

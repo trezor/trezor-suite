@@ -3,12 +3,12 @@ import { produce } from 'immer';
 import { BigNumber } from '@trezor/utils';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
-import { WalletAction } from 'src/types/wallet';
+import { type WalletAction } from 'src/types/wallet';
 import {
-    CardanoNetwork,
-    DRepResponse,
-    PendingStakeTx,
-    PoolsResponse,
+    type CardanoNetwork,
+    type DRepResponse,
+    type PendingStakeTx,
+    type PoolsResponse,
 } from 'src/types/wallet/cardanoStaking';
 
 export interface State {

@@ -1,5 +1,5 @@
 import { forwardRef, useRef } from 'react';
-import { View, ViewProps } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,

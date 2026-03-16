@@ -3,7 +3,7 @@ import { BufferWriter } from '../bufferutils';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack } from '../types';
+import { type Payment, type PaymentOpts, type Stack } from '../types';
 import { BufferNSchema, BufferSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;

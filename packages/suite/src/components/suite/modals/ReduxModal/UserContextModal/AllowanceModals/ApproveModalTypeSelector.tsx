@@ -1,10 +1,10 @@
-import { CryptoId, DexApprovalType, ProviderMetadata } from 'invity-api';
+import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, CollapsibleBox, Column, Paragraph, RadioCard, Row, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
 

@@ -14,9 +14,9 @@ import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import {
     LABELING_LEGACY_OPTION_LABEL,
     LABELING_SELECT_OPTIONS,
-    LabelingOption,
-    LabelingOptionTranslated,
-    LabelingSelectValue,
+    type LabelingOption,
+    type LabelingOptionTranslated,
+    type LabelingSelectValue,
 } from 'src/constants/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';

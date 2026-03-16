@@ -5,11 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
     PassphraseForm,

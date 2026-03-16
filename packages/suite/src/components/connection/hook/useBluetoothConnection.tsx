@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 
 import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
-import { BluetoothDeviceId } from '@trezor/connect';
+import { type BluetoothDeviceId } from '@trezor/connect';
 
-import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { setConnectionModal } from 'src/actions/device/deviceSlice';

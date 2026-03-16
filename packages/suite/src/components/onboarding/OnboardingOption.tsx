@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Card, Column, H4, Icon, IconName, Paragraph, Row } from '@trezor/components';
+import { Card, Column, H4, Icon, type IconName, Paragraph, Row } from '@trezor/components';
 
 type OnboardingOptionProps = {
     heading: ReactNode;

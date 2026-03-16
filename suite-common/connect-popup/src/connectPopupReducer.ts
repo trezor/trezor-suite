@@ -1,14 +1,14 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
-    AppRememberedPermission,
+    type AppRememberedPermission,
     CALL_SOURCE_WALLETCONNECT,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
 } from './connectPopupTypes';
 
 export type ConnectPopupState = {

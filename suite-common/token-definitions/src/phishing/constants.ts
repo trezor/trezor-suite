@@ -1,5 +1,5 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 /** The dust threshold is in fiat (USD), as we want to detect economically meaningful dust-sized value movements */
 export const DUST_PHISHING_THRESHOLD = '0.005';

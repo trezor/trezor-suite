@@ -1,5 +1,5 @@
-import { DeviceMetadata } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/platform-encryption';
+import { type DeviceMetadata } from '@suite-common/metadata-types';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type {
     AuthenticateDeviceResult,
     DeviceButtonRequest,
@@ -13,7 +13,7 @@ import type {
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
-import { Branded, UnionSubset } from '@trezor/type-utils';
+import { type Branded, type UnionSubset } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect

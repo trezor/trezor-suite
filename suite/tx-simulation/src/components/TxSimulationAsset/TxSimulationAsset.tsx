@@ -1,5 +1,5 @@
-import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
-import { Network } from '@suite-common/wallet-config';
+import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
 import { TxSimulationAssetLogo } from './TxSimulationAssetLogo';

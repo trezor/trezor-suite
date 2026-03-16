@@ -1,12 +1,12 @@
-import { ThpState } from './ThpState';
+import { type ThpState } from './ThpState';
 import { CRC_LENGTH, TAG_LENGTH } from './constants';
 import { aesgcm } from './crypto';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
-import { TransportProtocolDecode } from '../types';
+import { type TransportProtocolDecode } from '../types';
 import { crc32 } from './crypto/crc32';
 import { getHandshakeHash, getTrezorState } from './crypto/pairing';
 import { getIvFromNonce } from './crypto/tools';
-import { ThpDeviceProperties, ThpError, ThpMessageResponse } from './messages';
+import { type ThpDeviceProperties, type ThpError, type ThpMessageResponse } from './messages';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
     thpState: ThpState;

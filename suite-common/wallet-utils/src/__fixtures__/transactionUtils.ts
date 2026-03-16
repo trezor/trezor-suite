@@ -1,7 +1,7 @@
-import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
-import { AccountTransaction } from '@trezor/connect';
+import { type TokenTransfer, type TransferType } from '@trezor/blockchain-link-types';
+import { type AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
 

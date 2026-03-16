@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { GEOLOCATION_API_URL } from '@trezor/urls';
 
-import { CountryCode } from './countries';
+import { type CountryCode } from './countries';
 import { GEOLOCATION_PREFIX, geolocationActions } from './geolocationReducer';
 
 type GeolocationResponse = {

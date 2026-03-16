@@ -1,9 +1,9 @@
 import type { CryptoId } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { buyQuotes } from '@suite-native/trading-fixtures';
-import { TradingBuyState } from '@suite-native/trading-types';
+import { type TradingBuyState } from '@suite-native/trading-types';
 
 import { buyActions, buyReducer } from '../buySlice';
 

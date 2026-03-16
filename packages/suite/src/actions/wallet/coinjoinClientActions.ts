@@ -5,17 +5,17 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
-    CoinjoinClientEvents,
-    CoinjoinClientVersion,
-    CoinjoinRequestEvent,
-    CoinjoinResponseEvent,
-    CoinjoinRoundEvent,
-    CoinjoinStatusEvent,
+    type CoinjoinClientEvents,
+    type CoinjoinClientVersion,
+    type CoinjoinRequestEvent,
+    type CoinjoinResponseEvent,
+    type CoinjoinRoundEvent,
+    type CoinjoinStatusEvent,
     RoundPhase,
-    SerializedCoinjoinRound,
+    type SerializedCoinjoinRound,
 } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { getOsName } from '@trezor/env-utils';
@@ -30,8 +30,12 @@ import {
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
-import { Dispatch, GetState } from 'src/types/suite';
-import { CoinjoinAccount, CoinjoinDebugSettings, EndRoundState } from 'src/types/wallet/coinjoin';
+import { type Dispatch, type GetState } from 'src/types/suite';
+import {
+    type CoinjoinAccount,
+    type CoinjoinDebugSettings,
+    EndRoundState,
+} from 'src/types/wallet/coinjoin';
 import {
     getEstimatedTimePerRound,
     getSessionDeadline,

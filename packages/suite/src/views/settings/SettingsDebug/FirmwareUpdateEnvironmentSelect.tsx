@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { Column, Text } from '@trezor/components';
-import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
+import { type FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';

@@ -5,7 +5,7 @@ import type { AccountAddress } from '../../types/account';
 import type { AliceShape } from '../../types/alice';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { Bob, outputDecomposition } from './outputDecomposition';
+import { type Bob, outputDecomposition } from './outputDecomposition';
 import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { scheduleDelay } from '../../utils/roundUtils';
 import type { Account } from '../Account';

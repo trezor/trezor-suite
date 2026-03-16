@@ -1,13 +1,15 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
-import { Target, TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
-import type {
-    StakeType,
-    TokenDetailByMint,
-    TokenInfo,
-    TokenStandard,
+import {
+    type StakeType,
+    type Target,
+    type TokenDetailByMint,
+    type TokenInfo,
+    type TokenStandard,
+    type TokenTransfer,
+    type Transaction,
 } from '@trezor/blockchain-link-types/src';
-import { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
+import { type SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

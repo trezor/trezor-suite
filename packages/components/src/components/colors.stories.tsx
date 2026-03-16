@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { Meta } from '@storybook/react';
+import { type Meta } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
+import { type CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { Badge } from './Badge/Badge';

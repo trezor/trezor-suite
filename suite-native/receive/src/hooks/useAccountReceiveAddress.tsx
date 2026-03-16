@@ -5,13 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     confirmAddressOnDeviceThunk,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

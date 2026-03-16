@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 import { getFormattedFingerprint, validateFirmware } from '../index';
 

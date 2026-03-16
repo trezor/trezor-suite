@@ -2,11 +2,11 @@ import styled, { css } from 'styled-components';
 
 import {
     EXPERIMENT_MAP,
-    ExperimentId,
-    ExperimentsItemType,
+    type ExperimentId,
+    type ExperimentsItemType,
     buildExperimentGroupRanges,
 } from '@suite-common/message-system';
-import { ExperimentsItem } from '@suite-common/suite-types';
+import { type ExperimentsItem } from '@suite-common/suite-types';
 import { InfoItem, Row, Text } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 

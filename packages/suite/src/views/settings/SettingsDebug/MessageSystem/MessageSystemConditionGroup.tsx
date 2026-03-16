@@ -1,4 +1,4 @@
-import { Action } from '@suite-common/suite-types';
+import { type Action } from '@suite-common/suite-types';
 import { Column, InfoItem, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

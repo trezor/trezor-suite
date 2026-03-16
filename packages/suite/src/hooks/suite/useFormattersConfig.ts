@@ -1,4 +1,4 @@
-import { FormatterProviderConfig } from '@suite-common/formatters';
+import { type FormatterProviderConfig } from '@suite-common/formatters';
 import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite/useSelector';

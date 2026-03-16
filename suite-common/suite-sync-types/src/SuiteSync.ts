@@ -1,12 +1,12 @@
-import { UpdateAccountLabelDep } from './data/updateAccountLabel';
-import { UpdateAddressLabelDep } from './data/updateAddressLabel';
-import { UpdateOutputLabelDep } from './data/updateOutputLabel';
-import { UpdateWalletLabelDep } from './data/updateWalletLabel';
-import { ChangeRelayUrlDep } from './relay/changeRelayUrl';
-import { EnsureWalletSuiteSyncOnDep } from './storage/ensureWalletSuiteSyncOn';
-import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
-import { TurnOffSuiteSyncDep } from './turnOffSuiteSync';
-import { TurnOnSuiteSyncDep } from './turnOnSuiteSync';
+import { type UpdateAccountLabelDep } from './data/updateAccountLabel';
+import { type UpdateAddressLabelDep } from './data/updateAddressLabel';
+import { type UpdateOutputLabelDep } from './data/updateOutputLabel';
+import { type UpdateWalletLabelDep } from './data/updateWalletLabel';
+import { type ChangeRelayUrlDep } from './relay/changeRelayUrl';
+import { type EnsureWalletSuiteSyncOnDep } from './storage/ensureWalletSuiteSyncOn';
+import { type TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
+import { type TurnOffSuiteSyncDep } from './turnOffSuiteSync';
+import { type TurnOnSuiteSyncDep } from './turnOnSuiteSync';
 
 export type SuiteSync = ChangeRelayUrlDep &
     TurnOnSuiteSyncDep &

@@ -1,5 +1,5 @@
 import {
-    ElectronMainOptions,
+    type ElectronMainOptions,
     IPCMode,
     captureConsoleIntegration,
     init,

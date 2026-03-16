@@ -1,19 +1,24 @@
 import styled from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconName } from '../../Icon/Icon';
 import { ShortcutBadge } from '../../ShortcutBadge/ShortcutBadge';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+} from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
@@ -24,7 +29,7 @@ import {
     pickButtonProps,
 } from '../utils';
 import { mapSizeToGap, mapSizeToPadding } from './utils';
-import { Keys } from '../../ShortcutBadge/keyboardKeys';
+import { type Keys } from '../../ShortcutBadge/keyboardKeys';
 
 export const allowedButtonFrameProps = [
     'margin',

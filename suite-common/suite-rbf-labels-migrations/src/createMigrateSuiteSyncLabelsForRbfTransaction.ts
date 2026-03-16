@@ -1,15 +1,15 @@
 import {
-    DeleteLabelsForSuiteSync,
-    DeleteLabelsForSuiteSyncDep,
-    GetOutputsDep,
-    MigrateSuiteSyncLabelsForRbfTransaction,
-    RbfLabelsToBeUpdated,
-    SetLabelsForSuiteSync,
-    SetLabelsForSuiteSyncDep,
+    type DeleteLabelsForSuiteSync,
+    type DeleteLabelsForSuiteSyncDep,
+    type GetOutputsDep,
+    type MigrateSuiteSyncLabelsForRbfTransaction,
+    type RbfLabelsToBeUpdated,
+    type SetLabelsForSuiteSync,
+    type SetLabelsForSuiteSyncDep,
 } from '@suite-common/suite-rbf-labels-migrations-types';
-import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { typedObjectEntries } from '@trezor/utils';
 
 export const createSetLabelsForSuiteSync =

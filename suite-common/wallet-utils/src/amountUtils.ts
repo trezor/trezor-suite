@@ -1,8 +1,8 @@
-import { NetworkSymbol, getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
-import { BigNumber, BigNumberValue } from '@trezor/utils';
+import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
-import { AmountSubunit, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
+import { type AmountSubunit, type AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 

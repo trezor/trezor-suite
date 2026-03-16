@@ -3,7 +3,7 @@
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack } from '../types';
+import { type Payment, type PaymentOpts, type Stack } from '../types';
 import { BufferSchema, Type, assertType, isBuffer } from '../types/validation';
 
 const { OPS } = bscript;

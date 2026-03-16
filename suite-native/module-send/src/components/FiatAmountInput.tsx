@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
@@ -19,8 +19,8 @@ import { selectAccountTokenDecimals } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { SendAmountCurrencyLabelWrapper } from './CryptoAmountInput';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { SendAmountInputProps } from '../types';
+import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
 
 export const FiatAmountInput = ({

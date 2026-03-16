@@ -1,6 +1,6 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';

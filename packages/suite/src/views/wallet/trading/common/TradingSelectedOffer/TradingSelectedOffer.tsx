@@ -4,7 +4,10 @@ import { Card, Column } from '@trezor/components';
 
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingOfferExchangeProps, TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import {
+    type TradingOfferExchangeProps,
+    type TradingOfferSellProps,
+} from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,

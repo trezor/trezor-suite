@@ -5,7 +5,7 @@ import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-util
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 
-import { AccountWithTokensOption } from '../types';
+import { type AccountWithTokensOption } from '../types';
 import { calculateExpandableTokensHeight } from '../utils';
 
 export function useFilterAccountsWithTokens(

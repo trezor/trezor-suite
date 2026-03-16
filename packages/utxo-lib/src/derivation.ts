@@ -3,7 +3,7 @@ import bs58 from 'bs58';
 import { throwError } from '@trezor/utils';
 
 import { fromBase58 } from './bip32';
-import { Network, bitcoin } from './networks';
+import { type Network, bitcoin } from './networks';
 import { p2pkh, p2sh, p2tr, p2wpkh } from './payments';
 
 const BIP32_PAYMENT_TYPES = {

@@ -1,6 +1,6 @@
 import { nativeTheme } from 'electron';
 
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { Store } from '../libs/store';
 import { ipcMain } from '../typed-electron';

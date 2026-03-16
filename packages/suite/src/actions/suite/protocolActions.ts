@@ -1,13 +1,13 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
-    AnchorSettingSection,
+    type AnchorSettingSection,
     SettingsAnchor,
     goto,
     mapAnchorToRoute,
     onLocationChange,
 } from '@suite/router';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { Protocol } from '@suite-common/suite-constants';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
@@ -21,9 +21,9 @@ import { isArrayMember } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
-import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
+import { type CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
 
 import { PROTOCOL } from './constants';
 

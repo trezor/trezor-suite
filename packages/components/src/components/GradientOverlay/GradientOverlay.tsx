@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { useElevation } from '../ElevationContext/ElevationContext';
 

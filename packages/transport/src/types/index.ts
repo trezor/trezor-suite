@@ -1,9 +1,9 @@
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
-import { DEVICE_TYPE } from '../constants';
+import { type DEVICE_TYPE } from '../constants';
 import type { DescriptorModel } from '../utils/descriptor';
 
-export * from './apiCall';
+export type * from './apiCall';
 
 export type Session = `${number}` & Branded<'Session'>;
 export const Session = (input: `${number}`) => `${input}` as Session;

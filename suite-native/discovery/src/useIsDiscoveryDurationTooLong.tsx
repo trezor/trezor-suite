@@ -5,7 +5,7 @@ import {
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 
 const DISCOVERY_LENGTH_CHECK_INTERVAL = 1_000;
 const DISCOVERY_DURATION_THRESHOLD = 50_000;

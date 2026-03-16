@@ -4,7 +4,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 
 type CustomFeeLabelProps = {
     networkType: NetworkType;

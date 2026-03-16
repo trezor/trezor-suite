@@ -1,13 +1,13 @@
-import { UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 
 import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
-import { FeeInfo, TxSimulationAction } from '@suite-common/wallet-types';
+import { type FeeInfo, type TxSimulationAction } from '@suite-common/wallet-types';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { useDispatch } from 'src/hooks/suite';
-import { FeesFormValues } from 'src/hooks/wallet/form/useFees';
+import { type FeesFormValues } from 'src/hooks/wallet/form/useFees';
 
 interface UseTxSimulationActionsProps {
     method: TxSimulationAction['method'];

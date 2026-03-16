@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Column, Icon, IconName, Row, Text, UIIntent } from '@trezor/components';
+import { Column, Icon, type IconName, Row, Text, type UIIntent } from '@trezor/components';
 
 type UpdateRowProps = {
     children: ReactNode;

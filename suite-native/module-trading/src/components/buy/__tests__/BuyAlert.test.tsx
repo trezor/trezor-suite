@@ -4,7 +4,7 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyAlert } from '../BuyAlert';

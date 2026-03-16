@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
 
-import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invity-api';
+import {
+    type BuyCryptoPaymentMethod,
+    type CryptoId,
+    type SellCryptoPaymentMethod,
+} from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,4 +1,4 @@
-import { CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 const bitcoin = 'bitcoin' as CryptoId;
 

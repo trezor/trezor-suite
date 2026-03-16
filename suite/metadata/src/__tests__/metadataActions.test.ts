@@ -10,7 +10,7 @@ import * as fixtures from '../__fixtures__/metadataActions';
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
-import { SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
+import { type SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
 import * as metadataThunks from '../metadataThunks';
 import { DropboxProvider } from '../providers/DropboxProvider';
 

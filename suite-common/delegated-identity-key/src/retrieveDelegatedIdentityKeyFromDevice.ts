@@ -1,13 +1,13 @@
 import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/device';
 import {
-    DelegatedIdentityKey,
-    DeviceCancelledErrType,
-    DeviceErrorType,
-    TrezorDeviceWithState,
+    type DelegatedIdentityKey,
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type TrezorDeviceWithState,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
-import TrezorConnect from '@trezor/connect';
-import { Result, err, ok } from '@trezor/type-utils';
+import type TrezorConnect from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 export type RetrieveDelegatedIdentityKeyParams = {
     device: Pick<TrezorDeviceWithState, 'path' | 'state' | 'instance' | 'useEmptyPassphrase'>;

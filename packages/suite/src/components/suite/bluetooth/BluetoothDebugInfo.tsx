@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Code, Icon, InfoSegments, Text } from '@trezor/components';
 
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 
 const TimeAgo = ({ timestamp }: { timestamp: number }) => {

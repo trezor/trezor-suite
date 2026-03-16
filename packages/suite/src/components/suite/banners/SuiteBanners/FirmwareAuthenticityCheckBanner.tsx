@@ -1,11 +1,11 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import {
-    SkippedHashCheckError,
-    SkippedRevisionCheckError,
+    type SkippedHashCheckError,
+    type SkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import { Banner } from '@trezor/components';
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';

@@ -4,7 +4,7 @@ import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
@@ -14,7 +14,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
@@ -31,7 +31,7 @@ import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { configureStore } from 'src/support/tests/configureStore';
-import { AcquiredDevice, AppState } from 'src/types/suite';
+import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import * as storageActions from '../storageActions';
 

@@ -1,6 +1,6 @@
 import {
     Feature,
-    TradingSurveyPayload,
+    type TradingSurveyPayload,
     resolveMessageContent,
     selectFeatureConfig,
     validateTradingSurvey,

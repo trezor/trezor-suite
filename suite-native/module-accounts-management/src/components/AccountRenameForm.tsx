@@ -2,19 +2,23 @@ import { useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import {
-    AccountFormValues,
+    type AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
     useAccountLabelForm,
 } from '@suite-native/accounts';
-import { Box, Button, InputType, VStack } from '@suite-native/atoms';
+import { Box, Button, type InputType, VStack } from '@suite-native/atoms';
 import { featureUsed } from '@suite-native/experimental-features';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    CombinedLabelingState,
+    type CombinedLabelingState,
     selectAccountLabel,
     selectIsLabellingAllowed,
     useSuiteSyncErrorHandler,

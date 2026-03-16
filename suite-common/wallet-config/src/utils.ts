@@ -1,4 +1,4 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-api';
 
 import { networks } from './networksConfig';
 import {

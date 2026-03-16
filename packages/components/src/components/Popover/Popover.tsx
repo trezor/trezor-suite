@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CSSProperties, HTMLProps, forwardRef, useImperativeHandle } from 'react';
+import { type CSSProperties, type HTMLProps, forwardRef, useImperativeHandle } from 'react';
 
 import {
     FloatingFocusManager,
@@ -19,7 +19,7 @@ import { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-import { PopoverPlacement, convertPopoverPlacement } from './utils';
+import { type PopoverPlacement, convertPopoverPlacement } from './utils';
 import { intermediaryTheme } from '../../config/colors';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 

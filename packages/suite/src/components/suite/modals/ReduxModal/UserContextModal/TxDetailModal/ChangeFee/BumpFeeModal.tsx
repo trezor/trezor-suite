@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
-    ChainedTransactions,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type ChainedTransactions,
+    type SelectedAccountLoaded,
+    type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 

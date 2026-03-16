@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
-import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
+import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings, transitions, typography } from '@trezor/theme';

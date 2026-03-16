@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,

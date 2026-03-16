@@ -1,17 +1,17 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Card, Column, ElevationContext, IconButton, Row, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import {
-    UpdateStatus,
-    UpdateStatusDevice,
-    UpdateStatusSuite,
+    type UpdateStatus,
+    type UpdateStatusDevice,
+    type UpdateStatusSuite,
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';

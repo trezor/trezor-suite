@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { GhostContainer } from '@trezor/components';
 
-import { Fees, FeesProps } from 'src/components/wallet/Fees/Fees';
+import { Fees, type FeesProps } from 'src/components/wallet/Fees/Fees';
 
 export type TradingFormFeesProps = Pick<
     FeesProps,

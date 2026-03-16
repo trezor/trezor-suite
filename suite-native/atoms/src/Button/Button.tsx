@@ -1,19 +1,25 @@
-import { ReactElement, ReactNode, useState } from 'react';
-import { PressableProps } from 'react-native';
+import { type ReactElement, type ReactNode, useState } from 'react';
+import { type PressableProps } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { MergeExclusive } from 'type-fest';
+import { type MergeExclusive } from 'type-fest';
 
-import { AnimatedIconColor, Icon, IconName, IconSize, icons } from '@suite-native/icons';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
+import {
+    type AnimatedIconColor,
+    Icon,
+    type IconName,
+    type IconSize,
+    icons,
+} from '@suite-native/icons';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type Color, type TypographyStyle, nativeSpacings } from '@trezor/theme';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
 import { AnimatedPressable } from '../Pressable';
 import { HStack } from '../Stack';
-import { TestProps } from '../types';
+import { type TestProps } from '../types';
 
 // Using ReactElement instead of ReactNode to exclude string and have type check on IconName
 // and also because string needs to be rendered in the <Text> element anyway

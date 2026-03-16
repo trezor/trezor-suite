@@ -1,11 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { type DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { ProgressLabelState } from './types';
+import { type ProgressLabelState } from './types';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 

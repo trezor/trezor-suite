@@ -1,4 +1,4 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Column, Icon } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
@@ -7,9 +7,9 @@ import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { useDevice, useSelector } from 'src/hooks/suite';
 
 import {
-    UpdateStatus,
-    UpdateStatusDevice,
-    UpdateStatusSuite,
+    type UpdateStatus,
+    type UpdateStatusDevice,
+    type UpdateStatusSuite,
     mapUpdateStatusToIcon,
     mapUpdateStatusToIntent,
 } from './updateQuickActionTypes';

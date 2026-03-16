@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { type useDispatch } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
@@ -6,16 +6,16 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
 import {
-    AccountHistoryMovementItem,
-    AccountItem,
-    BalanceMovementEvent,
-    GroupedBalanceMovementEvent,
+    type AccountHistoryMovementItem,
+    type AccountItem,
+    type BalanceMovementEvent,
+    type GroupedBalanceMovementEvent,
 } from './types';
 
 /**

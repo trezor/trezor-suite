@@ -1,14 +1,14 @@
 import {
-    NetworkSymbol,
-    NetworkType,
+    type NetworkSymbol,
+    type NetworkType,
     getNetworkFeatures,
     getNetworkType,
 } from '@suite-common/wallet-config';
-import { RatesByTimestamps, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type RatesByTimestamps, type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { TokenDefinitions } from '../tokenDefinitionsTypes';
+import { type TokenDefinitions } from '../tokenDefinitionsTypes';
 import { detectors } from './detectors';
-import { PhishingDetectorFn } from './types';
+import { type PhishingDetectorFn } from './types';
 import { getTransactionWithFiatAmounts } from './utils';
 
 type NetworkPhishingDetectors = Map<NetworkType, PhishingDetectorFn[]>;

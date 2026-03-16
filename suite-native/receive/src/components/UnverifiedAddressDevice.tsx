@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Pressable } from 'react-native';
 import {
-    GestureEvent,
+    type GestureEvent,
     PanGestureHandler,
-    PanGestureHandlerEventPayload,
+    type PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';

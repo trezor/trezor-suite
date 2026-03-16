@@ -1,9 +1,9 @@
 import { bufferUtils } from '@trezor/utils';
 
 import {
-    PrepareDeviceAuthenticityDataParams,
-    VerifyAuthenticityProofParams,
-    VerifyAuthenticityProofResult,
+    type PrepareDeviceAuthenticityDataParams,
+    type VerifyAuthenticityProofParams,
+    type VerifyAuthenticityProofResult,
 } from './types';
 import { getCaPubKeyBlacklist, getRootPubKeys } from './utils';
 import { validateCaCertExtensions } from './validateCaCertExtensions';

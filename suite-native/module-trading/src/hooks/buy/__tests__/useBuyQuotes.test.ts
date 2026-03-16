@@ -1,8 +1,8 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProvider,
@@ -14,7 +14,7 @@ import {
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormValues } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';

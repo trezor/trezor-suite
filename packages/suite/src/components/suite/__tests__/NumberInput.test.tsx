@@ -3,13 +3,13 @@ import { Provider } from 'react-redux';
 
 import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Store } from 'redux';
+import { type Store } from 'redux';
 
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
 import { NumberInput } from '@trezor/product-components';
 
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 
 const onChangeMock = jest.fn();

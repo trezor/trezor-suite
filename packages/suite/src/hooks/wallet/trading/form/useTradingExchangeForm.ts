@@ -5,7 +5,7 @@ import { useDebounce } from 'react-use';
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { events } from '@suite/analytics';
-import { TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -19,7 +19,7 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    TradingExchangeType,
+    type TradingExchangeType,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
@@ -43,7 +43,7 @@ import {
     updateFeeInfoThunk,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -60,11 +60,11 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type Dispatch } from 'src/types/suite';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
-    TradingExchangeConfirmTradeProps,
-    TradingExchangeFormContextProps,
+    type TradingExchangeConfirmTradeProps,
+    type TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 

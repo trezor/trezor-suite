@@ -1,4 +1,4 @@
-import { Menu, MenuItemConstructorOptions, app, shell } from 'electron';
+import { Menu, type MenuItemConstructorOptions, app, shell } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 

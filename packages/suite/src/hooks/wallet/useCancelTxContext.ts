@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { PrecomposeResultFinal } from '@trezor/connect';
+import { type PrecomposeResultFinal } from '@trezor/connect';
 
 type CancelTxContextValues = {
     composedCancelTx: PrecomposeResultFinal | null;

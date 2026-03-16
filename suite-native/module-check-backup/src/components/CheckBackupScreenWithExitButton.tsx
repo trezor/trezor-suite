@@ -6,14 +6,14 @@ import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackRoutes,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     Screen,
     ScreenHeader,
-    ScreenProps,
-    StackToStackCompositeNavigationProps,
+    type ScreenProps,
+    type StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';

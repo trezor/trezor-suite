@@ -11,9 +11,9 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
@@ -22,7 +22,7 @@ import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearExchangeFormQuoteData } from './useExchangeForm';

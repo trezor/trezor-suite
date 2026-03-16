@@ -1,5 +1,5 @@
-import { RouterState } from '@suite/router';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type RouterState } from '@suite/router';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -7,16 +7,16 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountBase,
-    AccountKey,
-    Output,
-    FormState as SendFormState,
+    type Account,
+    type AccountBase,
+    type AccountKey,
+    type Output,
+    type FormState as SendFormState,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
+import { type State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const blockchainSubscription: Array<{
     description: string;

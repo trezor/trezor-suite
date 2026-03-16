@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Card, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

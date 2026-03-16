@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { selectRouteName } from '@suite/router';
-import { Route } from '@suite-common/suite-types';
+import { type Route } from '@suite-common/suite-types';
 import { Tabs } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 

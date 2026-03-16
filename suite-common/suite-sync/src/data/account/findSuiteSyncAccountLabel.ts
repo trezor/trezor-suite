@@ -1,6 +1,6 @@
-import { SuiteSyncAccount } from '@suite-common/suite-sync-storage';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
 
 export const findSuiteSyncAccountLabel = (params: {
     accounts: SuiteSyncAccount[];

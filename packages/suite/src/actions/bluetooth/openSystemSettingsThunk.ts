@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { InvokeResult, desktopApi } from '@trezor/suite-desktop-api';
+import { type InvokeResult, desktopApi } from '@trezor/suite-desktop-api';
 
 type OpenSystemSettingsThunkParams = {
     type: Parameters<typeof desktopApi.openSystemSettings>[0];

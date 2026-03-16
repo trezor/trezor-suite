@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { type AssetFiatBalance } from '@suite-common/assets';
 import {
     type Network,
     type NetworkSymbol,
@@ -17,10 +17,10 @@ import {
     selectCurrentFiatRates,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { RatesByKey } from '@suite-common/wallet-types';
+import { type RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
-    AmountUnit,
+    type AmountUnit,
     BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
@@ -28,17 +28,16 @@ import {
     isSupportedSolStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { PartialRecord } from '@trezor/type-utils';
+import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';

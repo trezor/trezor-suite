@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 

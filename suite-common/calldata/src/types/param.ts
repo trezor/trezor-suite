@@ -1,5 +1,5 @@
-import { IssueWithSeverity, PolicyResult } from './policy';
-import { Issue, ValidationResult } from './validation';
+import { type IssueWithSeverity, type PolicyResult } from './policy';
+import { type Issue, type ValidationResult } from './validation';
 
 export interface ParamResult<Output> {
     value: Output | null;

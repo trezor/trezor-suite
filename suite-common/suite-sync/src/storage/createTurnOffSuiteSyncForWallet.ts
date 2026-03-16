@@ -1,7 +1,7 @@
 import {
-    SubscriptionStorageDep,
-    SuiteSyncStorageRepositoryDep,
-    TurnOffSuiteSyncForWallet,
+    type SubscriptionStorageDep,
+    type SuiteSyncStorageRepositoryDep,
+    type TurnOffSuiteSyncForWallet,
 } from '@suite-common/suite-sync-types';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';

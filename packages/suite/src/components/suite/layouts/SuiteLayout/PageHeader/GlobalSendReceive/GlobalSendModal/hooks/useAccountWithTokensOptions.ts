@@ -3,21 +3,21 @@ import { useThrottle } from 'react-use';
 
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     accountsFiatBalanceInDescOrderComparator,
     filterAccountsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import {
     createAccountOption,
     createHiddenTokensOption,

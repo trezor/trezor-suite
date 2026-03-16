@@ -1,4 +1,4 @@
-import { FlagSize, FlagType, isFlagType } from './types';
+import { type FlagSize, type FlagType, isFlagType } from './types';
 
 export const mapSizeToOutlineWidth = (size: FlagSize): number => {
     const outlineWidthMap: Record<FlagSize, number> = {

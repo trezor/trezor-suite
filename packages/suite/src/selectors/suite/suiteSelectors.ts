@@ -1,10 +1,15 @@
 import type { ExperimentalFeature } from '@suite/experimental';
-import { RouterRootState, selectRouter } from '@suite/router';
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { TransportInfo } from '@trezor/connect';
+import { type RouterRootState, selectRouter } from '@suite/router';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type TransportInfo } from '@trezor/connect';
 
-import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import {
+    type AppState,
+    type PrerequisiteType,
+    TorStatus,
+    type TrezorDevice,
+} from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 

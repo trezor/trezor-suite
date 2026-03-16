@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import Animated, { SlideOutDown, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { LinearGradient } from 'expo-linear-gradient';

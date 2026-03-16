@@ -5,7 +5,7 @@ import {
     selectPrecomposedSendForm,
     selectSendPrecomposedTx,
 } from '@suite-common/wallet-core';
-import { Account, TxTargetId } from '@suite-common/wallet-types';
+import { type Account, type TxTargetId } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { featureUsed } from '@suite-native/experimental-features';
 

@@ -1,6 +1,6 @@
-import z from 'zod';
+import type z from 'zod';
 
-import { CardanoValidatorStatsItem } from '../schemas';
+import { type CardanoValidatorStatsItem } from '../schemas';
 
 type CardanoValidatorStatsItem = z.infer<typeof CardanoValidatorStatsItem>;
 

@@ -2,14 +2,14 @@ import { prepareInitialState } from '@suite-common/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { NativeBluetoothState } from '../bluetoothSlice';
+import { type NativeBluetoothState } from '../bluetoothSlice';
 import {
     selectHasKnownBluetoothDevices,
     selectKnownConnectableBluetoothDevices,
     selectNearbyBluetoothDevices,
     selectNearbyPairableBluetoothDevices,
 } from '../selectors';
-import { BluetoothDevice } from '../types';
+import { type BluetoothDevice } from '../types';
 
 const initialState: NativeBluetoothState = {
     ...prepareInitialState<BluetoothDevice>(),

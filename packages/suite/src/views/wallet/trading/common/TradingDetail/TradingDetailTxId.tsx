@@ -4,7 +4,7 @@ import { openModal } from '@suite/modal';
 import { Link, type TextProps } from '@trezor/components';
 
 import { Address } from 'src/components/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 type TradingDetailTxIdProps = {
     value: string;

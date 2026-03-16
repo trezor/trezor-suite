@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
+    type BlockchainRootState,
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { percentageDiff } from '@suite-native/graph';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 

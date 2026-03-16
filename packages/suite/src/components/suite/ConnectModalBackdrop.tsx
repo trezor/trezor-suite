@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
     ModalBackdrop,
-    ModalBackdropProps,
+    type ModalBackdropProps,
 } from '@trezor/components/src/components/Modal/ModalBackdrop';
 import { spacings } from '@trezor/theme';
 

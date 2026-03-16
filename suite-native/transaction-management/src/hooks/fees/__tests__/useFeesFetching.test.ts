@@ -1,8 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FeesStatus } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FeesStatus } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     initStore,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';

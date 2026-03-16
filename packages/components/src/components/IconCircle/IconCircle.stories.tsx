@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
 
 import {
     IconCircle as IconCircleComponent,
-    IconCircleProps,
+    type IconCircleProps,
     allowedIconCircleFrameProps,
 } from './IconCircle';
 import { iconCircleIntents, iconCircleSizes } from './types';

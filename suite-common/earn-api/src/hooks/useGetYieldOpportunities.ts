@@ -1,11 +1,11 @@
 import { type MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
 import {
-    GetYieldResponseError,
-    GetYieldsResponseSuccess,
-    ProviderDto,
-    YieldsControllerGetYieldsSort,
-    YieldsControllerGetYieldsType,
+    type GetYieldResponseError,
+    type GetYieldsResponseSuccess,
+    type ProviderDto,
+    type YieldsControllerGetYieldsSort,
+    type YieldsControllerGetYieldsType,
     getYields,
 } from '../api';
 

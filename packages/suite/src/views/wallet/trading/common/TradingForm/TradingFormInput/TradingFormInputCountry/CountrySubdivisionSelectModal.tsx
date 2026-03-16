@@ -1,17 +1,17 @@
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
-    TradingCountryOption,
-    TradingCountrySubdivisionOption,
+    type TradingCountryOption,
+    type TradingCountrySubdivisionOption,
     useCountrySubdivisionFilteredData,
 } from '@suite-common/trading';
 import { CardList, Column, Input, Modal, Paragraph, Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
 interface CountrySubdivisionSelectModalProps {
     onClose: () => void;

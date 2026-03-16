@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
-import { LANGUAGES, Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';

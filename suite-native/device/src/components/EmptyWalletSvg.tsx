@@ -1,4 +1,4 @@
-import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, type SvgProps } from 'react-native-svg';
 
 import { useIllustrationColors } from '@suite-native/atoms';
 

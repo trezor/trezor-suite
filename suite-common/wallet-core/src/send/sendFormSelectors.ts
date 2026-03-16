@@ -1,11 +1,16 @@
 import { G } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, FormState, Output, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type FormState,
+    type Output,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
-import { SendRootState } from './sendFormReducer';
+import { type SendRootState } from './sendFormReducer';
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;

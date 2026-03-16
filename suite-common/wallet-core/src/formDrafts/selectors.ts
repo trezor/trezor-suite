@@ -2,7 +2,7 @@ import type { FieldValues } from 'react-hook-form';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
-import { FormDraftRootState } from './formDraftSlice';
+import { type FormDraftRootState } from './formDraftSlice';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<FormDraftRootState>();
 

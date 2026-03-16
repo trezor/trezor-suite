@@ -1,24 +1,24 @@
-import { HTMLAttributes, ReactNode } from 'react';
+import { type HTMLAttributes, type ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Elevation, borders, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders, spacingsPx } from '@trezor/theme';
 
-import { CardVariant, FillType, PaddingType } from './types';
+import { type CardVariant, type FillType, type PaddingType } from './types';
 import {
     mapFillTypeToCSS,
     mapPaddingTypeToLabelPadding,
     mapPaddingTypeToPadding,
     mapVariantToColor,
 } from './utils';
-import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
+import { type AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';

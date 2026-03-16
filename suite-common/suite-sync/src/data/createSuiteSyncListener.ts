@@ -1,6 +1,6 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { SuiteSyncListener } from '@suite-common/suite-sync-types';
+import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import {

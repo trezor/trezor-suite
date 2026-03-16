@@ -1,13 +1,13 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
+import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
-    FeedbackCategory,
-    FeedbackType,
-    Rating,
+    type FeedbackCategory,
+    type FeedbackType,
+    type Rating,
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';

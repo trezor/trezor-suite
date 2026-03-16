@@ -9,13 +9,13 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    DeviceAuthenticityStackParamList,
+    type DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 

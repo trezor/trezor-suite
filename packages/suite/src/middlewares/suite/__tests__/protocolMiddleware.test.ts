@@ -1,6 +1,6 @@
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import {
-    NotificationEntry,
+    type NotificationEntry,
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';

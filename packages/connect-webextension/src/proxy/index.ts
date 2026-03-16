@@ -1,7 +1,7 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index
-import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
+import { CORE_CALL, type CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
+import { type ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
 import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';

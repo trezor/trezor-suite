@@ -1,4 +1,4 @@
-import { ReactNode, useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -6,7 +6,7 @@ import { borders, spacings } from '@trezor/theme';
 
 import { type SwitchLabelPosition, type SwitchSize } from './types';
 import { mapSizeToHandleSize, mapSizeToLabelContainerGap, mapSizeToLabelTypography } from './utils';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';

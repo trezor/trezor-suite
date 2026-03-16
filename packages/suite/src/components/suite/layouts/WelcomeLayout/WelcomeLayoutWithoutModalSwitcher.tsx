@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,7 +12,7 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import { Elevation, spacingsPx } from '@trezor/theme';
+import { type Elevation, spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue

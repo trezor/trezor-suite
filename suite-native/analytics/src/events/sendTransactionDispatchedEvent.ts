@@ -1,6 +1,10 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import {
+    type FeeLevelLabel,
+    type TokenAddress,
+    type TokenSymbol,
+} from '@suite-common/wallet-types';
 
 import { EventType } from '../constants';
 

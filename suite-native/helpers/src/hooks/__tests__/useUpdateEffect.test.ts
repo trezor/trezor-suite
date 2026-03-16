@@ -1,4 +1,4 @@
-import { EffectCallback } from 'react';
+import { type EffectCallback } from 'react';
 
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 

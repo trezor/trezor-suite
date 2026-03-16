@@ -11,13 +11,13 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     EVM_FEE_RATE_DECIMALS,
-    FeesRootState,
+    type FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
 import {
-    GeneralPrecomposedTransaction,
-    GeneralPrecomposedTransactionFinal,
+    type GeneralPrecomposedTransaction,
+    type GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
@@ -28,12 +28,12 @@ import {
     EmptyAmountSkeleton,
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
-import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;

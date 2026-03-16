@@ -1,12 +1,12 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    TradingExchangeType,
-    TradingSellType,
-    TradingSignAndPushSendFormTransactionProps,
+    type TradingExchangeType,
+    type TradingSellType,
+    type TradingSignAndPushSendFormTransactionProps,
     parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -18,7 +18,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import {
     composeAllowanceTransactionThunk,
     composeSendFormTransactionFeeLevelsThunk,
@@ -31,11 +31,11 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FeeInfo,
-    FeeLevelLabel,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type Account,
+    type FeeInfo,
+    type FeeLevelLabel,
+    type PrecomposedTransactionFinal,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
@@ -48,7 +48,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
     transactionManagementActions,
 } from '@suite-native/transaction-management';

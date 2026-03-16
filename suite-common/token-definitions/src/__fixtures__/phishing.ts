@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
 import { DUST_PHISHING_THRESHOLD } from '../phishing/constants';
-import { TransactionWithFiatAmount } from '../phishing/types';
+import { type TransactionWithFiatAmount } from '../phishing/types';
 import type { TokenDefinitions } from '../tokenDefinitionsTypes';
 
 const DUST_UNIT = new BigNumber(DUST_PHISHING_THRESHOLD).dividedBy(10);

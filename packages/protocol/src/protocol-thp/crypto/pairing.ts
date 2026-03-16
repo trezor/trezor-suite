@@ -3,11 +3,11 @@ import { createHash, randomBytes } from 'crypto';
 import { aesgcm } from './aesgcm';
 import { curve25519, elligator2, getCurve25519KeyPair } from './curve25519';
 import { bigEndianBytesToBigInt, getIvFromNonce, hashOfTwo, hkdf, sha256 } from './tools';
-import { ThpState } from '../ThpState';
+import { type ThpState } from '../ThpState';
 import {
-    ThpCredentials,
-    ThpHandshakeCredentials,
-    ThpHandshakeInitResponse,
+    type ThpCredentials,
+    type ThpHandshakeCredentials,
+    type ThpHandshakeInitResponse,
     ThpPairingMethod,
 } from '../messages';
 

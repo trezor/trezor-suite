@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AddressFormatter } from '@suite-native/formatters';

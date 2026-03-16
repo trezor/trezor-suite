@@ -1,18 +1,18 @@
-import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellSendAmountInput, SellSendAmountInputProps } from '../SellSendAmountInput';
+import { SellSendAmountInput, type SellSendAmountInputProps } from '../SellSendAmountInput';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,

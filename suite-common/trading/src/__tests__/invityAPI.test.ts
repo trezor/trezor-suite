@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { InfoResponse } from 'invity-api';
+import { type InfoResponse } from 'invity-api';
 
 import coins from '../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../__fixtures__/invityAPI';

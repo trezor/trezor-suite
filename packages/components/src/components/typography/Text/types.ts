@@ -1,4 +1,4 @@
-import { UIIntent, UIPriority } from '../../../config/types';
+import { type UIIntent, type UIPriority } from '../../../config/types';
 
 export const textIntents = [
     'neutral',

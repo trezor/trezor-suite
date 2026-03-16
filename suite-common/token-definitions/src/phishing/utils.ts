@@ -1,8 +1,8 @@
 import {
-    RatesByTimestamps,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type RatesByTimestamps,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -14,7 +14,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { DUST_PHISHING_THRESHOLD_CURRENCY, PHISHING_WHITELISTED_TX_TYPES } from './constants';
-import { TransactionWithFiatAmount } from './types';
+import { type TransactionWithFiatAmount } from './types';
 
 export const isTransactionWhitelisted = (transaction: TransactionWithFiatAmount) =>
     PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type);

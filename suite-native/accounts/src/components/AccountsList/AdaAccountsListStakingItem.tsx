@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from '@suite-native/staking';

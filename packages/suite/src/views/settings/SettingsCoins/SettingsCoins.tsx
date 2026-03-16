@@ -1,4 +1,4 @@
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { selectFlags } from '@suite/flags';

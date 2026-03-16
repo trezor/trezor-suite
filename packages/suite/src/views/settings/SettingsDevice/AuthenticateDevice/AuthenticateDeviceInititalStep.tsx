@@ -1,5 +1,5 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { Icon, type IconName, List, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const items: Array<{ icon: IconName; text: TranslationKey }> = [

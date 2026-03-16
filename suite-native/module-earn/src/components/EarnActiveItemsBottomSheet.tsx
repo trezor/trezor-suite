@@ -17,9 +17,9 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectAPYByAccountKey, useSelector as useStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-    MessageSystemConfigSource,
+    type MessageSystemConfigSource,
     initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfigSource,

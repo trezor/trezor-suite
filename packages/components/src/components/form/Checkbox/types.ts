@@ -1,4 +1,4 @@
-import { UIAlignment } from '../../../config/types';
+import { type UIAlignment } from '../../../config/types';
 
 export const labelAlignments = ['start', 'end'] as const;
 export type LabelAlignment = Extract<UIAlignment, (typeof labelAlignments)[number]>;

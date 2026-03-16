@@ -2,14 +2,14 @@ import React from 'react';
 
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Box,
     PressableOpacity,
     Text,
     TitleHeader,
 } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SUITE_URL } from '@trezor/urls';

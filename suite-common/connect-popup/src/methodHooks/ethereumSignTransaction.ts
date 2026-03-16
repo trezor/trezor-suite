@@ -1,25 +1,25 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { Bip43Path, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { type Bip43Path, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type {
     CallMethodKeys,
     EthereumSignTransaction,
     EthereumSignTypedData,
 } from '@trezor/connect';
-import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
+import { type MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const temporaryAccounts: Account[] = [];
 

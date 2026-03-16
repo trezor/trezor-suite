@@ -23,7 +23,7 @@ import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import {
     ALL_URLS,
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
@@ -34,7 +34,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
-import { InputErrorProps } from 'src/components/wallet/InputError';
+import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FeesContextType } from '../../context/FeesContext';
+import { type FeesContextType } from '../../context/FeesContext';
 
 export type TransactionMaxFeeProps = Pick<FeesContextType, 'networkSymbol' | 'composedLevels'> & {
     selectedFeeLevel?: FeesContextType['selectedFeeLevel'];

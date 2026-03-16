@@ -1,5 +1,9 @@
-import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
-import { SearchAccountLabels, SearchOutputLabels, TxId } from '@suite-common/transaction-search';
+import { type AccountLabels, type AccountOutputLabels } from '@suite-common/metadata-types';
+import {
+    type SearchAccountLabels,
+    type SearchOutputLabels,
+    type TxId,
+} from '@suite-common/transaction-search';
 import { asTxTargetId } from '@suite-common/wallet-types';
 import { typedObjectEntries } from '@trezor/utils';
 
