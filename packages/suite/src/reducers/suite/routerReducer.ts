@@ -6,7 +6,7 @@ import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/rout
 import { Action } from 'src/types/suite';
 import type { RouterPath } from 'src/utils/suite/router';
 
-const ACCOUNT_TABS = [
+export const ACCOUNT_TABS = [
     'wallet-index',
     'wallet-details',
     'wallet-tokens',
