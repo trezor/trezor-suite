@@ -160,6 +160,9 @@
         { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
         {
+            "path": "../../suite/onboarding-components"
+        },
+        {
             "path": "../../suite/platform-encryption-electron"
         },
         {

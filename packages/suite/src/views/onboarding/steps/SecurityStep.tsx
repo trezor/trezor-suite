@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
 
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { useOnboarding } from 'src/hooks/suite';
 
