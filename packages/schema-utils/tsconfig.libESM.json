@@ -6,6 +6,9 @@
     },
     "references": [
         {
+            "path": "../type-utils"
+        },
+        {
             "path": "../eslint"
         }
     ]
