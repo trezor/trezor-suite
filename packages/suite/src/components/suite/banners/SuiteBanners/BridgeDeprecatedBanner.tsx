@@ -13,7 +13,10 @@ export const BridgeDeprecated = () => {
             intent="info"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto('suite-bridge-deprecated'))}
+                    onClick={e => {
+                        e.stopPropagation();
+                        dispatch(goto('suite-bridge-deprecated'));
+                    }}
                     data-testid="@notification/bridge-deprecated/button"
                 >
                     <Translation id="TR_LEARN_MORE" />

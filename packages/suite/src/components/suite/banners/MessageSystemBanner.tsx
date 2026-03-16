@@ -42,7 +42,10 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                     {dismissalConfig && (
                         <Banner.IconButton
                             icon="x"
-                            onClick={dismissalConfig.onClick}
+                            onClick={e => {
+                                e.stopPropagation();
+                                dismissalConfig.onClick();
+                            }}
                             priority="secondary"
                             data-testid={dismissalConfig['data-testid']}
                         />

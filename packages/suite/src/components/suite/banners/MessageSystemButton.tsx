@@ -26,7 +26,8 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
 
     const { action, label, link, anchor } = cta;
 
-    const onClick = () => {
+    const onClick = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        e.stopPropagation();
         switch (action) {
             case 'internal-link':
                 // @ts-expect-error: impossible to add all href options to the message system config json schema

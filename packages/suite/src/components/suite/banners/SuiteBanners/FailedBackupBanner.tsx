@@ -25,7 +25,10 @@ export const FailedBackup = () => {
                 data-testid="@notification/failed-backup"
                 rightContent={
                     <Banner.Button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={e => {
+                            e.stopPropagation();
+                            setIsModalOpen(true);
+                        }}
                         data-testid="@notification/failed-backup/continue-button"
                     >
                         <Translation id={buttonTranslation} />

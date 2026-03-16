@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {
@@ -12,6 +13,7 @@ import { selectBannerMessage } from '@suite-common/message-system';
 import { selectHasDeviceSuiteSyncError } from '@suite-common/suite-sync';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
+import { Column, TOOLTIP_DELAY_EXTRA_LONG, Text, Tooltip, motionEasing } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -35,15 +37,57 @@ import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { SuiteSyncBanner } from './SuiteSyncBanner';
 
-const Container = styled.div<{ $fill?: boolean }>`
+const Container = styled.div<{ $fill?: boolean; $cursor?: string; $hasPadding?: boolean }>`
     width: 100%;
     max-width: ${({ $fill }) => ($fill ? 'none' : MAX_CONTENT_WIDTH)};
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xs};
+    padding: ${({ $hasPadding }) => ($hasPadding ? `${spacingsPx.sm} ${spacingsPx.md}` : 0)};
     position: relative; /* because it must be on the top of the draggable area on Mac */
+    cursor: ${({ $cursor }) => $cursor || 'unset'};
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        transform: scale(1.005);
+    }
 `;
+const BannerWrapperContainer = styled(motion.div)<{ $zIndex: number }>`
+    position: relative;
+    z-index: ${({ $zIndex }) => $zIndex};
+
+    & > * {
+        outline: solid 1px ${({ theme }) => theme.backgroundSurfaceElevation0};
+    }
+`;
+
+type BannerWrapperProps = {
+    scale: number;
+    children: React.ReactNode;
+    isExpanded: boolean;
+    index: number;
+};
+
+const BannerWrapper = ({ scale, children, isExpanded, index }: BannerWrapperProps) => {
+    const isLastBanner = scale === 1;
+
+    return (
+        <BannerWrapperContainer
+            initial={false}
+            transition={{
+                duration: 0.4,
+                ease: motionEasing.transition,
+            }}
+            animate={{
+                height: isExpanded || isLastBanner ? 'auto' : '1px',
+                scale: isExpanded ? 1 : scale,
+            }}
+            $zIndex={index}
+            key={`suite-banner-${scale}`}
+        >
+            {children}
+        </BannerWrapperContainer>
+    );
+};
+// const NonExpandableAction = ({ children }) => (
+//     <span onClick={e => e.stopPropagation()}>{children}</span>
+// );
 
 type SuiteBannersProps = {
     isOnboarding?: boolean;
@@ -66,6 +110,8 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const hasSuiteSyncError = useSelector(state =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
     );
+
+    const [isExpanded, setIsExpanded] = useState(false);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -136,12 +182,53 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
         (!isMessageSystemBannerVisible && banner !== null);
     if (!isBannerVisible) return null;
 
+    const banners = [
+        ...(isMessageSystemBannerVisible
+            ? [<MessageSystemBanner key="banner-message-system" message={bannerMessage} />]
+            : []),
+        ...(!isOnline ? [<NoConnectionBanner key="banner-no-connection" />] : []),
+        ...(!isMessageSystemBannerVisible && banner ? [banner] : []),
+    ];
+
+    const hasMultipleItems = banners.length > 1;
+
     return (
-        <Container $fill={fill}>
-            {isMessageSystemBannerVisible && <MessageSystemBanner message={bannerMessage} />}
-            {!isOnline && <NoConnectionBanner />}
-            {!isMessageSystemBannerVisible && banner}
-            {/* TODO: add Pin not set */}
+        <Container
+            $cursor={hasMultipleItems ? 'pointer' : 'unset'}
+            $fill={fill}
+            onClick={() => setIsExpanded(!isExpanded)}
+            $hasPadding
+            data-testid="@suite-banners/container"
+        >
+            <Tooltip
+                isFullWidth
+                placement="right"
+                content={
+                    <Text typographyStyle="label">
+                        {isExpanded
+                            ? 'Click to collapse notifications'
+                            : 'Click to show all notifications'}
+                    </Text>
+                }
+                hasArrow
+                isActive={hasMultipleItems}
+                delayShow={TOOLTIP_DELAY_EXTRA_LONG}
+            >
+                <Column gap={8} width="100%">
+                    <AnimatePresence>
+                        {banners.map((b, index) => (
+                            <BannerWrapper
+                                key={`banner-wrapper-${index}`}
+                                scale={1 - (banners.length - 1 - index) / 50}
+                                isExpanded={isExpanded}
+                                index={index}
+                            >
+                                {b}
+                            </BannerWrapper>
+                        ))}
+                    </AnimatePresence>
+                </Column>
+            </Tooltip>
         </Container>
     );
 };

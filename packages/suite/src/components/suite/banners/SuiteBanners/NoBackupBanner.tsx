@@ -18,7 +18,10 @@ export const NoBackup = () => {
             intent="critical"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto('backup-index'))}
+                    onClick={e => {
+                        e.stopPropagation();
+                        dispatch(goto('backup-index'));
+                    }}
                     data-testid="@notification/no-backup/button"
                 >
                     <Translation id="TR_CREATE_BACKUP" />

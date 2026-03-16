@@ -48,6 +48,7 @@ export class DashboardPage {
     readonly openUnusedWalletButton1: Locator;
     readonly openUnusedWalletButton2: Locator;
     readonly loading: Locator;
+    readonly suiteBannersContainer: Locator;
     readonly notificationNoBackupButton: Locator;
     readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
@@ -98,6 +99,9 @@ export class DashboardPage {
         this.passphraseInput = this.page.getByTestId('@passphrase/input');
         this.passphraseSubmitButton = this.page.getByTestId('@passphrase/hidden/submit-button');
         this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
+        this.loading = this.page.getByTestId('@dashboard/loading');
+        this.suiteBannersContainer = this.page.getByTestId('@suite-banners/container');
+        this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
         this.passphraseMismatchStartOverButton = this.page.getByTestId(
             '@passphrase-mismatch/start-over',
         );
