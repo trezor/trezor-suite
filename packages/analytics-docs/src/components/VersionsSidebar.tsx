@@ -33,26 +33,18 @@ const scrollToEvent = (eventName: string) => {
     window.scrollTo({ top: y });
 };
 
-export const SIDEBAR_WIDTH = 280;
-
 const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
-    width: ${SIDEBAR_WIDTH}px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
     flex-shrink: 0;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-left: 1px solid ${({ theme }) => theme.borderOnElevation1};
     overflow-y: auto;
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        position: fixed;
-        top: ${HEADER_HEIGHT}px;
-        right: 0;
-        bottom: 0;
-        height: calc(100vh - ${HEADER_HEIGHT}px);
-        z-index: 10;
-    }
+    display: flex;
+    flex-direction: column;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        width: 100%;
         order: 0;
         border-left: none;
         border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};

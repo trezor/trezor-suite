@@ -1,5 +1,13 @@
 import type { ReactNode } from 'react';
-import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import {
+    startTransition,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 
 import styled from 'styled-components';
 
@@ -8,12 +16,14 @@ import {
     Banner,
     Box,
     Button,
+    ButtonGroup,
     Column,
     Divider,
     H2,
     H3,
     IconButton,
     Modal,
+    ResizableBox,
     Row,
     Spinner,
     Text,
@@ -27,13 +37,20 @@ import { AddEventModal } from './components/AddEventModal';
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
+import {
+    LIVE_LOG_SIDEBAR_MAX_WIDTH,
+    LIVE_LOG_SIDEBAR_MIN_WIDTH,
+    LiveLogSidebar,
+} from './components/LiveLogSidebar';
 import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
-import { SIDEBAR_WIDTH, VersionsSidebar } from './components/VersionsSidebar';
+import { VersionsSidebar } from './components/VersionsSidebar';
 import { HEADER_HEIGHT } from './constants';
 import type { EventDoc } from './types';
 import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
+
+const SIDEBAR_DEFAULT_WIDTH = 360;
 
 type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 'dark' };
 
@@ -85,7 +102,7 @@ const MainWithSidebar = styled.div`
     }
 `;
 
-const ContentArea = styled.div`
+const ContentArea = styled.div<{ $sidebarWidth?: number }>`
     flex: 1;
     min-width: 0;
     margin: 0;
@@ -97,8 +114,31 @@ const ContentArea = styled.div`
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         margin: 0 20px 20px;
-        margin-right: ${SIDEBAR_WIDTH + 20}px;
+        margin-right: ${({ $sidebarWidth }) =>
+            $sidebarWidth != null ? $sidebarWidth + 20 : 20}px;
     }
+`;
+
+const SidebarOuter = styled.div<{ theme: SuiteThemeColors }>`
+    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
+        position: fixed;
+        top: ${HEADER_HEIGHT}px;
+        right: 0;
+        bottom: 0;
+        height: calc(100vh - ${HEADER_HEIGHT}px);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+    }
+`;
+
+const SidebarInner = styled.div`
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 `;
 
 const HIGHLIGHT_DURATION_MS = 1000;
@@ -195,6 +235,21 @@ const AnalyticsContent = ({
 export const App = ({ theme }: AppProps) => {
     const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
     const [eventToEdit, setEventToEdit] = useState<EventDoc | null>(null);
+    const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+    const rafRef = useRef<number | null>(null);
+    const pendingWidthRef = useRef<number | null>(null);
+
+    const setSidebarWidthThrottled = useCallback((w: number) => {
+        pendingWidthRef.current = w;
+        if (rafRef.current != null) return;
+        rafRef.current = requestAnimationFrame(() => {
+            if (pendingWidthRef.current != null) {
+                setSidebarWidth(pendingWidthRef.current);
+                pendingWidthRef.current = null;
+            }
+            rafRef.current = null;
+        });
+    }, []);
     const {
         filteredEvents,
         setQuery,
@@ -208,11 +263,13 @@ export const App = ({ theme }: AppProps) => {
         allEvents,
         isFiltering,
         isSidebarOpen,
+        isLiveLogOpen,
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading,
         generatedAt,
         setIsSidebarOpen,
+        setIsLiveLogOpen,
         setIsSidebarLoading,
     } = useFilteredEvents();
 
@@ -327,34 +384,54 @@ export const App = ({ theme }: AppProps) => {
                                         )}
                                     </Tooltip>
                                     <ThemeSwitch />
-                                    <Tooltip
-                                        content={
-                                            isSidebarOpen
-                                                ? 'Hide versions'
-                                                : 'Show versions by changelog'
-                                        }
-                                    >
-                                        <IconButton
-                                            icon="clockCounterClockwise"
-                                            onClick={() => {
-                                                setIsSidebarLoading(true);
-                                                if (isSidebarOpen) {
-                                                    startTransition(() => setIsSidebarOpen(false));
-                                                } else {
-                                                    requestAnimationFrame(() => {
-                                                        requestAnimationFrame(() => {
-                                                            startTransition(() =>
-                                                                setIsSidebarOpen(true),
-                                                            );
-                                                        });
+                                    <ButtonGroup intent="neutral" priority="secondary" size="small">
+                                        <Tooltip
+                                            content={
+                                                isLiveLogOpen
+                                                    ? 'Hide live log'
+                                                    : 'Show live analytics log'
+                                            }
+                                        >
+                                            <IconButton
+                                                icon="broadcast"
+                                                onClick={() => {
+                                                    startTransition(() => {
+                                                        const next = !isLiveLogOpen;
+                                                        setIsLiveLogOpen(next);
+                                                        if (next) setIsSidebarOpen(false);
                                                     });
-                                                }
-                                            }}
-                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
-                                            size="small"
-                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
-                                        />
-                                    </Tooltip>
+                                                }}
+                                                intent={isLiveLogOpen ? 'brand' : 'neutral'}
+                                                priority={isLiveLogOpen ? 'primary' : 'secondary'}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip
+                                            content={
+                                                isSidebarOpen
+                                                    ? 'Hide changelog'
+                                                    : 'Show versions by changelog'
+                                            }
+                                        >
+                                            <IconButton
+                                                icon="clockCounterClockwise"
+                                                onClick={() => {
+                                                    setIsSidebarLoading(true);
+                                                    if (isSidebarOpen) {
+                                                        startTransition(() =>
+                                                            setIsSidebarOpen(false),
+                                                        );
+                                                    } else {
+                                                        startTransition(() => {
+                                                            setIsLiveLogOpen(false);
+                                                            setIsSidebarOpen(true);
+                                                        });
+                                                    }
+                                                }}
+                                                intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                                priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                            />
+                                        </Tooltip>
+                                    </ButtonGroup>
                                 </Row>
                             </Row>
                             <Row
@@ -383,9 +460,9 @@ export const App = ({ theme }: AppProps) => {
                         </ContentContainer>
                     </TopBar>
 
-                    {isSidebarOpen ? (
+                    {isSidebarOpen || isLiveLogOpen ? (
                         <MainWithSidebar>
-                            <ContentArea>
+                            <ContentArea $sidebarWidth={isMobile ? undefined : sidebarWidth}>
                                 <ContentContainer>
                                     <AnalyticsContent
                                         isAnalyticsDataLoading={isAnalyticsDataLoading}
@@ -397,10 +474,56 @@ export const App = ({ theme }: AppProps) => {
                                     />
                                 </ContentContainer>
                             </ContentArea>
-                            <VersionsSidebar
-                                versionsWithEvents={versionsWithEvents}
-                                onEventClick={handleSidebarEventClick}
-                            />
+                            {(() => {
+                                const mobileSidebar = isLiveLogOpen ? (
+                                    <LiveLogSidebar
+                                        onEventClick={handleSidebarEventClick}
+                                        filterQuery={debouncedQuery}
+                                    />
+                                ) : (
+                                    <VersionsSidebar
+                                        versionsWithEvents={versionsWithEvents}
+                                        onEventClick={handleSidebarEventClick}
+                                    />
+                                );
+                                const desktopSidebar = (
+                                    <SidebarOuter>
+                                        <ResizableBox
+                                        directions={['left']}
+                                        width={sidebarWidth}
+                                        minWidth={LIVE_LOG_SIDEBAR_MIN_WIDTH}
+                                        maxWidth={LIVE_LOG_SIDEBAR_MAX_WIDTH}
+                                        minHeight={0}
+                                        flex="1"
+                                        onWidthResizeEnd={w => {
+                                        pendingWidthRef.current = null;
+                                        if (rafRef.current != null) {
+                                            cancelAnimationFrame(rafRef.current);
+                                            rafRef.current = null;
+                                        }
+                                        setSidebarWidth(w);
+                                    }}
+                                    onWidthResizeMove={setSidebarWidthThrottled}
+                                    >
+                                        <SidebarInner>
+                                            {isLiveLogOpen ? (
+                                                <LiveLogSidebar
+                                                    onEventClick={handleSidebarEventClick}
+                                                    filterQuery={debouncedQuery}
+                                                />
+                                            ) : (
+                                                <VersionsSidebar
+                                                    versionsWithEvents={versionsWithEvents}
+                                                    onEventClick={handleSidebarEventClick}
+                                                />
+                                            )}
+                                        </SidebarInner>
+                                    </ResizableBox>
+                                </SidebarOuter>
+                                );
+
+                                return isMobile ? mobileSidebar : desktopSidebar;
+                            })()}
                         </MainWithSidebar>
                     ) : (
                         <Content>
