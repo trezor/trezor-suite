@@ -1,9 +1,9 @@
 import { FetchError } from 'node-fetch';
 
+import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/types/device';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import type { FirmwareRevisionCheckResult } from '../../types/device';
 import * as utilsAssets from '../../utils/assets';
 import type { CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
 import { checkFirmwareRevision } from '../checkFirmwareRevision';

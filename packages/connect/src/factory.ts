@@ -1,3 +1,4 @@
+import type { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import { Type } from '@trezor/schema-utils';
 
 import { UI_REQUEST } from './events';
@@ -19,7 +20,6 @@ import {
     TrezorConnectTezos,
     TrezorConnectTron,
 } from './types';
-import type { ConnectEmitter } from './types/emitter';
 
 export type InitType<SettingsType extends Record<string, any>> = (
     settings: { manifest: Manifest } & SettingsType,

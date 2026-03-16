@@ -1,10 +1,17 @@
 import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { serializeError } from '@trezor/connect-common/src/constants/errors';
+import { RESPONSE_EVENT } from '@trezor/connect-common/src/events/call';
+import type { CORE_CALL } from '@trezor/connect-common/src/events/core-call';
+import type { CommonParams, DeviceIdentity } from '@trezor/connect-common/src/types/params';
 
-import type { CORE_CALL } from './core-call';
 import type { TrezorConnect } from '../types/api';
 import type { IDevice } from '../types/idevice';
-import type { CommonParams, DeviceIdentity } from '../types/params';
+
+export type {
+    CoreCallMessage,
+    MethodResponseMessage,
+} from '@trezor/connect-common/src/events/call';
+export { RESPONSE_EVENT, createResponseMessage } from '@trezor/connect-common/src/events/call';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
 type UnwrappedResponse<Response> =
@@ -56,6 +63,9 @@ type SupportParams = { useEventListener?: boolean };
 
 export type CallMethodKeys = Exclude<keyof CallApi, TopLevelMethods>;
 export type CallMethodUnion = CallApi[CallMethodKeys];
+// Full typed discriminated union of all TrezorConnect method payloads.
+// For message-channel communication the generic CoreCallMessage.payload is sufficient;
+// this type is used internally within @trezor/connect for per-method type safety.
 export type CallMethodPayload = Parameters<CallMethodUnion>[0] & SupportParams;
 export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
 export type CallMethodResponse<M extends CallMethodKeys> = UnwrappedResponse<
@@ -65,20 +75,18 @@ export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 
 export type CallMethod = (params: CallMethodPayload) => Promise<any>;
 
-export interface CoreCallMessage {
+// Override CoreCallMessage with the fully typed payload for use within @trezor/connect.
+// The base CoreCallMessage in @trezor/connect-common uses a generic payload type.
+export interface TypedCoreCallMessage {
     id: number;
     type: typeof CORE_CALL;
     payload: CallMethodPayload;
 }
 
-export const RESPONSE_EVENT = 'RESPONSE_EVENT';
-
-export type MethodResponseMessage = {
-    // extends AnyResponse
+export type TypedMethodResponseMessage = {
     event: typeof RESPONSE_EVENT;
     type: typeof RESPONSE_EVENT;
     id: number;
-
     device?: DeviceIdentity;
 } & (
     | {
@@ -93,12 +101,12 @@ export type MethodResponseMessage = {
       }
 );
 
-export const createResponseMessage = (
+export const createTypedResponseMessage = (
     id: number,
     success: boolean,
     payload: any,
     device?: IDevice,
-): MethodResponseMessage => {
+): TypedMethodResponseMessage => {
     const deviceIdentity = device
         ? {
               path: device?.getUniquePath(),

@@ -1,3 +1,16 @@
+import type {
+    DeviceButtonRequestPayload,
+    DeviceThpCredentialsChangedPayload,
+    DeviceThpPairingPayload,
+    DeviceThpPairingStatus,
+    DeviceVersionChanged,
+} from '@trezor/connect-common/src/events/device';
+import type {
+    UiResponsePassphrase,
+    UiResponsePin,
+    UiResponseThpPairingTag,
+    UiResponseWord,
+} from '@trezor/connect-common/src/events/ui-response';
 import type { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
@@ -22,19 +35,6 @@ import type {
 import type { FirmwareReleaseConfigInfo } from './firmware';
 import type { TypedCallProvider } from './typed-call-provider';
 import type { DeviceCommands } from '../device/DeviceCommands';
-import type {
-    DeviceButtonRequestPayload,
-    DeviceThpCredentialsChangedPayload,
-    DeviceThpPairingPayload,
-    DeviceThpPairingStatus,
-    DeviceVersionChanged,
-} from '../events/device';
-import type {
-    UiResponsePassphrase,
-    UiResponsePin,
-    UiResponseThpPairingTag,
-    UiResponseWord,
-} from '../events/ui-response';
 
 /**
  * Events emitted on the `device.lifecycle` emitter (separate from the main device TypedEmitter).

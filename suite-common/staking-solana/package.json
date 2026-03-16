@@ -20,9 +20,8 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-solana": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"

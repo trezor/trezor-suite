@@ -1,7 +1,7 @@
+import { DEVICE } from '@trezor/connect-common/src/events/device';
 import { TrezorPushNotificationMode, TrezorPushNotificationType, tpn } from '@trezor/protocol';
 import { resolveAfter } from '@trezor/utils';
 
-import { DEVICE } from '../../events/device';
 import type { TpnWorkflowContext } from '../../types/workflow';
 import { getThpChannel } from '../thp';
 

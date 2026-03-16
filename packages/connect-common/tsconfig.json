@@ -6,8 +6,13 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../utils" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../device-utils" },
         { "path": "../protobuf" },
-        { "path": "../protocol" }
+        { "path": "../protocol" },
+        { "path": "../schema-utils" },
+        { "path": "../transport" },
+        { "path": "../type-utils" },
+        { "path": "../utils" }
     ]
 }

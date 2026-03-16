@@ -1,9 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import { DEFAULT_DOMAIN, VERSION } from '@trezor/connect-common/src/data/version';
+import type {
+    ConnectSettings,
+    LocalFirmwares,
+    Manifest,
+} from '@trezor/connect-common/src/types/settings';
 
 import { parseThpSettings } from './thpSettings';
-import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
 
 /*
  * Initial settings for connect.

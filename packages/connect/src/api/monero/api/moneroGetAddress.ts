@@ -1,11 +1,11 @@
 // Monero GetAddress implementation
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { Address } from '@trezor/connect-common/src/types/params';
 
 import { PROTO } from '../../../constants';
 import type { MethodPermission, Payload } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import type { Address } from '../../../types/params';
 import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 

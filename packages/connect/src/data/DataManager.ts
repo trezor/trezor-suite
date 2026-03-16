@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
+import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common/src/types/settings';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
 import type {
@@ -13,7 +14,6 @@ import type {
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import {
     getFirmwareReleaseConfig,
     getOnlyLocalFirmwareReleaseConfig,

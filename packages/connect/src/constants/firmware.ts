@@ -1,4 +1,7 @@
-import type { FirmwareHashCheckError, FirmwareRevisionCheckError } from '../types/device';
+import type {
+    FirmwareHashCheckError,
+    FirmwareRevisionCheckError,
+} from '@trezor/connect-common/src/types/device';
 
 export const HASH_CHECK_MAX_ATTEMPTS = 3;
 
