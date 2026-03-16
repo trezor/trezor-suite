@@ -1,4 +1,4 @@
-import { ChildProcess, fork } from 'child_process';
+import { type ChildProcess, fork } from 'child_process';
 import { randomUUID } from 'crypto';
 import path from 'path';
 

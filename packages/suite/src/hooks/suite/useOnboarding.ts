@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { OnboardingAnalytics } from '@suite/analytics';
-import { BackupType } from '@suite-common/suite-types';
+import { type OnboardingAnalytics } from '@suite/analytics';
+import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AnyPath, AnyStepId } from 'src/types/onboarding';
+import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
 

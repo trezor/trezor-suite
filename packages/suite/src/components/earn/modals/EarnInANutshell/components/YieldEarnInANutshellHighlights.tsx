@@ -1,12 +1,15 @@
 import { Translation } from '@suite/intl';
 import {
-    NetworkSymbol,
-    StakingNetworkType,
+    type NetworkSymbol,
+    type StakingNetworkType,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
-import { EarnInANutshellHighlight, EarnInANutshellHighlights } from './EarnInANutshellHighlights';
+import {
+    type EarnInANutshellHighlight,
+    EarnInANutshellHighlights,
+} from './EarnInANutshellHighlights';
 
 interface YieldEarnInANutshellHighlightsProps {
     networkType: StakingNetworkType;

@@ -1,4 +1,4 @@
-import { ReviewOutput, ReviewOutputState } from '@suite-common/wallet-types';
+import { type ReviewOutput, type ReviewOutputState } from '@suite-common/wallet-types';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
 

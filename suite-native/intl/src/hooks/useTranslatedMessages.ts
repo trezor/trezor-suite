@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSupportedLanguageLocale } from '../localeSlice';
 import { messages as defaultMessages } from '../messages';
-import { SupportedLocaleCode } from '../types';
+import { type SupportedLocaleCode } from '../types';
 import { flatten } from '../utils';
 
 const LANGUAGE_TRANSLATIONS_MAP = {

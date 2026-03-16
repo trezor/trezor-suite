@@ -1,9 +1,9 @@
 import { produce } from 'immer';
 
-import { BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
+import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
 import { WINDOW } from 'src/actions/suite/constants';
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
 export interface State extends BreakpointFlags {
     isVisible: boolean;

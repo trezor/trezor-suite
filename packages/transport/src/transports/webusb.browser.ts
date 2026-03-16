@@ -1,4 +1,4 @@
-import { AbstractTransportMethodParams, AbstractTransportParams } from './abstract';
+import { type AbstractTransportMethodParams, type AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
 import { UsbApi } from '../api/usb';
 import { BrowserSessionsBackground } from '../sessions/background-browser';

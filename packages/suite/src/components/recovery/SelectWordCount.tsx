@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { WordCount } from '@suite/recovery';
+import { type WordCount } from '@suite/recovery';
 import { Grid } from '@trezor/components';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';

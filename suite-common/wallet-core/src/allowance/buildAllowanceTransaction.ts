@@ -1,8 +1,8 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { PrecomposedTransaction } from '@suite-common/wallet-types';
+import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { calculateTotalGasCost } from '@suite-common/wallet-utils';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 export const buildAllowanceTransaction = (

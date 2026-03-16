@@ -1,8 +1,8 @@
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { AmountSubunit } from '@suite-common/wallet-utils';
+import { type AmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { IssueCode } from '../../../types/validation';
+import { type IssueCode } from '../../../types/validation';
 
 type ValidateFnTestCase = {
     description: string;

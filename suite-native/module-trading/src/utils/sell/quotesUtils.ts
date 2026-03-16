@@ -1,6 +1,6 @@
 import { invariant } from '@suite-common/suite-utils';
-import { MinimalSellFormProps } from '@suite-common/trading';
-import { SellFormType } from '@suite-native/trading-types';
+import { type MinimalSellFormProps } from '@suite-common/trading';
+import { type SellFormType } from '@suite-native/trading-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 

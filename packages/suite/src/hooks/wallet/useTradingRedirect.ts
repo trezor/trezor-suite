@@ -1,10 +1,10 @@
 import {
-    BuyCryptoPaymentMethod,
-    BuyTradeQuoteRequest,
-    CryptoId,
-    ExchangeTradeQuoteRequest,
-    SellCryptoPaymentMethod,
-    SellFiatTradeQuoteRequest,
+    type BuyCryptoPaymentMethod,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeTradeQuoteRequest,
+    type SellCryptoPaymentMethod,
+    type SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
 import { goto } from '@suite/router';
@@ -16,10 +16,10 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 interface BuyOfferRedirectParams {
     symbol: Account['symbol'];

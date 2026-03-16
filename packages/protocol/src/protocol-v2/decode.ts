@@ -1,7 +1,7 @@
 import * as ERRORS from '../errors';
 import { HEADER_SIZE, MESSAGE_LEN_SIZE, THP_CONTROL_BYTE } from './constants';
 import { getHeaders } from './encode';
-import { TransportProtocolDecode } from '../types';
+import { type TransportProtocolDecode } from '../types';
 
 // TODO: link-to-public-docs
 // https://github.com/trezor/trezor-firmware/blob/m1nd3r/thp-documentation/docs/common/thp/specification.md#transport-packet-structure

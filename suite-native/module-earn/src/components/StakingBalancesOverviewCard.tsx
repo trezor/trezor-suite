@@ -1,5 +1,5 @@
 import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AUTO_STAKED_SYMBOLS,
     selectAPYByAccountKey,

@@ -7,7 +7,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { AcquiredDevice } from 'src/types/suite';
+import { type AcquiredDevice } from 'src/types/suite';
 
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {

@@ -1,13 +1,17 @@
 import type { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type TokenAddress,
+    type TokenSymbol,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
-import { MyAsset } from '@suite-native/trading-types';
+import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { MyAssetListItem, MyAssetListItemProps } from '../MyAssetListItem';
+import { MyAssetListItem, type MyAssetListItemProps } from '../MyAssetListItem';
 
 describe('MyAssetListItem', () => {
     const mockBtcAsset: MyAsset = {

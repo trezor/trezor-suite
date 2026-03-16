@@ -1,9 +1,9 @@
-import { TooltipProps } from 'recharts';
+import { type TooltipProps } from 'recharts';
 
 import { useFormatters } from '@suite-common/formatters';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 
-import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
+import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
 import type { FiatGraphProps } from './TransactionsGraph';

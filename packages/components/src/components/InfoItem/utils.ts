@@ -1,8 +1,8 @@
-import { SpacingValues, TypographyStyle, spacings } from '@trezor/theme';
+import { type SpacingValues, type TypographyStyle, spacings } from '@trezor/theme';
 
-import { InfoItemVerticalAlignment } from './types';
-import { FlexAlignItems } from '../Flex/FlexProp';
-import { IconSize } from '../Icon/Icon';
+import { type InfoItemVerticalAlignment } from './types';
+import { type FlexAlignItems } from '../Flex/FlexProp';
+import { type IconSize } from '../Icon/Icon';
 
 export const mapVerticalAlignmentToAlignItems = (
     verticalAlignment: InfoItemVerticalAlignment,

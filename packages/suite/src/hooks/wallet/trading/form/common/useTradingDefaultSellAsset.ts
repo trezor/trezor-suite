@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
-    TradingAssetSellOption,
+    type TradingAssetSellOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
 } from '@suite-common/trading';
-import { NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 

@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { Dispatch } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { bioAuthActions } from './bioAuthActions';
 

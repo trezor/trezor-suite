@@ -1,5 +1,5 @@
 import { goto, selectSettingsBackRoute } from '@suite/router';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

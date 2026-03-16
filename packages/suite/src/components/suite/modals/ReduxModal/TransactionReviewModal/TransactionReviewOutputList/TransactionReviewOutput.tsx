@@ -1,15 +1,24 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationFunction, TranslationKey, useTranslation } from '@suite/intl';
+import {
+    Translation,
+    type TranslationFunction,
+    type TranslationKey,
+    useTranslation,
+} from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
-    EvmApprovalPurpose,
+    type EvmTransactionPurpose,
+    type ReviewOutput,
+    type StakeType,
+} from '@suite-common/wallet-types';
+import {
+    type EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
     isEvmApprovalTxByTextSignature,
@@ -24,9 +33,9 @@ import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import {
-    OutputElementLine,
+    type OutputElementLine,
     TransactionReviewOutputElement,
-    TransactionReviewOutputElementProps,
+    type TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
 
 const getFeeLabel = (networkType: NetworkType) => {

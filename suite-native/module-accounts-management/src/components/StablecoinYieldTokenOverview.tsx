@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-api';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type StablecoinYieldTokenOverviewProps = {
     accountKey: AccountKey;

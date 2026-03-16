@@ -1,19 +1,19 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type AccountType,
     type Bip43Path,
-    Network,
+    type Network,
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import { formattedAccountTypeMap } from './accountsConstants';
-import { AccountsRootState } from './accountsReducer';
+import { type AccountsRootState } from './accountsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState

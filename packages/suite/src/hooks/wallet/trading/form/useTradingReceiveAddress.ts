@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    TradingType,
+    type TradingType,
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
@@ -16,16 +16,16 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { TradingPageType } from 'src/types/trading/trading';
+import { type TradingPageType } from 'src/types/trading/trading';
 import {
-    TradingGetTranslationIdsProps,
-    TradingVerifyFormProps,
+    type TradingGetTranslationIdsProps,
+    type TradingVerifyFormProps,
 } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';

@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { deviceActions } from '@suite-common/device';
 import {
-    WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncOwnerForDeviceStaticId,
     setSuiteSyncOwner,
 } from '@suite-common/suite-sync';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

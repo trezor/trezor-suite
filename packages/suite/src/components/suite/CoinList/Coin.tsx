@@ -1,13 +1,13 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
-import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;

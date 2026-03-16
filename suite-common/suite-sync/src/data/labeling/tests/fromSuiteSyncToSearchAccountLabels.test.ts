@@ -1,6 +1,6 @@
 import {
-    SuiteSyncAddress,
-    SuiteSyncOutput,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
     createSuiteSyncAddressId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';

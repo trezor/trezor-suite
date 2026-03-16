@@ -2,7 +2,7 @@ import * as varuint from 'varuint-bitcoin';
 
 import { getChunkSize, reverseBuffer } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
+import { bitcoin as BITCOIN_NETWORK, type Network, isNetworkType } from '../networks';
 import * as bscript from '../script';
 import { Hash256bit, assertType } from '../types/validation';
 

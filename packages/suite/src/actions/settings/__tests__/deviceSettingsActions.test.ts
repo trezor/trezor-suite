@@ -7,7 +7,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
 import fixtures, {
-    DeviceSettingsFixtureState,
+    type DeviceSettingsFixtureState,
     deviceReducer,
 } from '../__fixtures__/deviceSettingsActions';
 

@@ -1,18 +1,18 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { Rate, Timestamp } from '@suite-common/wallet-types';
+import { type Rate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
-    TradingTestStateWithWalletSettings,
+    type TradingTestStateWithWalletSettings,
     createTestStateWithWalletSettings,
     renderHookWithTradingStore,
 } from '../../__tests__/testUtils';
 import {
-    TradingFiatRatesProps,
-    TradingFiatRatesReturn,
+    type TradingFiatRatesProps,
+    type TradingFiatRatesReturn,
     useTradingFiatValues,
 } from '../useTradingFiatValues';
 

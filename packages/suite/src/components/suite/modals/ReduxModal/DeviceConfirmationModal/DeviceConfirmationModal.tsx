@@ -1,4 +1,4 @@
-import { MODAL_CONTEXT_DEVICE_CONFIRMATION } from '@suite/modal';
+import { type MODAL_CONTEXT_DEVICE_CONFIRMATION } from '@suite/modal';
 import { UI_REQUEST } from '@trezor/connect';
 
 import { SelectAccountModal } from './SelectAccountModal';

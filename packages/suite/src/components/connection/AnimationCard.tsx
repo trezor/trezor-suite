@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
-import { Box, FrameProps } from '@trezor/components';
+import { Box, type FrameProps } from '@trezor/components';
 
 type AnimationCardProps = PropsWithChildren<{
     aspectRatio: FrameProps['aspectRatio'];

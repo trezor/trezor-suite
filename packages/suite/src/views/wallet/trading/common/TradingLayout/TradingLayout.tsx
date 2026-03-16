@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 import { selectRouteName } from '@suite/router';
 import { Column } from '@trezor/components';

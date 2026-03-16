@@ -4,7 +4,7 @@ import {
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 
-import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingGetProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 
 export type TradingProviderInfoProps = {

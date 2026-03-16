@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -7,19 +7,19 @@ import type { BuyTrade } from 'invity-api';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleBuyRequestThunkProps,
-    TradingRootState,
+    type TradingRootState,
     buyThunks,
     cryptoIdToNetwork,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
     selectTradingPlatformByCryptoId,
 } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
-import { AbortablePromise, BuyFormType } from '@suite-native/trading-types';
+import { type AbortablePromise, type BuyFormType } from '@suite-native/trading-types';
 import { useDebounce } from '@trezor/react-utils';
 
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';

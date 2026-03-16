@@ -1,6 +1,6 @@
 import {
     BLUETOOTH_PREFIX,
-    ForgetBluetoothDeviceThunkParams,
+    type ForgetBluetoothDeviceThunkParams,
     bluetoothActions,
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';

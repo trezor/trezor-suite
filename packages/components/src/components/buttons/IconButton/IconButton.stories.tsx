@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import {
     IconButton as IconButtonComponent,
-    IconButtonProps,
+    type IconButtonProps,
     allowedIconButtonFrameProps,
 } from './IconButton';
 import { variables } from '../../../config';

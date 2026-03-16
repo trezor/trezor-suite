@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { type PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -12,7 +12,10 @@ import {
 
 const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 
-import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
+import {
+    type ReceiveAccountsListMode,
+    useReceiveAccountsListData,
+} from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {

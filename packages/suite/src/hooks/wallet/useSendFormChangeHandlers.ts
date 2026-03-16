@@ -1,6 +1,6 @@
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 export type HandleAmountChangeParams = {
     outputId: number;

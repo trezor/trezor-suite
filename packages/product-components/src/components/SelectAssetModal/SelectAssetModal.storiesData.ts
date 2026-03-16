@@ -1,4 +1,4 @@
-import { AssetOptionBaseProps } from './SelectAssetModal';
+import { type AssetOptionBaseProps } from './SelectAssetModal';
 
 interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
     type: 'currency';

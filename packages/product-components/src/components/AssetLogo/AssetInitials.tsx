@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { ElevationUp, Text, Tooltip, useElevation } from '@trezor/components';
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,

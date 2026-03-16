@@ -2,15 +2,15 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { LANGUAGES, Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { useAlert } from '@suite-native/alerts';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type DeviceSettingsStackParamList,
+    type DeviceSettingsStackRoutes,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';

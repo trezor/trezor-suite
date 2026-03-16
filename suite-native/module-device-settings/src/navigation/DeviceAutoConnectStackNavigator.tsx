@@ -8,7 +8,7 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    DeviceAutoConnectStackParamList,
+    type DeviceAutoConnectStackParamList,
     DeviceAutoConnectStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

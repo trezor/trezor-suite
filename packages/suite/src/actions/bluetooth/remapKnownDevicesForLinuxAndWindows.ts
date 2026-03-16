@@ -1,4 +1,4 @@
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 type RemapKnownDevicesForLinuxAndWindowsParams = {
     knownDevices: DesktopBluetoothDevice[];

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
+import { type BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
 
 interface Process {
     service: boolean;

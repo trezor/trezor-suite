@@ -8,7 +8,7 @@ import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailTxId } from './TradingDetailTxId';
 import { TradingProviderInfo } from '../TradingProviderInfo';

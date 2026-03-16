@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import { DeviceAnimation as DeviceAnimationComponent } from './DeviceAnimation';
 import { DEVICE_ANIMATION_CONFIG } from './deviceAnimationConfig';

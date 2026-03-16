@@ -1,4 +1,4 @@
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 
 export class Throttler {
     private readonly delay: number;

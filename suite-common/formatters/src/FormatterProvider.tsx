@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useMemo } from 'react';
+import { type ReactNode, createContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 import type { FormatNumberOptions } from '@formatjs/intl';

@@ -1,8 +1,8 @@
 import {
-    EncryptableBranded,
-    EncryptedHex,
+    type EncryptableBranded,
+    type EncryptedHex,
     EncryptionUnavailable,
-    PlatformEncryption,
+    type PlatformEncryption,
 } from '@suite-common/platform-encryption';
 import { err } from '@trezor/type-utils';
 

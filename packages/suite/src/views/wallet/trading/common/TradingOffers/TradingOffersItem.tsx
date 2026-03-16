@@ -1,10 +1,10 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { type BuyTrade, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import {
-    TradingTradeMapProps,
+    type TradingTradeMapProps,
     getTagAndInfoNote,
     sellUtils,
     tradingBuyActions,

@@ -1,16 +1,16 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import {
-    ControlProps,
-    DropdownIndicatorProps,
-    GroupHeadingProps,
-    GroupProps,
-    IndicatorsContainerProps,
-    MenuListProps,
-    MenuProps,
-    OptionProps,
-    PlaceholderProps,
-    SingleValueProps,
-    ValueContainerProps,
+    type ControlProps,
+    type DropdownIndicatorProps,
+    type GroupHeadingProps,
+    type GroupProps,
+    type IndicatorsContainerProps,
+    type MenuListProps,
+    type MenuProps,
+    type OptionProps,
+    type PlaceholderProps,
+    type SingleValueProps,
+    type ValueContainerProps,
     components,
 } from 'react-select';
 
@@ -24,7 +24,7 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { FloatingLabel } from '../FloatingLabel';
 import { InputWrapper } from '../InputWrapper';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import {
     INPUT_PADDING,
     mapSizeToHeight,

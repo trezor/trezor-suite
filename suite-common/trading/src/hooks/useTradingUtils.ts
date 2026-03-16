@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { useCoinsAndPlatforms } from './useCoinsAndPlatforms';
 import {

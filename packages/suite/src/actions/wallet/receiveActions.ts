@@ -1,15 +1,15 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }

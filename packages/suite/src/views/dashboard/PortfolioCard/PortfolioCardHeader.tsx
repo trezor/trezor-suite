@@ -7,8 +7,8 @@ import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
-import { Discovery } from 'src/types/wallet';
-import { GraphRange } from 'src/types/wallet/graph';
+import { type Discovery } from 'src/types/wallet';
+import { type GraphRange } from 'src/types/wallet/graph';
 
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 

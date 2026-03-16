@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';

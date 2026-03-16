@@ -5,9 +5,9 @@ import { G } from '@mobily/ts-belt';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
-import { TextProps } from '@suite-native/atoms';
+import { type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 

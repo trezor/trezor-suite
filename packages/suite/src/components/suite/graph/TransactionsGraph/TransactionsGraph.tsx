@@ -4,7 +4,7 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
@@ -12,11 +12,11 @@ import { typography, zIndices } from '@trezor/theme';
 import { GraphRangeSelector } from 'src/components/suite/graph/GraphRangeSelector';
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
 import { useGraph, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphRange,
+    type AggregatedAccountHistory,
+    type AggregatedDashboardHistory,
+    type GraphRange,
 } from 'src/types/wallet/graph';
 import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 

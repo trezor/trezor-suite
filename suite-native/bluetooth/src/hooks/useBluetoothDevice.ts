@@ -8,7 +8,7 @@ import TrezorConnect from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 import { forgetBluetoothDeviceThunk } from '../bluetoothThunks';
-import { BluetoothDevice } from '../types';
+import { type BluetoothDevice } from '../types';
 
 type UnpairDeviceProps = {
     onSuccess: () => void;

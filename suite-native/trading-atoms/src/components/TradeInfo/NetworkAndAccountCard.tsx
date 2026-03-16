@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';

@@ -1,8 +1,8 @@
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { AmountSubunit } from '@suite-common/wallet-utils';
+import { type AmountSubunit } from '@suite-common/wallet-utils';
 
-import { ContextWith } from '../../types/validation';
-import { InspectFn, ValidateFn, createValidator } from '../createValidator';
+import { type ContextWith } from '../../types/validation';
+import { type InspectFn, type ValidateFn, createValidator } from '../createValidator';
 
 export const isNegative: ValidateFn<AmountSubunit> = input =>
     input.isNegative() ? 'NEGATIVE_AMOUNT' : null;

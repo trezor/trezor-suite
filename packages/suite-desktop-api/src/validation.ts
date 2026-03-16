@@ -1,5 +1,5 @@
-import { RendererChannels } from './api';
-import { SuiteThemeVariant } from './messages';
+import { type RendererChannels } from './api';
+import { type SuiteThemeVariant } from './messages';
 
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];

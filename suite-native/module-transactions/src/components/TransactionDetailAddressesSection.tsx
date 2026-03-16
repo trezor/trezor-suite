@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 
 import { Box, CardDivider, Text, TextButton, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { WalletAccountTransaction } from '@suite-native/tokens';
-import { VinVoutAddress } from '@suite-native/transactions';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
+import { type VinVoutAddress } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';

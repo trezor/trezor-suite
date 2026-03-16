@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import {
     FORM_DRAFT as COMMON_FORM_DRAFT,
-    FormDraftAction,
+    type FormDraftAction,
     formDraftReducer as commonFormDraftReducer,
     formDraftInitialState,
 } from '@suite-common/wallet-core';

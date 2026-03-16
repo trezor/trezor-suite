@@ -1,12 +1,12 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { TranslationKey } from '@suite/intl';
-import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type TranslationKey } from '@suite/intl';
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { AppState } from 'src/reducers/store';
+import { type AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';

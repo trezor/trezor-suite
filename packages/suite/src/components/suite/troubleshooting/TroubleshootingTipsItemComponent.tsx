@@ -1,6 +1,6 @@
 import { Column, IconCircle, List, Paragraph } from '@trezor/components';
 
-import { TroubleshootingTipsItem } from './TroubleshootingTips';
+import { type TroubleshootingTipsItem } from './TroubleshootingTips';
 
 type TroubleshootingTipsItemProps = {
     item: TroubleshootingTipsItem;

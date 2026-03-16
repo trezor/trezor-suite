@@ -1,9 +1,17 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
-import { ButtonPriority } from '@trezor/components/src/components/buttons/types';
+import {
+    Button,
+    type ButtonProps,
+    Column,
+    Icon,
+    type IconName,
+    Paragraph,
+    Row,
+} from '@trezor/components';
+import { type ButtonPriority } from '@trezor/components/src/components/buttons/types';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';

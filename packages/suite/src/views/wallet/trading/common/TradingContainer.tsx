@@ -1,4 +1,4 @@
-import { ElementType } from 'react';
+import { type ElementType } from 'react';
 
 import type { TradingProviderInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';

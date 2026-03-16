@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Elevation, borders, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Icon } from '../Icon/Icon';

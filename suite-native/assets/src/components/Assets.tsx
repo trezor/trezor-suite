@@ -8,16 +8,16 @@ import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { OnSelectAccount } from '@suite-native/accounts';
+import { type OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
+    type AppTabsParamList,
+    type AppTabsRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';

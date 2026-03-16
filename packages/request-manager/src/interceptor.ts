@@ -8,7 +8,7 @@ import { interceptNetConnect } from './interceptor/interceptNetConnect';
 import { interceptNetSocketConnect } from './interceptor/interceptNetSocketConnect';
 import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
 import { TorIdentities } from './torIdentities';
-import { InterceptorOptions } from './types';
+import { type InterceptorOptions } from './types';
 
 /**
  * Create an interceptor that can be used to intercept and manage network requests made from a Node.js environment.

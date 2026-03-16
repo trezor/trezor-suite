@@ -1,7 +1,7 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Context } from '@suite-common/message-system';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';

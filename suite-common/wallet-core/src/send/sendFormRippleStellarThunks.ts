@@ -3,9 +3,9 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     AddressDisplayOptions,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -19,20 +19,20 @@ import {
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect, {
-    FeeLevel,
-    RipplePayment,
-    StellarOperation,
-    TokenInfo,
+    type FeeLevel,
+    type RipplePayment,
+    type StellarOperation,
+    type TokenInfo,
 } from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 
 const calculate = (

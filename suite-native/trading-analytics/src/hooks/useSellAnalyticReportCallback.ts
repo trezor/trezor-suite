@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     selectTradingCoinInfoByCryptoId,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
-import { TradingSellAction, TradingSellStep, events } from '@suite-native/analytics';
+import { type TradingSellAction, type TradingSellStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { getAnalyticsTradingSellPayload } from '../utils/quotesUtils';

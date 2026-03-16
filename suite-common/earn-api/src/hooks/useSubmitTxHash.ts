@@ -1,8 +1,8 @@
-import { MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
+import { type MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
 import {
-    SubmitTransactionHashResponseError,
-    SubmitTransactionHashResponseSuccess,
+    type SubmitTransactionHashResponseError,
+    type SubmitTransactionHashResponseSuccess,
     submitTransactionHash,
 } from '../api';
 

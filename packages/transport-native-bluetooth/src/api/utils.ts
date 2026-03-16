@@ -1,6 +1,6 @@
-import { Device } from 'react-native-ble-plx';
+import { type Device } from 'react-native-ble-plx';
 
-import { BluetoothDevice } from './types';
+import { type BluetoothDevice } from './types';
 
 export const base64ToByteArray = (value: string) => Array.from(Buffer.from(value, 'base64'));
 

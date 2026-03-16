@@ -1,5 +1,5 @@
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type SendState, type StakeState } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 
 import { isStakeState } from '../types';
 

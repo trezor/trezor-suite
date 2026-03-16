@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { goto, selectRouterParams } from '@suite/router';
 import { yup } from '@suite-common/validators';
-import { Account, GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Route } from 'src/types/suite';
+import { type Route } from 'src/types/suite';
 
 import { useGoToWithAnalytics } from '../../useGoToWithAnalytics';
 

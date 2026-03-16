@@ -17,26 +17,26 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { CountryCode } from '@suite-common/geolocation';
+import { type CountryCode } from '@suite-common/geolocation';
 import {
-    Network,
-    NetworkConfig,
-    NetworkDisplaySymbol,
-    NetworkSymbol,
+    type Network,
+    type NetworkConfig,
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountKey,
-    BaseCurrencyOption,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
+    type Account,
+    type AccountKey,
+    type BaseCurrencyOption,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Timer } from '@trezor/react-utils';
-import { Err, Ok, PrimitiveType } from '@trezor/type-utils';
+import { type PROTO } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Timer } from '@trezor/react-utils';
+import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
-import * as constants from './constants';
+import type * as constants from './constants';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;

@@ -1,17 +1,20 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    SuiteSyncDataRootState,
-    WithSuiteSyncAndDeviceState,
+    type SuiteSyncDataRootState,
+    type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
     selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { SettingsSliceRootState, selectIsExperimentalFeatureEnabled } from '@suite-native/settings';
-import { StaticSessionId } from '@trezor/connect';
+import {
+    type SettingsSliceRootState,
+    selectIsExperimentalFeatureEnabled,
+} from '@suite-native/settings';
+import { type StaticSessionId } from '@trezor/connect';
 
 export type CombinedLabelingState = SuiteSyncDataRootState &
     WithSuiteSyncAndDeviceState &

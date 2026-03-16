@@ -6,10 +6,10 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createLazy } from '@trezor/utils';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
 type Context = ContextType<Horizon.Server> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;

@@ -4,7 +4,7 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
     ExchangeApprovalLimitCard,
-    ExchangeApprovalLimitCardProps,
+    type ExchangeApprovalLimitCardProps,
 } from '../ExchangeApprovalLimitCard';
 
 const mockOnChange = jest.fn();

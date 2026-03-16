@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
-import { Url } from '@trezor/urls';
+import { type Url } from '@trezor/urls';
 
 import { LearnMoreButton } from '../LearnMoreButton';
 

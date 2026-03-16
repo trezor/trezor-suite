@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';

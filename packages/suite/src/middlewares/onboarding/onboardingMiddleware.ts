@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
@@ -6,7 +6,7 @@ import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 const onboardingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

@@ -1,4 +1,4 @@
-import { Device } from 'react-native-ble-plx';
+import { type Device } from 'react-native-ble-plx';
 
 import { base64ToByteArray, toBluetoothDevice } from '../../api/utils';
 

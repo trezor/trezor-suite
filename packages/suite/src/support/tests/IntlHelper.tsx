@@ -1,8 +1,8 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
-import { RenderResult, render } from '@testing-library/react';
+import { type RenderResult, render } from '@testing-library/react';
 
 import { configureStore } from 'src/support/tests/configureStore';
 

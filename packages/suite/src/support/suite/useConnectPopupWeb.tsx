@@ -3,9 +3,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CORE_CALL, POPUP } from '@trezor/connect';
 
 import {
-    ConnectPopupLink,
-    ConnectPopupMessage,
-    ConnectPopupOutgoingMessage,
+    type ConnectPopupLink,
+    type ConnectPopupMessage,
+    type ConnectPopupOutgoingMessage,
     useConnectPopup,
 } from './useConnectPopup';
 

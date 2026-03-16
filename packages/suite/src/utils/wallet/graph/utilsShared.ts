@@ -1,7 +1,10 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
-import { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/wallet/graph';
+import {
+    type AggregatedAccountHistory,
+    type AggregatedDashboardHistory,
+} from 'src/types/wallet/graph';
 
 import type { FiatValueMap } from './utilsWorker';
 

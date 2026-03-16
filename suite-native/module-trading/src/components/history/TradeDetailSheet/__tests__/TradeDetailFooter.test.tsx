@@ -1,4 +1,4 @@
-import { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction } from '@suite-common/trading';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getInitializedTradingState, getSellTrade } from '@suite-native/trading-fixtures';
 

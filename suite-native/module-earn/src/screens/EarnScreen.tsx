@@ -10,7 +10,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
-import { EarnItemInfoModal, EarnType } from '../components/EarnItemInfoModal';
+import { EarnItemInfoModal, type EarnType } from '../components/EarnItemInfoModal';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';

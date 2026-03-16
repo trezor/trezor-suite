@@ -1,20 +1,20 @@
 import { useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    TradingPaymentMethodListProps,
+    type TradingPaymentMethodListProps,
 } from '@suite-common/trading';
 import { Modal, Row, Text } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
 interface PaymentMethodModalProps {
     onClose: () => void;

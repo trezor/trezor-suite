@@ -14,7 +14,7 @@ import {
     selectPoolStatsApyData,
     selectPoolStatsNextRewardPayout,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     hasStakeInPendingDepositedState,

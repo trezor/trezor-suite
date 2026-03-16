@@ -1,7 +1,7 @@
 import { NativeModule } from 'expo';
 import { requireNativeModule } from 'expo-modules-core';
 
-import { NativeDevice } from './ReactNativeUsb.types';
+import { type NativeDevice } from './ReactNativeUsb.types';
 
 type DeviceEvents = {
     onDeviceConnect: (device: NativeDevice | null) => void;

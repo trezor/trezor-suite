@@ -3,7 +3,7 @@ import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { AnimatedBox, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { WaitingCard, type WaitingCardProps } from '@suite-native/trading-atoms';
-import { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 export type ConfirmationInProgressProps = {
     status: ProviderConfirmationStatus;

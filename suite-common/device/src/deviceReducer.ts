@@ -2,20 +2,20 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    AcquiredDevice,
-    ButtonRequest,
-    PersistentDeviceData,
-    StoredAuthenticateDeviceResult,
-    TrezorDevice,
+    type AcquiredDevice,
+    type ButtonRequest,
+    type PersistentDeviceData,
+    type StoredAuthenticateDeviceResult,
+    type TrezorDevice,
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice } from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
-import { Err } from '@trezor/type-utils';
+import { type Err } from '@trezor/type-utils';
 
-import { DeviceStateActionPayload, deviceActions } from './deviceActions';
+import { type DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 import { shouldDeviceBeRemembered } from './deviceUtils';
 

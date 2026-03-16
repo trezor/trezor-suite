@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
     Box,
     Button,
@@ -17,7 +17,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 import { walletBackupTutorialCopyByType } from './presets';
 import { WalletBackupSheet } from '../WalletBackupSheet/WalletBackupSheet';
 

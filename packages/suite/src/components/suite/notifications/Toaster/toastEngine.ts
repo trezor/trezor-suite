@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify/unstyled';
 
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 
 import { renderToast } from './renderToast';

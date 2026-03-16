@@ -1,7 +1,11 @@
-import { WritableDraft, createReducer, isAnyOf } from '@reduxjs/toolkit';
+import { type WritableDraft, createReducer, isAnyOf } from '@reduxjs/toolkit';
 
 import { notificationsActions } from './notificationsActions';
-import { NotificationEntry, NotificationsState, UnknownTranslationKey } from './types';
+import {
+    type NotificationEntry,
+    type NotificationsState,
+    type UnknownTranslationKey,
+} from './types';
 
 export function createNotificationsReducer<
     TranslationKey extends UnknownTranslationKey = UnknownTranslationKey,

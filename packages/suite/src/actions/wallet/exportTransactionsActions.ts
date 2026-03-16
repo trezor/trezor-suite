@@ -8,7 +8,7 @@ import {
     selectHistoricFiatRates,
     selectTransactions,
 } from '@suite-common/wallet-core';
-import { Account, ExportFileType } from '@suite-common/wallet-types';
+import { type Account, type ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';

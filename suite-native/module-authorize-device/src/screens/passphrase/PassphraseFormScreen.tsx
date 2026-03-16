@@ -6,11 +6,11 @@ import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { PassphraseForm, useHandleUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
 

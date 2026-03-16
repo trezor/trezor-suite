@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,
 } from '@suite-native/trading-analytics';
 import { tradingActions } from '@suite-native/trading-state';
-import { TradingOutputsReviewScreenNavigationProp } from '@suite-native/trading-types';
+import { type TradingOutputsReviewScreenNavigationProp } from '@suite-native/trading-types';
 import {
     selectIsTransactionAlreadySigned,
     transactionManagementActions,

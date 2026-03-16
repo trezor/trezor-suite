@@ -1,6 +1,6 @@
 import { useTranslation } from '@suite/intl';
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinSessionBlockerByAccountKey } from 'src/reducers/wallet/coinjoinReducer';

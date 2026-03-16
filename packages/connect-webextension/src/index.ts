@@ -1,7 +1,10 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import { POPUP } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { ConnectDynamicSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import {
+    type ConnectDynamicSettings,
+    TrezorConnectDynamic,
+} from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';

@@ -2,7 +2,7 @@ import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ThemeColorVariant } from '@trezor/theme';
+import { type ThemeColorVariant } from '@trezor/theme';
 
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';

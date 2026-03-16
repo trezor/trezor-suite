@@ -6,7 +6,7 @@ import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { ExportFileType } from '@suite-common/wallet-types';
+import { type ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note, Text } from '@trezor/components';
 
@@ -14,7 +14,7 @@ import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsAc
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
     account: Account;

@@ -1,22 +1,22 @@
 import {
-    AccountInfoBase,
-    Address,
-    ClusterUrl,
-    RpcMainnet,
-    RpcSubscriptionsMainnet,
-    RpcTransportMainnet,
+    type AccountInfoBase,
+    type Address,
+    type ClusterUrl,
+    type RpcMainnet,
+    type RpcSubscriptionsMainnet,
+    type RpcTransportMainnet,
     SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
     SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND,
-    Signature,
-    Slot,
-    SolanaRpcApiMainnet,
-    SolanaRpcResponse,
-    SolanaRpcSubscriptionsApi,
-    TransactionWithBlockhashLifetime,
+    type Signature,
+    type Slot,
+    type SolanaRpcApiMainnet,
+    type SolanaRpcResponse,
+    type SolanaRpcSubscriptionsApi,
+    type TransactionWithBlockhashLifetime,
     address,
     assertTransactionIsFullySigned,
     createDefaultRpcTransport,
@@ -60,12 +60,15 @@ import type {
     SolanaValidParsedTxWithMeta,
 } from '@trezor/blockchain-link-utils/src/solana-types';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { getBaseFee, getPriorityFee } from './utils/fee';
-import { ThrottledTransportOptions, getThrottledTransport } from './utils/getThrottledTransport';
+import {
+    type ThrottledTransportOptions,
+    getThrottledTransport,
+} from './utils/getThrottledTransport';
 import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './utils/stakingAccounts';
 
 const THROTTLE_OPTIONS: ThrottledTransportOptions = {

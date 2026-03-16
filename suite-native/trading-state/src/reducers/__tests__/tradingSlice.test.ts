@@ -7,10 +7,10 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { buyQuotes, exchangeQuotes, sellQuotes } from '@suite-native/trading-fixtures';
-import { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';

@@ -8,13 +8,13 @@ import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import { type PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     Badge,
     Banner,
@@ -22,7 +22,7 @@ import {
     Column,
     ElevationUp,
     Modal,
-    Option,
+    type Option,
     Row,
     Select,
     Text,

@@ -6,9 +6,9 @@ import { selectDeviceModel, selectDeviceUnavailableCapabilities } from '@suite-c
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { selectThpStep } from '@suite-common/thp';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 

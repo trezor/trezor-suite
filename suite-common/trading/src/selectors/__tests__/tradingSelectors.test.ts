@@ -1,28 +1,28 @@
 import {
-    BuyTrade,
-    Coins,
-    CryptoId,
-    FiatCurrenciesProps,
-    FiatCurrencyCode,
-    Platforms,
-    SellFiatTrade,
+    type BuyTrade,
+    type Coins,
+    type CryptoId,
+    type FiatCurrenciesProps,
+    type FiatCurrencyCode,
+    type Platforms,
+    type SellFiatTrade,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
 import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
-import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
-import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
-import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
+import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
+import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
+import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
 import type { TradingPaymentMethodListProps, TradingType } from '../../types';
 import {
-    TradingRootStateWithDeviceAndAccounts,
+    type TradingRootStateWithDeviceAndAccounts,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
     selectTrading,

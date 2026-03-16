@@ -2,19 +2,19 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { TransactionsRootState } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TransactionsRootState } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    TransactionTranfer,
+    type TransactionTranfer,
     selectTransactionInputAndOutputTransfers,
 } from '@suite-native/transactions';
 
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
-import { SheetControls, TransactionDetailSheet } from './TransactionDetailSheet';
+import { type SheetControls, TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailInputsSheetProps = {
     txid: string;

@@ -1,7 +1,7 @@
 import {
-    CreateSqliteDriver,
-    SqliteDriver,
-    SqliteRow,
+    type CreateSqliteDriver,
+    type SqliteDriver,
+    type SqliteRow,
     createConsole,
     createPreparedStatementsCache,
     createRandom,

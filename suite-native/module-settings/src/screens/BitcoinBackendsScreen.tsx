@@ -8,7 +8,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { ConnectionInfoButton } from '../components/ConnectionInfoButton';
-import { ServerType, useBackendServersForm } from '../hooks/useBackendServersForm';
+import { type ServerType, useBackendServersForm } from '../hooks/useBackendServersForm';
 
 export const BitcoinBackendsScreen = () => {
     const { showAlert } = useAlert();

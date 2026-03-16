@@ -1,6 +1,10 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { getTranslation } from '@suite-native/intl';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    renderWithStoreProviderAsync,
+    screen,
+} from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EmptyHomeRenderer } from '../EmptyHomeRenderer';

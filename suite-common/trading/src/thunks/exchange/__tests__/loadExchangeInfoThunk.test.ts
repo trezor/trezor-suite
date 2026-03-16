@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { ExchangeListResponse } from 'invity-api';
+import { type ExchangeListResponse } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 

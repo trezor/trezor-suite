@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -8,13 +8,13 @@ import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { SendAmountInputProps } from '../types';
+import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
 
 export const SendAmountCurrencyLabelWrapper = ({

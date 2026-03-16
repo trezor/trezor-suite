@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
+import { type FirmwareUpdateStuckedState } from '@suite-native/analytics';
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Box,
     Button,
     NumberedListItem,

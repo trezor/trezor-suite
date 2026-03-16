@@ -1,19 +1,19 @@
-import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import { recoveryRerunThunk } from '@suite/recovery';
 import { closeModalApp, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type BackupType } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     findNextStep,
     findPrevStep,

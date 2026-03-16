@@ -1,5 +1,5 @@
 import { BufferReader, BufferWriter } from '../bufferutils';
-import { TransactionBase, TransactionOptions } from './base';
+import { TransactionBase, type TransactionOptions } from './base';
 
 function toBuffer(tx: TransactionBase, buffer?: Buffer, initialOffset?: number) {
     if (!buffer) buffer = Buffer.allocUnsafe(tx.byteLength(false));

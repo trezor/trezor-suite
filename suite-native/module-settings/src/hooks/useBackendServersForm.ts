@@ -5,19 +5,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { yup } from '@suite-common/validators';
-import { BackendType } from '@suite-common/wallet-config';
+import { type BackendType } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
+    type BlockchainRootState,
     blockchainActions,
     reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import { SelectItemType } from '@suite-native/atoms';
+import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import TrezorConnect, { BLOCKCHAIN, BlockchainError } from '@trezor/connect';
+import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 import { parseElectrumUrl } from '@trezor/utils';
 
 const symbol = 'btc';

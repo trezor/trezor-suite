@@ -1,9 +1,9 @@
-import { MouseEvent, ReactNode } from 'react';
+import { type MouseEvent, type ReactNode } from 'react';
 
 import { goto } from '@suite/router';
-import { Route } from '@suite-common/suite-types';
+import { type Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 

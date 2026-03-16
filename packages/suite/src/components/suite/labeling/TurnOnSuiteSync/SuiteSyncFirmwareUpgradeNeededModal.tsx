@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Card, Modal, Paragraph } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { useDispatch, useSelector } from '../../../../hooks/suite';
 

@@ -2,8 +2,8 @@
 
 import {
     CORE_CALL,
-    CallMethodAnyResponse,
-    CallMethodPayload,
+    type CallMethodAnyResponse,
+    type CallMethodPayload,
     POPUP,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';

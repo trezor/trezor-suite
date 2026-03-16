@@ -6,9 +6,9 @@ import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<DeviceSettingsStackParamList, DeviceSettingsStackRoutes>;

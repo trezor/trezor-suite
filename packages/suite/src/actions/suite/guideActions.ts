@@ -1,6 +1,6 @@
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 
-import { Dispatch } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { GUIDE } from './constants';
 

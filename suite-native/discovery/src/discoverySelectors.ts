@@ -2,7 +2,7 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
@@ -10,18 +10,18 @@ import {
     networksCollection,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type WalletSettingsRootState,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
+import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
     isNetworkWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,

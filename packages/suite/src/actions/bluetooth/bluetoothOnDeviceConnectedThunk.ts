@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
 import { createThunk } from '@suite-common/redux-utils';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 

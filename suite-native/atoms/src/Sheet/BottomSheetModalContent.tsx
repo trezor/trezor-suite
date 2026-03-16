@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AnimatedBox } from '../AnimatedBox';
-import { BoxProps } from '../Box';
+import { type BoxProps } from '../Box';
 
 const containerStyle = prepareNativeStyle(() => ({
     flex: 1,

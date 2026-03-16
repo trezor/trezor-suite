@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getUnstakeAmountByEthereumDataHex,

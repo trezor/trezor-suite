@@ -5,7 +5,7 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import { type TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {
     isTradingExchangeContext,
     isTradingSellContext,

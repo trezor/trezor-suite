@@ -7,7 +7,13 @@ import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { discovery } from '@trezor/utxo-lib';
 
-import { AddressHistory, Api, discoverAddress, getTransactions, tryGetScripthash } from '../utils';
+import {
+    type AddressHistory,
+    type Api,
+    discoverAddress,
+    getTransactions,
+    tryGetScripthash,
+} from '../utils';
 
 const PAGE_SIZE_DEFAULT = 25;
 

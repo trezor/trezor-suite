@@ -1,25 +1,25 @@
 import { useState } from 'react';
 
 import {
-    BuyTradeStatus,
-    ExchangeProviderInfo,
-    ExchangeTradeStatus,
-    SellTradeStatus,
+    type BuyTradeStatus,
+    type ExchangeProviderInfo,
+    type ExchangeTradeStatus,
+    type SellTradeStatus,
 } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
 
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 interface TradingDetailFeedbackProps {
     status: ExchangeTradeStatus | SellTradeStatus | BuyTradeStatus | undefined;

@@ -1,4 +1,10 @@
-import { CreateType, JavaScriptTypeBuilder, Kind, TSchema, TypeRegistry } from '@sinclair/typebox';
+import {
+    CreateType,
+    JavaScriptTypeBuilder,
+    Kind,
+    type TSchema,
+    TypeRegistry,
+} from '@sinclair/typebox';
 
 export interface TBuffer extends TSchema {
     [Kind]: 'Buffer';

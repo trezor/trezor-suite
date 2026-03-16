@@ -1,4 +1,4 @@
-import { ExperimentalFeedbackRootState } from './experimentalFeedbackSlice';
+import { type ExperimentalFeedbackRootState } from './experimentalFeedbackSlice';
 
 export const selectExperimentalFeatureUsageCount = <FeatureName extends string>(
     state: ExperimentalFeedbackRootState<FeatureName>,

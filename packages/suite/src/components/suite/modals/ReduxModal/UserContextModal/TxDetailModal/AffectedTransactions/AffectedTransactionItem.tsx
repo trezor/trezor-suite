@@ -1,5 +1,5 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Transaction } from '@trezor/blockchain-link-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -22,7 +22,7 @@ import { useOnForegroundCallback } from './useOnForegroundCallback';
 import { getSourceForForm } from '../utils/formUtils';
 import { doesUrlContainCloseCallbackUrl } from '../utils/utils';
 
-export * from './useBrowserAuthTypes';
+export type * from './useBrowserAuthTypes';
 
 class BrowserAuthError extends Error {
     constructor(message: string) {

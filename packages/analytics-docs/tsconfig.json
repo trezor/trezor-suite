@@ -6,14 +6,10 @@
         "package.json",
         "styled.d.ts"
     ],
-    "exclude": [
-        "src/**/__tests__/**",
-        "**/*.test.ts",
-        "**/*.test.tsx"
-    ],
+    "exclude": [],
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["vite/client"]
+        "types": ["vite/client", "jest"]
     },
     "references": [
         {

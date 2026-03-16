@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import express, { Express } from 'express';
+import express, { type Express } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 const BOUNDARY = '---------314159265358979323846';

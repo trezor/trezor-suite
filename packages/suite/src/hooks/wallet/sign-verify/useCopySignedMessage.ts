@@ -1,5 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { useDispatch } from 'src/hooks/suite';

@@ -1,7 +1,10 @@
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
-import { TradeableAssetListItem, TradeableAssetListItemProps } from '../TradeableAssetListItem';
+import {
+    TradeableAssetListItem,
+    type TradeableAssetListItemProps,
+} from '../TradeableAssetListItem';
 
 describe('TradeableAssetListItem', () => {
     const renderComponent = ({

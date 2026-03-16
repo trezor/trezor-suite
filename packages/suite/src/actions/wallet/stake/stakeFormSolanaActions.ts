@@ -2,7 +2,7 @@ import { address } from '@solana/kit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
@@ -13,12 +13,12 @@ import {
     prepareUnstakeSolTx,
 } from '@suite-common/staking-solana';
 import {
-    EstimatedFee,
-    PrepareStakeSolTxResponse,
-    SolanaTxMeta,
+    type EstimatedFee,
+    type PrepareStakeSolTxResponse,
+    type SolanaTxMeta,
 } from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
@@ -26,24 +26,24 @@ import {
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    BlockchainNetworks,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    SelectedAccountStatus,
-    StakeFormState,
+    type BlockchainNetworks,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
+    type SelectedAccountStatus,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,

@@ -17,8 +17,8 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 

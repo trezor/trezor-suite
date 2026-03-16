@@ -5,5 +5,5 @@ export * from './components/TokenTransferListItem';
 export * from './components/TransactionListItem';
 export * from './components/TransactionListItemContainer';
 export * from './selectors';
-export * from './types';
+export type * from './types';
 export * from './utils';

@@ -1,6 +1,6 @@
-import { Abi, AbiFunction, AbiParameter, encodeFunctionData } from 'viem';
+import { type Abi, type AbiFunction, type AbiParameter, encodeFunctionData } from 'viem';
 
-import { Encoder } from '../types/encoder';
+import { type Encoder } from '../types/encoder';
 
 type ExtractAbiFunction<T extends Abi> = Extract<T[number], AbiFunction>;
 

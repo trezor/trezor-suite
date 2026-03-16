@@ -1,4 +1,4 @@
-import { ThunkDispatch } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import {
@@ -9,46 +9,51 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    AnyAction,
-    ExtraDependencies,
-    SuiteCompatibleThunk,
+    type AnyAction,
+    type ExtraDependencies,
+    type SuiteCompatibleThunk,
     createThunk,
 } from '@suite-common/redux-utils';
 import {
-    AcquiredDevice,
-    AuthorizedDevice,
-    TrezorDevice,
-    TrezorDeviceWithState,
+    type AcquiredDevice,
+    type AuthorizedDevice,
+    type TrezorDevice,
+    type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import {
-    Bip43Path,
-    NetworkSymbol,
-    TrezorConnectBackendType,
+    type Bip43Path,
+    type NetworkSymbol,
+    type TrezorConnectBackendType,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { Account, DiscoveryStatus, TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type DiscoveryStatus,
+    type TokenSymbol,
+    toTokenAddress,
+} from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
     getStakingProvidersForAnalytics,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    AccountInfo,
-    BundleProgress,
-    DeviceState,
-    DeviceUniquePath,
-    StaticSessionId,
+    type AccountInfo,
+    type BundleProgress,
+    type DeviceState,
+    type DeviceUniquePath,
+    type StaticSessionId,
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
+import { type DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
-import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
+import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';

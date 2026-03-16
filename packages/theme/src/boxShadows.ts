@@ -1,4 +1,4 @@
-import { CSSColor } from './types';
+import { type CSSColor } from './types';
 
 export const boxShadows = {
     standard: {

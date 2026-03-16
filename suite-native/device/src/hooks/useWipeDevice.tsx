@@ -10,9 +10,9 @@ import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';

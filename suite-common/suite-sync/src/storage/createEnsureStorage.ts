@@ -1,19 +1,22 @@
-import { CreateSuiteStorageDep, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
-    RefreshSuiteSyncKeysDep,
-    SuiteSyncStorageRepositoryDep,
-    SuiteSyncUnavailableOnDeviceErrorType,
+    type CreateSuiteStorageDep,
+    type SuiteSyncStorage,
+} from '@suite-common/suite-sync-storage';
+import {
+    type RefreshSuiteSyncKeysDep,
+    type SuiteSyncStorageRepositoryDep,
+    type SuiteSyncUnavailableOnDeviceErrorType,
+    type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
-import type { WriteModeRequiredForAllocationErrType } from '@suite-common/suite-sync-types';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
-import { StaticSessionId } from '@trezor/connect';
-import { Result, err, ok } from '@trezor/type-utils';
+import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
 
-import { EnsureQuotaDep } from './createEnsureQuota';
+import { type EnsureQuotaDep } from './createEnsureQuota';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
-import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
+import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;

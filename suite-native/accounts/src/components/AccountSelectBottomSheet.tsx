@@ -4,7 +4,7 @@ import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
-import { AccountSelectBottomSheetSection, OnSelectAccount } from '../types';
+import { type AccountSelectBottomSheetSection, type OnSelectAccount } from '../types';
 import { AccountSectionTitle } from './AccountSectionTitle';
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { AccountsListStakingItem } from './AccountsList/AccountsListStakingItem';

@@ -1,10 +1,10 @@
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeType,
+    type TradingExchangeType,
     cryptoIdToNetwork,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeFormStep,
@@ -20,7 +20,7 @@ import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 import { TradingUtilsKyc } from '../../TradingUtils/TradingUtilsKyc';

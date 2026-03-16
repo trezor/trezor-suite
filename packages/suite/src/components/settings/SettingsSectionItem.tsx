@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { SettingsAnchorValue } from '@suite/router';
+import { type SettingsAnchorValue } from '@suite/router';
 
 import { SectionItem } from 'src/components/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';

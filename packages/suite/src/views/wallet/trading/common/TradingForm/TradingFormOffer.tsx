@@ -13,7 +13,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getSelectQuoteTyped,

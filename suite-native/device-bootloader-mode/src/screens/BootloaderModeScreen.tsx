@@ -8,12 +8,12 @@ import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     WipeDeviceStackRoutes,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,

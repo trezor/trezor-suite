@@ -1,6 +1,6 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
-import { Column, Icon, IconName, UIIntent } from '@trezor/components';
+import { Column, Icon, type IconName, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

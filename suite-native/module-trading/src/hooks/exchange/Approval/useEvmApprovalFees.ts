@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { DexApprovalType } from 'invity-api';
+import { type DexApprovalType } from 'invity-api';
 
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';

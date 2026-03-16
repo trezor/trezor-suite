@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
 
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { SerializedTx, selectSendFormReviewButtonRequestsCount } from '@suite-common/wallet-core';
-import { Account, FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type SerializedTx,
+    selectSendFormReviewButtonRequestsCount,
+} from '@suite-common/wallet-core';
+import {
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
     getStakeType,

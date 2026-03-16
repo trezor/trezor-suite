@@ -1,8 +1,8 @@
-import { ReactNode, useId, useState } from 'react';
+import { type ReactNode, useId, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValues, spacings } from '@trezor/theme';
 
 import { CollapsibleContent } from './CollapsibleContent';
 import { CollapsibleContext } from './CollapsibleContext';

@@ -1,4 +1,4 @@
-import { PreloadedState } from '@suite-native/state';
+import { type PreloadedState } from '@suite-native/state';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { SelectableNetworkList } from '../SelectableNetworkList';

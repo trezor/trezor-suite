@@ -1,7 +1,7 @@
-import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
-import { Network } from '@suite-common/wallet-config';
+import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
-import { AssetLogo, AssetLogoSize, CoinLogo, isCoinSymbol } from '@trezor/product-components';
+import { AssetLogo, type AssetLogoSize, CoinLogo, isCoinSymbol } from '@trezor/product-components';
 
 interface TxSimulationAssetLogoProps {
     asset?: AssetDiff['asset'] | AssetExposure['asset'];

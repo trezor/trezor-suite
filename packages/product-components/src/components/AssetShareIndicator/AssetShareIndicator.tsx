@@ -1,13 +1,13 @@
-import { SVGProps } from 'react';
+import { type SVGProps } from 'react';
 
-import { SVGMotionProps, type Transition, motion } from 'framer-motion';
+import { type SVGMotionProps, type Transition, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
 import { coinsColors } from '@trezor/theme';
 
-import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
+import { CoinLogo, type CoinLogoProps } from '../CoinLogo/CoinLogo';
 
 const Container = styled.div`
     position: relative;

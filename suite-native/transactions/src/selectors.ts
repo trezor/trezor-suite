@@ -2,16 +2,16 @@ import { A, G, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     createSimpleTargetId,
     selectAccountNetworkType,
     selectAccountTransactions,
@@ -22,15 +22,15 @@ import {
     selectTransactionTargets,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    Timestamp,
-    TokenAddress,
-    TokenSymbol,
-    WalletAccountTransaction,
+    type AccountKey,
+    type Timestamp,
+    type TokenAddress,
+    type TokenSymbol,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
-import { AddressesType, VinVoutAddress } from './types';
+import { type AddressesType, type VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<

@@ -1,9 +1,9 @@
 import { useWatch } from 'react-hook-form';
 
 import { MODAL_CONTEXT_DEVICE, REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from '@suite/modal';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 

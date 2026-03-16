@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { RecoveryType, recoveryTypes } from '@suite/recovery';
+import { type RecoveryType, recoveryTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

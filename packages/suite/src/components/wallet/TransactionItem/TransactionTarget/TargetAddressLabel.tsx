@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
-import { AccountLabels } from '@suite-common/metadata-types';
+import { type AccountLabels } from '@suite-common/metadata-types';
 import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
-import { ArrayElement } from '@trezor/type-utils';
+import { type ArrayElement } from '@trezor/type-utils';
 
 import { Address, AddressLabeling } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { useSelector } from '../../../../hooks/suite';
 

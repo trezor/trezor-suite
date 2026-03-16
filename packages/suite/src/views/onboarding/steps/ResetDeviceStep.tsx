@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

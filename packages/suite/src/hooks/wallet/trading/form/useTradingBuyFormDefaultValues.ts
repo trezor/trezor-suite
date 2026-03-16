@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingPaymentMethodListProps,
     buildTradingFiatOption,
     getDefaultCountry,
@@ -18,7 +18,7 @@ import { selectBaseCurrency } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { type TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 
 export const useTradingBuyFormDefaultValues = (
     cryptoId: CryptoId | undefined,

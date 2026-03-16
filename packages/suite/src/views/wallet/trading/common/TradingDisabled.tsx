@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
-import { TradingType } from '@suite-common/trading';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
+import { type TradingType } from '@suite-common/trading';
 import { Banner } from '@trezor/components';
 
 const typeLabels: Record<TradingDisabledProps['type'], ExtendedMessageDescriptor['id']> = {

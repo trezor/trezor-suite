@@ -11,11 +11,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
+import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import {
-    DesktopBluetoothDevice,
+    type DesktopBluetoothDevice,
     fromBluetoothDevice,
     toBluetoothDevice,
 } from './DesktopBluetoothDevice';

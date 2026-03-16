@@ -1,5 +1,5 @@
-import { TransactionsRootState } from '@suite-common/wallet-core';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type TransactionsRootState } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { accountReceivingCoins, accountSpendingCoins } from './moveLabelsForRbfAccounts.fixture';
 

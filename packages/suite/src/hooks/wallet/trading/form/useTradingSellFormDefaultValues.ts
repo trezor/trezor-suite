@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingPaymentMethodListProps,
     buildTradingBaseCurrencyOptionFromFiat,
     buildTradingFiatOption,
@@ -15,11 +15,11 @@ import {
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
+import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { type TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';

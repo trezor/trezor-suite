@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCoingeckoId } from '@suite-common/wallet-config';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import type { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';

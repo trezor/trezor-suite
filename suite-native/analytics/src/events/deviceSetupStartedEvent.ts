@@ -1,5 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from '../constants';
 

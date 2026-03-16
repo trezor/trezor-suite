@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { Text } from '@trezor/components';
-import { SpacingValuesNew, borders } from '@trezor/theme';
+import { type SpacingValuesNew, borders } from '@trezor/theme';
 
 import { mapSizeToTypographyStyle } from './utils';
-import { AssetLogo, AssetLogoSize } from '../AssetLogo/AssetLogo';
+import { AssetLogo, type AssetLogoSize } from '../AssetLogo/AssetLogo';
 
 const MAX_VISIBLE_TOKENS = 3;
 

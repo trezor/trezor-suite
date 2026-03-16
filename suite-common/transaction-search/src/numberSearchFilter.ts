@@ -1,9 +1,9 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getTxOperation } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
-import { searchOperators } from './searchOperations';
+import { type searchOperators } from './searchOperations';
 
 export const numberSearchFilter = (
     transaction: WalletAccountTransaction,

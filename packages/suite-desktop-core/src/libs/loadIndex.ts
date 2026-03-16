@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { type BrowserWindow } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 

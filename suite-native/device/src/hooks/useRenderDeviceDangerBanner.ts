@@ -17,9 +17,9 @@ import {
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { FirmwareRevisionCheckError } from '@trezor/connect';
+import { type FirmwareRevisionCheckError } from '@trezor/connect';
 
-import { DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
+import { type DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
 import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';
 
 /**

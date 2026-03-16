@@ -1,4 +1,4 @@
-import { GeolocationState } from './geolocationReducer';
+import { type GeolocationState } from './geolocationReducer';
 
 type GeolocationRootState = {
     geolocation: GeolocationState;

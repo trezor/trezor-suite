@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
 import { useTradingUtils } from '@suite-common/trading';

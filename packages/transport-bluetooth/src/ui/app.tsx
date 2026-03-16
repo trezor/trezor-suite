@@ -2,7 +2,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { TrezorBluetooth } from '../client/trezor-bluetooth';
-import { BluetoothDevice, NotificationCharacteristic, NotificationEvent } from '../client/types';
+import {
+    type BluetoothDevice,
+    type NotificationCharacteristic,
+    type NotificationEvent,
+} from '../client/types';
 
 // Inline CSS (simplified, readable)
 const INLINE_CSS = `

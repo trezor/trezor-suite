@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
+import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
 import { useTxSimulation } from '@suite-common/tx-simulation';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { Account, TxSimulationAction } from '@suite-common/wallet-types';
+import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import {
     Button,

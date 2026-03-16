@@ -1,7 +1,7 @@
 import { createIpcProxy } from '@trezor/ipc-proxy';
 
 import { bluetoothIpc } from './client/bluetooth-ipc-renderer';
-import { BluetoothIpcApi } from './client/types';
+import { type BluetoothIpcApi } from './client/types';
 
 /*
  * index in browser context (electron renderer)

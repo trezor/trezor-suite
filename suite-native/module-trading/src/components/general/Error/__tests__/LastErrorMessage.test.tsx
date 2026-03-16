@@ -1,7 +1,7 @@
 import { tradingBuyActions } from '@suite-common/trading';
-import { TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 
-import { LastErrorMessage, LastErrorMessageProps } from '../LastErrorMessage';
+import { LastErrorMessage, type LastErrorMessageProps } from '../LastErrorMessage';
 
 describe('LastErrorMessage', () => {
     let store: TestStore;

@@ -1,6 +1,6 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import Animated, {
-    EntryExitAnimationFunction,
+    type EntryExitAnimationFunction,
     FadeOut,
     useSharedValue,
     withDelay,
@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
-import { AddCoinFlowType } from '@suite-native/navigation';
+import { type AddCoinFlowType } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';

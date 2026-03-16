@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { type ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     Box,
@@ -10,7 +10,7 @@ import {
     IconButton,
     Paragraph,
     Row,
-    SuiteThemeColors,
+    type SuiteThemeColors,
 } from '@trezor/components';
 
 const emojiIcon = '☺️';

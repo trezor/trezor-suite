@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { BlockchainState } from '@suite-common/wallet-core';
+import { type BlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 

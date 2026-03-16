@@ -1,27 +1,27 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
-    AnalyticsRootState,
+    type AnalyticsRootState,
     selectAnalyticsInstanceId,
     selectAnalyticsSessionId,
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics-redux';
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDevices,
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    BlockchainRootState,
-    WalletSettingsRootState,
+    type BlockchainRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectEnabledCustomBackends,
     selectEnabledNetworks,
     selectIsDiscreteModeActive,
 } from '@suite-common/wallet-core';
-import { DeviceState } from '@trezor/connect';
+import { type DeviceState } from '@trezor/connect';
 import {
     getBootloaderHash,
     getBootloaderVersion,
@@ -29,7 +29,7 @@ import {
     getFirmwareVersion,
 } from '@trezor/device-utils';
 
-import { LogsSliceRootState } from './logsSlice';
+import { type LogsSliceRootState } from './logsSlice';
 import { REDACTED_REPLACEMENT, redactAction } from './utils';
 
 export type LogsApplicationInfoRootState = LogsSliceRootState &

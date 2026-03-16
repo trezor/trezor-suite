@@ -1,14 +1,14 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAreSatsAmountUnit,
     selectBaseCurrency,
     selectIsDiscreteModeActive,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
 import { SkeletonRectangle, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';

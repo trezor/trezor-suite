@@ -1,4 +1,4 @@
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { ResidenceCheckAwareAnimatedBox } from '../ResidenceCheckAwareAnimatedBox';
 

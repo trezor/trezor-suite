@@ -1,9 +1,9 @@
-import { ActionCreator } from '@reduxjs/toolkit';
+import { type ActionCreator } from '@reduxjs/toolkit';
 
 import { tradingBuyActions } from '../../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../../reducers/sellReducer';
-import { TradingType } from '../../../types';
+import { type TradingType } from '../../../types';
 import { setLastErrorMessageByTradingType } from '../setLastErrorMessageByTradingType';
 
 describe('setLastErrorMessageByTradingType', () => {

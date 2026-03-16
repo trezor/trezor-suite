@@ -3,31 +3,31 @@ import { A, pipe } from '@mobily/ts-belt';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectAccountTransactions,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    TokenAddress,
-    TokenInfoBranded,
-    TokenSymbol,
+    type AccountKey,
+    type TokenAddress,
+    type TokenInfoBranded,
+    type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
+import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
 
-import { TypedTokenTransfer, WalletAccountTransaction } from './types';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState &

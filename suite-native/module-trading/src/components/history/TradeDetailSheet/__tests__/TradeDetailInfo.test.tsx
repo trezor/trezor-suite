@@ -1,4 +1,4 @@
-import { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction } from '@suite-common/trading';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     getBuyTrade,

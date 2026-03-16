@@ -3,9 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<

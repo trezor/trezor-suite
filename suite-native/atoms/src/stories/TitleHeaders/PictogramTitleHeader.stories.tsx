@@ -6,7 +6,7 @@ import { nativeTypographyStyles } from '@trezor/theme';
 import { PICTOGRAM_VARIANTS } from '../../Pictogram/Pictogram';
 import {
     PictogramTitleHeader as PictogramTitleHeaderComponent,
-    PictogramTitleHeaderProps,
+    type PictogramTitleHeaderProps,
 } from '../../TitleHeader/PictogramTitleHeader';
 
 type PictogramTitleHeaderStory = StoryObj<PictogramTitleHeaderProps>;

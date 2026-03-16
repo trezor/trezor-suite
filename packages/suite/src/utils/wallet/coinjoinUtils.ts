@@ -2,14 +2,14 @@ import { createHash } from 'crypto';
 import { hoursToMilliseconds } from 'date-fns';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { getBip43Type, getUtxoOutpoint } from '@suite-common/wallet-utils';
-import { AnonymitySet } from '@trezor/blockchain-link';
+import { type AnonymitySet } from '@trezor/blockchain-link';
 import {
-    CoinjoinStatusEvent,
-    CoinjoinTransactionData,
-    RegisterAccountParams,
+    type CoinjoinStatusEvent,
+    type CoinjoinTransactionData,
+    type RegisterAccountParams,
     RoundPhase,
     SessionPhase,
 } from '@trezor/coinjoin';
@@ -24,9 +24,9 @@ import {
 } from 'src/services/coinjoin/config';
 import type { CoinjoinSymbol } from 'src/services/coinjoin/config';
 import {
-    AnonymityGainPerRound,
-    CoinjoinAccount,
-    CoinjoinSessionParameters,
+    type AnonymityGainPerRound,
+    type CoinjoinAccount,
+    type CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
 
 export type CoinjoinBalanceBreakdown = {

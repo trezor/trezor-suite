@@ -6,7 +6,7 @@ import { nativeSpacings, nativeTypographyStyles } from '@trezor/theme';
 import {
     ICON_LIST_ITEM_VARIANTS,
     IconListTextItem as IconListTextItemComponent,
-    IconListTextItemProps,
+    type IconListTextItemProps,
 } from '../../IconListItem';
 
 type IconListTextItemStory = StoryObj<IconListTextItemProps>;

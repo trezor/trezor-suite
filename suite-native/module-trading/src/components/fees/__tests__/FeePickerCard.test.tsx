@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { TradingExchangeType, TradingSellType } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
 import { FeePickerCard } from '../FeePickerCard';

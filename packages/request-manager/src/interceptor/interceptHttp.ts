@@ -1,7 +1,7 @@
 import http from 'http';
-import https from 'https';
+import type https from 'https';
 
-import { Interceptor } from './interceptorTypes';
+import { type Interceptor } from './interceptorTypes';
 import { overloadHttpRequest } from './overloadHttpRequest';
 import { overloadWebsocketHandshake } from './overloadWebsocketHandshake';
 

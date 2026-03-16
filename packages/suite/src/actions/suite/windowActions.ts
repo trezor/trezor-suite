@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { BreakpointFlags } from '@trezor/theme';
+import { type BreakpointFlags } from '@trezor/theme';
 
 import { WINDOW } from './constants';
 

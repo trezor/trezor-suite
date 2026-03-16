@@ -12,7 +12,7 @@ import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddlewa
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action, Dispatch } from 'src/types/suite';
+import { type Action, type Dispatch } from 'src/types/suite';
 
 const device = mockSuiteDevice();
 

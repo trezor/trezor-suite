@@ -6,7 +6,7 @@ import {
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetwork,
     getNetworkType,
     networkSymbolCollection,

@@ -1,7 +1,7 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, { PROTO, RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
+import TrezorConnect, { PROTO, type RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { isRecoveryInProgress } from './isRecoveryInProgress';

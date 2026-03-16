@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
-import { View } from 'react-native';
-import Animated, { AnimatedProps } from 'react-native-reanimated';
+import React, { type ReactNode } from 'react';
+import { type View } from 'react-native';
+import Animated, { type AnimatedProps } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeSpacing } from '@trezor/theme';
+import { type NativeSpacing } from '@trezor/theme';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 type StackOrientation = 'horizontal' | 'vertical';
 interface StackProps extends BoxProps {

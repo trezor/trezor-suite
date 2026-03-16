@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { Button, Icon, Paragraph, Row, Tooltip, useElevation } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,

@@ -1,9 +1,9 @@
 import { isTrezorDeviceWithState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import {
-    EnsureWalletSuiteSyncOn,
-    RefreshSuiteSyncKeysDep,
-    SubscribeSuiteSyncDataDep,
-    SubscriptionStorageDep,
+    type EnsureWalletSuiteSyncOn,
+    type RefreshSuiteSyncKeysDep,
+    type SubscribeSuiteSyncDataDep,
+    type SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
 import { err } from '@trezor/type-utils';
 

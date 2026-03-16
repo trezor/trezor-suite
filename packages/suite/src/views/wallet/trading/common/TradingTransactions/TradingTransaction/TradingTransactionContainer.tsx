@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { Card, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,4 +1,4 @@
-import { PublicClient } from 'viem';
+import { type PublicClient } from 'viem';
 
 export const calculateBlockTime = async (client: PublicClient): Promise<number | null> => {
     try {

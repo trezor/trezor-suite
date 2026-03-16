@@ -1,11 +1,11 @@
 import {
-    EncryptableBranded,
-    EncryptedHex,
-    PlatformEncryption,
+    type EncryptableBranded,
+    type EncryptedHex,
+    type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import {
-    ConnectInitSettings,
+    type ConnectInitSettings,
     type ExtraDependencies,
     notImplementedAction,
     notImplementedActionType,
@@ -15,18 +15,18 @@ import {
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import {
-    ReportSecurityCheckParams,
-    Route,
+    type ReportSecurityCheckParams,
+    type Route,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     AddressDisplayOptions,
-    SelectedAccountLoaded,
+    type SelectedAccountLoaded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { Analytics } from '@trezor/analytics-uploader';
+import { type Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {

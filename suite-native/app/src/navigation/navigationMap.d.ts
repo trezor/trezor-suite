@@ -1,6 +1,6 @@
 // Specifying default types for useNavigation, Link, ref etc
 
-import { RootStackParamList } from '@suite-native/navigation';
+import { type RootStackParamList } from '@suite-native/navigation';
 
 declare global {
     namespace ReactNavigation {

@@ -1,4 +1,4 @@
-import { TestDetailsAnnotation, TestMetadataInput } from './types';
+import { type TestDetailsAnnotation, type TestMetadataInput } from './types';
 import {
     DeviceModel,
     TestAnnotationType,

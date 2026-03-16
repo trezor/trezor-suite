@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 
-import { FlagSize, FlagType } from './types';
+import { type FlagSize, type FlagType } from './types';
 import { mapSizeToBorderRadius, mapSizeToOutlineWidth } from './utils';
 import { IMAGES_PATH } from '../Image/Image';
 

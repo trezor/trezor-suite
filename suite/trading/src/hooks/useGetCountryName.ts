@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { TradingCountryOption, regional } from '@suite-common/trading';
+import { type TradingCountryOption, regional } from '@suite-common/trading';
 
 export const useGetCountryName = () => {
     const { translationString } = useTranslation();

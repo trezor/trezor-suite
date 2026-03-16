@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_NAMES, ICON_SIZES } from '@suite-native/icons';
 
-import { BADGE_SIZES, BADGE_VARIANTS, Badge as BadgeComponent, BadgeProps } from '../Badge';
+import { BADGE_SIZES, BADGE_VARIANTS, Badge as BadgeComponent, type BadgeProps } from '../Badge';
 import { SURFACE_ELEVATIONS } from '../types';
 
 type BadgeStory = StoryObj<BadgeProps>;

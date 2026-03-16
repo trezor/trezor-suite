@@ -1,6 +1,6 @@
 import { desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
-import { CreateActionDto, EnterYieldResponseSuccess, enterYield } from '../api';
+import { type CreateActionDto, type EnterYieldResponseSuccess, enterYield } from '../api';
 
 type EnterYieldOpportunityVariables = Pick<CreateActionDto, 'yieldId' | 'address'> & {
     amount: string;

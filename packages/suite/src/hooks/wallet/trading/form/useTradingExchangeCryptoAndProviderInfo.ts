@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { TradingExchangeType } from '@suite-common/trading';
+import { type TradingExchangeType } from '@suite-common/trading';
 
 import { useTradingFormContext } from './useTradingCommonForm';
 

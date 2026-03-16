@@ -2,8 +2,8 @@ import { useRef } from 'react';
 
 import {
     BottomSheetSearchInput,
-    BottomSheetSearchInputProps,
-    BottomSheetSearchInputRef,
+    type BottomSheetSearchInputProps,
+    type BottomSheetSearchInputRef,
     SearchInputWithCancel,
 } from '@suite-native/atoms';
 

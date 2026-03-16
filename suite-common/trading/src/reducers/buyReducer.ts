@@ -1,17 +1,17 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { FiatCurrencyCode } from 'invity-api';
-import type {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTrade,
-    BuyTradeQuoteRequest,
-    CryptoId,
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type BuyListResponse,
+    type BuyProviderInfo,
+    type BuyTrade,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type FiatCurrencyCode,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_PREFIX } from '../constants';
-import { TradingAmountLimitProps } from '../types';
+import { type TradingAmountLimitProps } from '../types';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;

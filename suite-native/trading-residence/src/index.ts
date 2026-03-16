@@ -1,4 +1,4 @@
-export * from './types/tradingLocationForm';
+export type * from './types/tradingLocationForm';
 
 export * from './components/CountrySheet/CountryOfResidencePicker';
 export * from './components/TradingLocationSettings';

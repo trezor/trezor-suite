@@ -1,18 +1,18 @@
 import { ipcMain } from 'electron';
 
 import TrezorConnect, {
-    ConnectSettings,
-    LocalFirmwares,
+    type ConnectSettings,
+    type LocalFirmwares,
     UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
-import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './module';
+import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';

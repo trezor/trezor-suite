@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { routerLocationChange } from '@suite/router';
 import {
@@ -15,7 +15,7 @@ import {
 } from '@suite-common/trading';
 
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 export const tradingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
-import { AccountKey, WalletParams } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
@@ -17,7 +17,7 @@ import {
     selectRoundsDurationInHours,
     selectSessionProgressByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const SPACING = 6;
 

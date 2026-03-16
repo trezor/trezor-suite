@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     invityAPI,
     tokenSupportsIncreasingAllowance,
     useTradingUtils,

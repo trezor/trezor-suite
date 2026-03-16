@@ -1,6 +1,6 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { SearchAccountLabels } from './searchLabels';
+import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
 export const advancedSearchTransactions = (

@@ -1,7 +1,7 @@
 import { mocked } from 'jest-mock';
 
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
-import { TrezorDeviceWithState } from '@suite-common/suite-types';
+import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -10,7 +10,7 @@ import { err, ok } from '@trezor/type-utils';
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
 import { DEFAULT_DEVICE_SIZE_QUOTA } from '../constants';
 import { ensureDeviceHasQuotaThunk } from '../ensureDeviceHasQuotaThunk';
-import { SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
+import { type SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
 import { checkStorageByPublicKey } from '../storage/checkStorage';
 import { registerStorageThunk } from '../storage/registerStorageThunk';
 

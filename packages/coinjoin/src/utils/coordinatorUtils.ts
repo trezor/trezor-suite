@@ -1,6 +1,6 @@
 import { bufferUtils } from '@trezor/utils';
 import {
-    Network,
+    type Network,
     bufferutils as bUtils,
     address as baddress,
     script as bscript,
@@ -8,10 +8,10 @@ import {
 } from '@trezor/utxo-lib';
 
 import {
-    AllowedScriptTypes,
-    CoinjoinInput,
-    CoinjoinOutput,
-    CoinjoinOutputAddedEvent,
+    type AllowedScriptTypes,
+    type CoinjoinInput,
+    type CoinjoinOutput,
+    type CoinjoinOutputAddedEvent,
 } from '../types/coordinator';
 
 // WabiSabi coordinator is using custom format of address scriptPubKey

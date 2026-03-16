@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo } from 'invity-api';
 
-import { TradingRootState, selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo, TradeInfoRow } from '@suite-native/trading-atoms';

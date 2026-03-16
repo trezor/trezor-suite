@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
-    AssetOptionBaseProps,
+    type AssetOptionBaseProps,
     SearchAsset,
     SelectAssetModal,
-    TokenTab,
+    type TokenTab,
     TokenTabs,
 } from '@trezor/product-components';
 

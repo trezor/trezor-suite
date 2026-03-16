@@ -1,8 +1,12 @@
-import { DeviceReducerState, deviceActions, deviceReducerInitialState } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    type DeviceReducerState,
+    deviceActions,
+    deviceReducerInitialState,
+} from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 // Default devices
 const CONNECT_DEVICE = mockConnectDevice();

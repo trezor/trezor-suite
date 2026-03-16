@@ -1,8 +1,8 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
-import { Branded } from '@trezor/type-utils';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
+import { type Branded } from '@trezor/type-utils';
 
-import { SuiteSyncTable } from '../SuiteSyncTable';
+import { type SuiteSyncTable } from '../SuiteSyncTable';
 
 export type SuiteSyncAddressId = string & Branded<'SuiteSyncAddressId'>;
 

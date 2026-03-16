@@ -7,12 +7,15 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { SettingsSliceRootState, selectIsExperimentalFeatureEnabled } from '@suite-native/settings';
+import {
+    type SettingsSliceRootState,
+    selectIsExperimentalFeatureEnabled,
+} from '@suite-native/settings';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';

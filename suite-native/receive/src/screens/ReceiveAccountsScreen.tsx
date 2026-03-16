@@ -2,16 +2,16 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
+import { AccountsList, AddAccountButton, type OnSelectAccount } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    ReceiveStackParamList,
+    type ReceiveStackParamList,
     ReceiveStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 

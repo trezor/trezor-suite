@@ -1,4 +1,4 @@
-import { CryptoId, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
 
 import {
     tradingExchangeCreatePaymentRequest,

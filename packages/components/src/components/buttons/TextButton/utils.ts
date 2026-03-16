@@ -1,9 +1,9 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { Color, SpacingValuesNew, TypographyStyle } from '@trezor/theme';
+import { type Color, type SpacingValuesNew, type TypographyStyle } from '@trezor/theme';
 
-import { TextButtonSize } from './types';
-import { ButtonIntent, ButtonPriority, InverseKey } from '../types';
+import { type TextButtonSize } from './types';
+import { type ButtonIntent, type ButtonPriority, type InverseKey } from '../types';
 
 export const mapSizeToGap = (size: TextButtonSize): SpacingValuesNew => {
     const gapMap: Record<TextButtonSize, SpacingValuesNew> = {

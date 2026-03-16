@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { Rating, ratingOptions } from '@suite-common/feedback';
+import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 
 const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
     width: 48px;

@@ -1,6 +1,6 @@
-import { ComponentType } from 'react';
+import { type ComponentType } from 'react';
 
-import { PageName } from '@suite-common/suite-types';
+import { type PageName } from '@suite-common/suite-types';
 
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';

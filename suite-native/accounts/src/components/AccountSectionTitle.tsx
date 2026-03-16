@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { AccountLabel } from '@suite-native/labeling';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     doesCoinSupportStaking,
     selectAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';

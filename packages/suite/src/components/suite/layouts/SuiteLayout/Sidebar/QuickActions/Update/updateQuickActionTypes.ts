@@ -1,12 +1,12 @@
 import { goto } from '@suite/router';
-import { IconName, UIIntent } from '@trezor/components';
+import { type IconName, type UIIntent } from '@trezor/components';
 
 import {
     installUpdate,
     justUpdated,
     setIsUpdateModalVisible,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
-import { Dispatch } from '../../../../../../../types/suite';
+import { type Dispatch } from '../../../../../../../types/suite';
 
 export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'disconnected';
 

@@ -1,12 +1,12 @@
 import { memo, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
-import { AssetPickerInput, AssetPickerInputProps } from '../TradingFormInputAssetPicker';
+import { AssetPickerInput, type AssetPickerInputProps } from '../TradingFormInputAssetPicker';
 import { AssetOptionsProvider } from './AssetOptionsContext';
-import { AssetPickerModal, AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
+import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 
 export interface TradingFormInputSellAssetProps {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];

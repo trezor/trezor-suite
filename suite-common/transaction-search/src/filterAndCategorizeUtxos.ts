@@ -1,6 +1,6 @@
-import { Utxo } from '@trezor/blockchain-link';
+import { type Utxo } from '@trezor/blockchain-link';
 
-import { SearchOutputLabels } from './searchLabels';
+import { type SearchOutputLabels } from './searchLabels';
 
 export type FilterAndCategorizeUtxosParams = {
     searchQuery: string;

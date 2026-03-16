@@ -1,14 +1,14 @@
-import { SuiteSyncSchema } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncSchema } from '@suite-common/suite-sync-storage';
 import {
-    SubscribeSuiteSyncData,
-    SubscriptionStorageDep,
-    SuiteSyncListenerDep,
+    type SubscribeSuiteSyncData,
+    type SubscriptionStorageDep,
+    type SuiteSyncListenerDep,
 } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 import { typedObjectValues } from '@trezor/utils';
 
-import { EnsureStorageDep } from '../storage/createEnsureStorage';
+import { type EnsureStorageDep } from '../storage/createEnsureStorage';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
 export type CreateSubscribeSuiteSyncDataDeps = EnsureStorageDep &

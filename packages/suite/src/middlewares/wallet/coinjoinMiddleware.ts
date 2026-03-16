@@ -17,7 +17,7 @@ import {
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
@@ -41,7 +41,7 @@ import {
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { CoinjoinService } from 'src/services/coinjoin';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
-import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
+import { type CoinjoinConfig } from 'src/types/wallet/coinjoin';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 export const coinjoinMiddleware =

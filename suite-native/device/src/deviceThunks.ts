@@ -6,12 +6,12 @@ import {
 } from '@suite-common/device';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect, { OkWithDevice, PROTO } from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Err, exhaustive } from '@trezor/type-utils';
+import TrezorConnect, { type OkWithDevice, PROTO } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 

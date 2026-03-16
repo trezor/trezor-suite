@@ -1,4 +1,4 @@
-import { EventInstance } from './eventDefinition';
+import { type EventInstance } from './eventDefinition';
 import * as sharedEventsData from './events';
 
 export const sharedEvents = sharedEventsData;

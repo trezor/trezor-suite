@@ -11,7 +11,7 @@ export { paletteV2 } from './paletteV2';
 export * from './prepareTheme';
 export * from './sizes';
 export * from './spacings';
-export * from './types';
+export type * from './types';
 export * from './typography';
 export * from './zIndices';
 export * from './breakpoints';

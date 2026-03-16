@@ -1,22 +1,22 @@
 import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
 
 import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
-import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
-import { Account } from './Account';
+import { type EndRoundState, RoundPhase, SessionPhase } from '../enums';
+import { type Account } from './Account';
 import { Alice } from './Alice';
-import { Logger } from '../types';
-import { AccountAddress, RegisterAccountParams } from '../types/account';
-import { CoinjoinRoundParameters, Round } from '../types/coordinator';
-import { CoinjoinPrisonShape } from '../types/prison';
+import { type Logger } from '../types';
+import { type AccountAddress, type RegisterAccountParams } from '../types/account';
+import { type CoinjoinRoundParameters, type Round } from '../types/coordinator';
+import { type CoinjoinPrisonShape } from '../types/prison';
 import {
-    BroadcastedTransactionDetails,
-    CoinjoinRequestEvent,
-    CoinjoinResponseEvent,
-    CoinjoinRoundEvent,
-    CoinjoinRoundOptions,
-    CoinjoinTransactionData,
-    CoinjoinTransactionLiquidityClue,
-    SerializedCoinjoinRound,
+    type BroadcastedTransactionDetails,
+    type CoinjoinRequestEvent,
+    type CoinjoinResponseEvent,
+    type CoinjoinRoundEvent,
+    type CoinjoinRoundOptions,
+    type CoinjoinTransactionData,
+    type CoinjoinTransactionLiquidityClue,
+    type SerializedCoinjoinRound,
 } from '../types/round';
 import { connectionConfirmation } from './round/connectionConfirmation';
 import { ended } from './round/endedRound';

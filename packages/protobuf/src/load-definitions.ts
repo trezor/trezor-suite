@@ -1,4 +1,4 @@
-import * as protobuf from 'protobufjs/light';
+import type * as protobuf from 'protobufjs/light';
 
 type Root = protobuf.Root;
 type Definitions = Record<string, unknown>;

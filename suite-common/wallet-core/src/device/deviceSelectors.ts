@@ -1,6 +1,6 @@
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getStatus } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';

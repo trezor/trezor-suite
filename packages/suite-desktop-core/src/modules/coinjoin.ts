@@ -6,10 +6,14 @@ import { captureMessage, withScope } from '@sentry/electron/main';
 import { ipcMain } from 'electron';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
-import { CoinjoinBackend, CoinjoinBackendSettings, CoinjoinClient } from '@trezor/coinjoin';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import {
+    type CoinjoinBackend,
+    type CoinjoinBackendSettings,
+    CoinjoinClient,
+} from '@trezor/coinjoin';
+import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { InterceptedEvent } from '@trezor/request-manager';
+import { type InterceptedEvent } from '@trezor/request-manager';
 import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';

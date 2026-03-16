@@ -7,22 +7,22 @@ import { isRejected } from '@reduxjs/toolkit';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { signTransactionNativeThunk } from '@suite-native/send';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';

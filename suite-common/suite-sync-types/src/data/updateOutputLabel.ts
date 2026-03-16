@@ -1,10 +1,10 @@
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type Result } from '@trezor/type-utils';
 
-import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
+import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateOutputLabelParams = {
     deviceStaticSessionId: StaticSessionId;

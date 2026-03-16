@@ -5,7 +5,7 @@ import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
-    SuiteLogsApplicationInfoRootState,
+    type SuiteLogsApplicationInfoRootState,
     selectRedactedDesktopApplicationInfo,
 } from 'src/selectors/suite/logsSelectors';
 

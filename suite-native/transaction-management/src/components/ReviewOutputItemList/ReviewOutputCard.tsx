@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { ReviewOutputState } from '@suite-common/wallet-types';
+import { type ReviewOutputState } from '@suite-common/wallet-types';
 import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

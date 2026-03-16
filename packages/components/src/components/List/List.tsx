@@ -1,23 +1,23 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings, spacingsPx } from '@trezor/theme';
+import { type SpacingValues, spacings, spacingsPx } from '@trezor/theme';
 
 import { ListContext } from './ListContext';
 import { ListItem } from './ListItem';
-import { BulletVerticalAlignment, ListIntent, ListStyleType } from './types';
+import { type BulletVerticalAlignment, type ListIntent, type ListStyleType } from './types';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
-import { Text, TextProps } from '../typography/Text/Text';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { Text, type TextProps } from '../typography/Text/Text';
 import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
+    type TextProps as TextPropsCommon,
+    type TextPropsKeys,
     pickAndPrepareTextProps,
     withTextProps,
 } from '../typography/utils';

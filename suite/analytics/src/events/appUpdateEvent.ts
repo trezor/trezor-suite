@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-import { AppUpdateEventStatus } from '../definitions';
+import { type AppUpdateEventStatus } from '../definitions';
 
 type Attributes = {
     toVersion?: AttributeDef<string | undefined>;

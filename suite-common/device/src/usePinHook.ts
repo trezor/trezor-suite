@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ButtonRequest } from '@suite-common/suite-types';
+import { type ButtonRequest } from '@suite-common/suite-types';
 import TrezorConnect, { UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];

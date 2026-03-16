@@ -3,14 +3,17 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceStaticSessionId } from '@suite-common/device';
-import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
+import {
+    type WithSuiteSyncAndDeviceState,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';

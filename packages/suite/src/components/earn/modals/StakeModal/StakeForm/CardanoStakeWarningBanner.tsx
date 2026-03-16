@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 
 type CardanoStakeWarningBannerProps = {

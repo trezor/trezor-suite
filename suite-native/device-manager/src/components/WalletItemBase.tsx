@@ -2,12 +2,12 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
-    WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncOwnerForDeviceStaticId,
 } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';

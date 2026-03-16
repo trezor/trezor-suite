@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Textarea as TextareaComponent } from '@trezor/components';
 
-import { FieldBasic } from '../../types';
+import { type FieldBasic } from '../../types';
 
 const Row = styled.div`
     display: block;

@@ -4,10 +4,10 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import {
-    AccountItem,
-    FiatGraphPoint,
-    FiatGraphPointWithCryptoBalance,
-    GroupedBalanceMovementEvent,
+    type AccountItem,
+    type FiatGraphPoint,
+    type FiatGraphPointWithCryptoBalance,
+    type GroupedBalanceMovementEvent,
 } from './types';
 
 export type CommonUseGraphParams = {

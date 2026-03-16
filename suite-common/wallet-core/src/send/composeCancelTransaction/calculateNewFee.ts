@@ -1,4 +1,4 @@
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { type ChainedTransactions } from '@suite-common/wallet-types';
 import { calculateChainedTransactionsFeeForRbf } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

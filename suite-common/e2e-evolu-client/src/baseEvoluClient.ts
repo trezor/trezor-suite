@@ -1,9 +1,13 @@
-import { Evolu, SimpleName } from '@evolu/common';
-import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
+import { type Evolu, SimpleName } from '@evolu/common';
+import {
+    type Upsertable,
+    createEvolu,
+    createOwnerWebSocketTransport,
+} from '@evolu/common/local-first';
 import { execSync } from 'child_process';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
-import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 
 import { createNodeEvoluDeps } from './createEvoluNodeDeps';
 

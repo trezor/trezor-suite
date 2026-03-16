@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -16,7 +16,7 @@ import {
     selectStartCoinjoinSessionArguments,
 } from 'src/reducers/wallet/coinjoinReducer';
 
-import { Tile, TileProps } from './Tile';
+import { Tile, type TileProps } from './Tile';
 
 const TopFeeRow = styled.div`
     display: flex;

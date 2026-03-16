@@ -1,16 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { DemoAccountQuestionnaireLinkKey, events } from '@suite-native/analytics';
+import { type DemoAccountQuestionnaireLinkKey, events } from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    DemoAccountQuestionnaireStackParamList,
-    DemoAccountQuestionnaireStackRoutes,
+    type DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {

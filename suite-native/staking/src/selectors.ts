@@ -5,7 +5,7 @@ import {
     selectPoolStatsApyData,
     selectSolAccountHasStaked,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
@@ -38,7 +38,7 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 import { doesCoinSupportStaking } from './utils';
 
 // create empty array in advance so it will be always same on shallow comparison

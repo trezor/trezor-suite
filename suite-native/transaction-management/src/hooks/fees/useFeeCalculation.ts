@@ -3,16 +3,16 @@ import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
+    type AccountKey,
+    type FeeLevelLabel,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';

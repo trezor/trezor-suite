@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
 import {
@@ -11,7 +11,7 @@ import {
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import {
     TransactionIcon,
     getTransactionValueSign,

@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { GuideCategory } from '@suite-common/suite-types';
+import { type GuideCategory } from '@suite-common/suite-types';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';

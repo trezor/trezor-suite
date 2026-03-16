@@ -1,19 +1,19 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
 import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';
-import { AnimatedCard, CardProps } from './Card';
+import { AnimatedCard, type CardProps } from './Card';
 
 export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
 type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];

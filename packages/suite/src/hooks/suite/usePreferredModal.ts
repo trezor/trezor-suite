@@ -1,7 +1,7 @@
 import { MODAL_CONTEXT_NONE } from '@suite/modal';
-import { ModalAppParams, selectRoute, selectRouterParams } from '@suite/router';
+import { type ModalAppParams, selectRoute, selectRouterParams } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Route } from '@suite-common/suite-types';
+import { type Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 

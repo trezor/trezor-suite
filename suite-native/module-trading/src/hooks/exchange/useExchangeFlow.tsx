@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import {
-    TradingSendRejectedProps,
+    type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,

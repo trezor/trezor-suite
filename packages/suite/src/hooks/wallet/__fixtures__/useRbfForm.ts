@@ -1,15 +1,15 @@
 import {
-    ChainedTransactions,
-    FeesState,
-    SelectedAccountLoaded,
-    WalletAccountTransaction,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type ChainedTransactions,
+    type FeesState,
+    type SelectedAccountLoaded,
+    type WalletAccountTransaction,
+    type WalletAccountTransactionWithRequiredRbfParams,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { AccountUtxo } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type AccountUtxo } from '@trezor/connect';
+import { type DeepPartial } from '@trezor/type-utils';
 
-import { CoinjoinState } from '../../../reducers/wallet/coinjoinReducer';
+import { type CoinjoinState } from '../../../reducers/wallet/coinjoinReducer';
 
 export { getRootReducer } from './useSendForm';
 

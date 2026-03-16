@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 
 import { messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 

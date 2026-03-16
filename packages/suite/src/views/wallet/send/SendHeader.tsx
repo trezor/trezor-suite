@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { sendFormActions } from '@suite-common/wallet-core';
-import { Button, Dropdown, DropdownMenuItemProps, Switch, Text } from '@trezor/components';
+import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { WalletSubpageHeading } from 'src/components/wallet';

@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
 import {
-    RenderResult,
+    type RenderResult,
     act,
     render,
     screen,
@@ -16,7 +16,7 @@ import { MockedFormatterProvider } from '@suite-common/formatters';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
 import { SuiteServicesProvider } from '../SuiteServicesProvider';
-import { SuiteServices } from '../extraDependencies';
+import { type SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 // used in hooks tests

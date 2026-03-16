@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { ErrorToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { type ErrorToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { TradingType } from '../../types';
+import { type TradingType } from '../../types';
 import { setLastErrorMessageByTradingType } from '../common/setLastErrorMessageByTradingType';
 
 export type LogErrorThunkProps = {

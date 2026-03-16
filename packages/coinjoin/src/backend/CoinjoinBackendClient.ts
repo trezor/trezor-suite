@@ -18,7 +18,7 @@ import type {
     CoinjoinBackendClientShape,
     MempoolFilterResponse,
 } from '../types/backend';
-import { RequestOptions, resetIdentityCircuit } from '../utils/http';
+import { type RequestOptions, resetIdentityCircuit } from '../utils/http';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
 import {
     Flag,
     GhostContainer,

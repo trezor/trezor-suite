@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
+import { Kind, OptionalKind, type TIntersect, type TObject, type TSchema } from '@sinclair/typebox';
 
 import { Param } from './Param';
 import { descriptionDictionary } from '../constants/descriptions';

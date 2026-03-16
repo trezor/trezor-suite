@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Tooltip, type AllowedFrameProps as TooltipAllowedFrameProps } from '../../Tooltip/Tooltip';
-import { TooltipDelay } from '../../Tooltip/TooltipDelay';
+import { type TooltipDelay } from '../../Tooltip/TooltipDelay';
 
 const EllipsisContainer = styled.div`
     text-overflow: ellipsis;

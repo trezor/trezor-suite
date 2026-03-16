@@ -1,6 +1,6 @@
 import { events } from '@suite/analytics';
 import { goto } from '@suite/router';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 

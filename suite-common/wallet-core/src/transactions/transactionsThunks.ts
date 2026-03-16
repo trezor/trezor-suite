@@ -3,14 +3,14 @@ import { toWei } from 'web3-utils';
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    Account,
-    AccountKey,
-    FormState,
-    PrecomposedTransactionCardanoFinal,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    Timestamp,
-    WalletAccountTransaction,
+    type Account,
+    type AccountKey,
+    type FormState,
+    type PrecomposedTransactionCardanoFinal,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type Timestamp,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     enhanceTransaction,
@@ -25,9 +25,13 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
+import { type TokenInfo, type TokenStandard } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { AccountInfo, AccountTransaction, TokenTransfer } from '@trezor/connect';
+import TrezorConnect, {
+    type AccountInfo,
+    type AccountTransaction,
+    type TokenTransfer,
+} from '@trezor/connect';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {

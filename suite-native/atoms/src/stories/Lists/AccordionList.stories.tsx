@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import {
     AccordionList as AccordionListComponent,
-    AccordionListProps,
+    type AccordionListProps,
 } from '../../Accordion/AccordionList';
 import { Text } from '../../Text';
 

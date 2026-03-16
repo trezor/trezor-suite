@@ -1,9 +1,9 @@
-import { Evolu, EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
+import { type Evolu, type EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { SuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import { SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
+import { type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 import { createEvoluErrorHandler } from './createEvoluErrorHandler';

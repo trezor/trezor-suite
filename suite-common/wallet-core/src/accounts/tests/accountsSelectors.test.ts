@@ -1,10 +1,10 @@
 import type { DeviceRootState } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { AccountsRootState } from '../accountsReducer';
+import { type AccountsRootState } from '../accountsReducer';
 import {
     selectAddressByNetworkAndPath,
     selectVisibleDeviceAccountsMap,

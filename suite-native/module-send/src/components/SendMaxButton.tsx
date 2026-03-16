@@ -7,24 +7,24 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountNetworkSymbol,
     selectAreSatsAmountUnit,
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';
 
 type SendMaxButtonProps = {

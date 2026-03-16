@@ -6,7 +6,7 @@ import {
     selectPoolStatsApyData,
     selectSolExternalStakingAccountsTotalStaked,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';

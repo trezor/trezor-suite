@@ -5,7 +5,7 @@ import ecc from 'tiny-secp256k1';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackFunction } from '../types';
+import { type Payment, type PaymentOpts, type StackFunction } from '../types';
 import { BufferSchema, Point, PredicateSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;

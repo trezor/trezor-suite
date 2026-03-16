@@ -3,7 +3,7 @@ import {
     renderHookWithBasicProvider,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';
 import { useSellInputFormControls } from '../useSellInputFormControls';

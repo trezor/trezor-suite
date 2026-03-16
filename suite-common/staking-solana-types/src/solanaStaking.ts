@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Blockchain } from '@suite-common/wallet-types';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Blockchain } from '@suite-common/wallet-types';
+import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import type { SolanaSignTransaction } from '@trezor/connect';
 
 export const supportedSolanaNetworkSymbols = ['sol', 'dsol'] as const;

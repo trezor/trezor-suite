@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';

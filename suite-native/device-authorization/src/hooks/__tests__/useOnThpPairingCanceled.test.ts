@@ -1,5 +1,5 @@
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { DeviceThpPairingStatus } from '@trezor/connect';
+import { type DeviceThpPairingStatus } from '@trezor/connect';
 
 import { useOnThpPairingCanceled } from '../useOnThpPairingCanceled';
 

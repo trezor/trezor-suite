@@ -13,7 +13,7 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import { useNativeStyles } from '@trezor/styles';
 import { paletteV1 } from '@trezor/theme';
 

@@ -1,9 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,
@@ -11,7 +11,7 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { FillType, HeadingSize, PaddingType } from './types';
+import { type FillType, type HeadingSize, type PaddingType } from './types';
 import {
     mapPaddingTypeToContentPadding,
     mapPaddingTypeToHeaderPadding,
@@ -21,16 +21,16 @@ import {
 } from './utils';
 import { Collapsible } from '../Collapsible/Collapsible';
 import { Column, Row } from '../Flex/Flex';
-import { IconName, IconProps, IconSize } from '../Icon/Icon';
+import { type IconName, type IconProps, type IconSize } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedCollapsibleBoxFrameProps = [
     'margin',

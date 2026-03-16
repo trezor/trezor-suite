@@ -1,4 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
@@ -7,18 +7,18 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    AccountLabels,
-    MetadataAddPayload,
-    MetadataEncryptionVersion,
-    MetadataProvider,
-    Error as MetadataProviderError,
+    type AccountLabels,
+    type MetadataAddPayload,
+    type MetadataEncryptionVersion,
+    type MetadataProvider,
+    type Error as MetadataProviderError,
     ProviderErrorAction,
-    WalletLabels,
+    type WalletLabels,
 } from '@suite-common/metadata-types';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import type { MetadataAction } from './metadataActions';
@@ -27,7 +27,7 @@ import * as METADATA from './metadataConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectLabelableEntities,
     selectMetadata,
     selectSelectedProviderForLabels,

@@ -8,10 +8,10 @@ import { IconButton } from '@suite-native/atoms';
 import {
     AccountsImportStackRoutes,
     AddCoinAccountStackRoutes,
-    AddCoinFlowType,
-    RootStackParamList,
+    type AddCoinFlowType,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { useAccountAlerts } from '../hooks/useAccountAlerts';

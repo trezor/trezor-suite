@@ -1,11 +1,11 @@
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
 import {
-    AmountLimitsString,
-    BaseStakeContextValues,
-    Rate,
-    StakeFormState,
-    StakingLimits,
+    type AmountLimitsString,
+    type BaseStakeContextValues,
+    type Rate,
+    type StakeFormState,
+    type StakingLimits,
 } from '@suite-common/wallet-types';
 
 export type SupplyContextValues = UseFormReturn<StakeFormState> &

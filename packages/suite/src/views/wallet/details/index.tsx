@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
@@ -12,7 +12,7 @@ import {
     HELP_CENTER_BIP329_URL,
     HELP_CENTER_BIP32_URL,
     HELP_CENTER_XPUB_URL,
-    Url,
+    type Url,
 } from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';

@@ -1,13 +1,17 @@
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
-import { EarnFlow, EarnModalAction, EarnYieldContext } from '@suite-common/suite-types/src/staking';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    EarnFlow,
+    type EarnModalAction,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';

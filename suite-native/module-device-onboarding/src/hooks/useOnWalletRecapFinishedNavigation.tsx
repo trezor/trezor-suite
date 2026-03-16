@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceProtectedByPin } from '@suite-common/device';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { useOnDeviceOnboardingFinishedNavigation } from './useOnDeviceOnboardingFinishedNavigation';

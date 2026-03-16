@@ -1,9 +1,9 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { ReviewSummaryOutput, StatefulReviewOutput } from '../../../types';
-import { ReviewOutputItemList, ReviewOutputItemListProps } from '../ReviewOutputItemList';
+import { type ReviewSummaryOutput, type StatefulReviewOutput } from '../../../types';
+import { ReviewOutputItemList, type ReviewOutputItemListProps } from '../ReviewOutputItemList';
 
 let mockSelectTransactionReviewOutputsFromDraftReturnValue: StatefulReviewOutput[] | null;
 let mockSelectIsTransactionAlreadySignedValue: boolean;

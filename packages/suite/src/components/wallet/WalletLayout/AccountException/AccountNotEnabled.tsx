@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

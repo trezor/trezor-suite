@@ -3,15 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { events } from '@suite/analytics';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type SendState, type StakeState } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
     getTxValidityTimeoutInMs,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { Deferred } from '@trezor/utils';
+import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';

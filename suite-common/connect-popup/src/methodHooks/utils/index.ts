@@ -1,4 +1,4 @@
-import { Bip43Path, Network } from '@suite-common/wallet-config';
+import { type Bip43Path, type Network } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 
 export const createPlaceholderAccount = (

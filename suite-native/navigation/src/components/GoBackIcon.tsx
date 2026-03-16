@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { IconButton } from '@suite-native/atoms';
 
-import { CloseActionType } from '../navigators';
+import { type CloseActionType } from '../navigators';
 
 type GoBackIconProps = {
     closeActionType?: CloseActionType;

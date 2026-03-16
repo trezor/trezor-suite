@@ -1,18 +1,18 @@
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    SuiteSyncInteraction,
-    SuiteSyncState,
-    WithSuiteSyncAndDeviceState,
+    type SuiteSyncInteraction,
+    type SuiteSyncState,
+    type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
     selectSuiteSyncInteraction,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { typedObjectFromEntries } from '@trezor/utils';
 
-import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 

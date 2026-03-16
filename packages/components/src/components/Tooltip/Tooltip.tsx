@@ -1,22 +1,22 @@
-import { MutableRefObject, ReactNode } from 'react';
+import { type MutableRefObject, type ReactNode } from 'react';
 
-import { Placement, ShiftOptions } from '@floating-ui/react';
+import { type Placement, type ShiftOptions } from '@floating-ui/react';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
+import { type ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
 
 import { TooltipArrow } from './TooltipArrow';
-import { TooltipBox, TooltipBoxProps } from './TooltipBox';
-import { TOOLTIP_DELAY_SHORT, TooltipDelay } from './TooltipDelay';
+import { TooltipBox, type TooltipBoxProps } from './TooltipBox';
+import { TOOLTIP_DELAY_SHORT, type TooltipDelay } from './TooltipDelay';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
 import { intermediaryTheme } from '../../config/colors';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Icon } from '../Icon/Icon';
 
 export type TooltipInteraction = 'none' | 'hover';

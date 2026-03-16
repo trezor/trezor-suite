@@ -1,4 +1,4 @@
-import { CloneType, Static, Type } from '@trezor/schema-utils';
+import { CloneType, type Static, Type } from '@trezor/schema-utils';
 
 export enum DeviceModelInternal {
     T1B1 = 'T1B1',

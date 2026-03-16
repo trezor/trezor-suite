@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { Box, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';

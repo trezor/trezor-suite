@@ -1,12 +1,12 @@
 import { fromWei } from 'web3-utils';
 
 import { useFormatters } from '@suite-common/formatters';
-import { Network } from '@suite-common/wallet-config';
-import { TxSimulationMethod } from '@suite-common/wallet-types';
+import { type Network } from '@suite-common/wallet-config';
+import { type TxSimulationMethod } from '@suite-common/wallet-types';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Card,
     HStack,
     Text,

@@ -5,7 +5,7 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    DeviceNameStackParamList,
+    type DeviceNameStackParamList,
     DeviceNameStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

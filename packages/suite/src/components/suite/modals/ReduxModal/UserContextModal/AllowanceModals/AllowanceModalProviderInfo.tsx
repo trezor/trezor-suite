@@ -1,4 +1,4 @@
-import { ProviderMetadata } from 'invity-api';
+import { type ProviderMetadata } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';

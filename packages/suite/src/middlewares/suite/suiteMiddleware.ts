@@ -4,7 +4,7 @@ import { METADATA } from '@suite/metadata';
 import { recoveryActions } from '@suite/recovery';
 import { goto, routerAppChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
-import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

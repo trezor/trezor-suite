@@ -1,6 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import { BackendType, isBlockbookBasedNetwork } from '@suite-common/wallet-config';
+import { type BackendType, isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
     FiatRatesResult,
     HistoricRates,

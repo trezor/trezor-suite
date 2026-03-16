@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
 import { Translation } from '@suite/intl';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
     Box,
@@ -12,7 +12,7 @@ import {
     H3,
     Icon,
     InfoItem,
-    InfoItemProps,
+    type InfoItemProps,
     InfoSegments,
     Link,
     Row,
@@ -20,13 +20,13 @@ import {
     useElevation,
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useExternalLink } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`

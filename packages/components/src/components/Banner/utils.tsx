@@ -1,7 +1,7 @@
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { BannerIntent } from './types';
-import { IconName } from '../Icon/Icon';
+import { type BannerIntent } from './types';
+import { type IconName } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {

@@ -6,7 +6,7 @@ import {
     useSelector,
 } from '@suite-native/staking';
 
-import { StakingEarnItem } from '../types';
+import { type StakingEarnItem } from '../types';
 import { EarnItemRewardInfo } from './EarnItemRewardInfo';
 
 type EarnItemRewardSectionProps = StakingEarnItem;

@@ -6,7 +6,7 @@ import { thp as protocolThp } from '@trezor/protocol';
 import { THP_STATE_ERROR } from '../errors';
 import { thpLoop } from './loop';
 import type { CommonProps } from './receiveExpectedMessage';
-import { receive } from '../utils/receive';
+import { type receive } from '../utils/receive';
 import { error } from '../utils/result';
 
 export const receiveThpMessage = async ({

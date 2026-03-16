@@ -1,12 +1,16 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
-import { SpacingValuesNew, borders } from '@trezor/theme';
+import { type SpacingValuesNew, borders } from '@trezor/theme';
 
-import { ComponentWithSubIconIntent } from './types';
+import { type ComponentWithSubIconIntent } from './types';
 import { mapIntentToBackgroundColor, mapIntentToIconColor } from './utils';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;

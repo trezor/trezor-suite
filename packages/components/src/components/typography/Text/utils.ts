@@ -1,8 +1,8 @@
-import { DefaultTheme } from 'styled-components';
+import { type DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color } from '@trezor/theme';
+import { type CSSColor, type Color } from '@trezor/theme';
 
-import { TextIntent, TextPriority } from './types';
+import { type TextIntent, type TextPriority } from './types';
 
 const colorMap: Record<Exclude<TextIntent, 'neutral'>, Color> = {
     brand: 'textPrimaryDefault',

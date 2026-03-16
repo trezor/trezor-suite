@@ -2,13 +2,13 @@ import { mocked } from 'jest-mock';
 
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
 import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../constants';
 import { ensureOwnerHasAllocatedQuotaThunk } from '../ensureOwnerHasAllocatedQuotaThunk';
-import { SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
+import { type SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
 import { checkStorageByOwnerId } from '../storage/checkStorage';
 import { transferStorageThunk } from '../storage/transferStorageThunk';
 

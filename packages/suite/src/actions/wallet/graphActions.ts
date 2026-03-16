@@ -1,13 +1,13 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
-import { AccountKey, createAccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import {
-    AccountHistoryWithBalance,
+    type AccountHistoryWithBalance,
     type GraphData,
     type GraphRange,
     type GraphScale,

@@ -3,11 +3,11 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { D, pipe } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
-import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;

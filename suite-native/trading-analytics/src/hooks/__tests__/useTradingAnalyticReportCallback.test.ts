@@ -1,12 +1,12 @@
 import {
-    TradingExchangeAction,
-    TradingExchangeStep,
-    TradingSellAction,
-    TradingSellStep,
+    type TradingExchangeAction,
+    type TradingExchangeStep,
+    type TradingSellAction,
+    type TradingSellStep,
     events,
 } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';

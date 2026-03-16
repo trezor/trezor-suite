@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SecurityChecklist } from 'src/views/onboarding/steps/DeviceAuthenticityStep/SecurityChecklist';
-import { SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
+import { type SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
 
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { hardFailureChecklistItems } from './checklistItems';

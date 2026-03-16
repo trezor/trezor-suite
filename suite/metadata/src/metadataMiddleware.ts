@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
+import { type Dispatch } from '@reduxjs/toolkit';
+import { type MiddlewareAPI } from 'redux';
 
-import { AnyAction } from '@suite-common/redux-utils';
+import { type AnyAction } from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 
-import { MetadataAction } from './metadataActions';
+import { type MetadataAction } from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';
-import { MetadataRootState } from './metadataReducer';
+import { type MetadataRootState } from './metadataReducer';
 
 type Action = MetadataAction | ReturnType<typeof accountsActions.createAccount> | AnyAction;
 

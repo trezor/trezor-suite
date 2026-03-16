@@ -3,7 +3,12 @@ import { FreeFocusInside } from 'react-focus-lock';
 import styled from 'styled-components';
 
 import { Icon, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
+import {
+    type Elevation,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    zIndices,
+} from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
 

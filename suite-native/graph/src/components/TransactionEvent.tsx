@@ -9,11 +9,11 @@ import {
 
 import { Circle, Group } from '@shopify/react-native-skia';
 
-import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-import { EventComponentProps } from '@suite-native/react-native-graph';
+import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
+import { type EventComponentProps } from '@suite-native/react-native-graph';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles';
-import { Color, ThemeColorVariant } from '@trezor/theme';
+import { type Color, type ThemeColorVariant } from '@trezor/theme';
 
 import { GraphContextProvider } from './GraphContextProvider';
 

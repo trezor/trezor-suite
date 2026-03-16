@@ -9,12 +9,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
-import { NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FeesRootState,
-    SendRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FeesRootState,
+    type SendRootState,
+    type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -24,7 +24,7 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
@@ -32,20 +32,23 @@ import {
 } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
-    FeeLevelsMaxAmount,
+    type FeeLevelsMaxAmount,
     calculateFeeLevelsMaxAmountThunk,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
-import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
+import {
+    type SendOutputsFormValues,
+    sendOutputsFormValidationSchema,
+} from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
 import { useUtxoSelection } from './useUtxoSelection';
 

@@ -1,7 +1,7 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import {
-    Environment,
+    type Environment,
     getCommitHash,
     getEnvironment,
     getOsName,

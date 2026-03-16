@@ -1,5 +1,5 @@
 import type { DeviceRootState } from '@suite-common/device';
-import { DiscoveryRootState, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
+import { type DiscoveryRootState, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 
 /**
  * Returns true if discovery failed due to passphrase flow (cancelled, wrong passphrase, modal dismissed).

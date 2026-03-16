@@ -1,13 +1,13 @@
-import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useRef } from 'react';
+import { type ChangeEventHandler, type KeyboardEventHandler, type ReactNode, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Paragraph, Range, RangeProps, Row } from '@trezor/components';
+import { Paragraph, Range, type RangeProps, Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
 
-import { SliderInput, SliderInputProps } from './SliderInput';
+import { SliderInput, type SliderInputProps } from './SliderInput';
 
 const StyledSliderInput = styled(SliderInput)<{ $width?: number }>`
     width: ${({ $width }) => $width && `${$width}px`};

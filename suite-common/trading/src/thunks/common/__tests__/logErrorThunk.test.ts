@@ -1,4 +1,4 @@
-import { TradingType } from '../../../types';
+import { type TradingType } from '../../../types';
 import { logErrorThunk } from '../logErrorThunk';
 
 jest.mock('@suite-common/toast-notifications', () => {

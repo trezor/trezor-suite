@@ -11,7 +11,7 @@ import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserCont
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account, AccountItemType } from 'src/types/wallet';
+import { type Account, type AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
 import { useAccountsOptions } from './hooks/useAccountsOptions';

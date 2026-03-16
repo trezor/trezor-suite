@@ -1,4 +1,4 @@
-import { StorageId } from './suiteSyncStorageRepository';
+import { type StorageId } from './suiteSyncStorageRepository';
 
 export type SubscriptionStorageParams = {
     storageId: StorageId;

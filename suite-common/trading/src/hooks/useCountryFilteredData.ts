@@ -1,7 +1,7 @@
 import { normalizeForSearch } from '@suite-common/suite-utils';
 
 import { nonSanctionedRegional } from '../regional';
-import { TradingCountryOption } from '../types';
+import { type TradingCountryOption } from '../types';
 import { useListDataFilter } from './useListDataFilter';
 
 const filterCallback = (

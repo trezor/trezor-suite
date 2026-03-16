@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';

@@ -6,12 +6,12 @@ import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
 import {
-    CoinjoinClientSettings,
-    CoinjoinClientVersion,
-    CoinjoinStatusEvent,
-    LogEvent,
+    type CoinjoinClientSettings,
+    type CoinjoinClientVersion,
+    type CoinjoinStatusEvent,
+    type LogEvent,
 } from '../types';
-import { Round } from '../types/coordinator';
+import { type Round } from '../types/coordinator';
 import { patchResponse } from '../utils/http';
 import { transformStatus } from '../utils/roundUtils';
 

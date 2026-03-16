@@ -5,8 +5,8 @@ import { openDeferredModal, openModal, selectModalType } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
-import { UnavailableCapabilities } from '@trezor/connect';
+import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -14,7 +14,7 @@ import { toggleTor } from 'src/actions/suite/suiteActions';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
 

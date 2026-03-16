@@ -1,21 +1,21 @@
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     Row,
     Text,
     Tooltip,
-    TransientProps,
+    type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { SpacingValuesNew, borders, zIndices } from '@trezor/theme';
+import { type SpacingValuesNew, borders, zIndices } from '@trezor/theme';
 
 import { ActionsContainer } from './ActionsContainer';
-import { SavingStatus } from './types';
+import { type SavingStatus } from './types';
 import {
     SAVED_STATUS_TIMEOUT,
     escapeCssContent,

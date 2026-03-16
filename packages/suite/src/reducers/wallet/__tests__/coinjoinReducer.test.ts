@@ -2,8 +2,8 @@ import type { Action } from 'src/types/suite';
 
 import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
 import {
-    CoinjoinRootState,
-    CoinjoinState,
+    type CoinjoinRootState,
+    type CoinjoinState,
     coinjoinReducer,
     selectRegisteredUtxosByAccountKey,
 } from '../coinjoinReducer';

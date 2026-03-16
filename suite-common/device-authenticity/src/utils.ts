@@ -1,4 +1,4 @@
-import { AuthenticateDeviceResult } from '@trezor/connect';
+import { type AuthenticateDeviceResult } from '@trezor/connect';
 
 type IsDeviceAuthenticityValidParams = {
     result: AuthenticateDeviceResult;

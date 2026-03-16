@@ -1,6 +1,6 @@
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { PaymentMethodListItem, PaymentMethodListItemProps } from '../PaymentMethodListItem';
+import { PaymentMethodListItem, type PaymentMethodListItemProps } from '../PaymentMethodListItem';
 
 describe('PaymentMethodListItem', () => {
     const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps>) =>

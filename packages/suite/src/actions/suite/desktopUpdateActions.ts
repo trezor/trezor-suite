@@ -1,11 +1,11 @@
 import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
+import { type UpdateInfo, type UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 export type DesktopUpdateAction =

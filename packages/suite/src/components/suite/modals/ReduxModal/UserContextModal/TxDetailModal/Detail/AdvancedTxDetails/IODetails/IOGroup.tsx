@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { IODetails } from './IODetails';
+import { type IODetails } from './IODetails';
 import { IOItem } from './IOItem';
 
 export type IOGroupProps = {

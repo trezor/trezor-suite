@@ -1,8 +1,8 @@
 import { Box } from '@suite-native/atoms';
-import { TxKeyPath } from '@suite-native/intl';
+import { type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TimeSwitchItem, TimeSwitchValue } from './TimeSwitchItem';
+import { TimeSwitchItem, type TimeSwitchValue } from './TimeSwitchItem';
 
 type TimeSwitchProps = {
     selectedTimeFrame: TimeSwitchValue;

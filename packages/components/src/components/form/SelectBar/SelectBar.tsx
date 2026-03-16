@@ -1,19 +1,19 @@
-import { KeyboardEvent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     nextElevation,
     spacings,
 } from '@trezor/theme';
 
-import { SelectBarOrientation, SelectBarSize } from './types';
+import { type SelectBarOrientation, type SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { useMediaQuery } from '../../../utils/useMediaQuery';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Box } from '../../Box/Box';

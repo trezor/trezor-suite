@@ -1,7 +1,7 @@
 import { sendFormActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -9,7 +9,7 @@ import {
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { transactionManagementActions } from '@suite-native/transaction-management';
 
-import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
+import { type TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
 const mockReportToAnalytics = jest.fn();

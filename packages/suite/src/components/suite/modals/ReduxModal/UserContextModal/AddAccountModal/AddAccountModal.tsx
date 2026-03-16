@@ -6,9 +6,9 @@ import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    Network,
-    NetworkAccount,
-    NetworkSymbol,
+    type Network,
+    type NetworkAccount,
+    type NetworkSymbol,
     getNetwork,
     networks,
 } from '@suite-common/wallet-config';
@@ -32,8 +32,8 @@ import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
 } from 'src/selectors/suite/suiteSelectors';
-import { TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
+import { type TrezorDevice } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
 
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';

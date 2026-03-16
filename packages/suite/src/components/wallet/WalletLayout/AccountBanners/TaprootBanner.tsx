@@ -6,7 +6,7 @@ import { getBip43Type } from '@suite-common/wallet-utils';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';

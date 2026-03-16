@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
 

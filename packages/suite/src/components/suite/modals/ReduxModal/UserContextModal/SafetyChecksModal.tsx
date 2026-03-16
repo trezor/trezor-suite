@@ -6,7 +6,7 @@ import {
     Card,
     Column,
     Modal,
-    ModalProps,
+    type ModalProps,
     Paragraph,
     Radio,
     Text,

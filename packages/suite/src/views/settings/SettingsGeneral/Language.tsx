@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
-import { LANGUAGES, Locale, LocaleInfo } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';

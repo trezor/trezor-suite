@@ -6,7 +6,7 @@ import ecc from 'tiny-secp256k1';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
-import { Payment, PaymentOpts } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
 import * as lazy from './lazy';
 import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 

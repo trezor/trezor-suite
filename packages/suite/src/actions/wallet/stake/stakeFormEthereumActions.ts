@@ -2,7 +2,7 @@ import { toWei } from 'web3-utils';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
     prepareClaimEthTx,
@@ -24,17 +24,17 @@ import {
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    StakeFormState,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateStakingTransaction = (
     availableBalance: string,

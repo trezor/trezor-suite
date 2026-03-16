@@ -1,7 +1,7 @@
 import {
-    BlockquoteHTMLAttributes,
+    type BlockquoteHTMLAttributes,
     Children,
-    PropsWithChildren,
+    type PropsWithChildren,
     cloneElement,
     isValidElement,
 } from 'react';

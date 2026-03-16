@@ -1,17 +1,17 @@
 import { createMockDeps } from '@suite-common/dependency-injection';
 import {
-    EntityListener,
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
-    SuiteSyncWallet,
+    type EntityListener,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
+    type SuiteSyncWallet,
     createSuiteSyncAccountId,
     createSuiteSyncAddressId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
-import { SuiteSyncListener } from '@suite-common/suite-sync-types';
+import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
@@ -19,7 +19,7 @@ import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncK
 import { createStorageIdFromDeviceStaticSessionId } from '../../storage/createStorageIdFromDeviceStaticSessionId';
 import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';
 import {
-    CreateSubscribeSuiteSyncDataDeps,
+    type CreateSubscribeSuiteSyncDataDeps,
     createEnsureSubscribeSuiteSyncData,
 } from '../createEnsureSubscribeSuiteSyncData';
 

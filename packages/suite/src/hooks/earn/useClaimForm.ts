@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { ClaimContextValues, ClaimFormState } from 'src/types/earn/claimForm';
+import { type ClaimContextValues, type ClaimFormState } from 'src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 
 import { useCardanoStaking } from './useCardanoStaking';

@@ -8,9 +8,9 @@ import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

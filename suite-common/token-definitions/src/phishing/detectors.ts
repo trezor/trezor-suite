@@ -5,7 +5,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { isTokenDefinitionKnown } from '../tokenDefinitionsUtils';
 import { DUST_PHISHING_THRESHOLD } from './constants';
-import { PhishingDetectorFn } from './types';
+import { type PhishingDetectorFn } from './types';
 import { isTransactionWhitelisted } from './utils';
 
 const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {

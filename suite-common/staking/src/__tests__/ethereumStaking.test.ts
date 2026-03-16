@@ -1,12 +1,16 @@
-import { EthereumValidatorsQueue } from '@suite-common/wallet-api';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { AccountInfo, InternalTransfer, OkWithDevice } from '@trezor/connect';
+import { type EthereumValidatorsQueue } from '@suite-common/wallet-api';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import TrezorConnect, {
+    type AccountInfo,
+    type InternalTransfer,
+    type OkWithDevice,
+} from '@trezor/connect';
 import {
-    BlockchainEstimatedFee,
-    BlockchainEstimatedFeeLevel,
+    type BlockchainEstimatedFee,
+    type BlockchainEstimatedFeeLevel,
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Err, Ok, Result } from '@trezor/type-utils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
     claimFailedFixture,
@@ -28,9 +32,9 @@ import {
     unstakeFixture,
 } from '../__fixtures__/ethereumStaking';
 import {
-    GetStakeFormsDefaultValuesParams,
-    GetStakeTxGasLimitParams,
-    StakeTxBaseArgs,
+    type GetStakeFormsDefaultValuesParams,
+    type GetStakeTxGasLimitParams,
+    type StakeTxBaseArgs,
 } from '../types';
 import {
     claimWithdrawRequest,

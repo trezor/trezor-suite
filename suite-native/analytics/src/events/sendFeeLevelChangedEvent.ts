@@ -1,5 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { FeeLevelLabel } from '@suite-common/wallet-types';
+import { type FeeLevelLabel } from '@suite-common/wallet-types';
 
 import { EventType } from '../constants';
 

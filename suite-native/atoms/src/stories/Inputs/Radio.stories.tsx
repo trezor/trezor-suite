@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { Radio as RadioComponent, RadioProps } from '../../Radio';
+import { Radio as RadioComponent, type RadioProps } from '../../Radio';
 
 type RadioStory = StoryObj<RadioProps<number>>;
 

@@ -1,7 +1,7 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
-import { UseFeesFormProps, useFeesForm } from '../useFeesForm';
+import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {

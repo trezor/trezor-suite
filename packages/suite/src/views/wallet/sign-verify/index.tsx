@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { FieldError } from 'react-hook-form';
+import { type FieldError } from 'react-hook-form';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     Button,
     Card,
@@ -25,7 +25,7 @@ import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySigned
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
-    SignVerifyFields,
+    type SignVerifyFields,
     useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';

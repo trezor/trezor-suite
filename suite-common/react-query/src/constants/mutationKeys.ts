@@ -1,4 +1,4 @@
-import { AllowedMutationKey } from '../types';
+import { type AllowedMutationKey } from '../types';
 
 export const commonMutationKeys = {} as const satisfies Record<string, AllowedMutationKey>;
 

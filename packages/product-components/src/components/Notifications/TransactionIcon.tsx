@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 
 import {
     type TransactionNotificationToken,

@@ -1,10 +1,10 @@
-import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type AccountKey } from '@suite-common/wallet-types';
 
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { ASSET_ROW_HEIGHT, EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../constants';
-import { AccountWithTokensOption } from '../types';
+import { type AccountWithTokensOption } from '../types';
 
 export function calculateExpandableTokensHeight(expanded: boolean, hiddenTokensLength: number) {
     const tokensHeight = expanded ? hiddenTokensLength * (ASSET_ROW_HEIGHT - 8) : 0;

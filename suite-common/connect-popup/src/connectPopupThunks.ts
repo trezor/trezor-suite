@@ -1,16 +1,16 @@
-import { AsyncThunkAction } from '@reduxjs/toolkit';
+import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
+import { type CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    CallMethodKeys,
-    CallMethodParams,
-    CallMethodPayload,
+    type CallMethodKeys,
+    type CallMethodParams,
+    type CallMethodPayload,
 } from '@trezor/connect';
-import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { type MethodInfo, type MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { connectCallableMethods } from '@trezor/connect/src/factory';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
@@ -22,7 +22,7 @@ import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPo
 import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
-    ConnectCallSource,
+    type ConnectCallSource,
 } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 

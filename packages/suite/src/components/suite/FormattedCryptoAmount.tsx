@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { isSignValuePositive } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
+import { type SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
     getDisplaySymbol,
@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
-    AmountUnit,
+    type AmountUnit,
     formatCoinBalance,
     localizeNumber,
     networkAmountToSmallestUnit,

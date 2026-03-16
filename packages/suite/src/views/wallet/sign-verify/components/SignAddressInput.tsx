@@ -2,10 +2,10 @@ import { components } from 'react-select';
 
 import styled from 'styled-components';
 
-import { Select, SelectProps } from '@trezor/components';
+import { Select, type SelectProps } from '@trezor/components';
 
 import {
-    AddressItem,
+    type AddressItem,
     useSignAddressOptions,
 } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';

@@ -1,17 +1,17 @@
 import {
     CORE_CALL,
-    CallMethodAnyResponse,
-    CallMethodPayload,
+    type CallMethodAnyResponse,
+    type CallMethodPayload,
     POPUP,
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
-import { Log, initLog } from '@trezor/connect/src/utils/debug';
+import { type Log, initLog } from '@trezor/connect/src/utils/debug';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
 import { getEnv } from '../connectSettings';
 import { getSuiteWebUrl } from './getSuiteWebUrl';
-import { Popup } from '../popup/abstract';
+import { type Popup } from '../popup/abstract';
 import { WebPopup } from '../popup/web';
 import { WebExtensionPopup } from '../popup/webextension';
 

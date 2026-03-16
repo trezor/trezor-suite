@@ -1,6 +1,6 @@
 import { useTheme } from 'styled-components';
 
-import { Icon, IconSize } from '@trezor/components';
+import { Icon, type IconSize } from '@trezor/components';
 
 import { PaymentMethodLogo } from './PaymentMethodLogo';
 

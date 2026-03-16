@@ -1,15 +1,15 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { type AnyAction } from '@reduxjs/toolkit';
 
-import { TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { type TrezorDevice, type UserContextPayload } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     DEVICE,
-    Device,
+    type Device,
     UI_REQUEST,
-    UiRequestButtonData,
-    UiRequestConfirmation,
-    UiRequestSelectAccount,
-    UiRequestSelectFee,
+    type UiRequestButtonData,
+    type UiRequestConfirmation,
+    type UiRequestSelectAccount,
+    type UiRequestSelectFee,
 } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 

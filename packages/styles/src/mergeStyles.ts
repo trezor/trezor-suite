@@ -1,5 +1,5 @@
 import { processNativeStyles, processStyles } from './processStyles';
-import { NativeStyle, NativeStyles, Style, Styles } from './types';
+import { type NativeStyle, type NativeStyles, type Style, type Styles } from './types';
 
 export const mergeStyles =
     <TProps extends Record<string, unknown>>(styles: Styles<TProps>): Style<TProps> =>

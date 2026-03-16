@@ -1,15 +1,15 @@
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { BulletListItemState, Card, Column, InfoItem } from '@trezor/components';
+import { type BulletListItemState, Card, Column, InfoItem } from '@trezor/components';
 
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailTxId } from '../TradingDetailTxId';

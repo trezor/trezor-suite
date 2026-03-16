@@ -1,14 +1,14 @@
 import { fromWei, hexToNumberString } from 'web3-utils';
 
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
-    Account,
-    FormState,
-    ReviewOutput,
-    StakeFormState,
-    StakeType,
-    StakingPoolExtended,
-    SupportedEthereumNetworkSymbol,
+    type Account,
+    type FormState,
+    type ReviewOutput,
+    type StakeFormState,
+    type StakeType,
+    type StakingPoolExtended,
+    type SupportedEthereumNetworkSymbol,
     supportedNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';

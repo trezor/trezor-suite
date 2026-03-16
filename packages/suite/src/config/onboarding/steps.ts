@@ -1,7 +1,7 @@
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
-import { Step, StepCategory } from 'src/types/onboarding';
+import { type Step, type StepCategory } from 'src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'no-transport',

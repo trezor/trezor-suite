@@ -1,6 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';

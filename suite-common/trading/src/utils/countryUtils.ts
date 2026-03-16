@@ -1,7 +1,7 @@
 import {
-    CountryCode,
-    CountryCodeWithSubdivisions,
-    CountrySubdivision,
+    type CountryCode,
+    type CountryCodeWithSubdivisions,
+    type CountrySubdivision,
     countries,
     subdivisionsByCountry,
 } from '@suite-common/geolocation';

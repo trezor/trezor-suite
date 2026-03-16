@@ -1,6 +1,6 @@
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
     renderHookWithStoreProviderAsync,
@@ -8,7 +8,11 @@ import {
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { tradingInitialState } from '@suite-native/trading-state';
-import { ExchangeFormType, ReceiveAccount, TradeableAsset } from '@suite-native/trading-types';
+import {
+    type ExchangeFormType,
+    type ReceiveAccount,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';

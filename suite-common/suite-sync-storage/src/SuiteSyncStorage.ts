@@ -1,6 +1,6 @@
-import { SuiteSyncTable } from './SuiteSyncTable';
-import { SuiteSyncSchema } from './data/SuiteSyncSchema';
-import { SuiteSyncOwner } from './owner/suiteSyncOwner';
+import { type SuiteSyncTable } from './SuiteSyncTable';
+import { type SuiteSyncSchema } from './data/SuiteSyncSchema';
+import { type SuiteSyncOwner } from './owner/suiteSyncOwner';
 
 type SuiteSyncStorageData = {
     [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;

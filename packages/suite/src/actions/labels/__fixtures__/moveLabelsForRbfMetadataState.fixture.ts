@@ -1,4 +1,4 @@
-import { MetadataState } from '@suite-common/metadata-types';
+import { type MetadataState } from '@suite-common/metadata-types';
 
 import {
     chainSpendingReceivedCoins,

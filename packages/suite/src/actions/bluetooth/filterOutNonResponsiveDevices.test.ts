@@ -1,7 +1,7 @@
 import { asBluetoothDeviceId } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createMockedBluetoothDevice } from './__tests__/createMockedBluetoothDevice';
 import {
     filterOutNonResponsiveDevices,

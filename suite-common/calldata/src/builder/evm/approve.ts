@@ -1,9 +1,9 @@
-import { AmountSubunit } from '@suite-common/wallet-utils';
+import { type AmountSubunit } from '@suite-common/wallet-utils';
 
 import { EVM_ABI } from '../../constants/evm';
 import { createEvmEncoder } from '../../encoder/evm';
 import { createPolicy } from '../../policy/createPolicy';
-import { EvmAddress } from '../../types/evm';
+import { type EvmAddress } from '../../types/evm';
 import { validateAddress } from '../../validation/evm/address';
 import { validateUint256 } from '../../validation/evm/uint256';
 import { createBuilder } from '../createBuilder';

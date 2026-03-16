@@ -1,6 +1,6 @@
 import { BufferReader, BufferWriter } from '../bufferutils';
 import { isNetworkType } from '../networks';
-import { TransactionBase, TransactionOptions } from './base';
+import { TransactionBase, type TransactionOptions } from './base';
 
 const ADVANCED_TRANSACTION_MARKER = 0x00;
 const ADVANCED_TRANSACTION_FLAG = 0x01;

@@ -1,16 +1,16 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AppTabsRoutes } from '../routes';
-import { TabsOptions } from '../types';
+import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;

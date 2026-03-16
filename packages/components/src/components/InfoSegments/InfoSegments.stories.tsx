@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import {
     InfoSegments as InfoSegmentsComponent,
-    InfoSegmentsProps,
+    type InfoSegmentsProps,
     allowedInfoSegmentsFrameProps,
     allowedInfoSegmentsTextProps,
 } from './InfoSegments';

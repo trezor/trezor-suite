@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     BulletList,
-    BulletListItemState,
+    type BulletListItemState,
     Card,
     Flex,
-    FlexDirection,
+    type FlexDirection,
     Grid,
     Icon,
-    IconName,
+    type IconName,
     Note,
     Paragraph,
     Row,

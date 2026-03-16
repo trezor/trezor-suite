@@ -9,7 +9,7 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import {
     ConfirmValueModal,
-    ConfirmValueModalProps,
+    type ConfirmValueModalProps,
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';

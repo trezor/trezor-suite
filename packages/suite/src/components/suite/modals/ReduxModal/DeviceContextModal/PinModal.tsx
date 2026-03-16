@@ -4,7 +4,7 @@ import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 type PinModalProps = {
     device: TrezorDevice;

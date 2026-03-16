@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { Table as TableComponent, allowedTableFrameProps, allowedTableTextProps } from './Table';
 import { getFramePropsStory } from '../../utils/frameProps';

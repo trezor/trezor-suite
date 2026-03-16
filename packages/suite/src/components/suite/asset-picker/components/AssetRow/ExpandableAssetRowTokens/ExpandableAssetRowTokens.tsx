@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Card, Collapsible, Row, Text } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../../../constants';
 import { AssetRowToken } from '../AssetRowToken/AssetRowToken';

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { SpacingValues } from '@trezor/theme';
+import { type SpacingValues } from '@trezor/theme';
 
 const SPINNER_SIZE = 32;
 

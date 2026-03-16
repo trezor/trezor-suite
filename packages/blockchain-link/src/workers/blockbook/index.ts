@@ -10,7 +10,7 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/blockbook';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { BlockbookAPI } from './websocket';
 
 type Context = ContextType<BlockbookAPI>;

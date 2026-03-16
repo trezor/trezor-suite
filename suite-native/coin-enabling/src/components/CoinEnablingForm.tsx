@@ -15,7 +15,10 @@ import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
-import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
+import {
+    type CoinEnablingFormValues,
+    coinEnablingFormValidationSchema,
+} from '../coinEnablingSchema';
 
 export const CoinEnablingForm = () => {
     const dispatch = useDispatch();

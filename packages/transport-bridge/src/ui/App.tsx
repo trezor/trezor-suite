@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { ThemeProvider as SCThemeProvider } from 'styled-components';
 

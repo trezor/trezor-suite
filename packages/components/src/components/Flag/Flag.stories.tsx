@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { Flag as FlagComponent } from './Flag';
 import { FLAGS } from './flags';

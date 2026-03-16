@@ -1,11 +1,11 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackRoutes,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProvider,

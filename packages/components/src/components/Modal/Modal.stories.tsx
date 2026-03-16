@@ -1,12 +1,12 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import { modalIntents, modalWidths } from './types';
 import {
     Modal as ModalComponent,
-    ModalProps,
+    type ModalProps,
     allowedModalFrameProps,
     variables,
 } from '../../index';

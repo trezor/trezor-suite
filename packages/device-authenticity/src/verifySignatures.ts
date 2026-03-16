@@ -3,8 +3,8 @@ import crypto from 'crypto';
 
 import { getSubtleCrypto } from '@trezor/crypto-utils';
 
-import { VerifySignature } from './types';
-import { AlgorithmName, fixSignature } from './x509certificate';
+import { type VerifySignature } from './types';
+import { type AlgorithmName, fixSignature } from './x509certificate';
 
 // There is incomparability in results between Node.js and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify

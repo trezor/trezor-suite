@@ -1,6 +1,6 @@
-import { CryptoId, SellFiatTrade } from 'invity-api';
+import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { TradingSellInfoSelector } from '../../../selectors/tradingSelectors';
+import { type TradingSellInfoSelector } from '../../../selectors/tradingSelectors';
 import { sellUtilsFixtures } from '../__fixtures__/sellUtils';
 import { sellUtils } from '../sellUtils';
 

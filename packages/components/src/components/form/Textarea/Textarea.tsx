@@ -1,14 +1,14 @@
-import { ReactNode, Ref, TextareaHTMLAttributes } from 'react';
+import { type ReactNode, type Ref, type TextareaHTMLAttributes } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { CharacterCount, CharacterCountProps } from './CharacterCount';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { CharacterCount, type CharacterCountProps } from './CharacterCount';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { Box } from '../../Box/Box';
 import { FloatingLabel } from '../FloatingLabel';
-import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
+import { FormCell, type FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
 import { InputWrapper } from '../InputWrapper';
 import { INPUT_PADDING, commonInputStyles } from '../utils';
 

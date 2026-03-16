@@ -6,7 +6,7 @@ import { useTranslation } from '@suite/intl';
 import { selectLabelingDataForWallet } from '@suite/metadata';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 interface WalletLabellingProps {
     device: TrezorDevice;

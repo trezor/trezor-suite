@@ -1,8 +1,11 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
-import { DeviceStatus as ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
+import {
+    type DeviceStatus as ConnectedDeviceStatus,
+    type getStatus,
+} from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, BannerIntent } from '@trezor/components';
+import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';

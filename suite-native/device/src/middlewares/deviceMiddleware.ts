@@ -1,4 +1,4 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { type AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';

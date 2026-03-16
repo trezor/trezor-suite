@@ -2,9 +2,9 @@ import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import {
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeFormProps,
-    TradingSellFormProps,
+    type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 

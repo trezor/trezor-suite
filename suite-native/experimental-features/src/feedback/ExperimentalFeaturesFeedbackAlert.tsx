@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import { ExperimentalFeature } from '@suite-native/settings';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import { type ExperimentalFeature } from '@suite-native/settings';
 
 import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';
 import { feedbackDismissed } from './experimentalFeedbackSlice';

@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,8 +6,8 @@ import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
@@ -16,14 +16,14 @@ import {
     selectIsPageAlreadyFetched,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
 import {
-    TokensRootState,
-    TypedTokenTransfer,
-    WalletAccountTransaction,
+    type TokensRootState,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

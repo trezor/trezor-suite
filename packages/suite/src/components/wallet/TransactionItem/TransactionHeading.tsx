@@ -3,7 +3,7 @@ import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-co
 import { Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';
 import { TransactionHeader } from './TransactionHeader';

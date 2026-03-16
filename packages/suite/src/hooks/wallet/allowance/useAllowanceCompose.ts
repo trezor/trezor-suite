@@ -6,16 +6,21 @@ import { useMutation } from '@tanstack/react-query';
 
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
-    ComposeAllowanceTransactionThunkParams,
+    type ComposeAllowanceTransactionThunkParams,
     composeAllowanceTransactionThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { Account, FeeLevelLabel, FormState, PrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FeeLevelLabel,
+    type FormState,
+    type PrecomposedLevels,
+} from '@suite-common/wallet-types';
 import {
     buildApprovalTransactionData,
     getConvertedOrDefaultFeeInfo,
 } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

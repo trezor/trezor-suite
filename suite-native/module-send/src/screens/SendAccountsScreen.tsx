@@ -1,12 +1,12 @@
-import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
+import { AccountsList, type OnSelectAccount } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackProps,
+    type StackProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';

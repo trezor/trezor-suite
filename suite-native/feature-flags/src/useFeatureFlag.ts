@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsFeatureFlagEnabled } from './featureFlagsSelectors';
-import { FeatureFlag, FeatureFlagsRootState } from './featureFlagsSlice';
+import { type FeatureFlag, type FeatureFlagsRootState } from './featureFlagsSlice';
 
 export const useFeatureFlag = (featureFlag: FeatureFlag): boolean => {
     const isFeatureFlagEnabled = useSelector((state: FeatureFlagsRootState) =>

@@ -9,9 +9,13 @@ import {
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import {
-    TransactionReviewOutputsState,
+    type SendStackParamList,
+    SendStackRoutes,
+    type StackProps,
+} from '@suite-native/navigation';
+import {
+    type TransactionReviewOutputsState,
     selectIsDestinationTagOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';

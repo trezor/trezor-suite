@@ -6,7 +6,7 @@
  * in case our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
  */
 
-import { OAuthServerEnvironment, Tokens } from '@suite-common/metadata-types';
+import { type OAuthServerEnvironment, type Tokens } from '@suite-common/metadata-types';
 import { isDesktop } from '@trezor/env-utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';

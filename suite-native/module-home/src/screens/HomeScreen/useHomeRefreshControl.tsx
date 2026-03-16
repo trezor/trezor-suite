@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles';
 
-import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { type PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
     isDiscoveredDeviceAccountless,

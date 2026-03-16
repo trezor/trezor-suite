@@ -1,6 +1,6 @@
-import { PublicClient } from 'viem';
+import { type PublicClient } from 'viem';
 
-import { Eip1559Fees } from '@trezor/blockchain-link-types/src/blockbook-api';
+import { type Eip1559Fees } from '@trezor/blockchain-link-types/src/blockbook-api';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 
 import { averageRewards, calculateBlockTime } from './block';

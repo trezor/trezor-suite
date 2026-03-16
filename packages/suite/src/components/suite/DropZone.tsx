@@ -1,11 +1,27 @@
-import { ChangeEvent, DragEvent, MouseEvent, useCallback, useMemo, useRef, useState } from 'react';
+import {
+    type ChangeEvent,
+    type DragEvent,
+    type MouseEvent,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { Column, Icon, IconName, Paragraph, Row, Text, useElevation } from '@trezor/components';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import {
-    Elevation,
+    Column,
+    Icon,
+    type IconName,
+    Paragraph,
+    Row,
+    Text,
+    useElevation,
+} from '@trezor/components';
+import {
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,

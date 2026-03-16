@@ -1,13 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { tradingThunks } from '../../common';

@@ -1,9 +1,9 @@
-import { ComponentProps, useMemo } from 'react';
+import { type ComponentProps, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccordionList, Box, BulletListItem, Card, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { isAndroid } from '@trezor/env-utils';

@@ -1,14 +1,14 @@
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectLabelingDataForWallet,
     selectSelectedLabelsProviderType,
 } from '@suite/metadata';
 import {
-    LogsApplicationInfoRootState,
+    type LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
     selectRedactedApplicationInfo,
 } from '@suite-common/logger';
-import { DeviceState } from '@trezor/connect';
+import { type DeviceState } from '@trezor/connect';
 
 import {
     selectAutodetectLanguage,
@@ -22,10 +22,10 @@ import {
     selectTorState,
 } from './suiteSelectors';
 import {
-    DesktopUpdateRootState,
+    type DesktopUpdateRootState,
     selectDesktopUpdateAllowPrerelease,
 } from '../../reducers/suite/desktopUpdateReducer';
-import { SuiteRootState } from '../../reducers/suite/suiteReducer';
+import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &
     MetadataRootState &

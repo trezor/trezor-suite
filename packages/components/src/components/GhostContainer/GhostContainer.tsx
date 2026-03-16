@@ -1,6 +1,10 @@
-import { HTMLProps } from 'react';
+import { type HTMLProps } from 'react';
 
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 
 export const allowedGhostContainerFrameProps = [

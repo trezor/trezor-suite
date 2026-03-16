@@ -1,7 +1,7 @@
 import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { TradingCountryOption } from '@suite-common/trading';
+import { type TradingCountryOption } from '@suite-common/trading';
 import { AnimatedBox, Box, Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

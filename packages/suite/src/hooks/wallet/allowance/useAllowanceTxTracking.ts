@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { selectTransactionByAccountKeyAndTxid } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';

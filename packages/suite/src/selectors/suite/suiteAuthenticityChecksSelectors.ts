@@ -14,7 +14,7 @@ import {
 } from '@suite-common/firmware-authenticity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import {
     selectAreDeviceMetaChecksEnabled,

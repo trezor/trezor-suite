@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { H1 } from '@trezor/components/src/components/typography/Heading/Heading';
 
 import { Card } from '../components/Card';
-import { Devices, DevicesProps } from '../components/Devices';
-import { Logs, LogsProps } from '../components/Logs';
+import { Devices, type DevicesProps } from '../components/Devices';
+import { Logs, type LogsProps } from '../components/Logs';
 import { Translation } from '../components/Translation';
 
 export type StatusProps = LogsProps &

@@ -1,7 +1,7 @@
-import { ComponentType, JSX } from 'react';
+import { type ComponentType, type JSX } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -13,7 +13,7 @@ import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
-import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
 

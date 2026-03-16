@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
+import { type TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
@@ -21,7 +21,7 @@ import {
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
 } from '@suite-native/trading-state';
-import { BuyFormType, BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
 
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';

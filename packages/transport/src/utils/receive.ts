@@ -1,8 +1,8 @@
 import { decodeMessage } from '@trezor/protobuf';
-import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED, type TransportProtocol } from '@trezor/protocol';
 
 import { error, success } from './result';
-import { AbstractApi } from '../api/abstract';
+import { type AbstractApi } from '../api/abstract';
 
 type Receiver = () => ReturnType<AbstractApi['read']>;
 

@@ -1,14 +1,14 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
     selectAccountStakeTransactions,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 
 export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
     state: NativeStakingRootState,

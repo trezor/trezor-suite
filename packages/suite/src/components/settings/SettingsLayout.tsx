@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -6,7 +6,7 @@ import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import {
-    NavigationItem,
+    type NavigationItem,
     PageHeader,
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';

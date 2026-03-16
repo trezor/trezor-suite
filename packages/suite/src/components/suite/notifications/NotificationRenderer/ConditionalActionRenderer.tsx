@@ -1,11 +1,11 @@
-import { JSX, ReactNode } from 'react';
+import { type JSX, type ReactNode } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { Paragraph } from '@trezor/components';
 
 import type { NotificationRendererProps } from 'src/components/suite';
 
-import { NotificationAction } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+import { type NotificationAction } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type ConditionalActionRendererProps = NotificationRendererProps & {
     header: ReactNode;

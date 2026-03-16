@@ -1,7 +1,11 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
+import {
+    type InvityServerEnvironment,
+    type TradingType,
+    prepareTradingReducer,
+} from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 

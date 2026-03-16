@@ -4,7 +4,7 @@ import { Pressable, TextInput } from 'react-native';
 import { useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';

@@ -1,7 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { BackupAvailability } from '@trezor/protobuf/src/messages';
+import { type BackupAvailability } from '@trezor/protobuf/src/messages';
 
-import { AppState } from 'src/reducers/store';
+import { type AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 
 import type { BackupState } from '../backupReducer';

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { TradingType } from '@suite-common/suite-types';
+import { type TradingType } from '@suite-common/suite-types';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
@@ -17,7 +17,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

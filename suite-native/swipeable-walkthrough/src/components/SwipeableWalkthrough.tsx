@@ -1,7 +1,7 @@
-import { ReactNode, useRef } from 'react';
-import { View } from 'react-native';
+import { type ReactNode, useRef } from 'react';
+import { type View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { SharedValue } from 'react-native-reanimated';
+import { type SharedValue } from 'react-native-reanimated';
 
 import { AnimatedBox } from '@suite-native/atoms';
 

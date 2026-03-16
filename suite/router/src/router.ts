@@ -1,14 +1,19 @@
-import { Route } from '@suite-common/suite-types';
-import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
+import { type Route } from '@suite-common/suite-types';
+import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import {
-    DashboardParams,
+    type DashboardParams,
     decodeEarnRouteParams,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
 } from './routerParams';
-import { ModalAppParams, type RouteParams, type RouterAppWithParams, suiteRoutes } from './routes';
+import {
+    type ModalAppParams,
+    type RouteParams,
+    type RouterAppWithParams,
+    suiteRoutes,
+} from './routes';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
 export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`

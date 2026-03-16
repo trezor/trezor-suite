@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import styled, { DefaultTheme, keyframes } from 'styled-components';
+import styled, { type DefaultTheme, keyframes } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     tokenSupportsIncreasingAllowance,
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { AllowanceType } from '@suite-common/wallet-types';
+import { type AllowanceType } from '@suite-common/wallet-types';
 import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 

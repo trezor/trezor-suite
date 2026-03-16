@@ -1,9 +1,9 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     initStore,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
@@ -12,7 +12,7 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
-import { FeeOptionsList, FeeOptionsListProps } from '../FeeOptionsList';
+import { FeeOptionsList, type FeeOptionsListProps } from '../FeeOptionsList';
 
 // Mock the fee-related selectors
 jest.mock('@suite-common/wallet-core', () => ({

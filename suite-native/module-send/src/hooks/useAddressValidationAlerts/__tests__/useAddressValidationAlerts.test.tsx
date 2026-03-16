@@ -3,7 +3,7 @@ import { useRoute } from '@react-navigation/native';
 import { useAlert } from '@suite-native/alerts';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProvider,
     waitFor,

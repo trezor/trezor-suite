@@ -1,5 +1,5 @@
 import { createBuilder } from '../../builder/createBuilder';
-import { Encoder } from '../../types/builder';
+import { type Encoder } from '../../types/builder';
 
 describe('createBuilder', () => {
     it('calls params and encode, returns encoded data when all valid', () => {

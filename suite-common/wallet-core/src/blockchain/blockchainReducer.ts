@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
@@ -7,18 +7,21 @@ import {
     getNetworkOptional,
     networksCollection,
 } from '@suite-common/wallet-config';
-import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
+import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
-    BlockchainBlock,
-    BlockchainError,
-    BlockchainInfo,
-    BlockchainReconnecting,
+    type BlockchainBlock,
+    type BlockchainError,
+    type BlockchainInfo,
+    type BlockchainReconnecting,
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
 } from '@trezor/connect';
 
 import { blockchainActions } from './blockchainActions';
-import { WalletSettingsRootState, selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
 
 /*
   get url suffix from default network and generate url for selected network

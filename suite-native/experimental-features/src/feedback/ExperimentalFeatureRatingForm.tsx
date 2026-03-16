@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { TextInput } from 'react-native';
 
-import { Rating, ratingOptions } from '@suite-common/feedback';
+import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ExperimentalFeature } from '@suite-native/settings';
+import { type ExperimentalFeature } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';

@@ -8,7 +8,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    PassphraseFormValues,
+    type PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';

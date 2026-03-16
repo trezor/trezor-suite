@@ -1,4 +1,4 @@
-import { UIPriority, UISize } from '../../../config/types';
+import { type UIPriority, type UISize } from '../../../config/types';
 
 export const textButtonSizes = ['large', 'small'] as const;
 export type TextButtonSize = Extract<UISize, (typeof textButtonSizes)[number]>;

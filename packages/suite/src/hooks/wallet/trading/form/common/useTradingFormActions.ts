@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -11,7 +11,7 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingAssetSellOption,
+    type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     isCountrySubdivisionEmpty,
@@ -23,7 +23,7 @@ import {
     selectIsNetworkReserveEnabled,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -37,9 +37,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
-    TradingSellExchangeFormProps,
-    TradingUseFormActionsProps,
-    TradingUseFormActionsReturnProps,
+    type TradingSellExchangeFormProps,
+    type TradingUseFormActionsProps,
+    type TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
 import { getFeeInUnits, resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 

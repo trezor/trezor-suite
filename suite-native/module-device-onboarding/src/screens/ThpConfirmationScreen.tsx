@@ -5,9 +5,9 @@ import { selectIsDeviceThpLocked } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

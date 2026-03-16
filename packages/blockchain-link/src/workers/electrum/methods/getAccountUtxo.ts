@@ -4,7 +4,7 @@ import type { GetAccountUtxo as Res } from '@trezor/blockchain-link-types/src/re
 import { throwError } from '@trezor/utils';
 import { discovery } from '@trezor/utxo-lib';
 
-import { Api, discoverAddress, tryGetScripthash } from '../utils';
+import { type Api, discoverAddress, tryGetScripthash } from '../utils';
 
 const transformUtxo =
     (currentHeight: number, addressInfo: { address?: string; path?: string } = {}) =>

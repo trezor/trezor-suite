@@ -1,11 +1,11 @@
-import { TradingCountryOption } from '@suite-common/trading';
+import { type TradingCountryOption } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { events } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,

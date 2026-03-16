@@ -1,8 +1,8 @@
-import z from 'zod';
+import type z from 'zod';
 
 import {
-    SolanaStakeAccountRewardItem,
-    SolanaTotalStakeRewardsResponse,
+    type SolanaStakeAccountRewardItem,
+    type SolanaTotalStakeRewardsResponse,
 } from '../schemas/everstake-sol-rewards';
 
 export type SolanaStakeAccountReward = z.infer<typeof SolanaStakeAccountRewardItem>;

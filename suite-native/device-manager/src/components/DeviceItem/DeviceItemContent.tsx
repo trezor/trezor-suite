@@ -2,21 +2,21 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    DeviceRootState,
+    type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceByState,
     selectDeviceLabelOrNameById,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { WalletLabel } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { DeviceItemIcon } from './DeviceItemIcon';
 import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';

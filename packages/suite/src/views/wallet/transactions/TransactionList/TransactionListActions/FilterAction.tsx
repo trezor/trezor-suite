@@ -12,7 +12,7 @@ import {
     Button,
     Column,
     Dropdown,
-    DropdownRef,
+    type DropdownRef,
     Paragraph,
     Radio,
     Row,

@@ -1,8 +1,12 @@
-import { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
-import { SearchAccountLabels, SearchOutputLabels, TxId } from '@suite-common/transaction-search';
+import { type SuiteSyncAddress, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import {
+    type SearchAccountLabels,
+    type SearchOutputLabels,
+    type TxId,
+} from '@suite-common/transaction-search';
 import { asTxTargetId } from '@suite-common/wallet-types';
 
-import { AllLabelsForAccount } from './selectAllLabelsForAccount';
+import { type AllLabelsForAccount } from './selectAllLabelsForAccount';
 
 export const fromSuiteSyncToSearchOutputLabels = (
     outputLabels: SuiteSyncOutput[] = [],

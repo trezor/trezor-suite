@@ -4,7 +4,7 @@ import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { StellarTokenInfo } from '../hooks/useInactiveStellarTokens';
+import { type StellarTokenInfo } from '../hooks/useInactiveStellarTokens';
 
 type TokenListItemProps = {
     token: StellarTokenInfo;

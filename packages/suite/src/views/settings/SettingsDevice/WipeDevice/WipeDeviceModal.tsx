@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -11,7 +11,7 @@ import {
     Column,
     Divider,
     Icon,
-    IconName,
+    type IconName,
     Modal,
     Paragraph,
     Row,

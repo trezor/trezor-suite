@@ -1,4 +1,4 @@
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import {
     type TradingExchangeAnalyticReportCallback,

@@ -1,15 +1,15 @@
-import { RouterState, routerLocationChange } from '@suite/router';
+import { type RouterState, routerLocationChange } from '@suite/router';
 import { accountsActions } from '@suite-common/wallet-core';
-import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AnonymitySet } from '@trezor/blockchain-link';
-import { DEVICE, StaticSessionId } from '@trezor/connect';
+import { type AccountKey, type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type AnonymitySet } from '@trezor/blockchain-link';
+import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
-import { Account } from 'src/types/wallet';
-import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
+import { type Account } from 'src/types/wallet';
+import { type CoinjoinAccount, type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const DEVICE_A = {
     available: true,

@@ -8,14 +8,14 @@ import {
     selectIsDeviceLanguageConfigurable,
     selectSupportedDeviceLanguages,
 } from '@suite-common/device';
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import { Badge, Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackNavigationProps<

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { HStack, Text, TextProps } from '@suite-native/atoms';
+import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { HStack, Text, type TextProps } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import {
     AddressLabel,

@@ -14,7 +14,7 @@ import {
     SubTabs,
     Table,
 } from '@trezor/components';
-import { UiRequestSelectAccount } from '@trezor/connect';
+import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

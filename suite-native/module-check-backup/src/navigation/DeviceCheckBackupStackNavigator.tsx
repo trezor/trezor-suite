@@ -8,7 +8,7 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

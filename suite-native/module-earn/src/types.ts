@@ -2,7 +2,7 @@ import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wal
 import {
     type Account,
     type AccountKey,
-    BaseCurrencyAmount,
+    type BaseCurrencyAmount,
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';

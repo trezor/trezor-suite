@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { HiddenPlaceholder } from '../../../../components/suite';
 

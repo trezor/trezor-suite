@@ -1,4 +1,4 @@
-import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { atom, useAtomValue } from 'jotai';
 

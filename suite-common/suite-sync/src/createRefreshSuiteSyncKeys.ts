@@ -1,16 +1,16 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { isTrezorDeviceWithState } from '@suite-common/device';
 import {
-    EnsureSuiteSyncOwnerDep,
-    RefreshSuiteSyncKeys,
-    SuiteSyncUnavailableOnDeviceErrorType,
+    type EnsureSuiteSyncOwnerDep,
+    type RefreshSuiteSyncKeys,
+    type SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
-import { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
+import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
 
 /**
  * Device is not connected or device is in a state/configuration, that does not

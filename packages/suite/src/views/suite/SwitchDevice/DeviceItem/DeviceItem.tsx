@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -6,7 +6,16 @@ import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Column,
+    Icon,
+    type IconName,
+    List,
+    Paragraph,
+    Row,
+    Tooltip,
+} from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

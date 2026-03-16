@@ -7,7 +7,7 @@ import { Card as CardStory } from './Card.stories';
 import {
     COMPACT_CARD_VARIANTS,
     CompactCardWithIconLayout as CompactCardWithIconLayoutComponent,
-    CompactCardWithIconLayoutProps,
+    type CompactCardWithIconLayoutProps,
 } from '../../Card/CompactCardWithIconLayout';
 
 type CompactCardWithIconLayoutStory = StoryObj<CompactCardWithIconLayoutProps>;

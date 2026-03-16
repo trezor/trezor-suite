@@ -2,7 +2,7 @@ import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage } from '@suite-native/device';
 import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

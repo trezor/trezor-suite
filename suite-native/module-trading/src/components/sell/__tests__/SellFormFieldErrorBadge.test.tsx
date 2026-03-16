@@ -1,16 +1,19 @@
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { btcAsset, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { SellFormFieldErrorBadge, SellFormFieldErrorBadgeProps } from '../SellFormFieldErrorBadge';
+import {
+    SellFormFieldErrorBadge,
+    type SellFormFieldErrorBadgeProps,
+} from '../SellFormFieldErrorBadge';
 
 describe('SellFormFieldErrorBadge', () => {
     let tradingForm: SellFormType;

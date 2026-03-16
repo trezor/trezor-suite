@@ -9,11 +9,11 @@ import {
 } from '@suite-native/device-authorization';
 import { useFirmwareLanguage } from '@suite-native/firmware';
 import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    FirmwareLanguageStackParamList,
+    type DeviceSettingsStackParamList,
+    type DeviceSettingsStackRoutes,
+    type FirmwareLanguageStackParamList,
     FirmwareLanguageStackRoutes,
-    StackProps,
+    type StackProps,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 

@@ -1,4 +1,4 @@
-import { ReactNode, Ref } from 'react';
+import { type ReactNode, type Ref } from 'react';
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 

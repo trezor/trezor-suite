@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { type EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

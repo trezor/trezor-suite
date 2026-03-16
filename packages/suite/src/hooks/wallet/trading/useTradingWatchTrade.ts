@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
-import { BuyTradeFinalStatus, ExchangeTradeFinalStatus, SellTradeFinalStatus } from 'invity-api';
+import {
+    type BuyTradeFinalStatus,
+    type ExchangeTradeFinalStatus,
+    type SellTradeFinalStatus,
+} from 'invity-api';
 
 import {
     type TradingTradeStatusType,
@@ -12,7 +16,7 @@ import {
 } from '@suite-common/trading';
 import { useFormDraft } from '@suite-common/wallet-core';
 
-import { TradingUseWatchTradeProps } from 'src/types/trading/trading';
+import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
 
 export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],

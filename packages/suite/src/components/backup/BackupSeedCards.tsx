@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
 
-import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
+import { type ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 const items = [

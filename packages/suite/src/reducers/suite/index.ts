@@ -1,6 +1,6 @@
 import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
 import { prepareFlagsReducer } from '@suite/flags';
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import { locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer as modal } from '@suite/modal';

@@ -3,7 +3,7 @@ import { deflateRaw } from 'pako';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { TrezorDevice } from 'src/types/suite/index';
+import { type TrezorDevice } from 'src/types/suite/index';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here

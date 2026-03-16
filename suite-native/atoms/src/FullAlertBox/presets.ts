@@ -1,7 +1,7 @@
-import { IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
-import { ButtonColorScheme } from '../Button/Button';
+import { type ButtonColorScheme } from '../Button/Button';
 
 export const FULL_ALERT_BOX_VARIANTS = [
     'info',

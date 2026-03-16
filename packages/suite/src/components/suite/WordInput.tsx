@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { SelectInstance, createFilter } from 'react-select';
+import { type SelectInstance, createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { Select } from '@trezor/components';

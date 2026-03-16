@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-    ConnectPopupLink,
-    ConnectPopupMessage,
-    ConnectPopupOutgoingMessage,
+    type ConnectPopupLink,
+    type ConnectPopupMessage,
+    type ConnectPopupOutgoingMessage,
     useConnectPopup,
 } from './useConnectPopup';
 

@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { pipe } from '@mobily/ts-belt';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
-import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import {

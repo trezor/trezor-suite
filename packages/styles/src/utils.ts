@@ -1,6 +1,6 @@
 import { getLuminance } from 'polished';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 export const getValueAndUnit = (valueAndUnit: string): [value: number, unit: string] => {
     const value = parseFloat(valueAndUnit);

@@ -1,7 +1,7 @@
 import type { FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { xssFilters } from '@trezor/utils';
 
 import { TRADING_URL_BASE, TRADING_URL_DEFAULT_BACK } from '../consts';

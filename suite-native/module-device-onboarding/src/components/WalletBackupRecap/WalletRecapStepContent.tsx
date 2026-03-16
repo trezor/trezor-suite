@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';

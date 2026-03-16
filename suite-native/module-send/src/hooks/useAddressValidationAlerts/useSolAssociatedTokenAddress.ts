@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isProgramDerivedAccount } from '@suite-common/wallet-utils';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';

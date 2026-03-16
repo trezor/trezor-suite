@@ -1,4 +1,4 @@
-import { ThpState } from './ThpState';
+import { type ThpState } from './ThpState';
 import { CRC_LENGTH, TAG_LENGTH, THP_DEFAULT_CHANNEL } from './constants';
 import { aesgcm, crc32 } from './crypto';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';

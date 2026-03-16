@@ -1,23 +1,27 @@
 import { produce } from 'immer';
 
-import { LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { DeviceRootState, selectDeviceStatus } from '@suite-common/device';
+import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
+import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, getInputSize, getOutputSize } from '@trezor/coinjoin';
-import { PartialRecord } from '@trezor/type-utils';
+import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     CLIENT_STATUS_FALLBACK,
@@ -33,12 +37,12 @@ import {
     UNECONOMICAL_COINJOIN_THRESHOLD,
     ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 import {
-    CoinjoinAccount,
-    CoinjoinClientInstance,
-    CoinjoinConfig,
-    CoinjoinDebugSettings,
+    type CoinjoinAccount,
+    type CoinjoinClientInstance,
+    type CoinjoinConfig,
+    type CoinjoinDebugSettings,
 } from 'src/types/wallet/coinjoin';
 import {
     breakdownCoinjoinBalance,
@@ -52,7 +56,7 @@ import {
     transformCoinjoinStatus,
 } from 'src/utils/wallet/coinjoinUtils';
 
-import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
+import { type SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];

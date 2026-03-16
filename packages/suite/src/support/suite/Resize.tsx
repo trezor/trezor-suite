@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 import {
-    Breakpoint,
-    BreakpointFlagName,
-    BreakpointFlags,
-    BreakpointValue,
+    type Breakpoint,
+    type BreakpointFlagName,
+    type BreakpointFlags,
+    type BreakpointValue,
     aboveBreakpoint,
     belowBreakpoint,
     breakpoints,

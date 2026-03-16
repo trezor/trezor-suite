@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { useSelector } from './useSelector';
 

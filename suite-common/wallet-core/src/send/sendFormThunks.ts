@@ -2,21 +2,21 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountKey,
-    ComposeActionContext,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    PrecomposedTransactionFinalCardano,
+    type Account,
+    type AccountKey,
+    type ComposeActionContext,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -34,10 +34,10 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { Ok, exhaustive } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
@@ -69,10 +69,10 @@ import {
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import {
-    ComposeFeeLevelsError,
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    type ComposeFeeLevelsError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';

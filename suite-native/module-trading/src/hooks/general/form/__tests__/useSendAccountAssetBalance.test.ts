@@ -1,7 +1,11 @@
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType, SellFormType, TradeableAsset } from '@suite-native/trading-types';
+import {
+    type ExchangeFormType,
+    type SellFormType,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
 
 import { useSendAccountAssetBalance } from '../useSendAccountAssetBalance';
 

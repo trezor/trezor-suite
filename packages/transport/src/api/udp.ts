@@ -2,10 +2,14 @@ import UDP from 'dgram';
 
 import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
-import { AbstractApi, AbstractApiAwaitedResult, AbstractApiConstructorParams } from './abstract';
+import {
+    AbstractApi,
+    type AbstractApiAwaitedResult,
+    type AbstractApiConstructorParams,
+} from './abstract';
 import { DEVICE_TYPE } from '../constants';
 import * as ERRORS from '../errors';
-import { DescriptorApiLevel, PathInternal } from '../types';
+import { type DescriptorApiLevel, PathInternal } from '../types';
 import { readMessageBuffer } from '../utils/readMessageBuffer';
 
 const PING = Buffer.from('PINGPING');

@@ -6,11 +6,11 @@ import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';

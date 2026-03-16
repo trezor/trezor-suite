@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import { BalancesQueryDto, YieldDto, getAggregateBalances } from '@suite-common/earn-api';
+import { type BalancesQueryDto, type YieldDto, getAggregateBalances } from '@suite-common/earn-api';
 import { useQuery } from '@suite-common/react-query';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { getSuppliedBalancesByYieldAndAddress } from '../../utils/earnYieldUtils';
 

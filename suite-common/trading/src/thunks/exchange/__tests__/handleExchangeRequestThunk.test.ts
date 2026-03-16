@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
@@ -11,10 +11,10 @@ import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
-    HandleExchangeRequestThunkProps,
-    TradingAssetOption,
-    TradingAssetSellOption,
-    TradingExchangeFormProps,
+    type HandleExchangeRequestThunkProps,
+    type TradingAssetOption,
+    type TradingAssetSellOption,
+    type TradingExchangeFormProps,
 } from '../../../types';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);

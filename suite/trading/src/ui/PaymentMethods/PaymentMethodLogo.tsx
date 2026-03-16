@@ -1,5 +1,5 @@
 import { type PaymentMethodLogoName, paymentMethodLogos } from '@suite-common/icons';
-import { IconSize, Image } from '@trezor/components';
+import { type IconSize, Image } from '@trezor/components';
 
 export interface ProviderIconProps {
     paymentMethodLogoName: PaymentMethodLogoName;

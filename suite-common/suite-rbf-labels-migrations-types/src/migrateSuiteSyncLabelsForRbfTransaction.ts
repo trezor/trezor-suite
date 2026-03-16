@@ -1,14 +1,14 @@
-import { SuiteSyncOutput, SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type SuiteSyncOutput, type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountDescriptor,
-    AccountKey,
-    WalletAccountTransaction,
-    WalletDescriptor,
+    type AccountDescriptor,
+    type AccountKey,
+    type WalletAccountTransaction,
+    type WalletDescriptor,
 } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
 export type SuiteSyncTransactionToCopy = {
     data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];

@@ -7,7 +7,7 @@ import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
     Box,
     Button,
@@ -41,7 +41,7 @@ import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingRedu
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityChecklistItem } from './types';
+import { type SecurityChecklistItem } from './types';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 

@@ -2,17 +2,17 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { FormState } from '@suite-common/wallet-types';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type FormState } from '@suite-common/wallet-types';
 import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
 
 import {
     CollapsibleFeesHeaderContent,
-    CollapsibleFeesHeaderContentProps,
+    type CollapsibleFeesHeaderContentProps,
 } from './CollapsibleFeesHeaderContent';
 import { CustomFee } from './CustomFee/CustomFee';
 import { StandardFee } from './StandardFee/StandardFee';
-import { FeesContext, FeesContextType } from '../context/FeesContext';
+import { FeesContext, type FeesContextType } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {

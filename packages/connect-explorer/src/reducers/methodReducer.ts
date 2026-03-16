@@ -1,5 +1,5 @@
 import {
-    MethodState,
+    type MethodState,
     initialState,
     prepareBundle,
     setAffectedValues,

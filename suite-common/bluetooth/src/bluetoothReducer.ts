@@ -1,17 +1,17 @@
-import { AnyAction, Draft } from '@reduxjs/toolkit';
+import { type AnyAction, type Draft } from '@reduxjs/toolkit';
 
-import { DeviceConnectActionPayload, deviceActions } from '@suite-common/device';
+import { type DeviceConnectActionPayload, deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
+import { type BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
 import { filterOutOldDuplicates } from './filterOutOldDuplicates';
 import {
-    BluetoothAdapterStatus,
-    BluetoothAutoConnectPolicy,
-    BluetoothDeviceCommon,
-    BluetoothScanStatus,
+    type BluetoothAdapterStatus,
+    type BluetoothAutoConnectPolicy,
+    type BluetoothDeviceCommon,
+    type BluetoothScanStatus,
 } from './types';
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {

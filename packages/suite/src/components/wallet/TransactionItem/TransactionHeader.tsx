@@ -1,16 +1,16 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { StakeType } from '@suite-common/wallet-types';
+import { type StakeType } from '@suite-common/wallet-types';
 import {
     getTxHeaderSymbol,
     isCardanoStakingTx,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { AccountTransaction } from '@trezor/connect';
+import { type AccountTransaction } from '@trezor/connect';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {

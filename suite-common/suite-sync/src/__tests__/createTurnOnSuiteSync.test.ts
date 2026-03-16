@@ -6,7 +6,7 @@ import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../tests/createSuiteSyncStorageMock.mock';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
-import { CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
+import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
 import { updateSuiteSyncEnabled } from '../suiteSyncSlice';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';

@@ -1,7 +1,7 @@
 import { Alert, Pressable, Share } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';

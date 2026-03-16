@@ -1,5 +1,5 @@
 import { ModalContext, useModalContext } from './ModalContext';
-import { Button, ButtonProps } from '../buttons/Button/Button';
+import { Button, type ButtonProps } from '../buttons/Button/Button';
 
 export const ModalButton = ({
     children,

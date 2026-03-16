@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalDetailsCard } from '../ExchangeApprovalDetailsCard';

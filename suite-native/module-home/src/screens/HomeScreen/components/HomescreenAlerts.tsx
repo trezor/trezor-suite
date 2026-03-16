@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import {
-    ExperimentalFeedbackRootState,
+    type ExperimentalFeedbackRootState,
     selectPendingFeedbackFeature,
 } from '@suite-common/feedback';
 import { selectShouldDisplayOutOfQuotaAlert } from '@suite-common/suite-sync-quota-manager';
 import { ExperimentalFeaturesFeedbackAlert } from '@suite-native/experimental-features';
-import { ExperimentalFeature } from '@suite-native/settings';
+import { type ExperimentalFeature } from '@suite-native/settings';
 
 import { SuiteSyncKeysAlert } from './SuiteSyncKeysAlert';
 import {

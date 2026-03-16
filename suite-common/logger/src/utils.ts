@@ -1,8 +1,8 @@
 import { deviceActions } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName, getBrowserVersion, getOsVersion } from '@suite-common/suite-utils';
 import { accountsActions } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { DEVICE } from '@trezor/connect';
 import {
     getCommitHash,
@@ -16,9 +16,9 @@ import {
     getWindowWidth,
     isCodesignBuild,
 } from '@trezor/env-utils';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
-import { LogEntry } from './types';
+import { type LogEntry } from './types';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 

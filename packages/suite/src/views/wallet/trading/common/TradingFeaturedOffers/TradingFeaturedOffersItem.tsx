@@ -1,4 +1,4 @@
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -12,8 +12,8 @@ import { Badge, Button, Card, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { TradingTradeDetailBuySellType } from 'src/types/trading/trading';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { type TradingTradeDetailBuySellType } from 'src/types/trading/trading';
+import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,

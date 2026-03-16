@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 
 import * as languageActions from 'src/actions/settings/languageActions';
 import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';

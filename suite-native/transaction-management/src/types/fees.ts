@@ -1,8 +1,8 @@
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormDraftKeyPrefix,
-    TokenAddress,
+    type AccountKey,
+    type FeeLevelLabel,
+    type FormDraftKeyPrefix,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 
 export type NativeSupportedPredefinedFeeLevel = Exclude<FeeLevelLabel, 'custom'>;

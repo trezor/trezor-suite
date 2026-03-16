@@ -5,7 +5,7 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { TradingType } from '../../types';
+import { type TradingType } from '../../types';
 
 export type SetLastErrorMessageByTradingTypeProps = {
     tradingType: TradingType;

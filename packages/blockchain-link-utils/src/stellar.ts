@@ -1,7 +1,7 @@
 import {
     Account,
     Asset,
-    Horizon,
+    type Horizon,
     Memo,
     Networks,
     Operation,

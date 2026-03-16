@@ -1,18 +1,18 @@
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type { TradingTradeType, TradingType } from '@suite-common/trading';
-import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { Route, TrezorDevice } from 'src/types/suite';
+import { type Route, type TrezorDevice } from 'src/types/suite';
 import {
-    TradingGetAmountLabelsProps,
-    TradingGetAmountLabelsReturnProps,
-    TradingGetProvidersInfoProps,
+    type TradingGetAmountLabelsProps,
+    type TradingGetAmountLabelsReturnProps,
+    type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const translationKeys: Record<
     TradingType,

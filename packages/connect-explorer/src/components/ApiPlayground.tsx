@@ -4,12 +4,12 @@ import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
 import { CollapsibleBox, Select, Switch, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
-import { MethodState } from '../reducers/methodCommon';
+import { type MethodState } from '../reducers/methodCommon';
 
 const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
     display: block;

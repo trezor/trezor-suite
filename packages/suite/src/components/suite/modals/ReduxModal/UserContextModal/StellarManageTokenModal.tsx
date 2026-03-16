@@ -9,14 +9,14 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     activateStellarTokenThunk,
     deactivateStellarTokenThunk,
     fetchAndUpdateAccountThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';

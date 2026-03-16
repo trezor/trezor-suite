@@ -1,15 +1,20 @@
 import {
-    FieldError,
-    FieldErrors,
-    FieldErrorsImpl,
-    FieldPath,
-    FieldValues,
-    Merge,
+    type FieldError,
+    type FieldErrors,
+    type FieldErrorsImpl,
+    type FieldPath,
+    type FieldValues,
+    type Merge,
 } from 'react-hook-form';
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    type NetworkType,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -33,17 +38,17 @@ import type {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import {
-    BaseCurrencyCode,
+    type BaseCurrencyCode,
     baseCurrencies,
     isBaseCurrencyCode,
 } from '@trezor/blockchain-link-types';
 import {
-    ComposeOutput,
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    FeeLevel,
-    PROTO,
-    TokenInfo,
+    type ComposeOutput,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+    type PROTO,
+    type TokenInfo,
 } from '@trezor/connect';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 

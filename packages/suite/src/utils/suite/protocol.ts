@@ -1,4 +1,4 @@
-import { Protocol } from '@suite-common/suite-constants';
+import { type Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 
 import { parseQuery, parseUri } from './parseUri';

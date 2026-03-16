@@ -1,4 +1,4 @@
-import { getStoredState } from 'redux-persist';
+import { type getStoredState } from 'redux-persist';
 
 import { migrateAutoEjectToWalletSettings } from '../../migrations/walletSettings/v2';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';

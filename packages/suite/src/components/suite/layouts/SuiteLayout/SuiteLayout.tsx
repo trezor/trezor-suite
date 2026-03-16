@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useRef, useState } from 'react';
+import { type ReactNode, createContext, useRef, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
@@ -11,7 +11,7 @@ import { DiscoveryProgress } from 'src/components/wallet';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
-import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
+import { LayoutContext, type LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
 import { AppShortcuts } from './AppShortcuts';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';

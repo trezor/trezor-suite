@@ -1,5 +1,5 @@
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { TradingCountryCode, useCountryFilteredData } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type TradingCountryCode, useCountryFilteredData } from '@suite-common/trading';
 import { Column, Flag, Input, Modal, Paragraph, Row, getCountryFlag } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 

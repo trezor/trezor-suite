@@ -1,4 +1,4 @@
-import { RouterState } from '@suite/router';
+import { type RouterState } from '@suite/router';
 
 type Route = RouterState['route'];
 

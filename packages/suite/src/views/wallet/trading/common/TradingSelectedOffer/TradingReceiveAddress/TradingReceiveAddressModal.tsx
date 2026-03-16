@@ -7,7 +7,7 @@ import addressValidator from '@trezor/address-validator';
 import { Column, Input, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
+import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

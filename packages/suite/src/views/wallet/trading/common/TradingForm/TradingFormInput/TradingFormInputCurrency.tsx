@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { type Control, Controller } from 'react-hook-form';
 
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
-    TradingFiatCurrencyOption,
+    type TradingFiatCurrencyOption,
     buildTradingFiatOption,
     isSupportedFiatCurrency,
 } from '@suite-common/trading';
@@ -13,7 +13,10 @@ import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
+import {
+    type TradingAllFormProps,
+    type TradingFormInputCurrencyProps,
+} from 'src/types/trading/tradingForm';
 import {
     getFiatCurrenciesProps,
     getSelectedTradingCurrency,

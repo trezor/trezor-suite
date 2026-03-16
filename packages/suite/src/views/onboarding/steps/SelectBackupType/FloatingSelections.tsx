@@ -1,9 +1,9 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { type CSSProperties, forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
     Banner,
     CollapsibleBox,
@@ -14,7 +14,7 @@ import {
     variables,
 } from '@trezor/components';
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     spacings,

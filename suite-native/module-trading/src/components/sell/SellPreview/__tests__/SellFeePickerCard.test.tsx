@@ -1,8 +1,8 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { SellFeePickerCard, SellFeePickerCardProps } from '../SellFeePickerCard';
+import { SellFeePickerCard, type SellFeePickerCardProps } from '../SellFeePickerCard';
 
 describe('SellFeePickerCard', () => {
     const renderSellFeePickerCard = (

@@ -1,19 +1,19 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { selectDevices } from '@suite-common/device';
 import {
-    AbstractMetadataProvider,
-    AccountLabels,
-    MetadataProvider,
-    PasswordManagerState,
-    WalletLabels,
+    type AbstractMetadataProvider,
+    type AccountLabels,
+    type MetadataProvider,
+    type PasswordManagerState,
+    type WalletLabels,
 } from '@suite-common/metadata-types';
 import { selectAccounts } from '@suite-common/wallet-core';
 
 import { setAccountAdd } from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
-import { MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
+import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
 /**

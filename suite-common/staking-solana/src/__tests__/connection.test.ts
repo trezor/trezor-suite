@@ -1,6 +1,6 @@
 import { getSolanaValidatorFixtures } from '../__fixtures__/connection';
 import { getSolanaValidator } from '../connection';
-import { Network } from '../types';
+import { type Network } from '../types';
 
 describe('getSolanaValidator', () => {
     getSolanaValidatorFixtures.forEach(fixture => {

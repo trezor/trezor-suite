@@ -1,4 +1,4 @@
-import { DesktopDeviceRootState } from './deviceSlice';
+import { type DesktopDeviceRootState } from './deviceSlice';
 
 export const selectIsConnectionModalOpen = (state: DesktopDeviceRootState) =>
     state.device.isConnectionModalOpen;

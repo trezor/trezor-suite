@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Rate } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Rate } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import type { PartialRecord } from '@trezor/type-utils';
 
 export type SimpleTokenStructure = string[];

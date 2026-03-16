@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Button, H2, Paragraph, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';

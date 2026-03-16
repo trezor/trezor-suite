@@ -1,20 +1,20 @@
-import { CryptoId, InfoResponse } from 'invity-api';
+import { type CryptoId, type InfoResponse } from 'invity-api';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
 import {
-    TradingComposedTransactionInfo,
+    type TradingComposedTransactionInfo,
     initialState,
     tradingActions,
 } from '../tradingCommonReducer';
 import { accounts } from './account';
 import {
-    TradingPaymentMethodListProps,
-    TradingTransactionBuy,
-    TradingTransactionExchange,
+    type TradingPaymentMethodListProps,
+    type TradingTransactionBuy,
+    type TradingTransactionExchange,
 } from '../../types';
 
 const tradeBuy: TradingTransactionBuy = {

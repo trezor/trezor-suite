@@ -1,8 +1,8 @@
 import base58check from 'bs58check';
 import * as crypto from 'crypto';
 
-import { DataType, MetadataProvider } from '@suite-common/metadata-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type DataType, type MetadataProvider } from '@suite-common/metadata-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 export type FetchIntervalTrackingId =
     `${DataType}-${MetadataProvider['clientId']}-${StaticSessionId}`;

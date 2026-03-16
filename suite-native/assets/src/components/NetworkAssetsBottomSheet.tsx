@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountSelectBottomSheet, OnSelectAccount } from '@suite-native/accounts';
+import { AccountSelectBottomSheet, type OnSelectAccount } from '@suite-native/accounts';
 
-import { AssetsRootState, selectBottomSheetDeviceNetworkItems } from '../assetsSelectors';
+import { type AssetsRootState, selectBottomSheetDeviceNetworkItems } from '../assetsSelectors';
 
 type NetworkAssetsBottomSheetProps = {
     symbol: NetworkSymbol | null;

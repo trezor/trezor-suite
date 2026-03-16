@@ -3,10 +3,10 @@ import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Column, FractionButtonProps, Text } from '@trezor/components';
+import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
-import { WithdrawalFormState } from 'src/components/earn/forms/SupplyFormContext';
+import { type WithdrawalFormState } from 'src/components/earn/forms/SupplyFormContext';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import { useAllowanceState } from './useAllowanceState';
-import { useAllowanceTxTracking } from './useAllowanceTxTracking';
+import { type useAllowanceState } from './useAllowanceState';
+import { type useAllowanceTxTracking } from './useAllowanceTxTracking';
 
 export interface AllowanceContextValue {
     tx: ReturnType<typeof useAllowanceTxTracking>;

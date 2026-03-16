@@ -2,12 +2,12 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { buyQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,

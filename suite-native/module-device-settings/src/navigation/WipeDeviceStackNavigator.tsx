@@ -9,7 +9,7 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    WipeDeviceStackParamList,
+    type WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

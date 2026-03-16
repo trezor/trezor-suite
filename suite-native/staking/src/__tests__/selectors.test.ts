@@ -1,5 +1,9 @@
-import { CardanoPoolStats, EthereumPoolStats, SolanaStakingInfo } from '@suite-common/wallet-api';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import {
+    type CardanoPoolStats,
+    type EthereumPoolStats,
+    type SolanaStakingInfo,
+} from '@suite-common/wallet-api';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import {
     selectAPYBySymbol,

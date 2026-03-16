@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
@@ -11,17 +11,17 @@ import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FLOATING,
-    TradingExchangeFormType,
-    TradingExchangeKycFilter,
-    TradingExchangeRateFilter,
-    TradingExchangeRateType,
+    type TradingExchangeFormType,
+    type TradingExchangeKycFilter,
+    type TradingExchangeRateFilter,
+    type TradingExchangeRateType,
     buildTradingBaseCurrencyOptionFromFiat,
     buildTradingFiatOption,
     getSupportedFiatCurrencyWithFallback,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
+import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';

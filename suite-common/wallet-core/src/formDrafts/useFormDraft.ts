@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 
-import { FormDraftRootState, formDraftActions } from './formDraftSlice';
+import { type FormDraftRootState, formDraftActions } from './formDraftSlice';
 import { selectDeepCopyOfFormDraft } from './selectors';
 
 export const useFormDraft = <T extends FieldValues>(

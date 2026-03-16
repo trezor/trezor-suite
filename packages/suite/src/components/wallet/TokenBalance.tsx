@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Column, Text } from '@trezor/components';
-import { AssetProps } from '@trezor/product-components';
+import { type AssetProps } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

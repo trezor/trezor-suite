@@ -14,9 +14,9 @@ import {
 import { TurnOnAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { BluetoothPairingAnimation } from '../../components/connect/BluetoothPairingAnimation';

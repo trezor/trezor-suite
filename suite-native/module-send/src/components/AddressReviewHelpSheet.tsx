@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
 import { PressableOpacity } from '@suite-native/atoms';

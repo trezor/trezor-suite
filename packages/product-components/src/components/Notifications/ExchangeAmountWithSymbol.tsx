@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';

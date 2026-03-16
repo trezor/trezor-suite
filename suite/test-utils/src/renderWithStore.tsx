@@ -1,10 +1,15 @@
 import { type ReactElement } from 'react';
 
-import { RenderHookOptions, RenderOptions, render, renderHook } from '@testing-library/react';
+import {
+    type RenderHookOptions,
+    type RenderOptions,
+    render,
+    renderHook,
+} from '@testing-library/react';
 
-import { PreloadedState } from '@trezor/suite';
+import { type PreloadedState } from '@trezor/suite';
 
-import { StoreProviderForTests, TestStore } from './StoreProviderForTests';
+import { StoreProviderForTests, type TestStore } from './StoreProviderForTests';
 
 type RenderWithStoreProviderOptions = {
     preloadedState?: PreloadedState;

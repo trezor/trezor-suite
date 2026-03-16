@@ -1,4 +1,4 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore } from '@reduxjs/toolkit';
 
 import { Form } from '@suite-native/forms';
 import {
@@ -9,7 +9,7 @@ import {
     screen,
 } from '@suite-native/test-utils';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';

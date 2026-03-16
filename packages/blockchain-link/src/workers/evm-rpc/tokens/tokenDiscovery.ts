@@ -1,4 +1,4 @@
-import { type Log, PublicClient, parseAbiItem } from 'viem';
+import { type Log, type PublicClient, parseAbiItem } from 'viem';
 
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 
