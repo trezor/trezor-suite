@@ -4,19 +4,14 @@ import {
     isPhishingTransactionFixtures,
     isUnknownTxPhishingFixtures,
     isZeroValuePhishingFixtures,
-} from '../__fixtures__/antiFraud';
-import {
-    isDustValuePhishing,
-    isFakeTokenPhishing,
-    isPhishingTransaction,
-    isUnknownTxPhishing,
-    isZeroValuePhishing,
-} from '../antiFraud';
+} from '../__fixtures__/phishing';
+import { isPhishingTransaction } from '../phishing';
+import { detectors } from '../phishing/detectors';
 
 describe('isDustValuePhishing', () => {
     isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(isDustValuePhishing({ transaction })).toBe(result);
+            expect(detectors.dustValue({ transaction })).toBe(result);
         });
     });
 });
@@ -24,7 +19,7 @@ describe('isDustValuePhishing', () => {
 describe('isZeroValuePhishing', () => {
     isZeroValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(isZeroValuePhishing({ transaction })).toBe(result);
+            expect(detectors.zeroValue({ transaction })).toBe(result);
         });
     });
 });
@@ -32,7 +27,7 @@ describe('isZeroValuePhishing', () => {
 describe('isFakeTokenPhishing', () => {
     isFakeTokenPhishingFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
         test(testName, () => {
-            expect(isFakeTokenPhishing({ transaction, tokenDefinitions })).toBe(result);
+            expect(detectors.fakeToken({ transaction, tokenDefinitions })).toBe(result);
         });
     });
 });
@@ -40,7 +35,7 @@ describe('isFakeTokenPhishing', () => {
 describe('isUnknownTxPhishing', () => {
     isUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(isUnknownTxPhishing({ transaction })).toBe(result);
+            expect(detectors.unknownTx({ transaction })).toBe(result);
         });
     });
 });
