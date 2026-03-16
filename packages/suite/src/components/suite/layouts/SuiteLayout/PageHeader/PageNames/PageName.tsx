@@ -3,8 +3,6 @@ import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@sui
 
 import { useEffectiveRouteName, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { resolveEffectiveBackgroundRouteName } from 'src/utils/suite/router';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
@@ -12,14 +10,8 @@ import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const route = useSelector(state => state.router.route);
-    const { suiteRouterHistory } = useSuiteServices();
-    const currentRoute = resolveEffectiveBackgroundRouteName(
-        route,
-        suiteRouterHistory.getLocation(),
-    );
     const selectedAccount = useSelector(selectSelectedAccount);
-    const { isAccountTabPage } = useEffectiveRouteName();
+    const { effectiveRouteName, isAccountTabPage } = useEffectiveRouteName();
     const { params } = useSelector(state => state.wallet.selectedAccount);
 
     const fallbackAccount = useSelector(state =>
@@ -34,11 +26,11 @@ export const PageName = () => {
     // TODO: does not work properly with foreground apps, e.g. FW update,
     // as the `route` does not indicate the current page
     // (however location.pathname does)
-    if (currentRoute?.includes('settings')) {
+    if (effectiveRouteName?.includes('settings')) {
         return <SettingsName />;
     }
 
-    if (currentRoute?.includes('earn')) {
+    if (effectiveRouteName?.includes('earn')) {
         return (
             <BasicName>
                 <Translation id="TR_EARN" />
