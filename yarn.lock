@@ -15821,6 +15821,7 @@ __metadata:
     "@sinclair/typebox": "npm:^0.33.7"
     "@sinclair/typebox-codegen": "npm:^0.10.4"
     "@trezor/eslint": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
   peerDependencies:
