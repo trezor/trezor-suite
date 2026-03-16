@@ -8,7 +8,7 @@ const ConfirmationContent = ({
     isBluetoothDevice: boolean;
     isBluetoothConnectedDevice: boolean;
 }) => (
-    <Card paddingType="normal">
+    <Card paddingType="normal" data-testid="@settings/device/forget/confirm-content">
         <List gap={24}>
             <List.Item
                 bulletComponent={
@@ -70,10 +70,18 @@ export const ConfirmationModal = ({
         width={680}
         bottomContent={
             <>
-                <Modal.Button onClick={onConfirm}>
+                <Modal.Button
+                    data-testid="@settings/device/forget-button-confirm"
+                    onClick={onConfirm}
+                >
                     <Translation id="TR_FORGET_DEVICE_MODAL_CONFIRM" />
                 </Modal.Button>
-                <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
+                <Modal.Button
+                    data-testid="@settings/device/forget-button-cancel"
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={onCancel}
+                >
                     <Translation id="TR_CANCEL" />
                 </Modal.Button>
             </>

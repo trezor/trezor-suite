@@ -55,6 +55,7 @@ export const OsAndTrezorCleanupModal = ({
                             intent="brand"
                             onClick={() => setOsRemovalConfirmed(true)}
                             size="large"
+                            data-testid="@settings/device/ive-removed-it-button"
                         >
                             <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                         </Button>
@@ -74,7 +75,12 @@ export const OsAndTrezorCleanupModal = ({
                         />
                     }
                     actions={
-                        <Button intent="brand" onClick={onTrezorRemovalConfirm} size="large">
+                        <Button
+                            intent="brand"
+                            onClick={onTrezorRemovalConfirm}
+                            size="large"
+                            data-testid="@settings/device/ive-removed-it-button-trezor"
+                        >
                             <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                         </Button>
                     }

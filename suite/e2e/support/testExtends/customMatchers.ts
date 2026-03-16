@@ -261,7 +261,7 @@ export const expect = baseExpect.extend({
 
     async toHaveTranslation(
         locator: Locator,
-        translationKey: TranslationKey,
+        translationKey: TranslationKey | TranslationKey[],
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
             isValueElement?: boolean;
@@ -269,24 +269,46 @@ export const expect = baseExpect.extend({
             timeout?: number;
         },
     ) {
-        const template = messages[translationKey].defaultMessage;
-        const values = options?.values;
-        const expectedTranslation =
-            values && Object.keys(values).length > 0
-                ? String(
-                      intlEn.formatMessage(
-                          { id: translationKey, defaultMessage: template },
-                          options.values,
-                      ),
-                  )
+        // Helper to resolve a translation key into its formatted string
+        const translate = (key: TranslationKey) => {
+            const message = messages[key];
+            if (!message)
+                throw new Error(`[toHaveTranslation] Could not resolve translation key: ${key}`);
+
+            const template = message.defaultMessage;
+            const values = options?.values;
+
+            return values && Object.keys(values).length > 0
+                ? String(intlEn.formatMessage({ id: key, defaultMessage: template }, values))
                 : template;
+        };
+
+        /*
+         * Resolve all keys into translated strings.
+         * If an array is provided, 'expected' will be an array of strings,
+         * enabling the locator to match multiple elements simultaneously.
+         */
+        const expected = Array.isArray(translationKey)
+            ? translationKey.map(translate)
+            : translate(translationKey);
 
         if (options?.isValueElement) {
-            await baseExpect(locator).toHaveValue(expectedTranslation, {
-                timeout: options?.timeout,
-            });
+            if (Array.isArray(expected)) {
+                await baseExpect(locator).toHaveCount(expected.length, {
+                    timeout: options?.timeout,
+                });
+                for (let i = 0; i < expected.length; i++) {
+                    await baseExpect(locator.nth(i)).toHaveValue(expected[i], {
+                        timeout: options?.timeout,
+                    });
+                }
+            } else {
+                await baseExpect(locator).toHaveValue(expected, {
+                    timeout: options?.timeout,
+                });
+            }
         } else {
-            await baseExpect(locator).toHaveText(expectedTranslation, {
+            await baseExpect(locator).toHaveText(expected, {
                 timeout: options?.timeout,
             });
         }
