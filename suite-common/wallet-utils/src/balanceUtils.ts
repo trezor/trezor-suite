@@ -9,6 +9,8 @@ export const isZero = (value: string) => {
     return valueBig.isZero();
 };
 
+export const isPositiveBalance = (value: string) => new BigNumber(value).isGreaterThan(0);
+
 export const formatCoinBalance = (value: string, locale: Locale = 'en-US') => {
     const MAX_NUMBERS = 9;
     const balanceBig = new BigNumber(value);
