@@ -73,9 +73,10 @@ describe('Router thunks', () => {
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
             } else {
-                expect(
-                    store.getActions().filter(a => !a.type.startsWith('@router/init')).length,
-                ).toEqual(0);
+                const actionsWithoutThunkLifecycleEvents = store
+                    .getActions()
+                    .filter(a => !a.type.startsWith(routerInit.typePrefix));
+                expect(actionsWithoutThunkLifecycleEvents.length).toEqual(0);
             }
         });
     });
@@ -109,9 +110,10 @@ describe('Router thunks', () => {
         });
         const { store } = initStore(state);
         store.dispatch(onLocationChange({ pathname: '/' }));
-        expect(
-            store.getActions().filter(a => !a.type.startsWith('@router/onLocationChange')).length,
-        ).toEqual(0);
+        const actionsWithoutThunkLifecycleEvents = store
+            .getActions()
+            .filter(a => !a.type.startsWith(onLocationChange.typePrefix));
+        expect(actionsWithoutThunkLifecycleEvents.length).toEqual(0);
     });
 
     it('closeModalApp', () => {
