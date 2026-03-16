@@ -15562,13 +15562,16 @@ __metadata:
     bs58check: "npm:^4.0.0"
     cbor: "npm:^10.0.10"
     cross-fetch: "npm:^4.1.0"
+    crypto-browserify: "npm:^3.12.0"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.1"
     node-fetch: "npm:^2.6.4"
     process: "npm:^0.11.10"
+    stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
     vite-plugin-node-polyfills: "npm:^0.25.0"
     vitest: "npm:^3.2.4"
+    vm-browserify: "npm:^1.1.2"
     web3-utils: "npm:^4.3.2"
     ws: "npm:^8.18.0"
   peerDependencies:
@@ -22933,7 +22936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-browserify@npm:^3.12.1":
+"crypto-browserify@npm:^3.12.0, crypto-browserify@npm:^3.12.1":
   version: 3.12.1
   resolution: "crypto-browserify@npm:3.12.1"
   dependencies:

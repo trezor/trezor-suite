@@ -4,8 +4,11 @@
         "@babel/preset-typescript",
         "@trezor/connect",
         "@vitest/browser",
+        "crypto-browserify",
         "process",
+        "stream-browserify",
         "tsx",
-        "virtual:txcache"
+        "virtual:txcache",
+        "vm-browserify"
     ]
 }

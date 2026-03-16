@@ -15,7 +15,7 @@ let controller: ReturnType<typeof getController> | undefined;
 // After the removal bip69, we sort inputs and outputs randomly
 // So we need to mock the source of randomness for all tests, so the fixtures are deterministic.
 // The deterministic getRandomInt is injected via resolve.alias in vitest.config.ts,
-// which redirects the @trezor/utils/src/getRandomInt module to a mock returning min + (4 % max).
+// which redirects the @trezor/utils/src/getRandomInt module to a deterministic mock.
 
 // This is mock of randomness for browser environment (overrides window.crypto.getRandomValues
 // so that the real getRandomInt — if somehow loaded — also produces deterministic output).

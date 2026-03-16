@@ -23,6 +23,7 @@ function txCachePlugin(): Plugin {
                 cacheFiles(filePath, cache);
             } else if (file.endsWith('.json')) {
                 const key = file.substring(0, 6);
+                if (key in cache) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
                 const rawJson = fs.readFileSync(filePath, 'utf-8');
                 const content = JSON.parse(rawJson);
                 cache[key] = {
@@ -91,8 +92,8 @@ function wsCacheTransformPlugin(): Plugin {
 /**
  * Vite plugin that transforms CommonJS require() calls for JSON files into inline JSON.parse().
  * Many workspace packages (connect-data, connect) use require() for JSON imports,
- * which doesn't work in browser ESM mode. For non-JSON requires, we transform
- * them into dynamic imports.
+ * which doesn't work in browser ESM mode. Non-JSON require() calls are left
+ * unchanged.
  */
 function requireToImportPlugin(): Plugin {
     return {
