@@ -165,7 +165,7 @@ export const useTradingBuyForm = ({
         values.cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
     );
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
+    const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
         inputNames: {
@@ -173,6 +173,12 @@ export const useTradingBuyForm = ({
             fiatInput: TRADING_FORM_FIAT_INPUT,
         },
     });
+
+    const toggleAmountInCrypto = () => {
+        setValue(TRADING_FORM_CRYPTO_INPUT, '');
+        setValue(TRADING_FORM_FIAT_INPUT, '');
+        baseToggleAmountInCrypto();
+    };
 
     const { handleChange } = useTradingBuyHandleChange({
         formValues: values,
