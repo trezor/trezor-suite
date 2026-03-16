@@ -1993,8 +1993,12 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
-        defaultMessage: 'Failed to communicate with your Trezor',
+        defaultMessage: 'We can’t connect to your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+    },
+    TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH: {
+        id: 'TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH',
+        defaultMessage: 'Make sure your Trezor is connected via USB or Bluetooth and unlocked.',
     },
     TR_NEEDS_ATTENTION_DEVICE_BUSY: {
         defaultMessage: 'Your Trezor is in an incorrect state. Restart it to connect.',

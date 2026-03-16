@@ -37,7 +37,7 @@ export const DeviceAcquire = () => {
 
     return (
         <TroubleshootingTips
-            label={<Translation id="TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT" />}
+            label={<Translation id="TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH" />}
             cta={ctaButton}
             items={tips}
         />
