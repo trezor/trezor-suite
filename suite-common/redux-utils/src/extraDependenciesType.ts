@@ -40,10 +40,6 @@ export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
-export type SelectedRoute = {
-    name: string;
-};
-
 export type CommonServices = SuiteSyncDep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {
@@ -79,7 +75,6 @@ export type ExtraDependenciesStatic = {
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectRoute: SuiteCompatibleSelector<SelectedRoute | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
