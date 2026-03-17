@@ -57,17 +57,12 @@ export type NativeAccountsRootState = AccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
-export const selectVisibleAccountsWithLabel = createMemoizedSelector(
-    [
-        (state: NativeAccountsRootState) =>
-            selectAccountsWithSuiteSyncLabel(
-                state,
-                selectVisibleDeviceAccounts(state),
-                selectDeviceStaticSessionId(state),
-            ),
-    ],
-    accounts => accounts,
-);
+export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
+    selectAccountsWithSuiteSyncLabel(
+        state,
+        selectVisibleDeviceAccounts(state),
+        selectDeviceStaticSessionId(state),
+    );
 
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
