@@ -7,7 +7,6 @@ import {
 import {
     type ConnectInitSettings,
     type ExtraDependencies,
-    type SelectedRoute,
     notImplementedAction,
     notImplementedActionType,
     notImplementedReducer,
@@ -102,9 +101,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             transports: [],
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRoute: notImplementedSelector('selectRoute', {
-            name: 'suite-index',
-        } satisfies SelectedRoute),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectDevice: notImplementedSelector('selectDevice', {
             ...mockSuiteDevice(),

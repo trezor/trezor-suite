@@ -91,13 +91,12 @@ import {
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     (
-        { selectedAccountKey }: { selectedAccountKey?: AccountKey },
-        { dispatch, getState, extra, rejectWithValue },
+        {
+            selectedAccountKey,
+            isOnSendPage,
+        }: { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
+        { dispatch, getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectRoute },
-        } = extra;
-        const suiteRoute = selectRoute(getState());
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -107,16 +106,13 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
             return rejectWithValue('Account not found.');
         }
 
-        // draft will be saved after leaving the form anyways – don't interfere with the logic
-        const isOnDesktopSendPage = suiteRoute?.name === 'wallet-send';
-
         draftEntries.forEach(([accountKey, draft]) => {
             // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             const relatedAccount = selectAccountByKey(getState(), accountKey as AccountKey);
 
             const isSelectedAccount = selectedAccountKey === accountKey;
 
-            if ((isSelectedAccount && isOnDesktopSendPage) || !relatedAccount) {
+            if ((isSelectedAccount && isOnSendPage) || !relatedAccount) {
                 return;
             }
 
