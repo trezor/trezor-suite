@@ -10,6 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
+import { backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { recoveryReducer } from '@suite/recovery';
 import { type HistoryDep } from '@suite/router';
@@ -31,12 +32,11 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import backupMiddlewares from 'src/middlewares/backup';
+import backupMiddleware from 'src/middlewares/backup/backupMiddleware';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
-import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
 import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
@@ -64,7 +64,7 @@ const rootReducer = combineReducers({
     wallet: walletReducers,
     recovery: recoveryReducer,
     firmware: firmwareReducer,
-    backup: backupReducers,
+    backup: backupReducer,
     desktop: desktopReducer,
     bioAuth: prepareBioAuthReducer(extraDependencies),
     tokenDefinitions: tokenDefinitionsReducer,
@@ -87,7 +87,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
         ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
-        ...backupMiddlewares,
+        backupMiddleware,
     ];
 
     if (!isCodesignBuild()) {

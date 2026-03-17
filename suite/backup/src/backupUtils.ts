@@ -1,4 +1,4 @@
-import { type ConfirmKey } from 'src/actions/backup/backupActions';
+import { type ConfirmKey } from './types';
 
 /**
  * Utility function used to disable exit button after successful backup

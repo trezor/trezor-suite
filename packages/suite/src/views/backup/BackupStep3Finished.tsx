@@ -1,12 +1,10 @@
+import { type BackupState, canContinue } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { canContinue } from 'src/utils/backup';
-
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
-import { type BackupState } from '../../reducers/backup/backupReducer';
 
 export const BackupStep3Finished = ({
     onCancel,
