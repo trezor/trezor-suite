@@ -1,5 +1,4 @@
-import type { Address, Transaction } from '@trezor/blockchain-link-types';
-import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
+import type { Address, Transaction, VinVout } from '@trezor/blockchain-link-types';
 import type { ElectrumAPI } from '@trezor/blockchain-link-types/src/electrum';
 import type { GetAccountInfo as Req } from '@trezor/blockchain-link-types/src/messages';
 import type { GetAccountInfo as Res } from '@trezor/blockchain-link-types/src/responses';

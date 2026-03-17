@@ -4,13 +4,6 @@ export type SolanaTokenAccountInfo = {
     decimals: number | undefined;
 };
 
-export type SolanaStakingAccount = {
-    status: string;
-    stake?: string;
-    rentExemptReserve: string;
-    voterPubkey?: string;
-};
-
 export const StakeState = {
     Inactive: 'inactive',
     Activating: 'activating',

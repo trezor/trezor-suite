@@ -7,13 +7,13 @@ import type {
     TokenTransfer,
     Transaction,
     Utxo,
+    VinVout,
 } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo as BlockbookAccountInfo,
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
     ServerInfo,
-    VinVout,
 } from '@trezor/blockchain-link-types/src/blockbook';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

@@ -1,23 +1,137 @@
 import type tls from 'tls';
 
-import type { OptionalKey, RequiredKey } from '@trezor/type-utils';
+import type { BaseCurrencyCode } from './baseCurrency';
 
-import type {
-    AccountBalanceHistory,
-    Transaction as BlockbookTransaction,
-    FiatRatesBySymbol,
-    TokenStandard,
-    VinVout,
-} from './blockbook';
-import type {
-    AddressAlias,
-    Token as BlockbookToken,
-    TokenTransfer as BlockbookTokenTransfer,
-    Utxo as BlockbookUtxo,
-    ContractInfo,
-    StakingPool,
-} from './blockbook-api';
-import type { SolanaStakingAccount } from './solana';
+/* Shared types — canonical definitions used by both common and backend-specific modules */
+
+export interface SolanaStakingAccount {
+    status: string;
+    stake?: string;
+    rentExemptReserve: string;
+    voterPubkey?: string;
+}
+
+export type TokenStandard =
+    | 'TRC10'
+    | 'ERC20'
+    | 'TRC20'
+    | 'BEP20'
+    | 'ERC721'
+    | 'TRC721'
+    | 'BEP721'
+    | 'ERC1155'
+    | 'TRC1155'
+    | 'BEP1155'
+    | 'SPL'
+    | 'SPL-2022'
+    | 'BLOCKFROST'
+    | 'STELLAR-CLASSIC';
+
+export type FiatRatesBySymbol = {
+    [K in BaseCurrencyCode]?: number | undefined;
+};
+
+export interface VinVout {
+    txid?: string;
+    vout?: number;
+    sequence?: number;
+    n: number;
+    addresses?: string[];
+    isAddress: boolean;
+    isOwn?: boolean;
+    value?: string;
+    hex?: string;
+    asm?: string;
+    coinbase?: string;
+    spent?: boolean;
+    spentTxId?: string;
+    spentIndex?: number;
+    spentHeight?: number;
+    type?: string;
+}
+
+export interface AccountBalanceHistory {
+    time: number;
+    txs: number;
+    received: string;
+    sent: string;
+    sentToSelf?: string;
+    rates: FiatRatesBySymbol;
+}
+
+export interface MultiTokenValue {
+    id?: string;
+    value?: string;
+}
+
+export interface AddressAlias {
+    Type: string;
+    Alias: string;
+}
+
+export interface EthereumInternalTransfer {
+    type: number;
+    from: string;
+    to: string;
+    value: string;
+}
+
+export interface EthereumParsedInputParam {
+    type: string;
+    values?: string[];
+}
+
+export interface EthereumParsedInputData {
+    methodId: string;
+    name: string;
+    function?: string;
+    params?: EthereumParsedInputParam[];
+}
+
+export interface EthereumSpecific {
+    type?: number;
+    createdContract?: string;
+    status: number;
+    error?: string;
+    nonce: number;
+    gasLimit: number;
+    gasUsed?: number;
+    gasPrice?: string;
+    maxPriorityFeePerGas?: string;
+    maxFeePerGas?: string;
+    baseFeePerGas?: string;
+    l1Fee?: number;
+    l1FeeScalar?: string;
+    l1GasPrice?: string;
+    l1GasUsed?: number;
+    data?: string;
+    parsedData?: EthereumParsedInputData;
+    internalTransfers?: EthereumInternalTransfer[];
+}
+
+export interface StakingPool {
+    contract: string;
+    name: string;
+    pendingBalance: string;
+    pendingDepositedBalance: string;
+    depositedBalance: string;
+    withdrawTotalAmount: string;
+    claimableAmount: string;
+    restakedReward: string;
+    autocompoundBalance: string;
+}
+
+export interface ContractInfo {
+    /** @deprecated: Use standard instead. */
+    type: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
+    standard: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
+    contract: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    createdInBlock?: number;
+    destructedInBlock?: number;
+}
 
 /* Common types used in both params and responses */
 
@@ -76,16 +190,21 @@ export interface ServerInfo {
     network: string;
 }
 
-export type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard };
-
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
 /* Transaction */
-export type TokenTransfer = Omit<BlockbookTokenTransfer, 'value' | 'type' | 'standard'> & {
+export interface TokenTransfer {
     type: TransferType;
     standard?: TokenStandard;
     amount: string;
-};
+    from: string;
+    to: string;
+    contract: string;
+    name?: string;
+    symbol?: string;
+    decimals: number;
+    multiTokenValues?: MultiTokenValue[];
+}
 
 export interface InternalTransfer {
     // we filter out addresses where from/to is not user's address except Everstake instant txs which are marked 'external'
@@ -131,7 +250,7 @@ export interface Transaction {
     targets: Target[];
     tokens: TokenTransfer[];
     rbf?: boolean;
-    ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
+    ethereumSpecific?: EthereumSpecific;
     internalTransfers: InternalTransfer[];
     cardanoSpecific?: {
         subtype?:
@@ -187,32 +306,40 @@ export interface AccountAddresses {
     anonymitySet?: AnonymitySet;
 }
 
-export type Utxo = Omit<
-    RequiredKey<BlockbookUtxo, 'address' | 'path'>,
-    'value' | 'height' | 'lockTime'
-> & {
+export interface Utxo {
+    txid: string;
+    vout: number;
+    confirmations: number;
+    address: string;
+    path: string;
+    coinbase?: boolean;
     amount: string;
     blockHeight: number;
     cardanoSpecific?: {
         unit: string;
     };
-};
+}
 
 export interface TokenAccount {
     publicKey: string;
     balance: string;
 }
 
-export type TokenInfo = Omit<
-    RequiredKey<OptionalKey<BlockbookToken, 'name'>, 'contract'>,
-    'type' | 'standard' | 'path' | 'transfers' | 'baseValue' | 'secondaryValue'
-> & {
+export interface TokenInfo {
     standard: TokenStandard;
+    name?: string;
+    contract: string;
+    symbol?: string;
+    decimals: number;
+    balance?: string;
+    ids?: string[];
+    multiTokenValues?: MultiTokenValue[];
+    totalReceived?: string;
+    totalSent?: string;
     accounts?: TokenAccount[];
     policyId?: string;
     fingerprint?: string;
-    // transfers: number, // total transactions?
-};
+}
 
 /**
  * This is Backend data for the account. Data can change over time as transactions happen.
