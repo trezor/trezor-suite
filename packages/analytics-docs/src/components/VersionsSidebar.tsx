@@ -14,10 +14,8 @@ import {
     variables,
 } from '@trezor/components';
 
-import { HEADER_HEIGHT } from '../constants';
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
-import { getEventId } from '../utils/filterUtils';
 
 const isAdded = (event: EventDoc, version: string) => event.changelog?.addedInVersion === version;
 
@@ -25,13 +23,6 @@ const getEventChangeProps = (event: EventDoc, version: string) =>
     isAdded(event, version)
         ? { name: 'plus' as const, intent: 'brand' as const }
         : { name: 'arrowsClockwiseFilled' as const, intent: 'warning' as const };
-
-const scrollToEvent = (eventName: string) => {
-    const el = document.getElementById(getEventId(eventName));
-    if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT - 20;
-    window.scrollTo({ top: y });
-};
 
 const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     width: 100%;
@@ -85,7 +76,6 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                                 <CardList.Item
                                     paddingType="small"
                                     onClick={() => {
-                                        scrollToEvent(event.name);
                                         onEventClick?.(event.name);
                                     }}
                                     key={event.name}

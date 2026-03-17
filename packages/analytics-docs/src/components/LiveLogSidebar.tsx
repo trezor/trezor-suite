@@ -33,7 +33,7 @@ import { useLiveLogEvents } from '../utils/useLiveLogEvents';
 const META_KEYS = ['version', 'commit', 'instanceId', 'sessionId', 'messageId'] as const;
 
 export const LIVE_LOG_SIDEBAR_MIN_WIDTH = 280;
-export const LIVE_LOG_SIDEBAR_MAX_WIDTH = 600;
+export const LIVE_LOG_SIDEBAR_MAX_WIDTH = 800;
 
 const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     width: 100%;

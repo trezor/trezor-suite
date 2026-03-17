@@ -80,4 +80,3 @@ export const createEventStore = (opts?: { maxEvents?: number }) => {
 };
 
 export type EventStore = ReturnType<typeof createEventStore>;
-

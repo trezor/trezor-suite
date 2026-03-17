@@ -3,7 +3,12 @@
     "include": ["src/**/*.ts"],
     "compilerOptions": {
         "composite": true,
-        "noEmit": true
-    }
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationMap": true,
+        "outDir": "libDev",
+        "rootDir": "src"
+    },
+    "references": []
 }
-
