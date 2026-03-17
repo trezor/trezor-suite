@@ -45,6 +45,7 @@ export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';
 export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
+export type TradingTypeWithConcierge = TradingType | 'concierge';
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;

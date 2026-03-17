@@ -84,6 +84,7 @@ export const Feature = {
         restrictions: {
             blacklist: 'trading.restrictions.blacklist',
         },
+        concierge: 'trading.concierge',
         survey: 'trading.survey',
         slip24: 'trading.slip24',
     },
