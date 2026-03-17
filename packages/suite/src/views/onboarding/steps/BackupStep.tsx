@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
-import { backupDeviceThunk, canContinue, selectBackup, selectBackupStatus } from '@suite/backup';
+import {
+    type BackupDeviceParams,
+    backupDeviceThunk,
+    canContinue,
+    selectBackup,
+    selectBackupStatus,
+} from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { SettingsAnchor, goto } from '@suite/router';
@@ -27,7 +33,7 @@ export const BackupStep = () => {
     const handleBackup = () => {
         dispatch(updateAnalytics({ backup: 'create' }));
 
-        const params: Parameters<typeof backupDeviceThunk>[0]['params'] =
+        const params: BackupDeviceParams =
             backupType === 'shamir-single'
                 ? {
                       group_threshold: 1,
