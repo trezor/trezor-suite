@@ -13,6 +13,9 @@ type GlobalWithReselectWarnPatch = typeof globalThis & {
 const globalScope = globalThis as GlobalWithReselectWarnPatch;
 
 if (!globalScope.__trezorReselectIdentityWarnPatched__) {
+    // We cannot mock reselect's internal `runIdentityFunctionCheck` directly here because the
+    // published CommonJS build bundles that helper into the main module. Patching `console.warn`
+    // lets tests fail on that specific warning without modifying production code.
     const originalWarn = console.warn.bind(console);
 
     globalScope.__trezorReselectOriginalWarn__ = originalWarn;
