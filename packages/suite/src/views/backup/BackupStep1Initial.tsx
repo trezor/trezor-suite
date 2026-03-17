@@ -1,4 +1,9 @@
-import { type BackupState, type ConfirmKey, backupDeviceThunk } from '@suite/backup';
+import {
+    type BackupDeviceParams,
+    type BackupState,
+    type ConfirmKey,
+    backupDeviceThunk,
+} from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -26,7 +31,7 @@ export const BackupStep1Initial = ({
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const dispatch = useDispatch();
 
-    const params: Parameters<typeof backupDeviceThunk>[0]['params'] =
+    const params: BackupDeviceParams =
         device?.features?.backup_type === 'Slip39_Basic' ||
         device?.features?.backup_type === 'Slip39_Basic_Extendable'
             ? {

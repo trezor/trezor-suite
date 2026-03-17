@@ -1,3 +1,5 @@
+import TrezorConnect from '@trezor/connect';
+
 export type ConfirmKey =
     | 'has-enough-time'
     | 'is-in-private'
@@ -7,3 +9,5 @@ export type ConfirmKey =
     | 'will-hide-seed';
 
 export type BackupStatus = 'initial' | 'in-progress' | 'finished' | 'error';
+
+export type BackupDeviceParams = Parameters<typeof TrezorConnect.backupDevice>[0];
