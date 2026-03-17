@@ -1,7 +1,6 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { goto } from '@suite/router';
-import { type Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';

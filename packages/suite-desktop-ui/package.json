@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.8.0",
+        "@suite/router": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/flags": "workspace:*",

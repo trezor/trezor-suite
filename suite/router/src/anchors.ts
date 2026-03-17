@@ -1,4 +1,4 @@
-import { type Route } from '@suite-common/suite-types';
+import { type Route } from './route';
 
 export type AnchorSettingSection =
     | 'general-settings'
