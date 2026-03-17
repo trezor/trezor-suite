@@ -1,7 +1,32 @@
-packages/**/node_modules
-packages/blockchain-link
-packages/suite-desktop
-suite-native/app
-suite-native/**/node_modules
-node_modules
 .git
+.github
+**/.DS_Store
+
+# Node / build artifacts
+**/node_modules
+**/dist
+**/build
+**/.cache
+**/.turbo
+**/.next
+**/.storybook-cache
+
+# Mobile workspace is huge; not needed for analytics-docs build
+suite-native
+suite-native/**
+
+# ...except suite-native/analytics, which analytics-docs build-data imports
+!suite-native/analytics
+!suite-native/analytics/**
+
+# iOS pods can be massive if present
+**/Pods
+**/Pods/**
+
+# Yarn cache can be large; not required to build when using node-modules linker
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+
+# Logs
+**/*.log

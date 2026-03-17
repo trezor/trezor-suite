@@ -5,13 +5,14 @@ import type { LiveLogEvent } from '../types';
 const STREAM_PATH = '/api/analytics-events/stream';
 const CLEAR_PATH = '/api/analytics-events/clear';
 
-export const useLiveLogEvents = () => {
+const joinUrl = (baseUrl: string, path: string) => `${baseUrl.replace(/\/+$/, '')}${path}`;
+
+export const useLiveLogEvents = (baseUrl: string) => {
     const [events, setEvents] = useState<LiveLogEvent[]>([]);
     const [connected, setConnected] = useState(false);
 
     useEffect(() => {
-        const base = typeof window !== 'undefined' ? window.location.origin : '';
-        const url = `${base}${STREAM_PATH}`;
+        const url = joinUrl(baseUrl, STREAM_PATH);
         const es = new EventSource(url);
 
         es.onopen = () => setConnected(true);
@@ -30,13 +31,12 @@ export const useLiveLogEvents = () => {
             es.close();
             setConnected(false);
         };
-    }, []);
+    }, [baseUrl]);
 
     const clear = useCallback(async () => {
-        const base = typeof window !== 'undefined' ? window.location.origin : '';
-        await fetch(`${base}${CLEAR_PATH}?clear=1`, { method: 'GET' });
+        await fetch(`${joinUrl(baseUrl, CLEAR_PATH)}?clear=1`, { method: 'GET' });
         setEvents([]);
-    }, []);
+    }, [baseUrl]);
 
     return { events, connected, clear };
 };
