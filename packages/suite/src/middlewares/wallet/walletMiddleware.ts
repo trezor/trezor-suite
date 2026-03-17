@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
-import { routerLocationChange } from '@suite/router';
+import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -106,9 +106,11 @@ const walletMiddleware =
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
             const nextSelectedAccountKey = selectSelectedAccountKey(api.getState());
+            const suiteRouteName = selectRouteName(api.getState());
             api.dispatch(
                 convertSendFormDraftsBtcAmountUnitsThunk({
                     selectedAccountKey: nextSelectedAccountKey,
+                    isOnSendPage: suiteRouteName === 'wallet-send',
                 }),
             );
             api.dispatch(tradingCommonActions.convertDrafts());

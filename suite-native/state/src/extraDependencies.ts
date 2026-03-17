@@ -131,7 +131,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRoute: notImplementedSelector('selectRoute', {} as any),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
