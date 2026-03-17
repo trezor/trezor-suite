@@ -9973,7 +9973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12, @sinclair/typebox@npm:^0.33.7":
+"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12":
   version: 0.33.12
   resolution: "@sinclair/typebox@npm:0.33.12"
   checksum: 10/3b868a540480a914fb05e939fd875f1db9d078671038786394d8ac21f1cb12f2e5e25f0cc1092925f613821d0a959a14c8c8ad35a4064639822ce5f7b83ce380
@@ -15959,7 +15959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
   dependencies:
-    "@sinclair/typebox": "npm:^0.33.7"
+    "@sinclair/typebox": "npm:^0.33.12"
     "@sinclair/typebox-codegen": "npm:^0.10.4"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
