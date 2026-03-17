@@ -31,6 +31,7 @@ export * from './utils/exchange/exchangeUtils';
 export * from './utils/sell/sellUtils';
 export * from './utils/signature/signatureUtils';
 export * from './utils/countryUtils';
+export * from './utils/numberUtils';
 export { getOtcProvidersByCountry, useFetchOtc } from './queries';
 export * from './invityAPI';
 export * from './utils/currencyUtils';
