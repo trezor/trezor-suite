@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
+        "@trezor/analytics-log-server": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/react-utils": "workspace:*",

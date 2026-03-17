@@ -1,0 +1,14 @@
+{
+    "name": "@trezor/analytics-log-server",
+    "private": true,
+    "type": "module",
+    "main": "src/index.ts",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "dev": "yarn g:tsx src/server.ts",
+        "build": "yarn g:tsc -p tsconfig.build.json",
+        "start": "node dist/server.js"
+    }
+}
