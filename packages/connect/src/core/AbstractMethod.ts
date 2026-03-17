@@ -38,10 +38,15 @@ export type MethodInfo = {
     confirmation?: UiRequestConfirmation['payload'];
 };
 
+export type MethodContext = {
+    postMessage: (message: CoreEventMessage) => void;
+    createUiPromise: UiPromiseCreator;
+};
+
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: number;
     payload: Payload<Name>;
-};
+} & MethodContext;
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
@@ -158,9 +163,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
     // callbacks
-    // @ts-expect-error: strictPropertyInitialization
     public postMessage: (message: CoreEventMessage) => void;
-    // @ts-expect-error: strictPropertyInitialization
+
     public createUiPromise: UiPromiseCreator;
 
     public initAsync?(): Promise<void>;
@@ -170,6 +174,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.payload = payload;
         this.responseID = message.id || 0;
+        this.postMessage = message.postMessage;
+        this.createUiPromise = message.createUiPromise;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
