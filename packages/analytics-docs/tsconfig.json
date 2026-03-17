@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "include": [
         "src/**/*",
+        "server/**/*",
         "scripts/**/*",
         "package.json",
         "styled.d.ts"
@@ -9,12 +10,19 @@
     "exclude": [],
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["vite/client", "jest"]
+        "types": ["vite/client", "jest"],
+        "baseUrl": ".",
+        "paths": {
+            "@trezor/analytics-log-server": [
+                "../analytics-log-server/src/index.ts"
+            ]
+        }
     },
     "references": [
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../analytics-log-server" },
         { "path": "../components" },
         { "path": "../eslint" },
         { "path": "../react-utils" },

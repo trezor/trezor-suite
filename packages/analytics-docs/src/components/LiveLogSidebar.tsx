@@ -17,6 +17,7 @@ import {
     SuiteThemeColors,
     Table,
     Text,
+    Tooltip,
     variables,
 } from '@trezor/components';
 
@@ -243,30 +244,33 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                         <Box padding={{ horizontal: 20, top: 20, bottom: 8 }}>
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <H3 margin={{ bottom: 0 }}>Live log</H3>
-                                <IconButton
-                                    icon="gear"
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    onClick={() => setIsSettingsOpen(true)}
-                                />
+                                <Row gap={8}>
+                                    {events.length > 0 && (
+                                        <Tooltip content="Clear log">
+                                            <IconButton
+                                                size="small"
+                                                priority="secondary"
+                                                intent="critical"
+                                                onClick={clear}
+                                                icon="prohibit"
+                                            />
+                                        </Tooltip>
+                                    )}
+                                    <Tooltip content="Settings">
+                                        <IconButton
+                                            icon="gear"
+                                            size="small"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            onClick={() => setIsSettingsOpen(true)}
+                                        />
+                                    </Tooltip>
+                                </Row>
                             </Row>
                             <Box margin={{ bottom: 8 }}>
-                                <Row gap={8} alignItems="center">
-                                    <Badge size="small" intent={connected ? 'brand' : 'warning'}>
-                                        {connected ? 'Connected' : 'Reconnecting…'}
-                                    </Badge>
-                                    {events.length > 0 && (
-                                        <Button
-                                            size="small"
-                                            priority="secondary"
-                                            intent="critical"
-                                            onClick={clear}
-                                        >
-                                            Clear
-                                        </Button>
-                                    )}
-                                </Row>
+                                <Badge size="small" intent={connected ? 'brand' : 'warning'}>
+                                    {connected ? 'Connected' : 'Reconnecting…'}
+                                </Badge>
                             </Box>
                             <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                                 In Suite, set Custom Analytics URL (Settings → Debug) to{' '}
@@ -304,73 +308,63 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
             </SidebarWrapper>
             {isSettingsOpen &&
                 createPortal(
-                    <Modal.Backdrop
-                        zIndex={100}
-                        onClick={undefined}
-                        alignment={{ x: 'center', y: 'center' }}
+                    <Modal
+                        heading="Live log settings"
+                        onCancel={() => {
+                            setIsSettingsOpen(false);
+                            setLogServerInput(logServerBaseUrl);
+                        }}
+                        width={600}
+                        bottomContent={
+                            <Modal.Button
+                                onClick={() => {
+                                    const next =
+                                        logServerInput.trim() || getDefaultLogServerBaseUrl();
+                                    setLogServerBaseUrl(next);
+                                    setLogServerBaseUrlState(next);
+                                    setLogServerInput(next);
+                                    setIsSettingsOpen(false);
+                                }}
+                            >
+                                Apply
+                            </Modal.Button>
+                        }
                     >
-                        <Modal.ModalBase
-                            heading="Live log settings"
-                            onCancel={() => {
-                                setIsSettingsOpen(false);
-                                setLogServerInput(logServerBaseUrl);
-                            }}
-                            width={600}
-                            bottomContent={
-                                <Modal.Button
-                                    onClick={() => {
-                                        const next =
-                                            logServerInput.trim() || getDefaultLogServerBaseUrl();
-                                        setLogServerBaseUrl(next);
-                                        setLogServerBaseUrlState(next);
-                                        setLogServerInput(next);
-                                        setIsSettingsOpen(false);
-                                    }}
-                                >
-                                    Apply
-                                </Modal.Button>
-                            }
-                        >
-                            <Column gap={12} alignItems="stretch">
-                                <Row gap={8} alignItems="center">
-                                    <Input
-                                        size="small"
-                                        value={logServerInput}
-                                        onChange={e => setLogServerInput(e.target.value)}
-                                        placeholder="Log server base URL (e.g. https://analytics-log.example.com)"
-                                        showClearButton
-                                        onClear={() => setLogServerInput('')}
-                                    />
+                        <Column gap={12} alignItems="stretch">
+                            <Row gap={8} alignItems="center">
+                                <Input
+                                    size="small"
+                                    value={logServerInput}
+                                    onChange={e => setLogServerInput(e.target.value)}
+                                    placeholder="Log server base URL (e.g. https://analytics-log.example.com)"
+                                    showClearButton
+                                    onClear={() => setLogServerInput('')}
+                                />
 
-                                    <Modal.Button
-                                        priority="secondary"
-                                        intent="critical"
-                                        onClick={() => {
-                                            const def = getDefaultLogServerBaseUrl();
-                                            setLogServerBaseUrl(def);
-                                            setLogServerBaseUrlState(def);
-                                            setLogServerInput(def);
-                                        }}
-                                        size="medium"
-                                    >
-                                        Reset
-                                    </Modal.Button>
-                                </Row>
-                                <Text
-                                    typographyStyle="body-xs"
-                                    intent="neutral"
+                                <Modal.Button
                                     priority="secondary"
+                                    intent="critical"
+                                    onClick={() => {
+                                        const def = getDefaultLogServerBaseUrl();
+                                        setLogServerBaseUrl(def);
+                                        setLogServerBaseUrlState(def);
+                                        setLogServerInput(def);
+                                    }}
+                                    size="medium"
                                 >
-                                    This controls where analytics-docs connects for live events
-                                    (SSE) and where Suite should send events to{' '}
-                                    <Text isMonospaced typographyStyle="inherit">
-                                        {`${(logServerInput.trim() || getDefaultLogServerBaseUrl()).replace(/\/+$/, '')}/log`}
-                                    </Text>
-                                    .
+                                    Reset
+                                </Modal.Button>
+                            </Row>
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                This controls where analytics-docs connects for live events (SSE)
+                                and where Suite should send events to{' '}
+                                <Text isMonospaced typographyStyle="inherit">
+                                    {`${(logServerInput.trim() || getDefaultLogServerBaseUrl()).replace(/\/+$/, '')}/log`}
                                 </Text>
-                            </Column>
-                        </Modal.ModalBase>
-                    </Modal.Backdrop>,
+                                .
+                            </Text>
+                        </Column>
+                    </Modal>,
                     document.body,
                 )}
         </>
