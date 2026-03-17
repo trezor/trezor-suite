@@ -1,11 +1,11 @@
 import type { DeviceReducerState } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { testMocks } from '@suite-common/test-utils';
+import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 

@@ -18,5 +18,10 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "redux-mock-store": "^1.5.5",
+        "redux-thunk": "^3.1.0"
     }
 }

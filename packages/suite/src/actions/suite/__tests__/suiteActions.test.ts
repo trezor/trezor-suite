@@ -8,21 +8,19 @@ import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
+import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
     forgetDisconnectedDevices,
-    handleDeviceDisconnect,
     observeSelectedDevice,
     selectDeviceThunk,
     selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';
-import { DEVICE } from '@trezor/connect';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from '../__fixtures__/suiteActions';
@@ -171,29 +169,6 @@ describe('Suite Actions', () => {
             expect(
                 store.getActions().some(a => a?.type === SUITE.SET_RECENTLY_CONNECTED_DEVICE),
             ).toBe(f.isSetAsRecentlyConnected);
-        });
-    });
-
-    fixtures.handleDeviceDisconnect.forEach(f => {
-        it(`handleDeviceDisconnect: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
-            store.dispatch({
-                type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
-                payload: f.device,
-            });
-            store.dispatch(handleDeviceDisconnect(f.device));
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
-                    deviceActions.deviceDisconnect.type,
-                );
-            } else {
-                const action = store.getActions().pop();
-                if (f.result.type) {
-                    expect(action.type).toEqual(f.result.type);
-                }
-                expect(action.payload).toEqual(f.result.payload);
-            }
         });
     });
 

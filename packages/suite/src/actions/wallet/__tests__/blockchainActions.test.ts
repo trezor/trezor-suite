@@ -1,5 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
-import { testMocks } from '@suite-common/test-utils';
+import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
     notificationsActions,
@@ -22,7 +22,7 @@ import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/blockchainActions';
 
