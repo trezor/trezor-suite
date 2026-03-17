@@ -1,8 +1,8 @@
 import { lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Route } from '@suite-common/suite-types';
 
 import { type AnchorType } from './anchors';
+import { type Route } from './route';
 import {
     type RouterPathOptional,
     findRoute,

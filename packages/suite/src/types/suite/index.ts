@@ -7,7 +7,7 @@ import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
 import type { recoveryActions } from '@suite/recovery';
-import { type RouterAction } from '@suite/router';
+import { type Route, type RouterAction } from '@suite/router';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
@@ -20,7 +20,6 @@ import {
     type suiteSyncDataSlice,
 } from '@suite-common/suite-sync';
 import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
-import type { Route } from '@suite-common/suite-types';
 import { type thpActions } from '@suite-common/thp';
 import { type notificationsActions } from '@suite-common/toast-notifications';
 import {

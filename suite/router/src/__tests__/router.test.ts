@@ -1,5 +1,4 @@
-import { type Route } from '@suite-common/suite-types';
-
+import { type Route } from '../route';
 import {
     getAppWithParams,
     getPrefixedURL,

@@ -12,7 +12,6 @@ import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/s
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     type ReportSecurityCheckDep,
-    type Route,
     type TrezorDevice,
     type UserContextPayload,
 } from '@suite-common/suite-types';
@@ -40,6 +39,10 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
+
+export type SelectedRoute = {
+    name: string;
+};
 
 export type CommonServices = SuiteSyncDep &
     EnsureDelegatedIdentityKeyDep &
@@ -77,7 +80,7 @@ export type ExtraDependenciesStatic = {
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectRouterApp: SuiteCompatibleSelector<string>;
-        selectRoute: SuiteCompatibleSelector<Route | undefined>;
+        selectRoute: SuiteCompatibleSelector<SelectedRoute | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;

@@ -1,7 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
-import { type Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';

@@ -154,6 +154,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
+        // TODO remove both
         selectRouterApp,
         selectRoute,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,

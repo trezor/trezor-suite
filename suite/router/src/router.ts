@@ -1,6 +1,6 @@
-import { type Route } from '@suite-common/suite-types';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
+import { type Route } from './route';
 import {
     type DashboardParams,
     decodeEarnRouteParams,
