@@ -394,6 +394,7 @@
   "TR_BIO_AUTH_LOCKED_HEADING": "A Trezor Suite zárolva van",
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Feloldás Touch ID használatával",
   "TR_BIO_AUTH_LOCKED_TEXT_WIN": "Feloldás Window Hello használatával",
+  "TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT": "A biometrikus azonosítás jelenleg nem érhető el ezen az eszközön. Próbálja meg újraindítani az eszközt, vagy nyissa meg a Trezor Suite-ot az elsődleges kijelzőn. Ha ezek a lépések nem segítenek, telepítse újra az alkalmazást, és csatlakoztassa újra a Trezor eszközeit.",
   "TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP": "Biometrikus hitelesítés elérhetőségének ellenőrzése.",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "személyazonosság igazolása",
   "TR_BIO_AUTH_UNAVAILABLE_TOOLTIP": "A biometrikus hitelesítés nem érhető el az eszközödön.",
