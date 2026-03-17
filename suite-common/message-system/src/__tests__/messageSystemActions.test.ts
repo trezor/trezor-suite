@@ -4,7 +4,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 
 import * as fixtures from '../__fixtures__/messageSystemActions';
 import {
-    MessageSystemState,
+    type MessageSystemState,
     initMessageSystemThunk,
     messageSystemActions,
     prepareMessageSystemReducer,

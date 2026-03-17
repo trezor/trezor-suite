@@ -8,7 +8,7 @@ import {
     selectExperimentById,
     selectExperimentInclusionOverrideById,
 } from './messageSystemSelectors';
-import { ExperimentId } from './messageSystemTypes';
+import type { ExperimentId } from './messageSystemTypes';
 
 export const useExperiment = (experimentId: ExperimentId) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);

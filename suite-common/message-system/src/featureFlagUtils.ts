@@ -1,5 +1,5 @@
-import { Feature } from '@suite-common/suite-types';
-import { FirmwareHashCheckTimeouts } from '@trezor/connect';
+import { type Feature } from '@suite-common/suite-types';
+import { type FirmwareHashCheckTimeouts } from '@trezor/connect';
 
 import { Feature as FeatureDefinitions } from './messageSystemTypes';
 

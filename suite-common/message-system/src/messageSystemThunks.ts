@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { MessageSystem } from '@suite-common/suite-types';
+import { type MessageSystem } from '@suite-common/suite-types';
 import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { isCodesignBuild, isNative } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';

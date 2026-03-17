@@ -7,7 +7,7 @@ import {
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
 } from '../experimentUtils';
-import { ExperimentId } from '../messageSystemTypes';
+import { type ExperimentId } from '../messageSystemTypes';
 
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),

@@ -1,4 +1,4 @@
-import { Feature } from '@suite-common/suite-types';
+import { type Feature } from '@suite-common/suite-types';
 
 import { parseTimeoutThresholdsPerModel } from '../featureFlagUtils';
 import { Feature as FeatureDefinitions } from '../messageSystemTypes';
