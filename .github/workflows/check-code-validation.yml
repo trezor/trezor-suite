@@ -69,15 +69,8 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
 
-      - name: ESlint Cache
-        uses: actions/cache@v5
-        with:
-          path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
       - name: Lint JS
-        run: yarn lint:js:workspaces --cache-strategy content
+        run: yarn nx:lint:js --output-style=stream
       - name: Lint Styles
         run: yarn nx:lint:styles --output-style=stream
       - name: Check rust files changes

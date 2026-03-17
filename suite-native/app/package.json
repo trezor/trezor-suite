@@ -23,7 +23,8 @@
         "test:e2e:ios": "node ./scripts/cleanArtifacts.js && npx tsx e2e/trezorDetoxRunner/index.ts --config=e2e/trezorDetoxRunner/config/runner-ios.config.js",
         "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21328 tcp:21328 && adb reverse tcp:19121 tcp:19121",
-        "github:report:manual": "npx jest --config=./e2e/jest.config.reporter.js"
+        "github:report:manual": "npx jest --config=./e2e/jest.config.reporter.js",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@bitcoinerlab/secp256k1": "1.2.0",

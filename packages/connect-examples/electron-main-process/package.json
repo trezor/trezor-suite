@@ -9,7 +9,8 @@
         "dev": "electron .",
         "build:mac": "electron-builder --mac",
         "build:linux": "electron-builder --linux",
-        "build:win": "electron-builder --win"
+        "build:win": "electron-builder --win",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "build": {
         "appId": "${name}",

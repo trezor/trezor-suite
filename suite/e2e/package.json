@@ -16,7 +16,8 @@
         "github:create:project": "tsx ./support/reporters/scriptCreateProject.ts",
         "git:bisect": "./scripts/bisect-commits.sh",
         "decode:sol:stake": "tsx ./scripts/decode-sol-staking-account.ts",
-        "docker:suite-sync": "docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml up quota-db suite-sync"
+        "docker:suite-sync": "docker compose -f ../../docker/docker-compose.suite-ci-e2e.yml up quota-db suite-sync",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@currents/playwright": "^1.19.0",

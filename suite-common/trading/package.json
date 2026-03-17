@@ -9,7 +9,8 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest --coverage",
-        "test:unit:watch": "yarn g:jest --watch"
+        "test:unit:watch": "yarn g:jest --watch",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",

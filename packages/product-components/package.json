@@ -15,7 +15,8 @@
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9004 -c .storybook",
         "storybook-build": "storybook build -c .storybook -o .build-storybook",
-        "icons:optimize": "svgo -rf ./src/images"
+        "icons:optimize": "svgo -rf ./src/images",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/suite-constants": "workspace:*",

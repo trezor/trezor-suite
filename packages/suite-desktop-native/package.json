@@ -10,7 +10,8 @@
         "build:native": "node scripts/build-native.js",
         "clean": "node scripts/clean.js",
         "copy-binary": "node scripts/copy-binary.js",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "node-addon-api": "^5.0.0"

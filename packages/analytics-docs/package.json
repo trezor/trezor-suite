@@ -9,7 +9,8 @@
         "build": "yarn build-data && vite build",
         "preview": "vite preview",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",

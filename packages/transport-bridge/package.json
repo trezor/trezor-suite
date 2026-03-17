@@ -15,7 +15,8 @@
         "build:ui": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
         "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
         "build": "yarn build:js",
-        "build:lib": "yarn build:js"
+        "build:lib": "yarn build:js",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "esbuild": "^0.25.2",

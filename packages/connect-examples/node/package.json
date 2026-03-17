@@ -5,7 +5,8 @@
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "license": "MIT",
     "scripts": {
-        "start": "tsx  ./src/index.ts"
+        "start": "tsx  ./src/index.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",

@@ -15,7 +15,8 @@
         "dev:tailwind": "TAILWIND_MODE=watch yarn postcss css/styles.css -o style.css --watch",
         "prepublishOnly": "yarn build:all",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "postinstall": "yarn build:all"
+        "postinstall": "yarn build:all",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "next": ">=9.5.3",

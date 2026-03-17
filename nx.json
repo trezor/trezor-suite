@@ -50,6 +50,15 @@
             ],
             "cache": true
         },
+        "lint:js": {
+            "inputs": [
+                "default",
+                "{workspaceRoot}/eslint.config.mjs",
+                "{workspaceRoot}/packages/eslint/**/*"
+            ],
+            "outputs": ["{projectRoot}/.eslintcache"],
+            "cache": true
+        },
         "lint:styles": {
             "inputs": ["default", "{workspaceRoot}/.stylelintrc"],
             "outputs": ["{projectRoot}/.stylelintcache"],
