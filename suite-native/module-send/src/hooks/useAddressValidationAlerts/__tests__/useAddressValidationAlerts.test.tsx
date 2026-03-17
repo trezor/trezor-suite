@@ -5,7 +5,7 @@ import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
@@ -91,7 +91,7 @@ describe('useAddressValidationAlerts', () => {
         preloadedState: PreloadedState = defaultPreloadedState,
         { inputIndex = 0 } = {},
     ) => {
-        const result = await renderHookWithStoreProviderAsync(
+        const result = renderHookWithStoreProvider(
             () => useAddressValidationAlerts({ inputIndex }),
             {
                 preloadedState,
