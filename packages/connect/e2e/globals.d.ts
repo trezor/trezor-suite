@@ -18,14 +18,14 @@ declare global {
 
     type LegacyResult = {
         rules: string[];
-        payload?: Record<string, unknown> | false;
+        payload?: Record<string, unknown> | boolean;
         success?: boolean;
     };
 
     type Fixture = {
         description: string;
         params: Record<string, unknown>;
-        result?: Record<string, unknown> | Record<string, unknown>[] | false;
+        result?: Record<string, unknown> | Record<string, unknown>[] | boolean;
         legacyResults?: LegacyResult[];
         customTimeout?: number;
         setup?: {
