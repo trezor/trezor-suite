@@ -77,7 +77,7 @@ jobs:
             !**/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
       - name: Lint JS
-        run: yarn lint:js --cache-strategy content
+        run: yarn lint:js:workspaces --cache-strategy content
       - name: Lint Styles
         run: yarn nx:lint:styles --output-style=stream
       - name: Check rust files changes
@@ -173,7 +173,6 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
-
 
   releases-revision-checks:
     name: Releases revision Checks
