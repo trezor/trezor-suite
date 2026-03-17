@@ -15308,6 +15308,7 @@ __metadata:
   resolution: "@trezor/analytics-docs@workspace:packages/analytics-docs"
   dependencies:
     "@suite-common/analytics": "workspace:*"
+    "@trezor/analytics-log-server": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -15322,6 +15323,12 @@ __metadata:
     tsx: "npm:^4.20.3"
     vite: "npm:^7.3.1"
     vite-plugin-node-polyfills: "npm:^0.25.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/analytics-log-server@workspace:*, @trezor/analytics-log-server@workspace:packages/analytics-log-server":
+  version: 0.0.0-use.local
+  resolution: "@trezor/analytics-log-server@workspace:packages/analytics-log-server"
   languageName: unknown
   linkType: soft
 
