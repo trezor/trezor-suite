@@ -14220,7 +14220,6 @@ __metadata:
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -16146,7 +16145,6 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": "npm:^7.8.0"
-    "@suite-common/suite-types": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:*"

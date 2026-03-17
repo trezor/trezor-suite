@@ -1,7 +1,7 @@
-import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
+import reduxMockStore, { type MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
-import { routerReducer } from '@suite/router';
+import { type RouterState, routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesCommonMock, filterThunkActionTypes } from '@suite-common/test-utils';
@@ -13,10 +13,15 @@ import { disconnectDeviceThunk } from '../deviceThunks';
 const EMPTY_ACTION = { type: 'foo' };
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 
+type State = {
+    device: ReturnType<typeof deviceReducer>;
+    router: RouterState;
+};
+
 const getInitialState = (state?: {
     device?: Partial<ReturnType<typeof deviceReducer>>;
-    router?: Partial<ReturnType<typeof routerReducer>>;
-}) => ({
+    router?: Partial<RouterState>;
+}): State => ({
     device: {
         ...deviceReducer(undefined, EMPTY_ACTION),
         ...state?.device,
@@ -24,7 +29,7 @@ const getInitialState = (state?: {
     router: {
         ...routerReducer(undefined, EMPTY_ACTION),
         ...state?.router,
-    },
+    } as RouterState,
 });
 
 const configureStore = <S, DispatchExts = {}>(
@@ -34,10 +39,9 @@ const configureStore = <S, DispatchExts = {}>(
         withExtraArgument({
             ...extraDependenciesCommonMock,
             ...additionalExtraDeps,
-        }),
+        }) as any,
     ]);
 
-type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
