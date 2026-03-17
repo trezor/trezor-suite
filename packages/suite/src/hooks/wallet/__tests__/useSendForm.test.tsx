@@ -5,11 +5,15 @@ import { type DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    filterThunkActionTypes,
+    initPreloadedState,
+    testMocks,
+} from '@suite-common/test-utils';
 import { type FormState } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 
-import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
     type UserAction,
     actionSequence,
