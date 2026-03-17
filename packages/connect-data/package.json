@@ -30,13 +30,13 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
             "./files/*": "./files/*",
-            "./libESM/*.js": "./libESM/*.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "scripts": {
@@ -49,6 +49,7 @@
         "depcheck": "yarn g:depcheck"
     },
     "peerDependencies": {
+        "@trezor/device-utils": "workspace:*",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
