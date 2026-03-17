@@ -68,7 +68,16 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-
+      - name: ESlint Cache
+        uses: actions/cache@v5
+        with:
+          # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
+          # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
+          # (context: https://github.com/trezor/trezor-suite/pull/26006#discussion_r2949341349)
+          path: |
+            './.eslintcache'
+            '!**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
         run: yarn nx:lint:js --output-style=stream
       - name: Lint Styles
