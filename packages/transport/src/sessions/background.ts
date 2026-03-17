@@ -253,7 +253,7 @@ export class SessionsBackground
     }
 
     private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
+        // todo: create a deferred with built-in timeout functionality (utils)
         const dfd = createDeferred();
 
         // to ensure that communication with device will not get stuck forever,

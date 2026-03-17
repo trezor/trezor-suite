@@ -155,7 +155,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
             let token: TokenInfo | undefined;
 
             // ERC-20 transfer
-            // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
+            // TODO: consider refactoring to shared utils package together with `suite-common/wallet-constants/src/sendForm.ts`
             if (this.payload.transaction.to && data?.startsWith('a9059cbb') && amount.eq(0)) {
                 const definitions = await getEthereumDefinitions({
                     chainId: this.payload.transaction.chainId,

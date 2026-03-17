@@ -18,7 +18,7 @@ MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr1
 
 const getPrivateKey = () => {
     // Only CI jobs flagged with "codesign", sign message system config by production private key. All other branches use development key.
-    // The isCodesignBuild() util cannot be used here because the lib is not built at this point. Building libs would make the release script slower.
+    // The isCodesignBuild() utils cannot be used here because the lib is not built at this point. Building libs would make the release script slower.
     if (process.env.IS_CODESIGN_BUILD !== 'true') {
         console.log('Signing config using develop private key!');
 

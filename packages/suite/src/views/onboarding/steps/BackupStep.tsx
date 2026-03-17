@@ -14,7 +14,10 @@ import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupReducer';
+import { selectIsN4w1BackupEnabled } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
+
+import { N4W1BackupSteps } from './N4W1BackupSteps';
 
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -23,6 +26,7 @@ export const BackupStep = () => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const dispatch = useDispatch();
+    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     const { backupType } = useSelector(state => state.onboarding);
 
@@ -136,7 +140,7 @@ export const BackupStep = () => {
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            {getContent()}
+            {isN4w1BackupEnabled ? <N4W1BackupSteps /> : getContent()}
         </>
     );
 };

@@ -14859,6 +14859,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/backup@workspace:*, @suite/backup@workspace:suite/backup":
+  version: 0.0.0-use.local
+  resolution: "@suite/backup@workspace:suite/backup"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    react: "npm:18.2.0"
+    react-intl: "npm:6.8.7"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/experimental-feedback@workspace:*, @suite/experimental-feedback@workspace:suite/experimental-feedback":
   version: 0.0.0-use.local
   resolution: "@suite/experimental-feedback@workspace:suite/experimental-feedback"
@@ -14978,6 +14991,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/onboarding-components@workspace:suite/onboarding-components"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/suite-types": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -14987,6 +15001,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-intl: "npm:6.8.7"
+    react-redux: "npm:^9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -16436,6 +16451,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/backup": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/experimental-feedback": "workspace:*"
     "@suite/flags": "workspace:*"

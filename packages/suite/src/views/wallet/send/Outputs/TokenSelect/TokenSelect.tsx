@@ -65,7 +65,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
     // Amount needs to be re-validated again AFTER token change propagation (decimal places, available balance)
-    // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)
+    // watch token change and use "useSendFormFields.setAmount" utils for validation (if amount is set)
     // if Amount is not valid 'react-hook-form' will set an error to it, and composeTransaction will be prevented
     // N0TE: do this conditionally only for networks with tokens and when set-max is not enabled
     const tokenWatch = watch(tokenInputName, null);

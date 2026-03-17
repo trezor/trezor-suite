@@ -9,7 +9,7 @@ export const ClearDevicePersistentData = () => {
 
     const handleClick = () => {
         dispatch(deviceActions.clearDevicePersistentData());
-        // technically just part of the storage was cleared, but it's just dev util, so close enough to let you know it is finished
+        // technically just part of the storage was cleared, but it's just dev utils, so close enough to let you know it is finished
         dispatch(notificationsActions.addToast({ type: 'clear-storage' }));
     };
 

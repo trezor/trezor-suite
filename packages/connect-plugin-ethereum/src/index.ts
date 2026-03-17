@@ -1,6 +1,6 @@
 import * as sigUtil from '@metamask/eth-sig-util';
 
-// Sanitization is used for T1B1 as eth-sig-util does not support BigInt
+// Sanitization is used for T1B1 as eth-sig-utils does not support BigInt
 function sanitizeData(data: any): any {
     switch (Object.prototype.toString.call(data)) {
         case '[object Object]': {

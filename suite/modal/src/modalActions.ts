@@ -85,9 +85,9 @@ type DeferredModals = Extract<
             | 'import-transaction';
     }
 >;
-// extract single modal by `type` util
+// extract single modal by `type` utils
 type DeferredModal<T extends DeferredModals['type']> = Extract<DeferredModals, { type: T }>;
-// extract params except for `type` and 'decision` util
+// extract params except for `type` and 'decision` utils
 type DeferredRest<T extends DeferredModals['type']> = Omit<DeferredModal<T>, 'type' | 'decision'>;
 // openDeferredModal params (without `decision` field)
 type DeferredPayload<T extends DeferredModals['type']> = { type: T } & DeferredRest<T>;

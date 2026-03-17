@@ -1,5 +1,5 @@
 {
-    "name": "@suite/onboarding-components",
+    "name": "@suite/backup",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,15 +12,10 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/suite-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "@trezor/product-components": "workspace:*",
-        "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-intl": "6.8.7",
-        "react-redux": "^9.2.0"
+        "styled-components": "^6.3.9"
     }
 }
