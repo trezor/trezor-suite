@@ -15,7 +15,8 @@
         "build:e2e:api:node": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.node.js --platform=node --target=node18 --external:usb",
         "build:e2e:api:browser": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.browser.js --platform=browser --external:usb  && cp e2e/ui/api.test.html e2e/dist/index.html",
         "test:e2e:api:node:hw": "yarn build:e2e:api:node && node ./e2e/dist/api.test.node.js",
-        "test:e2e:api:browser:hw": "yarn build:e2e:api:browser && npx http-serve ./e2e/dist"
+        "test:e2e:api:browser:hw": "yarn build:e2e:api:browser && npx http-serve ./e2e/dist",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@jest/types": "^29.6.3",

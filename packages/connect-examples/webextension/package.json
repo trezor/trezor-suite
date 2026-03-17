@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "type-check": "yarn g:tsc --build",
-        "build": "webpack --mode production"
+        "build": "webpack --mode production",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/connect-webextension": "workspace:^"

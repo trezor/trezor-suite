@@ -25,7 +25,8 @@
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "expo-constants": "*",

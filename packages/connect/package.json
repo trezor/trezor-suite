@@ -123,7 +123,8 @@
         "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "yarn g:tsx ./e2e/run.ts web",
-        "test:e2e:node": "yarn g:tsx ./e2e/run.ts node"
+        "test:e2e:node": "yarn g:tsx ./e2e/run.ts node",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@ethereumjs/common": "^10.1.1",

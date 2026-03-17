@@ -66,7 +66,8 @@
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@trezor/e2e-utils": "workspace:*",

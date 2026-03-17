@@ -9,7 +9,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts"
+        "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/styles": "workspace:*",

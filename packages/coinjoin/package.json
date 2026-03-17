@@ -21,7 +21,8 @@
         "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tests/tools/benchmark-test.ts",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/suite-constants": "workspace:*",

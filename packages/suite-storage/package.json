@@ -12,7 +12,8 @@
     "scripts": {
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "main": "./src/index.ts",
     "browser": "./src/index.ts",

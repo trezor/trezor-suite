@@ -10,7 +10,8 @@
         "make:migration": "yarn workspace @suite/idb-migration-utils make:migration",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
-        "test-unit:watch": "yarn g:jest -o --watch"
+        "test-unit:watch": "yarn g:jest -o --watch",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.17",

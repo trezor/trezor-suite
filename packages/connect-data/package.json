@@ -46,7 +46,8 @@
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "@trezor/device-utils": "workspace:*",

@@ -16,7 +16,8 @@
         "storybook": "storybook dev -p 9003 -c .storybook",
         "storybook-build": "storybook build -c .storybook -o .build-storybook",
         "test:unit": "yarn g:jest",
-        "test-unit:watch": "yarn g:jest -o --watch"
+        "test-unit:watch": "yarn g:jest -o --watch",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.17",
