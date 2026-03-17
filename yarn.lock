@@ -14770,6 +14770,16 @@ __metadata:
 "@suite/device@workspace:*, @suite/device@workspace:suite/device":
   version: 0.0.0-use.local
   resolution: "@suite/device@workspace:suite/device"
+  dependencies:
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    redux-mock-store: "npm:^1.5.5"
+    redux-thunk: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
 
