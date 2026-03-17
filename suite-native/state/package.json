@@ -25,7 +25,6 @@
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
