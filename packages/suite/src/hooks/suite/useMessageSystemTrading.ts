@@ -3,13 +3,13 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from './useSelector';
 
-export const useMessageSystemTrading = (type: TradingType) => {
+export const useMessageSystemTrading = (type: TradingTypeWithConcierge) => {
     const language = useSelector(selectLanguage);
 
     const isDisabled = useSelector(state => selectIsFeatureDisabled(state, Feature.trading[type]));
