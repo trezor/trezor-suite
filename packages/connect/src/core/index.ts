@@ -174,11 +174,11 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     try {
         method = await methodSynchronize(async () => {
             _log.debug('loading method...');
-            const method2 = await getMethod(message);
+            const method2 = await getMethod(message, {
+                postMessage: sendCoreMessage,
+                createUiPromise: uiPromises.create,
+            });
             _log.debug('method selected', method2.name);
-            // bind callbacks
-            method2.postMessage = sendCoreMessage;
-            method2.createUiPromise = uiPromises.create;
             // start validation process
             method2.init();
             await method2.initAsync?.();
