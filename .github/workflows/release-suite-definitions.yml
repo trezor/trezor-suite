@@ -57,7 +57,7 @@ jobs:
           cd suite-common/token-definitions
 
           yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
-          yarn coins simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar tron
+          yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar tron
           yarn coins advanced solana stellar
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
