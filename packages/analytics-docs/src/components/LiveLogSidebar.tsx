@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import styled from 'styled-components';
 
@@ -10,6 +11,8 @@ import {
     Column,
     H3,
     IconButton,
+    Input,
+    Modal,
     Row,
     SuiteThemeColors,
     Table,
@@ -19,6 +22,11 @@ import {
 
 import type { LiveLogEvent } from '../types';
 import { fuzzyMatch, getEventId } from '../utils/filterUtils';
+import {
+    getDefaultLogServerBaseUrl,
+    getInitialLogServerBaseUrl,
+    setLogServerBaseUrl,
+} from '../utils/logServerUrl';
 import { useLiveLogEvents } from '../utils/useLiveLogEvents';
 
 const META_KEYS = ['version', 'commit', 'instanceId', 'sessionId', 'messageId'] as const;
@@ -208,7 +216,11 @@ type LiveLogSidebarProps = {
 };
 
 export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProps) => {
-    const { events, connected, clear } = useLiveLogEvents();
+    const [logServerBaseUrl, setLogServerBaseUrlState] = useState(getInitialLogServerBaseUrl);
+    const [logServerInput, setLogServerInput] = useState(logServerBaseUrl);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    const { events, connected, clear } = useLiveLogEvents(logServerBaseUrl);
 
     const filteredEvents = useMemo(() => {
         const q = filterQuery.trim().toLowerCase();
@@ -224,60 +236,143 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
     };
 
     return (
-        <SidebarWrapper>
-            <Column gap={0}>
-                <StickyHeader>
-                    <Box padding={{ horizontal: 20, top: 20, bottom: 8 }}>
-                        <H3 margin={{ bottom: 8 }}>Live log</H3>
-                        <Box margin={{ bottom: 8 }}>
-                            <Row gap={8} alignItems="center">
-                                <Badge size="small" intent={connected ? 'brand' : 'warning'}>
-                                    {connected ? 'Connected' : 'Reconnecting…'}
-                                </Badge>
-                                {events.length > 0 && (
-                                    <Button
+        <>
+            <SidebarWrapper>
+                <Column gap={0}>
+                    <StickyHeader>
+                        <Box padding={{ horizontal: 20, top: 20, bottom: 8 }}>
+                            <Row justifyContent="space-between" alignItems="center" gap={8}>
+                                <H3 margin={{ bottom: 0 }}>Live log</H3>
+                                <IconButton
+                                    icon="gear"
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={() => setIsSettingsOpen(true)}
+                                />
+                            </Row>
+                            <Box margin={{ bottom: 8 }}>
+                                <Row gap={8} alignItems="center">
+                                    <Badge size="small" intent={connected ? 'brand' : 'warning'}>
+                                        {connected ? 'Connected' : 'Reconnecting…'}
+                                    </Badge>
+                                    {events.length > 0 && (
+                                        <Button
+                                            size="small"
+                                            priority="secondary"
+                                            intent="critical"
+                                            onClick={clear}
+                                        >
+                                            Clear
+                                        </Button>
+                                    )}
+                                </Row>
+                            </Box>
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                In Suite, set Custom Analytics URL (Settings → Debug) to{' '}
+                                <Text isMonospaced typographyStyle="inherit">
+                                    {`${logServerBaseUrl.replace(/\/+$/, '')}/log`}
+                                </Text>
+                            </Text>
+                        </Box>
+                    </StickyHeader>
+
+                    <Box padding={{ horizontal: 16, bottom: 16 }}>
+                        {events.length === 0 && (
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                No events yet. Point Suite to this server and trigger analytics.
+                            </Text>
+                        )}
+                        {events.length > 0 && filteredEvents.length === 0 && (
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                No events match the current filter.
+                            </Text>
+                        )}
+                        {events.length > 0 && filteredEvents.length > 0 && (
+                            <CardList margin={{ top: 0 }}>
+                                {filteredEvents.map(event => (
+                                    <LiveLogEventItem
+                                        key={event.id}
+                                        event={event}
+                                        onEventClick={handleRowClick}
+                                    />
+                                ))}
+                            </CardList>
+                        )}
+                    </Box>
+                </Column>
+            </SidebarWrapper>
+            {isSettingsOpen &&
+                createPortal(
+                    <Modal.Backdrop
+                        zIndex={100}
+                        onClick={undefined}
+                        alignment={{ x: 'center', y: 'center' }}
+                    >
+                        <Modal.ModalBase
+                            heading="Live log settings"
+                            onCancel={() => {
+                                setIsSettingsOpen(false);
+                                setLogServerInput(logServerBaseUrl);
+                            }}
+                            width={600}
+                            bottomContent={
+                                <Modal.Button
+                                    onClick={() => {
+                                        const next =
+                                            logServerInput.trim() || getDefaultLogServerBaseUrl();
+                                        setLogServerBaseUrl(next);
+                                        setLogServerBaseUrlState(next);
+                                        setLogServerInput(next);
+                                        setIsSettingsOpen(false);
+                                    }}
+                                >
+                                    Apply
+                                </Modal.Button>
+                            }
+                        >
+                            <Column gap={12} alignItems="stretch">
+                                <Row gap={8} alignItems="center">
+                                    <Input
                                         size="small"
+                                        value={logServerInput}
+                                        onChange={e => setLogServerInput(e.target.value)}
+                                        placeholder="Log server base URL (e.g. https://analytics-log.example.com)"
+                                        showClearButton
+                                        onClear={() => setLogServerInput('')}
+                                    />
+
+                                    <Modal.Button
                                         priority="secondary"
                                         intent="critical"
-                                        onClick={clear}
+                                        onClick={() => {
+                                            const def = getDefaultLogServerBaseUrl();
+                                            setLogServerBaseUrl(def);
+                                            setLogServerBaseUrlState(def);
+                                            setLogServerInput(def);
+                                        }}
+                                        size="medium"
                                     >
-                                        Clear
-                                    </Button>
-                                )}
-                            </Row>
-                        </Box>
-                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            In Suite, set Custom Analytics URL (Settings → Debug) to this origin +
-                            /log, e.g.{' '}
-                            {typeof window !== 'undefined' ? `${window.location.origin}/log` : '…'}
-                        </Text>
-                    </Box>
-                </StickyHeader>
-
-                <Box padding={{ horizontal: 16, bottom: 16 }}>
-                    {events.length === 0 && (
-                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            No events yet. Point Suite to this server and trigger analytics.
-                        </Text>
-                    )}
-                    {events.length > 0 && filteredEvents.length === 0 && (
-                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            No events match the current filter.
-                        </Text>
-                    )}
-                    {events.length > 0 && filteredEvents.length > 0 && (
-                        <CardList margin={{ top: 0 }}>
-                            {filteredEvents.map(event => (
-                                <LiveLogEventItem
-                                    key={event.id}
-                                    event={event}
-                                    onEventClick={handleRowClick}
-                                />
-                            ))}
-                        </CardList>
-                    )}
-                </Box>
-            </Column>
-        </SidebarWrapper>
+                                        Reset
+                                    </Modal.Button>
+                                </Row>
+                                <Text
+                                    typographyStyle="body-xs"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    This controls where analytics-docs connects for live events
+                                    (SSE) and where Suite should send events to{' '}
+                                    <Text isMonospaced typographyStyle="inherit">
+                                        {`${(logServerInput.trim() || getDefaultLogServerBaseUrl()).replace(/\/+$/, '')}/log`}
+                                    </Text>
+                                    .
+                                </Text>
+                            </Column>
+                        </Modal.ModalBase>
+                    </Modal.Backdrop>,
+                    document.body,
+                )}
+        </>
     );
 };
