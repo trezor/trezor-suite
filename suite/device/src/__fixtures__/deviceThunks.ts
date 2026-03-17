@@ -12,12 +12,10 @@ type Fixture = {
         router?: Record<string, unknown>;
     };
     device: Device;
-    result?:
-        | {
-              type: string;
-              payload: unknown;
-          }
-        | { payload: undefined };
+    result?: {
+        type?: string;
+        payload: unknown;
+    };
 };
 
 const disconnectDeviceThunkFixture: Fixture[] = [
