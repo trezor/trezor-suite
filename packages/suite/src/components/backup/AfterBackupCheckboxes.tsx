@@ -1,8 +1,8 @@
+import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { type ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { CheckItem } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -17,21 +17,25 @@ export const AfterBackupCheckboxes = () => {
             <Column gap={spacings.xl}>
                 <CheckItem
                     data-testid="@backup/check-item/wrote-seed-properly"
-                    onClick={() => dispatch(toggleCheckboxByKey('wrote-seed-properly'))}
+                    onClick={() =>
+                        dispatch(backupActions.toggleCheckboxByKey('wrote-seed-properly'))
+                    }
                     title={<Translation id="TR_BACKUP_CHECKBOX_1_TITLE" />}
                     description={<Translation id="TR_BACKUP_CHECKBOX_1_DESCRIPTION" />}
                     isChecked={isChecked('wrote-seed-properly')}
                 />
                 <CheckItem
                     data-testid="@backup/check-item/made-no-digital-copy"
-                    onClick={() => dispatch(toggleCheckboxByKey('made-no-digital-copy'))}
+                    onClick={() =>
+                        dispatch(backupActions.toggleCheckboxByKey('made-no-digital-copy'))
+                    }
                     title={<Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />}
                     description={<Translation id="TR_BACKUP_CHECKBOX_2_DESCRIPTION" />}
                     isChecked={isChecked('made-no-digital-copy')}
                 />
                 <CheckItem
                     data-testid="@backup/check-item/will-hide-seed"
-                    onClick={() => dispatch(toggleCheckboxByKey('will-hide-seed'))}
+                    onClick={() => dispatch(backupActions.toggleCheckboxByKey('will-hide-seed'))}
                     title={<Translation id="TR_BACKUP_CHECKBOX_3_TITLE" />}
                     description={<Translation id="TR_BACKUP_CHECKBOX_3_DESCRIPTION" />}
                     isChecked={isChecked('will-hide-seed')}

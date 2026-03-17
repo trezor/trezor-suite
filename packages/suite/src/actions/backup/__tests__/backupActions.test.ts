@@ -1,3 +1,4 @@
+import { backupActions, backupDeviceThunk } from '@suite/backup';
 import { lockDevice } from '@suite/locks';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -7,8 +8,6 @@ import { type CommonParams } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import * as backupActions from 'src/actions/backup/backupActions';
-import { BACKUP } from 'src/actions/backup/constants';
 import { configureStore } from 'src/support/tests/configureStore';
 
 const getInitialState = (override: any) => {
@@ -61,8 +60,10 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({
-                device: store.getState().device.selectedDevice as CommonParams['device'],
+            backupDeviceThunk({
+                params: {
+                    device: store.getState().device.selectedDevice as CommonParams['device'],
+                },
             }),
         );
 
@@ -74,8 +75,11 @@ describe('Backup Actions', () => {
             type: connectInitThunk.fulfilled.type,
             payload: undefined,
         });
+        expect(store.getActions().shift()).toMatchObject({
+            type: backupDeviceThunk.pending.type,
+        });
         expect(store.getActions().shift()).toEqual({
-            type: BACKUP.SET_IN_PROGRESS,
+            type: backupActions.setInProgress.type,
             payload: true,
         });
         expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: true });
@@ -100,8 +104,10 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({
-                device: store.getState().device.selectedDevice as CommonParams['device'],
+            backupDeviceThunk({
+                params: {
+                    device: store.getState().device.selectedDevice as CommonParams['device'],
+                },
             }),
         );
 
@@ -113,8 +119,11 @@ describe('Backup Actions', () => {
             type: connectInitThunk.fulfilled.type,
             payload: undefined,
         });
+        expect(store.getActions().shift()).toMatchObject({
+            type: backupDeviceThunk.pending.type,
+        });
         expect(store.getActions().shift()).toEqual({
-            type: BACKUP.SET_IN_PROGRESS,
+            type: backupActions.setInProgress.type,
             payload: true,
         });
         expect(store.getActions().shift()).toEqual({ type: lockDevice.type, payload: true });

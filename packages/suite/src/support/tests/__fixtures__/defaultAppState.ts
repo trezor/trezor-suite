@@ -1,3 +1,4 @@
+import { BackupState } from '@suite/backup';
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
@@ -10,7 +11,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
 import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
-import { type BackupState } from 'src/reducers/backup/backupReducer';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
 import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
