@@ -35,9 +35,6 @@
         {
             "path": "../../suite-common/suite-sync-quota-manager"
         },
-        {
-            "path": "../../suite-common/suite-types"
-        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
