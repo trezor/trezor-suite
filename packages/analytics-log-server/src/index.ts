@@ -1,3 +1,2 @@
-export * from './eventStore.ts';
-export * from './handlers.ts';
-
+export * from './eventStore';
+export * from './handlers';

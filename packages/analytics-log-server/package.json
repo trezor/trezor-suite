@@ -7,8 +7,10 @@
         ".": "./src/index.ts"
     },
     "scripts": {
-        "dev": "yarn g:tsx src/server.ts",
         "build": "yarn g:tsc -p tsconfig.build.json",
-        "start": "node dist/server.js"
+        "depcheck": "yarn g:depcheck",
+        "dev": "yarn g:tsx src/server.ts",
+        "start": "node dist/server.js",
+        "type-check": "yarn g:tsc --build"
     }
 }
