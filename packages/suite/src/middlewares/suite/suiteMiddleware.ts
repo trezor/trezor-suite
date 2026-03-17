@@ -1,5 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { disconnectDeviceThunk } from '@suite/device';
 import { METADATA } from '@suite/metadata';
 import { recoveryActions } from '@suite/recovery';
 import { goto, routerAppChanged } from '@suite/router';
@@ -98,7 +99,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
         if (deviceActions.forgetDevice.match(action)) {
             const { device } = action.payload;
 
-            dispatch(handleDeviceDisconnect(device));
+            dispatch(disconnectDeviceThunk(device));
             if (isTrezorDeviceWithState(device)) {
                 extra.services.suiteSync.turnOffSuiteSyncForWallet({
                     deviceStaticSessionId: device.state.staticSessionId,

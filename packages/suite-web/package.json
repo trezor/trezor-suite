@@ -17,8 +17,8 @@
     },
     "dependencies": {
         "@sentry/browser": "10.40.0",
-        "@suite/router": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/suite": "workspace:*",
         "core-js": "^3.48.0",
