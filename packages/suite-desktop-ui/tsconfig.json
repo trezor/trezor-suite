@@ -9,9 +9,6 @@
         "../suite/src/components/suite/BioAuthGuard"
     ],
     "references": [
-        {
-            "path": "../../suite-common/suite-types"
-        },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/intl" },
