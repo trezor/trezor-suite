@@ -1,10 +1,15 @@
-import { type modalAppParams, routes } from '@suite-common/suite-config';
 import { type Route } from '@suite-common/suite-types';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
-import { type ArrayElement } from '@trezor/type-utils';
+import { type ArrayElement, ConstWithOptionalFields, Keys } from '@trezor/type-utils';
 
+import { modalAppParams, routes } from './routeConfig';
 import { type DashboardParams, type EarnParams } from './routerParams';
+
+type RouteKeys = Keys<ArrayElement<typeof routes>>;
+
+export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
+export type PageName = Exclude<Route, { isForegroundApp: true } | { isNestedRoute: true }>['name'];
 
 export type SettingsBackRoute = {
     name: Route['name'];

@@ -6,9 +6,6 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-config"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {

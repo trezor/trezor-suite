@@ -4,6 +4,9 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite/router"
+        },
+        {
             "path": "../../suite-common/suite-config"
         },
         { "path": "../bundler-security" },

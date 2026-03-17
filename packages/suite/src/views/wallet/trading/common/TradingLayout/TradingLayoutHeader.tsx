@@ -1,8 +1,7 @@
 import { type PropsWithChildren } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { goto, selectRouteName } from '@suite/router';
-import { type Route } from '@suite-common/suite-types';
+import { type Route, goto, selectRouteName } from '@suite/router';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,5 +1,3 @@
-import { type Route } from '@suite-common/suite-types';
-
 import {
     getAppWithParams,
     getPrefixedURL,
@@ -7,7 +5,7 @@ import {
     getRouteHash,
     stripPrefixedURL,
 } from '../router';
-import type { RouteParams } from '../routes';
+import type { Route, RouteParams } from '../routes';
 
 const OLD_ENV = { ...process.env };
 

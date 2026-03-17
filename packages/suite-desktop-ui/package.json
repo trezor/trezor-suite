@@ -14,10 +14,10 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.8.0",
-        "@suite-common/suite-types": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",

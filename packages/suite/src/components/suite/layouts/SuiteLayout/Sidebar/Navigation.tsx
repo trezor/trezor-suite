@@ -3,8 +3,8 @@ import { type FC, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectIsInitialRun } from '@suite/flags';
+import { type Route } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { type Route } from '@suite-common/suite-types';
 import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
