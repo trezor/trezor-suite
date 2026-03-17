@@ -20,22 +20,26 @@ done
 
 SNAPSHOT_FILE="scripts/knip/knip-snapshot.txt"
 KNIP_ARGS=(--reporter compact --no-exit-code)
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+REPO_PARENT="$(dirname "$REPO_ROOT")"
+REPO_GRANDPARENT="$(dirname "$REPO_PARENT")"
 
 RAW_OUTPUT_FILE="$(mktemp)"
 NORMALIZED_OUTPUT_FILE="$(mktemp)"
 
-cleanup() {
-    rm -f "$RAW_OUTPUT_FILE" "$NORMALIZED_OUTPUT_FILE"
-}
-
-trap cleanup EXIT
+trap 'rm -f "$RAW_OUTPUT_FILE" "$NORMALIZED_OUTPUT_FILE"' EXIT
 
 # Knip stdout is prefixed with non-deterministic dotenv tips in this repo, so we must
-# strip those lines before snapshotting. The section-prefixing and sorting then make the
-# snapshot stable even if Knip changes report ordering, while still preserving each line's
-# category after the original section headers are removed.
+# strip those lines before snapshotting. We also need to rewrite absolute paths to stable
+# repo-relative ones because Knip reports machine-specific checkout paths in some findings.
+# CI may also force colorized output, so ANSI escape sequences must be removed before
+# parsing section headers or diffing against the plain-text snapshot.
+# The section-prefixing and sorting then make the snapshot stable even if Knip changes
+# report ordering, while still preserving each line's category after the original section
+# headers are removed.
 normalize_knip_output() {
-    sed '/^\[dotenv@/d;/^$/d' "$1" | awk '
+    sed '/^\[dotenv@/d;/^$/d' "$1" |
+        sed -E $'s/\x1B\[[0-9;]*[[:alpha:]]//g; s/\r$//' | awk '
         /^[^[:space:]].* \([0-9]+\)$/ {
             section = $0;
             sub(/ \([0-9]+\)$/, "", section);
@@ -45,7 +49,10 @@ normalize_knip_output() {
         section != "" {
             print section ": " $0;
         }
-    ' | sort -u > "$2"
+    ' | sed \
+        -e "s|$REPO_ROOT/||g" \
+        -e "s|$REPO_PARENT/|../|g" \
+        -e "s|$REPO_GRANDPARENT/|../../|g" | sort -u > "$2"
 }
 
 if ! yarn exec knip "${KNIP_ARGS[@]}" > "$RAW_OUTPUT_FILE"; then
