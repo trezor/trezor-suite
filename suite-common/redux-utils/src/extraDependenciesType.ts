@@ -79,7 +79,6 @@ export type ExtraDependenciesStatic = {
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<SelectedRoute | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
