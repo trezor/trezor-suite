@@ -5,24 +5,27 @@ import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-commo
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 
-type TradingButtonProps = {
+type AssetActionButtonRoute = Extract<Route['name'], 'wallet-staking' | 'wallet-trading-buy'>;
+
+type AssetActionButtonProps = {
     children: ReactNode;
     onClick?: () => void;
     symbol: NetworkSymbol;
-    routeName: Route['name'];
+    routeName: AssetActionButtonRoute;
     'data-testid'?: string;
 };
 
-export const TradingButton = ({
+export const AssetActionButton = ({
     children,
     onClick: onButtonClick,
     symbol,
     routeName,
     'data-testid': dataTest,
-}: TradingButtonProps) => {
+}: AssetActionButtonProps) => {
     const dispatch = useDispatch();
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
@@ -34,15 +37,32 @@ export const TradingButton = ({
             a => a.symbol === symbol && a.accountType === 'normal' && a.index === 0,
         );
 
-        if (account) {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
+        switch (routeName) {
+            case 'wallet-staking':
+                dispatch(
+                    goto({
+                        routeName,
+                        params: {
+                            symbol,
+                            accountIndex: account?.index ?? 0,
+                            accountType: account?.accountType ?? 'normal',
+                        },
+                    }),
+                );
+                break;
+            case 'wallet-trading-buy':
+                if (account) {
+                    dispatch(
+                        tradingActions.setTradingFromPrefilledAccount(
+                            getTradingPrefilledFromAccountData(account),
+                        ),
+                    );
+                }
+                dispatch(goto({ routeName }));
+                break;
+            default:
+                exhaustive(routeName);
         }
-
-        dispatch(goto({ routeName }));
         toggleCoinFilter(symbol);
         setSearchString(undefined);
 

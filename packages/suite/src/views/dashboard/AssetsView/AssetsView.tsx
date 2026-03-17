@@ -30,7 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
@@ -190,7 +190,7 @@ export const AssetsView = () => {
                 isBelowTablet ? (
                     <></>
                 ) : (
-                    <Row justifyContent="space-around" gap={spacings.sm}>
+                    <Row justifyContent="space-around" gap={12}>
                         {hasMainnetNetworksToEnable && (
                             <Button
                                 intent="neutral"
@@ -250,7 +250,7 @@ export const AssetsView = () => {
                                     name="warning"
                                     intent="critical"
                                     size={14}
-                                    margin={{ right: spacings.xxs }}
+                                    margin={{ right: 4 }}
                                 />
                                 <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                             </InfoMessage>
@@ -273,7 +273,7 @@ export const AssetsView = () => {
                                 name="warning"
                                 intent="critical"
                                 size={14}
-                                margin={{ right: spacings.xxs }}
+                                margin={{ right: 4 }}
                             />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
