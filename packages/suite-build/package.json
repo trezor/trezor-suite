@@ -25,7 +25,6 @@
     },
     "dependencies": {
         "@suite-common/suite-config": "workspace:*",
-        "@suite/router": "workspace:*",
         "@trezor/bundler-security": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "babel-loader": "^10.0.0",
