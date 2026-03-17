@@ -261,8 +261,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
             // Do not close the modal if the transaction signing timed out
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
-                // TODO: this is some kinda bizarre hack
-                return { type: signResponse.error.message } as any;
+                return { type: 'sign-transaction-timeout' as const };
             }
 
             // Close the modal manually since UI.CLOSE_UI.WINDOW was

@@ -113,6 +113,13 @@ describe('sendDexTransactionThunk', () => {
             ['when payload is undefined', undefined],
             ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
             ['when payload is not successful', { success: false }],
+            [
+                'when sign transaction timed out',
+                {
+                    type: 'sign-transaction-timeout',
+                    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                },
+            ],
         ])('%s', async (_, recomposeAndSignPayload) => {
             const { store, returnUrl, account } = getMocks();
 

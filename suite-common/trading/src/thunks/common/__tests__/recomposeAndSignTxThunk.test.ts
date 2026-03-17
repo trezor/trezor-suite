@@ -448,6 +448,44 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
     });
 
+    it('should reject with sign-transaction-timeout when signAndPushSendFormTransaction returns timeout signal', async () => {
+        const { store, account, tradingFormState } = getMocks();
+
+        const mockSignAndPushSendFormTransaction = jest
+            .fn()
+            .mockResolvedValueOnce({ type: 'sign-transaction-timeout' });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('rejected');
+        expect(response.payload).toEqual({
+            type: 'sign-transaction-timeout',
+            error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+        });
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
     it('should return successful recomposed and signed transaction', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {

@@ -27,6 +27,7 @@ import type {
     TradingFulfillValue,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
+    TradingSignTimeoutResult,
 } from '../../types';
 
 export type RecomposeAndSignTxThunkProps = {
@@ -52,6 +53,9 @@ export type RecomposeAndSignTxThunkProps = {
         paymentRequests,
     }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
 };
+
+const isSignTimeoutResult = (value: TradingFulfillValue): value is TradingSignTimeoutResult =>
+    value != null && 'type' in value && value.type === 'sign-transaction-timeout';
 
 /**
  * This thunk is particularly useful for scenarios where transaction details (e.g., fees, outputs) need to be recalculated
@@ -269,6 +273,13 @@ export const recomposeAndSignTxThunk = createThunk<
             selectedAccount: account,
             paymentRequests,
         });
+
+        if (isSignTimeoutResult(resultOfSignedTransaction)) {
+            return rejectWithValue({
+                type: resultOfSignedTransaction.type,
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
 
         return fulfillWithValue(resultOfSignedTransaction);
     },
