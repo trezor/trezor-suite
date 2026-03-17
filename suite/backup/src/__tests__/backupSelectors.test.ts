@@ -1,9 +1,11 @@
-import { type BackupState, selectBackupStatus } from '@suite/backup';
+import type { DeviceRootState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type BackupAvailability } from '@trezor/protobuf/src/messages';
 
-import { type AppState } from 'src/reducers/store';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
+import { type BackupState } from '../backupReducer';
+import { type BackupRootState, selectBackupStatus } from '../backupSelectors';
+
+type TestState = BackupRootState & DeviceRootState;
 
 describe('selectBackupStatus', () => {
     const baseBackup: BackupState = {
@@ -24,51 +26,51 @@ describe('selectBackupStatus', () => {
         error: undefined,
     };
 
-    const getState = (backup: BackupState, backup_availability: BackupAvailability): AppState => ({
-        ...initialAppState,
+    const createState = (
+        backup: BackupState,
+        backup_availability: BackupAvailability,
+    ): TestState => ({
         backup: { ...baseBackup, ...backup },
         device: {
             devices: [],
             persistentDeviceData: [],
-            isConnectionModalOpen: true,
-            defaultConnectionMode: 'cable',
             selectedDevice: mockSuiteDevice({}, { backup_availability }),
         },
     });
 
     it('returns "finished" if backup_availability is Available and no error is set', () => {
         [baseBackup, inProgressBackup].forEach(backup => {
-            const state = getState(backup, 'Available');
+            const state = createState(backup, 'Available');
             expect(selectBackupStatus(state)).toBe('finished');
         });
     });
 
     it('returns "finished" if backup_availability is NotAvailable and no error is set', () => {
         [baseBackup, inProgressBackup].forEach(backup => {
-            const state = getState(backup, 'NotAvailable');
+            const state = createState(backup, 'NotAvailable');
             expect(selectBackupStatus(state)).toBe('finished');
         });
     });
 
     it('returns "error" if backup.error is set even when availability indicates finished', () => {
-        ['Available', 'NotAvailable'].forEach(availability => {
-            const state = getState(errorBackup, availability as BackupAvailability);
+        (['Available', 'NotAvailable'] as const).forEach(availability => {
+            const state = createState(errorBackup, availability);
             expect(selectBackupStatus(state)).toBe('error');
         });
     });
 
     it('returns "error" if backup.error is set', () => {
-        const state = getState(errorBackup, 'Required');
+        const state = createState(errorBackup, 'Required');
         expect(selectBackupStatus(state)).toBe('error');
     });
 
     it('returns "in-progress" if backup.inProgress is true', () => {
-        const state = getState(inProgressBackup, 'Required');
+        const state = createState(inProgressBackup, 'Required');
         expect(selectBackupStatus(state)).toBe('in-progress');
     });
 
     it('returns "initial" if none of the above', () => {
-        const state = getState(baseBackup, 'Required');
+        const state = createState(baseBackup, 'Required');
         expect(selectBackupStatus(state)).toBe('initial');
     });
 });
