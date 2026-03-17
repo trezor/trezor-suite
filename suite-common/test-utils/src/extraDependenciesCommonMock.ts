@@ -102,7 +102,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             transports: [],
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
         selectRoute: notImplementedSelector('selectRoute', {
             name: 'suite-index',
         } satisfies SelectedRoute),

@@ -145,6 +145,7 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
         {
             "path": "../../suite/experimental-feedback"

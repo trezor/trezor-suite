@@ -15,6 +15,7 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/intl" },
+        { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../components" },
         { "path": "../connect" },

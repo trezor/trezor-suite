@@ -14767,6 +14767,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/device@workspace:*, @suite/device@workspace:suite/device":
+  version: 0.0.0-use.local
+  resolution: "@suite/device@workspace:suite/device"
+  languageName: unknown
+  linkType: soft
+
 "@suite/experimental-feedback@workspace:*, @suite/experimental-feedback@workspace:suite/experimental-feedback":
   version: 0.0.0-use.local
   resolution: "@suite/experimental-feedback@workspace:suite/experimental-feedback"
@@ -14921,8 +14927,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -16008,6 +16012,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.2"
     "@sentry/webpack-plugin": "npm:^5.1.1"
     "@suite-common/suite-config": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -16136,6 +16141,7 @@ __metadata:
     "@suite/analytics": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -16189,7 +16195,6 @@ __metadata:
     "@suite-common/e2e-evolu-client": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/message-system": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -16202,6 +16207,7 @@ __metadata:
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:^"
     "@suite/metadata": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -16245,6 +16251,7 @@ __metadata:
   dependencies:
     "@sentry/browser": "npm:10.40.0"
     "@suite-common/suite-types": "workspace:*"
+    "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -16329,6 +16336,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/device": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/experimental-feedback": "workspace:*"
     "@suite/flags": "workspace:*"
