@@ -19,5 +19,11 @@
         "@suite/analytics": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:*"
     }
 }
