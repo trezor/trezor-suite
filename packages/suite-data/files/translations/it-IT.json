@@ -375,6 +375,7 @@
   "TR_BIO_AUTH_LOCKED_HEADING": "Trezor Suite è bloccato",
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Utilizza il Touch ID per sbloccare.",
   "TR_BIO_AUTH_LOCKED_TEXT_WIN": "Utilizza Windows Hello per sbloccare.",
+  "TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT": "La biometria non è attualmente disponibile su questo dispositivo. Prova a riavviare il dispositivo o ad aprire Trezor Suite sul display principale. Se questi passaggi non aiutano, reinstalla l'applicazione e ricollega i tuoi dispositivi Trezor.",
   "TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP": "Verifica della disponibilità dell'autenticazione biometrica.",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "verifica la tua identità",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_WIN": "Utilizza la tua impronta digitale o inserisci il tuo PIN per accedere a Trezor Suite.",

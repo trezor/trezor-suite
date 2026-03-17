@@ -419,6 +419,7 @@
   "TR_BIO_AUTH_LOCKED_HEADING": "Aplikace Trezor Suite je uzamčena",
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Pro odemčení použijte Touch ID.",
   "TR_BIO_AUTH_LOCKED_TEXT_WIN": "Pro odemčení použijte Windows Hello.",
+  "TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT": "Biometrické ověření není v tomto zařízení momentálně k dispozici. Zkuste zařízení restartovat nebo otevřít Trezor Suite na primárním displeji. Pokud tyto kroky nepomohou, přeinstalujte aplikaci a znovu připojte Trezor.",
   "TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP": "Probíhá kontrola, zda je dostupné biometrické ověření.",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "ověřte svou totožnost",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_WIN": "Použijte svůj otisk prstu nebo zadejte svůj kód PIN pro přístup do Trezor Suite.",

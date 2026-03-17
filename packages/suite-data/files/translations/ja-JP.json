@@ -419,6 +419,7 @@
   "TR_BIO_AUTH_LOCKED_HEADING": "Trezor Suiteはロックされています",
   "TR_BIO_AUTH_LOCKED_TEXT_MAC": "Touch IDを使ってロックを解除します。",
   "TR_BIO_AUTH_LOCKED_TEXT_WIN": "Windows Helloを使ってロックを解除します。",
+  "TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT": "このデバイスでは現在、生体認証をご利用いただけません。デバイスを再起動するか、メインディスプレイで Trezor Suite を開いてみてください。これらの手順で解決しない場合は、アプリを再インストールし、Trezor デバイスを再接続してください。",
   "TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP": "生体認証が利用可能かどうかを確認しています。",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_MAC": "本人確認を行ってください",
   "TR_BIO_AUTH_SYSTEM_MESSAGE_WIN": "指紋認証を使用するかPINを入力して、Trezor Suiteにアクセスしてください。",
