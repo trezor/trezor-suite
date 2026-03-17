@@ -344,8 +344,6 @@ export type TradingVerifiedAddress =
 
 export type TradingSignTimeoutResult = { type: 'sign-transaction-timeout' };
 
-export type TradingFulfillValue =
-    | Ok<{ txid: string }>
-    | Err<SerializedError>
-    | TradingSignTimeoutResult
-    | undefined;
+export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+
+export type TradingSignResult = TradingFulfillValue | TradingSignTimeoutResult;

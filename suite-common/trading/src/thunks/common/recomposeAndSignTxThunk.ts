@@ -27,6 +27,7 @@ import type {
     TradingFulfillValue,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
+    TradingSignResult,
     TradingSignTimeoutResult,
 } from '../../types';
 
@@ -51,10 +52,10 @@ export type RecomposeAndSignTxThunkProps = {
         precomposedTransaction,
         selectedAccount,
         paymentRequests,
-    }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
+    }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingSignResult>;
 };
 
-const isSignTimeoutResult = (value: TradingFulfillValue): value is TradingSignTimeoutResult =>
+const isSignTimeoutResult = (value: TradingSignResult): value is TradingSignTimeoutResult =>
     value != null && 'type' in value && value.type === 'sign-transaction-timeout';
 
 /**
