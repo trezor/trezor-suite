@@ -45,7 +45,6 @@ import {
 import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
 import { VersionsSidebar } from './components/VersionsSidebar';
-import { HEADER_HEIGHT } from './constants';
 import type { EventDoc } from './types';
 import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
@@ -65,19 +64,6 @@ export const TopBar = styled.div`
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         backdrop-filter: blur(20px);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 50; /* below theme tooltip (60) so tooltips are visible above header */
-    }
-`;
-
-export const Content = styled.div`
-    padding: 20px 10px;
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 20px 0;
     }
 `;
 
@@ -88,47 +74,47 @@ export const ContentContainer = styled.div`
     width: 100%;
 `;
 
+const Page = styled.div`
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+`;
+
 const MainWithSidebar = styled.div`
     display: flex;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 0 0;
-    }
 `;
 
-const ContentArea = styled.div<{ $sidebarWidth?: number }>`
+const ContentArea = styled.div`
     flex: 1;
     min-width: 0;
-    margin: 0;
     padding: 20px 10px;
+    overflow-y: auto;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         order: 1;
     }
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 0 20px 20px;
-        margin-right: ${({ $sidebarWidth }) =>
-            $sidebarWidth != null ? $sidebarWidth + 20 : 20}px;
+        padding: 20px;
     }
 `;
 
 const SidebarOuter = styled.div<{ theme: SuiteThemeColors }>`
+    margin-left: 8px;
+
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        position: fixed;
-        top: ${HEADER_HEIGHT}px;
-        right: 0;
-        bottom: 0;
-        height: calc(100vh - ${HEADER_HEIGHT}px);
-        z-index: 10;
         display: flex;
         flex-direction: column;
+        height: 100%;
+        z-index: 10;
     }
 `;
 
@@ -238,6 +224,7 @@ export const App = ({ theme }: AppProps) => {
     const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
     const rafRef = useRef<number | null>(null);
     const pendingWidthRef = useRef<number | null>(null);
+    const contentScrollRef = useRef<HTMLDivElement | null>(null);
 
     const setSidebarWidthThrottled = useCallback((w: number) => {
         pendingWidthRef.current = w;
@@ -280,20 +267,39 @@ export const App = ({ theme }: AppProps) => {
         [filteredEvents],
     );
 
+    const scrollToEventInContent = useCallback((eventName: string) => {
+        const container = contentScrollRef.current;
+        const el = document.getElementById(getEventId(eventName));
+        if (!container || !el) return;
+
+        const containerRect = container.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const nextTop = elRect.top - containerRect.top + container.scrollTop - 20;
+        container.scrollTo({ top: Math.max(0, nextTop), behavior: 'smooth' });
+    }, []);
+
     const handleSidebarEventClick = (eventName: string) => {
         const el = document.getElementById(getEventId(eventName));
         if (!el) return;
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
+        scrollToEventInContent(eventName);
     };
 
     const scrollToHashElement = useCallback((): boolean => {
+        const container = contentScrollRef.current;
         const hash = window.location.hash.slice(1);
         if (!hash) return true;
         const el = document.getElementById(hash);
         if (!el) return false;
-        el.scrollIntoView({ block: 'start', behavior: 'instant' });
-        window.scrollBy(0, -(HEADER_HEIGHT + 20));
+        if (container) {
+            const containerRect = container.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            const nextTop = elRect.top - containerRect.top + container.scrollTop - 20;
+            container.scrollTo({ top: Math.max(0, nextTop), behavior: 'instant' });
+        } else {
+            el.scrollIntoView({ block: 'start', behavior: 'instant' });
+        }
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
 
@@ -360,7 +366,7 @@ export const App = ({ theme }: AppProps) => {
                     }}
                     initialEvent={eventToEdit}
                 />
-                <Box minHeight="100vh">
+                <Page>
                     <TopBar>
                         <ContentContainer>
                             <Row
@@ -460,35 +466,38 @@ export const App = ({ theme }: AppProps) => {
                         </ContentContainer>
                     </TopBar>
 
-                    {isSidebarOpen || isLiveLogOpen ? (
-                        <MainWithSidebar>
-                            <ContentArea $sidebarWidth={isMobile ? undefined : sidebarWidth}>
-                                <ContentContainer>
-                                    <AnalyticsContent
-                                        isAnalyticsDataLoading={isAnalyticsDataLoading}
-                                        isAnalyticsDataGenerated={isAnalyticsDataGenerated}
-                                        eventCards={eventCards}
-                                        hasEventCards={filteredEvents.length > 0}
-                                        generatedAt={generatedAt}
-                                        onContentReady={handleContentReady}
-                                    />
-                                </ContentContainer>
-                            </ContentArea>
-                            {(() => {
-                                const mobileSidebar = isLiveLogOpen ? (
-                                    <LiveLogSidebar
-                                        onEventClick={handleSidebarEventClick}
-                                        filterQuery={debouncedQuery}
-                                    />
-                                ) : (
-                                    <VersionsSidebar
-                                        versionsWithEvents={versionsWithEvents}
-                                        onEventClick={handleSidebarEventClick}
-                                    />
-                                );
-                                const desktopSidebar = (
-                                    <SidebarOuter>
-                                        <ResizableBox
+                    <MainWithSidebar>
+                        <ContentArea ref={contentScrollRef}>
+                            <ContentContainer>
+                                <AnalyticsContent
+                                    isAnalyticsDataLoading={isAnalyticsDataLoading}
+                                    isAnalyticsDataGenerated={isAnalyticsDataGenerated}
+                                    eventCards={eventCards}
+                                    hasEventCards={filteredEvents.length > 0}
+                                    generatedAt={generatedAt}
+                                    onContentReady={handleContentReady}
+                                />
+                            </ContentContainer>
+                        </ContentArea>
+
+                        {(() => {
+                            if (!isSidebarOpen && !isLiveLogOpen) return null;
+
+                            const mobileSidebar = isLiveLogOpen ? (
+                                <LiveLogSidebar
+                                    onEventClick={handleSidebarEventClick}
+                                    filterQuery={debouncedQuery}
+                                />
+                            ) : (
+                                <VersionsSidebar
+                                    versionsWithEvents={versionsWithEvents}
+                                    onEventClick={handleSidebarEventClick}
+                                />
+                            );
+
+                            const desktopSidebar = (
+                                <SidebarOuter>
+                                    <ResizableBox
                                         directions={['left']}
                                         width={sidebarWidth}
                                         minWidth={LIVE_LOG_SIDEBAR_MIN_WIDTH}
@@ -496,14 +505,14 @@ export const App = ({ theme }: AppProps) => {
                                         minHeight={0}
                                         flex="1"
                                         onWidthResizeEnd={w => {
-                                        pendingWidthRef.current = null;
-                                        if (rafRef.current != null) {
-                                            cancelAnimationFrame(rafRef.current);
-                                            rafRef.current = null;
-                                        }
-                                        setSidebarWidth(w);
-                                    }}
-                                    onWidthResizeMove={setSidebarWidthThrottled}
+                                            pendingWidthRef.current = null;
+                                            if (rafRef.current != null) {
+                                                cancelAnimationFrame(rafRef.current);
+                                                rafRef.current = null;
+                                            }
+                                            setSidebarWidth(w);
+                                        }}
+                                        onWidthResizeMove={setSidebarWidthThrottled}
                                     >
                                         <SidebarInner>
                                             {isLiveLogOpen ? (
@@ -520,26 +529,12 @@ export const App = ({ theme }: AppProps) => {
                                         </SidebarInner>
                                     </ResizableBox>
                                 </SidebarOuter>
-                                );
+                            );
 
-                                return isMobile ? mobileSidebar : desktopSidebar;
-                            })()}
-                        </MainWithSidebar>
-                    ) : (
-                        <Content>
-                            <ContentContainer>
-                                <AnalyticsContent
-                                    isAnalyticsDataLoading={isAnalyticsDataLoading}
-                                    isAnalyticsDataGenerated={isAnalyticsDataGenerated}
-                                    eventCards={eventCards}
-                                    hasEventCards={filteredEvents.length > 0}
-                                    generatedAt={generatedAt}
-                                    onContentReady={handleContentReady}
-                                />
-                            </ContentContainer>
-                        </Content>
-                    )}
-                </Box>
+                            return isMobile ? mobileSidebar : desktopSidebar;
+                        })()}
+                    </MainWithSidebar>
+                </Page>
             </Modal.Provider>
         </>
     );

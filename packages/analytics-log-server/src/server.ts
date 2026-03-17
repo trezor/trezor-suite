@@ -1,12 +1,7 @@
 import * as http from 'http';
 
 import { createEventStore } from './eventStore';
-import {
-    handleClearEvents,
-    handleEventsStream,
-    handleGetEvents,
-    handleLog,
-} from './handlers';
+import { handleClearEvents, handleEventsStream, handleGetEvents, handleLog } from './handlers';
 
 const PORT = Number(process.env.PORT) || 5180;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS) || 500;
@@ -63,4 +58,3 @@ server.listen(PORT, () => {
     // eslint-disable-next-line no-console
     console.log(`Analytics log server listening on http://0.0.0.0:${PORT}`);
 });
-

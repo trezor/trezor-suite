@@ -32,4 +32,3 @@ process.on('SIGTERM', () => {
     shutdown();
     process.exit(0);
 });
-

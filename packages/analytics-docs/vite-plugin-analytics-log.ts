@@ -35,18 +35,12 @@ export const analyticsLogPlugin = (): Plugin => {
                     return;
                 }
                 if (pathname === '/api/analytics-events') {
-                    onGetEvents(
-                        { method: req.method ?? 'GET', url: req.url ?? '/' },
-                        res,
-                    );
+                    onGetEvents({ method: req.method ?? 'GET', url: req.url ?? '/' }, res);
 
                     return;
                 }
                 if (pathname === '/api/analytics-events/clear') {
-                    onClearEvents(
-                        { method: req.method ?? 'GET', url: req.url ?? '/' },
-                        res,
-                    );
+                    onClearEvents({ method: req.method ?? 'GET', url: req.url ?? '/' }, res);
 
                     return;
                 }

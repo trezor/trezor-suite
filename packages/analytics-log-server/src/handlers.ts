@@ -88,4 +88,3 @@ export const handleEventsStream = (store: EventStore) => (req: Req, res: Res) =>
         res.end();
     });
 };
-
