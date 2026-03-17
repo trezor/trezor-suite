@@ -1,7 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { goto } from '@suite/router';
-import { type Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
 import { type IconName, SubTabs } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';

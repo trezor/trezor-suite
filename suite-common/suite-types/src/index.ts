@@ -10,7 +10,6 @@ export type * from './github';
 export type * from './guide';
 export type * from './messageSystem';
 export type * from './modal';
-export type * from './route';
 export * from './staking';
 export * from './walletBackupType';
 export type * from './sign';

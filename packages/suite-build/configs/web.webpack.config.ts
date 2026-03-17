@@ -4,7 +4,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
-import { FLAGS, routes } from '@suite-common/suite-config';
+import { routes } from '@suite/router';
+import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';

@@ -1,6 +1,6 @@
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import { type Route } from '@suite-common/suite-types';
+import { type Route } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';

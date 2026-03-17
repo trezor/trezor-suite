@@ -3,8 +3,7 @@ import { type MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
-import { goto, selectRouteName } from '@suite/router';
-import { type Route } from '@suite-common/suite-types';
+import { type Route, goto, selectRouteName } from '@suite/router';
 import {
     Icon,
     type IconName,

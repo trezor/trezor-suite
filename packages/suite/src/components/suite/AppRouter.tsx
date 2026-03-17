@@ -1,12 +1,12 @@
 import { type ComponentType, createElement, memo } from 'react';
 
 import {
+    type PageName,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
     selectRouteName,
     suiteRoutes,
 } from '@suite/router';
-import { type PageName } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
