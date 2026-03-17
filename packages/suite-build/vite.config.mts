@@ -596,5 +596,15 @@ export default defineConfig({
         watch: {
             ignored: ['**/node_modules/**', '**/dist/**', '**/.nx/**', '**/.git/**'],
         },
+        // Pre-transform app source files into Vite's in-memory cache at startup.
+        // This eliminates per-request esbuild transform latency across the ESM import cascade.
+        warmup: {
+            clientFiles: [
+                './vite-index.ts',
+                '../../packages/*/src/**/*.{ts,tsx}',
+                '../../suite/*/src/**/*.{ts,tsx}',
+                '../../suite-common/*/src/**/*.{ts,tsx}',
+            ],
+        },
     },
 });
