@@ -5,3 +5,10 @@ export type { Response } from './responses';
 export * from './baseCurrency';
 
 export type { Transaction as BlockbookTransaction } from './blockbook';
+export type {
+    AssetBalance,
+    BlockfrostAccountInfo,
+    BlockfrostTransaction,
+    BlockfrostUtxos,
+    ParseAssetResult,
+} from './blockfrost';

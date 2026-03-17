@@ -5,12 +5,12 @@ import type {
     EnhancedVinVout,
     Transaction,
     Utxo,
+    VinVout,
 } from '@trezor/blockchain-link-types';
 import type {
     Transaction as BlockbookTransaction,
     FilterResponse,
     ServerInfo,
-    VinVout,
 } from '@trezor/blockchain-link-types/src/blockbook';
 import type { Network } from '@trezor/utxo-lib';
 

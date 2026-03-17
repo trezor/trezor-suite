@@ -1,20 +1,18 @@
-import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
+    AccountAddresses,
+    AccountInfo,
     AssetBalance,
     BlockfrostAccountInfo,
     BlockfrostTransaction,
     BlockfrostUtxos,
     ParseAssetResult,
-} from '@trezor/blockchain-link-types/src/blockfrost';
-import type {
-    AccountAddresses,
-    AccountInfo,
     TokenInfo,
     TokenTransfer,
     Transaction,
     TransferType,
     Utxo,
-} from '@trezor/blockchain-link-types/src/common';
+    VinVout,
+} from '@trezor/blockchain-link-types';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
