@@ -1,3 +1,4 @@
+export * from './backupMiddleware';
 export * from './backupReducer';
 export * from './backupSelectors';
 export * from './backupThunks';

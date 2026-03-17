@@ -10,7 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
-import { backupReducer } from '@suite/backup';
+import { backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { recoveryReducer } from '@suite/recovery';
 import { type HistoryDep } from '@suite/router';
@@ -32,7 +32,6 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import backupMiddleware from 'src/middlewares/backup/backupMiddleware';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';

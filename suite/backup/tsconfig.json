@@ -10,6 +10,7 @@
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../analytics" },
+        { "path": "../router" },
         { "path": "../../packages/connect" }
     ]
 }
