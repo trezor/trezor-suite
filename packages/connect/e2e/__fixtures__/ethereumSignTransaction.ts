@@ -2,6 +2,9 @@
 // @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx.json';
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
 const legacyResults: Record<string, LegacyResult[]> = {
     'Ledger Live legacy path': [
         {
@@ -41,11 +44,17 @@ export default {
             };
 
             if (parameters.data) {
-                (fixture.params.transaction as Record<string, unknown>).data = parameters.data;
+                const transaction = fixture.params.transaction;
+                if (isRecord(transaction)) {
+                    transaction.data = parameters.data;
+                }
             }
 
             if (parameters.tx_type) {
-                (fixture.params.transaction as Record<string, unknown>).txType = parameters.tx_type;
+                const transaction = fixture.params.transaction;
+                if (isRecord(transaction)) {
+                    transaction.txType = parameters.tx_type;
+                }
             }
 
             return fixture;

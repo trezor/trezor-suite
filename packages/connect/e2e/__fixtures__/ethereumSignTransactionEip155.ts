@@ -2,6 +2,9 @@
 // @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip155.json';
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
 const legacyResults: Record<string, LegacyResult[]> = {
     Palm: [
         {
@@ -75,7 +78,10 @@ export default {
             }
 
             if (parameters.data) {
-                (fixture.params.transaction as Record<string, unknown>).data = parameters.data;
+                const transaction = fixture.params.transaction;
+                if (isRecord(transaction)) {
+                    transaction.data = parameters.data;
+                }
             }
 
             return fixture;
