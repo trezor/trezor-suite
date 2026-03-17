@@ -14796,6 +14796,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
