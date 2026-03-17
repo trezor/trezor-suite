@@ -1,11 +1,11 @@
 import { type MiddlewareAPI } from 'redux';
 
+import { backupActions } from '@suite/backup';
 import { routerAppChanged } from '@suite/router';
 
-import * as backupActions from 'src/actions/backup/backupActions';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
-const backup =
+const backupMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
@@ -19,4 +19,4 @@ const backup =
 
         return action;
     };
-export default backup;
+export default backupMiddleware;

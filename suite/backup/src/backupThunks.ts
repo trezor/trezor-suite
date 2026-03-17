@@ -1,63 +1,38 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
-import { BACKUP } from 'src/actions/backup/constants';
-import type { Dispatch, GetState } from 'src/types/suite';
+import { backupActions } from './backupReducer';
 
-export type ConfirmKey =
-    | 'has-enough-time'
-    | 'is-in-private'
-    | 'understands-what-seed-is'
-    | 'wrote-seed-properly'
-    | 'made-no-digital-copy'
-    | 'will-hide-seed';
+const actionPrefix = '@suite/backup';
 
-export type BackupStatus = 'initial' | 'in-progress' | 'finished' | 'error';
-export type BackupAction =
-    | { type: typeof BACKUP.RESET_REDUCER }
-    | { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey }
-    | { type: typeof BACKUP.SET_IN_PROGRESS; payload: boolean }
-    | { type: typeof BACKUP.SET_ERROR; payload: string };
-
-export const toggleCheckboxByKey = (key: ConfirmKey): BackupAction => ({
-    type: BACKUP.TOGGLE_CHECKBOX_BY_KEY,
-    payload: key,
-});
-
-export const setInProgress = (inProgress: boolean): BackupAction => ({
-    type: BACKUP.SET_IN_PROGRESS,
-    payload: inProgress,
-});
-
-export const setError = (error: string): BackupAction => ({
-    type: BACKUP.SET_ERROR,
-    payload: error,
-});
-
-export const resetReducer = (): BackupAction => ({
-    type: BACKUP.RESET_REDUCER,
-});
-
-export const backupDevice =
-    (params: Parameters<typeof TrezorConnect.backupDevice>[0] = {}, skipSuccessToast?: boolean) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+export const backupDeviceThunk = createThunk(
+    `${actionPrefix}/backupDeviceThunk`,
+    async (
+        {
+            params = {},
+            skipSuccessToast,
+        }: {
+            params?: Parameters<typeof TrezorConnect.backupDevice>[0];
+            skipSuccessToast?: boolean;
+        },
+        { dispatch, getState, extra },
+    ) => {
         const device = selectSelectedDevice(getState());
         if (!device) {
-            return dispatch(
+            dispatch(
                 notificationsActions.addToast({
                     type: 'error',
                     error: 'Device not connected',
                 }),
             );
+
+            return;
         }
 
-        dispatch({
-            type: BACKUP.SET_IN_PROGRESS,
-            payload: true,
-        });
+        dispatch(backupActions.setInProgress(true));
 
         const result = await TrezorConnect.backupDevice({
             ...params,
@@ -71,10 +46,7 @@ export const backupDevice =
             await TrezorConnect.getFeatures({ device: { path: device.path } });
 
             dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
-            dispatch({
-                type: BACKUP.SET_ERROR,
-                payload: result.error.message,
-            });
+            dispatch(backupActions.setError(result.error.message));
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.createBackupEvent.name,
                 payload: {
@@ -86,10 +58,7 @@ export const backupDevice =
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'backup-success' }));
             }
-            dispatch({
-                type: BACKUP.SET_IN_PROGRESS,
-                payload: false,
-            });
+            dispatch(backupActions.setInProgress(false));
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.createBackupEvent.name,
                 payload: {
@@ -98,4 +67,5 @@ export const backupDevice =
                 },
             });
         }
-    };
+    },
+);

@@ -1,15 +1,14 @@
+import { type BackupState, type ConfirmKey, backupDeviceThunk } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { type ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
-import { type BackupState } from '../../reducers/backup/backupReducer';
 
 const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
     (['has-enough-time', 'is-in-private', 'understands-what-seed-is'] as const).every(e =>
@@ -27,7 +26,7 @@ export const BackupStep1Initial = ({
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const dispatch = useDispatch();
 
-    const backupParams: Parameters<typeof backupDevice>[0] =
+    const params: Parameters<typeof backupDeviceThunk>[0]['params'] =
         device?.features?.backup_type === 'Slip39_Basic' ||
         device?.features?.backup_type === 'Slip39_Basic_Extendable'
             ? {
@@ -47,7 +46,7 @@ export const BackupStep1Initial = ({
                 <>
                     <Modal.Button
                         data-testid="@backup/start-button"
-                        onClick={() => dispatch(backupDevice(backupParams))}
+                        onClick={() => dispatch(backupDeviceThunk({ params }))}
                         isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                     >
                         <Translation id="TR_CREATE_BACKUP" />

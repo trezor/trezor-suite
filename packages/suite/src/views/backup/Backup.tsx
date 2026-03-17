@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { selectBackup, selectBackupStatus } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import { BackupStep1Initial } from './BackupStep1Initial';
 import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
-import { selectBackup, selectBackupStatus } from '../../reducers/backup/backupReducer';
 
 const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     if (unfinishedBackup) {

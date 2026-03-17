@@ -1,6 +1,7 @@
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
+import type { backupActions } from '@suite/backup';
 import { type experimentalFeedbackSlice } from '@suite/experimental-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
@@ -36,7 +37,6 @@ import {
 } from '@trezor/connect';
 import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
-import type { BackupAction } from 'src/actions/backup/backupActions';
 import { type deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
@@ -123,7 +123,7 @@ type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryA
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | AnalyticsAction
-    | BackupAction
+    | ReturnType<(typeof backupActions)[keyof typeof backupActions]>
     | BioAuthAction
     | BluetoothAction
     | BluetoothActionDesktop

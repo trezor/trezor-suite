@@ -1,11 +1,9 @@
+import { type BackupState, selectBackupStatus } from '@suite/backup';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type BackupAvailability } from '@trezor/protobuf/src/messages';
 
 import { type AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
-
-import type { BackupState } from '../backupReducer';
-import { selectBackupStatus } from '../backupReducer';
 
 describe('selectBackupStatus', () => {
     const baseBackup: BackupState = {

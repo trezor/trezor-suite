@@ -1,7 +1,7 @@
+import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
 
-import { type ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 const items = [
@@ -44,7 +44,7 @@ export const BackupSeedCards = () => {
                     <Card
                         paddingType="large"
                         key={item.key}
-                        onClick={() => dispatch(toggleCheckboxByKey(item.key))}
+                        onClick={() => dispatch(backupActions.toggleCheckboxByKey(item.key))}
                         data-testid={`@backup/check-item/${item.key}`}
                     >
                         <Column gap={16}>
