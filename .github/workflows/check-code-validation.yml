@@ -165,6 +165,8 @@ jobs:
         run: yarn verify-project-references
       - name: Detect unused dependencies
         run: yarn depcheck
+      - name: Knip analysis
+        run: yarn knip
       - name: Yarn Dedupe check
         run: yarn dedupe --check
       - name: Check dependency domain lists

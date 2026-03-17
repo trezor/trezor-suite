@@ -1,0 +1,7 @@
+{
+    "workspaces": {
+        "suite-native/app": {
+            "metro": false
+        }
+    }
+}
