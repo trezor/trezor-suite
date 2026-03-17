@@ -53,7 +53,7 @@ export default {
         };
 
         if (parameters.data) {
-            fixture.params.transaction.data = parameters.data;
+            (fixture.params.transaction as Record<string, unknown>).data = parameters.data;
         }
 
         return fixture;

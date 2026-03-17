@@ -41,11 +41,11 @@ export default {
             };
 
             if (parameters.data) {
-                fixture.params.transaction.data = parameters.data;
+                (fixture.params.transaction as Record<string, unknown>).data = parameters.data;
             }
 
             if (parameters.tx_type) {
-                fixture.params.transaction.txType = parameters.tx_type;
+                (fixture.params.transaction as Record<string, unknown>).txType = parameters.tx_type;
             }
 
             return fixture;

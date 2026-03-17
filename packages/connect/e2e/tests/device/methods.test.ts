@@ -104,7 +104,7 @@ describe(`TrezorConnect methods`, () => {
             testCase.tests.forEach(t => {
                 // check if test should be skipped on current configuration
                 conditionalTest(
-                    t.skip,
+                    t.skip ?? [],
                     t.description,
                     async () => {
                         // print current test case, `jest` default reporter doesn't log this. see https://github.com/facebook/jest/issues/4471

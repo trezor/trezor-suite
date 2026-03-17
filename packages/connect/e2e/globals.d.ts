@@ -1,8 +1,12 @@
-/* eslint-disable no-var */
+ 
+
+import type { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 
 // Globals used in connect test
-declare namespace globalThis {
-    var TestUtils: any;
+declare global {
+    var TestUtils: {
+        TX_CACHE: (txs: string[], force?: boolean) => Record<string, unknown>[];
+    };
 
     var firmware: string;
     var firmwareUrl: string | undefined;
@@ -14,22 +18,22 @@ declare namespace globalThis {
 
     type LegacyResult = {
         rules: string[];
-        payload?: any;
+        payload?: Record<string, unknown> | boolean;
         success?: boolean;
     };
 
     type Fixture = {
         description: string;
-        params: any;
-        result?: any;
+        params: Record<string, unknown>;
+        result?: Record<string, unknown> | Record<string, unknown>[] | boolean;
         legacyResults?: LegacyResult[];
         customTimeout?: number;
         setup?: {
             wiped?: boolean;
             mnemonic?: string;
-            settings?: any;
+            settings?: ApplySettings;
         };
-        skip?: any;
+        skip?: string[];
     };
 
     type TestCase = {
@@ -38,8 +42,10 @@ declare namespace globalThis {
         setup: {
             wiped?: boolean;
             mnemonic?: string;
-            settings?: any;
+            settings?: ApplySettings;
         };
         tests: Fixture[];
     };
 }
+
+export {};

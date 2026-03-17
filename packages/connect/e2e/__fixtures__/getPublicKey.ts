@@ -36,7 +36,7 @@ export default {
                     'wpkh([95d8f670/84h/0h/0h]xpub6Bmuozp73G1Ng4FtB1dzVJ9WGg6BcMn5xgUd7rQ8NybSHytQjkyfqMZfJ635zoHMYZoMuS4uCEz86SPLpvfFQxQe1acY5U7FzX9yL5DyRAe/<0;1>/*)#78czyhf0',
             },
             get legacyResults() {
-                const { descriptor, ...payload } = this.result;
+                const { descriptor, ...payload } = this.result as Record<string, unknown>;
 
                 return [{ rules: ['<2.7.0'], payload }];
             },
@@ -55,7 +55,7 @@ export default {
                     'sh(wpkh([95d8f670/49h/0h/0h]xpub6DExuxjQ16sWy5TF4KkLV65YGqCJ5pyv7Ej7d9yJNAXz7C1M9intqszXfaNZG99KsDJdQ29wUKBTZHZFXUaPbKTZ5Z6f4yowNvAQ8fEJw2G/<0;1>/*))#euxgwkh5',
             },
             get legacyResults() {
-                const { descriptor, ...payload } = this.result;
+                const { descriptor, ...payload } = this.result as Record<string, unknown>;
 
                 return [{ rules: ['<2.7.0'], payload }];
             },
@@ -74,7 +74,7 @@ export default {
                     'sh(wpkh([95d8f670/49h/0h/0h]xpub6DExuxjQ16sWy5TF4KkLV65YGqCJ5pyv7Ej7d9yJNAXz7C1M9intqszXfaNZG99KsDJdQ29wUKBTZHZFXUaPbKTZ5Z6f4yowNvAQ8fEJw2G/<0;1>/*))#euxgwkh5',
             },
             get legacyResults() {
-                const { descriptor, ...payload } = this.result;
+                const { descriptor, ...payload } = this.result as Record<string, unknown>;
 
                 return [{ rules: ['<2.7.0'], payload }];
             },
@@ -91,7 +91,7 @@ export default {
                     'pkh([95d8f670/44h/0h/0h]xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zrKmZP2fXMuve7ZRBe18pWQQsGg68jkq24mZchHwYENd8cCiSb71u3KD4AFH/<0;1>/*)#k60fe5pm',
             },
             get legacyResults() {
-                const { descriptor, ...payload } = this.result;
+                const { descriptor, ...payload } = this.result as Record<string, unknown>;
 
                 return [{ rules: ['<2.7.0'], payload }];
             },
