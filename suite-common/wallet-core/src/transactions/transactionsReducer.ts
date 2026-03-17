@@ -73,7 +73,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         // add a new transaction
                         if (page && perPage) {
                             // insert a tx object at correct index
-                            // TODO settingsCommonConfig.TXS_PER_PAGE musi chodit z payloadu, jinak failuje (chodi do thunku, sem ne)
                             const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
                             accountTxs[txIndex] = transaction;
                         } else {
