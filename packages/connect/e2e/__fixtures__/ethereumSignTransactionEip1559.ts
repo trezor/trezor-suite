@@ -56,7 +56,7 @@ export default {
         };
 
         if (parameters.data) {
-            const transaction = fixture.params.transaction;
+            const { transaction } = fixture.params;
             if (isRecord(transaction)) {
                 transaction.data = parameters.data;
             }
