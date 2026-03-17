@@ -4133,48 +4133,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:7.3.0":
-  version: 7.3.0
-  resolution: "@evolu/common@npm:7.3.0"
+"@evolu/common@github:evoluhq/evolu#workspace=@evolu/common&head=common-v8":
+  version: 7.4.1
+  resolution: "@evolu/common@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fcommon&commit=6bd7dc2a64dfe09fcf2357e85ce74d09be24a0e8"
   dependencies:
-    "@noble/ciphers": "npm:^2.0.0"
-    "@noble/hashes": "npm:^2.0.0"
-    "@scure/bip39": "npm:^2.0.0"
-    kysely: "npm:^0.28.4"
-    msgpackr: "npm:^1.11.5"
+    "@noble/ciphers": "npm:^2.1.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@scure/bip39": "npm:^2.0.1"
+    kysely: "npm:^0.28.10"
+    msgpackr: "npm:^1.11.8"
     random: "npm:^5.4.1"
-  checksum: 10/9e1b90947f28100200b5da0074698d5352369bbdd1d9e6edfa2269b25a50f52d42ec0bfa296c89ed6104801a22ceb1f4fcff91868753de3c52d8336ec445f31d
+  checksum: 10/6050c159656bd7da6110f8ef4e0e7d12d19674c1b2ec2ac757264d8a1fb4915560b3a83cbab730ac8785afb9a22aaeda8d5004e4a7dad9da5a740003424cbc40
   languageName: node
   linkType: hard
 
-"@evolu/common@patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch":
-  version: 7.3.0
-  resolution: "@evolu/common@patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch::version=7.3.0&hash=f72703"
+"@evolu/react-native@github:evoluhq/evolu#workspace=@evolu/react-native&head=common-v8":
+  version: 14.3.0
+  resolution: "@evolu/react-native@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Freact-native&commit=6bd7dc2a64dfe09fcf2357e85ce74d09be24a0e8"
   dependencies:
-    "@noble/ciphers": "npm:^2.0.0"
-    "@noble/hashes": "npm:^2.0.0"
-    "@scure/bip39": "npm:^2.0.0"
-    kysely: "npm:^0.28.4"
-    msgpackr: "npm:^1.11.5"
-    random: "npm:^5.4.1"
-  checksum: 10/8ca977ccc188b257a1701e7330d365c840ebe91320d5a28821cc65b922b221955b731ae2279d957c9d016a07679a105c8104f0e6802943354f9e19e5326868f3
-  languageName: node
-  linkType: hard
-
-"@evolu/react-native@npm:^14.2.0":
-  version: 14.2.0
-  resolution: "@evolu/react-native@npm:14.2.0"
+    array-from-async: "npm:^3.0.0"
+    array.prototype.tosorted: "npm:^1.1.4"
+    promise.try: "npm:^2.0.1"
+    promise.withresolvers: "npm:^1.0.4"
+    set.prototype.difference: "npm:^1.1.7"
+    set.prototype.intersection: "npm:^1.1.8"
+    set.prototype.isdisjointfrom: "npm:^1.1.5"
+    set.prototype.issubsetof: "npm:^1.1.4"
+    set.prototype.issupersetof: "npm:^1.1.3"
+    set.prototype.symmetricdifference: "npm:^1.1.3"
+    set.prototype.union: "npm:^1.1.3"
   peerDependencies:
-    "@evolu/common": ^7.3.0
-    "@evolu/react": ^10.3.0
+    "@evolu/common": ^7.4.1
+    "@evolu/react": ^10.4.0
     "@op-engineering/op-sqlite": ">=12"
-    expo: ">=54"
-    expo-secure-store: ">=15"
-    expo-sqlite: ">=16"
-    react-native: ">=0.81"
-    react-native-nitro-modules: ">=0.31"
+    expo: ">=55"
+    expo-secure-store: ">=55"
+    expo-sqlite: ">=55"
+    react: ">=19"
+    react-native: ">=0.83"
+    react-native-nitro-modules: ">=0.34"
     react-native-sensitive-info: ">=6"
-    react-native-svg: ">=15"
+    react-native-svg: ">=15.15"
   peerDependenciesMeta:
     "@op-engineering/op-sqlite":
       optional: true
@@ -4190,7 +4189,7 @@ __metadata:
       optional: true
     react-native-svg:
       optional: true
-  checksum: 10/e8a49abdd6b52ef80f3f16fed41dc8b52e746edf665eae63ea84f42b77e1312cc9e5852c25edda02102e565b6b8949610e41a1cf724c49dee56b064b87784327
+  checksum: 10/24322e353d00d7bc356210d7e807c163bc31fc7bef61aeba102f48075a214f66514c8551b53b8462933d050eaa11f420d7776a248312431db9559cb81f899a34
   languageName: node
   linkType: hard
 
@@ -4203,15 +4202,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/web@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@evolu/web@npm:2.3.0"
+"@evolu/web@github:evoluhq/evolu#workspace=@evolu/web&head=common-v8":
+  version: 2.4.0
+  resolution: "@evolu/web@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fweb&commit=6bd7dc2a64dfe09fcf2357e85ce74d09be24a0e8"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
     idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^7.3.0
-  checksum: 10/73de169259f5f224b9a4feb3b58f1e0eca06925504544922824080cd498259962a85bd4eca0e8b8bbefee2b44f71b0a928413f5e08e6cb70d79fa7d67502e618
+    "@evolu/common": ^7.4.1
+  checksum: 10/36b8471624914b8ed7998d36edf30a696dd7d727c47ee0702a4d41eecfe50dbe8760d508bcedfd3d274248a77043e00c578f6f805eb1d33cd89654c3bedcf6de
   languageName: node
   linkType: hard
 
@@ -6353,10 +6352,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "@noble/ciphers@npm:2.0.1"
-  checksum: 10/18260557f9891f739d5e5bb59043df8c820835c9f2d563b7686d0e71ac71164e7a5b14fbe95c34208ec2cb3cd330fc913ec3b0d3e7ac79e3b4df25c27854ef66
+"@noble/ciphers@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@noble/ciphers@npm:2.1.1"
+  checksum: 10/efca189b2719ed7309616a6824328d713bd37156e1bcead453725e51fc93311fb2f54e4d46bef0391fa17ce18bd9c2364511290774504a8600264b572f6a1db5
   languageName: node
   linkType: hard
 
@@ -6435,7 +6434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:2.0.1, @noble/hashes@npm:^2.0.0, @noble/hashes@npm:^2.0.1":
+"@noble/hashes@npm:2.0.1, @noble/hashes@npm:^2.0.1":
   version: 2.0.1
   resolution: "@noble/hashes@npm:2.0.1"
   checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
@@ -9352,7 +9351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:^2.0.0":
+"@scure/bip39@npm:^2.0.1":
   version: 2.0.1
   resolution: "@scure/bip39@npm:2.0.1"
   dependencies:
@@ -11195,7 +11194,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
-    "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch"
+    "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.13"
@@ -11576,12 +11575,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
-    "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch"
+    "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8"
     "@noble/hashes": "npm:^2.0.1"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.13"
@@ -14331,7 +14331,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
-    "@evolu/react-native": "npm:^14.2.0"
+    "@evolu/react-native": "github:evoluhq/evolu#workspace=@evolu/react-native&head=common-v8"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
@@ -14950,7 +14950,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/web": "npm:^2.3.0"
+    "@evolu/web": "github:evoluhq/evolu#workspace=@evolu/web&head=common-v8"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -16173,7 +16173,7 @@ __metadata:
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
     "@currents/playwright": "npm:^1.19.0"
-    "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch"
+    "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8"
     "@playwright/browser-chromium": "npm:1.57.0"
     "@playwright/browser-firefox": "npm:1.57.0"
     "@playwright/browser-webkit": "npm:1.57.0"
@@ -19920,6 +19920,13 @@ __metadata:
   version: 1.1.1
   resolution: "array-flatten@npm:1.1.1"
   checksum: 10/e13c9d247241be82f8b4ec71d035ed7204baa82fae820d4db6948d30d3c4a9f2b3905eb2eec2b937d4aa3565200bd3a1c500480114cff649fa748747d2a50feb
+  languageName: node
+  linkType: hard
+
+"array-from-async@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "array-from-async@npm:3.0.0"
+  checksum: 10/3fbf84fc574612b8a3eefbc27b1beb49efc1db0a97bfe5ef1e2a51f0fae5d991bbc7ecb20a918df1620c05ce9bb221c4063e05a40c4186e1b4ea92be4d9b80a7
   languageName: node
   linkType: hard
 
@@ -25278,6 +25285,68 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es-abstract@npm:^1.24.1":
+  version: 1.24.1
+  resolution: "es-abstract@npm:1.24.1"
+  dependencies:
+    array-buffer-byte-length: "npm:^1.0.2"
+    arraybuffer.prototype.slice: "npm:^1.0.4"
+    available-typed-arrays: "npm:^1.0.7"
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.4"
+    data-view-buffer: "npm:^1.0.2"
+    data-view-byte-length: "npm:^1.0.2"
+    data-view-byte-offset: "npm:^1.0.1"
+    es-define-property: "npm:^1.0.1"
+    es-errors: "npm:^1.3.0"
+    es-object-atoms: "npm:^1.1.1"
+    es-set-tostringtag: "npm:^2.1.0"
+    es-to-primitive: "npm:^1.3.0"
+    function.prototype.name: "npm:^1.1.8"
+    get-intrinsic: "npm:^1.3.0"
+    get-proto: "npm:^1.0.1"
+    get-symbol-description: "npm:^1.1.0"
+    globalthis: "npm:^1.0.4"
+    gopd: "npm:^1.2.0"
+    has-property-descriptors: "npm:^1.0.2"
+    has-proto: "npm:^1.2.0"
+    has-symbols: "npm:^1.1.0"
+    hasown: "npm:^2.0.2"
+    internal-slot: "npm:^1.1.0"
+    is-array-buffer: "npm:^3.0.5"
+    is-callable: "npm:^1.2.7"
+    is-data-view: "npm:^1.0.2"
+    is-negative-zero: "npm:^2.0.3"
+    is-regex: "npm:^1.2.1"
+    is-set: "npm:^2.0.3"
+    is-shared-array-buffer: "npm:^1.0.4"
+    is-string: "npm:^1.1.1"
+    is-typed-array: "npm:^1.1.15"
+    is-weakref: "npm:^1.1.1"
+    math-intrinsics: "npm:^1.1.0"
+    object-inspect: "npm:^1.13.4"
+    object-keys: "npm:^1.1.1"
+    object.assign: "npm:^4.1.7"
+    own-keys: "npm:^1.0.1"
+    regexp.prototype.flags: "npm:^1.5.4"
+    safe-array-concat: "npm:^1.1.3"
+    safe-push-apply: "npm:^1.0.0"
+    safe-regex-test: "npm:^1.1.0"
+    set-proto: "npm:^1.0.0"
+    stop-iteration-iterator: "npm:^1.1.0"
+    string.prototype.trim: "npm:^1.2.10"
+    string.prototype.trimend: "npm:^1.0.9"
+    string.prototype.trimstart: "npm:^1.0.8"
+    typed-array-buffer: "npm:^1.0.3"
+    typed-array-byte-length: "npm:^1.0.3"
+    typed-array-byte-offset: "npm:^1.0.4"
+    typed-array-length: "npm:^1.0.7"
+    unbox-primitive: "npm:^1.1.0"
+    which-typed-array: "npm:^1.1.19"
+  checksum: 10/c84cb69ebae36781309a3ed70ff40b4767a921d3b3518060fac4e08f14ede04491b68e9f318aedf186e349d4af4a40f5d0e4111e46513800e8368551fd09de8c
+  languageName: node
+  linkType: hard
+
 "es-array-method-boxes-properly@npm:^1.0.0":
   version: 1.0.0
   resolution: "es-array-method-boxes-properly@npm:1.0.0"
@@ -25415,6 +25484,31 @@ __metadata:
     object.entries: "npm:^1.1.8"
     stop-iteration-iterator: "npm:^1.0.0"
   checksum: 10/56d56897e51cd6729d53c79377723bc29ac0afa9a8278256da1d297f48f05d921834b32885d6b0def7e90c10a70b9075a4e20e4b9b8eb1a4db054f97f482835f
+  languageName: node
+  linkType: hard
+
+"es-set@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "es-set@npm:2.0.1"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.2"
+    define-properties: "npm:^1.2.1"
+    es-abstract: "npm:^1.23.5"
+    es-map: "npm:^1.0.6"
+    es-set-tostringtag: "npm:^2.0.3"
+    for-each: "npm:^0.3.3"
+    functions-have-names: "npm:^1.2.3"
+    get-intrinsic: "npm:^1.2.5"
+    globalthis: "npm:^1.0.4"
+    gopd: "npm:^1.2.0"
+    has-property-descriptors: "npm:^1.0.2"
+    has-symbols: "npm:^1.1.0"
+    internal-slot: "npm:^1.0.7"
+    iterate-value: "npm:^1.0.2"
+    object.entries: "npm:^1.1.8"
+    stop-iteration-iterator: "npm:^1.0.0"
+  checksum: 10/47b843c4ad2a2ed4394887d82dbd3eefcad7acf4c72947eaf6c15ecc85dc0c6becce705780ce944ebedd1a0b3a69234673195dcd0d4c642939e2e26c0e37bf50
   languageName: node
   linkType: hard
 
@@ -32884,10 +32978,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.28.4":
-  version: 0.28.5
-  resolution: "kysely@npm:0.28.5"
-  checksum: 10/ac595a82c7898d5158be0834dfc589723367645b305406523e67e1ac62d60acc102262bc2f39f63584696e24f97e5a46a8da490a44f4b3b9a6c0ab40e3956af3
+"kysely@npm:^0.28.10":
+  version: 0.28.11
+  resolution: "kysely@npm:0.28.11"
+  checksum: 10/c6f58d77c04b0be5af3b67062f0f981678095c081141f04d5a1effeddecca21b838fcd62be62f6be60bdc266cb5318a345bf61edf0e5dce6c3842973881cfd5c
   languageName: node
   linkType: hard
 
@@ -36324,15 +36418,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msgpackr@npm:^1.11.5":
-  version: 1.11.5
-  resolution: "msgpackr@npm:1.11.5"
+"msgpackr@npm:^1.11.8":
+  version: 1.11.8
+  resolution: "msgpackr@npm:1.11.8"
   dependencies:
     msgpackr-extract: "npm:^3.0.2"
   dependenciesMeta:
     msgpackr-extract:
       optional: true
-  checksum: 10/8d1db85d355bbe87428ae91a161dad4e67647761f4266d8ac06abe29e1fbae976aec4cc9435d32a1a4240d10bf01294dc2a00cec1c94409b77c4749f9bc9feb5
+  checksum: 10/f37666bddca024958f1dc3fa5f53909f6c0001ef3632e7e86c4e769cf99270c1a35cc6b0818cc5f6c3a493bd4b7920f9e4aff5af2719fea03db9581d43f379b3
   languageName: node
   linkType: hard
 
@@ -39331,6 +39425,31 @@ __metadata:
     err-code: "npm:^2.0.2"
     retry: "npm:^0.12.0"
   checksum: 10/96e1a82453c6c96eef53a37a1d6134c9f2482f94068f98a59145d0986ca4e497bf110a410adf73857e588165eab3899f0ebcf7b3890c1b3ce802abc0d65967d4
+  languageName: node
+  linkType: hard
+
+"promise.try@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "promise.try@npm:2.0.1"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    define-properties: "npm:^1.2.1"
+    es-abstract: "npm:^1.24.1"
+    es-errors: "npm:^1.3.0"
+    set-function-name: "npm:^2.0.2"
+  checksum: 10/cdae64d4f80f2ea7b2dc5f4b86c38e87d42cd9ab9208cd82d01893276834cc1d131b8fef564279e67a6c6430f91fc07dae7c62a271b2b0f563c39b3c934fd333
+  languageName: node
+  linkType: hard
+
+"promise.withresolvers@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "promise.withresolvers@npm:1.0.4"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    define-properties: "npm:^1.2.1"
+    es-abstract: "npm:^1.24.1"
+    es-errors: "npm:^1.3.0"
+  checksum: 10/0c8b7e1039908081a26b3c3f09b9b40d101f36be5335b405d0f12db9b6c194a96968af8dbca7f6578df2bab23e7fd0b1057058d4af90f201fb97a2e96f397a14
   languageName: node
   linkType: hard
 
@@ -42339,6 +42458,21 @@ __metadata:
     is-set: "npm:^2.0.3"
     stop-iteration-iterator: "npm:^1.0.0"
   checksum: 10/5f60022ed31d68770e3431db881b29ebb69c609b9dc7cf8b3561099e2d61a4b18e623819ca86f6c6962b755e8a25f78fccca0a4b9a1f521c337ccd812af73081
+  languageName: node
+  linkType: hard
+
+"set.prototype.intersection@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "set.prototype.intersection@npm:1.1.8"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    define-properties: "npm:^1.2.1"
+    es-abstract: "npm:^1.24.0"
+    es-errors: "npm:^1.3.0"
+    es-set: "npm:^2.0.1"
+    is-set: "npm:^2.0.3"
+    stop-iteration-iterator: "npm:^1.1.0"
+  checksum: 10/4c5526dd3858a7a8a575ff4b79def903fec144df2fcce4fa2ada27275306626729cc3e9f3eee95dec230308c3c28d18029d1cff71a10b6b14dd357d4657752c5
   languageName: node
   linkType: hard
 

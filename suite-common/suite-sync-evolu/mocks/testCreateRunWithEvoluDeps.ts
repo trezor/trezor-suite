@@ -10,6 +10,7 @@ import {
     lazyVoid,
     ok,
     testCreateRun,
+    testCreateWebSocket,
     testName,
 } from '@evolu/common';
 import {
@@ -30,9 +31,10 @@ export const testCreateRunWithEvoluDeps = async () => {
 
     const run = testCreateRun({
         // console: createConsole({ level: "debug" }),
-        consoleStoreOutputEntry: consoleStoreOutput.entry,
         createMessageChannel,
+        consoleStoreOutputEntry: consoleStoreOutput.entry,
         createMessagePort,
+        createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
     });
 
     const driver = await run.orThrow(testCreateSqliteDeps.createSqliteDriver(testName));

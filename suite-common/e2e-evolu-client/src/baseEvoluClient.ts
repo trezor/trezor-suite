@@ -1,11 +1,17 @@
-import { Evolu, SimpleName } from '@evolu/common';
-import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
+import {
+    AppName,
+    Evolu,
+    MutationValues,
+    createOwnerWebSocketTransport,
+    createQueryBuilder,
+    getOrThrow,
+} from '@evolu/common';
+import { createEvolu } from '@evolu/common/local-first';
 import { execSync } from 'child_process';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
+import { testCreateRunWithEvoluDeps } from '@suite-common/suite-sync-evolu/mocks';
 import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-
-import { createNodeEvoluDeps } from './createEvoluNodeDeps';
 
 export type EvoluClientInitParams = {
     ownerSecret: SuiteSyncOwnerSecretHex;
@@ -21,35 +27,37 @@ const EVOLU_LOCAL_SERVER_NOT_RUNNING_ERROR =
     'Evolu relay is not running on localhost. Please start the Docker environment:\n' +
     'yarn workspace "@trezor/suite-e2e" docker:suite-sync';
 
+export const createQuery = createQueryBuilder(Schema);
+
 export class BaseEvoluClient {
     private _evolu?: Evolu<typeof Schema>;
 
-    init({ ownerSecret, relayUrl = RELAY_URL }: EvoluClientInitParams) {
-        const deps = createNodeEvoluDeps();
-
+    async init({ ownerSecret, relayUrl = RELAY_URL }: EvoluClientInitParams) {
+        const run = await testCreateRunWithEvoluDeps();
         const owner = createEvoluAppOwnerFromTrezorData({ data: ownerSecret });
         if (!owner.ok) {
             throw new Error(`Failed to parse owner: ${JSON.stringify(owner.error)}`);
         }
 
         const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
-        const clientDatabaseName = SimpleName.orThrow(`trezor-suite-e2e-${sanitizedOwnerId}`);
+        const appName = AppName.orThrow(`trezor-suite-e2e-${sanitizedOwnerId}`);
 
-        this._evolu = createEvolu(deps)(Schema, {
-            name: clientDatabaseName,
-            transports: [
-                createOwnerWebSocketTransport({
-                    url: relayUrl,
-                    ownerId: owner.value.id,
+        this._evolu = getOrThrow(
+            await run(
+                createEvolu(Schema, {
+                    appName,
+                    // Intentionally no transport, transport will be passed
+                    // later on, so we can change the RelayUrl at any time.
+                    transports: [
+                        createOwnerWebSocketTransport({
+                            url: relayUrl,
+                            ownerId: owner.value.id,
+                        }),
+                    ],
+                    appOwner: owner.value,
                 }),
-            ],
-            externalAppOwner: owner.value,
-            encryptionKey: owner.value.encryptionKey,
-        });
-
-        this._evolu.subscribeError(() => {
-            console.error('Evolu Error:', this._evolu?.getError());
-        });
+            ),
+        );
     }
 
     get evolu() {
@@ -60,18 +68,13 @@ export class BaseEvoluClient {
         return this._evolu;
     }
 
-    writeTo<T extends TableName>(table: T, object: Upsertable<(typeof Schema)[T]>) {
-        const upsertResult = this.evolu.upsert(table, object as any);
-        if (!upsertResult.ok) {
-            throw new Error(
-                `Upsert to Evolu relay failed: ${JSON.stringify(upsertResult.error, null, 2)}`,
-            );
-        }
+    writeTo<T extends TableName>(table: T, object: MutationValues<(typeof Schema)[T], 'upsert'>) {
+        this.evolu.upsert(table, object as any);
     }
 
     async subscribeToTable(table: TableName) {
         const ownerId = (await this.evolu.appOwner).id;
-        const query = this.evolu.createQuery(db =>
+        const query = createQuery(db =>
             db.selectFrom(table).where('ownerId', '=', ownerId).selectAll(),
         );
 
@@ -85,7 +88,7 @@ export class BaseEvoluClient {
 
     async readFrom(table: TableName) {
         const ownerId = (await this.evolu.appOwner).id;
-        const query = this.evolu.createQuery(db =>
+        const query = createQuery(db =>
             db.selectFrom(table).where('ownerId', '=', ownerId).selectAll(),
         );
 
