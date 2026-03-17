@@ -5,13 +5,13 @@
 
 import type { Plugin } from 'vite';
 
-import { createEventStore } from './server/eventStore';
 import {
+    createEventStore,
     handleClearEvents,
     handleEventsStream,
     handleGetEvents,
     handleLog,
-} from './server/handlers';
+} from '@trezor/analytics-log-server';
 
 export const analyticsLogPlugin = (): Plugin => {
     const store = createEventStore();

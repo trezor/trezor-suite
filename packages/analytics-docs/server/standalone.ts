@@ -9,13 +9,13 @@ import * as http from 'http';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import { createEventStore } from './eventStore';
 import {
+    createEventStore,
     handleClearEvents,
     handleEventsStream,
     handleGetEvents,
     handleLog,
-} from './handlers';
+} from '@trezor/analytics-log-server';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(__dirname, '..', 'dist');
