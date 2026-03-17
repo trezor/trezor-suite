@@ -22,13 +22,16 @@
     "main": "src/index.ts",
     "publishConfig": {
         "main": "./lib/index.js",
+        "module": "./libESM/index.mjs",
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
-            }
+            },
+            "./lib/impl/*": "./lib/impl/*.js",
+            "./libESM/impl/*": "./libESM/impl/*"
         }
     },
     "files": [

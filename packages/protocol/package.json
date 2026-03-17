@@ -16,18 +16,15 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
             "./lib/protocol-thp": "./lib/protocol-thp/index.js",
             "./lib/protocol-thp/messages": "./lib/protocol-thp/messages/index.js",
             "./lib/protocol-tpn": "./lib/protocol-tpn/index.js",
-            "./libESM/protocol-thp/*": "./libESM/protocol-thp/*",
-            "./libESM/protocol-thp/messages/*": "./libESM/protocol-thp/messages/*",
-            "./libESM/protocol-tpn/*": "./lib/protocol-tpn/*"
+            "./libESM/*": "./libESM/*"
         }
     },
     "npmPublishAccess": "public",

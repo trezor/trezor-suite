@@ -9,14 +9,13 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
             "./lib/constants": "./lib/constants/index.js",
-            "./libESM/constants/index.js": "./libESM/constants/index.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "files": [

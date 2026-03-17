@@ -31,24 +31,18 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
             "./lib/types": "./lib/types/index.js",
             "./lib/transaction": "./lib/transaction/index.js",
             "./lib/payments": "./lib/payments/index.js",
             "./lib/compose": "./lib/compose/index.js",
             "./lib/coinselect": "./lib/coinselect/index.js",
             "./lib/script": "./lib/script/index.js",
-            "./libESM/types.js": "./libESM/types/index.js",
-            "./libESM/transaction.js": "./libESM/transaction/index.js",
-            "./libESM/payments.js": "./libESM/payments/index.js",
-            "./libESM/compose.js": "./libESM/compose/index.js",
-            "./libESM/coinselect.js": "./libESM/coinselect/index.js",
-            "./libESM/script.js": "./libESM/script/index.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "scripts": {
