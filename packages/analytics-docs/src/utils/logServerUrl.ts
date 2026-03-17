@@ -46,4 +46,3 @@ export const setLogServerBaseUrl = (baseUrl: string): void => {
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
     window.history.replaceState(null, '', `${url}${window.location.hash}`);
 };
-

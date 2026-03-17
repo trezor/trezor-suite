@@ -48,10 +48,7 @@ const server = http.createServer((req, res) => {
     const pathname = req.url?.split('?')[0] ?? '/';
 
     if (pathname === '/log' || pathname.startsWith('/log/')) {
-        onLog(
-            { method: req.method ?? 'GET', url: req.url ?? '/', on: req.on?.bind(req) },
-            res,
-        );
+        onLog({ method: req.method ?? 'GET', url: req.url ?? '/', on: req.on?.bind(req) }, res);
 
         return;
     }
