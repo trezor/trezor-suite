@@ -35,7 +35,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
-import { TradingButton } from '../TradingButton';
+import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 type AmountComponentProps = {
@@ -209,24 +209,24 @@ export const AssetCard = ({
 
                             <Row gap={8}>
                                 {isStakeNetwork && (
-                                    <TradingButton
+                                    <AssetActionButton
                                         symbol={symbol}
                                         data-testid={`@dashboard/asset/${symbol}/stake-button`}
                                         onClick={onStakeButtonClick}
                                         routeName="wallet-staking"
                                     >
                                         <Translation id="TR_STAKE_STAKE" />
-                                    </TradingButton>
+                                    </AssetActionButton>
                                 )}
 
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                     onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
-                                </TradingButton>
+                                </AssetActionButton>
                             </Row>
                         </Row>
                     </Card>

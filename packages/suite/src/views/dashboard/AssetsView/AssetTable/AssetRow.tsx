@@ -11,7 +11,6 @@ import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import {
     AmountUnitSwitchWrapper,
@@ -29,7 +28,7 @@ import { AssetCoinName } from '../AssetCoinName';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
-import { TradingButton } from '../TradingButton';
+import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {
@@ -139,7 +138,7 @@ export const AssetRow = memo(
                             />
                         </Section>
                     </Table.Cell>
-                    <Table.Cell padding={{ left: spacings.zero }}>
+                    <Table.Cell padding={{ left: 0 }}>
                         <AssetCoinName network={network} />
                     </Table.Cell>
                     <Table.Cell>
@@ -147,7 +146,7 @@ export const AssetRow = memo(
                             <Column
                                 alignItems="flex-start"
                                 justifyContent="center"
-                                gap={spacings.xxxs}
+                                gap={2}
                                 data-testid={`@dashboard/asset/${symbol}/fiat-amount`}
                             >
                                 <BaseCurrencyValue
@@ -172,7 +171,7 @@ export const AssetRow = memo(
                             </Column>
                         ) : (
                             <Text intent="critical" typographyStyle="body-sm" textWrap="nowrap">
-                                <Row gap={spacings.xxs}>
+                                <Row gap={4}>
                                     <Icon name="warning" intent="critical" size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                                 </Row>
@@ -187,26 +186,26 @@ export const AssetRow = memo(
                         {shallDisplayBaseCurrency && <TrendTicker symbol={symbol} />}
                     </Table.Cell>
                     <Table.Cell align="end" colSpan={2}>
-                        <Row gap={spacings.md}>
+                        <Row gap={16}>
                             {isStakeNetwork && (
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     onClick={onStakeButtonClick}
                                     routeName="wallet-staking"
                                 >
                                     <Translation id="TR_STAKE_STAKE" />
-                                </TradingButton>
+                                </AssetActionButton>
                             )}
 
                             {!isTestnet(symbol) && (
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                     onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
-                                </TradingButton>
+                                </AssetActionButton>
                             )}
                             <IconButton icon="arrowRight" intent="neutral" priority="secondary" />
                         </Row>
