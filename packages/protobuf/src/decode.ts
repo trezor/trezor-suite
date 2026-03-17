@@ -1,5 +1,6 @@
 import type * as protobuf from 'protobufjs/light';
 
+import { bufbuildManager } from './bufbuild-manager';
 import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';
 
@@ -88,6 +89,20 @@ export const decodeMessage = (
 ) => {
     const { Message, messageName } = createMessageFromType(messages, messageType);
     const message = decode(Message, data);
+
+    if (bufbuildManager) {
+        // This should be removed once we have confidence in the new implementation.
+        try {
+            const bufbuildResult = bufbuildManager.decode(messageName, data);
+            if (JSON.stringify(message) !== JSON.stringify(bufbuildResult.message)) {
+                console.error(
+                    `[bufbuild] decode mismatch for "${messageName}": protobufjs=${JSON.stringify(message)} bufbuild=${JSON.stringify(bufbuildResult.message)}`,
+                );
+            }
+        } catch (error) {
+            console.error(`[bufbuild] bufbuild decode failed for "${messageName}":`, error);
+        }
+    }
 
     return { type: messageName, message } as MessageResponse;
 };
