@@ -86,6 +86,9 @@ const TAB_OPTIONS: Array<{ label: React.ReactNode; value: TabValue }> = [
     },
 ];
 
+const feeLevelToTab = (feeLevel: string): TabValue =>
+    feeLevel === 'custom' ? 'custom' : 'standard';
+
 export const FeesBottomSheet = ({
     ref,
     form,
@@ -101,13 +104,15 @@ export const FeesBottomSheet = ({
     onConfirm,
     closeModal,
 }: FeesBottomSheetProps) => {
-    const [activeTab, setActiveTab] = useState<TabValue>('standard');
+    const showCustomTab = networkType !== 'solana';
+
+    const [activeTab, setActiveTab] = useState<TabValue>(() =>
+        showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
+    );
     const [customIsSubmittable, setCustomIsSubmittable] = useState(false);
 
     const { getValues } = form;
     const { isDirty } = useFormState({ control: form.control });
-
-    const showCustomTab = networkType !== 'solana';
 
     const currentIsSubmittable =
         activeTab === 'custom' ? customIsSubmittable : standardIsSubmittable;
@@ -140,8 +145,12 @@ export const FeesBottomSheet = ({
             return;
         }
 
+        if (showCustomTab && snapshotRef.current?.feeLevel) {
+            setActiveTab(feeLevelToTab(snapshotRef.current?.feeLevel));
+        }
+
         form.reset(snapshotRef.current);
-    }, [confirmedRef, form, snapshotRef]);
+    }, [confirmedRef, form, snapshotRef, showCustomTab]);
 
     const titleKey = getFeeLabelTranslationId(networkType);
     const confirmButtonTranslationId =
