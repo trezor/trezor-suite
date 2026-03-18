@@ -1,7 +1,16 @@
-import { type AccountKey, type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import {
+    type AccountKey,
+    type FeeLevelLabel,
+    type TokenAddress,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 
 import { useFeeCalculation } from './useFeeCalculation';
 import { useFeeSelection } from './useFeeSelection';
+import { selectFeeLevels } from '../../selectors';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeesManagementParams = {
@@ -30,15 +39,25 @@ export const useFeesManagement = ({
         selectedSetMaxOutputId,
     });
 
-    const feeSelection = useFeeSelection({
+    const { dispatchDefaultFee, ...feeSelection } = useFeeSelection({
         accountKey,
         tokenContract,
         updateThunk,
         formDraftKey,
     });
 
+    const feeLevels = useSelector(selectFeeLevels);
+    const isNormalFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
+
+    useEffect(() => {
+        if (selectedFee === undefined && isNormalFeeReady) {
+            dispatchDefaultFee();
+        }
+    }, [selectedFee, isNormalFeeReady, dispatchDefaultFee]);
+
     return {
         ...feeCalculation,
         ...feeSelection,
+        dispatchDefaultFee,
     };
 };

@@ -53,7 +53,9 @@ export const useFeesForm = ({
     });
 
     const minimalFeeLimit =
-        'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
+        feeLevels.normal && 'estimatedFeeLimit' in feeLevels.normal
+            ? feeLevels.normal.estimatedFeeLimit
+            : undefined;
 
     const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
         ? (feeLevels.normal as PrecomposedTransactionFinal)

@@ -1,23 +1,13 @@
 import { type RefObject, useCallback, useMemo } from 'react';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    BottomSheetModal,
-    type BottomSheetModalRef,
-    Box,
-    HStack,
-    InlineAlertBox,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Form, FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
-import { CustomFeeInputs } from './CustomFeeInputs';
+import { CustomFeeContent } from './CustomFeeContent';
 import { type FeesFormValues } from '../../../feesFormSchema';
 import { type CustomFeeParams } from '../../../hooks';
 
@@ -104,41 +94,12 @@ export const CustomFeeBottomSheet = ({
             }}
         >
             <Form form={form}>
-                <VStack marginTop="sp24" spacing="sp24" justifyContent="space-between" flex={1}>
-                    <CustomFeeInputs symbol={symbol} />
-                    <HStack
-                        flex={1}
-                        justifyContent="space-between"
-                        alignItems="center"
-                        paddingHorizontal="sp1"
-                    >
-                        <Text variant="body-md-strong">
-                            <Translation id="transactionManagement.fees.custom.bottomSheet.total" />
-                        </Text>
-                        <VStack alignItems="flex-end">
-                            <CryptoToFiatAmountFormatter
-                                value={feeValue}
-                                isLoading={isFeeLoading}
-                                symbol={symbol}
-                            />
-                            <CryptoAmountFormatter
-                                value={feeValue}
-                                symbol={symbol}
-                                variant="body-md"
-                                isLoading={isFeeLoading}
-                                isBalance={false}
-                            />
-                        </VStack>
-                    </HStack>
-                    {isErrorBoxVisible && (
-                        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
-                            <InlineAlertBox
-                                variant="critical"
-                                title={<Translation id="transactionManagement.fees.error" />}
-                            />
-                        </Animated.View>
-                    )}
-                </VStack>
+                <CustomFeeContent
+                    symbol={symbol}
+                    feeValue={feeValue}
+                    isFeeLoading={isFeeLoading}
+                    isErrorBoxVisible={isErrorBoxVisible}
+                />
                 <Box marginTop="sp16">
                     <FormSubmitButton
                         onPress={handleSetCustomFee}

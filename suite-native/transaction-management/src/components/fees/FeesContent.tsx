@@ -6,6 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { CustomFee } from './CustomFee/CustomFee';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
+import { getFeeLabelTranslationId } from './feesLabelUtils';
 import { type CustomFeeParams } from '../../hooks';
 
 export type FeesContentProps = {
