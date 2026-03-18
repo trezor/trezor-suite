@@ -337,6 +337,7 @@ export const networks = {
         symbol: 'trx',
         displaySymbol: 'TRX',
         name: 'Tron',
+        isDebugOnlyNetwork: true,
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
         decimals: 6,
