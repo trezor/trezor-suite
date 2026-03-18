@@ -5,6 +5,7 @@ import { DeviceFixture } from '../device';
 
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
+    readonly confirmOnDevicePromptSuccess: Locator;
     readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
     readonly modalCloseButton: Locator;
@@ -39,6 +40,7 @@ export class DevicePrompt {
         private device: DeviceFixture,
     ) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
+        this.confirmOnDevicePromptSuccess = page.getByTestId('@prompts/confirm-on-device/success');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modalCloseButton = page.getByTestId('@modal/close-button');
         this.modal = page.modal;
@@ -73,7 +75,8 @@ export class DevicePrompt {
     @step()
     async confirmOnDeviceIsCompleted() {
         await this.confirmOnDevicePromptIsShown();
-        await expect(this.confirmOnDevicePrompt).toHaveText('Confirm on TrezorConfirmed');
+        await expect(this.confirmOnDevicePrompt).toContainText('Confirm on Trezor');
+        await expect(this.confirmOnDevicePromptSuccess).toHaveText('Confirmed');
     }
 
     @step()
