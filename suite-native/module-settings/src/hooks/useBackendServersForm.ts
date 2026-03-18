@@ -72,17 +72,13 @@ export const useBackendServersForm = () => {
                     'format',
                     translate('moduleSettings.advanced.bitcoinBackends.servers.invalidFormat'),
                     value => !!value && !!parseElectrumUrl(value),
-                )
-                .test(
-                    'tor',
-                    translate('moduleSettings.advanced.bitcoinBackends.servers.torNotSupported'),
-                    value => !!value && !value.includes('.onion:'),
                 ),
         }),
         defaultValues,
         mode: 'onSubmit',
     });
 
+    const isOnionAddress = form.watch('serverAddress').includes('.onion:');
     const [isConnecting, setIsConnecting] = useState(false);
 
     const setBackend = ({ serverType, serverAddress }: FormValues) => {
@@ -120,13 +116,15 @@ export const useBackendServersForm = () => {
             if (e.code === 'Backend_Error') {
                 form.setError('serverAddress', {
                     message: translate(
-                        'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect',
+                        isOnionAddress
+                            ? 'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect.tor'
+                            : 'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect.clearnet',
                     ),
                 });
                 setIsConnecting(false);
             }
         },
-        [form, translate],
+        [form, isOnionAddress, translate],
     );
 
     useFocusEffect(

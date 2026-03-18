@@ -1419,9 +1419,11 @@ export const messages = {
                     connectButton: 'Connect',
                     invalidFormat:
                         'Incorrect format. Please enter the server address in such a way: host:port:[t|s]',
-                    torNotSupported: 'Tor not supported, use a clearnet address instead.',
-                    unableToConnect:
-                        'Unable to connect to server. Check for typos and server disruptions.',
+                    unableToConnect: {
+                        clearnet:
+                            'Unable to connect to server. Check for typos and server disruptions.',
+                        tor: 'Unable to connect to server. Check for typos and ensure Orbot is running on your device.',
+                    },
                 },
                 closeAction: {
                     title: 'Discard changes?',
