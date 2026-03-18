@@ -1,7 +1,13 @@
 import { Gesture } from 'react-native-gesture-handler';
 import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-export const useTapGesture = (onPress: () => void) => {
+export const useTapGesture = ({
+    onPress,
+    isDisabled = false,
+}: {
+    onPress: () => void;
+    isDisabled?: boolean;
+}) => {
     const isPressed = useSharedValue(false);
 
     const tapGesture = Gesture.Tap()
@@ -19,7 +25,8 @@ export const useTapGesture = (onPress: () => void) => {
             if (onPress) {
                 runOnJS(onPress)();
             }
-        });
+        })
+        .enabled(!isDisabled);
 
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: withTiming(isPressed.value ? 0.5 : 1, { duration: 100 }),

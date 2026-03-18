@@ -82,7 +82,7 @@ export const CompactCardWithIconLayout = ({
     const { caretColor, iconColor, titleColor, subtitleColor, iconWrapperBackgroundColor } =
         cardVariantToColorsMap[variant];
 
-    const { tapGesture, animatedStyle } = useTapGesture(onPress);
+    const { tapGesture, animatedStyle } = useTapGesture({ onPress, isDisabled });
 
     return (
         <GestureDetector gesture={tapGesture}>
