@@ -119,11 +119,12 @@ type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geo
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
 type FlagsAction = ReturnType<(typeof flagsActions)[keyof typeof flagsActions]>;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
+type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | AnalyticsAction
-    | ReturnType<(typeof backupActions)[keyof typeof backupActions]>
+    | BackupAction
     | BioAuthAction
     | BluetoothAction
     | BluetoothActionDesktop

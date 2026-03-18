@@ -1,4 +1,4 @@
-import TrezorConnect from '@trezor/connect';
+import type TrezorConnect from '@trezor/connect';
 
 export type ConfirmKey =
     | 'has-enough-time'
