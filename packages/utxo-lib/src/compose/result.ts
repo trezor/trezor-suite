@@ -1,17 +1,17 @@
 import BN from 'bn.js';
 
+import { restorePsbtComposeResult } from './psbtCompose';
+import { type ValidatedComposeRequest } from './request';
 import { createTransaction } from './transaction';
 import { transactionBytes } from '../coinselect/coinselectUtils';
 import {
     COMPOSE_ERROR_TYPES,
-    type CoinSelectRequest,
     type CoinSelectResult,
     type ComposeChangeAddress,
     type ComposeFinalOutput,
     type ComposeInput,
     type ComposeNotFinalOutput,
     type ComposeOutput,
-    type ComposeRequest,
     type ComposeResult,
     type ComposeResultError,
     type ComposeResultFinal,
@@ -50,16 +50,17 @@ export function getResult<
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
 >(
-    request: ComposeRequest<Input, Output, Change>,
-    { sendMaxOutputIndex }: CoinSelectRequest,
+    request: ValidatedComposeRequest<Input, Change>,
     result: CoinSelectResult,
 ): ComposeResult<Input, Output, Change> {
+    const { composeRequest, psbtComposeContext, sendMaxOutputIndex } = request;
+
     if (!result.inputs || !result.outputs) {
         return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     }
 
     const totalSpent = result.outputs.reduce((total, output, index) => {
-        if (request.outputs[index]) {
+        if (composeRequest.outputs[index]) {
             return total.add(output.value);
         }
 
@@ -71,10 +72,10 @@ export function getResult<
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 
-    const { complete, incomplete } = splitByCompleteness(request.outputs);
+    const { complete, incomplete } = splitByCompleteness(composeRequest.outputs);
 
     if (incomplete.length > 0) {
-        const inputs = result.inputs.map(input => request.utxos[input.i]);
+        const inputs = result.inputs.map(input => composeRequest.utxos[input.i]);
 
         return {
             type: 'nonfinal',
@@ -87,9 +88,9 @@ export function getResult<
         };
     }
 
-    const transaction = createTransaction({ ...request, outputs: complete }, result);
+    const transaction = createTransaction({ ...composeRequest, outputs: complete }, result);
 
-    return {
+    const composeResult = {
         type: 'final',
         fee: result.fee.toString(),
         feePerByte: feePerByte.toString(),
@@ -98,4 +99,6 @@ export function getResult<
         totalSpent: totalSpent.toString(),
         ...transaction,
     } as ComposeResultFinal<Input, Output, Change>;
+
+    return restorePsbtComposeResult(composeRequest as any, composeResult, psbtComposeContext);
 }

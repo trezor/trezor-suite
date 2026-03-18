@@ -14,15 +14,15 @@ export function composeTx<
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
 >(request: ComposeRequest<Input, Output, Change>): ComposeResult<Input, Output, Change> {
-    const coinselectRequest = validateAndParseRequest(request);
-    if ('error' in coinselectRequest) {
-        return coinselectRequest;
-    }
-
     try {
+        const coinselectRequest = validateAndParseRequest(request);
+        if ('error' in coinselectRequest) {
+            return coinselectRequest;
+        }
+
         const result = coinselect(coinselectRequest);
 
-        return getResult(request, coinselectRequest, result);
+        return getResult(coinselectRequest, result);
     } catch (error) {
         return getErrorResult(error);
     }

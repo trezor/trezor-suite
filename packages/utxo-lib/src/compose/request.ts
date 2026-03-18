@@ -1,4 +1,5 @@
 import { toOutputScript } from '../address';
+import { type PsbtComposeContext, preparePsbtComposeRequest } from './psbtCompose';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
@@ -22,6 +23,36 @@ import type {
 } from '../types';
 
 type Request = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+
+export type ValidatedComposeRequest<
+    Input extends ComposeInput,
+    Change extends ComposeChangeAddress,
+> = CoinSelectRequest & {
+    composeRequest: ComposeRequest<Input, ComposeOutput, Change>;
+    psbtComposeContext?: PsbtComposeContext;
+};
+
+function getPsbtComposeError(error: unknown): ComposeResultError {
+    const message = error instanceof Error ? error.message : `${error}`;
+
+    if (
+        message === 'PSBT compose requires request.outputs to be empty.' ||
+        message === 'PSBT compose supports only address outputs and simple OP_RETURN outputs.' ||
+        message === 'Multiple PSBT change outputs are not supported.'
+    ) {
+        return {
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message,
+        };
+    }
+
+    return {
+        type: 'error',
+        error: 'COINSELECT',
+        message,
+    };
+}
 
 function validateAndParseFeeRate(rate: unknown) {
     const feeRate = typeof rate === 'string' ? Number(rate) : rate;
@@ -201,7 +232,23 @@ function validateAndParseChangeOutput(
     }
 }
 
-export function validateAndParseRequest(request: Request): CoinSelectRequest | ComposeResultError {
+export function validateAndParseRequest<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+>(
+    composeRequest: ComposeRequest<Input, Output, Change>,
+): ValidatedComposeRequest<Input, Change> | ComposeResultError {
+    let preparedRequest: ReturnType<typeof preparePsbtComposeRequest<Input, Output, Change>>;
+
+    try {
+        preparedRequest = preparePsbtComposeRequest(composeRequest);
+    } catch (error) {
+        return getPsbtComposeError(error);
+    }
+
+    const { request } = preparedRequest;
+
     const feeRate = validateAndParseFeeRate(request.feeRate);
     if (!feeRate) {
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };
@@ -243,5 +290,7 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         baseFee: request.baseFee,
         floorBaseFee: request.floorBaseFee,
         sortingStrategy: request.sortingStrategy,
+        composeRequest: request,
+        psbtComposeContext: preparedRequest.context,
     };
 }
