@@ -1,4 +1,4 @@
-import type { EventStore } from './eventStore';
+import type { EventStore } from './eventStore.js';
 
 const CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
