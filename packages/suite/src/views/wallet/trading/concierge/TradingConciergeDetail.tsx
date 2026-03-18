@@ -1,19 +1,13 @@
 import { Translation, type TranslationId } from '@suite/intl';
-import {
-    Banner,
-    Card,
-    Column,
-    H3,
-    IconCircle,
-    type IconName,
-    List,
-    Paragraph,
-} from '@trezor/components';
+import { Card, Column, H3, IconCircle, type IconName, List, Paragraph } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
+import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { TradingFooter } from '../common';
 import { TradingConciergeForm } from './TradingConciergeForm';
+import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingLayout } from '../common/TradingLayout/TradingLayout';
 
 const LIST_ITEMS: { titleId: TranslationId; descriptionId: TranslationId; icon: IconName }[] = [
@@ -36,11 +30,12 @@ const LIST_ITEMS: { titleId: TranslationId; descriptionId: TranslationId; icon: 
 
 export const TradingConciergeDetail = () => {
     const { isDisabled, content } = useMessageSystemTrading('concierge');
+    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
     return (
         <TradingLayout>
-            {isDisabled ? (
-                <Banner icon="warning" intent="warning" description={content} />
+            {isDisabled || isDeviceCompromised ? (
+                <TradingDisabled type="concierge" content={content} />
             ) : (
                 <>
                     <Column
