@@ -12,6 +12,7 @@ import * as script from './script';
 import { TxWeightCalculator } from './txWeightCalculator';
 
 export { Transaction } from './transaction';
+export { Psbt } from './psbt';
 
 export {
     address,
