@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
@@ -90,6 +90,13 @@ export const useTradingReceiveAddress = ({
     const [selectedAccount, setSelectedAccount] = useState<Account | null | undefined>(undefined);
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
+    const initialSymbolRef = useRef<typeof symbol>(undefined);
+
+    useEffect(() => {
+        if (initialSymbolRef.current === undefined && symbol !== undefined) {
+            initialSymbolRef.current = symbol;
+        }
+    }, [symbol]);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -180,7 +187,12 @@ export const useTradingReceiveAddress = ({
             }
         }
 
-        if (isPreviousRouteFromTradeSection && persistedReceiveAddress && canUseNonSuiteAccount) {
+        if (
+            isPreviousRouteFromTradeSection &&
+            persistedReceiveAddress &&
+            canUseNonSuiteAccount &&
+            symbol === initialSymbolRef.current
+        ) {
             selectNonSuiteAddress(persistedReceiveAddress);
 
             return;
