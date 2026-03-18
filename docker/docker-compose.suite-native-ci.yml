@@ -2,7 +2,7 @@ services:
   trezor-user-env-unix:
     network_mode: "host"
     container_name: trezor-user-env.unix
-    image: ghcr.io/trezor/trezor-user-env:e9411ccc936756438d4c60a1ab4d035a4648e6a2
+    image: ghcr.io/trezor/trezor-user-env:929ac0b17a53e5cec4d1a55a4b12b5a1007f3c6e
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
