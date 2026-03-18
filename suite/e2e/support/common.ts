@@ -47,15 +47,21 @@ export const isEqualWithOmit = (param: { object1: any; object2: any; mask: strin
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
 
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
+const EVM_ADDRESS_PREFIX = '0x';
+const DEVICE_RENDERED_EVM_INDENT = '  ';
 
 const formatEvmAddress = (address: string) => {
-    if (!address.startsWith('0x')) {
+    if (!address.startsWith(EVM_ADDRESS_PREFIX)) {
         return formatAddress(address);
     }
 
     const spacedBody = splitStringEveryNCharacters(address.slice(2), 4).join(' ');
 
-    return spacedBody ? `0x${spacedBody}` : address;
+    if (!spacedBody) {
+        return address;
+    }
+
+    return `${DEVICE_RENDERED_EVM_INDENT}${EVM_ADDRESS_PREFIX} ${spacedBody}`;
 };
 
 export const formatAddressWithNewlines = (address: string) =>
