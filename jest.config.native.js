@@ -17,6 +17,7 @@ module.exports = {
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
     workerIdleMemoryLimit: '1024MB',
+    maxWorkers: 4,
     moduleNameMapper: {
         ...moduleNameMapper,
         '^@evolu/common$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
