@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 
+import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 
 import { createExecCliCommand } from './execCliCommand';
@@ -19,6 +20,12 @@ const getModeFromPositionals = (positionals: ReadonlyArray<string>): Requirement
     throw new Error(`Invalid mode "${mode ?? ''}". Use "verify" or "fix".`);
 };
 
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const requirementsWorkspaceName = pkg.name;
+if (typeof requirementsWorkspaceName !== 'string') {
+    throw new Error('Failed to get name of this workspace (requirements) from package.json.');
+}
+
 /**
  * Runs requirements in selected mode (`verify` or `fix`) for Nx-affected workspaces.
  *
@@ -33,7 +40,10 @@ const getModeFromPositionals = (positionals: ReadonlyArray<string>): Requirement
 const main = async () => {
     // Composition Root
     const execCliCommand = createExecCliCommand({ console });
-    const getAffectedWorkspaces = createGetAffectedWorkspaces({ execCliCommand });
+    const getAffectedWorkspaces = createGetAffectedWorkspaces({
+        execCliCommand,
+        requirementsWorkspaceName,
+    });
     const report = createReport({ console });
 
     // Run

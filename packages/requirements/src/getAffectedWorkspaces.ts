@@ -22,7 +22,7 @@ type GetAffectedWorkspacesResult = {
 
 export type GetAffectedWorkspaces = (cwd: string) => Promise<GetAffectedWorkspacesResult>;
 
-export type GetAffectedWorkspacesDeps = ExecCliCommandDep;
+export type GetAffectedWorkspacesDeps = ExecCliCommandDep & { requirementsWorkspaceName: string };
 
 export const createGetAffectedWorkspaces =
     (deps: GetAffectedWorkspacesDeps): GetAffectedWorkspaces =>
@@ -82,6 +82,15 @@ export const createGetAffectedWorkspaces =
             throw new Error('Failed to determine affected projects: invalid Nx output format.');
         }
 
+        // if 'requirements' changed, then we need to recheck all workspaces
+        if (affectedWorkspaceNames.includes(deps.requirementsWorkspaceName)) {
+            return {
+                repoRoot,
+                workspaces: allWorkspaces,
+            };
+        }
+
+        // run only affected workspaces
         const workspaces = allWorkspaces.filter(workspace =>
             affectedWorkspaceNames.includes(workspace.name),
         );
