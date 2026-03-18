@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "include": [
         "src/**/*",
-        "server/**/*",
         "scripts/**/*",
         "package.json",
         "styled.d.ts"

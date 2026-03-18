@@ -1,9 +1,9 @@
 import * as http from 'http';
 
-import { createEventStore } from './eventStore';
-import { handleClearEvents, handleEventsStream, handleGetEvents, handleLog } from './handlers';
+import { createEventStore } from './eventStore.js';
+import { handleClearEvents, handleEventsStream, handleGetEvents, handleLog } from './handlers.js';
 
-const PORT = Number(process.env.PORT) || 5180;
+const PORT = Number(process.env.PORT) || 5181;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS) || 500;
 
 const store = createEventStore({ maxEvents: MAX_EVENTS });

@@ -118,15 +118,6 @@ const SidebarOuter = styled.div<{ theme: SuiteThemeColors }>`
     }
 `;
 
-const SidebarInner = styled.div`
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-`;
-
 const HIGHLIGHT_DURATION_MS = 1000;
 
 const EventCardWrapper = styled.div`
@@ -267,16 +258,32 @@ export const App = ({ theme }: AppProps) => {
         [filteredEvents],
     );
 
-    const scrollToEventInContent = useCallback((eventName: string) => {
-        const container = contentScrollRef.current;
-        const el = document.getElementById(getEventId(eventName));
-        if (!container || !el) return;
+    const scrollToIdInContent = useCallback(
+        (id: string, opts?: { behavior?: ScrollBehavior; offsetTop?: number }): boolean => {
+            const container = contentScrollRef.current;
+            const el = document.getElementById(id);
+            if (!container || !el) return false;
 
-        const containerRect = container.getBoundingClientRect();
-        const elRect = el.getBoundingClientRect();
-        const nextTop = elRect.top - containerRect.top + container.scrollTop - 20;
-        container.scrollTo({ top: Math.max(0, nextTop), behavior: 'smooth' });
-    }, []);
+            const offsetTop = opts?.offsetTop ?? 20;
+            const containerRect = container.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            const nextTop = elRect.top - containerRect.top + container.scrollTop - offsetTop;
+            container.scrollTo({
+                top: Math.max(0, nextTop),
+                behavior: opts?.behavior ?? 'instant',
+            });
+
+            return true;
+        },
+        [],
+    );
+
+    const scrollToEventInContent = useCallback(
+        (eventName: string) => {
+            scrollToIdInContent(getEventId(eventName), { behavior: 'smooth', offsetTop: 20 });
+        },
+        [scrollToIdInContent],
+    );
 
     const handleSidebarEventClick = (eventName: string) => {
         const el = document.getElementById(getEventId(eventName));
@@ -292,19 +299,18 @@ export const App = ({ theme }: AppProps) => {
         if (!hash) return true;
         const el = document.getElementById(hash);
         if (!el) return false;
+
         if (container) {
-            const containerRect = container.getBoundingClientRect();
-            const elRect = el.getBoundingClientRect();
-            const nextTop = elRect.top - containerRect.top + container.scrollTop - 20;
-            container.scrollTo({ top: Math.max(0, nextTop), behavior: 'instant' });
+            if (!scrollToIdInContent(hash, { behavior: 'instant', offsetTop: 20 })) return false;
         } else {
             el.scrollIntoView({ block: 'start', behavior: 'instant' });
         }
+
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
 
         return true;
-    }, []);
+    }, [scrollToIdInContent]);
 
     const handleContentReady = useCallback(() => {
         if (!window.location.hash) return;
@@ -514,7 +520,12 @@ export const App = ({ theme }: AppProps) => {
                                         }}
                                         onWidthResizeMove={setSidebarWidthThrottled}
                                     >
-                                        <SidebarInner>
+                                        <Column
+                                            overflow="hidden"
+                                            minHeight={0}
+                                            width="100%"
+                                            height="100%"
+                                        >
                                             {isLiveLogOpen ? (
                                                 <LiveLogSidebar
                                                     onEventClick={handleSidebarEventClick}
@@ -526,7 +537,7 @@ export const App = ({ theme }: AppProps) => {
                                                     onEventClick={handleSidebarEventClick}
                                                 />
                                             )}
-                                        </SidebarInner>
+                                        </Column>
                                     </ResizableBox>
                                 </SidebarOuter>
                             );
