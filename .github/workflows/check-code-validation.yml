@@ -107,7 +107,9 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Check for new Circular Imports
-        run: ./scripts/circular-dependencies/check-circular-dependencies.sh
+        run: |
+          ./scripts/circular-dependencies/check-circular-dependencies.sh
+          ./scripts/circular-dependencies/check-circular-type-dependencies.sh
 
   unit-tests-suite:
     name: Unit Tests

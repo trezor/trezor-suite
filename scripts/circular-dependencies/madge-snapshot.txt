@@ -1,0 +1,20 @@
+
+
+packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
+packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
+packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
+packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal.tsx
+packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal.tsx
+packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx
+packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalExchange.tsx
+packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalSell.tsx
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupStep2to4.tsx
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/CollapsibleIOSection.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IOGroup.tsx
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/TokenSpecificBalanceDetailsRow.tsx
+packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx
+packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsItemComponent.tsx
+packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx
+packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeMisc.tsx
+packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx

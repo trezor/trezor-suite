@@ -55,7 +55,9 @@ jobs:
           node-version-file: ".nvmrc"
 
       - run: yarn install --immutable
-      - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
+      - run: |
+          ./scripts/circular-dependencies/check-circular-dependencies.sh
+          ./scripts/circular-dependencies/check-circular-type-dependencies.sh
 
   test-unit:
     runs-on: ubuntu-latest
