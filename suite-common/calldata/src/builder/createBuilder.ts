@@ -3,20 +3,23 @@ import { typedObjectFromEntries } from '@trezor/utils';
 import {
     type BuildResult,
     type Builder,
-    type BuilderConfig,
     type Encoder,
     type ExtractContext,
     type ExtractEncoderOutput,
     type ExtractInputs,
     type ExtractParamNames,
-    type ParamsConfig,
 } from '../types/builder';
+import { type Param } from '../types/param';
 
 export const createBuilder = <
     E extends Encoder<string, unknown>,
-    Config extends ParamsConfig<ExtractParamNames<E>>,
+    Config extends Record<ExtractParamNames<E>, Param<any, any, any>>,
 >(
-    config: BuilderConfig<E> & { params: ParamsConfig<ExtractParamNames<E>, Config> },
+    config: { params: Config; encode: E } & ([Exclude<keyof Config, ExtractParamNames<E>>] extends [
+        never,
+    ]
+        ? unknown
+        : { params: Record<Exclude<keyof Config & string, ExtractParamNames<E>>, never> }),
 ): Builder<
     ExtractInputs<ExtractParamNames<E>, Config>,
     ExtractContext<Config>,

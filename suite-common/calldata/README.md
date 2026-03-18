@@ -2,21 +2,22 @@
 
 ## Overview
 
-Type-safe calldata builder for blockchain transactions. Validates inputs, normalizes values, applies configurable policies (error/warning/ignore), and encodes transaction data.
+Type-safe calldata builder and verifier for blockchain transactions. The builder validates inputs, normalizes values, and encodes transaction data. The verifier decodes externally-provided calldata and checks it against expected params. Built with a chain-agnostic core — currently implements EVM using viem.
 
-Built with chain-agnostic core - add validators and encoders for any chain. Currently implements EVM using viem.
+---
 
-## Usage
+## Builder
+
+### Usage
 
 ```typescript
 import { Calldata } from '@suite-common/calldata';
-import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 const result = Calldata.evm.erc20.approve(
     {
         spender: '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
-        amount: asAmountSubunit(new BigNumber('1000000')),
+        amount: new BigNumber('1000000'),
     },
     { sender: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3' },
 );
@@ -30,9 +31,7 @@ if (result.isValid) {
 
 The second argument is context - additional data for validation (e.g., sender address for self-transfer detection). Required fields depend on the builder.
 
-## Architecture
-
-### Flow
+### Architecture
 
 ```
 Input → Validate → Normalize → Inspect → Policy → Encode → Calldata
@@ -109,7 +108,7 @@ const buildApprove = createBuilder({
 
 Parameter names (`spender`, `amount`) are derived directly from the ABI - TypeScript will error on wrong param names or types.
 
-## Adding New Calls
+### Adding New Builders
 
 1. **Add ABI to constants**
 
@@ -153,6 +152,50 @@ export const Calldata = {
     evm: {
         myContract: {
             myMethod: buildMyMethod,
+        },
+    },
+};
+```
+
+---
+
+## Verifier
+
+Validates externally-provided calldata against expected params. Accepts an optional `fields` array for partial validation — only the specified fields are checked. If omitted, all fields must match.
+
+### Usage
+
+```typescript
+import { Verifier } from '@suite-common/calldata';
+
+// Full validation — all params must match
+const result = Verifier.evm.erc4626.deposit(externalCalldata, {
+    assets: expectedAmount,
+    receiver: userAddress,
+});
+
+// Partial validation — only check specific fields
+const result = Verifier.evm.erc20.approve(
+    externalCalldata,
+    { spender: expectedSpender, amount: expectedAmount },
+    ['spender'],
+);
+
+if (!result.isValid) {
+    console.log(result.issues);
+}
+```
+
+Parameter names and types in `params` and `fields` are inferred from the ABI — TypeScript will error on wrong names or types.
+
+### Adding New Verifiers
+
+```typescript
+// verifier.ts
+export const Verifier = {
+    evm: {
+        myContract: {
+            myMethod: createVerifier({ abi: EVM_ABI.myContract.myMethod }),
         },
     },
 };
