@@ -7,6 +7,12 @@ import { requirePackageJsonScripts } from '../requirePackageJsonScripts';
 
 const createTempWorkspace = (): string => mkdtempSync(join(tmpdir(), 'package-json-'));
 
+const validScripts = {
+    depcheck: 'yarn g:depcheck',
+    'lint:js': "yarn g:eslint '**/*.{ts,tsx,js}'",
+    'type-check': 'yarn g:tsc --build',
+};
+
 describe(requirePackageJsonScripts.name, () => {
     let workspaceDir: string;
     let context: WorkspaceContext;
@@ -24,10 +30,26 @@ describe(requirePackageJsonScripts.name, () => {
         rmSync(workspaceDir, { recursive: true, force: true });
     });
 
-    it('passes when depcheck script is configured correctly', async () => {
+    it('passes when all required scripts are configured correctly', async () => {
         writeFileSync(
             join(workspaceDir, 'package.json'),
-            JSON.stringify({ scripts: { depcheck: 'yarn g:depcheck' } }),
+            JSON.stringify({ scripts: validScripts }),
+        );
+
+        const errors = await requirePackageJsonScripts.verify(context);
+
+        expect(errors).toEqual([]);
+    });
+
+    it('passes when type-check script matches the configured regex', async () => {
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {
+                    ...validScripts,
+                    'type-check': 'yarn g:tsc --build tsconfig.json',
+                },
+            }),
         );
 
         const errors = await requirePackageJsonScripts.verify(context);
@@ -36,7 +58,15 @@ describe(requirePackageJsonScripts.name, () => {
     });
 
     it('reports missing depcheck script', async () => {
-        writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify({ scripts: {} }));
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {
+                    'lint:js': validScripts['lint:js'],
+                    'type-check': validScripts['type-check'],
+                },
+            }),
+        );
 
         const errors = await requirePackageJsonScripts.verify(context);
 
@@ -48,13 +78,36 @@ describe(requirePackageJsonScripts.name, () => {
     it('reports invalid depcheck value', async () => {
         writeFileSync(
             join(workspaceDir, 'package.json'),
-            JSON.stringify({ scripts: { depcheck: 'depcheck' } }),
+            JSON.stringify({
+                scripts: {
+                    ...validScripts,
+                    depcheck: 'depcheck',
+                },
+            }),
         );
 
         const errors = await requirePackageJsonScripts.verify(context);
 
         expect(errors).toEqual([
             '@trezor/example: scripts.depcheck must be "yarn g:depcheck" in package.json.',
+        ]);
+    });
+
+    it('reports invalid type-check value when it does not match the configured regex', async () => {
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {
+                    ...validScripts,
+                    'type-check': 'tsc --build tsconfig.json',
+                },
+            }),
+        );
+
+        const errors = await requirePackageJsonScripts.verify(context);
+
+        expect(errors).toEqual([
+            '@trezor/example: scripts.type-check must be matching /^yarn g:tsc --build.*$/ in package.json.',
         ]);
     });
 
@@ -84,7 +137,15 @@ describe(requirePackageJsonScripts.name, () => {
             workspaceName: 'connect-example-node',
         };
 
-        writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify({ scripts: {} }));
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {
+                    'lint:js': validScripts['lint:js'],
+                    'type-check': validScripts['type-check'],
+                },
+            }),
+        );
 
         const errors = await requirePackageJsonScripts.verify(context);
 
