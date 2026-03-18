@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
+        "outDir": "libDev"
+    },
     "references": [
         { "path": "../analytics" },
         { "path": "../bluetooth" },

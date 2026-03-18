@@ -1,7 +1,10 @@
 {
     "extends": "../../tsconfig.base.json",
     "include": ["src/**/*", "package.json"],
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
+        "outDir": "libDev"
+    },
     "references": [
         { "path": "../env-utils" },
         { "path": "../utils" }

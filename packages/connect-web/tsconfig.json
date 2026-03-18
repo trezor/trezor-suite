@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "libDev",

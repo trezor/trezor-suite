@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
         "noImplicitAny": false,
         "outDir": "libDev"
     },

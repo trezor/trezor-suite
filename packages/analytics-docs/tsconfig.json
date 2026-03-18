@@ -8,6 +8,7 @@
     ],
     "exclude": [],
     "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
         "outDir": "libDev",
         "types": ["vite/client", "jest"]
     },

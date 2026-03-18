@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
+        "tsBuildInfoFile": "./dist/.tsbuildinfo",
         "isolatedModules": false,
         "outDir": "./lib",
         "types": ["chrome", "w3c-web-usb"]
