@@ -5,7 +5,7 @@ import {
     type TestStore,
     fireEvent,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
 import {
@@ -84,7 +84,7 @@ describe('AccountList', () => {
     ) => {
         store = initStore(preloadedState).store;
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <AccountList
                 symbol="btc"
                 pickerMode="account"
@@ -102,8 +102,8 @@ describe('AccountList', () => {
             screen.unmount();
         });
 
-        it('should display all accounts for given symbol', async () => {
-            const { getByText } = await renderComponent({
+        it('should display all accounts for given symbol', () => {
+            const { getByText } = renderComponent({
                 symbol: 'btc',
                 pickerMode: 'account',
             });
@@ -112,8 +112,8 @@ describe('AccountList', () => {
             expect(getByText('BTC Account #2')).toBeTruthy();
         });
 
-        it('should display addresses when picker mode is set and account is selected', async () => {
-            const { getByText } = await renderComponent(
+        it('should display addresses when picker mode is set and account is selected', () => {
+            const { getByText } = renderComponent(
                 {
                     symbol: 'btc',
                     pickerMode: 'address',
@@ -131,10 +131,10 @@ describe('AccountList', () => {
             screen.unmount();
         });
 
-        it('should call onSetPickerMode when account is selected in account mode', async () => {
+        it('should call onSetPickerMode when account is selected in account mode', () => {
             (useNavigation as jest.Mock).mockReturnValue({ popToTop });
 
-            const { getByText } = await renderComponent({
+            const { getByText } = renderComponent({
                 symbol: 'btc',
                 pickerMode: 'account',
                 onSetPickerMode: onSetPickerModeMock,
@@ -149,10 +149,10 @@ describe('AccountList', () => {
             expect(popToTop).not.toHaveBeenCalled();
         });
 
-        it('should popToTop when account is selected in account mode and there are no addresses', async () => {
+        it('should popToTop when account is selected in account mode and there are no addresses', () => {
             (useNavigation as jest.Mock).mockReturnValue({ popToTop });
 
-            const { getByText } = await renderComponent({
+            const { getByText } = renderComponent({
                 symbol: 'eth',
                 pickerMode: 'account',
                 onSetPickerMode: onSetPickerModeMock,
@@ -166,9 +166,9 @@ describe('AccountList', () => {
             expect(popToTop).toHaveBeenCalled();
         });
 
-        it('should handle address selection in address mode', async () => {
+        it('should handle address selection in address mode', () => {
             (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-            const { getByText } = await renderComponent(
+            const { getByText } = renderComponent(
                 {
                     symbol: 'btc',
                     pickerMode: 'address',
@@ -185,8 +185,8 @@ describe('AccountList', () => {
             expect(popToTop).toHaveBeenCalled();
         });
 
-        it('should set correct state with tradingType set to "buy"', async () => {
-            const { getByText } = await renderComponent({
+        it('should set correct state with tradingType set to "buy"', () => {
+            const { getByText } = renderComponent({
                 symbol: 'btc',
                 pickerMode: 'account',
             });
@@ -200,8 +200,8 @@ describe('AccountList', () => {
             expect(selectTradingBuyReceiveAccountKey(store.getState())).toBe(btc1NormalAccount.key);
         });
 
-        it('should set correct state with tradingType set to "exchange"', async () => {
-            const { getByText } = await renderComponent({
+        it('should set correct state with tradingType set to "exchange"', () => {
+            const { getByText } = renderComponent({
                 symbol: 'btc',
                 pickerMode: 'account',
                 tradingType: 'exchange',
@@ -215,9 +215,9 @@ describe('AccountList', () => {
             });
         });
 
-        it('should handle address selection in address mode for "exchange"', async () => {
+        it('should handle address selection in address mode for "exchange"', () => {
             (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-            const { getByText } = await renderComponent(
+            const { getByText } = renderComponent(
                 {
                     symbol: 'btc',
                     pickerMode: 'address',
@@ -241,8 +241,8 @@ describe('AccountList', () => {
             screen.unmount();
         });
 
-        it('should display footer with "Add new" button in "account" mode', async () => {
-            const { getByText } = await renderComponent({
+        it('should display footer with "Add new" button in "account" mode', () => {
+            const { getByText } = renderComponent({
                 symbol: 'btc',
                 pickerMode: 'account',
             });
@@ -250,8 +250,8 @@ describe('AccountList', () => {
             expect(getByText('Add new')).toBeTruthy();
         });
 
-        it('should NOT display footer with "Add new" button in "address" mode', async () => {
-            const { queryByText } = await renderComponent(
+        it('should NOT display footer with "Add new" button in "address" mode', () => {
+            const { queryByText } = renderComponent(
                 {
                     symbol: 'btc',
                     pickerMode: 'address',

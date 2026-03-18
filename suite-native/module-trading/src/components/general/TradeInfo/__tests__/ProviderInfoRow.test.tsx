@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { ProviderInfoRow, type ProviderInfoRowProps } from '../ProviderInfoRow';
@@ -11,20 +11,20 @@ describe('ProviderInfoRow', () => {
             }),
         };
 
-        return renderWithStoreProviderAsync(<ProviderInfoRow exchange="mercuryo" {...props} />, {
+        return renderWithStoreProvider(<ProviderInfoRow exchange="mercuryo" {...props} />, {
             preloadedState,
         });
     };
 
-    it('should render provider', async () => {
-        const { getByText } = await renderProviderInfoRow({});
+    it('should render provider', () => {
+        const { getByText } = renderProviderInfoRow({});
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
         expect(getByText('Provider')).toBeOnTheScreen();
     });
 
-    it('should render nothing when no provider is found', async () => {
-        const { toJSON } = await renderProviderInfoRow({ exchange: 'non-existing-provider' });
+    it('should render nothing when no provider is found', () => {
+        const { toJSON } = renderProviderInfoRow({ exchange: 'non-existing-provider' });
 
         expect(toJSON()).toBeNull();
     });

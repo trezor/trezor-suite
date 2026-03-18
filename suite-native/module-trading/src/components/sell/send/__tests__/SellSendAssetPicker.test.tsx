@@ -5,8 +5,8 @@ import { Form } from '@suite-native/forms';
 import {
     type TestStore,
     initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 import {
@@ -66,17 +66,17 @@ describe('SellSendAssetPicker', () => {
         },
     });
 
-    const renderSellForm = () => renderHookWithStoreProviderAsync(() => useSellForm(), { store });
+    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
 
     const renderSellSendAssetPicker = () =>
-        renderWithStoreProviderAsync(<SellSendAssetPicker />, {
+        renderWithStoreProvider(<SellSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         store = initStore(getPreloadedState()).store;
-        const { result } = await renderSellForm();
+        const { result } = renderSellForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -85,7 +85,7 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should select asset on item press', async () => {
-        const { getByText } = await renderSellSendAssetPicker();
+        const { getByText } = renderSellSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 
@@ -99,7 +99,7 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should select account on item press', async () => {
-        const { getByText } = await renderSellSendAssetPicker();
+        const { getByText } = renderSellSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 

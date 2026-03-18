@@ -1,5 +1,5 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { TradingStackNavigator } from '../TradingStackNavigator';
 
@@ -12,8 +12,8 @@ jest.mock('../../hooks/buy/useBuyData', () => ({
 }));
 
 describe('TradingStackNavigator', () => {
-    it('should render', async () => {
-        const { getByTestId } = await renderWithStoreProviderAsync(<TradingStackNavigator />, {
+    it('should render', () => {
+        const { getByTestId } = renderWithStoreProvider(<TradingStackNavigator />, {
             preloadedState: {
                 featureFlags: {
                     ...featureFlagsInitialState,

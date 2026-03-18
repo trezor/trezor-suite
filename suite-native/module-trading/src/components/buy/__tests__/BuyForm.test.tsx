@@ -2,8 +2,8 @@ import { Form } from '@suite-native/forms';
 import {
     type PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
 import {
@@ -22,10 +22,10 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
 
 describe('BuyForm', () => {
     const renderFormHook = (preloadedState: PreloadedState) =>
-        renderHookWithStoreProviderAsync(() => useBuyForm(), { preloadedState });
+        renderHookWithStoreProvider(() => useBuyForm(), { preloadedState });
 
     const renderBuyForm = (preloadedState: PreloadedState, form: BuyFormType) =>
-        renderWithStoreProviderAsync(<BuyForm />, {
+        renderWithStoreProvider(<BuyForm />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
@@ -34,9 +34,9 @@ describe('BuyForm', () => {
         screen.unmount();
     });
 
-    it('should render when buy data are not preloaded', async () => {
-        const { result } = await renderFormHook(residenceCheckDisabledState);
-        const { queryByText, getByText, getByLabelText } = await renderBuyForm(
+    it('should render when buy data are not preloaded', () => {
+        const { result } = renderFormHook(residenceCheckDisabledState);
+        const { queryByText, getByText, getByLabelText } = renderBuyForm(
             residenceCheckDisabledState,
             result.current,
         );
@@ -59,16 +59,13 @@ describe('BuyForm', () => {
             ...residenceCheckDisabledState,
         };
 
-        beforeEach(async () => {
-            const { result } = await renderFormHook(preloadedState);
+        beforeEach(() => {
+            const { result } = renderFormHook(preloadedState);
             form = result.current;
         });
 
-        it('should render with default values', async () => {
-            const { queryByText, getByLabelText, getByText } = await renderBuyForm(
-                preloadedState,
-                form,
-            );
+        it('should render with default values', () => {
+            const { queryByText, getByLabelText, getByText } = renderBuyForm(preloadedState, form);
 
             expect(getByText('You pay')).toBeTruthy();
 
@@ -84,11 +81,11 @@ describe('BuyForm', () => {
             expect(queryByText('Continue')).toBeNull();
         });
 
-        it('should render only BuyCard and Done when amount input is active', async () => {
+        it('should render only BuyCard and Done when amount input is active', () => {
             act(() => {
                 form.setValue('focusedValue', 'fiatValue');
             });
-            const { queryByText, getByText } = await renderBuyForm(preloadedState, form);
+            const { queryByText, getByText } = renderBuyForm(preloadedState, form);
 
             expect(getByText('You pay')).toBeTruthy();
             expect(getByText('You get')).toBeTruthy();
@@ -99,8 +96,8 @@ describe('BuyForm', () => {
             expect(queryByText('Continue')).toBeNull();
         });
 
-        it('should not render receive account when assets is not selected', async () => {
-            const { queryByText, getByTestId } = await renderBuyForm(preloadedState, form);
+        it('should not render receive account when assets is not selected', () => {
+            const { queryByText, getByTestId } = renderBuyForm(preloadedState, form);
 
             expect(queryByText('Receive account')).toBeNull();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
@@ -111,11 +108,11 @@ describe('BuyForm', () => {
             });
         });
 
-        it('should render receive account once asset is selected', async () => {
+        it('should render receive account once asset is selected', () => {
             act(() => {
                 form.setValue('asset', btcAsset);
             });
-            const { getByText, getByTestId } = await renderBuyForm(preloadedState, form);
+            const { getByText, getByTestId } = renderBuyForm(preloadedState, form);
 
             expect(getByText('Receive account')).toBeTruthy();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({

@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalDetailsCard } from '../ExchangeApprovalDetailsCard';
@@ -12,7 +12,7 @@ describe('ExchangeApprovalDetailsCard', () => {
         isLoading = false,
         networkSymbol: NetworkSymbol | undefined,
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ExchangeApprovalDetailsCard
                 fee={fee}
                 isLoading={isLoading}
@@ -29,10 +29,10 @@ describe('ExchangeApprovalDetailsCard', () => {
         };
     });
 
-    it('should render card', async () => {
+    it('should render card', () => {
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
 
-        const { getByText } = await renderExchangeApprovalDetailsCard('100000', false, 'eth');
+        const { getByText } = renderExchangeApprovalDetailsCard('100000', false, 'eth');
 
         expect(getByText('Approval details')).toBeTruthy();
         expect(getByText('Provider')).toBeTruthy();
@@ -40,16 +40,16 @@ describe('ExchangeApprovalDetailsCard', () => {
         expect(getByText('Fee')).toBeTruthy();
     });
 
-    it('should render nothing without quote', async () => {
-        const { toJSON } = await renderExchangeApprovalDetailsCard('100000', false, 'eth');
+    it('should render nothing without quote', () => {
+        const { toJSON } = renderExchangeApprovalDetailsCard('100000', false, 'eth');
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing without networkSymbol', async () => {
+    it('should render nothing without networkSymbol', () => {
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
 
-        const { toJSON } = await renderExchangeApprovalDetailsCard('100000', false, undefined);
+        const { toJSON } = renderExchangeApprovalDetailsCard('100000', false, undefined);
 
         expect(toJSON()).toBeNull();
     });

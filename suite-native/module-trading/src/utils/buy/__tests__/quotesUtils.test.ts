@@ -1,7 +1,7 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { type TradingAssetOption } from '@suite-common/trading';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
     buyQuotes,
@@ -17,12 +17,12 @@ describe('quotesUtils', () => {
     let form: BuyFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useBuyForm(), {
+        renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 

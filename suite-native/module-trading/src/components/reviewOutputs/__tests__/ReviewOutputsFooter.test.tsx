@@ -1,8 +1,4 @@
-import {
-    type PreloadedState,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { ReviewOutputsFooter, type ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
 
@@ -11,7 +7,7 @@ describe('ReviewOutputsFooter', () => {
         props: Partial<ReviewOutputsFooterProps>,
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ReviewOutputsFooter
                 resolveConsent={jest.fn()}
                 isConsentRequested={true}
@@ -21,21 +17,21 @@ describe('ReviewOutputsFooter', () => {
             { preloadedState },
         );
 
-    it('should display "Send transaction" button', async () => {
-        const { getByTestId } = await renderReviewOutputsFooter({});
+    it('should display "Send transaction" button', () => {
+        const { getByTestId } = renderReviewOutputsFooter({});
 
         expect(getByTestId('TEST_ID/submit-button')).toHaveTextContent('Send transaction');
         expect(getByTestId('TEST_ID/submit-button')).toBeEnabled();
     });
 
-    it('should be disabled when isConsentRequested is false', async () => {
-        const { getByText } = await renderReviewOutputsFooter({ isConsentRequested: false });
+    it('should be disabled when isConsentRequested is false', () => {
+        const { getByText } = renderReviewOutputsFooter({ isConsentRequested: false });
 
         expect(getByText('Send transaction')).toBeDisabled();
     });
 
-    it('should display "all set" info when transaction is signed', async () => {
-        const { getByText } = await renderReviewOutputsFooter(
+    it('should display "all set" info when transaction is signed', () => {
+        const { getByText } = renderReviewOutputsFooter(
             { isConsentRequested: true },
             {
                 wallet: {
@@ -56,7 +52,7 @@ describe('ReviewOutputsFooter', () => {
 
     it('should resolveConsent on press', async () => {
         const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+        const { getByTestId } = renderReviewOutputsFooter({ resolveConsent });
 
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
@@ -66,7 +62,7 @@ describe('ReviewOutputsFooter', () => {
 
     it('should resolveConsent only once', async () => {
         const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+        const { getByTestId } = renderReviewOutputsFooter({ resolveConsent });
 
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
         await userEvent.press(getByTestId('TEST_ID/submit-button'));

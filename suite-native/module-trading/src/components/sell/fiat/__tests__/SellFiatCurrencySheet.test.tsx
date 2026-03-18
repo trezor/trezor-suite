@@ -1,11 +1,11 @@
-import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellFiatCurrencySheet } from '../SellFiatCurrencySheet';
 
 describe('SellFiatCurrencySheet', () => {
     const renderSellFiatCurrencySheet = () =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <SellFiatCurrencySheet onFiatSelect={jest.fn()} onClose={jest.fn()} isVisible={true} />,
             { preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) } },
         );
@@ -14,8 +14,8 @@ describe('SellFiatCurrencySheet', () => {
         screen.unmount();
     });
 
-    it('should render items based on Sell state', async () => {
-        const { getByText } = await renderSellFiatCurrencySheet();
+    it('should render items based on Sell state', () => {
+        const { getByText } = renderSellFiatCurrencySheet();
 
         expect(getByText('USD')).toBeOnTheScreen();
         expect(getByText('EUR')).toBeOnTheScreen();

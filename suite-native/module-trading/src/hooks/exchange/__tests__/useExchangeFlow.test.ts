@@ -6,7 +6,7 @@ import {
     type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     getBtcAccount,
@@ -64,7 +64,7 @@ describe('useExchangeFlow', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderUseExchangeFlow = async ({ store }: { store: TestStore }) => {
+    const renderUseExchangeFlow = ({ store }: { store: TestStore }) => {
         const reportMock = jest.fn();
 
         (useAnalytics as jest.Mock).mockReturnValue({
@@ -73,8 +73,7 @@ describe('useExchangeFlow', () => {
 
         return {
             reportMock,
-            result: (await renderHookWithStoreProviderAsync(() => useExchangeFlow(), { store }))
-                .result,
+            result: renderHookWithStoreProvider(() => useExchangeFlow(), { store }).result,
         };
     };
 
@@ -86,11 +85,11 @@ describe('useExchangeFlow', () => {
 
     describe('confirmTrade', () => {
         it('should call confirmTradeThunk when confirmTrade is called', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = await renderUseExchangeFlow({ store });
+            const { result } = renderUseExchangeFlow({ store });
 
             const mockTrade = {
                 exchange: 'test-exchange',
@@ -127,7 +126,7 @@ describe('useExchangeFlow', () => {
         });
 
         it('should return false when confirmTradeThunk returns false', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
 
             const originalConfirmTradeThunk =
                 require('@suite-common/trading').exchangeThunks.confirmTradeThunk;
@@ -136,7 +135,7 @@ describe('useExchangeFlow', () => {
                 unwrap: () => Promise.resolve(false),
             });
 
-            const { result } = await renderUseExchangeFlow({ store });
+            const { result } = renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -157,10 +156,10 @@ describe('useExchangeFlow', () => {
         });
 
         it('should return false when trade is missing', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
-            const { result } = await renderUseExchangeFlow({ store });
+            const { result } = renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -193,7 +192,7 @@ describe('useExchangeFlow', () => {
             };
 
             const { store } = initStore(preloadedState);
-            const { result } = await renderUseExchangeFlow({ store });
+            const { result } = renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -216,11 +215,11 @@ describe('useExchangeFlow', () => {
 
     describe('analytics', () => {
         it('should call analytics event when confirmTrade is called', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result, reportMock } = await renderUseExchangeFlow({ store });
+            const { result, reportMock } = renderUseExchangeFlow({ store });
 
             const mockTrade = {
                 exchange: 'test-exchange',

@@ -3,8 +3,8 @@ import { Form } from '@suite-native/forms';
 import {
     act,
     fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
@@ -25,13 +25,13 @@ describe('BuyFiatCurrencyPicker', () => {
         mockUseListDataFilter = jest.requireActual('@suite-common/trading').useListDataFilter;
     });
 
-    const renderFiatCurrencyPicker = async () => {
+    const renderFiatCurrencyPicker = () => {
         const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
+        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <Form form={result.current}>
                 <BuyFiatCurrencyPicker />
             </Form>,
@@ -45,14 +45,14 @@ describe('BuyFiatCurrencyPicker', () => {
         screen.unmount();
     });
 
-    it('should display selected currency', async () => {
-        const { getByLabelText } = await renderFiatCurrencyPicker();
+    it('should display selected currency', () => {
+        const { getByLabelText } = renderFiatCurrencyPicker();
 
         expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
     });
 
     it('should allow to select currency', async () => {
-        const { getByText, getByLabelText } = await renderFiatCurrencyPicker();
+        const { getByText, getByLabelText } = renderFiatCurrencyPicker();
 
         fireEvent.press(getByLabelText('Select fiat currency'));
         fireEvent.press(getByText('USD'));
@@ -63,14 +63,14 @@ describe('BuyFiatCurrencyPicker', () => {
         expect(getByLabelText('Select fiat currency')).toHaveTextContent(/USD/);
     });
 
-    it('should display empty component when filtered data is empty', async () => {
+    it('should display empty component when filtered data is empty', () => {
         mockUseListDataFilter = () => ({
             filteredData: [],
             setFilterValue: jest.fn(),
             filterValue: 'test-key',
         });
 
-        const { getByText } = await renderFiatCurrencyPicker();
+        const { getByText } = renderFiatCurrencyPicker();
 
         expect(getByText('Currency not found')).toBeTruthy();
         expect(

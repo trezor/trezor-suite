@@ -1,5 +1,5 @@
 import { type Network } from '@suite-common/wallet-config';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { TradeableAssetSheetHeader } from '../TradeableAssetSheetHeader';
 
@@ -14,7 +14,7 @@ jest.mock('@suite-native/discovery', () => {
 
 describe('TradeableAssetSheetHeader', () => {
     const renderComponent = (onClose = jest.fn()) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradeableAssetSheetHeader
                 onClose={onClose}
                 onFilterChange={jest.fn()}
@@ -22,15 +22,15 @@ describe('TradeableAssetSheetHeader', () => {
             />,
         );
 
-    it('should display "Coins" and do not display tabs by default', async () => {
-        const { getByText, queryByText } = await renderComponent();
+    it('should display "Coins" and do not display tabs by default', () => {
+        const { getByText, queryByText } = renderComponent();
 
         expect(getByText('Assets')).toBeTruthy();
         expect(queryByText('All')).toBeNull();
     });
 
-    it('should display tabs after focusing search input', async () => {
-        const { getByPlaceholderText, getByText, queryByText } = await renderComponent();
+    it('should display tabs after focusing search input', () => {
+        const { getByPlaceholderText, getByText, queryByText } = renderComponent();
 
         fireEvent(getByPlaceholderText(/Search/), 'focus');
 
@@ -38,23 +38,23 @@ describe('TradeableAssetSheetHeader', () => {
         expect(queryByText('Coins')).toBeNull();
     });
 
-    it('should not display cancel button by default', async () => {
-        const { queryByText } = await renderComponent();
+    it('should not display cancel button by default', () => {
+        const { queryByText } = renderComponent();
 
         expect(queryByText('Cancel')).toBeNull();
     });
 
-    it('should display cancel button after focusing search input', async () => {
-        const { getByPlaceholderText, getByText } = await renderComponent();
+    it('should display cancel button after focusing search input', () => {
+        const { getByPlaceholderText, getByText } = renderComponent();
 
         fireEvent(getByPlaceholderText(/Search/), 'focus');
 
         expect(getByText('Cancel')).toBeTruthy();
     });
 
-    it('should call onClose when close button is pressed ', async () => {
+    it('should call onClose when close button is pressed ', () => {
         const onClose = jest.fn();
-        const { getByLabelText } = await renderComponent(onClose);
+        const { getByLabelText } = renderComponent(onClose);
 
         fireEvent.press(getByLabelText('Close'));
 

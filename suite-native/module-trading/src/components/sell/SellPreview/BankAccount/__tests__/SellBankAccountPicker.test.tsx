@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountPicker } from '../SellBankAccountPicker';
@@ -18,7 +18,7 @@ describe('SellBankAccountPicker', () => {
     });
 
     describe('Conditional Rendering', () => {
-        it('should not render when no bank accounts are available', async () => {
+        it('should not render when no bank accounts are available', () => {
             const preloadedState: PreloadedState = {
                 wallet: getWalletState({ tradeType: 'sell' }),
             };
@@ -34,7 +34,7 @@ describe('SellBankAccountPicker', () => {
                 },
             ];
 
-            const { queryByTestId } = await renderWithStoreProviderAsync(
+            const { queryByTestId } = renderWithStoreProvider(
                 <SellBankAccountPicker
                     orderId="order_id_1"
                     selectedBankAccountIban=""
@@ -46,7 +46,7 @@ describe('SellBankAccountPicker', () => {
             expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
         });
 
-        it('should not render when bankAccounts is undefined', async () => {
+        it('should not render when bankAccounts is undefined', () => {
             const preloadedState: PreloadedState = {
                 wallet: getWalletState({ tradeType: 'sell' }),
             };
@@ -62,7 +62,7 @@ describe('SellBankAccountPicker', () => {
                 },
             ];
 
-            const { queryByTestId } = await renderWithStoreProviderAsync(
+            const { queryByTestId } = renderWithStoreProvider(
                 <SellBankAccountPicker
                     orderId="order_id_1"
                     selectedBankAccountIban=""
@@ -74,7 +74,7 @@ describe('SellBankAccountPicker', () => {
             expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
         });
 
-        it('should not render when orderId is undefined', async () => {
+        it('should not render when orderId is undefined', () => {
             const preloadedState: PreloadedState = {
                 wallet: getWalletState({ tradeType: 'sell' }),
             };
@@ -90,7 +90,7 @@ describe('SellBankAccountPicker', () => {
                 },
             ];
 
-            const { queryByTestId } = await renderWithStoreProviderAsync(
+            const { queryByTestId } = renderWithStoreProvider(
                 <SellBankAccountPicker
                     orderId={undefined}
                     selectedBankAccountIban={bankAccounts[0].bankAccount}

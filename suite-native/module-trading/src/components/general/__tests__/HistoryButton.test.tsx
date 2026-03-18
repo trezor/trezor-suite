@@ -1,9 +1,5 @@
 import { type TradingTransaction } from '@suite-common/trading';
-import {
-    type PreloadedState,
-    fireEvent,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
 import { HistoryButton } from '../HistoryButton';
@@ -25,13 +21,13 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('HistoryButton', () => {
     const renderHistoryButton = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<HistoryButton />, {
+        renderWithStoreProvider(<HistoryButton />, {
             preloadedState,
         });
 
-    it('should render nothing where no trades are available', async () => {
+    it('should render nothing where no trades are available', () => {
         mockSelectDeviceTradingTrades = [];
-        const { toJSON } = await renderHistoryButton({});
+        const { toJSON } = renderHistoryButton({});
 
         expect(toJSON()).toBeNull();
     });
@@ -42,14 +38,14 @@ describe('HistoryButton', () => {
             mockNavigate = jest.fn();
         });
 
-        it('should render button when at least one trade is specified', async () => {
-            const { getByText } = await renderHistoryButton({});
+        it('should render button when at least one trade is specified', () => {
+            const { getByText } = renderHistoryButton({});
 
             expect(getByText('Trade history')).toBeOnTheScreen();
         });
 
-        it('should render nothing when isAmountInputActive is true', async () => {
-            const { toJSON } = await renderHistoryButton({
+        it('should render nothing when isAmountInputActive is true', () => {
+            const { toJSON } = renderHistoryButton({
                 wallet: {
                     trading: {
                         isAmountInputActive: true,
@@ -60,8 +56,8 @@ describe('HistoryButton', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should navigate on press', async () => {
-            const { getByText } = await renderHistoryButton({});
+        it('should navigate on press', () => {
+            const { getByText } = renderHistoryButton({});
 
             fireEvent.press(getByText('Trade history'));
 

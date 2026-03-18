@@ -4,8 +4,8 @@ import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
     userEvent,
 } from '@suite-native/test-utils';
@@ -30,22 +30,22 @@ describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
     let preloadedState: PreloadedState;
 
-    const renderExchangeForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderExchangeForm = () => renderHookWithStoreProvider(() => useExchangeForm());
 
     const renderExchangeRateAndProviderPicker = () =>
-        renderWithStoreProviderAsync(<ExchangeRateAndProviderPicker />, {
+        renderWithStoreProvider(<ExchangeRateAndProviderPicker />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
 
         (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
 
-        const { result } = await renderExchangeForm();
+        const { result } = renderExchangeForm();
         exchangeForm = result.current;
 
         preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
@@ -55,26 +55,26 @@ describe('ExchangeRateAndProviderPicker', () => {
         screen.unmount();
     });
 
-    it('should render nothing when no quote is selected and quotes are not loading', async () => {
-        const { toJSON } = await renderExchangeRateAndProviderPicker();
+    it('should render nothing when no quote is selected and quotes are not loading', () => {
+        const { toJSON } = renderExchangeRateAndProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render provider picker when no quote is selected and quotes are loading', async () => {
+    it('should render provider picker when no quote is selected and quotes are loading', () => {
         preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
-        const { getByText } = await renderExchangeRateAndProviderPicker();
+        const { getByText } = renderExchangeRateAndProviderPicker();
 
         expect(getByText('Provider')).toBeOnTheScreen();
     });
 
-    it('should render provider when quote is selected', async () => {
+    it('should render provider when quote is selected', () => {
         act(() => {
             exchangeForm.setValue('quote', exchangeQuotes[0]);
         });
 
-        const { getByText } = await renderExchangeRateAndProviderPicker();
+        const { getByText } = renderExchangeRateAndProviderPicker();
 
         expect(getByText('Provider')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
@@ -90,7 +90,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should fire analytics event on provider select', async () => {
-            const { getByText } = await renderExchangeRateAndProviderPicker();
+            const { getByText } = renderExchangeRateAndProviderPicker();
 
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getByText('Cexdirect'));
@@ -112,7 +112,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should not fire analytics event when same provider is selected', async () => {
-            const { getByText, getAllByText } = await renderExchangeRateAndProviderPicker();
+            const { getByText, getAllByText } = renderExchangeRateAndProviderPicker();
 
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getAllByText('Mercuryo')[1]);

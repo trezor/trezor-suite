@@ -5,7 +5,7 @@ import {
     type PreloadedState,
     act,
     fireEvent,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     buyMercuryo,
@@ -105,7 +105,7 @@ describe('TradeDetailAlert', () => {
 
         const alertType = getTradeStatusStep(trade);
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <TradeDetailAlert
                 alertType={alertType}
                 provider={TEST_PROVIDER}
@@ -118,15 +118,15 @@ describe('TradeDetailAlert', () => {
     };
 
     describe('Error Alert', () => {
-        it('should render error alert with support button for buy trades', async () => {
-            const { getByText } = await renderAlert('ERROR', 'buy', TEST_PROVIDER_STATUS_URL);
+        it('should render error alert with support button for buy trades', () => {
+            const { getByText } = renderAlert('ERROR', 'buy', TEST_PROVIDER_STATUS_URL);
 
             expect(getByText('Transaction failed')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
         });
 
-        it('should render error alert with support button for sell trades', async () => {
-            const { getByText } = await renderAlert('ERROR', 'sell', TEST_PROVIDER_STATUS_URL);
+        it('should render error alert with support button for sell trades', () => {
+            const { getByText } = renderAlert('ERROR', 'sell', TEST_PROVIDER_STATUS_URL);
 
             expect(getByText('Transaction failed')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -134,15 +134,15 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('Waiting Alert', () => {
-        it('should render waiting alert with payment button when orderId is provided', async () => {
-            const { getByText } = await renderAlert('SUBMITTED', 'buy', undefined, 'test-order-id');
+        it('should render waiting alert with payment button when orderId is provided', () => {
+            const { getByText } = renderAlert('SUBMITTED', 'buy', undefined, 'test-order-id');
 
             expect(getByText('Waiting for your payment ...')).toBeTruthy();
             expect(getByText('Proceed to pay')).toBeTruthy();
         });
 
-        it('should render button but not navigate when trade is not found in store', async () => {
-            const { getByText } = await renderWithStoreProviderAsync(
+        it('should render button but not navigate when trade is not found in store', () => {
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="waiting"
                     provider={TEST_PROVIDER}
@@ -166,8 +166,8 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('KYC Alert', () => {
-        it('should render kyc alert with support button when orderId is provided', async () => {
-            const { getByText } = await renderAlert('KYC', 'exchange', undefined, 'test-order-id');
+        it('should render kyc alert with support button when orderId is provided', () => {
+            const { getByText } = renderAlert('KYC', 'exchange', undefined, 'test-order-id');
 
             expect(getByText('Identity verification required')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -175,12 +175,8 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('Converting Alert', () => {
-        it('should render converting alert with support button', async () => {
-            const { getByText } = await renderAlert(
-                'CONVERTING',
-                'exchange',
-                TEST_PROVIDER_STATUS_URL,
-            );
+        it('should render converting alert with support button', () => {
+            const { getByText } = renderAlert('CONVERTING', 'exchange', TEST_PROVIDER_STATUS_URL);
 
             expect(getByText('Converting your crypto...')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -188,12 +184,8 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('Sending Alert', () => {
-        it('should render sending alert with support button', async () => {
-            const { getByText } = await renderAlert(
-                'SENDING',
-                'exchange',
-                TEST_PROVIDER_STATUS_URL,
-            );
+        it('should render sending alert with support button', () => {
+            const { getByText } = renderAlert('SENDING', 'exchange', TEST_PROVIDER_STATUS_URL);
 
             expect(getByText('Sending your crypto...')).toBeTruthy();
             expect(getByText('Go to provider support')).toBeTruthy();
@@ -201,8 +193,8 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('Sell Trade Alerts', () => {
-        it('should not render alert for sell trades with SUCCESS status', async () => {
-            const { toJSON } = await renderWithStoreProviderAsync(
+        it('should not render alert for sell trades with SUCCESS status', () => {
+            const { toJSON } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="success"
                     provider={TEST_PROVIDER}
@@ -216,8 +208,8 @@ describe('TradeDetailAlert', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should not render alert for sell trades with SEND_CRYPTO status (pending)', async () => {
-            const { toJSON } = await renderAlert('SEND_CRYPTO', 'sell');
+        it('should not render alert for sell trades with SEND_CRYPTO status (pending)', () => {
+            const { toJSON } = renderAlert('SEND_CRYPTO', 'sell');
 
             expect(toJSON()).toBeNull();
         });
@@ -233,12 +225,8 @@ describe('TradeDetailAlert', () => {
             ['SENDING', 'exchange', TEST_PROVIDER_STATUS_URL],
         ])(
             'should call openLink with status URL when support button is pressed for %s %s trades',
-            async (status, tradeType, expectedUrl) => {
-                const { getByText } = await renderAlert(
-                    status as any,
-                    tradeType as any,
-                    expectedUrl,
-                );
+            (status, tradeType, expectedUrl) => {
+                const { getByText } = renderAlert(status as any, tradeType as any, expectedUrl);
 
                 act(() => {
                     fireEvent.press(getByText('Go to provider support'));
@@ -250,8 +238,8 @@ describe('TradeDetailAlert', () => {
     });
 
     describe('Edge Cases', () => {
-        it('should not render when alertType is undefined', async () => {
-            const { toJSON } = await renderWithStoreProviderAsync(
+        it('should not render when alertType is undefined', () => {
+            const { toJSON } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType={undefined as any}
                     provider={TEST_PROVIDER}
@@ -265,8 +253,8 @@ describe('TradeDetailAlert', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should not render when alertType is success for non-exchange trades', async () => {
-            const { toJSON } = await renderWithStoreProviderAsync(
+        it('should not render when alertType is success for non-exchange trades', () => {
+            const { toJSON } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="success"
                     provider={TEST_PROVIDER}
@@ -280,14 +268,14 @@ describe('TradeDetailAlert', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should render error alert without button when trade and provider info is missing', async () => {
+        it('should render error alert without button when trade and provider info is missing', () => {
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.trades = [];
             if (tradingState.buy.buyInfo?.providerInfos) {
                 delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
             }
 
-            const { getByText, queryByText } = await renderWithStoreProviderAsync(
+            const { getByText, queryByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="error"
                     provider={TEST_PROVIDER}
@@ -302,8 +290,8 @@ describe('TradeDetailAlert', () => {
             expect(queryByText('Go to provider support')).toBeNull();
         });
 
-        it('should render waiting alert with support fallback when statusUrl is missing', async () => {
-            const { getByText } = await renderWithStoreProviderAsync(
+        it('should render waiting alert with support fallback when statusUrl is missing', () => {
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="waiting"
                     provider={TEST_PROVIDER}
@@ -321,12 +309,12 @@ describe('TradeDetailAlert', () => {
             expect(mockOpenLink).toHaveBeenCalledWith(buyMercuryo.supportUrl);
         });
 
-        it('should render button but not navigate when partnerData is missing for buy trades', async () => {
+        it('should render button but not navigate when partnerData is missing for buy trades', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             // Remove partnerData to test missing url for browser navigation
             delete buyTrade.data.partnerData;
 
-            const { getByText } = await renderWithStoreProviderAsync(
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="waiting"
                     provider={TEST_PROVIDER}
@@ -346,11 +334,11 @@ describe('TradeDetailAlert', () => {
             expect(mockOnOpenedBrowser).not.toHaveBeenCalled();
         });
 
-        it('should fall back to support URL when partnerData is missing for exchange trades', async () => {
+        it('should fall back to support URL when partnerData is missing for exchange trades', () => {
             const exchangeTrade = getExchangeTrade({ status: 'KYC' });
             // Exchange trades don't have partnerData, so they always fall back to support URL
 
-            const { getByText } = await renderWithStoreProviderAsync(
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="kyc"
                     provider={TEST_PROVIDER}
@@ -370,7 +358,7 @@ describe('TradeDetailAlert', () => {
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
 
-        it('should render button but not navigate when neither URL for browser auth nor support URL is available', async () => {
+        it('should render button but not navigate when neither URL for browser auth nor support URL is available', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             // Remove partnerData to test missing url for browser navigation
             delete buyTrade.data.partnerData;
@@ -383,7 +371,7 @@ describe('TradeDetailAlert', () => {
                 delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
             }
 
-            const { getByText } = await renderWithStoreProviderAsync(
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="waiting"
                     provider={TEST_PROVIDER}
@@ -404,12 +392,12 @@ describe('TradeDetailAlert', () => {
             expect(mockOpenLink).not.toHaveBeenCalled();
         });
 
-        it('should handle sell trades with browser navigation when partnerData is available', async () => {
+        it('should handle sell trades with browser navigation when partnerData is available', () => {
             const sellTrade = getSellTrade({ status: 'ERROR' });
             // Ensure partnerData is present for browser navigation
             sellTrade.data.partnerData = 'https://sell.mercuryo.io/test';
 
-            const { getByText } = await renderWithStoreProviderAsync(
+            const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="error"
                     provider={TEST_PROVIDER}

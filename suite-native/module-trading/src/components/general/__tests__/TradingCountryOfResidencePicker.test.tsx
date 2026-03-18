@@ -7,8 +7,8 @@ import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
     userEvent,
 } from '@suite-native/test-utils';
@@ -34,28 +34,25 @@ describe('TradingCountryOfResidencePicker', () => {
     let form: UseFormReturn<{ country: TradingCountryOption }>;
 
     const renderForm = () =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () => useForm<{ country: TradingCountryOption }>({ validation: yup.object() }),
             { preloadedState: residenceCheckDisabledState },
         );
 
     const renderCountryOfResidencePicker = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(
-            <TradingCountryOfResidencePicker testID="testID" context="buy" />,
-            {
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                preloadedState,
-            },
-        );
+        renderWithStoreProvider(<TradingCountryOfResidencePicker testID="testID" context="buy" />, {
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState,
+        });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
 
         (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
 
-        const { result } = await renderForm();
+        const { result } = renderForm();
         form = result.current;
     });
 
@@ -63,7 +60,7 @@ describe('TradingCountryOfResidencePicker', () => {
         screen.unmount();
     });
 
-    it('should use country from form', async () => {
+    it('should use country from form', () => {
         act(() => {
             form.setValue('country', {
                 value: 'US',
@@ -75,13 +72,13 @@ describe('TradingCountryOfResidencePicker', () => {
             });
         });
 
-        const { getByTestId } = await renderCountryOfResidencePicker(residenceCheckDisabledState);
+        const { getByTestId } = renderCountryOfResidencePicker(residenceCheckDisabledState);
 
         expect(getByTestId('testID/value')).toHaveTextContent('🇺🇸 USA');
     });
 
     it('should call analytics on country change', async () => {
-        const { getByText } = await renderCountryOfResidencePicker(residenceCheckDisabledState);
+        const { getByText } = renderCountryOfResidencePicker(residenceCheckDisabledState);
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
@@ -95,8 +92,8 @@ describe('TradingCountryOfResidencePicker', () => {
         });
     });
 
-    it('should render nothing when isTradingResidenceCheckEnabled FF is true', async () => {
-        const { toJSON } = await renderCountryOfResidencePicker(residenceCheckEnabledState);
+    it('should render nothing when isTradingResidenceCheckEnabled FF is true', () => {
+        const { toJSON } = renderCountryOfResidencePicker(residenceCheckEnabledState);
 
         expect(toJSON()).toBeNull();
     });
