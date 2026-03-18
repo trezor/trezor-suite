@@ -1,4 +1,4 @@
-import { BackupState } from '@suite/backup';
+import type { BackupState } from '@suite/backup';
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';

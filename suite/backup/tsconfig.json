@@ -11,6 +11,14 @@
         },
         { "path": "../analytics" },
         { "path": "../router" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/protobuf" }
     ]
 }
