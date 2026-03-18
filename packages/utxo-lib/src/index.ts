@@ -10,6 +10,7 @@ import * as payments from './payments';
 import * as script from './script';
 
 export { Transaction } from './transaction';
+export { Psbt } from './psbt';
 
 export {
     address,
