@@ -12,6 +12,7 @@ const createTestGetAffectedWorkspaces = (options: CreateTestGetAffectedWorkspace
             .fn()
             .mockResolvedValueOnce(options.workspaceListResult)
             .mockResolvedValueOnce(options.affectedResult),
+        requirementsWorkspaceName: '@trezor/requirements',
     });
 
 describe(createGetAffectedWorkspaces.name, () => {
@@ -46,6 +47,37 @@ describe(createGetAffectedWorkspaces.name, () => {
             workspaces: [
                 { name: '@trezor/connect', dir: '/repo/packages/connect' },
                 { name: '@trezor/suite', dir: '/repo/packages/suite' },
+            ],
+        });
+    });
+
+    it('returns all workspaces when @trezor/requirements is affected', async () => {
+        const getAffectedWorkspaces = createTestGetAffectedWorkspaces({
+            workspaceListResult: {
+                exitCode: 0,
+                stderr: '',
+                stdout: [
+                    '{"name":"trezor-suite","location":"."}',
+                    '{"name":"@trezor/connect","location":"packages/connect"}',
+                    '{"name":"@trezor/suite","location":"packages/suite"}',
+                    '{"name":"@trezor/requirements","location":"packages/requirements"}',
+                ].join('\n'),
+            },
+            affectedResult: {
+                exitCode: 0,
+                stderr: '',
+                stdout: '["@trezor/requirements"]',
+            },
+        });
+
+        const result = await getAffectedWorkspaces('/repo/packages/requirements');
+
+        expect(result).toEqual({
+            repoRoot: '/repo',
+            workspaces: [
+                { name: '@trezor/connect', dir: '/repo/packages/connect' },
+                { name: '@trezor/suite', dir: '/repo/packages/suite' },
+                { name: '@trezor/requirements', dir: '/repo/packages/requirements' },
             ],
         });
     });
@@ -128,6 +160,7 @@ describe(createGetAffectedWorkspaces.name, () => {
                     stderr: 'boom',
                 }),
             ),
+            requirementsWorkspaceName: '@trezor/requirements',
         });
 
         await expect(getAffectedWorkspaces('/repo/packages/requirements')).rejects.toThrow(
