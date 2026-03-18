@@ -33,6 +33,7 @@ import { useLiveLogEvents } from '../utils/useLiveLogEvents';
 
 const META_KEYS = ['version', 'commit', 'instanceId', 'sessionId', 'messageId'] as const;
 
+export const NEW_EVENT_TIMEOUT = 10_000;
 export const LIVE_LOG_SIDEBAR_MIN_WIDTH = 280;
 export const LIVE_LOG_SIDEBAR_MAX_WIDTH = 800;
 
@@ -228,7 +229,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                     return rest;
                 });
                 timeoutsRef.current.delete(e.id);
-            }, 10_000);
+            }, NEW_EVENT_TIMEOUT);
 
             timeoutsRef.current.set(e.id, timeoutId);
         }
