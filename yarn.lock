@@ -15315,7 +15315,9 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/jest": "npm:29.5.12"
+    "@types/react-dom": "npm:^19.1.0"
     "@vitejs/plugin-react": "npm:^4.7.0"
+    date-fns: "npm:^4.1.0"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
     styled-components: "npm:^6.3.9"
@@ -17928,7 +17930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:19.2.3":
+"@types/react-dom@npm:19.2.3, @types/react-dom@npm:^19.1.0":
   version: 19.2.3
   resolution: "@types/react-dom@npm:19.2.3"
   peerDependencies:
