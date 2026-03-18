@@ -19,6 +19,7 @@
         },
         { "path": "../locks" },
         { "path": "../modal" },
+        { "path": "../router-config" },
         { "path": "../../packages/type-utils" }
     ]
 }

@@ -47,7 +47,7 @@
         "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:^",
         "@suite/metadata": "workspace:*",
-        "@suite/router": "workspace:*",
+        "@suite/router-config": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/connect-web": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",

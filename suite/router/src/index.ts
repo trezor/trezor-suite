@@ -2,7 +2,6 @@ export * from './anchors';
 export * from './anchorUtils';
 export * from './router';
 export type * from './route';
-export * from './routeConfig';
 export * from './createSuiteRouterHistory';
 export * from './routerMiddleware';
 export * from './routerParams';
