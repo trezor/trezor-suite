@@ -98,8 +98,9 @@
 /suite-common/e2e-evolu-client @HajekOndrej @Vere-Grey
 
 # Analytics
-/packages/analytics-uploader @jvaclavik
 /packages/analytics-docs @jvaclavik
+/packages/analytics-log-server @jvaclavik
+/packages/analytics-uploader @jvaclavik
 
 # Desktop analytics
 /suite/analytics @jvaclavik

@@ -19,15 +19,7 @@ import {
 } from '@trezor/components';
 
 import { AnalyticsContent } from './app/AnalyticsContent';
-import {
-    ContentArea,
-    ContentContainer,
-    EventCardWrapper,
-    MainWithSidebar,
-    Page,
-    SidebarOuter,
-    TopBar,
-} from './app/layout';
+import { ContentArea, EventCardWrapper, MainWithSidebar, SidebarOuter, TopBar } from './app/layout';
 import { scrollToIdInContainer } from './app/scroll';
 import { AddEventModal } from './components/AddEventModal';
 import { EventCard } from './components/EventCard';
@@ -46,12 +38,17 @@ import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
 const SIDEBAR_DEFAULT_WIDTH = 360;
+const HIGHLIGHT_DURATION_MS = 1000;
 
 type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 'dark' };
 
 type AppProps = { theme: AppTheme };
 
-const HIGHLIGHT_DURATION_MS = 1000;
+const ContentContainer = ({ children }: { children: ReactNode }) => (
+    <Column gap={12} width="100%">
+        {children}
+    </Column>
+);
 
 export const App = ({ theme }: AppProps) => {
     const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
@@ -106,7 +103,7 @@ export const App = ({ theme }: AppProps) => {
         scrollToIdInContainer({
             container: contentScrollRef.current,
             id: getEventId(eventName),
-            behavior: 'smooth',
+            behavior: 'instant',
             offsetTop: 20,
         });
     }, []);
@@ -260,7 +257,7 @@ export const App = ({ theme }: AppProps) => {
                     }}
                     initialEvent={eventToEdit}
                 />
-                <Page>
+                <Column height="100vh" overflow="hidden">
                     <TopBar>
                         <ContentContainer>
                             <Row
@@ -376,7 +373,7 @@ export const App = ({ theme }: AppProps) => {
 
                         {sidebar}
                     </MainWithSidebar>
-                </Page>
+                </Column>
             </Modal.Provider>
         </>
     );
