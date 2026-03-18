@@ -160,9 +160,9 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         ? customFeeLevel.fee
         : feeEstimate;
 
-    const hasFeePerByteError = isNotNullOrUndefined(errors[FEE_PER_UNIT_FIELD_NAME]);
+    const hasFormErrors = Object.keys(errors).length > 0;
     const isSubmittable =
-        isNotNullOrUndefined(customFeeLevel) && !hasFeePerByteError && !isErrorBoxVisible;
+        isNotNullOrUndefined(customFeeLevel) && !hasFormErrors && !isErrorBoxVisible;
 
     return { feeValue, isFeeLoading, isErrorBoxVisible, isSubmittable };
 };

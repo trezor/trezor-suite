@@ -1,5 +1,7 @@
+import { FadeIn, FadeOut } from 'react-native-reanimated';
+
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { AnimatedPressable, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -7,12 +9,10 @@ import { useTranslate } from '@suite-native/intl';
 import { getFeeLabelTranslationId } from './feesLabelUtils';
 
 type FeeSummaryCardProps = {
-    // Step 1: fee always shows the `normal` fee level. Step 6 will show the selected fee level.
     fee: string;
     symbol: NetworkSymbol;
     networkType: NetworkType;
     areFeesLoading: boolean;
-    // Step 1: no-op. Step 6 wires this to open FeesBottomSheet.
     onPress: () => void;
     testID?: string;
 };
@@ -29,7 +29,7 @@ export const FeeSummaryCard = ({
     const labelKey = getFeeLabelTranslationId(networkType);
 
     return (
-        <PressableOpacity onPress={onPress} testID={testID}>
+        <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
             <Card>
                 <HStack justifyContent="space-between" alignItems="center">
                     <VStack spacing="sp4">
@@ -57,6 +57,6 @@ export const FeeSummaryCard = ({
                     </HStack>
                 </HStack>
             </Card>
-        </PressableOpacity>
+        </AnimatedPressable>
     );
 };

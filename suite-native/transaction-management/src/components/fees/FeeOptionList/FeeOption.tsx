@@ -158,13 +158,18 @@ export const FeeOption = ({
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
 
     const handleSelectFeeLevel = () => {
-        setValue('feeLevel', feeKey, { shouldValidate: true });
+        if (feeKey === selectedLevel) return;
+
+        setValue('feeLevel', feeKey, { shouldValidate: true, shouldDirty: true });
         onSelectedFeeLevel?.(feeKey);
 
         // Update custom fee form so user sees current values when switching to Custom tab.
-        setValue('customFeePerUnit', feePerUnit, { shouldValidate: true });
+        setValue('customFeePerUnit', feePerUnit, { shouldValidate: true, shouldDirty: true });
         if (feeLevel.feeLimit !== undefined) {
-            setValue('customFeeLimit', feeLevel.feeLimit, { shouldValidate: true });
+            setValue('customFeeLimit', feeLevel.feeLimit, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
         }
     };
 

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -13,12 +14,33 @@ import {
     type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { useForm } from '@suite-native/forms';
+import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
+
+const syncCustomFeeDefaults = (
+    form: UseFormReturn<FeesFormValues>,
+    feePerUnit: string | undefined,
+    normalFee: PrecomposedTransactionFinal | undefined,
+) => {
+    const values = form.getValues();
+
+    if (!values.customFeePerUnit && feePerUnit) {
+        form.setValue('customFeePerUnit', feePerUnit);
+    }
+    if (!values.customFeeLimit && normalFee?.feeLimit) {
+        form.setValue('customFeeLimit', normalFee.feeLimit);
+    }
+    if (!values.customMaxFeePerGas && normalFee?.maxFeePerGas) {
+        form.setValue('customMaxFeePerGas', normalFee.maxFeePerGas);
+    }
+    if (!values.customMaxPriorityFeePerGas && normalFee?.maxPriorityFeePerGas) {
+        form.setValue('customMaxPriorityFeePerGas', normalFee.maxPriorityFeePerGas);
+    }
+};
 
 export type UseFeesFormProps = {
     accountKey: AccountKey;
@@ -61,7 +83,7 @@ export const useFeesForm = ({
         ? (feeLevels.normal as PrecomposedTransactionFinal)
         : undefined;
 
-    return useForm<FeesFormValues>({
+    const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
         defaultValues: {
             feeLevel: defaultFeeLevel,
@@ -78,4 +100,10 @@ export const useFeesForm = ({
             isEip1559Fee,
         },
     });
+
+    useEffect(() => {
+        syncCustomFeeDefaults(form, trimmedFeePerUnit, normalFee);
+    }, [trimmedFeePerUnit, normalFee, form]);
+
+    return form;
 };

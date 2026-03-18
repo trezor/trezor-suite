@@ -1,14 +1,7 @@
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
-import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { Box, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-const screenFooterStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-}));
 
 export const SendOutputsScreenFooter = ({
     isSubmitting,
@@ -17,13 +10,11 @@ export const SendOutputsScreenFooter = ({
     isSubmitting: boolean;
     handleNavigateToReviewScreen: () => void;
 }) => {
-    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     return (
-        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-            <ScreenFooterGradient />
-            <Box style={applyStyle(screenFooterStyle)}>
+        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+            <Box paddingHorizontal="sp16" paddingVertical="sp16">
                 <Button
                     accessibilityRole="button"
                     accessibilityLabel={translate('generic.validateForm')}
@@ -31,7 +22,7 @@ export const SendOutputsScreenFooter = ({
                     onPress={handleNavigateToReviewScreen}
                     isDisabled={isSubmitting}
                 >
-                    <Translation id="generic.buttons.continue" />
+                    <Translation id="moduleSend.fees.submitButton" />
                 </Button>
             </Box>
         </Animated.View>

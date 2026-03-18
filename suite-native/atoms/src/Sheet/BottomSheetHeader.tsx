@@ -55,7 +55,7 @@ export const BottomSheetHeader = ({
                     <View style={applyStyle(titlesContainer, { isCloseDisplayed })}>
                         {title && <Text variant="headline-sm">{title}</Text>}
                         {subtitle && (
-                            <Text variant="body-xs" color="textSubdued">
+                            <Text variant="body-sm" color="textSubdued">
                                 {subtitle}
                             </Text>
                         )}
