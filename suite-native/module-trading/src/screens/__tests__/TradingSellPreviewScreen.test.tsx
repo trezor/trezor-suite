@@ -3,7 +3,7 @@ import { getTranslation } from '@suite-native/intl';
 import {
     type PreloadedState,
     act,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
@@ -55,7 +55,7 @@ describe('TradingSellPreviewScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderTradingSellPreviewScreen = async (preloadedState?: PreloadedState) => {
-        const result = await renderWithStoreProviderAsync(<TradingSellPreviewScreen />, {
+        const result = renderWithStoreProvider(<TradingSellPreviewScreen />, {
             preloadedState,
         });
 

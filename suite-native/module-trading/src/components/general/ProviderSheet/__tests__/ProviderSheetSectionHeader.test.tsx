@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { type QuotesCategory } from '@suite-native/trading-types';
 
 import {
@@ -8,14 +8,14 @@ import {
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithStoreProviderAsync(<ProviderSheetSectionHeader {...props} />);
+        renderWithStoreProvider(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
         ['fixed', 'Fixed-rate CEX'],
         ['float', 'Floating-rate CEX'],
         ['dex', 'DEX'],
-    ])('should render correct section based on category [%s]', async (category, expectedTitle) => {
-        const { getByText } = await renderProviderSheetSectionHeader({ category });
+    ])('should render correct section based on category [%s]', (category, expectedTitle) => {
+        const { getByText } = renderProviderSheetSectionHeader({ category });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
     });

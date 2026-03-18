@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import {
@@ -14,37 +14,37 @@ describe('SellToFiatTradePreviewCard', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
 
-        return renderWithStoreProviderAsync(<SellToFiatTradePreviewCard {...props} />, {
+        return renderWithStoreProvider(<SellToFiatTradePreviewCard {...props} />, {
             preloadedState,
         });
     };
 
-    it('should render nothing when there is no quote', async () => {
-        const { toJSON } = await renderSellToFiatTradePreviewCard({});
+    it('should render nothing when there is no quote', () => {
+        const { toJSON } = renderSellToFiatTradePreviewCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when quote has no fiatCurrency', async () => {
+    it('should render nothing when quote has no fiatCurrency', () => {
         const quoteWithoutFiat = { ...sellQuotes[0], fiatCurrency: undefined };
-        const { toJSON } = await renderSellToFiatTradePreviewCard({
+        const { toJSON } = renderSellToFiatTradePreviewCard({
             quote: quoteWithoutFiat,
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when quote has no paymentMethod', async () => {
+    it('should render nothing when quote has no paymentMethod', () => {
         const quoteWithoutPaymentMethod = { ...sellQuotes[0], paymentMethod: undefined };
-        const { toJSON } = await renderSellToFiatTradePreviewCard({
+        const { toJSON } = renderSellToFiatTradePreviewCard({
             quote: quoteWithoutPaymentMethod,
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeFiatSideCard otherwise', async () => {
-        const { getByText } = await renderSellToFiatTradePreviewCard({
+    it('should render TradeFiatSideCard otherwise', () => {
+        const { getByText } = renderSellToFiatTradePreviewCard({
             quote: sellQuotes[0],
         });
 
@@ -53,8 +53,8 @@ describe('SellToFiatTradePreviewCard', () => {
         expect(getByText('+$90.17')).toBeOnTheScreen();
     });
 
-    it('should render bank transfer payment method', async () => {
-        const { getByText } = await renderSellToFiatTradePreviewCard({
+    it('should render bank transfer payment method', () => {
+        const { getByText } = renderSellToFiatTradePreviewCard({
             quote: sellQuotes[1], // This quote has bankTransfer payment method
         });
 

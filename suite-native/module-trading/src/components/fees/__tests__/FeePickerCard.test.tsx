@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { FeePickerCard } from '../FeePickerCard';
 
@@ -24,24 +22,24 @@ describe('FeePickerCard', () => {
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
-    const renderFeePickerCard = async (props = {}) => {
+    const renderFeePickerCard = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProviderAsync(<FeePickerCard {...finalProps} />);
+        return renderWithStoreProvider(<FeePickerCard {...finalProps} />);
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render the details title', async () => {
-        const { getByText } = await renderFeePickerCard();
+    it('should render the details title', () => {
+        const { getByText } = renderFeePickerCard();
 
-        expect(getByText('Transaction details')).toBeTruthy();
+        expect(getByText('Transaction details')).toBeOnTheScreen();
     });
 
-    it('should pass correct props to FeeSelector', async () => {
-        await renderFeePickerCard();
+    it('should pass correct props to FeeSelector', () => {
+        renderFeePickerCard();
 
         expect(mockFeeSelectorProps).toHaveBeenCalledWith(
             expect.objectContaining({

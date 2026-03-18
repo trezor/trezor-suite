@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { type MinimalSellFormProps } from '@suite-common/trading';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
@@ -12,12 +12,12 @@ describe('quoteUtils', () => {
     let form: SellFormType;
 
     const renderUseTradingSellForm = () =>
-        renderHookWithStoreProviderAsync(() => useSellForm(), {
+        renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingSellForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingSellForm();
         form = result.current;
     });
 

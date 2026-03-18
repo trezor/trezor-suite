@@ -1,7 +1,7 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -12,15 +12,15 @@ import { BuyAlert } from '../BuyAlert';
 describe('BuyAlert', () => {
     let form: BuyFormType;
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderFormHook = () => renderHookWithStoreProvider(() => useBuyForm());
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(<BuyAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderFormHook();
+    beforeEach(() => {
+        const { result } = renderFormHook();
         form = result.current;
     });
 

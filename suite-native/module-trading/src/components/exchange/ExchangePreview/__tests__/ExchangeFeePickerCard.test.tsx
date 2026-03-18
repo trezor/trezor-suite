@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
@@ -19,14 +19,13 @@ describe('ExchangeFeePickerCard', () => {
         };
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
 
-        return renderWithStoreProviderAsync(
-            <ExchangeFeePickerCard isTxnError={false} {...props} />,
-            { preloadedState },
-        );
+        return renderWithStoreProvider(<ExchangeFeePickerCard isTxnError={false} {...props} />, {
+            preloadedState,
+        });
     };
 
-    it('should render nothing when isTxnError', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard({
+    it('should render nothing when isTxnError', () => {
+        const { toJSON } = renderExchangeFeePickerCard({
             quote: exchangeQuotes[0],
             isTxnError: true,
         });
@@ -34,14 +33,14 @@ describe('ExchangeFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when there is no quote', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard({});
+    it('should render nothing when there is no quote', () => {
+        const { toJSON } = renderExchangeFeePickerCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard(
+    it('should render nothing when account is not found', () => {
+        const { toJSON } = renderExchangeFeePickerCard(
             { quote: exchangeQuotes[0] },
             'unknown-account-key',
         );
@@ -49,8 +48,8 @@ describe('ExchangeFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', async () => {
-        const { getByText } = await renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
+    it('should render FeePickerCard otherwise', () => {
+        const { getByText } = renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
 
         expect(getByText('Transaction details')).toBeOnTheScreen();
     });

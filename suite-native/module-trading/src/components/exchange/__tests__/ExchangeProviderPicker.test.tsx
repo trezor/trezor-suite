@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
@@ -10,7 +10,7 @@ describe('ExchangeProviderPicker', () => {
     let preloadedState: PreloadedState;
 
     const renderExchangeProviderPicker = (props: Partial<ExchangeProviderPickerProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ExchangeProviderPicker
                 isLoading={false}
                 selectedValue={undefined}
@@ -26,14 +26,14 @@ describe('ExchangeProviderPicker', () => {
         preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
     });
 
-    it('should render nothing when no quote is selected and isLoading is false', async () => {
-        const { toJSON } = await renderExchangeProviderPicker({});
+    it('should render nothing when no quote is selected and isLoading is false', () => {
+        const { toJSON } = renderExchangeProviderPicker({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render skeleton when quotes are being fetched', async () => {
-        const { getByText, getByLabelText } = await renderExchangeProviderPicker({
+    it('should render skeleton when quotes are being fetched', () => {
+        const { getByText, getByLabelText } = renderExchangeProviderPicker({
             isLoading: true,
         });
 
@@ -41,8 +41,8 @@ describe('ExchangeProviderPicker', () => {
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
-    it('should render provider when quote is selected', async () => {
-        const { getByText } = await renderExchangeProviderPicker({
+    it('should render provider when quote is selected', () => {
+        const { getByText } = renderExchangeProviderPicker({
             selectedValue: exchangeQuotes[0],
         });
 
@@ -50,16 +50,16 @@ describe('ExchangeProviderPicker', () => {
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render KYC warning for provider with "KYC-required"', async () => {
-        const { getByText } = await renderExchangeProviderPicker({
+    it('should render KYC warning for provider with "KYC-required"', () => {
+        const { getByText } = renderExchangeProviderPicker({
             selectedValue: exchangeQuotes[2],
         });
 
         expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
     });
 
-    it('should not render KYC provider warning for providers with "noKYC"', async () => {
-        const { queryByText } = await renderExchangeProviderPicker({
+    it('should not render KYC provider warning for providers with "noKYC"', () => {
+        const { queryByText } = renderExchangeProviderPicker({
             selectedValue: exchangeQuotes[0],
         });
 

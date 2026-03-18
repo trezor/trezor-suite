@@ -1,20 +1,20 @@
 import { type TradingTransaction } from '@suite-common/trading';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradeHistoryListItem } from '../TradeHistoryListItem';
 
 describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
             { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
         );
 
-    it('should render trade correctly', async () => {
+    it('should render trade correctly', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByText } = await renderTradeHistoryListItem(buyTrade);
+        const { getByText } = renderTradeHistoryListItem(buyTrade);
 
         expect(getByText('Mercuryo')).toBeTruthy();
         expect(getByText('$1,234.00')).toBeTruthy();
@@ -23,10 +23,10 @@ describe('TradeHistoryListItem', () => {
         expect(getByText('Submitted')).toBeTruthy();
     });
 
-    it('should render date and time', async () => {
+    it('should render date and time', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByText } = await renderTradeHistoryListItem(buyTrade);
+        const { getByText } = renderTradeHistoryListItem(buyTrade);
 
         expect(getByText(/0[45]\/10\/2025 at [0-9]{1,2}:21/)).toBeTruthy();
     });

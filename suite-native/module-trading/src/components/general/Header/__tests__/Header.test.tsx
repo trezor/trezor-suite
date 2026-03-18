@@ -6,7 +6,7 @@ import {
     type TestStore,
     fireEvent,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { type TradingRootState } from '@suite-native/trading-state';
 
@@ -43,8 +43,8 @@ describe('Header', () => {
         },
     });
 
-    const renderWithStoreProviderAsyncWithReportMock = async (
-        ...args: Parameters<typeof renderWithStoreProviderAsync>
+    const renderWithStoreProviderWithReportMock = (
+        ...args: Parameters<typeof renderWithStoreProvider>
     ) => {
         const reportMock = jest.fn();
         (useAnalytics as jest.Mock).mockReturnValue({
@@ -52,7 +52,7 @@ describe('Header', () => {
         });
 
         return {
-            renderer: await renderWithStoreProviderAsync(...args),
+            renderer: renderWithStoreProvider(...args),
             reportMock,
         };
     };
@@ -114,7 +114,7 @@ describe('Header', () => {
             ...tradingPreloadedState,
         } as unknown as PreloadedState;
 
-        return renderWithStoreProviderAsyncWithReportMock(<Header />, { preloadedState });
+        return renderWithStoreProviderWithReportMock(<Header />, { preloadedState });
     };
 
     it.each([
@@ -143,16 +143,16 @@ describe('Header', () => {
             sellEnabled: false,
             exchangeEnabled: true,
         },
-    ])('should display Header tabs with Buy, Swap and Sell tabs, case %#', async config => {
-        const { renderer } = await renderHeader(config);
+    ])('should display Header tabs with Buy, Swap and Sell tabs, case %#', config => {
+        const { renderer } = renderHeader(config);
 
         expect(renderer.getByText('Buy')).toBeOnTheScreen();
         expect(renderer.getByText('Swap')).toBeOnTheScreen();
         expect(renderer.getByText('Sell')).toBeOnTheScreen();
     });
 
-    it('should display nothing when isAmountInputActive is true', async () => {
-        const { renderer } = await renderHeader({
+    it('should display nothing when isAmountInputActive is true', () => {
+        const { renderer } = renderHeader({
             buyEnabled: true,
             tradingPreloadedState: {
                 wallet: {
@@ -166,14 +166,14 @@ describe('Header', () => {
         expect(renderer.toJSON()).toBeNull();
     });
 
-    it('should set state on tab button press', async () => {
+    it('should set state on tab button press', () => {
         const { store } = initStore(
             getFFPreloadedState({
                 buyEnabled: true,
                 exchangeEnabled: true,
             }),
         );
-        const { renderer } = await renderWithStoreProviderAsyncWithReportMock(<Header />, {
+        const { renderer } = renderWithStoreProviderWithReportMock(<Header />, {
             store,
         });
 
@@ -182,8 +182,8 @@ describe('Header', () => {
         expect(store.getState().wallet.trading.activeTradingType).toBe('exchange');
     });
 
-    it('should display trade settings button', async () => {
-        const { renderer } = await renderHeader({
+    it('should display trade settings button', () => {
+        const { renderer } = renderHeader({
             buyEnabled: true,
             exchangeEnabled: true,
         });
@@ -191,8 +191,8 @@ describe('Header', () => {
         expect(renderer.getByLabelText('Advanced settings')).toBeOnTheScreen();
     });
 
-    it('should not display settings wheel when AreTradingExchangeDexesEnabled is disabled', async () => {
-        const { renderer } = await renderHeader({
+    it('should not display settings wheel when AreTradingExchangeDexesEnabled is disabled', () => {
+        const { renderer } = renderHeader({
             buyEnabled: true,
             exchangeEnabled: true,
             areTradingExchangeDexesEnabled: false,
@@ -214,11 +214,10 @@ describe('Header', () => {
             ).store;
         });
 
-        it('should report TradingNavigate event on tab change', async () => {
-            const { renderer, reportMock } = await renderWithStoreProviderAsyncWithReportMock(
-                <Header />,
-                { store },
-            );
+        it('should report TradingNavigate event on tab change', () => {
+            const { renderer, reportMock } = renderWithStoreProviderWithReportMock(<Header />, {
+                store,
+            });
 
             fireEvent.press(renderer.getByText('Swap'));
 
@@ -232,11 +231,10 @@ describe('Header', () => {
             });
         });
 
-        it('should not report TradingNavigate event when tab was not changed', async () => {
-            const { renderer, reportMock } = await renderWithStoreProviderAsyncWithReportMock(
-                <Header />,
-                { store },
-            );
+        it('should not report TradingNavigate event when tab was not changed', () => {
+            const { renderer, reportMock } = renderWithStoreProviderWithReportMock(<Header />, {
+                store,
+            });
 
             fireEvent.press(renderer.getByText('Swap'));
             reportMock.mockClear();
@@ -246,11 +244,10 @@ describe('Header', () => {
             expect(reportMock).not.toHaveBeenCalled();
         });
 
-        it('should report TradingNavigate event when tab was changed to buy', async () => {
-            const { renderer, reportMock } = await renderWithStoreProviderAsyncWithReportMock(
-                <Header />,
-                { store },
-            );
+        it('should report TradingNavigate event when tab was changed to buy', () => {
+            const { renderer, reportMock } = renderWithStoreProviderWithReportMock(<Header />, {
+                store,
+            });
 
             fireEvent.press(renderer.getByText('Swap'));
             reportMock.mockClear();

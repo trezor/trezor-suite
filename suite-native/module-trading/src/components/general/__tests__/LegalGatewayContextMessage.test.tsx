@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 
@@ -15,10 +15,10 @@ jest.mock('@suite-common/message-system', () => {
 
 describe('LegalGatewayContextMessage', () => {
     const renderLegalGatewayContextMessage = () =>
-        renderWithStoreProviderAsync(<LegalGatewayContextMessage />);
+        renderWithStoreProvider(<LegalGatewayContextMessage />);
 
-    it('should render legal.gateway context message', async () => {
-        const { getByText } = await renderLegalGatewayContextMessage();
+    it('should render legal.gateway context message', () => {
+        const { getByText } = renderLegalGatewayContextMessage();
 
         expect(getByText('Legal gateway message')).toBeOnTheScreen();
     });

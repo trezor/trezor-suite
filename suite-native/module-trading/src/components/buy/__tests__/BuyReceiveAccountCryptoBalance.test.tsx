@@ -1,8 +1,8 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -16,31 +16,31 @@ import {
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
 
-    const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderBuyForm = () => {
+        const { result } = renderHookWithStoreProvider(() => useBuyForm());
 
         return result.current;
     };
 
     const renderComponent = () =>
-        renderWithStoreProviderAsync(<BuyReceiveAccountCryptoBalance />, {
+        renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        buyForm = await renderBuyForm();
+    beforeEach(() => {
+        buyForm = renderBuyForm();
     });
 
-    it('should use asset form field as default symbol', async () => {
+    it('should use asset form field as default symbol', () => {
         act(() => {
             buyForm.setValue('asset', btcAsset);
         });
-        const { getByTestId } = await renderComponent();
+        const { getByTestId } = renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should use receiveAccount form field to obtain account', async () => {
+    it('should use receiveAccount form field to obtain account', () => {
         act(() => {
             buyForm.setValue('asset', btcAsset);
         });
@@ -49,7 +49,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
                 account: getBtcAccount(),
             });
         });
-        const { getByTestId } = await renderComponent();
+        const { getByTestId } = renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

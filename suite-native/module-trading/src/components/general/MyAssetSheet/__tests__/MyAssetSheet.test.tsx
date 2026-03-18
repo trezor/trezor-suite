@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils';
 import {
     btc1NormalAccount,
     eth1NormalAccount,
@@ -66,7 +66,7 @@ describe('MyAssetSheet', () => {
     });
 
     const renderMyAssetsSheet = (props?: Partial<MyAssetSheetProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <MyAssetSheet
                 onAssetSelect={jest.fn}
                 onClose={jest.fn}
@@ -87,33 +87,33 @@ describe('MyAssetSheet', () => {
         screen.unmount();
     });
 
-    it('should render account information correctly', async () => {
+    it('should render account information correctly', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
 
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
         expect(getByText('BTC Account #1')).toBeTruthy();
         expect(getByText('ETH Account #1')).toBeTruthy();
     });
 
-    it('should render correct empty component', async () => {
+    it('should render correct empty component', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue([]);
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
         expect(getByText('No assets found')).toBeTruthy();
         expect(getByText('You do not have any assets available for this operation.')).toBeTruthy();
     });
 
-    it('should select asset and close on asset item press', async () => {
+    it('should select asset and close on asset item press', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
         const onAssetSelect = jest.fn();
         const onClose = jest.fn();
 
-        const { getByText } = await renderMyAssetsSheet({ onAssetSelect, onClose });
+        const { getByText } = renderMyAssetsSheet({ onAssetSelect, onClose });
 
         fireEvent.press(getByText('BTC'));
 
@@ -127,7 +127,7 @@ describe('MyAssetSheet', () => {
         expect(onClose).toHaveBeenCalledWith(false);
     });
 
-    it('should render formatted account type badge when defined', async () => {
+    it('should render formatted account type badge when defined', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
@@ -137,12 +137,12 @@ describe('MyAssetSheet', () => {
             accountKey === btcAccount.key ? 'SegWit' : null,
         );
 
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
         expect(getByText('SegWit')).toBeTruthy();
     });
 
-    it('should not render badge when formatted account type is null', async () => {
+    it('should not render badge when formatted account type is null', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
@@ -150,7 +150,7 @@ describe('MyAssetSheet', () => {
         // Mock the selector to return null for all accounts
         mockedSelectFormattedAccountType.mockReturnValue(null);
 
-        const { queryByTestId } = await renderMyAssetsSheet();
+        const { queryByTestId } = renderMyAssetsSheet();
 
         expect(queryByTestId(TEST_ID_ACCOUNT_TYPE_BADGE)).toBeNull();
     });

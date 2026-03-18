@@ -1,5 +1,5 @@
 import { type TradingType } from '@suite-common/trading';
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 
@@ -32,7 +32,7 @@ describe('TradingTypeAwareContextMessage', () => {
     });
 
     const renderTradingTypeAwareContextMessage = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<TradingTypeAwareContextMessage />, { preloadedState });
+        renderWithStoreProvider(<TradingTypeAwareContextMessage />, { preloadedState });
 
     it.each<[TradingType, string]>([
         ['buy', 'Trading buy message'],
@@ -40,8 +40,8 @@ describe('TradingTypeAwareContextMessage', () => {
         ['sell', 'Trading sell message'],
     ])(
         'should render correct context message for trading type %s',
-        async (tradingType, expectedMessage) => {
-            const { getByText } = await renderTradingTypeAwareContextMessage(
+        (tradingType, expectedMessage) => {
+            const { getByText } = renderTradingTypeAwareContextMessage(
                 getPreloadedState(tradingType),
             );
 
@@ -49,8 +49,8 @@ describe('TradingTypeAwareContextMessage', () => {
         },
     );
 
-    it('should render nothing when trading type is not specified', async () => {
-        const { toJSON } = await renderTradingTypeAwareContextMessage(getPreloadedState(undefined));
+    it('should render nothing when trading type is not specified', () => {
+        const { toJSON } = renderTradingTypeAwareContextMessage(getPreloadedState(undefined));
 
         expect(toJSON()).toBeNull();
     });

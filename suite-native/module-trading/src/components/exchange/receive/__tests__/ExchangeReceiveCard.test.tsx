@@ -1,8 +1,8 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -13,24 +13,24 @@ import { ExchangeReceiveCard } from '../ExchangeReceiveCard';
 describe('ExchangeReceiveCard', () => {
     let form: ExchangeFormType;
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
 
     const renderExchangeBuyCard = () =>
-        renderWithStoreProviderAsync(<ExchangeReceiveCard />, {
+        renderWithStoreProvider(<ExchangeReceiveCard />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
     });
 
-    it('should render all components', async () => {
+    it('should render all components', () => {
         act(() => {
             form.setValue('receiveAsset', usdcAsset);
             form.setValue('quote', exchangeQuotes[0]);
         });
-        const { getByText, getByLabelText } = await renderExchangeBuyCard();
+        const { getByText, getByLabelText } = renderExchangeBuyCard();
 
         expect(getByText('You get')).toBeOnTheScreen();
         expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
