@@ -1,4 +1,4 @@
-import { type EvmAddress } from '../../../types/evm';
+import { type EvmAddress, asEvmAddress } from '../../../types/evm';
 import { type ValidationResult } from '../../../types/validation';
 
 interface ValidateAddressTestCase {
@@ -8,8 +8,8 @@ interface ValidateAddressTestCase {
     expected: ValidationResult<EvmAddress>;
 }
 
-const VALID_ADDRESS = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress;
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as EvmAddress;
+const VALID_ADDRESS = asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+const ZERO_ADDRESS = asEvmAddress('0x0000000000000000000000000000000000000000');
 
 export const validateAddressTestCases: ValidateAddressTestCase[] = [
     {
@@ -59,7 +59,7 @@ export const validateAddressTestCases: ValidateAddressTestCase[] = [
     {
         description: 'address different from sender returns NOT_SAME_AS_SENDER issue',
         input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        context: { sender: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as EvmAddress },
+        context: { sender: asEvmAddress('0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb') },
         expected: {
             value: VALID_ADDRESS,
             issues: [{ code: 'NOT_SAME_AS_SENDER', path: 'to' }],
@@ -70,7 +70,7 @@ export const validateAddressTestCases: ValidateAddressTestCase[] = [
         input: '0xcccccccccccccccccccccccccccccccccccccccc',
         context: { addressWhitelist: [VALID_ADDRESS] },
         expected: {
-            value: '0xcccccccccccccccccccccccccccccccccccccccc' as EvmAddress,
+            value: asEvmAddress('0xcccccccccccccccccccccccccccccccccccccccc'),
             issues: [{ code: 'ADDRESS_NOT_WHITELISTED', path: 'to' }],
         },
     },

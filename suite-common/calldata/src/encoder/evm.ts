@@ -1,15 +1,7 @@
-import { type Abi, type AbiFunction, type AbiParameter, encodeFunctionData } from 'viem';
+import { type Abi, type AbiFunction, encodeFunctionData } from 'viem';
 
+import { type AbiParamName } from '../types/abi';
 import { type Encoder } from '../types/encoder';
-
-type ExtractAbiFunction<T extends Abi> = Extract<T[number], AbiFunction>;
-
-type NamedAbiParameter = AbiParameter & { name: string };
-
-type AbiParamName<T extends Abi> =
-    ExtractAbiFunction<T> extends infer F extends AbiFunction
-        ? Extract<F['inputs'][number], NamedAbiParameter>['name']
-        : never;
 
 export const createEvmEncoder = <const T extends Abi>(
     abi: T,
