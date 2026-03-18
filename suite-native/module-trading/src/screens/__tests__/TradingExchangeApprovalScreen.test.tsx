@@ -7,7 +7,7 @@ import {
     type TestStore,
     fireEvent,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -58,8 +58,8 @@ describe('TradingExchangeApprovalScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async () => {
-        const result = await renderWithStoreProviderAsync(
+    const renderScreen = () => {
+        const result = renderWithStoreProvider(
             <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
             { store },
         );
@@ -94,27 +94,27 @@ describe('TradingExchangeApprovalScreen', () => {
         }
     });
 
-    it('should render the approval screen with quote details', async () => {
-        const { getByText } = await renderScreen();
+    it('should render the approval screen with quote details', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should show network information when network symbol is available', async () => {
-        const { getByText } = await renderScreen();
+    it('should show network information when network symbol is available', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Ethereum')).toBeOnTheScreen();
     });
 
-    it('should display provider information correctly', async () => {
-        const { getByText } = await renderScreen();
+    it('should display provider information correctly', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
     it('should open bottom sheet when limit row is pressed', async () => {
-        const { findByText } = await renderScreen();
+        const { findByText } = renderScreen();
 
         const pressableElement = await findByText('Limit');
 
@@ -122,25 +122,25 @@ describe('TradingExchangeApprovalScreen', () => {
         expect(mockShowSheet).toHaveBeenCalledTimes(1);
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderScreen();
+    it('should render continue button', () => {
+        const { getByText } = renderScreen();
 
         const buttons = getByText('Continue');
         expect(buttons).toBeTruthy();
     });
 
-    it('should render nothing when no quote is provided', async () => {
+    it('should render nothing when no quote is provided', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = await renderScreen();
+        const { toJSON } = renderScreen();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should clear selected quote on unmount', async () => {
+    it('should clear selected quote on unmount', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        const { unmount: localUnmount } = await renderScreen();
+        const { unmount: localUnmount } = renderScreen();
 
         localUnmount();
         unmount = undefined;

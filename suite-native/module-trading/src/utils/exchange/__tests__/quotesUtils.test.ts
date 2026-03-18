@@ -4,7 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { type MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -22,12 +22,12 @@ describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), {
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 

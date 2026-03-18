@@ -1,8 +1,5 @@
 import { Form } from '@suite-native/forms';
-import {
-    renderHookWithBasicProvider,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { renderHookWithBasicProvider, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';
@@ -11,15 +8,15 @@ import { useSellInputFormControls } from '../useSellInputFormControls';
 describe('useSellInputFormControls', () => {
     let form: SellFormType;
 
-    const renderSellFormHook = () => renderHookWithStoreProviderAsync(() => useSellForm());
+    const renderSellFormHook = () => renderHookWithStoreProvider(() => useSellForm());
 
     const renderUseSellInputFormControls = () =>
         renderHookWithBasicProvider(() => useSellInputFormControls('fiatStringAmount'), {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderSellFormHook();
+    beforeEach(() => {
+        const { result } = renderSellFormHook();
         form = result.current;
     });
 

@@ -13,7 +13,7 @@ import {
     type PreloadedState,
     type TestStore,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     userEvent,
     waitFor,
 } from '@suite-native/test-utils';
@@ -126,7 +126,7 @@ describe('TradingExchangePreviewScreen', () => {
     let consoleErrorSpy: jest.SpyInstance;
     let unmount: (() => void) | undefined;
 
-    const renderTradingExchangePreviewScreen = async (
+    const renderTradingExchangePreviewScreen = (
         isApproved: boolean = false,
         customStore?: TestStore,
     ) => {
@@ -137,7 +137,7 @@ describe('TradingExchangePreviewScreen', () => {
             report: reportMock,
         });
 
-        const result = await renderWithStoreProviderAsync(
+        const result = renderWithStoreProvider(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
@@ -169,35 +169,35 @@ describe('TradingExchangePreviewScreen', () => {
         }
     });
 
-    it('should display device guard when device is not connected', async () => {
+    it('should display device guard when device is not connected', () => {
         mockIsDeviceConnected = false;
-        const { result } = await renderTradingExchangePreviewScreen();
+        const { result } = renderTradingExchangePreviewScreen();
         expect(
             result.getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
         ).toBeOnTheScreen();
     });
 
-    it('should render continue button', async () => {
-        const { result } = await renderTradingExchangePreviewScreen();
+    it('should render continue button', () => {
+        const { result } = renderTradingExchangePreviewScreen();
 
         expect(result.getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should render screen title correctly', async () => {
-        const { result } = await renderTradingExchangePreviewScreen();
+    it('should render screen title correctly', () => {
+        const { result } = renderTradingExchangePreviewScreen();
 
         expect(result.getByText('Swap')).toBeOnTheScreen();
     });
 
-    it('should render from and to account labels', async () => {
-        const { result } = await renderTradingExchangePreviewScreen();
+    it('should render from and to account labels', () => {
+        const { result } = renderTradingExchangePreviewScreen();
 
         expect(result.getByText('From')).toBeOnTheScreen();
         expect(result.getByText('To')).toBeOnTheScreen();
     });
 
-    it('should render transaction details section', async () => {
-        const { result } = await renderTradingExchangePreviewScreen();
+    it('should render transaction details section', () => {
+        const { result } = renderTradingExchangePreviewScreen();
 
         expect(result.getByText('Transaction details')).toBeOnTheScreen();
         expect(result.getByText('Fee')).toBeOnTheScreen();
@@ -207,7 +207,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should show error alert when trade confirmation errors', async () => {
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
-            await renderTradingExchangePreviewScreen();
+            renderTradingExchangePreviewScreen();
 
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalledTimes(1);
@@ -223,7 +223,7 @@ describe('TradingExchangePreviewScreen', () => {
                 .mockRejectedValueOnce(new Error('Trade confirmation failed'))
                 .mockResolvedValueOnce(true);
 
-            const { reportMock } = await renderTradingExchangePreviewScreen();
+            const { reportMock } = renderTradingExchangePreviewScreen();
 
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
@@ -247,7 +247,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should navigate to top when cancel button is pressed', async () => {
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
-            const { reportMock } = await renderTradingExchangePreviewScreen();
+            const { reportMock } = renderTradingExchangePreviewScreen();
 
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
@@ -271,7 +271,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should not show error alert when trade confirmation succeeds', async () => {
             mockConfirmTrade.mockResolvedValue(true);
 
-            await renderTradingExchangePreviewScreen();
+            renderTradingExchangePreviewScreen();
 
             await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -279,8 +279,8 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
-    it('should report to analytics on mount', async () => {
-        const { reportMock } = await renderTradingExchangePreviewScreen();
+    it('should report to analytics on mount', () => {
+        const { reportMock } = renderTradingExchangePreviewScreen();
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
@@ -293,7 +293,7 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     it('should report to analytics on Continue press', async () => {
-        const { result, reportMock } = await renderTradingExchangePreviewScreen();
+        const { result, reportMock } = renderTradingExchangePreviewScreen();
         reportMock.mockClear();
 
         await userEvent.press(result.getByText('Continue'));
@@ -309,15 +309,15 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     describe('Error String Fallback Logic', () => {
-        it('should use txnErrorString when provided', async () => {
+        it('should use txnErrorString when provided', () => {
             mockTxnErrorString = 'Transaction error occurred';
 
-            const { result } = await renderTradingExchangePreviewScreen();
+            const { result } = renderTradingExchangePreviewScreen();
 
             expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
         });
 
-        it('should fall back to quote.error when txnErrorString is null', async () => {
+        it('should fall back to quote.error when txnErrorString is null', () => {
             mockTxnErrorString = null;
 
             const quoteWithError = {
@@ -327,12 +327,12 @@ describe('TradingExchangePreviewScreen', () => {
 
             const preloadedState = createPreloadedState(quoteWithError);
             const testStore = initStore(preloadedState).store;
-            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Quote error message')).toBeOnTheScreen();
         });
 
-        it('should not show error when both txnErrorString and quote.error are null', async () => {
+        it('should not show error when both txnErrorString and quote.error are null', () => {
             mockTxnErrorString = null;
 
             const quoteWithoutError = {
@@ -342,13 +342,13 @@ describe('TradingExchangePreviewScreen', () => {
 
             const preloadedState = createPreloadedState(quoteWithoutError);
             const testStore = initStore(preloadedState).store;
-            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.queryByText('Transaction error occurred')).toBeNull();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
 
-        it('should prioritize txnErrorString over quote.error', async () => {
+        it('should prioritize txnErrorString over quote.error', () => {
             mockTxnErrorString = 'Transaction error takes priority';
 
             const quoteWithError = {
@@ -358,7 +358,7 @@ describe('TradingExchangePreviewScreen', () => {
 
             const preloadedState = createPreloadedState(quoteWithError);
             const testStore = initStore(preloadedState).store;
-            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Transaction error takes priority')).toBeOnTheScreen();
             expect(result.queryByText('Quote error message')).toBeNull();

@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { ExchangeConfirmation } from '../ExchangeConfirmation';
@@ -26,7 +26,7 @@ describe('ExchangeConfirmation', () => {
         require('../../../hooks/exchange/useExchangeSelectQuote').useExchangeSelectQuote;
 
     const renderConfirmation = () =>
-        renderWithStoreProviderAsync(<ExchangeConfirmation />, {
+        renderWithStoreProvider(<ExchangeConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
@@ -35,7 +35,7 @@ describe('ExchangeConfirmation', () => {
         mockQuote.preapprovedStringAmount = undefined;
     });
 
-    it('should render "Swap" button when canProceed is true and approval not needed', async () => {
+    it('should render "Swap" button when canProceed is true and approval not needed', () => {
         mockUseExchangeSelectQuote.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -44,11 +44,11 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = await renderConfirmation();
+        const { getByText } = renderConfirmation();
         expect(getByText('Swap')).toBeTruthy();
     });
 
-    it('should render "Approve and swap" button when canProceed is true and approval needed', async () => {
+    it('should render "Approve and swap" button when canProceed is true and approval needed', () => {
         mockQuote.isDex = true;
 
         mockUseExchangeSelectQuote.mockReturnValue({
@@ -59,11 +59,11 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = await renderConfirmation();
+        const { getByText } = renderConfirmation();
         expect(getByText('Approve and swap')).toBeTruthy();
     });
 
-    it('should render "Swap" button when canProceed is true and approval status is approved', async () => {
+    it('should render "Swap" button when canProceed is true and approval status is approved', () => {
         mockQuote.isDex = false;
 
         mockUseExchangeSelectQuote.mockReturnValue({
@@ -74,11 +74,11 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = await renderConfirmation();
+        const { getByText } = renderConfirmation();
         expect(getByText('Swap')).toBeTruthy();
     });
 
-    it('should render "Swap" button when canProceed is true and approval status is null', async () => {
+    it('should render "Swap" button when canProceed is true and approval status is null', () => {
         mockQuote.isDex = false;
 
         mockUseExchangeSelectQuote.mockReturnValue({
@@ -89,11 +89,11 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = await renderConfirmation();
+        const { getByText } = renderConfirmation();
         expect(getByText('Swap')).toBeTruthy();
     });
 
-    it('should not render button when canProceed is false', async () => {
+    it('should not render button when canProceed is false', () => {
         mockQuote.isDex = false;
 
         mockUseExchangeSelectQuote.mockReturnValue({
@@ -104,7 +104,7 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { queryByText } = await renderConfirmation();
+        const { queryByText } = renderConfirmation();
 
         expect(queryByText('Swap')).toBeNull();
         expect(queryByText('Approve and swap')).toBeNull();

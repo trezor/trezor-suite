@@ -1,4 +1,4 @@
-import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -8,7 +8,7 @@ describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
     const renderTradeableAssetsSheet = (props: Partial<TradeableAssetsSheetProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradeableAssetSheet
                 assets={defaultAssets}
                 onAssetSelect={jest.fn}
@@ -25,11 +25,11 @@ describe('TradeableAssetSheet', () => {
         screen.unmount();
     });
 
-    it('should call onAssetSelect and onClose when an item is pressed', async () => {
+    it('should call onAssetSelect and onClose when an item is pressed', () => {
         const closeMock = jest.fn();
         const selectMock = jest.fn();
 
-        const { getByText } = await renderTradeableAssetsSheet({
+        const { getByText } = renderTradeableAssetsSheet({
             onClose: closeMock,
             onAssetSelect: selectMock,
         });
@@ -41,11 +41,11 @@ describe('TradeableAssetSheet', () => {
         expect(closeMock).toHaveBeenCalledWith(undefined);
     });
 
-    it('should call onAssetSelect with hideKeyboardOnAssetSelect=true when an item is pressed', async () => {
+    it('should call onAssetSelect with hideKeyboardOnAssetSelect=true when an item is pressed', () => {
         const closeMock = jest.fn();
         const selectMock = jest.fn();
 
-        const { getByText } = await renderTradeableAssetsSheet({
+        const { getByText } = renderTradeableAssetsSheet({
             onClose: closeMock,
             onAssetSelect: selectMock,
             hideKeyboardOnAssetSelect: true,
@@ -58,8 +58,8 @@ describe('TradeableAssetSheet', () => {
         expect(closeMock).toHaveBeenCalledWith(true);
     });
 
-    it('should render correct empty component', async () => {
-        const { getByText } = await renderTradeableAssetsSheet({
+    it('should render correct empty component', () => {
+        const { getByText } = renderTradeableAssetsSheet({
             assets: [],
         });
 

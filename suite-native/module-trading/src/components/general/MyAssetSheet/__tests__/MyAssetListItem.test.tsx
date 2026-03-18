@@ -6,7 +6,7 @@ import {
     type TokenSymbol,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
@@ -79,13 +79,13 @@ describe('MyAssetListItem', () => {
         }: Partial<MyAssetListItemProps> = {},
         preloadedState = getPreloadedState(),
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <MyAssetListItem asset={asset} account={account} onPress={onPress} />,
             { preloadedState },
         );
 
-    it('should render with correct labels', async () => {
-        const { getAllByText } = await renderComponent({
+    it('should render with correct labels', () => {
+        const { getAllByText } = renderComponent({
             asset: mockUsdcTokenAsset,
             account: getEthAccount(),
         });
@@ -94,9 +94,9 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('100,000,000 USDC').length).toBeGreaterThan(0);
     });
 
-    it('should call onPress callback when clicked', async () => {
+    it('should call onPress callback when clicked', () => {
         const onPress = jest.fn();
-        const { getAllByText } = await renderComponent({ asset: mockBtcAsset, onPress });
+        const { getAllByText } = renderComponent({ asset: mockBtcAsset, onPress });
 
         fireEvent.press(getAllByText('Bitcoin')[0]);
 
@@ -110,16 +110,16 @@ describe('MyAssetListItem', () => {
         );
     });
 
-    it('should render Bitcoin asset with correct labels and balance', async () => {
-        const { getAllByText } = await renderComponent({ asset: mockBtcAsset });
+    it('should render Bitcoin asset with correct labels and balance', () => {
+        const { getAllByText } = renderComponent({ asset: mockBtcAsset });
 
         expect(getAllByText('Bitcoin')[0]).toBeTruthy();
         expect(getAllByText('1,000,000 BTC')[0]).toBeTruthy();
         expect(getAllByText('$42,000.00')[0]).toBeTruthy();
     });
 
-    it('should render Ethereum asset with correct labels and balance', async () => {
-        const { getAllByText } = await renderComponent({
+    it('should render Ethereum asset with correct labels and balance', () => {
+        const { getAllByText } = renderComponent({
             asset: mockEthAsset,
             account: getEthAccount(),
         });
@@ -129,8 +129,8 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('$2,500.00')[0]).toBeTruthy();
     });
 
-    it('should render token asset with token formatter', async () => {
-        const { getAllByText } = await renderComponent({
+    it('should render token asset with token formatter', () => {
+        const { getAllByText } = renderComponent({
             asset: mockUsdcTokenAsset,
             account: getEthAccount(),
         });
@@ -140,7 +140,7 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('100,000,000 USDC')[0]).toBeTruthy();
     });
 
-    it('should render as no pair when not enabled', async () => {
+    it('should render as no pair when not enabled', () => {
         const preloadedState = {
             ...getPreloadedState(),
             appSettings: {
@@ -149,7 +149,7 @@ describe('MyAssetListItem', () => {
             },
         };
 
-        const { getByText } = await renderComponent(
+        const { getByText } = renderComponent(
             { asset: { ...mockEthAsset, isEnabled: false } },
             preloadedState,
         );
@@ -157,13 +157,13 @@ describe('MyAssetListItem', () => {
         expect(getByText('No pair')).toBeTruthy();
     });
 
-    it('should render without fiat balance when not available', async () => {
+    it('should render without fiat balance when not available', () => {
         const assetWithoutFiat: MyAsset = {
             ...mockBtcAsset,
             fiatBalance: null,
         };
 
-        const { getAllByText, queryByText } = await renderComponent({
+        const { getAllByText, queryByText } = renderComponent({
             asset: assetWithoutFiat,
         });
 
@@ -172,8 +172,8 @@ describe('MyAssetListItem', () => {
         expect(queryByText('$42,000.00')).toBeNull();
     });
 
-    it('should handle token assets with contract address correctly', async () => {
-        const { getByText, getAllByText } = await renderComponent({
+    it('should handle token assets with contract address correctly', () => {
+        const { getByText, getAllByText } = renderComponent({
             asset: mockUsdcTokenAsset,
             account: getEthAccount(),
         });
@@ -184,9 +184,9 @@ describe('MyAssetListItem', () => {
     });
 
     describe('handlePress functionality', () => {
-        it('should call onPress when asset is enabled and tradeableAsset exists', async () => {
+        it('should call onPress when asset is enabled and tradeableAsset exists', () => {
             const onPress = jest.fn();
-            const { getAllByText } = await renderComponent({
+            const { getAllByText } = renderComponent({
                 asset: mockBtcAsset,
                 onPress,
             });
@@ -205,10 +205,10 @@ describe('MyAssetListItem', () => {
             );
         });
 
-        it('should  not call onPress when asset is not enabled', async () => {
+        it('should  not call onPress when asset is not enabled', () => {
             const onPress = jest.fn();
             const disabledAsset = { ...mockBtcAsset, isEnabled: false };
-            const { getAllByText } = await renderComponent({
+            const { getAllByText } = renderComponent({
                 asset: disabledAsset,
                 onPress,
             });
@@ -218,10 +218,10 @@ describe('MyAssetListItem', () => {
             expect(onPress).not.toHaveBeenCalled();
         });
 
-        it('should  not call onPress when tradeableAsset does not exist (no cryptoId)', async () => {
+        it('should  not call onPress when tradeableAsset does not exist (no cryptoId)', () => {
             const onPress = jest.fn();
             const assetWithoutCryptoId = { ...mockBtcAsset, cryptoId: undefined };
-            const { getAllByText } = await renderComponent({
+            const { getAllByText } = renderComponent({
                 asset: assetWithoutCryptoId,
                 onPress,
             });
@@ -231,7 +231,7 @@ describe('MyAssetListItem', () => {
             expect(onPress).not.toHaveBeenCalled();
         });
 
-        it('should  not call onPress when coinInfo does not exist in store', async () => {
+        it('should  not call onPress when coinInfo does not exist in store', () => {
             const onPress = jest.fn();
             const preloadedStateWithoutCoinInfo = {
                 wallet: {
@@ -249,7 +249,7 @@ describe('MyAssetListItem', () => {
                 },
             };
 
-            const { getAllByText } = await renderComponent(
+            const { getAllByText } = renderComponent(
                 {
                     asset: mockBtcAsset,
                     onPress,
@@ -262,14 +262,14 @@ describe('MyAssetListItem', () => {
             expect(onPress).not.toHaveBeenCalled();
         });
 
-        it('should not call onPress when asset is not enabled and tradeableAsset does not exist', async () => {
+        it('should not call onPress when asset is not enabled and tradeableAsset does not exist', () => {
             const onPress = jest.fn();
             const disabledAssetWithoutCryptoId = {
                 ...mockBtcAsset,
                 isEnabled: false,
                 cryptoId: undefined,
             };
-            const { getAllByText } = await renderComponent({
+            const { getAllByText } = renderComponent({
                 asset: disabledAssetWithoutCryptoId,
                 onPress,
             });

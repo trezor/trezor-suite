@@ -4,7 +4,7 @@ import {
     type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
@@ -23,37 +23,37 @@ describe('useSellSelectQuote', () => {
     let store: TestStore;
     let sellForm: SellFormType;
 
-    const renderSellForm = () => renderHookWithStoreProviderAsync(() => useSellForm(), { store });
+    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
 
     const renderUseSellSelectQuote = () =>
-        renderHookWithStoreProviderAsync(() => useSellSelectQuote(sellForm), { store });
+        renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), { store });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
 
-        const { result } = await renderSellForm();
+        const { result } = renderSellForm();
         sellForm = result.current;
     });
 
     describe('canProceed', () => {
-        it('should be false when no quote is selected in form', async () => {
-            const { result } = await renderUseSellSelectQuote();
+        it('should be false when no quote is selected in form', () => {
+            const { result } = renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(false);
         });
 
-        it('should be false when quotes are being fetched', async () => {
+        it('should be false when quotes are being fetched', () => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
                 store.dispatch(tradingSellActions.setIsLoading(true));
             });
 
-            const { result } = await renderUseSellSelectQuote();
+            const { result } = renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(false);
         });
 
-        it('should be false when form contains error', async () => {
+        it('should be false when form contains error', () => {
             act(() => {
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
@@ -67,12 +67,12 @@ describe('useSellSelectQuote', () => {
                 });
             });
 
-            const { result } = await renderUseSellSelectQuote();
+            const { result } = renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(false);
         });
 
-        it('should be true when quote is selected', async () => {
+        it('should be true when quote is selected', () => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
                 store.dispatch(
@@ -82,7 +82,7 @@ describe('useSellSelectQuote', () => {
                 );
             });
 
-            const { result } = await renderUseSellSelectQuote();
+            const { result } = renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(true);
         });

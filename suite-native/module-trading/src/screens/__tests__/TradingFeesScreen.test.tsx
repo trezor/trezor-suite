@@ -1,6 +1,6 @@
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     accounts,
     btc1NormalAccount,
@@ -52,7 +52,7 @@ const preloadedState = {
 describe('TradingFeesScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async (state = preloadedState) => {
+    const renderScreen = (state = preloadedState) => {
         const reportMock = jest.fn();
         jest.clearAllMocks();
 
@@ -60,7 +60,7 @@ describe('TradingFeesScreen', () => {
             report: reportMock,
         });
 
-        const result = await renderWithStoreProviderAsync(<TradingFeesScreen />, {
+        const result = renderWithStoreProvider(<TradingFeesScreen />, {
             preloadedState: state,
         });
 
@@ -83,40 +83,40 @@ describe('TradingFeesScreen', () => {
         }
     });
 
-    it('should render the screen without crashing', async () => {
-        const { result } = await renderScreen();
+    it('should render the screen without crashing', () => {
+        const { result } = renderScreen();
 
         expect(result.root).toBeTruthy();
     });
 
-    it('should render TradingFeesForm with correct accountKey', async () => {
-        await renderScreen();
+    it('should render TradingFeesForm with correct accountKey', () => {
+        renderScreen();
 
         expect(mockTradingFeesForm).toHaveBeenCalledWith({
             accountKey: btc1NormalAccount.key,
         });
     });
 
-    it('should call useSubscribeForSolanaBlockUpdates with the account', async () => {
-        await renderScreen();
+    it('should call useSubscribeForSolanaBlockUpdates with the account', () => {
+        renderScreen();
 
         expect(mockUseSubscribeForSolanaBlockUpdates).toHaveBeenCalled();
     });
 
-    it('should not render anything when account is not found', async () => {
+    it('should not render anything when account is not found', () => {
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: 'nonexistent-account' },
         });
 
-        const { result } = await renderScreen();
+        const { result } = renderScreen();
 
         expect(result.queryByTestId('trading-fees-form')).not.toBeOnTheScreen();
         expect(mockTradingFeesForm).not.toHaveBeenCalled();
     });
 
-    it('should report to analytics on mount for exchange (default)', async () => {
-        const { reportMock } = await renderScreen();
+    it('should report to analytics on mount for exchange (default)', () => {
+        const { reportMock } = renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingExchangeEvent.name,
@@ -127,13 +127,13 @@ describe('TradingFeesScreen', () => {
         });
     });
 
-    it('should report to analytics on mount for exchange when explicitly set', async () => {
+    it('should report to analytics on mount for exchange when explicitly set', () => {
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: btc1NormalAccount.key, tradingType: 'exchange' },
         });
 
-        const { reportMock } = await renderScreen();
+        const { reportMock } = renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingExchangeEvent.name,
@@ -144,7 +144,7 @@ describe('TradingFeesScreen', () => {
         });
     });
 
-    it('should report to analytics on mount for sell', async () => {
+    it('should report to analytics on mount for sell', () => {
         const sellPreloadedState = {
             wallet: {
                 trading: getInitializedTradingState('sell'),
@@ -156,7 +156,7 @@ describe('TradingFeesScreen', () => {
             params: { accountKey: btc1NormalAccount.key, tradingType: 'sell' },
         });
 
-        const { reportMock } = await renderScreen(sellPreloadedState);
+        const { reportMock } = renderScreen(sellPreloadedState);
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingSellEvent.name,

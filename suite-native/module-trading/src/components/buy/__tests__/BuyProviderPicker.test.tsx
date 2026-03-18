@@ -5,8 +5,8 @@ import {
     type PreloadedState,
     act,
     fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
 import {
@@ -35,8 +35,8 @@ jest.mock('@suite-native/services', () => {
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
 
-    const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
+    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) => {
+        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
         form = result.current;
@@ -45,7 +45,7 @@ describe('BuyProviderPicker', () => {
     };
 
     const renderTradingProviderPicker = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,
@@ -64,19 +64,19 @@ describe('BuyProviderPicker', () => {
         });
     });
 
-    it('should display nothing when in default state', async () => {
-        await renderUseTradingBuyForm();
-        const { toJSON } = await renderTradingProviderPicker();
+    it('should display nothing when in default state', () => {
+        renderUseTradingBuyForm();
+        const { toJSON } = renderTradingProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display loader while quotes are fetched', async () => {
+    it('should display loader while quotes are fetched', () => {
         const preloadedState: PreloadedState = {
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
         };
-        await renderUseTradingBuyForm();
-        const { getByLabelText } = await renderTradingProviderPicker(preloadedState);
+        renderUseTradingBuyForm();
+        const { getByLabelText } = renderTradingProviderPicker(preloadedState);
 
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
@@ -97,8 +97,8 @@ describe('BuyProviderPicker', () => {
             };
         });
 
-        it('should allow to select provider', async () => {
-            const { getByText, getByLabelText } = await renderTradingProviderPicker(preloadedState);
+        it('should allow to select provider', () => {
+            const { getByText, getByLabelText } = renderTradingProviderPicker(preloadedState);
 
             fireEvent.press(getByText('Provider'));
             fireEvent.press(getByText('Mercuryo'));
@@ -106,31 +106,31 @@ describe('BuyProviderPicker', () => {
             expect(getByLabelText('Selected provider')).toHaveTextContent('Mercuryo');
         });
 
-        it('should display loader while quotes are re-fetched', async () => {
+        it('should display loader while quotes are re-fetched', () => {
             preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { getByLabelText } = await renderTradingProviderPicker(preloadedState);
+            const { getByLabelText } = renderTradingProviderPicker(preloadedState);
 
             expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
         });
 
-        it('should display sheet even while quotes are fetched', async () => {
+        it('should display sheet even while quotes are fetched', () => {
             preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { getByText } = await renderTradingProviderPicker(preloadedState);
+            const { getByText } = renderTradingProviderPicker(preloadedState);
 
             fireEvent.press(getByText('Provider'));
 
             expect(getByText('Mercuryo')).toBeOnTheScreen();
         });
 
-        it('should display kyc warning when not loading', async () => {
-            const { getByText } = await renderTradingProviderPicker(preloadedState);
+        it('should display kyc warning when not loading', () => {
+            const { getByText } = renderTradingProviderPicker(preloadedState);
 
             expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
         });
 
-        it('should not display kyc warning when loading', async () => {
+        it('should not display kyc warning when loading', () => {
             preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { queryByText } = await renderTradingProviderPicker(preloadedState);
+            const { queryByText } = renderTradingProviderPicker(preloadedState);
             expect(
                 queryByText('This provider requires to know your identity.'),
             ).not.toBeOnTheScreen();
@@ -141,8 +141,8 @@ describe('BuyProviderPicker', () => {
                 reportMock.mockClear();
             });
 
-            it('should fire analytics event on provider select', async () => {
-                const { getByText } = await renderTradingProviderPicker(preloadedState);
+            it('should fire analytics event on provider select', () => {
+                const { getByText } = renderTradingProviderPicker(preloadedState);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
@@ -163,8 +163,8 @@ describe('BuyProviderPicker', () => {
                 });
             });
 
-            it('should fire analytics event on provider change', async () => {
-                const { getByText } = await renderTradingProviderPicker(preloadedState);
+            it('should fire analytics event on provider change', () => {
+                const { getByText } = renderTradingProviderPicker(preloadedState);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
@@ -172,9 +172,8 @@ describe('BuyProviderPicker', () => {
                 expect(reportMock).toHaveBeenCalledTimes(2);
             });
 
-            it('should not fire analytics event when same provider is selected', async () => {
-                const { getByText, getAllByText } =
-                    await renderTradingProviderPicker(preloadedState);
+            it('should not fire analytics event when same provider is selected', () => {
+                const { getByText, getAllByText } = renderTradingProviderPicker(preloadedState);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getAllByText('Cexdirect')[1]);
@@ -188,9 +187,9 @@ describe('BuyProviderPicker', () => {
                 });
             });
 
-            it('should not call analytics when user tries to open sheet while quotes are loading', async () => {
+            it('should not call analytics when user tries to open sheet while quotes are loading', () => {
                 preloadedState!.wallet!.trading!.buy!.isLoading = true;
-                const { getByText } = await renderTradingProviderPicker(preloadedState);
+                const { getByText } = renderTradingProviderPicker(preloadedState);
 
                 fireEvent.press(getByText('Provider'));
 

@@ -5,7 +5,7 @@ import {
     type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
@@ -37,17 +37,22 @@ describe('useExchangeData', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderUseExchangeData = (
+    const renderUseExchangeData = async (
         reloadRequestOrdinalInitialValue: number = 0,
         store?: TestStore,
-    ) =>
-        renderHookWithStoreProviderAsync(
+    ) => {
+        const ret = renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
                 store,
             },
         );
+
+        await act(() => Promise.resolve()); // Wait for all effects to run
+
+        return ret;
+    };
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -116,7 +121,7 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
-            const store = await getInitializedStore(undefined);
+            const store = getInitializedStore(undefined);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
@@ -138,7 +143,7 @@ describe('useExchangeData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = await getInitializedStore(btc2AccountKey);
+            const store = getInitializedStore(btc2AccountKey);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
@@ -157,7 +162,7 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = getInitializedStore('btc-account-1');
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
@@ -180,7 +185,7 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = getInitializedStore('btc-account-1');
             await renderUseExchangeData(0, store);
 
             // Clear the initial call

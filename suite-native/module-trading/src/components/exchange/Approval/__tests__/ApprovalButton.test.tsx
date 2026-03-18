@@ -3,7 +3,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type TestStore,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
@@ -23,7 +23,7 @@ describe('ApprovalButton', () => {
     let store: TestStore;
 
     const renderApprovalButton = (props: ApprovalButtonProps) =>
-        renderWithStoreProviderAsync(<ApprovalButton {...props} />, { store });
+        renderWithStoreProvider(<ApprovalButton {...props} />, { store });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -39,20 +39,20 @@ describe('ApprovalButton', () => {
         store = initStore(preloadedState).store;
     });
 
-    it('should render continue button when isReady is true', async () => {
-        const { getByText } = await renderApprovalButton({ isReady: true });
+    it('should render continue button when isReady is true', () => {
+        const { getByText } = renderApprovalButton({ isReady: true });
 
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should render nothing when isReady is false', async () => {
-        const { toJSON } = await renderApprovalButton({ isReady: false });
+    it('should render nothing when isReady is false', () => {
+        const { toJSON } = renderApprovalButton({ isReady: false });
 
         expect(toJSON()).toBeNull();
     });
 
     it('should navigate to TradingExchangeOutputsReview on press', async () => {
-        const { getByText } = await renderApprovalButton({ isReady: true });
+        const { getByText } = renderApprovalButton({ isReady: true });
 
         await userEvent.press(getByText('Continue'));
 
@@ -63,10 +63,10 @@ describe('ApprovalButton', () => {
         });
     });
 
-    it('should render nothing when no selected quote is provided', async () => {
+    it('should render nothing when no selected quote is provided', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = await renderApprovalButton({ isReady: true });
+        const { toJSON } = renderApprovalButton({ isReady: true });
 
         expect(toJSON()).toBeNull();
     });

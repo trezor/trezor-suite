@@ -5,7 +5,7 @@ import {
     type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -15,7 +15,7 @@ describe('useApprovalTypeControls', () => {
     let store: TestStore;
 
     const renderUseApprovalTypeControls = () =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () => {
                 const quote = useSelector(selectTradingExchangeActiveQuote);
 
@@ -34,8 +34,8 @@ describe('useApprovalTypeControls', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(exchangeQuotes[0]));
     });
 
-    it('should use INFINITE as default', async () => {
-        const { result } = await renderUseApprovalTypeControls();
+    it('should use INFINITE as default', () => {
+        const { result } = renderUseApprovalTypeControls();
 
         expect(result.current).toEqual({
             approvalType: 'INFINITE',
@@ -49,8 +49,8 @@ describe('useApprovalTypeControls', () => {
         );
     });
 
-    it('should set new value with handleApprovalTypeChange', async () => {
-        const { result } = await renderUseApprovalTypeControls();
+    it('should set new value with handleApprovalTypeChange', () => {
+        const { result } = renderUseApprovalTypeControls();
 
         act(() => {
             result.current.handleApprovalTypeChange('MINIMAL');
@@ -66,9 +66,9 @@ describe('useApprovalTypeControls', () => {
         );
     });
 
-    it('should do nothing when no quote is provided', async () => {
+    it('should do nothing when no quote is provided', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
-        const { result } = await renderUseApprovalTypeControls();
+        const { result } = renderUseApprovalTypeControls();
 
         expect(result.current).toEqual({
             approvalType: 'INFINITE',

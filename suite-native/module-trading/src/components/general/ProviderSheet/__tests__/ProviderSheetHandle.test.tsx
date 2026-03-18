@@ -1,8 +1,4 @@
-import {
-    type PreloadedState,
-    fireEvent,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type PreloadedState, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { ProviderSheetHandle, type ProviderSheetHandleProps } from '../ProviderSheetHandle';
 
@@ -24,7 +20,7 @@ describe('ProviderSheetHandle', () => {
         props: Partial<ProviderSheetHandleProps> = {},
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ProviderSheetHandle
                 onClose={jest.fn()}
                 shouldShowFilters={true}
@@ -40,8 +36,8 @@ describe('ProviderSheetHandle', () => {
             { preloadedState },
         );
 
-    it('should render component with title and filter', async () => {
-        const { getByText } = await renderProviderSheetHandle({}, {});
+    it('should render component with title and filter', () => {
+        const { getByText } = renderProviderSheetHandle({}, {});
 
         expect(getByText('Providers')).toBeOnTheScreen();
         expect(getByText('All')).toBeOnTheScreen();
@@ -49,8 +45,8 @@ describe('ProviderSheetHandle', () => {
         expect(getByText('DEX')).toBeOnTheScreen();
     });
 
-    it('should not render filters when shouldShowFilters is false', async () => {
-        const { getByText, queryByText } = await renderProviderSheetHandle(
+    it('should not render filters when shouldShowFilters is false', () => {
+        const { getByText, queryByText } = renderProviderSheetHandle(
             { shouldShowFilters: false },
             {},
         );
@@ -61,26 +57,26 @@ describe('ProviderSheetHandle', () => {
         expect(queryByText('DEX')).toBeNull();
     });
 
-    it('should call onClose when close button is pressed', async () => {
+    it('should call onClose when close button is pressed', () => {
         const onClose = jest.fn();
-        const { getByLabelText } = await renderProviderSheetHandle({ onClose }, {});
+        const { getByLabelText } = renderProviderSheetHandle({ onClose }, {});
 
         fireEvent.press(getByLabelText('Close'));
 
         expect(onClose).toHaveBeenCalled();
     });
 
-    it('should setSelectedFilter when filter item is pressed', async () => {
+    it('should setSelectedFilter when filter item is pressed', () => {
         const setSelectedFilter = jest.fn();
-        const { getByText } = await renderProviderSheetHandle({ setSelectedFilter }, {});
+        const { getByText } = renderProviderSheetHandle({ setSelectedFilter }, {});
 
         fireEvent.press(getByText('CEX'));
 
         expect(setSelectedFilter).toHaveBeenCalledWith('cex');
     });
 
-    it('should display context message', async () => {
-        const { getByText } = await renderProviderSheetHandle(
+    it('should display context message', () => {
+        const { getByText } = renderProviderSheetHandle(
             {},
             {
                 wallet: {

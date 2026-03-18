@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from '../BankAccount/SellBankAccountItem';
@@ -35,7 +35,7 @@ describe('SellPreviewView', () => {
     ) => {
         const preloadedState = getPreloadedSellState(preloadedStateOverrides ?? {});
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <SellPreviewView quote={sellQuotes[1]} txnErrorString={null} {...props} />,
             {
                 preloadedState,
@@ -43,8 +43,8 @@ describe('SellPreviewView', () => {
         );
     };
 
-    it('should render all sections except alert', async () => {
-        const { getByText } = await renderSellPreviewView({});
+    it('should render all sections except alert', () => {
+        const { getByText } = renderSellPreviewView({});
 
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
@@ -53,8 +53,8 @@ describe('SellPreviewView', () => {
         expect(getByText('Fee')).toBeOnTheScreen();
     });
 
-    it('should render txnErrorString when isTxnError is true', async () => {
-        const { getByText, queryByText } = await renderSellPreviewView({
+    it('should render txnErrorString when isTxnError is true', () => {
+        const { getByText, queryByText } = renderSellPreviewView({
             txnErrorString: 'Transaction error occurred',
         });
 
@@ -67,8 +67,8 @@ describe('SellPreviewView', () => {
         expect(queryByText('Fee')).not.toBeOnTheScreen();
     });
 
-    it('should not render bank account picker when form step is not BANK_ACCOUNT', async () => {
-        const { queryByTestId } = await renderSellPreviewView(
+    it('should not render bank account picker when form step is not BANK_ACCOUNT', () => {
+        const { queryByTestId } = renderSellPreviewView(
             {},
             {
                 formStep: 'SEND_TRANSACTION', // Not BANK_ACCOUNT
@@ -78,8 +78,8 @@ describe('SellPreviewView', () => {
         expect(queryByTestId(BANK_ACCOUNT_ITEM_TEST_ID)).not.toBeOnTheScreen();
     });
 
-    it('should render bank account picker when form step is BANK_ACCOUNT', async () => {
-        const { getAllByTestId } = await renderSellPreviewView(
+    it('should render bank account picker when form step is BANK_ACCOUNT', () => {
+        const { getAllByTestId } = renderSellPreviewView(
             {},
             {
                 formStep: 'BANK_ACCOUNT',
@@ -89,9 +89,9 @@ describe('SellPreviewView', () => {
         expect(getAllByTestId(BANK_ACCOUNT_ITEM_TEST_ID).length).toBeGreaterThan(0);
     });
 
-    it('should use quote prop instead of selector', async () => {
+    it('should use quote prop instead of selector', () => {
         const differentQuote = sellQuotes[0];
-        const { getByText } = await renderSellPreviewView({
+        const { getByText } = renderSellPreviewView({
             quote: differentQuote,
         });
 
@@ -101,12 +101,12 @@ describe('SellPreviewView', () => {
         expect(getByText('Fee')).toBeOnTheScreen();
     });
 
-    it('should not render fee picker when quote has no cryptoCurrency', async () => {
+    it('should not render fee picker when quote has no cryptoCurrency', () => {
         const quoteWithoutCrypto = {
             ...sellQuotes[0],
             cryptoCurrency: undefined,
         };
-        const { queryByText } = await renderSellPreviewView({
+        const { queryByText } = renderSellPreviewView({
             quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
         });
 
