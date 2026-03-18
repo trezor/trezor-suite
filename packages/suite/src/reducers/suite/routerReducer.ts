@@ -4,9 +4,14 @@ import { ROUTER } from 'src/actions/suite/constants';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { Action } from 'src/types/suite';
-import type { RouterPath } from 'src/utils/suite/router';
+import {
+    type HashString,
+    type PathString,
+    type RouterPath,
+    resolveEffectiveBackgroundRouteName,
+} from 'src/utils/suite/router';
 
-export const ACCOUNT_TABS = [
+const ACCOUNT_TABS = [
     'wallet-index',
     'wallet-details',
     'wallet-tokens',
@@ -82,6 +87,38 @@ export const selectIsAccountTabPage = (state: RouterRootState) => {
     const routeName = selectRouteName(state);
 
     return routeName !== undefined && ACCOUNT_TABS.includes(routeName);
+};
+
+/**
+ * Selector that determines if the effective background route is an account tab page.
+ * Use this when foreground apps (like switch-device modal) are open and the Redux route
+ * doesn't reflect the actual background page.
+ *
+ * @param location - The current browser location from suiteRouterHistory.getLocation()
+ */
+export const selectIsAccountTabPageWithLocation = (
+    state: RouterRootState,
+    location: { pathname: PathString; hash?: HashString },
+) => {
+    const route = selectRoute(state);
+    const effectiveRouteName = resolveEffectiveBackgroundRouteName(route, location);
+
+    return effectiveRouteName !== undefined && ACCOUNT_TABS.includes(effectiveRouteName);
+};
+
+/**
+ * Selector that returns the effective route name, accounting for foreground apps.
+ * When a foreground app is open, returns the background route name from the browser URL.
+ *
+ * @param location - The current browser location from suiteRouterHistory.getLocation()
+ */
+export const selectEffectiveRouteName = (
+    state: RouterRootState,
+    location: { pathname: PathString; hash?: HashString },
+) => {
+    const route = selectRoute(state);
+
+    return resolveEffectiveBackgroundRouteName(route, location);
 };
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
