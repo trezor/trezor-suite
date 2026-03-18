@@ -4,9 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
-// Note: Direct import here as importing the whole router package is breaking build.
-// It would be better to have routes in @suite/routes-config I believe, but seems maybe unnecessary yet.
-import { routes } from '@suite/router/src/routeConfig';
+import { routes } from '@suite/router-config';
 import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev } from '../utils/env';

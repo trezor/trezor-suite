@@ -20,6 +20,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite/locks": "workspace:*",
         "@suite/modal": "workspace:*",
+        "@suite/router-config": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "history": "^5.3.0"
     }

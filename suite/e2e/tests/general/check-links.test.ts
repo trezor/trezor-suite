@@ -1,6 +1,6 @@
 import { Page, TestInfo } from '@playwright/test';
 
-import { routes } from '@suite/router';
+import { routes } from '@suite/router-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
