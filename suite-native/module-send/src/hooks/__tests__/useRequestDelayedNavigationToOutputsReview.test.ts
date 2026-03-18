@@ -1,5 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';
 
@@ -20,7 +20,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('useRequestDelayedNavigationToOutputsReview', () => {
     const renderUseRequestDelayedNavigationToOutputsReview = () =>
-        renderHookWithStoreProviderAsync(() =>
+        renderHookWithStoreProvider(() =>
             useRequestDelayedNavigationToOutputsReview({
                 accountKey: 'accountKey' as AccountKey,
                 tokenContract: 'tokenContract' as TokenAddress,
@@ -31,8 +31,8 @@ describe('useRequestDelayedNavigationToOutputsReview', () => {
         jest.clearAllMocks();
     });
 
-    it('should call navigate once there are any button requests', async () => {
-        const { result, rerender } = await renderUseRequestDelayedNavigationToOutputsReview();
+    it('should call navigate once there are any button requests', () => {
+        const { result, rerender } = renderUseRequestDelayedNavigationToOutputsReview();
 
         act(() => {
             result.current();
