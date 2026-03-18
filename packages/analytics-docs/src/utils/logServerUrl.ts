@@ -8,7 +8,17 @@ const normalizeBaseUrl = (input: string): string => {
 };
 
 export const getDefaultLogServerBaseUrl = (): string =>
-    typeof window !== 'undefined' ? window.location.origin : '';
+    typeof window !== 'undefined'
+        ? (() => {
+              const { hostname, protocol, port } = window.location;
+              // When docs run locally on 5180, default log server to 5181.
+              if (hostname === 'localhost' && port === '5180') {
+                  return `${protocol}//${hostname}:5181`;
+              }
+
+              return window.location.origin;
+          })()
+        : '';
 
 export const getInitialLogServerBaseUrl = (): string => {
     if (typeof window === 'undefined') return '';
