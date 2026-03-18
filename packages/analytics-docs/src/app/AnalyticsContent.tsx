@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { useLayoutEffect } from 'react';
 
+import { format } from 'date-fns';
+
 import { Banner, Box, Column, Divider, Spinner, Text } from '@trezor/components';
 
 const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
@@ -9,17 +11,6 @@ const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
     }, [onReady]);
 
     return null;
-};
-
-const formatGeneratedAt = (isoString: string): string => {
-    const d = new Date(isoString);
-    const YYYY = d.getFullYear();
-    const MM = String(d.getMonth() + 1).padStart(2, '0');
-    const DD = String(d.getDate()).padStart(2, '0');
-    const HH = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-
-    return `${YYYY}-${MM}-${DD}, ${HH}:${mm}`;
 };
 
 type AnalyticsContentProps = {
@@ -74,7 +65,7 @@ export const AnalyticsContent = ({
                 <Box>
                     <Divider margin={{ top: 0, bottom: 12 }} />
                     <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        Docs generated at {formatGeneratedAt(generatedAt)}
+                        Docs generated at {format(new Date(generatedAt), 'yyyy-MM-dd, HH:mm')}
                     </Text>
                 </Box>
             )}

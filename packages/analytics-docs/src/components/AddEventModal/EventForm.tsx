@@ -63,8 +63,6 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
                         platformOptions[0]
                     }
                     onChange={opt => opt && setFormState(s => ({ ...s, platform: opt.value }))}
-                    menuPortalTarget={document.body}
-                    menuPortalZIndex={101}
                     flex="1"
                 />
                 <Select
@@ -81,8 +79,6 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
                                 (eventPartFromEventName ? `/${eventPartFromEventName}` : ''),
                         }))
                     }
-                    menuPortalTarget={document.body}
-                    menuPortalZIndex={101}
                     flex="1"
                 />
                 <Input

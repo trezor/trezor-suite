@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { format } from 'date-fns';
 import styled from 'styled-components';
 
 import {
@@ -14,7 +15,7 @@ import {
     Input,
     Modal,
     Row,
-    SuiteThemeColors,
+    type SuiteThemeColors,
     Table,
     Text,
     Tooltip,
@@ -53,14 +54,6 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     }
 `;
 
-const StickyHeader = styled.div<{ theme: SuiteThemeColors }>`
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    padding: 12px 0 8px;
-`;
-
 const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
     width: 8px;
     height: 8px;
@@ -68,25 +61,6 @@ const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
     background: ${({ theme }) => theme.backgroundPrimaryDefault};
     flex: 0 0 auto;
 `;
-
-const formatTime = (ms: number) => {
-    const d = new Date(ms);
-    const now = new Date();
-    const sameDay =
-        d.getDate() === now.getDate() &&
-        d.getMonth() === now.getMonth() &&
-        d.getFullYear() === now.getFullYear();
-    const time = d.toLocaleTimeString(undefined, {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    });
-
-    return sameDay
-        ? time
-        : `${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ${time}`;
-};
 
 const getPayloadEntries = (event: LiveLogEvent): [string, string][] =>
     Object.entries(event.payload ?? {});
@@ -201,12 +175,12 @@ const LiveLogEventItem = ({ event, onEventClick, isNew }: LiveLogEventItemProps)
                             {isNew && <NewEventDot aria-label="New event" />}
                         </Row>
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            {formatTime(event.receivedAt)}
+                            {format(new Date(event.receivedAt), 'yyyy-MM-dd, HH:mm:ss')}
                         </Text>
                     </Column>
                     {hasPayload && (
                         <IconButton
-                            icon="stack"
+                            icon="info"
                             size="small"
                             intent={isPayloadOpen ? 'brand' : 'neutral'}
                             priority={isPayloadOpen ? 'primary' : 'secondary'}
@@ -289,54 +263,52 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
         <>
             <SidebarWrapper>
                 <Column gap={0}>
-                    <StickyHeader>
-                        <Box padding={{ horizontal: 20, top: 20, bottom: 8 }}>
-                            <Row justifyContent="space-between" alignItems="center" gap={8}>
-                                <H3 margin={{ bottom: 0 }}>Live log</H3>
-                                <Row gap={8}>
-                                    {events.length > 0 && (
-                                        <Tooltip content="Clear log">
-                                            <IconButton
-                                                size="small"
-                                                priority="secondary"
-                                                intent="critical"
-                                                onClick={async () => {
-                                                    await clear();
-                                                    seenEventIdsRef.current.clear();
-                                                    for (const timeoutId of timeoutsRef.current.values()) {
-                                                        window.clearTimeout(timeoutId);
-                                                    }
-                                                    timeoutsRef.current.clear();
-                                                    setNewEventIds({});
-                                                }}
-                                                icon="prohibit"
-                                            />
-                                        </Tooltip>
-                                    )}
-                                    <Tooltip content="Settings">
+                    <Box padding={{ horizontal: 20, top: 20, bottom: 8 }}>
+                        <Row justifyContent="space-between" alignItems="center" gap={8}>
+                            <H3 margin={{ bottom: 0 }}>Live log</H3>
+                            <Row gap={8}>
+                                {events.length > 0 && (
+                                    <Tooltip content="Clear log">
                                         <IconButton
-                                            icon="gear"
                                             size="small"
-                                            intent="neutral"
                                             priority="secondary"
-                                            onClick={() => setIsSettingsOpen(true)}
+                                            intent="critical"
+                                            onClick={async () => {
+                                                await clear();
+                                                seenEventIdsRef.current.clear();
+                                                for (const timeoutId of timeoutsRef.current.values()) {
+                                                    window.clearTimeout(timeoutId);
+                                                }
+                                                timeoutsRef.current.clear();
+                                                setNewEventIds({});
+                                            }}
+                                            icon="prohibit"
                                         />
                                     </Tooltip>
-                                </Row>
+                                )}
+                                <Tooltip content="Settings">
+                                    <IconButton
+                                        icon="gear"
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        onClick={() => setIsSettingsOpen(true)}
+                                    />
+                                </Tooltip>
                             </Row>
-                            <Box margin={{ bottom: 8 }}>
-                                <Badge size="small" intent={connected ? 'brand' : 'warning'}>
-                                    {connected ? 'Connected' : 'Reconnecting…'}
-                                </Badge>
-                            </Box>
-                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                                In Suite, set Custom Analytics URL (Settings → Debug) to{' '}
-                                <Text isMonospaced typographyStyle="inherit">
-                                    {`${logServerBaseUrl.replace(/\/+$/, '')}/log`}
-                                </Text>
-                            </Text>
+                        </Row>
+                        <Box margin={{ bottom: 8 }}>
+                            <Badge size="small" intent={connected ? 'brand' : 'warning'}>
+                                {connected ? 'Connected' : 'Reconnecting…'}
+                            </Badge>
                         </Box>
-                    </StickyHeader>
+                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                            In Suite, set Custom Analytics URL (Settings → Debug) to{' '}
+                            <Text isMonospaced typographyStyle="inherit">
+                                {`${logServerBaseUrl.replace(/\/+$/, '')}/log`}
+                            </Text>
+                        </Text>
+                    </Box>
 
                     <Box padding={{ horizontal: 16, bottom: 16 }}>
                         {events.length === 0 && (
