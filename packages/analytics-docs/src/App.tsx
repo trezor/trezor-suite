@@ -1,24 +1,11 @@
 import type { ReactNode } from 'react';
-import {
-    startTransition,
-    useCallback,
-    useEffect,
-    useLayoutEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
-
-import styled from 'styled-components';
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { SuiteThemeColors } from '@trezor/components';
 import {
-    Banner,
-    Box,
     Button,
     ButtonGroup,
     Column,
-    Divider,
     H2,
     H3,
     IconButton,
@@ -26,13 +13,22 @@ import {
     ResizableBox,
     Row,
     Spinner,
-    Text,
     Tooltip,
     useMediaQuery,
     variables,
 } from '@trezor/components';
-import { hexToRgba } from '@trezor/utils';
 
+import { AnalyticsContent } from './app/AnalyticsContent';
+import {
+    ContentArea,
+    ContentContainer,
+    EventCardWrapper,
+    MainWithSidebar,
+    Page,
+    SidebarOuter,
+    TopBar,
+} from './app/layout';
+import { scrollToIdInContainer } from './app/scroll';
 import { AddEventModal } from './components/AddEventModal';
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
@@ -55,159 +51,7 @@ type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 
 
 type AppProps = { theme: AppTheme };
 
-export const TopBar = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 12px 24px;
-    background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        backdrop-filter: blur(20px);
-    }
-`;
-
-export const ContentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-`;
-
-const Page = styled.div`
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-`;
-
-const MainWithSidebar = styled.div`
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-`;
-
-const ContentArea = styled.div`
-    flex: 1;
-    min-width: 0;
-    padding: 20px 10px;
-    overflow-y: auto;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        order: 1;
-    }
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        padding: 20px;
-    }
-`;
-
-const SidebarOuter = styled.div<{ theme: SuiteThemeColors }>`
-    margin-left: 8px;
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        z-index: 10;
-    }
-`;
-
 const HIGHLIGHT_DURATION_MS = 1000;
-
-const EventCardWrapper = styled.div`
-    border-radius: 18px;
-    border: 2px solid transparent;
-    transition: border-color 0.4s ease-out;
-
-    &.highlighted {
-        border-color: ${({ theme }) => theme.backgroundAlertYellowBold};
-    }
-`;
-
-const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
-    useLayoutEffect(() => {
-        onReady();
-    }, [onReady]);
-
-    return null;
-};
-
-const formatGeneratedAt = (isoString: string): string => {
-    const d = new Date(isoString);
-    const YYYY = d.getFullYear();
-    const MM = String(d.getMonth() + 1).padStart(2, '0');
-    const DD = String(d.getDate()).padStart(2, '0');
-    const HH = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-
-    return `${YYYY}-${MM}-${DD}, ${HH}:${mm}`;
-};
-
-type AnalyticsContentProps = {
-    isAnalyticsDataLoading: boolean;
-    isAnalyticsDataGenerated: boolean;
-    eventCards: ReactNode;
-    hasEventCards: boolean;
-    generatedAt?: string;
-    onContentReady?: () => void;
-};
-
-const AnalyticsContent = ({
-    isAnalyticsDataLoading,
-    isAnalyticsDataGenerated,
-    eventCards,
-    hasEventCards,
-    generatedAt,
-    onContentReady,
-}: AnalyticsContentProps) => {
-    if (isAnalyticsDataLoading) return <Spinner size={20} />;
-    if (!isAnalyticsDataGenerated) {
-        return (
-            <Banner
-                intent="warning"
-                icon
-                description={
-                    <>
-                        File{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            analytics.json
-                        </Text>{' '}
-                        has not been generated. Run{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            yarn build-data
-                        </Text>{' '}
-                        (or{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            yarn dev
-                        </Text>
-                        ) to generate it.
-                    </>
-                }
-            />
-        );
-    }
-
-    return (
-        <Column gap={40}>
-            {eventCards}
-            {onContentReady && hasEventCards && <ScrollWhenReady onReady={onContentReady} />}
-            {generatedAt && (
-                <Box>
-                    <Divider margin={{ top: 0, bottom: 12 }} />
-                    <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        Docs generated at {formatGeneratedAt(generatedAt)}
-                    </Text>
-                </Box>
-            )}
-        </Column>
-    );
-};
 
 export const App = ({ theme }: AppProps) => {
     const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
@@ -258,32 +102,14 @@ export const App = ({ theme }: AppProps) => {
         [filteredEvents],
     );
 
-    const scrollToIdInContent = useCallback(
-        (id: string, opts?: { behavior?: ScrollBehavior; offsetTop?: number }): boolean => {
-            const container = contentScrollRef.current;
-            const el = document.getElementById(id);
-            if (!container || !el) return false;
-
-            const offsetTop = opts?.offsetTop ?? 20;
-            const containerRect = container.getBoundingClientRect();
-            const elRect = el.getBoundingClientRect();
-            const nextTop = elRect.top - containerRect.top + container.scrollTop - offsetTop;
-            container.scrollTo({
-                top: Math.max(0, nextTop),
-                behavior: opts?.behavior ?? 'instant',
-            });
-
-            return true;
-        },
-        [],
-    );
-
-    const scrollToEventInContent = useCallback(
-        (eventName: string) => {
-            scrollToIdInContent(getEventId(eventName), { behavior: 'smooth', offsetTop: 20 });
-        },
-        [scrollToIdInContent],
-    );
+    const scrollToEventInContent = useCallback((eventName: string) => {
+        scrollToIdInContainer({
+            container: contentScrollRef.current,
+            id: getEventId(eventName),
+            behavior: 'smooth',
+            offsetTop: 20,
+        });
+    }, []);
 
     const handleSidebarEventClick = (eventName: string) => {
         const el = document.getElementById(getEventId(eventName));
@@ -301,7 +127,16 @@ export const App = ({ theme }: AppProps) => {
         if (!el) return false;
 
         if (container) {
-            if (!scrollToIdInContent(hash, { behavior: 'instant', offsetTop: 20 })) return false;
+            if (
+                !scrollToIdInContainer({
+                    container,
+                    id: hash,
+                    behavior: 'instant',
+                    offsetTop: 20,
+                })
+            ) {
+                return false;
+            }
         } else {
             el.scrollIntoView({ block: 'start', behavior: 'instant' });
         }
@@ -310,7 +145,7 @@ export const App = ({ theme }: AppProps) => {
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
 
         return true;
-    }, [scrollToIdInContent]);
+    }, []);
 
     const handleContentReady = useCallback(() => {
         if (!window.location.hash) return;
@@ -352,6 +187,59 @@ export const App = ({ theme }: AppProps) => {
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
     const Heading = isMobile ? H3 : H2;
+
+    let sidebar: ReactNode = null;
+    if (isSidebarOpen || isLiveLogOpen) {
+        if (isMobile) {
+            sidebar = isLiveLogOpen ? (
+                <LiveLogSidebar
+                    onEventClick={handleSidebarEventClick}
+                    filterQuery={debouncedQuery}
+                />
+            ) : (
+                <VersionsSidebar
+                    versionsWithEvents={versionsWithEvents}
+                    onEventClick={handleSidebarEventClick}
+                />
+            );
+        } else {
+            sidebar = (
+                <SidebarOuter>
+                    <ResizableBox
+                        directions={['left']}
+                        width={sidebarWidth}
+                        minWidth={LIVE_LOG_SIDEBAR_MIN_WIDTH}
+                        maxWidth={LIVE_LOG_SIDEBAR_MAX_WIDTH}
+                        minHeight={0}
+                        flex="1"
+                        onWidthResizeEnd={w => {
+                            pendingWidthRef.current = null;
+                            if (rafRef.current != null) {
+                                cancelAnimationFrame(rafRef.current);
+                                rafRef.current = null;
+                            }
+                            setSidebarWidth(w);
+                        }}
+                        onWidthResizeMove={setSidebarWidthThrottled}
+                    >
+                        <Column overflow="hidden" minHeight={0} width="100%" height="100%">
+                            {isLiveLogOpen ? (
+                                <LiveLogSidebar
+                                    onEventClick={handleSidebarEventClick}
+                                    filterQuery={debouncedQuery}
+                                />
+                            ) : (
+                                <VersionsSidebar
+                                    versionsWithEvents={versionsWithEvents}
+                                    onEventClick={handleSidebarEventClick}
+                                />
+                            )}
+                        </Column>
+                    </ResizableBox>
+                </SidebarOuter>
+            );
+        }
+    }
 
     const addButtonProps = {
         intent: 'neutral' as const,
@@ -486,64 +374,7 @@ export const App = ({ theme }: AppProps) => {
                             </ContentContainer>
                         </ContentArea>
 
-                        {(() => {
-                            if (!isSidebarOpen && !isLiveLogOpen) return null;
-
-                            const mobileSidebar = isLiveLogOpen ? (
-                                <LiveLogSidebar
-                                    onEventClick={handleSidebarEventClick}
-                                    filterQuery={debouncedQuery}
-                                />
-                            ) : (
-                                <VersionsSidebar
-                                    versionsWithEvents={versionsWithEvents}
-                                    onEventClick={handleSidebarEventClick}
-                                />
-                            );
-
-                            const desktopSidebar = (
-                                <SidebarOuter>
-                                    <ResizableBox
-                                        directions={['left']}
-                                        width={sidebarWidth}
-                                        minWidth={LIVE_LOG_SIDEBAR_MIN_WIDTH}
-                                        maxWidth={LIVE_LOG_SIDEBAR_MAX_WIDTH}
-                                        minHeight={0}
-                                        flex="1"
-                                        onWidthResizeEnd={w => {
-                                            pendingWidthRef.current = null;
-                                            if (rafRef.current != null) {
-                                                cancelAnimationFrame(rafRef.current);
-                                                rafRef.current = null;
-                                            }
-                                            setSidebarWidth(w);
-                                        }}
-                                        onWidthResizeMove={setSidebarWidthThrottled}
-                                    >
-                                        <Column
-                                            overflow="hidden"
-                                            minHeight={0}
-                                            width="100%"
-                                            height="100%"
-                                        >
-                                            {isLiveLogOpen ? (
-                                                <LiveLogSidebar
-                                                    onEventClick={handleSidebarEventClick}
-                                                    filterQuery={debouncedQuery}
-                                                />
-                                            ) : (
-                                                <VersionsSidebar
-                                                    versionsWithEvents={versionsWithEvents}
-                                                    onEventClick={handleSidebarEventClick}
-                                                />
-                                            )}
-                                        </Column>
-                                    </ResizableBox>
-                                </SidebarOuter>
-                            );
-
-                            return isMobile ? mobileSidebar : desktopSidebar;
-                        })()}
+                        {sidebar}
                     </MainWithSidebar>
                 </Page>
             </Modal.Provider>
