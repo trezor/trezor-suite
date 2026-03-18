@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import styled from 'styled-components';
@@ -59,6 +59,14 @@ const StickyHeader = styled.div<{ theme: SuiteThemeColors }>`
     z-index: 2;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     padding: 12px 0 8px;
+`;
+
+const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.backgroundPrimaryDefault};
+    flex: 0 0 auto;
 `;
 
 const formatTime = (ms: number) => {
@@ -169,9 +177,10 @@ const EventPayload = ({ event, isPayloadOpen }: EventPayloadProps) => {
 type LiveLogEventItemProps = {
     event: LiveLogEvent;
     onEventClick: (eventName: string) => void;
+    isNew: boolean;
 };
 
-const LiveLogEventItem = ({ event, onEventClick }: LiveLogEventItemProps) => {
+const LiveLogEventItem = ({ event, onEventClick, isNew }: LiveLogEventItemProps) => {
     const [isPayloadOpen, setIsPayloadOpen] = useState(false);
     const hasPayload = getPayloadEntries(event).length > 0 || getMetaEntries(event).length > 0;
 
@@ -185,9 +194,12 @@ const LiveLogEventItem = ({ event, onEventClick }: LiveLogEventItemProps) => {
                     gap={8}
                 >
                     <Column gap={0} flex="1" minWidth={0}>
-                        <Text typographyStyle="body-xs" isMonospaced>
-                            {event.type}
-                        </Text>
+                        <Row gap={8} alignItems="center" minWidth={0}>
+                            <Text typographyStyle="body-xs" isMonospaced>
+                                {event.type}
+                            </Text>
+                            {isNew && <NewEventDot aria-label="New event" />}
+                        </Row>
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                             {formatTime(event.receivedAt)}
                         </Text>
@@ -222,6 +234,43 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const { events, connected, clear } = useLiveLogEvents(logServerBaseUrl);
+    const seenEventIdsRef = useRef<Set<string>>(new Set());
+    const timeoutsRef = useRef<Map<string, number>>(new Map());
+    const [newEventIds, setNewEventIds] = useState<Record<string, true>>({});
+
+    useEffect(() => {
+        for (const e of events) {
+            if (seenEventIdsRef.current.has(e.id)) continue;
+            seenEventIdsRef.current.add(e.id);
+
+            setNewEventIds(prev => (prev[e.id] ? prev : { ...prev, [e.id]: true }));
+
+            const timeoutId = window.setTimeout(() => {
+                setNewEventIds(prev => {
+                    if (!prev[e.id]) return prev;
+
+                    const { [e.id]: _removed, ...rest } = prev;
+
+                    return rest;
+                });
+                timeoutsRef.current.delete(e.id);
+            }, 10_000);
+
+            timeoutsRef.current.set(e.id, timeoutId);
+        }
+
+        return () => {};
+    }, [events]);
+
+    useEffect(
+        () => () => {
+            for (const timeoutId of timeoutsRef.current.values()) {
+                window.clearTimeout(timeoutId);
+            }
+            timeoutsRef.current.clear();
+        },
+        [],
+    );
 
     const filteredEvents = useMemo(() => {
         const q = filterQuery.trim().toLowerCase();
@@ -251,7 +300,15 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                                 size="small"
                                                 priority="secondary"
                                                 intent="critical"
-                                                onClick={clear}
+                                                onClick={async () => {
+                                                    await clear();
+                                                    seenEventIdsRef.current.clear();
+                                                    for (const timeoutId of timeoutsRef.current.values()) {
+                                                        window.clearTimeout(timeoutId);
+                                                    }
+                                                    timeoutsRef.current.clear();
+                                                    setNewEventIds({});
+                                                }}
                                                 icon="prohibit"
                                             />
                                         </Tooltip>
@@ -298,6 +355,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                     <LiveLogEventItem
                                         key={event.id}
                                         event={event}
+                                        isNew={newEventIds[event.id] === true}
                                         onEventClick={handleRowClick}
                                     />
                                 ))}
