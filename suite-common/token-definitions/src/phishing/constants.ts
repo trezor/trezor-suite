@@ -12,4 +12,5 @@ export const PHISHING_WHITELISTED_TX_TYPES: WalletAccountTransaction['type'][] =
     'sent',
     'self',
     'contract',
+    'failed',
 ];
