@@ -16,20 +16,6 @@ export const TopBar = styled.div`
     }
 `;
 
-export const ContentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-`;
-
-export const Page = styled.div`
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-`;
-
 export const MainWithSidebar = styled.div`
     display: flex;
     flex: 1;
