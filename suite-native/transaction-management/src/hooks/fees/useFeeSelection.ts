@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type AccountKey, type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
@@ -87,5 +87,24 @@ export const useFeeSelection = ({
         [handleFeeLevelChange],
     );
 
-    return { handleFeeLevelChange, handleCustomFeeSet };
+    const hasDispatchedDefaultFee = useRef(false);
+
+    // pre-select default 'normal' fee level without analytics if fee is not already set
+    const dispatchDefaultFee = useCallback(() => {
+        if (hasDispatchedDefaultFee.current) {
+            return;
+        }
+        hasDispatchedDefaultFee.current = true;
+
+        dispatch(
+            updateThunk({
+                accountKey,
+                tokenContract,
+                feeLevelLabel: 'normal',
+                formDraftKey,
+            }),
+        );
+    }, [dispatch, updateThunk, accountKey, tokenContract, formDraftKey]);
+
+    return { handleFeeLevelChange, handleCustomFeeSet, dispatchDefaultFee };
 };
