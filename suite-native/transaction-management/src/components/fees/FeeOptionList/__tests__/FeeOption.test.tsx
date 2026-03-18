@@ -162,11 +162,13 @@ describe('FeeOption', () => {
 
     describe('Interaction', () => {
         it('should call onSelectedFeeLevel when pressed', async () => {
-            const { getByTestId } = renderFeeOption();
+            const { getByTestId } = renderFeeOption({
+                feeKey: 'high',
+            });
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
 
-            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('normal');
+            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('high');
         });
 
         it('should not call onSelectedFeeLevel when not interactive', async () => {
