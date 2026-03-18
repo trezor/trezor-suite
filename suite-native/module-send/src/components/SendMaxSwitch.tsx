@@ -27,13 +27,13 @@ import { useUtxoSelection } from '../hooks/useUtxoSelection';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';
 
-type SendMaxButtonProps = {
+type SendMaxSwitchProps = {
     outputIndex: number;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 
-export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMaxButtonProps) => {
+export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMaxSwitchProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -110,16 +110,6 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
 
     const disableSendMax = () => {
         setValue('setMaxOutputId', undefined);
-
-        setValue(getOutputFieldName(outputIndex, 'amount'), '', {
-            shouldValidate: true,
-            shouldTouch: true,
-        });
-
-        setValue(getOutputFieldName(outputIndex, 'fiat'), '', {
-            shouldValidate: true,
-            shouldTouch: true,
-        });
     };
 
     const toggleSendMax = (isToggled: boolean) => {
