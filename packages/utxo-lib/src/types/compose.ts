@@ -68,6 +68,15 @@ export interface ComposeChangeAddress {
     address: string;
 }
 
+export interface ComposeAccountAddress {
+    address: string;
+}
+
+export interface ComposePsbtData {
+    transactionData: string;
+    addresses: ComposeAccountAddress[];
+}
+
 export type TransactionInputOutputSortingStrategy =
     // BIP69 sorting
     | 'bip69'
@@ -87,7 +96,7 @@ export type ComposeRequest<
 > = {
     txType?: CoinSelectPaymentType;
     utxos: Input[]; // all inputs
-    outputs: Output[]; // all outputs
+    outputs: Output[]; // all outputs; may be empty when psbtData is provided
     feeRate: string | number; // in sat/byte, virtual size
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
     network: Network;
@@ -95,6 +104,7 @@ export type ComposeRequest<
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
+    psbtData?: ComposePsbtData;
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };

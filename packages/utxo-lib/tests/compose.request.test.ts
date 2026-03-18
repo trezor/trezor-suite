@@ -158,4 +158,46 @@ describe('validateAndParseRequest', () => {
             message: 'Invalid amount at index 0',
         });
     });
+
+    it('returns a structured error for invalid PSBT data', () => {
+        const request = {
+            ...REQUEST,
+            outputs: [],
+            psbtData: {
+                addresses: [],
+                transactionData: '00',
+            },
+        };
+
+        expect(() => validate(request)).not.toThrow();
+        expect(validate(request)).toEqual({
+            type: 'error',
+            error: 'COINSELECT',
+            message: 'Cannot read slice out of bounds',
+        });
+    });
+
+    it('rejects custom outputs when PSBT data are provided', () => {
+        const request: ComposeRequest<any, any, any> = {
+            ...REQUEST,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '1000',
+                    type: 'payment',
+                },
+            ],
+            psbtData: {
+                addresses: [],
+                transactionData:
+                    '70736274ff01004c020000000002d3dff505000000001976a914d0c59903c5bac2868760e90fd521a4665aa7652088ac00e1f5050000000017a9143545e6e33b832c47050f24d3eeb93c9c03948bc787b32e1300000000',
+            },
+        };
+
+        expect(validate(request)).toEqual({
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message: 'PSBT compose requires request.outputs to be empty.',
+        });
+    });
 });
