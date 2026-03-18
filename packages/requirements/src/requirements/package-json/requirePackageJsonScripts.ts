@@ -22,6 +22,10 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
             '@trezor/webextension-mv3-sw-ts',
         ],
     },
+    'lint:js': {
+        command: "yarn g:eslint '**/*.{ts,tsx,js}'",
+        ignoredPackages: ['@trezor/eslint', '@suite-common/earn-api'],
+    },
 };
 
 type PackageJson = {
