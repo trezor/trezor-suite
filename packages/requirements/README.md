@@ -5,7 +5,8 @@ Simple checks for repository requirements on Nx-affected workspaces.
 ## What it does 🧩
 
 - Verifies required repo rules.
-- Can auto-fix supported issues.
+- Can auto-fix issues, if the rule supports it.
+    - If the rule doesn't support auto-fix, it will only verify _(similarly to eslint)_.
 
 ## Usage 🚀
 
