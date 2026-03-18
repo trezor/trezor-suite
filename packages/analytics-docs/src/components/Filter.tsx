@@ -1,4 +1,5 @@
 import { Icon, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
 import type { Sort } from '../types';
@@ -47,7 +48,7 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 size="small"
                 options={platforms}
                 menuPortalTarget={menuPortalTarget}
-                menuPortalZIndex={101}
+                menuPortalZIndex={zIndices.pageHeader}
             />
             <Select
                 placeholder="Sort by"
@@ -58,7 +59,7 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 size="small"
                 options={sorting}
                 menuPortalTarget={menuPortalTarget}
-                menuPortalZIndex={101}
+                menuPortalZIndex={zIndices.pageHeader}
             />
         </Row>
     );
