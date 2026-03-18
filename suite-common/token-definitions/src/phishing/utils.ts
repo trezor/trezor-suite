@@ -1,8 +1,8 @@
-import {
-    type RatesByTimestamps,
-    type Timestamp,
-    type TokenAddress,
-    type WalletAccountTransaction,
+import type {
+    RatesByTimestamps,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
