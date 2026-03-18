@@ -1,15 +1,15 @@
-import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildDeposit } from '../../../builder/evm/deposit';
+import { asEvmAddress } from '../../../types/evm';
 
-const SENDER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
+const SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
 
 describe('buildDeposit', () => {
     it('encodes valid deposit calldata', () => {
         const result = buildDeposit(
             {
-                assets: asAmountSubunit(new BigNumber('5000000')),
+                assets: new BigNumber('5000000'),
                 receiver: SENDER,
             },
             { sender: SENDER },
@@ -26,7 +26,7 @@ describe('buildDeposit', () => {
     it('returns error for zero address receiver', () => {
         const result = buildDeposit(
             {
-                assets: asAmountSubunit(new BigNumber('5000000')),
+                assets: new BigNumber('5000000'),
                 receiver: '0x0000000000000000000000000000000000000000',
             },
             { sender: SENDER },
@@ -44,7 +44,7 @@ describe('buildDeposit', () => {
     it('returns error when receiver is different from sender', () => {
         const result = buildDeposit(
             {
-                assets: asAmountSubunit(new BigNumber('5000000')),
+                assets: new BigNumber('5000000'),
                 receiver: '0x1111111111111111111111111111111111111111',
             },
             { sender: SENDER },
@@ -61,7 +61,7 @@ describe('buildDeposit', () => {
     it('returns error for zero assets', () => {
         const result = buildDeposit(
             {
-                assets: asAmountSubunit(new BigNumber('0')),
+                assets: new BigNumber('0'),
                 receiver: SENDER,
             },
             { sender: SENDER },

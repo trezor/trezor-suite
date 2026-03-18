@@ -1,4 +1,4 @@
-import { type AmountSubunit } from '@suite-common/wallet-utils';
+import { type BigNumber } from '@trezor/utils';
 
 import { EVM_ABI } from '../../constants/evm';
 import { createEvmEncoder } from '../../encoder/evm';
@@ -19,7 +19,7 @@ const toParam = createParam<string, EvmAddress, TransferContext>({
     policy: createPolicy({ ZERO_ADDRESS: 'warning', SELF_ADDRESS: 'warning' }),
 });
 
-const amountParam = createParam<AmountSubunit, bigint, TransferContext>({
+const amountParam = createParam<BigNumber, bigint, TransferContext>({
     validate: validateUint256,
 });
 

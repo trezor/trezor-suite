@@ -11083,12 +11083,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/calldata@workspace:suite-common/calldata":
+"@suite-common/calldata@workspace:^, @suite-common/calldata@workspace:suite-common/calldata":
   version: 0.0.0-use.local
   resolution: "@suite-common/calldata@workspace:suite-common/calldata"
   dependencies:
-    "@suite-common/suite-constants": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.46.3"
@@ -11228,9 +11226,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-api@workspace:suite-common/earn-api"
   dependencies:
+    "@suite-common/calldata": "workspace:^"
     "@suite-common/react-query": "workspace:^"
+    "@trezor/utils": "workspace:^"
     orval: "npm:8.5.0"
     prettier: "npm:3.8.1"
+    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 

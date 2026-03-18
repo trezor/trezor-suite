@@ -1,4 +1,4 @@
-import { type AmountSubunit } from '@suite-common/wallet-utils';
+import { type BigNumber } from '@trezor/utils';
 
 import { EVM_ABI } from '../../constants/evm';
 import { createEvmEncoder } from '../../encoder/evm';
@@ -14,7 +14,7 @@ type DepositContext = {
     balance?: bigint;
 };
 
-const assetsParam = createParam<AmountSubunit, bigint, DepositContext>({
+const assetsParam = createParam<BigNumber, bigint, DepositContext>({
     validate: validateUint256,
     policy: createPolicy({ ZERO_AMOUNT: 'error' }),
 });

@@ -1,18 +1,18 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
-import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildApprove } from '../../../builder/evm/approve';
+import { asEvmAddress } from '../../../types/evm';
+import { UINT256_MAX } from '../../../validation/evm/uint256';
 
-const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
-const SENDER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
+const SPENDER = asEvmAddress('0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae');
+const SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
 
 describe('buildApprove', () => {
     it('encodes valid approve calldata', () => {
         const result = buildApprove(
             {
                 spender: SPENDER,
-                amount: asAmountSubunit(new BigNumber('1000000')),
+                amount: new BigNumber('1000000'),
             },
             { sender: SENDER },
         );
@@ -29,7 +29,7 @@ describe('buildApprove', () => {
         const result = buildApprove(
             {
                 spender: SPENDER,
-                amount: asAmountSubunit(new BigNumber(UINT256_MAX)),
+                amount: UINT256_MAX,
             },
             { sender: SENDER },
         );
@@ -46,7 +46,7 @@ describe('buildApprove', () => {
         const result = buildApprove(
             {
                 spender: 'invalid-address',
-                amount: asAmountSubunit(new BigNumber('1000000')),
+                amount: new BigNumber('1000000'),
             },
             { sender: SENDER },
         );
@@ -63,7 +63,7 @@ describe('buildApprove', () => {
         const result = buildApprove(
             {
                 spender: SPENDER,
-                amount: asAmountSubunit(new BigNumber('0')),
+                amount: new BigNumber('0'),
             },
             { sender: SENDER },
         );
