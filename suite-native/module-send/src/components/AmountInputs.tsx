@@ -21,7 +21,7 @@ import { useAnalytics } from '@suite-native/services';
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
-import { SendMaxButton } from './SendMaxButton';
+import { SendMaxSwitch } from './SendMaxSwitch';
 
 type AmountInputProps = {
     index: number;
@@ -57,7 +57,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         <Translation id="moduleSend.outputs.recipients.amountLabel" />
                     </Text>
                 </Animated.View>
-                <SendMaxButton
+                <SendMaxSwitch
                     outputIndex={index}
                     accountKey={accountKey}
                     tokenContract={tokenContract}
