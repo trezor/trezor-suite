@@ -10,7 +10,7 @@ import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
-const TRUNCATION_PLACEHOLDER = ' ... ';
+const TRUNCATION_PLACEHOLDER = '...';
 const REGEXP_ADDRESS = /^(0x)?((.{8})(?:.{4})*(.{5,8}))$/;
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 
@@ -38,19 +38,17 @@ const AddressWrapper = styled.p<{ $device?: DeviceModelInternal }>`
         $device &&
         css`
             ${mapDeviceModelToFontStyle($device)};
-            white-space: pre-line;
+            white-space: pre-wrap;
         `};
 `;
 
-const addSpacing = (value: string) => value?.match(/.{1,4}/g)?.join(' ') ?? value;
+const addSpacing = (value?: string) => value?.match(/.{1,4}/g)?.join(' ') ?? value;
 const addNewlineAfterEveryFourthChunk = (value: string) =>
     value?.replace(REGEXP_ADDRESS_CHUNKS, '$1\n') ?? value;
 
-export type AddressProps = {
+type AddressBaseProps = {
     value: string;
-    isTruncated?: boolean;
     isChunked?: boolean;
-    isDeviceRendered?: boolean;
     'data-testid'?: string;
     typographyStyle?: TypographyStyle;
     intent?: TextProps['intent'];
@@ -59,6 +57,18 @@ export type AddressProps = {
     isCopyAllowed?: boolean;
     onCopy?: () => void;
 };
+
+type AddressDisplayProps =
+    | {
+          isTruncated?: boolean;
+          isDeviceRendered?: false;
+      }
+    | {
+          isTruncated?: false;
+          isDeviceRendered: true;
+      };
+
+export type AddressProps = AddressBaseProps & AddressDisplayProps;
 
 export const Address = ({
     value,
@@ -78,18 +88,21 @@ export const Address = ({
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
-    const placeholder = isAddressChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();
+    const separator = isAddressChunked ? ' ' : '';
 
-    const [, prefix = '', rest, beginning, end] = (value.match(REGEXP_ADDRESS) || []).map(part =>
+    const [, prefix, rest, beginning, end] = (value.match(REGEXP_ADDRESS) || []).map(part =>
         isAddressChunked ? addSpacing(part) : part,
     );
 
-    const formattedValueBase = prefix + (isTruncated ? beginning + placeholder + end : rest);
-    const formattedValueFull = prefix + rest;
-    const formattedValue =
-        isAddressChunked && isDeviceRendered && !isTruncated
-            ? addNewlineAfterEveryFourthChunk(formattedValueBase)
-            : formattedValueBase;
+    const formattedValueTruncated = [prefix, beginning, TRUNCATION_PLACEHOLDER, end]
+        .filter(Boolean)
+        .join(separator);
+    const formattedValueFull = [prefix, rest].filter(Boolean).join(separator);
+    const formattedValue = isTruncated ? formattedValueTruncated : formattedValueFull;
+
+    const deviceRenderedIndent = isAddressChunked && prefix ? '  ' : '';
+    const deviceRenderedValue =
+        deviceRenderedIndent + addNewlineAfterEveryFourthChunk(formattedValueFull);
 
     const onManualCopy = (e: React.ClipboardEvent) => {
         const selection = window.getSelection()?.toString();
@@ -137,7 +150,7 @@ export const Address = ({
                     id={value}
                     $device={isDeviceRendered ? deviceModelInternal : undefined}
                 >
-                    {formattedValue}
+                    {isDeviceRendered ? deviceRenderedValue : formattedValue}
                 </AddressWrapper>
             </Text>
         </Tooltip>
