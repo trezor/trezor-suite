@@ -106,6 +106,35 @@ describe('useFeesForm', () => {
         expect(result.current.getValues('customFeeLimit')).toBe('21000');
     });
 
+    it('should handle empty fee levels without crashing', () => {
+        const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
+            preloadedState: {
+                wallet: {
+                    send: {
+                        feeLevels: {},
+                    },
+                    accounts: [
+                        {
+                            symbol: 'eth',
+                            networkType: 'ethereum',
+                            key: 'eth-1',
+                            path: "m/44'/60'/0'/0/0",
+                            balance: '1000000000000000000',
+                            availableBalance: '1000000000000000000',
+                            formattedBalance: '1.0',
+                            tokens: [],
+                            empty: false,
+                            history: { total: 0, unconfirmed: 0 },
+                        },
+                    ],
+                },
+            },
+        });
+
+        expect(result.current.getValues('feeLevel')).toBe('normal');
+        expect(result.current.getValues('customFeeLimit')).toBeUndefined();
+    });
+
     it('should initialize with custom default values', () => {
         const customProps: UseFeesFormProps = {
             accountKey: 'eth-1' as AccountKey, // Todo: create properly via `createAccountKey()`

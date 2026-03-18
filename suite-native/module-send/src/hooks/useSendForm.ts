@@ -221,6 +221,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }),
                 );
 
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({
+                        feeLevels: response.payload,
+                    }),
+                );
+
                 trigger();
             }
         }

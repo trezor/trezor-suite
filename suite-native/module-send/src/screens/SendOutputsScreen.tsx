@@ -1,5 +1,8 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -10,6 +13,7 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
+import { FeeSummaryCard, selectFeeLevels } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';
@@ -24,6 +28,11 @@ export const SendOutputsScreen = ({
     const { accountKey, tokenContract } = params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
+    const feeLevels = useSelector(selectFeeLevels);
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal) ? feeLevels.normal : null;
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, sendForm?.network?.symbol),
+    );
 
     if (!sendForm) {
         return null;
@@ -80,6 +89,19 @@ export const SendOutputsScreen = ({
                         )}
                     </Form>
                 </Box>
+                {isValid && normalFee && network && (
+                    <Box marginTop="sp24">
+                        <FeeSummaryCard
+                            fee={normalFee.fee}
+                            symbol={network.symbol}
+                            networkType={network.networkType}
+                            areFeesLoading={areFeesLoading}
+                            // Step 1: no-op. Step 6 wires this to open FeesBottomSheet.
+                            onPress={() => {}}
+                            testID="@moduleSend/fee-summary-card"
+                        />
+                    </Box>
+                )}
             </>
         </Screen>
     );

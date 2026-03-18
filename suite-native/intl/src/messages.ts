@@ -3090,6 +3090,11 @@ export const messages = {
             error: 'You don’t have enough balance to use this fee.',
             amount: 'Amount',
             totalAmount: 'Total amount',
+            tabs: {
+                standard: 'Standard fee',
+                custom: 'Custom',
+            },
+            confirmButton: 'Confirm fee',
             submitButton: 'Review and sign',
             total: 'Total fee',
         },
