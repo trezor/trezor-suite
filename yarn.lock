@@ -15306,7 +15306,6 @@ __metadata:
   resolution: "@trezor/analytics-docs@workspace:packages/analytics-docs"
   dependencies:
     "@suite-common/analytics": "workspace:*"
-    "@trezor/analytics-log-server": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -15326,7 +15325,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/analytics-log-server@workspace:*, @trezor/analytics-log-server@workspace:packages/analytics-log-server":
+"@trezor/analytics-log-server@workspace:packages/analytics-log-server":
   version: 0.0.0-use.local
   resolution: "@trezor/analytics-log-server@workspace:packages/analytics-log-server"
   languageName: unknown
