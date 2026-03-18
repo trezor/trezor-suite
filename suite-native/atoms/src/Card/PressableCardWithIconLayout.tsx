@@ -29,7 +29,7 @@ export const PressableCardWithIconLayout = ({
     description,
     onPress,
 }: PressableCardWithIconLayoutProps) => {
-    const { tapGesture, animatedStyle } = useTapGesture(onPress);
+    const { tapGesture, animatedStyle } = useTapGesture({ onPress });
     const { applyStyle } = useNativeStyles();
 
     return (
