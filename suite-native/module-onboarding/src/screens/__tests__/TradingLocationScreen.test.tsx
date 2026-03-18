@@ -3,7 +3,7 @@ import { type RouteProp } from '@react-navigation/native';
 import { events } from '@suite-native/analytics';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
@@ -33,8 +33,7 @@ jest.mock('../../hooks/useExitOnboardingFlow', () => ({
 }));
 
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationScreen = () =>
-        renderWithStoreProviderAsync(<TradingLocationScreen />);
+    const renderTradingLocationScreen = () => renderWithStoreProvider(<TradingLocationScreen />);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -48,8 +47,8 @@ describe('TradingLocationOnboardingScreen', () => {
         screen.unmount();
     });
 
-    it('should render all components', async () => {
-        const { getByText, getByLabelText } = await renderTradingLocationScreen();
+    it('should render all components', () => {
+        const { getByText, getByLabelText } = renderTradingLocationScreen();
 
         expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
@@ -59,7 +58,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const { getByText } = await renderTradingLocationScreen();
+        const { getByText } = renderTradingLocationScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('Argentina'));
@@ -75,7 +74,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should use exitOnboardingFlow on button press', async () => {
-        const { getByText } = await renderTradingLocationScreen();
+        const { getByText } = renderTradingLocationScreen();
         await userEvent.press(getByText('Not now'));
 
         expect(mockExitOnboardingFlow).toHaveBeenCalledTimes(1);

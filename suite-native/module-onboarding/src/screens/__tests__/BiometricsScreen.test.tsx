@@ -2,7 +2,7 @@ import { OnboardingStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 
@@ -29,7 +29,7 @@ describe('BiometricsScreen', () => {
     let store: TestStore;
 
     const renderBiometricsScreen = () =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <BiometricsScreen
                 navigation={
                     { navigate: mockNavigate } as unknown as BiometricsScreenProps['navigation']
@@ -49,7 +49,7 @@ describe('BiometricsScreen', () => {
                 isTradingResidenceCheckEnabled: true,
             },
         }).store;
-        const { getByText } = await renderBiometricsScreen();
+        const { getByText } = renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));
 
@@ -62,7 +62,7 @@ describe('BiometricsScreen', () => {
                 isTradingResidenceCheckEnabled: false,
             },
         }).store;
-        const { getByText } = await renderBiometricsScreen();
+        const { getByText } = renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));
 

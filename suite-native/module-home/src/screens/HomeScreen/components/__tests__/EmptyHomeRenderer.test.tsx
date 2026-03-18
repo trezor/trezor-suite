@@ -1,17 +1,13 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type PreloadedState,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EmptyHomeRenderer } from '../EmptyHomeRenderer';
 
 describe('EmptyHomeRenderer', () => {
     const renderEmptyHomeRenderer = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<EmptyHomeRenderer />, { preloadedState });
+        renderWithStoreProvider(<EmptyHomeRenderer />, { preloadedState });
 
     const expectUninitializedConnectedDeviceState = () => {
         expect(
@@ -31,8 +27,8 @@ describe('EmptyHomeRenderer', () => {
         ).toBeTruthy();
     };
 
-    it('should display UninitializedConnectedDeviceState when device is connected but not initialized', async () => {
-        await renderEmptyHomeRenderer({
+    it('should display UninitializedConnectedDeviceState when device is connected but not initialized', () => {
+        renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: true,
@@ -45,8 +41,8 @@ describe('EmptyHomeRenderer', () => {
         expectUninitializedConnectedDeviceState();
     });
 
-    it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', async () => {
-        await renderEmptyHomeRenderer({
+    it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', () => {
+        renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: true,
@@ -59,8 +55,8 @@ describe('EmptyHomeRenderer', () => {
         expectEmptyPortfolioCrossroadsState();
     });
 
-    it('should display EmptyPortfolioCrossroadsState when only portfolio tracker is allowed', async () => {
-        await renderEmptyHomeRenderer({
+    it('should display EmptyPortfolioCrossroadsState when only portfolio tracker is allowed', () => {
+        renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: false,
@@ -74,8 +70,8 @@ describe('EmptyHomeRenderer', () => {
         expectEmptyPortfolioCrossroadsState();
     });
 
-    it('should display EmptyPortfolioCrossroadsState when device is not authorized', async () => {
-        await renderEmptyHomeRenderer({
+    it('should display EmptyPortfolioCrossroadsState when device is not authorized', () => {
+        renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: false,
@@ -89,8 +85,8 @@ describe('EmptyHomeRenderer', () => {
         expectEmptyPortfolioCrossroadsState();
     });
 
-    it('should display EmptyConnectedDeviceState when device is connected and authorized', async () => {
-        await renderEmptyHomeRenderer({
+    it('should display EmptyConnectedDeviceState when device is connected and authorized', () => {
+        renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: true,

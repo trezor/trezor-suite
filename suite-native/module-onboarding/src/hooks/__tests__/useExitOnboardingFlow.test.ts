@@ -4,7 +4,7 @@ import {
     type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 
 import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
@@ -29,16 +29,16 @@ describe('useExitOnboardingFlow', () => {
     let store: TestStore;
 
     const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProviderAsync(() => useExitOnboardingFlow(), { store });
+        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
 
     beforeEach(() => {
         store = initStore().store;
         jest.clearAllMocks();
     });
 
-    it('should set onboarding flag and navigate', async () => {
+    it('should set onboarding flag and navigate', () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExitOnboardingFlow();
+        const { result } = renderUseExitOnboardingFlow();
 
         // call the returned callback
         act(() => {
