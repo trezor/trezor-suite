@@ -6,3 +6,4 @@ export * from './FeeLabelTranslation';
 export * from './FeeSummaryCard';
 export * from './feesLabelUtils';
 export * from './CustomFee/CustomFeeContent';
+export * from './FeeSelector';
