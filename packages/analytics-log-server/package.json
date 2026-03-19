@@ -14,6 +14,7 @@
         "build": "yarn g:tsc -p tsconfig.build.json",
         "depcheck": "yarn g:depcheck",
         "dev": "yarn g:tsx src/server.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "start": "node dist/server.js",
         "type-check": "yarn g:tsc --build"
     }
