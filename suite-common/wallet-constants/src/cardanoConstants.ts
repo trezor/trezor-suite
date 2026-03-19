@@ -1,6 +1,5 @@
 import { BigNumber } from '@trezor/utils';
 
-export const CARDANO_APY_MIN_THRESHOLD = 1.8;
 export const ESTIMATED_YEARLY_REWARD_RATE = 2.22;
 export const CARDANO_EPOCH_DAYS = 5;
 export const CARDANO_APPROXIMATE_EPOCHS = 2;
