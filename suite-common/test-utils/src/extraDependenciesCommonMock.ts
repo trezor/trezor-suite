@@ -69,7 +69,6 @@ const connectInitSettings: ConnectInitSettings = {
 
 export const extraDependenciesCommonMock: ExtraDependencies = {
     thunks: {
-        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
         addAccountMetadata: notImplementedThunk('addAccountMetadata'),

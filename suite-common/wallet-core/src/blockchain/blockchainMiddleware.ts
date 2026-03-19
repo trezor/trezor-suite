@@ -1,5 +1,3 @@
-import { getUnixTime } from 'date-fns';
-
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type BlockchainEvent,
@@ -14,11 +12,9 @@ import {
 } from './blockchainThunks';
 
 export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
-    (action: BlockchainEvent, { dispatch, next, extra }) => {
+    (action: BlockchainEvent, { dispatch, next }) => {
         // propagate action to reducers
         next(action);
-
-        const { cardanoValidatePendingTxOnBlock } = extra.thunks;
 
         switch (action.type) {
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
@@ -27,13 +23,6 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
                 dispatch(onBlockMinedThunk(action.payload));
-                // cardano stuff
-                dispatch(
-                    cardanoValidatePendingTxOnBlock({
-                        block: action.payload,
-                        timestamp: getUnixTime(new Date()),
-                    }),
-                );
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
                 dispatch(onBlockchainNotificationThunk(action.payload));

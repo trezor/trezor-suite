@@ -18,7 +18,6 @@ import {
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
-import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
@@ -52,15 +51,6 @@ const walletMiddleware =
                     page: 1,
                     perPage: getTxsPerPage(account.networkType),
                 }),
-            );
-        }
-
-        if (transactionsActions.addTransaction.match(action)) {
-            api.dispatch(
-                cardanoStakingActions.validatePendingStakeTxOnTx(
-                    action.payload.account,
-                    action.payload.transactions,
-                ),
             );
         }
 

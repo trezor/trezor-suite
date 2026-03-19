@@ -23,7 +23,6 @@ import {
 } from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
-    type BlockchainBlock,
     type BluetoothDeviceId,
     type ConnectSettings,
     type Manifest,
@@ -52,10 +51,6 @@ export type CommonServices = SuiteSyncDep &
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
     thunks: {
-        cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
-            block: BlockchainBlock;
-            timestamp: number;
-        }>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         addAccountMetadata: SuiteCompatibleThunk<
