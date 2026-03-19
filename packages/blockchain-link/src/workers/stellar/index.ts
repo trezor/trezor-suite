@@ -271,10 +271,16 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
+const pushTransaction = async (
+    { connect, payload }: Request<MessageTypes.PushTransaction>,
+    isTestnet: boolean,
+) => {
     const api = await connect();
     const base64EncodedTx = Buffer.from(payload.hex, 'hex').toString('base64');
-    const parsedTx = new StellarTransaction(base64EncodedTx, Networks.PUBLIC);
+    const parsedTx = new StellarTransaction(
+        base64EncodedTx,
+        isTestnet ? Networks.TESTNET : Networks.PUBLIC,
+    );
     try {
         const resp = await api.submitTransaction(parsedTx, { skipMemoRequiredCheck: true });
 
@@ -302,7 +308,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
         case MESSAGES.PUSH_TRANSACTION:
-            return pushTransaction(request);
+            return pushTransaction(request, isTestnet);
         case MESSAGES.SUBSCRIBE:
             return subscribe(request);
         case MESSAGES.UNSUBSCRIBE:
