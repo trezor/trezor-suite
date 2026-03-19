@@ -15,6 +15,7 @@ import {
     Input,
     Modal,
     Row,
+    Select,
     type SuiteThemeColors,
     Table,
     Text,
@@ -31,7 +32,14 @@ import {
 } from '../utils/logServerUrl';
 import { useLiveLogEvents } from '../utils/useLiveLogEvents';
 
-const META_KEYS = ['version', 'commit', 'instanceId', 'sessionId', 'messageId'] as const;
+const META_KEYS = [
+    'version',
+    'commit',
+    'instanceId',
+    'sessionId',
+    'messageId',
+    'deviceId',
+] as const;
 
 export const NEW_EVENT_TIMEOUT = 10_000;
 export const LIVE_LOG_SIDEBAR_MIN_WIDTH = 280;
@@ -178,6 +186,14 @@ const LiveLogEventItem = ({ event, onEventClick, isNew }: LiveLogEventItemProps)
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                             {format(new Date(event.receivedAt), 'yyyy-MM-dd, HH:mm:ss')}
                         </Text>
+                        {event.meta.instanceId && (
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                instance:{' '}
+                                <Text isMonospaced typographyStyle="inherit">
+                                    {event.meta.instanceId}
+                                </Text>
+                            </Text>
+                        )}
                     </Column>
                     {hasPayload && (
                         <IconButton
@@ -207,6 +223,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
     const [logServerBaseUrl, setLogServerBaseUrlState] = useState(getInitialLogServerBaseUrl);
     const [logServerInput, setLogServerInput] = useState(logServerBaseUrl);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [selectedInstanceId, setSelectedInstanceId] = useState<string>('all');
 
     const { events, connected, clear } = useLiveLogEvents(logServerBaseUrl);
     const seenEventIdsRef = useRef<Set<string>>(new Set());
@@ -249,10 +266,29 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
 
     const filteredEvents = useMemo(() => {
         const q = filterQuery.trim().toLowerCase();
-        if (!q) return events;
+        const byInstance =
+            selectedInstanceId === 'all'
+                ? events
+                : events.filter(e => (e.meta.instanceId ?? '__unknown__') === selectedInstanceId);
 
-        return events.filter(e => fuzzyMatch(q, e.type));
-    }, [events, filterQuery]);
+        if (!q) return byInstance;
+
+        return byInstance.filter(e => fuzzyMatch(q, e.type));
+    }, [events, filterQuery, selectedInstanceId]);
+
+    const instanceFilterOptions = useMemo(() => {
+        const ids = Array.from(
+            new Set(events.map(e => e.meta.instanceId ?? '__unknown__').filter(Boolean)),
+        ).sort((a, b) => a.localeCompare(b));
+
+        return [
+            { value: 'all', label: 'All instances' },
+            ...ids.map(id => ({
+                value: id,
+                label: id === '__unknown__' ? 'Unknown instance' : id,
+            })),
+        ];
+    }, [events]);
 
     const handleRowClick = (eventName: string) => {
         const id = getEventId(eventName);
@@ -312,6 +348,23 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                     </Box>
 
                     <Box padding={{ horizontal: 16, bottom: 16 }}>
+                        <Box margin={{ bottom: 12 }}>
+                            <Select
+                                size="small"
+                                value={
+                                    instanceFilterOptions.find(
+                                        o => o.value === selectedInstanceId,
+                                    ) ?? instanceFilterOptions[0]
+                                }
+                                onChange={option => setSelectedInstanceId(option.value)}
+                                options={instanceFilterOptions}
+                                menuPortalTarget={
+                                    typeof document !== 'undefined' ? document.body : undefined
+                                }
+                                menuPortalZIndex={101}
+                                aria-label="Instance filter"
+                            />
+                        </Box>
                         {events.length === 0 && (
                             <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                                 No events yet. Point Suite to this server and trigger analytics.

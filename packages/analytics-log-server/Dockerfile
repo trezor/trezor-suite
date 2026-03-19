@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json ./package.json
-COPY src ./src
+COPY packages/analytics-log-server/package.json ./package.json
+COPY packages/analytics-log-server/src ./src
 
 # Minimal runtime dependency for TS execution
 RUN npm install -g tsx@4.20.3
