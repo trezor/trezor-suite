@@ -49,6 +49,7 @@ type Params = {
     feeLevels?: PrecomposeParams['feeLevels'];
     baseFee?: PrecomposeParams['baseFee'];
     floorBaseFee?: PrecomposeParams['floorBaseFee'];
+    psbtTransactionData?: PrecomposeParams['psbtTransactionData'];
     sequence?: PrecomposeParams['sequence'];
     total: BigNumber;
     sortingStrategy?: TransactionInputOutputSortingStrategy;
@@ -70,7 +71,13 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const { payload } = this;
         // validate incoming parameters
         validateParams(payload, [
-            { name: 'outputs', type: 'array', required: true },
+            { name: 'psbtTransactionData', type: 'string' },
+            {
+                name: 'outputs',
+                type: 'array',
+                required: true,
+                allowEmpty: !!payload.psbtTransactionData,
+            },
             { name: 'coin', type: 'string', required: true },
             { name: 'identity', type: 'string' },
             { name: 'push', type: 'boolean' },
@@ -126,6 +133,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             feeLevels: payload.feeLevels,
             baseFee: payload.baseFee,
             floorBaseFee: payload.floorBaseFee,
+            psbtTransactionData: payload.psbtTransactionData,
             sequence: payload.sequence,
             sortingStrategy: payload.sortingStrategy,
             push: typeof payload.push === 'boolean' ? payload.push : false,
@@ -151,7 +159,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         account: PrecomposeParams['account'],
         feeLevels: PrecomposeParams['feeLevels'],
     ): Promise<PrecomposedResult[]> {
-        const { coinInfo, outputs, baseFee, sortingStrategy } = this.params;
+        const { coinInfo, outputs, baseFee, psbtTransactionData, sortingStrategy } = this.params;
         const address_n = pathUtils.validatePath(account.path);
         const composer = new TransactionComposer({
             account: {
@@ -165,6 +173,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
+            psbtTransactionData,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
@@ -310,7 +319,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     async selectFee(account: DiscoveryAccount, utxos: AccountUtxo[]) {
-        const { coinInfo, outputs, sortingStrategy } = this.params;
+        const { coinInfo, outputs, psbtTransactionData, sortingStrategy } = this.params;
 
         // get backend instance (it should be initialized before)
         const blockchain = await this.getBlockchain();
@@ -319,6 +328,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             utxos,
             coinInfo,
             outputs,
+            psbtTransactionData,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
         await composer.init(blockchain);

@@ -29,6 +29,7 @@ export type ComposeParams = {
     account?: undefined;
     feeLevels?: undefined;
     push?: boolean;
+    psbtTransactionData?: string;
     sequence?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
@@ -55,6 +56,7 @@ export type PrecomposeParams = {
     };
     feeLevels: { feePerUnit: string }[];
     push?: undefined;
+    psbtTransactionData?: string;
     baseFee?: number;
     floorBaseFee?: boolean;
     sequence?: number;

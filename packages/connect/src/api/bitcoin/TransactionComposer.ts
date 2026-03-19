@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 import { composeTx } from '@trezor/utxo-lib';
+import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
@@ -20,6 +20,7 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
+    psbtTransactionData?: string;
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
@@ -36,6 +37,8 @@ export class TransactionComposer {
 
     baseFee: number;
 
+    psbtTransactionData?: string;
+
     sortingStrategy: TransactionInputOutputSortingStrategy;
 
     feeLevels: BitcoinFeeLevels;
@@ -48,6 +51,7 @@ export class TransactionComposer {
         this.coinInfo = options.coinInfo;
         this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
+        this.psbtTransactionData = options.psbtTransactionData;
         this.sortingStrategy = options.sortingStrategy;
         this.feeLevels = getOrInitBitcoinFeeLevels(options.coinInfo);
 
@@ -162,6 +166,12 @@ export class TransactionComposer {
         const changeAddress =
             addresses.change.find(a => !a.transfers) ||
             addresses.change[addresses.change.length - 1];
+        const psbtData = this.psbtTransactionData
+            ? {
+                  transactionData: this.psbtTransactionData,
+                  addresses: addresses.used.concat(addresses.unused).concat(addresses.change),
+              }
+            : undefined;
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
         return composeTx({
@@ -173,6 +183,7 @@ export class TransactionComposer {
             sortingStrategy: this.sortingStrategy,
             network: coinInfo.network,
             changeAddress,
+            psbtData,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
         });
