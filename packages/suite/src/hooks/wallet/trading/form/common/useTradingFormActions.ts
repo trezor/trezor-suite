@@ -207,6 +207,22 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         }
     };
 
+    useEffect(() => {
+        const selectedAccountKey = sendCryptoSelect?.accountKey;
+
+        if (!selectedAccountKey || selectedAccountKey === account.key) {
+            return;
+        }
+
+        const selectedAccount = accounts.find(item => item.key === selectedAccountKey);
+
+        if (!selectedAccount) {
+            return;
+        }
+
+        setAccountOnChange(selectedAccount);
+    }, [account.key, accounts, sendCryptoSelect?.accountKey, setAccountOnChange]);
+
     const setRatioAmount = (divisor: number) => {
         const amount = tokenData
             ? new BigNumber(tokenData.balance || '0')
