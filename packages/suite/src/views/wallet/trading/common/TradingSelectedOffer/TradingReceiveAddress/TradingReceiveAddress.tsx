@@ -75,6 +75,7 @@ export const TradingReceiveAddress = () => {
                                 </Text>
                                 <Address
                                     value={receiveAddress}
+                                    data-testid="@trading/receive-address"
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
@@ -86,6 +87,7 @@ export const TradingReceiveAddress = () => {
                                 {receiveAddress ? (
                                     <Address
                                         value={receiveAddress}
+                                        data-testid="@trading/receive-address"
                                         typographyStyle="body-md"
                                         intent="neutral"
                                         isTruncated

@@ -7,6 +7,7 @@ import { step } from '../../common';
 export class TradingReceiveAccount {
     readonly receiveAddressPicker: Locator;
     readonly selectedReceiveAccount: Locator;
+    readonly receiveAddress: Locator;
 
     readonly receiveAccountModal: Locator;
     readonly receiveAccountModalSuiteOption: Locator;
@@ -31,6 +32,7 @@ export class TradingReceiveAccount {
         // receive account & receive address
         this.receiveAddressPicker = this.page.getByTestId('@trading/receive-address-picker');
         this.selectedReceiveAccount = this.page.getByTestId('@trading/selected-receive-account');
+        this.receiveAddress = this.page.getByTestId('@trading/receive-address');
 
         this.receiveAccountModal = this.page.getByTestId('@trading/receive-account-modal');
         this.receiveAccountModalSuiteOption = this.page.getByTestId(
