@@ -76,6 +76,9 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                         body: [['Stake SOL on', '\n', 'Everstake?']],
                         actions: { right_button: 'Continue' },
                     },
+                    T3T1: {
+                        body: [['Stake SOL on Everstake?']],
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
@@ -94,11 +97,8 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
-                        body: [['Max fees and rent:'], feeWrapped, ['Amount:'], amountWrapped],
+                        body: [['Amount'], amountWrapped, ['Max fees and rent'], feeWrapped],
                         actions: { right_button: 'Hold to sign' },
-                    },
-                    T3T1: {
-                        body: [['Amount:'], amountWrapped, ['Max fees and rent:'], feeWrapped],
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();

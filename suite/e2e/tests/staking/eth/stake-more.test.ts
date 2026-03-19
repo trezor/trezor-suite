@@ -88,7 +88,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake ETH on', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();

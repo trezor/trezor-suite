@@ -104,9 +104,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake key', '\n', 'registration'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             device.wrapText("m/1852'/1815'/0'/2/0"),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -118,18 +118,18 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake', '\n', 'delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
                     T3T1: {
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
                         ],
                     },
@@ -140,9 +140,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['to pool:'],
+                            ['To pool'],
                             device.wrapText(
-                                'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
+                                'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
                             ),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -154,18 +154,18 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Vote', '\n', 'delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
                     T3T1: {
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Vote delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
                         ],
                     },
@@ -176,7 +176,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Delegating to key hash:'],
+                            ['Delegating to key hash'],
                             device.wrapText(
                                 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                             ),
@@ -190,13 +190,26 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Transaction fee:'],
+                            ['Transaction fee'],
                             [toADA(feeAmount)],
-                            ['Network: Mainnet'],
-                            ['Valid since: n/a'],
-                            [/^TTL: \d{9}$/],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                            ['TTL'],
+                            [/\d{9}/],
                         ],
                         actions: { right_button: 'Hold to confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Transaction fee'],
+                            [toADA(feeAmount)],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                        ],
                     },
                 });
 

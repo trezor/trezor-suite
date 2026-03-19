@@ -51,9 +51,12 @@ export class TradingConfirmationModal {
         await this.openConfirmAndSendModal();
         await this.devicePrompt.compareAddressesOnDeviceAndSuite();
         await this.devicePrompt.waitForPromptAndConfirm();
+        await this.devicePrompt.waitForPromptAndConfirm();
+
         if (options?.confirmAlsoToken) {
             await this.devicePrompt.waitForPromptAndConfirm();
         }
+
         await this.devicePrompt.waitForFinalPromptAndConfirm();
         // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
         // In a real scenario, the user would complete the transaction by clicking this button.
