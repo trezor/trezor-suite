@@ -117,9 +117,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake key', '\n', 'deregistration'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             device.wrapText("m/1852'/1815'/0'/2/0"),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -131,13 +131,26 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Transaction fee:'],
+                            ['Transaction fee'],
                             [toADA(feeAmount)],
-                            ['Network: Mainnet'],
-                            ['Valid since: n/a'],
-                            [/^TTL: \d{9}$/],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                            ['TTL'],
+                            [/\d{9}$/],
                         ],
                         actions: { right_button: 'Hold to confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Transaction fee'],
+                            [toADA(feeAmount)],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                        ],
                     },
                 });
 

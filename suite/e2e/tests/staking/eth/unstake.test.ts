@@ -69,8 +69,11 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
+                        body: [['Unstake ETH', '\n', 'from', '\n', 'Everstake?']],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
                         body: [['Unstake ETH from', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();
@@ -187,7 +190,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Claim' },
                         body: [['Claim ETH from', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();

@@ -108,20 +108,12 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
-                        ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
-                    ],
-                },
-                T3T1: {
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
                         [`${maxFeePerGas} Gwei`],
                         ['Max priority fee'],
                         [`${maxPriorityFeePerGas} Gwei`],
                     ],
+                },
+                T3T1: {
                     footer: undefined,
                 },
             });
