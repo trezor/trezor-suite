@@ -319,6 +319,7 @@ const processNamespaces = (
 export const ethereumAdapter = {
     methods,
     networkType: 'ethereum',
+    namespaceId: 'eip155',
     requestThunk: ethereumRequestThunk,
     getNamespace,
     getChainId,

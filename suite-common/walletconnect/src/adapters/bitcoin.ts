@@ -280,6 +280,7 @@ const processNamespaces = (
 export const bitcoinAdapter = {
     methods,
     networkType: 'bitcoin',
+    namespaceId: 'bip122',
     requestThunk: bitcoinRequestThunk,
     getChainId,
     getNamespace,
