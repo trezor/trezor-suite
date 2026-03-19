@@ -9,7 +9,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelIcon, Icon, type IconSize } from '@suite-native/icons';
 
 type DeviceItemIconProps = {
-    deviceId: TrezorDevice['id'];
+    deviceId?: TrezorDevice['id'];
     iconSize?: IconSize | number;
 };
 
