@@ -19,7 +19,10 @@ import {
     resolveNextAvailableStep,
 } from 'src/utils/onboarding/steps';
 
-import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
+import {
+    selectIsOnboardingActive,
+    selectOnboardingAnalytics,
+} from '../../reducers/onboarding/onboardingReducer';
 import * as routerActions from '../suite/routerActions';
 import * as suiteActions from '../suite/suiteActions';
 
@@ -110,6 +113,12 @@ const resetOnboarding = (): OnboardingAction => ({
 const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     const device = selectSelectedDevice(getState());
     const onboardingAnalytics = selectOnboardingAnalytics(getState());
+    // Capture isActive before resetOnboarding() clears it. `isActive` is set to true only when the
+    // user actually navigates into the onboarding app (via enableOnboardingReducer triggered by
+    // APP_CHANGED → 'onboarding'). Returning users on Desktop (already-initialized devices going
+    // through suite-start → SecurityCheck → Continue) never enter the onboarding flow, so their
+    // isActive is false — meaning the event should not fire for them.
+    const isOnboardingActive = selectIsOnboardingActive(getState());
     // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
     // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
     // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
@@ -125,16 +134,16 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // only to satisfy typescript, there must be a device to progress with onboarding
     if (device?.features === undefined) return;
     const reportAnalytics = () => {
-        // Only report if the device was actually set up in this session.
-        // `seed` is set when the user goes through the seed creation/recovery step,
-        // so its presence reliably indicates a completed device setup flow.
-        // Without this guard, the event fires with an incomplete payload for
-        // returning users (already-initialized devices) who skip onboarding on Desktop.
-        if (!onboardingAnalytics.seed) return;
+        // Only report if the user actually went through the onboarding flow this session.
+        // `isOnboardingActive` is true only when the user navigated to `onboarding-index` and the
+        // onboarding reducer was enabled — this never happens for returning users connecting an
+        // already-initialized device on first Desktop run (suite-start → SecurityCheck → Continue).
+        // `startTime` must be present to produce a meaningful `duration` value.
+        if (!isOnboardingActive || !onboardingAnalytics.startTime) return;
 
         const payload = {
             ...onboardingAnalytics,
-            duration: Date.now() - onboardingAnalytics.startTime!,
+            duration: Date.now() - onboardingAnalytics.startTime,
             device: device.features.internal_model,
             unitPackaging: device.features.unit_packaging ?? 0,
         };

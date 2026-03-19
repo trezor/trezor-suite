@@ -92,7 +92,10 @@ describe('Onboarding Actions', () => {
 describe('goToSuite analytics', () => {
     const analyticsReportSpy = jest.fn();
 
-    const createGoToSuiteStore = (onboardingAnalytics: Record<string, unknown>) => {
+    const createGoToSuiteStore = (
+        onboardingAnalytics: Record<string, unknown>,
+        isActive = true,
+    ) => {
         const initialState = {
             ...getInitialState({
                 device: {
@@ -100,6 +103,7 @@ describe('goToSuite analytics', () => {
                 },
                 onboarding: {
                     onboardingAnalytics,
+                    isActive,
                 },
             }),
             locks: locksInitialState,
@@ -116,14 +120,20 @@ describe('goToSuite analytics', () => {
         analyticsReportSpy.mockClear();
     });
 
-    it('should NOT report device-setup-completed when onboardingAnalytics is empty (returning user path)', () => {
-        const store = createGoToSuiteStore({});
+    it('should NOT report device-setup-completed when onboarding was not active (returning user path)', () => {
+        // Returning users on Desktop (already-initialized device, first Desktop run) reach
+        // goToSuite() via suite-start → SecurityCheck → Continue, without ever enabling the
+        // onboarding reducer (isActive stays false).
+        const store = createGoToSuiteStore(
+            { startTime: Date.now(), seed: 'create' },
+            false, // isActive: false — user was NOT in the onboarding flow
+        );
         store.dispatch(onboardingActions.goToSuite());
         expect(analyticsReportSpy).not.toHaveBeenCalled();
     });
 
-    it('should NOT report device-setup-completed when only startTime is set (premature goToSuite call)', () => {
-        const store = createGoToSuiteStore({ startTime: Date.now() });
+    it('should NOT report device-setup-completed when startTime is missing (duration would be NaN)', () => {
+        const store = createGoToSuiteStore({ seed: 'create' }); // isActive: true, no startTime
         store.dispatch(onboardingActions.goToSuite());
         expect(analyticsReportSpy).not.toHaveBeenCalled();
     });
