@@ -1,4 +1,4 @@
-import TrezorConnect from '../../../../packages/connect/src/index';
+import TrezorConnect from '@trezor/connect';
 import { getAccountInfoMockedResponses } from '../fixtures/connect/getAccountInfo';
 
 const originalGetAccountInfo = TrezorConnect.getAccountInfo;
@@ -16,4 +16,4 @@ TrezorConnect.getAccountInfo = params => {
 // need to disable this rule to mimic export pattern of original index file.
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '../../../../packages/connect/src/exports';
+export * from '@trezor/connect';

@@ -6,9 +6,10 @@
     "sideEffects": false,
     "type": "module",
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

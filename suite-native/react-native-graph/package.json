@@ -4,11 +4,12 @@
     "description": "Fork of https://github.com/margelo/react-native-graph (v. 1.0.2)",
     "private": true,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "sideEffects": false,
     "license": "MIT",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

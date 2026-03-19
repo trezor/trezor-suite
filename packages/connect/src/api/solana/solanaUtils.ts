@@ -8,8 +8,8 @@ import {
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
-import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type { TokenProgramName } from '@trezor/blockchain-link-utils';
+import { BigNumber } from '@trezor/utils';
 
 import type { Blockchain } from '../../backend/Blockchain';
 

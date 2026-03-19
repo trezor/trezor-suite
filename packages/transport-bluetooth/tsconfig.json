@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
-        "types": ["jest", "node"]
+        "types": ["jest", "node", "w3c-web-usb"]
     },
     "references": [
         { "path": "../ipc-proxy" },

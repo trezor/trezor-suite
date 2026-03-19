@@ -2,6 +2,7 @@
     "name": "@suite-native/device-mutex",
     "version": "1.0.0",
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "license": "See LICENSE.md in repo root",
     "private": true,
     "sideEffects": false,
@@ -12,7 +13,7 @@
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     }

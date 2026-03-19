@@ -5,9 +5,10 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -15,6 +16,7 @@
         "react-native-ble-plx": "3.5.1"
     },
     "devDependencies": {
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@types/w3c-web-usb": "^1.0.10"
     }
 }

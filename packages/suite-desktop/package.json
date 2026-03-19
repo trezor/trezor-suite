@@ -25,7 +25,8 @@
         "build:mac": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron:mac",
         "build:win": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron:win",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
+        "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "blake-hash": "^2.0.0",

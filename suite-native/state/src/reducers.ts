@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
 import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';

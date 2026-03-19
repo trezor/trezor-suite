@@ -1,4 +1,7 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["// This can't be solved", "@suite-native/state"]
+    "ignores": [
+        "// See: https://github.com/trezor/trezor-suite/issues/26036 to solve this",
+        "@suite-native/state"
+    ]
 }

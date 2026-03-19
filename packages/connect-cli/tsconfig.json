@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["node", "w3c-web-usb"]
+    },
     "references": [
         { "path": "../connect" },
         { "path": "../protobuf" },

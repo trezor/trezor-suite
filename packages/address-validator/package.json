@@ -5,10 +5,12 @@
     "sideEffects": false,
     "private": true,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "base-x": "^5.0.1",

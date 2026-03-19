@@ -15,13 +15,14 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "test:unit": "yarn g:jest",
         "test:discovery": "yarn g:tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tests/tools/benchmark-test.ts",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

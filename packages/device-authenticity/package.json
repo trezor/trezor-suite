@@ -26,6 +26,7 @@
         }
     },
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "files": [
         "lib/",
         "libESM/",
@@ -36,7 +37,7 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

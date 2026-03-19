@@ -10,12 +10,13 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite storage",
     "scripts": {
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "type-check:watch": "yarn type-check -- --watch",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "main": "./src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "browser": "./src/index.ts",
     "dependencies": {
         "@trezor/eslint": "workspace:*",

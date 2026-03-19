@@ -76,7 +76,9 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     dispatch({ type: SET_METHOD_PROCESSING, payload: true });
     const trezorConnectImpl =
         connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
-    const connectMethod = trezorConnectImpl[method.name];
+    const connectMethod = trezorConnectImpl[method.name] as
+        | ((params: typeof method.params) => Promise<unknown>)
+        | undefined;
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({
@@ -87,7 +89,6 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
         return;
     }
 
-    // @ts-expect-error params type is unknown
     const response = await connectMethod({
         ...method.params,
     });

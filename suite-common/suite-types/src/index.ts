@@ -1,8 +1,6 @@
-import {
-    type ActionCreatorWithPayload,
-    type ActionCreatorWithoutPayload,
-    type AnyAction,
-} from '@reduxjs/toolkit';
+import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+
+import { type AnyAction } from '@suite-common/redux-utils';
 
 export * from './device';
 export type * from './firmware';

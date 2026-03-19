@@ -5,10 +5,11 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -37,5 +38,8 @@
         "react-native-mmkv": "~4.3.0",
         "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"
+    },
+    "devDependencies": {
+        "@types/w3c-web-usb": "^1.0.10"
     }
 }

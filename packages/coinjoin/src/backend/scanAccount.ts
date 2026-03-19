@@ -1,4 +1,4 @@
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import { createCooldown } from '@trezor/utils';
 
 import { CoinjoinAddressController } from './CoinjoinAddressController';
@@ -18,7 +18,7 @@ const transformTx =
     ({ receive, change }: CoinjoinAddressController) =>
     (tx: BlockbookTransaction) =>
         // It doesn't matter for transformTransaction which receive addrs are used and which are unused
-        transformTransaction(tx, { used: receive, unused: [], change });
+        blockbookUtils.transformTransaction(tx, { used: receive, unused: [], change });
 
 export const scanAccount = async (
     params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },

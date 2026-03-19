@@ -13,6 +13,7 @@
     },
     "sideEffects": false,
     "main": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "publishConfig": {
         "main": "lib/index.js"
     },
@@ -22,7 +23,7 @@
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",

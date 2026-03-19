@@ -1,6 +1,17 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "@suite-native/atoms": [
+                "./src/index.ts"
+            ],
+            "@suite-native/atoms/*": ["./src/*"]
+        }
+    },
+    "include": ["src", "redux.d.ts"],
     "references": [
         {
             "path": "../../suite-common/wallet-config"

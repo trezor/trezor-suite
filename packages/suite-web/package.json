@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "dev": "yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web",

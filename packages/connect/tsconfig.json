@@ -2,6 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
+        "paths": {
+            "@trezor/connect": ["./src/index.ts"],
+            "@trezor/connect/*": ["./src/*"]
+        },
         "types": [
             "jest",
             "vitest",

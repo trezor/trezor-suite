@@ -12,7 +12,6 @@ import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 import { bufferUtils } from '@trezor/utils';
-import type { Network } from '@trezor/utxo-lib';
 import {
     address as BitcoinJsAddress,
     payments as BitcoinJsPayments,
@@ -21,7 +20,8 @@ import {
 import type {
     TxInput as BitcoinJsInput,
     TxOutput as BitcoinJsOutput,
-} from '@trezor/utxo-lib/src/transaction/base';
+    Network,
+} from '@trezor/utxo-lib';
 
 import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 

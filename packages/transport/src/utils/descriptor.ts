@@ -15,7 +15,12 @@ export enum DescriptorModel {
 /**
  * Returns DescriptorModel from USBDevice
  */
-export const getUSBDescriptorModel = (device: USBDevice): DescriptorModel => {
+type USBDescriptorDevice = {
+    deviceVersionMajor: number;
+    productName?: string | null;
+};
+
+export const getUSBDescriptorModel = (device: USBDescriptorDevice): DescriptorModel => {
     if (device.deviceVersionMajor === 1) {
         return DescriptorModel.T1B1;
     }

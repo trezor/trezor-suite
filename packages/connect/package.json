@@ -20,6 +20,7 @@
     ],
     "sideEffects": false,
     "main": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "browser": {
         "./src/index": "./src/index-browser.ts",
         "./src/index.ts": "./src/index-browser.ts",
@@ -105,7 +106,7 @@
     "scripts": {
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",

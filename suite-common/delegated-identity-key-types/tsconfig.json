@@ -2,8 +2,18 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "@suite-common/delegated-identity-key-types": [
+                "./src/index.ts"
+            ],
+            "@suite-common/delegated-identity-key-types/*": [
+                "./src/*"
+            ]
+        }
     },
+    "include": ["src", "mocks"],
     "references": [
         { "path": "../suite-types" },
         { "path": "../../packages/type-utils" }

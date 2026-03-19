@@ -1,6 +1,5 @@
 import type { BitcoinNetworkInfo, PROTO } from '@trezor/connect-common';
-import * as baddress from '@trezor/utxo-lib/src/address';
-import { TxWeightCalculator } from '@trezor/utxo-lib/src/txWeightCalculator';
+import { TxWeightCalculator, address as baddress } from '@trezor/utxo-lib';
 
 import { getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 

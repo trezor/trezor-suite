@@ -15,11 +15,12 @@
         "transport"
     ],
     "main": "./src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "browser": "./src/browser.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:rs": "cargo fmt --all -- --check",
         "lint:rs:fix": "cargo fmt --all",
         "dev:server": "yarn build:ui && RUST_BACKTRACE=1 RUST_LOG=debug cargo run --bin trezor-bluetooth",
@@ -35,6 +36,7 @@
     "devDependencies": {
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
+        "@types/w3c-web-usb": "^1.0.10",
         "html-webpack-plugin": "5.6.6",
         "react": "19.2.4",
         "react-dom": "19.2.4",

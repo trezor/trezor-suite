@@ -19,7 +19,7 @@
         "desktop": "PROJECT=desktop ASSET_PREFIX=. yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

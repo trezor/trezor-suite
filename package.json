@@ -33,7 +33,7 @@
         "analytics:docs-dev": "node scripts/analytics-docs-dev.mjs",
         "native:start": "yarn workspace @suite-native/app start",
         "_______ Code validation _______": "Static code analysis (incl. autofixes), like formatting, testing, linting, type checking...",
-        "type-check": "yarn nx affected --target=type-check",
+        "type-check": "yarn nx affected --target=type-check --no-tui",
         "type-check:all": "yarn nx run-many --target=type-check",
         "test:unit": "yarn nx affected --target=test:unit",
         "test:unit:suite": "yarn nx affected --target=test:unit --exclude='@suite-native/*'",

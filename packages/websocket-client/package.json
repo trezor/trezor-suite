@@ -15,6 +15,7 @@
     },
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "browser": {
         "ws": "./src/ws-browser"
     },
@@ -48,7 +49,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",

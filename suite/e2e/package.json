@@ -6,7 +6,7 @@
     "sideEffects": false,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-desktop.config.ts",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-web.config.ts",
         "test:e2e:desktop:canary": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-desktop-local-canary.config.ts",

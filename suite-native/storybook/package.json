@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --passWithNoTests",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "storybook:generate": "sb-rn-get-stories",
         "storybook:web": "storybook dev -p 6006",
         "storybook:web:build": "yarn storybook build -c .storybook -o .build-storybook"

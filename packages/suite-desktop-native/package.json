@@ -4,13 +4,14 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "type": "module",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "build:native": "node scripts/build-native.js",
         "clean": "node scripts/clean.js",
         "copy-binary": "node scripts/copy-binary.js",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

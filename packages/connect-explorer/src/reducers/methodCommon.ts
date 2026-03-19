@@ -6,7 +6,7 @@ import type { Field, FieldBasic } from '../types/common';
 import { isFieldBasic } from '../types/common';
 
 export interface MethodState {
-    name?: keyof TrezorConnect;
+    name?: Extract<keyof TrezorConnect, string>;
     submitButton?: string;
     fields: Field<unknown>[];
     params: Record<string, unknown>;

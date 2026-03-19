@@ -15,6 +15,8 @@ import { type Popup } from '../popup/abstract';
 import { WebPopup } from '../popup/web';
 import { WebExtensionPopup } from '../popup/webextension';
 
+declare const __SUITE_WEB_URL__: string | undefined;
+
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
  * This implementation is directly used here in connect-web, but it is also extended in connect-webextension.

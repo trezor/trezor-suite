@@ -18,6 +18,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Data used by trezor-connect library.",
     "main": "./src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "files": [
         "lib/",
         "libESM/",
@@ -44,7 +45,7 @@
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

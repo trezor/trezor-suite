@@ -5,6 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "build:lib": "yarn msg-system-types && yarn sign-config",
         "msg-system-types": "yarn tsx ./scripts/generate-types.ts",
@@ -12,7 +13,7 @@
         "sign-config": "yarn tsx ./scripts/sign-config.ts",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

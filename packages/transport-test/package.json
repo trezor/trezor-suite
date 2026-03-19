@@ -6,7 +6,7 @@
     "sideEffects": false,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:e2e:bridge": "ts-node -T -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/bridge/run.ts",
         "test:e2e:old-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=false yarn test:e2e:bridge",
         "test:e2e:old-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=false yarn test:e2e:bridge",
@@ -26,6 +26,7 @@
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:^",
         "@trezor/utils": "workspace:*",
+        "@types/w3c-web-usb": "^1.0.10",
         "buffer": "^6.0.3",
         "esbuild": "^0.25.2",
         "jest": "29.7.0",

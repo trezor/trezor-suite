@@ -1,4 +1,4 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 import type { CoinInfo } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -14,6 +14,8 @@ import {
     dummyPriorityFeesForFeeEstimation,
     fetchAccountOwnerAndTokenInfoForAddress,
 } from '../solanaUtils';
+
+const { SYSTEM_PROGRAM_PUBLIC_KEY } = SolanaBlockchainLinkUtils;
 
 type SolanaComposeTransactionParams = SolanaComposeTransactionSchema & {
     coinInfo: CoinInfo;

@@ -8,7 +8,7 @@
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "make:migration": "yarn workspace @suite/idb-migration-utils make:migration",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

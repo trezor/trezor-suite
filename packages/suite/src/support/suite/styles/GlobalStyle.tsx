@@ -1,10 +1,13 @@
-import { type DefaultTheme, createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-import { fontFamilies, typography } from '@trezor/theme';
+import { type SuiteThemeColors } from '@trezor/components/src/config/colors';
+import { type ThemeVariant, fontFamilies, typography } from '@trezor/theme';
 
 import animations from './animations';
 
-const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
+type SuiteTheme = SuiteThemeColors & { variant: ThemeVariant };
+
+const GlobalStyle = createGlobalStyle<{ theme: SuiteTheme }>`
     :root {
         --font-sans: ${fontFamilies.base};
         color-scheme: ${({ theme }) => (theme.mode === 'light' ? 'light' : 'dark')};

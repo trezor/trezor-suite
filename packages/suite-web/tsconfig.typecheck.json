@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "disableSourceOfProjectReferenceRedirect": true,
+        // Resolve shared src/* imports against @trezor/suite declaration output during type-checking.
+        "baseUrl": "../suite/libDev"
+    }
+}

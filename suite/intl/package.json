@@ -5,6 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -15,7 +16,7 @@
         "translations:backport-en": "yarn g:tsx ../../packages/suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/messages.ts\"",
         "translations:list-duplicates": "yarn g:tsx ../../packages/suite-data/src/translations/list-duplicates.ts",
         "translations:list-unused": "yarn g:tsx ../../packages/suite-data/src/translations/list-unused.ts",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@crowdin/cli": "4.13.0",

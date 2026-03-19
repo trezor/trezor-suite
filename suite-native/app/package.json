@@ -9,7 +9,7 @@
         "android:clean": "cd android && ./gradlew clean",
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest src",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",

@@ -1,6 +1,19 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "@suite-common/suite-types": [
+                "./src/index.ts"
+            ],
+            "@suite-common/suite-types/*": [
+                "./src/*"
+            ]
+        }
+    },
+    "include": ["src", "mocks"],
     "references": [
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },

@@ -4,9 +4,10 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:e2e": "ts-node -T -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/api.test.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

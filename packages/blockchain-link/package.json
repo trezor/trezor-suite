@@ -26,6 +26,7 @@
         "CHANGELOG.md"
     ],
     "main": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "browser": {
         "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts"
     },
@@ -65,7 +66,7 @@
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

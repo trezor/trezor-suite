@@ -19,7 +19,7 @@ const getOrCreateTransport = (
     transports: Transport[],
     transportType: ConnectSettingsTransport,
     params: Params,
-) => {
+): Transport | Transport[] => {
     if (transportType === 'BridgeTransport') {
         // Temporary handling of BridgeTransport which translates to two instances listening on ports 21328/21325
         const existing = transports.filter(t => t.name === transportType);
@@ -44,20 +44,23 @@ const getOrCreateTransport = (
     } else if (typeof transportType === 'function' && 'prototype' in transportType) {
         const transportInstance = new transportType(params);
         if (isTransportInstance(transportInstance)) {
-            return tryGetTransport(transports, transportInstance.name) ?? transportInstance;
+            const customTransport = transportInstance as Transport;
+
+            return tryGetTransport(transports, customTransport.name) ?? customTransport;
         }
     } else if (isTransportInstance(transportType)) {
-        const existing = tryGetTransport(transports, transportType.name);
+        const customTransport = transportType as Transport;
+        const existing = tryGetTransport(transports, customTransport.name);
         if (existing) {
             return existing;
         }
 
         // custom Transport might be initialized without messages, update them if so
-        if (!transportType.getMessage()) {
-            transportType.updateMessages(params.messages);
+        if (!customTransport.getMessage()) {
+            customTransport.updateMessages(params.messages);
         }
 
-        return transportType;
+        return customTransport;
     }
 
     // runtime check
@@ -71,7 +74,7 @@ const createTransports = (
     existing: Transport[],
     transports: ConnectSettingsTransport[] = [],
     params: Params,
-) => {
+): Transport[] => {
     // BridgeTransport is the ultimate fallback
     const transportTypes = transports?.length ? transports : ['BridgeTransport' as const];
 

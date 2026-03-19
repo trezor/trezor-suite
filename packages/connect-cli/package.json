@@ -5,10 +5,11 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "cli": "tsx ./src/index.ts"
     },
     "dependencies": {
@@ -18,6 +19,7 @@
         "@trezor/transport-bluetooth": "workspace:*"
     },
     "devDependencies": {
+        "@types/w3c-web-usb": "^1.0.10",
         "tsx": "^4.21.0"
     }
 }
