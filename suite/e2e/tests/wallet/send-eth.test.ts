@@ -113,21 +113,12 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
-                        ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
-                    ],
-                },
-                T3T1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
                         [`${maxFeePerGas} Gwei`],
                         ['Max priority fee'],
                         [`${maxPriorityFeePerGas} Gwei`],
                     ],
+                },
+                T3T1: {
                     footer: undefined,
                 },
             });

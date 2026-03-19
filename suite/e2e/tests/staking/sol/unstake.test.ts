@@ -109,7 +109,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
-                        body: [['Transaction fee:'], feeWrapped],
+                        body: [['Transaction fee'], feeWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
                 });
@@ -202,11 +202,8 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Claim' },
-                        body: [['Transaction fee:'], feeWrapped, ['Amount:'], amountWrapped],
+                        body: [['Amount'], amountWrapped, ['Transaction fee'], feeWrapped],
                         actions: { right_button: 'Hold to sign' },
-                    },
-                    T3T1: {
-                        body: [['Amount:'], amountWrapped, ['Transaction fee:'], feeWrapped],
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
