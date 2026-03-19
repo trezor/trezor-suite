@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import {
     Badge,
     Box,
-    Button,
     CardList,
     Column,
     H3,
@@ -17,11 +16,13 @@ import {
     Row,
     Select,
     type SuiteThemeColors,
+    Switch,
     Table,
     Text,
     Tooltip,
     variables,
 } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 import type { LiveLogEvent } from '../types';
 import { fuzzyMatch, getEventId } from '../utils/filterUtils';
@@ -40,6 +41,7 @@ const META_KEYS = [
     'messageId',
     'deviceId',
 ] as const;
+const SHOW_META_IN_PAYLOAD_STORAGE_KEY = 'analytics-docs-live-log-show-meta-in-payload';
 
 export const NEW_EVENT_TIMEOUT = 10_000;
 export const LIVE_LOG_SIDEBAR_MIN_WIDTH = 280;
@@ -80,15 +82,16 @@ const getMetaEntries = (event: LiveLogEvent): [string, string][] =>
 type EventPayloadProps = {
     event: LiveLogEvent;
     isPayloadOpen: boolean;
+    showMetaInPayload: boolean;
 };
 
-const EventPayload = ({ event, isPayloadOpen }: EventPayloadProps) => {
-    const [metaOpen, setMetaOpen] = useState(false);
+const EventPayload = ({ event, isPayloadOpen, showMetaInPayload }: EventPayloadProps) => {
     const payloadEntries = getPayloadEntries(event);
     const metaEntries = getMetaEntries(event);
-    const hasPayload = payloadEntries.length > 0 || metaEntries.length > 0;
+    const tableEntries = showMetaInPayload ? [...payloadEntries, ...metaEntries] : payloadEntries;
+    const hasPayload = tableEntries.length > 0;
 
-    if (!hasPayload || !isPayloadOpen || payloadEntries.length === 0) return null;
+    if (!hasPayload || !isPayloadOpen) return null;
 
     return (
         <Box margin={{ top: 8 }}>
@@ -101,7 +104,7 @@ const EventPayload = ({ event, isPayloadOpen }: EventPayloadProps) => {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {payloadEntries.map(([key, value]) => (
+                        {tableEntries.map(([key, value]) => (
                             <Table.Row key={key}>
                                 <Table.Cell>
                                     <Text isMonospaced>{key}</Text>
@@ -113,45 +116,6 @@ const EventPayload = ({ event, isPayloadOpen }: EventPayloadProps) => {
                         ))}
                     </Table.Body>
                 </Table>
-                {metaEntries.length > 0 && (
-                    <Box margin={{ top: 8 }}>
-                        <Button
-                            size="small"
-                            priority="secondary"
-                            intent="neutral"
-                            onClick={e => {
-                                e.stopPropagation();
-                                setMetaOpen(prev => !prev);
-                            }}
-                        >
-                            {metaOpen ? 'Hide meta' : 'Show meta'}
-                        </Button>
-                        {metaOpen && (
-                            <Box margin={{ top: 8 }}>
-                                <Table typographyStyle="body-xs">
-                                    <Table.Header>
-                                        <Table.Row>
-                                            <Table.Cell>Meta</Table.Cell>
-                                            <Table.Cell>Value</Table.Cell>
-                                        </Table.Row>
-                                    </Table.Header>
-                                    <Table.Body>
-                                        {metaEntries.map(([key, value]) => (
-                                            <Table.Row key={key}>
-                                                <Table.Cell>
-                                                    <Text isMonospaced>{key}</Text>
-                                                </Table.Cell>
-                                                <Table.Cell>
-                                                    <Text isMonospaced>{String(value)}</Text>
-                                                </Table.Cell>
-                                            </Table.Row>
-                                        ))}
-                                    </Table.Body>
-                                </Table>
-                            </Box>
-                        )}
-                    </Box>
-                )}
             </>
         </Box>
     );
@@ -161,11 +125,19 @@ type LiveLogEventItemProps = {
     event: LiveLogEvent;
     onEventClick: (eventName: string) => void;
     isNew: boolean;
+    showMetaInPayload: boolean;
 };
 
-const LiveLogEventItem = ({ event, onEventClick, isNew }: LiveLogEventItemProps) => {
+const LiveLogEventItem = ({
+    event,
+    onEventClick,
+    isNew,
+    showMetaInPayload,
+}: LiveLogEventItemProps) => {
     const [isPayloadOpen, setIsPayloadOpen] = useState(false);
-    const hasPayload = getPayloadEntries(event).length > 0 || getMetaEntries(event).length > 0;
+    const hasPayload =
+        getPayloadEntries(event).length > 0 ||
+        (showMetaInPayload && getMetaEntries(event).length > 0);
 
     return (
         <CardList.Item key={event.id} paddingType="small">
@@ -186,29 +158,27 @@ const LiveLogEventItem = ({ event, onEventClick, isNew }: LiveLogEventItemProps)
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                             {format(new Date(event.receivedAt), 'yyyy-MM-dd, HH:mm:ss')}
                         </Text>
-                        {event.meta.instanceId && (
-                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                                instance:{' '}
-                                <Text isMonospaced typographyStyle="inherit">
-                                    {event.meta.instanceId}
-                                </Text>
-                            </Text>
-                        )}
                     </Column>
                     {hasPayload && (
-                        <IconButton
-                            icon="info"
-                            size="small"
-                            intent={isPayloadOpen ? 'brand' : 'neutral'}
-                            priority={isPayloadOpen ? 'primary' : 'secondary'}
-                            onClick={e => {
-                                e.stopPropagation();
-                                setIsPayloadOpen(prev => !prev);
-                            }}
-                        />
+                        <Tooltip content={isPayloadOpen ? 'Hide payload' : 'Show payload'}>
+                            <IconButton
+                                icon="info"
+                                size="small"
+                                intent={isPayloadOpen ? 'brand' : 'neutral'}
+                                priority={isPayloadOpen ? 'primary' : 'secondary'}
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    setIsPayloadOpen(prev => !prev);
+                                }}
+                            />
+                        </Tooltip>
                     )}
                 </Row>
-                <EventPayload event={event} isPayloadOpen={isPayloadOpen} />
+                <EventPayload
+                    event={event}
+                    isPayloadOpen={isPayloadOpen}
+                    showMetaInPayload={showMetaInPayload}
+                />
             </Column>
         </CardList.Item>
     );
@@ -224,6 +194,12 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
     const [logServerInput, setLogServerInput] = useState(logServerBaseUrl);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [selectedInstanceId, setSelectedInstanceId] = useState<string>('all');
+    const [showMetaInPayload, setShowMetaInPayload] = useState<boolean>(() => {
+        if (typeof window === 'undefined') return false;
+
+        return window.localStorage.getItem(SHOW_META_IN_PAYLOAD_STORAGE_KEY) === '1';
+    });
+    const [showMetaInPayloadDraft, setShowMetaInPayloadDraft] = useState(showMetaInPayload);
 
     const { events, connected, clear } = useLiveLogEvents(logServerBaseUrl);
     const seenEventIdsRef = useRef<Set<string>>(new Set());
@@ -282,7 +258,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
         ).sort((a, b) => a.localeCompare(b));
 
         return [
-            { value: 'all', label: 'All instances' },
+            { value: 'all', label: `All instances (${ids.length})` },
             ...ids.map(id => ({
                 value: id,
                 label: id === '__unknown__' ? 'Unknown instance' : id,
@@ -361,7 +337,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                 menuPortalTarget={
                                     typeof document !== 'undefined' ? document.body : undefined
                                 }
-                                menuPortalZIndex={101}
+                                menuPortalZIndex={zIndices.pageHeader}
                                 aria-label="Instance filter"
                             />
                         </Box>
@@ -382,6 +358,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                         key={event.id}
                                         event={event}
                                         isNew={newEventIds[event.id] === true}
+                                        showMetaInPayload={showMetaInPayload}
                                         onEventClick={handleRowClick}
                                     />
                                 ))}
@@ -397,6 +374,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                         onCancel={() => {
                             setIsSettingsOpen(false);
                             setLogServerInput(logServerBaseUrl);
+                            setShowMetaInPayloadDraft(showMetaInPayload);
                         }}
                         width={600}
                         bottomContent={
@@ -407,6 +385,17 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                     setLogServerBaseUrl(next);
                                     setLogServerBaseUrlState(next);
                                     setLogServerInput(next);
+                                    setShowMetaInPayload(showMetaInPayloadDraft);
+                                    if (showMetaInPayloadDraft) {
+                                        window.localStorage.setItem(
+                                            SHOW_META_IN_PAYLOAD_STORAGE_KEY,
+                                            '1',
+                                        );
+                                    } else {
+                                        window.localStorage.removeItem(
+                                            SHOW_META_IN_PAYLOAD_STORAGE_KEY,
+                                        );
+                                    }
                                     setIsSettingsOpen(false);
                                 }}
                             >
@@ -447,6 +436,11 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                 </Text>
                                 .
                             </Text>
+                            <Switch
+                                isChecked={showMetaInPayloadDraft}
+                                onChange={setShowMetaInPayloadDraft}
+                                label="Show metadata in payload table"
+                            />
                         </Column>
                     </Modal>,
                     document.body,
