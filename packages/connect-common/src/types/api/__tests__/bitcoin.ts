@@ -503,6 +503,7 @@ export const composeTransaction = async (api: TrezorConnect) => {
     const compose = await api.composeTransaction({
         outputs: [],
         coin: 'btc',
+        psbtTransactionData: '70736274ff01000a0000000000000000000000',
     });
     if (compose.success) {
         compose.payload.serializedTx.toLowerCase();
@@ -521,6 +522,7 @@ export const composeTransaction = async (api: TrezorConnect) => {
         },
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
+        psbtTransactionData: '70736274ff01000a0000000000000000000000',
     });
 
     if (precompose.success) {
