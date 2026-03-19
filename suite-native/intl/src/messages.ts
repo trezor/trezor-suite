@@ -2635,8 +2635,10 @@ export const messages = {
         confirmApprovalError: 'Failed to confirm approval. Please try again.',
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
+            approveTitle: 'Approve {symbol} spending',
             subtitle:
                 'Set the {symbol} amount to approve so {companyName} can access it. This is required to continue with your swap.',
+            approveSubtitle: 'Approve provider to spend your {symbol} to swap.',
             revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
             lowLimitInfoAlert:
                 'You’ve approved this token, but the limit is too low. Increase it to continue.',

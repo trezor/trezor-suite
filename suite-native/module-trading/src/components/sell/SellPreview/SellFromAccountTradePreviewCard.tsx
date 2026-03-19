@@ -27,7 +27,7 @@ export const SellFromAccountTradePreviewCard = ({
 
     return (
         <TradeSideCard
-            accountLabel={fromAccount.accountLabel}
+            account={fromAccount}
             cryptoId={cryptoId}
             amount={
                 fromStringValue ? (

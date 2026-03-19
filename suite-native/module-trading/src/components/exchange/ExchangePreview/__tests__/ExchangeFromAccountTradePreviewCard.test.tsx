@@ -1,5 +1,6 @@
+import type { AccountKey } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     ExchangeFromAccountTradePreviewCard,
@@ -9,7 +10,7 @@ import {
 describe('ExchangeFromAccountTradePreviewCard', () => {
     const renderExchangeFromAccountTradePreviewCard = (
         props: Partial<ExchangeFromAccountTradePreviewCardProps> = {},
-        tradingAccountKey = 'btc-account-1',
+        tradingAccountKey = eth1NormalAccount.key,
     ) => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'exchange' }),
@@ -31,7 +32,7 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeFromAccountTradePreviewCard(
             { quote: exchangeQuotes[0] },
-            'unknown-account-key',
+            'unknown-account-key' as AccountKey,
         );
 
         expect(toJSON()).toBeNull();
@@ -42,7 +43,8 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
             quote: exchangeQuotes[0],
         });
 
-        expect(getByText('Account')).toBeOnTheScreen();
+        expect(getByText('From')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('-100 USDC')).toBeOnTheScreen();
         expect(getByText(`100-${exchangeQuotes[0].send}`)).toBeOnTheScreen();
     });

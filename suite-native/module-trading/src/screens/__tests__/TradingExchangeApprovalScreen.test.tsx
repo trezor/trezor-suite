@@ -1,7 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
@@ -9,7 +8,7 @@ import {
     initStore,
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
@@ -80,11 +79,7 @@ describe('TradingExchangeApprovalScreen', () => {
 
         store = initStore(preloadedState).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
-        store.dispatch(
-            tradingExchangeActions.setTradingAccountKey(
-                'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            ),
-        );
+        store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
     afterEach(() => {
@@ -97,14 +92,8 @@ describe('TradingExchangeApprovalScreen', () => {
     it('should render the approval screen with quote details', () => {
         const { getByText } = renderScreen();
 
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-    });
-
-    it('should show network information when network symbol is available', () => {
-        const { getByText } = renderScreen();
-
-        expect(getByText('Ethereum')).toBeOnTheScreen();
     });
 
     it('should display provider information correctly', () => {

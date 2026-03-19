@@ -1,5 +1,10 @@
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    eth1NormalAccount,
+    getSellTrade,
+    getWalletState,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from '../BankAccount/SellBankAccountItem';
 import { SellPreviewView, type SellPreviewViewProps } from '../SellPreviewView';
@@ -19,7 +24,7 @@ describe('SellPreviewView', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
         preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
+        preloadedState.wallet!.trading!.sell!.tradingAccountKey = eth1NormalAccount.key;
         preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[1]; // Use quote with bank accounts
         preloadedState.wallet!.trading!.trades = [getSellTradeWithBankAccounts()];
         preloadedState.wallet!.trading!.providerConfirmationStatus = 'confirmation_success';
@@ -47,7 +52,7 @@ describe('SellPreviewView', () => {
         const { getByText } = renderSellPreviewView({});
 
         expect(getByText('From')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
         expect(getByText('Fee')).toBeOnTheScreen();
@@ -59,7 +64,7 @@ describe('SellPreviewView', () => {
         });
 
         expect(getByText('From')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();

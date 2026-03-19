@@ -1,6 +1,5 @@
-import { type AccountKey } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalForCard } from '../ExchangeApprovalForCard';
 
@@ -10,14 +9,12 @@ describe('ExchangeApprovalForCard', () => {
 
     it('should render text based on redux state', () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        preloadedState.wallet.trading.exchange.tradingAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+        preloadedState.wallet.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
 
         const { getByText } = renderExchangeApprovalForCard(preloadedState);
 
-        expect(getByText('For')).toBeOnTheScreen();
-        expect(getByText('Ethereum')).toBeOnTheScreen();
         expect(getByText('Account')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
     });
 
     it('should render nothing when account is not found', () => {

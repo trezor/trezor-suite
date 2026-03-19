@@ -10,6 +10,7 @@ import {
 import { PROTO, type StaticSessionId } from '@trezor/connect';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
+import { btc1NormalAccount, eth1NormalAccount, eth2legacyAccount } from './accounts';
 import { getInitializedTradingState } from './tradingState';
 
 type GetWalletStateParams = {
@@ -61,6 +62,10 @@ export const getWalletState = ({
             getEthAccount(undefined, accountOverrides),
             getBaseAccount(undefined, accountOverrides),
             getSolAccount(undefined, accountOverrides),
+            // TODO 25971 make sure it does not break anything
+            btc1NormalAccount,
+            eth1NormalAccount,
+            eth2legacyAccount,
         ] as Account[],
         send: {
             drafts: {},
