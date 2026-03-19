@@ -1,24 +1,44 @@
+import { createDeferred } from '@trezor/utils';
+
 import { UsbApi } from '../src/api/usb';
 
+const createTransferInResult = (size = 64) =>
+    ({
+        status: 'ok',
+        data: new DataView(new Uint8Array(size).buffer),
+    }) as USBInTransferResult;
+
+const createTransferOutResult = (bytesWritten = 64) =>
+    ({
+        status: 'ok',
+        bytesWritten,
+    }) as USBOutTransferResult;
+
 // create devices otherwise returned from navigator.usb.getDevices
-const createMockedDevice = (optional = {}) => ({
-    vendorId: 0x1209,
-    productId: 0x53c1,
-    serialNumber: '123',
-    open: () => Promise.resolve(),
-    selectConfiguration: () => Promise.resolve(),
-    claimInterface: () => Promise.resolve(),
-    transferOut: () => Promise.resolve({ status: 'ok' }),
-    transferIn: () => Promise.resolve({ data: Buffer.alloc(64) }),
-    releaseInterface: () => Promise.resolve(),
-    close: () => Promise.resolve(),
-    ...optional,
-});
+const createMockedDevice = (optional: Partial<USBDevice> & Record<string, unknown> = {}) =>
+    ({
+        vendorId: 0x1209,
+        productId: 0x53c1,
+        serialNumber: '123',
+        productName: 'Trezor',
+        manufacturerName: 'Trezor',
+        opened: false,
+        open: () => Promise.resolve(),
+        selectConfiguration: () => Promise.resolve(),
+        claimInterface: () => Promise.resolve(),
+        transferOut: () => Promise.resolve(createTransferOutResult()),
+        transferIn: () => Promise.resolve(createTransferInResult()),
+        releaseInterface: () => Promise.resolve(),
+        close: () => Promise.resolve(),
+        ...optional,
+    }) as USBDevice;
 
 // mock of navigator.usb
-const createUsbMock = (optional = {}) =>
+const createUsbMock = (optional: Partial<USB> = {}) =>
     ({
         getDevices: () => Promise.resolve([createMockedDevice()]),
+        onconnect: null,
+        ondisconnect: null,
         ...optional,
     }) as unknown as UsbApi['usbInterface'];
 
@@ -42,7 +62,7 @@ describe('api/usb', () => {
                             transferIn: () =>
                                 new Promise(resolve =>
                                     setTimeout(
-                                        () => resolve({ data: Buffer.alloc(api.chunkSize) }),
+                                        () => resolve(createTransferInResult(api.chunkSize)),
                                         100,
                                     ),
                                 ),
@@ -72,7 +92,7 @@ describe('api/usb', () => {
                             reset,
                             transferOut: () =>
                                 new Promise(resolve =>
-                                    setTimeout(() => resolve({ status: 'ok' }), 100),
+                                    setTimeout(() => resolve(createTransferOutResult()), 100),
                                 ),
                         }),
                     ]),
@@ -113,9 +133,7 @@ describe('api/usb', () => {
                     Promise.resolve([
                         createMockedDevice({
                             open: () =>
-                                new Promise(resolve =>
-                                    setTimeout(() => resolve({ status: 'ok' }), 100),
-                                ),
+                                new Promise<void>(resolve => setTimeout(() => resolve(), 100)),
                         }),
                     ]),
             }),
@@ -186,9 +204,8 @@ describe('api/usb', () => {
                     Promise.resolve([
                         createMockedDevice({
                             reset,
-                            transferIn: () =>
-                                Promise.resolve({ data: Buffer.alloc(api.chunkSize) }),
-                            transferOut: () => new Promise(resolve => resolve({ status: 'ok' })),
+                            transferIn: () => Promise.resolve(createTransferInResult()),
+                            transferOut: () => Promise.resolve(createTransferOutResult()),
                         }),
                     ]),
             }),
@@ -206,5 +223,46 @@ describe('api/usb', () => {
         await api.write('123', Buffer.alloc(0), abortController.signal);
 
         expect(reset).toHaveBeenCalledTimes(0);
+    });
+
+    it.each(['5e81a7', undefined, ''])('disconnect with serialNumber: %p', async serialNumber => {
+        let enumerateCounter = 0;
+        const enumerateDfd = createDeferred<USBDevice[]>();
+        const usbInterface = createUsbMock({
+            getDevices: () => {
+                if (enumerateCounter > 0) {
+                    return enumerateDfd.promise;
+                }
+                enumerateCounter++;
+
+                return Promise.resolve([createMockedDevice({ serialNumber })]);
+            },
+        });
+        const api = new UsbApi({
+            usbInterface,
+        });
+        await api.enumerate();
+
+        const enumerateSpy = jest.spyOn(api, 'enumerate');
+        const listener = jest.fn();
+
+        api.on('transport-interface-change', listener);
+        api.listen();
+
+        // emit change
+        const disconnectPromise = usbInterface.ondisconnect?.({
+            device: createMockedDevice({ serialNumber }),
+        } as any); // partial WebUSB event
+
+        if (!serialNumber) {
+            expect(enumerateSpy).toHaveBeenCalledTimes(1);
+            expect(listener).not.toHaveBeenCalled();
+        }
+
+        enumerateDfd.resolve([]);
+        await disconnectPromise;
+
+        expect(listener).toHaveBeenCalledTimes(1);
+        expect(listener).toHaveBeenCalledWith([]);
     });
 });
