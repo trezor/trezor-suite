@@ -22,7 +22,7 @@ export const CARDANO_EVERSTAKE_DREP = {
     bech32: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
 };
 
-export const CARDANO_POOL_SATURATION_SAFE_THRESHOLD = 80; // in percentage
+export const CARDANO_POOL_SATURATION_SAFE_THRESHOLD = 75; // in percentage
 
 export const MIN_CARDANO_AMOUNT_FOR_SEND = new BigNumber(1_000_000);
 
