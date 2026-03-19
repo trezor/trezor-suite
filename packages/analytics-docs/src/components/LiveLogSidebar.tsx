@@ -156,7 +156,7 @@ const LiveLogEventItem = ({
                             {isNew && <NewEventDot aria-label="New event" />}
                         </Row>
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            {format(new Date(event.receivedAt), 'yyyy-MM-dd, HH:mm:ss')}
+                            {format(new Date(event.receivedAt), 'HH:mm:ss')}
                         </Text>
                     </Column>
                     {hasPayload && (
