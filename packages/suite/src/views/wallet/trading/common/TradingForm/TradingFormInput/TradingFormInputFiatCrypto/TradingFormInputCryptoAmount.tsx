@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { type FieldErrors, type UseFormReturn } from 'react-hook-form';
+import { type FieldErrors, type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
@@ -13,7 +13,7 @@ import {
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
@@ -58,16 +58,6 @@ export const TradingFormInputCryptoAmount = ({
     const context = useTradingFormContext();
     const { amountLimits, account, network } = context;
 
-    const feeInUnits =
-        isTradingSellContext(context) || isTradingExchangeContext(context)
-            ? getFeeInUnits({
-                  symbol: account.symbol,
-                  composedLevels: context.composedLevels,
-                  selectedFee: context.composedTransactionInfo?.selectedFee,
-              })
-            : undefined;
-
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const {
         control,
@@ -76,6 +66,24 @@ export const TradingFormInputCryptoAmount = ({
         trigger,
         clearErrors,
     } = useTradingFormContext() as UseFormReturn<TradingAllFormProps>;
+
+    const sendCryptoSelect = useWatch({
+        control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    });
+    const selectedSendAccount = useSelector(state =>
+        selectAccountByKey(state, sendCryptoSelect?.accountKey),
+    );
+    const validationAccount = selectedSendAccount ?? account;
+    const feeInUnits =
+        isTradingSellContext(context) || isTradingExchangeContext(context)
+            ? getFeeInUnits({
+                  symbol: validationAccount.symbol,
+                  composedLevels: context.composedLevels,
+                  selectedFee: context.composedTransactionInfo?.selectedFee,
+              })
+            : undefined;
+    const { shouldSendInSats } = useBitcoinAmountUnit(validationAccount.symbol);
 
     const cryptoSelect = getValues(cryptoSelectName);
     const cryptoInputError =
@@ -121,18 +129,18 @@ export const TradingFormInputCryptoAmount = ({
             ...(!isTradingBuyContext(context)
                 ? {
                       reserveOrBalance: validateReserveOrBalance(translationString, {
-                          account,
+                          account: validationAccount,
                           areSatsUsed: !!shouldSendInSats,
                           contractAddress: getValues('outputs')?.[0]?.token,
                       }),
                       networkReserve: isNetworkReserveEnabled
                           ? validateNetworkReserve(translationString, {
                                 reserve: getNetworkReserve({
-                                    symbol: account.symbol,
+                                    symbol: validationAccount.symbol,
                                     contractAddress,
                                     isEnabled: isNetworkReserveEnabled,
                                 }),
-                                balance: account.formattedBalance,
+                                balance: validationAccount.formattedBalance,
                                 fee: feeInUnits?.toString(),
                             })
                           : () => undefined,
@@ -146,6 +154,10 @@ export const TradingFormInputCryptoAmount = ({
             trigger([cryptoInputName]);
         }
     }, [amountLimits, trigger]);
+
+    useDidUpdate(() => {
+        trigger([cryptoInputName]);
+    }, [cryptoInputName, trigger, validationAccount.key]);
 
     return (
         <NumberInput
