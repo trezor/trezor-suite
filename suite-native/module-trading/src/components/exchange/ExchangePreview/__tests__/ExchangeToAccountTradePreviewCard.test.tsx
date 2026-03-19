@@ -1,5 +1,6 @@
+import { type AccountKey } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { btc1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     ExchangeToAccountTradePreviewCard,
@@ -9,7 +10,7 @@ import {
 describe('ExchangeToAccountTradePreviewCard', () => {
     const renderExchangeToAccountTradePreviewCard = (
         props: Partial<ExchangeToAccountTradePreviewCardProps> = {},
-        receiveAccountKey = 'btc-account-1',
+        receiveAccountKey = btc1NormalAccount.key,
     ) => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'exchange' }),
@@ -31,7 +32,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeToAccountTradePreviewCard(
             { quote: exchangeQuotes[0] },
-            'unknown-account-key',
+            'unknown-account-key' as AccountKey,
         );
 
         expect(toJSON()).toBeNull();
@@ -42,7 +43,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
             quote: exchangeQuotes[0],
         });
 
-        expect(getByText('Account')).toBeOnTheScreen();
+        expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('+0.00083554 BTC')).toBeOnTheScreen();
         expect(getByText(`0.00083554-${exchangeQuotes[0].receive}`)).toBeOnTheScreen();
     });

@@ -2,19 +2,21 @@ import { Text } from 'react-native';
 
 import type { CryptoId } from 'invity-api';
 
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { TradeSideCard, type TradeSideCardProps } from '../TradeSideCard';
 
 describe('TradeSideCard', () => {
     const renderTradeSideCard = (props: Partial<TradeSideCardProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <TradeSideCard
+                account={btc1NormalAccount}
                 amount={<Text>AMOUNT</Text>}
                 title={<Text>TITLE</Text>}
-                accountLabel="ACCOUNT LABEL"
                 {...props}
             />,
+            { preloadedState: { wallet: { accounts: [btc1NormalAccount] } } },
         );
 
     it('should render nothing when no cryptoId is specified', () => {
@@ -28,7 +30,7 @@ describe('TradeSideCard', () => {
 
         expect(getByText('TITLE')).toBeOnTheScreen();
         expect(getByText('AMOUNT')).toBeOnTheScreen();
-        expect(getByText('ACCOUNT LABEL')).toBeOnTheScreen();
+        expect(getByText('BTC Account #1')).toBeOnTheScreen();
     });
 
     it('should render children when provided', () => {

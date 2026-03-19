@@ -5,7 +5,6 @@ import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeActiveQuote,
-    selectTradingProviderByNameAndTradeType,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
@@ -42,10 +41,6 @@ export const TradingExchangeApprovalScreen = ({
 
     const { isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
-    );
 
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
@@ -86,14 +81,14 @@ export const TradingExchangeApprovalScreen = ({
                 <DynamicScreenHeader
                     title={
                         <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.title"
+                            id="moduleTrading.tradingExchangeApprovalScreen.approveTitle"
                             values={{ symbol: coinSymbol }}
                         />
                     }
                     subtitle={
                         <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.subtitle"
-                            values={{ symbol: coinSymbol, companyName: providerInfo?.companyName }}
+                            id="moduleTrading.tradingExchangeApprovalScreen.approveSubtitle"
+                            values={{ symbol: coinSymbol }}
                         />
                     }
                     closeActionType="back"

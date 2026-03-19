@@ -13,9 +13,8 @@ export const ExchangeApprovalForCard = () => {
 
     return (
         <NetworkAndAccountCard
-            accountLabel={account.accountLabel}
-            symbol={account.symbol}
-            title={<Translation id="moduleTrading.tradingExchangeApprovalScreen.for" />}
+            account={account}
+            title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
         />
     );
 };
