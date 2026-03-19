@@ -46,6 +46,7 @@ export type LiveLogEvent = {
         instanceId?: string;
         sessionId?: string;
         messageId?: string;
+        deviceId?: string;
     };
     receivedAt: number;
 };

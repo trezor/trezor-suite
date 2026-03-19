@@ -21,7 +21,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        { "path": "../analytics-log-server" },
         { "path": "../components" },
         { "path": "../eslint" },
         { "path": "../react-utils" },

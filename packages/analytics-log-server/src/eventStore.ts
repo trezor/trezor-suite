@@ -11,6 +11,7 @@ export type LoggedEvent = {
         instanceId?: string;
         sessionId?: string;
         messageId?: string;
+        deviceId?: string;
     };
     receivedAt: number;
 };
@@ -37,6 +38,7 @@ export const createEventStore = (opts?: { maxEvents?: number }) => {
             instanceId: searchParams.get('c_instance_id') ?? undefined,
             sessionId: searchParams.get('c_session_id') ?? undefined,
             messageId: searchParams.get('c_message_id') ?? undefined,
+            deviceId: searchParams.get('c_device_id') ?? searchParams.get('device_id') ?? undefined,
         };
 
         searchParams.forEach((value, key) => {
