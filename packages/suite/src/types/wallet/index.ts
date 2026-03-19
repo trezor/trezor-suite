@@ -17,7 +17,6 @@ import {
     type stakeActions,
 } from '@suite-common/wallet-core';
 
-import { type CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { type CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { type GraphAction } from 'src/actions/wallet/graphActions';
@@ -90,7 +89,6 @@ export type WalletAction =
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction
-    | CardanoStakingAction
     | CoinjoinAccountAction
     | CoinjoinClientAction
     | AccountsAction

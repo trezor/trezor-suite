@@ -17,7 +17,6 @@ import {
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import accountSearchReducer from './accountSearchReducer';
-import cardanoStakingReducer from './cardanoStakingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
@@ -50,7 +49,6 @@ const WalletReducers = combineReducers({
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,
-    cardanoStaking: cardanoStakingReducer,
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
     settings: walletSettingsReducer,

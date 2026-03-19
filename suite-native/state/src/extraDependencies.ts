@@ -152,7 +152,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // Not implemented. We assume those are NEVER called on Native
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
-        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
         addAccountMetadata: notImplementedThunk('addAccountMetadata'),

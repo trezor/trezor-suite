@@ -34,7 +34,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 
-import { setPendingStakeTx } from './cardanoStakingActions';
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
@@ -193,7 +192,6 @@ const pushTransaction =
                         cardanoSpecific,
                     }),
                 );
-                dispatch(setPendingStakeTx(account, txid));
             }
 
             // notification from the backend may be delayed.
