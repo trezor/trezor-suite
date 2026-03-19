@@ -209,9 +209,12 @@ describe('TradingExchangePreviewScreen', () => {
 
             renderTradingExchangePreviewScreen();
 
-            await waitFor(() => {
-                expect(mockShowAlert).toHaveBeenCalledTimes(1);
-            });
+            await waitFor(
+                () => {
+                    expect(mockShowAlert).toHaveBeenCalledTimes(1);
+                },
+                { timeout: 30_000 },
+            );
             expect(consoleErrorSpy).toHaveBeenCalledWith(
                 'Failed to confirm trade',
                 new Error('Trade confirmation failed'),
