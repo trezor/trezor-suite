@@ -1,6 +1,5 @@
 import { BigNumber } from '@trezor/utils';
 
-export const ESTIMATED_YEARLY_REWARD_RATE = 2.22;
 export const CARDANO_EPOCH_DAYS = 5;
 export const CARDANO_APPROXIMATE_EPOCHS = 2;
 export const CARDANO_ACTIVATION_PERIOD_DAYS = CARDANO_APPROXIMATE_EPOCHS * CARDANO_EPOCH_DAYS;
