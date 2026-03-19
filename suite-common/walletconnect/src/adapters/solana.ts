@@ -245,6 +245,7 @@ const processNamespaces = (
 export const solanaAdapter = {
     methods,
     networkType: 'solana',
+    namespaceId: 'solana',
     requestThunk: solanaRequestThunk,
     getChainId,
     getNamespace,

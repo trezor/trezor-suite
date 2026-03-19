@@ -448,6 +448,7 @@ export const networks = {
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
         yieldXyzId: 'stellar',
+        caipId: 'stellar:pubnet',
     },
     ltc: {
         symbol: 'ltc',
@@ -697,6 +698,7 @@ export const networks = {
         coingeckoId: undefined,
         tradeCryptoId: undefined,
         yieldXyzId: 'stellar-testnet',
+        caipId: 'stellar:testnet',
     },
 } as const satisfies Networks;
 

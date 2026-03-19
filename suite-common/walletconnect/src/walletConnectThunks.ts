@@ -18,7 +18,12 @@ import { selectAllSuccessfulAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
 
-import { getAdapterByMethod, getNamespaces, processNamespaces } from './adapters';
+import {
+    getAdapterByMethod,
+    getAdapterByNetwork,
+    getNamespaces,
+    processNamespaces,
+} from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { selectPendingProposal } from './walletConnectReducer';
@@ -219,10 +224,13 @@ export const switchSelectedAccountThunk = createThunk<
             topic: sessionTopic,
             namespaces: approvedNamespaces,
         });
-        const namespace = account.networkType === 'solana' ? 'solana' : 'eip155';
-        const { chains } = session.namespaces[namespace];
+        const adapter = getAdapterByNetwork(account.networkType);
+        if (!adapter) {
+            return console.warn(`No adapter found for network type ${account.networkType}`);
+        }
+        const { chains } = session.namespaces[adapter.namespaceId];
         if (!chains) {
-            return console.warn(`No chains found for namespace ${namespace}`);
+            return console.warn(`No chains found for namespace ${adapter.namespaceId}`);
         }
 
         for (const chainId of chains) {
@@ -240,7 +248,7 @@ export const switchSelectedAccountThunk = createThunk<
                 topic: sessionTopic,
                 event: {
                     name: 'accountsChanged',
-                    data: [...updatedNamespaces[namespace].accounts],
+                    data: [...updatedNamespaces[adapter.namespaceId].accounts],
                 },
                 chainId,
             });

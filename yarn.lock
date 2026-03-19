@@ -11489,6 +11489,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@reown/walletkit": "npm:^1.2.8"
+    "@stellar/stellar-sdk": "npm:14.5.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -11503,6 +11504,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
+    "@trezor/connect-plugin-stellar": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
@@ -15179,7 +15181,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar":
+"@trezor/connect-plugin-stellar@workspace:*, @trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:

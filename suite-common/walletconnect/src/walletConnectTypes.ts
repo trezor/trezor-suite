@@ -7,6 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 export interface WalletConnectAdapter {
     networkType: string;
+    namespaceId: string;
     methods: string[];
     requestThunk: SuiteCompatibleThunk<{
         event: WalletKitTypes.SessionRequest;
