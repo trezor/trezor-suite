@@ -1,11 +1,10 @@
-import { Box, Image } from '@trezor/components';
+import { Image } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 type TradingIconProps = {
     iconUrl: string;
 };
 
 export const TradingIcon = ({ iconUrl }: TradingIconProps) => (
-    <Box height={20} borderRadius={4} backgroundColor="baseFillElementContrast">
-        <Image imageSrc={iconUrl} height={20} alt="" />
-    </Box>
+    <Image imageSrc={iconUrl} maxHeight={24} borderRadius={borders.radii.xxxs} />
 );

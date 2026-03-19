@@ -1,7 +1,6 @@
 export { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 export { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 export { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
-export { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
 export { TradingProviderInfo } from 'src/views/wallet/trading/common/TradingProviderInfo';
 export { TradingRefreshTime } from 'src/views/wallet/trading/common/TradingRefreshTime';
 export { TradingTag } from 'src/views/wallet/trading/common/TradingTag';

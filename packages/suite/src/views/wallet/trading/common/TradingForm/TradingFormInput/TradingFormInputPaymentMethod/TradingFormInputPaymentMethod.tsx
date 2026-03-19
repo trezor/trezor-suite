@@ -34,7 +34,7 @@ const TradingFormInputPaymentMethodValueContent = ({
     return (
         <Row gap={16}>
             <Row gap={4} alignItems="center">
-                <PaymentMethodIcon paymentMethod={paymentMethod} size={16} />
+                <PaymentMethodIcon paymentMethod={paymentMethod} size={24} />
                 <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>
                     {displayLabel}
                 </Text>

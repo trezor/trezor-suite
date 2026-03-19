@@ -1,15 +1,15 @@
-import type { TradingPaymentMethodType } from '@suite-common/trading';
+import { PaymentMethodType } from '@suite/trading';
+import type { TradingPaymentMethodType, TradingUtilsProvidersProps } from '@suite-common/trading';
 import { Flex, type FlexProps } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
-import { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
-import {
-    TradingProviderInfo,
-    type TradingProviderInfoProps,
-} from 'src/views/wallet/trading/common/TradingProviderInfo';
 
-interface TradingTransactionProvidersProps extends TradingProviderInfoProps {
+import { TradingUtilsProvider } from '../../TradingUtils/TradingUtilsProvider';
+
+interface TradingTransactionProvidersProps {
+    exchange?: string;
+    providers?: TradingUtilsProvidersProps;
     paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
@@ -37,9 +37,9 @@ export const TradingTransactionProvider = ({
 
     return (
         <Flex gap={spacings.sm} {...flexProps}>
-            <TradingProviderInfo exchange={exchange} providers={providers} />
+            <TradingUtilsProvider exchange={exchange} providers={providers} />
             {paymentMethod && (
-                <TradingPaymentType method={paymentMethod} methodName={paymentMethodName} />
+                <PaymentMethodType method={paymentMethod} methodName={paymentMethodName} />
             )}
         </Flex>
     );

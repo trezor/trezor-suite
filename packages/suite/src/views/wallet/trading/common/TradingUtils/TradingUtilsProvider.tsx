@@ -1,17 +1,8 @@
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import { type TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
 
-const Icon = styled.img`
-    flex: none;
-    max-height: 24px;
-    width: auto;
-    height: auto;
-    border-radius: ${borders.radii.xxxs};
-`;
+import { TradingIcon } from '../TradingIcon';
 
 interface TradingUtilsProviderProps {
     exchange?: string;
@@ -28,11 +19,11 @@ export const TradingUtilsProvider = ({
     const providerName = provider?.brandName ?? provider?.companyName;
 
     return (
-        <Row gap={spacings.xs} className={className} data-testid="@trading/offers/quote/provider">
+        <Row gap={8} className={className} data-testid="@trading/offers/quote/provider">
             {provider ? (
                 <>
                     {provider.logo && (
-                        <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
+                        <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
                     )}
                     {providerName}
                 </>

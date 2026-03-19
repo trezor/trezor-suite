@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { PaymentMethodPlainType } from '@suite/trading';
 import type { TradingType } from '@suite-common/trading';
 import { spacingsPx } from '@trezor/theme';
 
@@ -8,7 +9,6 @@ import {
     type TradingTradeBuySellType,
     type TradingTradeDetailBuySellType,
 } from 'src/types/trading/trading';
-import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
 
 const PaymentInfoWrapper = styled.div`
     display: flex;
@@ -29,9 +29,6 @@ export const TradingFeaturedOffersPaymentInfo = ({
         <Translation
             id={`TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_${type.toUpperCase() as Uppercase<TradingTradeBuySellType>}_LABEL`}
         />
-        <TradingPaymentPlainType
-            method={quote.paymentMethod}
-            methodName={quote.paymentMethodName}
-        />
+        <PaymentMethodPlainType method={quote.paymentMethod} methodName={quote.paymentMethodName} />
     </PaymentInfoWrapper>
 );
