@@ -17,6 +17,7 @@ import {
     Select,
     type SuiteThemeColors,
     Switch,
+    TOOLTIP_DELAY_LONG,
     Table,
     Text,
     Tooltip,
@@ -43,7 +44,7 @@ const META_KEYS = [
 ] as const;
 const SHOW_META_IN_PAYLOAD_STORAGE_KEY = 'analytics-docs-live-log-show-meta-in-payload';
 
-export const NEW_EVENT_TIMEOUT = 10_000;
+export const NEW_EVENT_TIMEOUT = 20_000;
 export const LIVE_LOG_SIDEBAR_MIN_WIDTH = 280;
 export const LIVE_LOG_SIDEBAR_MAX_WIDTH = 800;
 
@@ -66,8 +67,8 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
 `;
 
 const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${({ theme }) => theme.backgroundPrimaryDefault};
     flex: 0 0 auto;
@@ -94,7 +95,7 @@ const EventPayload = ({ event, isPayloadOpen, showMetaInPayload }: EventPayloadP
     if (!hasPayload || !isPayloadOpen) return null;
 
     return (
-        <Box margin={{ top: 8 }}>
+        <Box margin={{ top: 8 }} cursor="auto">
             <>
                 <Table typographyStyle="body-xs">
                     <Table.Header>
@@ -141,34 +142,35 @@ const LiveLogEventItem = ({
 
     return (
         <CardList.Item key={event.id} paddingType="small">
-            <Column gap={4} alignItems="stretch" width="100%">
+            <Column gap={4} margin={{ vertical: 4 }} alignItems="stretch" width="100%">
                 <Row
-                    onClick={() => onEventClick(event.type)}
+                    onClick={e => {
+                        e.stopPropagation();
+                        setIsPayloadOpen(prev => !prev);
+                    }}
                     justifyContent="space-between"
                     alignItems="center"
-                    gap={8}
+                    gap={12}
                 >
-                    <Column gap={0} flex="1" minWidth={0}>
-                        <Row gap={8} alignItems="center" minWidth={0}>
-                            <Text typographyStyle="body-xs" isMonospaced>
-                                {event.type}
+                    <Column gap={2} flex="1" minWidth={0}>
+                        <Text typographyStyle="body-sm-strong">{event.type}</Text>
+                        <Row gap={4} minWidth={0}>
+                            <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
+                                {format(new Date(event.receivedAt), 'HH:mm:ss')}
                             </Text>
                             {isNew && <NewEventDot aria-label="New event" />}
                         </Row>
-                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            {format(new Date(event.receivedAt), 'HH:mm:ss')}
-                        </Text>
                     </Column>
                     {hasPayload && (
-                        <Tooltip content={isPayloadOpen ? 'Hide payload' : 'Show payload'}>
+                        <Tooltip content="Find event" delayShow={TOOLTIP_DELAY_LONG}>
                             <IconButton
-                                icon="info"
+                                icon="magnifyingGlass"
                                 size="small"
-                                intent={isPayloadOpen ? 'brand' : 'neutral'}
-                                priority={isPayloadOpen ? 'primary' : 'secondary'}
+                                intent="neutral"
+                                priority="secondary"
                                 onClick={e => {
+                                    onEventClick(event.type);
                                     e.stopPropagation();
-                                    setIsPayloadOpen(prev => !prev);
                                 }}
                             />
                         </Tooltip>
