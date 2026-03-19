@@ -1,4 +1,4 @@
-# Nix
+# Development on Nix
 
 Trezor Suite provides two ways to use Nix: a **Nix flake** (`flake.nix`) and a **`shell.nix`** for environments without flakes enabled.
 
