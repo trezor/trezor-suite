@@ -30,7 +30,7 @@
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:vite": "yarn workspace @trezor/suite-web dev:vite",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
-        "analytics:dev": "node scripts/analytics-dev.mjs",
+        "analytics:docs-dev": "node scripts/analytics-docs-dev.mjs",
         "analytics:docs-with-docker-log-server": "node scripts/analytics-docs-with-docker-log-server.mjs",
         "native:start": "yarn workspace @suite-native/app start",
         "_______ Testing _______": "Testing, linting, type checking...",
