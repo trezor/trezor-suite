@@ -1,5 +1,4 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_APY_MIN_THRESHOLD } from '@suite-common/wallet-constants';
 import type { Account } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -68,7 +67,7 @@ export const selectPoolStatsApyData = (
 
         const { apy } = selectedPool;
 
-        if (!apy || apy < CARDANO_APY_MIN_THRESHOLD) {
+        if (!apy) {
             return null;
         }
 
