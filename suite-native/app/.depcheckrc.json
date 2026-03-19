@@ -19,6 +19,7 @@
         "expo-linear-gradient",
         "expo-linking",
         "expo-localization",
+        "expo-mcp",
         "expo-secure-store",
         "expo-status-bar",
         "expo-system-ui",
