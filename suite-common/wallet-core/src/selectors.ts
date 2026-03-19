@@ -80,6 +80,24 @@ export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
 );
 
 type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
+const testnetEvmSymbols = ['tsep', 'thod'] as const;
+
+const hasMissingDefaultEvmTestnetAccountType = ({
+    symbol,
+    accounts,
+}: {
+    symbol: NetworkSymbol;
+    accounts: Account[] | undefined;
+}) => {
+    if (!accounts || !testnetEvmSymbols.includes(symbol as (typeof testnetEvmSymbols)[number])) {
+        return false;
+    }
+
+    const hasLegacy = accounts.some(account => account.accountType === 'legacy');
+    const hasNormal = accounts.some(account => account.accountType === 'normal');
+
+    return hasLegacy && !hasNormal;
+};
 
 const getDeviceAccountsPerEnabledNetwork = (
     state: WalletCoreCompoundRootState,
@@ -125,6 +143,10 @@ export const selectDiscoveryAccountsParam = (
             else return { type };
         });
 
+        if (hasMissingDefaultEvmTestnetAccountType({ symbol, accounts })) {
+            known.push({ type: 'normal', skip: 0 });
+        }
+
         return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
     });
 
@@ -156,8 +178,9 @@ export const selectShouldRediscover = (
     if (!device.discovered) return true;
 
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
-        ({ accounts }) =>
+        ({ symbol, accounts }) =>
             !accounts ||
+            hasMissingDefaultEvmTestnetAccountType({ symbol, accounts }) ||
             getLastAccountsPerAccountType(accounts).some(
                 ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
             ),

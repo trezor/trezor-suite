@@ -26,7 +26,7 @@ export const AccountTypeDescription = ({
     networkType,
 }: AccountTypeDescriptionProps) => {
     const accountTypeUrl = getAccountTypeUrl(bip43Path);
-    const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
+    const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, symbol, networkType });
 
     return (
         <Column alignItems="flex-start" gap={spacings.sm}>

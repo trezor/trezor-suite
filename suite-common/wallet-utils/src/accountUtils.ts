@@ -246,10 +246,18 @@ export const getAccountTypeTech = (path: Bip43PathTemplate) => {
 type getAccountTypeDescProps = {
     path: Bip43PathTemplate;
     accountType?: AccountType;
+    symbol?: NetworkSymbol;
     networkType?: NetworkType;
 };
 
-export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccountTypeDescProps) => {
+export const getAccountTypeDesc = ({
+    path,
+    accountType,
+    symbol,
+    networkType,
+}: getAccountTypeDescProps) => {
+    const isEvmTestnet = symbol === 'tsep' || symbol === 'thod';
+
     switch (accountType) {
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
@@ -258,11 +266,20 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
                 return 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC';
             }
 
+            if (isEvmTestnet) {
+                return 'TR_ACCOUNT_TYPE_EVM_TESTNET_LEGACY_DESC';
+            }
+
             return 'TR_ACCOUNT_TYPE_LEGACY_DESC';
     }
 
     switch (networkType) {
         case 'ethereum':
+            if (isEvmTestnet) {
+                return 'TR_ACCOUNT_TYPE_EVM_TESTNET_NORMAL_DESC';
+            }
+
+            return 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC';
         case 'tron':
             return 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC';
         case 'solana':

@@ -3619,6 +3619,16 @@ export const messages = defineMessages({
         defaultMessage:
             'The current and most widely accepted method of generating and managing {value} addresses ensures interoperability, security, and support for all types of tokens.',
     },
+    TR_ACCOUNT_TYPE_EVM_TESTNET_NORMAL_DESC: {
+        id: 'TR_ACCOUNT_TYPE_EVM_TESTNET_NORMAL_DESC',
+        defaultMessage:
+            'The standard EVM derivation path improves compatibility for {value}. On Trezor testnets, it may trigger warnings or require changing Safety checks on your device.',
+    },
+    TR_ACCOUNT_TYPE_EVM_TESTNET_LEGACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_EVM_TESTNET_LEGACY_DESC',
+        defaultMessage:
+            "This legacy {value} account keeps Trezor's previous testnet derivation path. Use it only to access already created accounts or for debugging.",
+    },
     TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC: {
         id: 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC',
         defaultMessage:

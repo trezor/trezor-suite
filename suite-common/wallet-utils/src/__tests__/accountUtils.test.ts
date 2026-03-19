@@ -9,6 +9,8 @@ import {
     enhanceAddresses,
     findAccountDevice,
     getAccountIdentifier,
+    getAccountTypeDesc,
+    getAvailableAccountTypes,
     getBip43Type,
     getFirstFreshAddress,
     getNetworkAccountFeatures,
@@ -45,7 +47,6 @@ describe('account utils', () => {
 
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
-            // @ts-expect-error params are partial
             expect(getUtxoFromSignedTransaction(f.params)).toMatchObject(f.result);
         });
     });
@@ -77,6 +78,78 @@ describe('account utils', () => {
             it(f.description, () => {
                 expect(substituteBip43Path(f.pathTemplate, f.index)).toBe(f.result);
             });
+        });
+    });
+
+    describe(getAvailableAccountTypes.name, () => {
+        it.each([
+            ['tsep', "m/44'/60'/0'/0/i"],
+            ['thod', "m/44'/60'/0'/0/i"],
+        ] as const)(
+            'returns only the default account type for %s when debug mode is off',
+            (symbol, bip43Path) => {
+                expect(getAvailableAccountTypes(symbol, { isDebug: false })).toEqual([
+                    {
+                        accountType: 'normal',
+                        bip43Path,
+                    },
+                ]);
+            },
+        );
+
+        it.each([
+            ['tsep', "m/44'/60'/0'/0/i"],
+            ['thod', "m/44'/60'/0'/0/i"],
+        ] as const)(
+            'includes the legacy compatibility account type for %s when debug mode is on',
+            (symbol, bip43Path) => {
+                expect(getAvailableAccountTypes(symbol, { isDebug: true })).toEqual([
+                    {
+                        accountType: 'normal',
+                        bip43Path,
+                    },
+                    {
+                        accountType: 'legacy',
+                        bip43Path: "m/44'/1'/0'/0/i",
+                        isDebugOnlyAccountType: true,
+                    },
+                ]);
+            },
+        );
+    });
+
+    describe(getAccountTypeDesc.name, () => {
+        it.each(['tsep', 'thod'] as const)(
+            'returns testnet-specific EVM descriptions for %s',
+            symbol => {
+                expect(
+                    getAccountTypeDesc({
+                        path: "m/44'/60'/0'/0/i",
+                        accountType: 'normal',
+                        symbol,
+                        networkType: 'ethereum',
+                    }),
+                ).toBe('TR_ACCOUNT_TYPE_EVM_TESTNET_NORMAL_DESC');
+                expect(
+                    getAccountTypeDesc({
+                        path: "m/44'/1'/0'/0/i",
+                        accountType: 'legacy',
+                        symbol,
+                        networkType: 'ethereum',
+                    }),
+                ).toBe('TR_ACCOUNT_TYPE_EVM_TESTNET_LEGACY_DESC');
+            },
+        );
+
+        it('keeps the generic EVM description for mainnet Ethereum', () => {
+            expect(
+                getAccountTypeDesc({
+                    path: "m/44'/60'/0'/0/i",
+                    accountType: 'normal',
+                    symbol: 'eth',
+                    networkType: 'ethereum',
+                }),
+            ).toBe('TR_ACCOUNT_TYPE_NORMAL_EVM_DESC');
         });
     });
 

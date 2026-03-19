@@ -151,6 +151,9 @@ export const AddAccountModal = ({
         });
     }, [isCoinjoinVisible, isDebug, isSelectedNetworkEnabled, selectedNetwork]);
 
+    const currentAccountDefinition =
+        selectedAccount ?? accountTypes?.find(account => account.accountType === currentType);
+
     const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
 
     const selectNetwork = (symbol?: NetworkSymbol) => {
@@ -241,7 +244,7 @@ export const AddAccountModal = ({
 
     const addNewAccount = async () => {
         if (selectedNetwork) {
-            const account = selectedNetwork.accountTypes[currentType];
+            const account = currentAccountDefinition;
 
             if (account) {
                 const newAccount = await prepareNewAccountPayload({
@@ -389,6 +392,7 @@ export const AddAccountModal = ({
                     <AddAccountButton
                         network={selectedNetwork}
                         selectedAccount={selectedAccount}
+                        currentAccountDefinition={currentAccountDefinition}
                         scopedAccounts={scopedAccounts}
                         onEnableAccount={enableAccount}
                         onAddNewAccount={addNewAccount}

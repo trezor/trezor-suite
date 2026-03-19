@@ -82,7 +82,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
                 { symbol: 'ltc' },
                 { symbol: 'ada' },
                 { symbol: 'xrp' },
-            ],
+            ] as Parameters<typeof TrezorConnect.discoverAccounts>[0]['coins'],
             useCardanoDerivation: true,
         });
 

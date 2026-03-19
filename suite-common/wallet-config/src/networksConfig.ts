@@ -597,14 +597,21 @@ export const networks = {
         displaySymbol: 'tETH',
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
-        bip43Path: "m/44'/1'/0'/0/i",
+        bip43Path: "m/44'/60'/0'/0/i",
         chainId: 11155111,
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559', 'graph'],
         backendTypes: ['blockbook', 'evm-rpc'],
-        accountTypes: {},
+        accountTypes: {
+            legacy: {
+                // Previous Trezor path kept for compatibility and debugging.
+                accountType: 'legacy',
+                bip43Path: "m/44'/1'/0'/0/i",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         yieldXyzId: 'ethereum-sepolia',
@@ -614,7 +621,7 @@ export const networks = {
         displaySymbol: 'tETH',
         name: 'Ethereum Hoodi',
         networkType: 'ethereum',
-        bip43Path: "m/44'/1'/0'/0/i",
+        bip43Path: "m/44'/60'/0'/0/i",
         chainId: 560048,
         decimals: 18,
         testnet: true,
@@ -630,7 +637,14 @@ export const networks = {
             'graph',
         ],
         backendTypes: ['blockbook', 'evm-rpc'],
-        accountTypes: {},
+        accountTypes: {
+            legacy: {
+                // Previous Trezor path kept for compatibility and debugging.
+                accountType: 'legacy',
+                bip43Path: "m/44'/1'/0'/0/i",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         yieldXyzId: 'ethereum-hoodi',
