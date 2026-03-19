@@ -30,13 +30,13 @@ When deciding where a new package belongs:
 
 Some packages mainly assemble screens, routes, stacks, flows, or other app-specific wiring. Other packages provide reusable domain logic, state, UI, or helpers.
 
-Composition packages (modules) should stay thin and should not become dependencies of other composition packages.
+Composition packages (`module-*` prefix) should stay thin and should not become dependencies of other composition packages.
 
 Shared code used by multiple module packages belongs in a reusable package.
 
-This keeps dependencies one-directional, reduces circular references, and makes extraction easier.
+This keeps dependencies one-directional, avoids circular references, and makes extraction easier.
 
-In mobile, `module-*` packages are usually packages routing packages for `StackNavigators`. If code from one `module-*` package is needed in another, that code likely belongs in a reusable package, not in either module.
+In mobile, `module-*` packages are usually packages routing packages for React Navigation navigators (e. g. `StackNavigator`). If code from one `module-*` package is needed in another, that code belongs in a reusable package, not in either module.
 
 ## Refactoring heuristics
 

@@ -14,3 +14,9 @@
 Use them in packages to define public interface.
 
 Do not use them inside a module to export from directory. If you feel it shall be separated, create a new package. They can introduce accidental circular dependencies and may hurt tree-shaking.
+
+## No re-exports
+
+Do not use re-exports except in a package entrypoint.
+
+Within a package, import symbols directly from the file where they are defined. Use `index.ts` re-exports only to define the package's public API.
