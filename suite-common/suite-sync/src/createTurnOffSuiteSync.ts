@@ -28,7 +28,6 @@ export const createTurnOffSuiteSync =
         }
 
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: false }));
-        deps.dispatch(eraseFetchedData());
 
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 
@@ -41,6 +40,8 @@ export const createTurnOffSuiteSync =
         if (params.ensureSettingsPersisted) {
             await params.ensureSettingsPersisted();
         }
+
+        deps.dispatch(eraseFetchedData());
 
         // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
         deps.reloadApp();
