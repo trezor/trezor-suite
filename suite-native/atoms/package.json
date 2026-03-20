@@ -16,7 +16,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.3.0",
-        "@shopify/react-native-skia": "2.4.18",
+        "@shopify/react-native-skia": "2.5.1",
         "@storybook/react-native": "^10.2.1",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
