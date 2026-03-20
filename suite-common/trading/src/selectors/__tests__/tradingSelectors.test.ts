@@ -58,6 +58,7 @@ import {
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
+    selectTradingIsSlip24Allowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
@@ -1560,6 +1561,63 @@ describe('tradingSelectors', () => {
             const result = selectTradingProviderMetadata(state);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingIsSlip24Allowed.name, () => {
+        beforeEach(() => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = undefined;
+            }
+        });
+
+        it('should return false when account is undefined', () => {
+            expect(selectTradingIsSlip24Allowed(state, undefined, true)).toBe(false);
+        });
+
+        it('should return false when isSlip24Active is false', () => {
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, false)).toBe(false);
+        });
+
+        it('should return false when firmware has slip24 in unavailableCapabilities', () => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = { slip24: 'no-support' };
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return true when account is set, isSlip24Active is true, and firmware supports slip24', () => {
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(true);
+        });
+
+        it('should return true for supported network when firmware supports slip24 (e.g. ethereum account)', () => {
+            expect(selectTradingIsSlip24Allowed(state, accountEth as any, true)).toBe(true);
+        });
+
+        it('should return true for solana network when firmware supports slip24', () => {
+            const solanaAccount = {
+                ...accountBtc,
+                networkType: 'solana',
+            };
+            expect(selectTradingIsSlip24Allowed(state, solanaAccount as any, true)).toBe(true);
+        });
+
+        it('should return true for stellar network when firmware supports slip24', () => {
+            const stellarAccount = {
+                ...accountBtc,
+                networkType: 'stellar',
+            };
+            expect(selectTradingIsSlip24Allowed(state, stellarAccount as any, true)).toBe(true);
+        });
+
+        it('should return false for unsupported network even when firmware supports slip24', () => {
+            const unsupportedNetworkAccount = {
+                ...accountBtc,
+                networkType: 'cardano',
+            };
+            expect(
+                selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
+            ).toBe(false);
         });
     });
 });

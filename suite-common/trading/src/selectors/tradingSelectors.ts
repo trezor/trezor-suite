@@ -676,7 +676,7 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
 
         const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
         // TODO: slip24 - can be removed when slip24 is enabled for all networks
-        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum'];
+        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum', 'solana', 'stellar'];
         const isNetworkSupported = supportedNetworks.includes(account.networkType);
 
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
