@@ -31,7 +31,6 @@ export const normalizeChangelog = (
 ): NormalizedChangelog => {
     if (!changelog?.length) return { entries: [] };
 
-    // Remove duplicate versions, keeping all entries
     const uniqueVersions = new Map<string, { version: AppVersion; notes: string }[]>();
     for (const entry of changelog) {
         const existing = uniqueVersions.get(entry.version) || [];
@@ -39,14 +38,12 @@ export const normalizeChangelog = (
         uniqueVersions.set(entry.version, existing);
     }
 
-    // Sort versions chronologically
     const sortedVersions = Array.from(uniqueVersions.keys()).sort(compareVersions);
 
-    // Flatten entries back, maintaining chronological order
     const sortedEntries = sortedVersions.flatMap(version => uniqueVersions.get(version) || []);
 
-    const first = sortedVersions[0];
-    const last = sortedVersions[sortedVersions.length - 1];
+    const first = sortedVersions[0] as AppVersion;
+    const last = sortedVersions[sortedVersions.length - 1] as AppVersion;
 
     return {
         entries: sortedEntries,
