@@ -125,6 +125,8 @@ export const getVersionsWithEvents = (events: EventDoc[]): VersionWithEvents[] =
 
     for (const event of events) {
         const seenVersions = new Set<string>();
+
+        // Add event changelog entries
         for (const entry of event.changelog?.entries ?? []) {
             const v = entry.version;
             if (!v || seenVersions.has(v)) continue;
@@ -132,6 +134,18 @@ export const getVersionsWithEvents = (events: EventDoc[]): VersionWithEvents[] =
             const list = versionToEvents.get(v) ?? [];
             list.push(event);
             versionToEvents.set(v, list);
+        }
+
+        // Add attribute changelog entries
+        for (const attribute of Object.values(event.attributes)) {
+            for (const entry of attribute.changelog?.entries ?? []) {
+                const v = entry.version;
+                if (!v || seenVersions.has(v)) continue;
+                seenVersions.add(v);
+                const list = versionToEvents.get(v) ?? [];
+                list.push(event);
+                versionToEvents.set(v, list);
+            }
         }
     }
 
