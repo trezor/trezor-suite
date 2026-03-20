@@ -384,8 +384,9 @@ export const toggleAutoEjectThunk = createThunk(
         ),
 );
 
-type ForgetAllDeviceDataThunkParams = {
+type ForgetDevicePersistentDataThunkParams = {
     deviceId: TrezorDevice['id'];
+    isOsUnpairingFinished?: boolean;
 };
 
 /**
@@ -393,9 +394,12 @@ type ForgetAllDeviceDataThunkParams = {
  * This includes wallets, `persistentDeviceData`, Bluetooth, THP.
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
-export const forgetSingleDevicePersistentDataThunk = createThunk(
+export const forgetDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
-    async ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
+    async (
+        { deviceId, isOsUnpairingFinished }: ForgetDevicePersistentDataThunkParams,
+        { dispatch, extra, getState },
+    ) => {
         if (!deviceId) return;
 
         const device = selectDeviceById(getState(), deviceId);
@@ -410,7 +414,9 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
         if (bluetoothId !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
-            await dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
+            await dispatch(
+                extra.thunks.forgetBluetoothDevice({ bluetoothId, isOsUnpairingFinished }),
+            );
         }
         const credentials = matchingDevice?.thp?.credentials;
         if (credentials !== undefined) {
@@ -419,16 +425,25 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
     },
 );
 
+export type ForgetDeviceThunkParams = {
+    isOsUnpairingFinished?: boolean;
+};
+
 export const forgetDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    async (_, { dispatch, getState }) => {
+    async (
+        { isOsUnpairingFinished }: ForgetDeviceThunkParams | undefined = {},
+        { dispatch, getState },
+    ) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
 
         const devices = selectDevices(getState());
         const deviceInstances = getDeviceInstances(device, devices);
 
-        await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device.id }));
+        await dispatch(
+            forgetDevicePersistentDataThunk({ deviceId: device.id, isOsUnpairingFinished }),
+        );
 
         deviceInstances.forEach(instance => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
@@ -468,7 +483,7 @@ const handlePostWipeCleanupThunk = createThunk(
         if (initialDevice.id !== undefined) {
             // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
             // (and persistent device data as well, because device.id changed).
-            await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
+            await dispatch(forgetDevicePersistentDataThunk({ deviceId: initialDevice.id }));
         }
 
         dispatch(extra.actions.openModal({ type: 'wipe-device-success' }));
