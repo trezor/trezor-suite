@@ -11,6 +11,7 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         await test.step('Seed Evolu relay server', () => {
             evoluClient.init({ ownerSecret });
             evoluClient.writeTo('account', accountSeed);
+            evoluClient.seedQuotaManagerData();
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
     });

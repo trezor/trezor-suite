@@ -28,10 +28,23 @@ export class WalletMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({ index, label }: { index: number; label: string }) {
+    async changeLabel({
+        index,
+        label,
+        confirmSuiteSync,
+    }: {
+        index: number;
+        label: string;
+        confirmSuiteSync?: boolean;
+    }) {
         await this.clickEditLabel(index);
         await this.fillLabelInput(label);
-        await this.successIconIsVisible(index);
+        if (confirmSuiteSync) {
+            await this.devicePrompt.confirmSuiteSyncSetup();
+        } else {
+            // success icon is not visible after device confirms keys on first label change
+            await this.successIconIsVisible(index);
+        }
     }
 
     @step()

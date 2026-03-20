@@ -18,9 +18,20 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({ accountId, label }: { accountId: string; label: string }) {
+    async changeLabel({
+        accountId,
+        label,
+        confirmSuiteSync,
+    }: {
+        accountId: string;
+        label: string;
+        confirmSuiteSync?: boolean;
+    }) {
         await this.clickEditLabelButton(accountId);
         await this.fillLabelInput(label, { useButton: true });
+        if (confirmSuiteSync) {
+            await this.devicePrompt.confirmSuiteSyncSetup();
+        }
         await this.successIconIsVisible(accountId);
     }
 
