@@ -133,7 +133,7 @@ export const useTradingExchangeForm = ({
     );
 
     const { symbol } = account;
-    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = getNetwork(account.symbol);
     const trades = useSelector(selectTradingTrades);
     const trade = useMemo(

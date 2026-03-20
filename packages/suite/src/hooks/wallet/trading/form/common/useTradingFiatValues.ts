@@ -17,7 +17,7 @@ export const useTradingFiatValues = ({
     const { network } = cryptoIdToNetworkAndContractAddress(cryptoId);
     const symbol = network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY;
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     return useCommonTradingFiatValues({ ...rest, cryptoId, shouldSendInSats });
 };
