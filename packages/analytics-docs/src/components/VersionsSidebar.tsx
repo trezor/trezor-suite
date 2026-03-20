@@ -55,29 +55,14 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
     for (const [attrName, attrDoc] of Object.entries(event.attributes)) {
         const attrChanges = attrDoc.changelog?.entries?.filter(e => e.version === version);
         if (attrChanges && attrChanges.length > 0) {
-            const isAdded = attrChanges.some(c => c.notes.toLowerCase().includes('added'));
+            const attrAddedVersion = attrDoc.changelog?.addedInVersion;
+            const isAttrAddedInThisVersion = attrAddedVersion === version;
 
-            if (isAdded && isEventAddedInThisVersion) {
+            if (isAttrAddedInThisVersion && isEventAddedInThisVersion) {
                 continue;
             }
 
-            const attrNotes = attrChanges.map(c => c.notes.toLowerCase()).join(' ');
-            const eventNotes = eventChanges?.map(c => c.notes.toLowerCase()).join(' ') ?? '';
-            const hasMatchingPlatformNote =
-                (attrNotes.includes('added on desktop') &&
-                    eventNotes.includes('added on desktop')) ||
-                (attrNotes.includes('added on mobile') && eventNotes.includes('added on mobile'));
-
-            if (hasMatchingPlatformNote && !isEventAddedInThisVersion) {
-                info.updatedAttributes.push(attrName);
-                continue;
-            }
-
-            if (hasMatchingPlatformNote && isEventAddedInThisVersion) {
-                continue;
-            }
-
-            if (isAdded) {
+            if (isAttrAddedInThisVersion) {
                 info.addedAttributes.push(attrName);
             } else {
                 info.updatedAttributes.push(attrName);
