@@ -116,7 +116,7 @@ export const useTradingSellForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = networks[account.symbol];
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
     const trades = useSelector(selectTradingTrades);
     const trade = trades.find(

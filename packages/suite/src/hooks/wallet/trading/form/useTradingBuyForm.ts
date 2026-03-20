@@ -91,7 +91,7 @@ export const useTradingBuyForm = ({
 
     const shouldResetOnInitialBuyInfoLoad = useRef(!buyInfo);
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const fiatTradingValuesParams = selectedQuote

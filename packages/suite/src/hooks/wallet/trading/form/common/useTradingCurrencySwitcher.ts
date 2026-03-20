@@ -44,7 +44,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
 }: TradingUseCurrencySwitcherProps<T>) => {
     const { setValue, getValues, control } =
         methods as unknown as UseFormReturn<TradingAllFormProps>;
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const { getAssetDecimals } = useTradingAssetDecimals();
