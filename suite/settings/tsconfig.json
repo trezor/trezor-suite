@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/metadata-types"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../experimental" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/suite-desktop-api"
+        }
+    ]
+}

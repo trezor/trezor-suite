@@ -4,6 +4,7 @@ import { events } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, goto, selectRouteName } from '@suite/router';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { Button, Icon, IconButton, type IconName, Input, Row, SubTabs } from '@t
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 

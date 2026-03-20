@@ -3,6 +3,7 @@ import { initialState as experimentalFeedbackInitialState } from '@suite/experim
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
 import { type RouterState } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -22,6 +23,7 @@ import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktop
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    suiteSettings: suiteSettingsInitialState,
     flags: flagsInitialState,
     locks: locksInitialState,
     device: initialState,

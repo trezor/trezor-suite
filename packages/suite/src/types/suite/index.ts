@@ -9,6 +9,7 @@ import type { MetadataAction } from '@suite/metadata';
 import type { ModalAction } from '@suite/modal';
 import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
+import { type suiteSettingsActions } from '@suite/settings';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
@@ -118,6 +119,9 @@ type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
 type FlagsAction = ReturnType<(typeof flagsActions)[keyof typeof flagsActions]>;
+type SuiteSettingsAction = ReturnType<
+    (typeof suiteSettingsActions)[keyof typeof suiteSettingsActions]
+>;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
 
@@ -150,6 +154,7 @@ export type Action =
     | RouterAction
     | StorageAction
     | SuiteAction
+    | SuiteSettingsAction
     | SuiteSyncAction
     | SuiteSyncActionCommon
     | SuiteSyncDataAction

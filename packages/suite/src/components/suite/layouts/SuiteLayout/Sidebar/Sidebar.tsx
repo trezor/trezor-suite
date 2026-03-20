@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
+import { suiteSettingsActions } from '@suite/settings';
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -15,7 +16,6 @@ import {
     zIndices,
 } from '@trezor/theme';
 
-import { setSidebarWidth as setSidebarWidthInRedux } from 'src/actions/suite/suiteActions';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectShouldDisplayDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
@@ -119,7 +119,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
 
     const handleSidebarWidthChanged = (width: number) => {
         setSidebarWidth(width);
-        dispatch(setSidebarWidthInRedux({ width }));
+        dispatch(suiteSettingsActions.setSidebarWidth(width));
     };
     const handleSidebarWidthUpdate = (width: number) => {
         if (userResizingSidebar && typeof forcedSidebarWidth === 'number') {

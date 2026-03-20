@@ -1,11 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
+import { selectIsDebugModeActive, selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
-
-import { setLanguage } from 'src/actions/settings/languageActions';
-import { setAutodetect } from 'src/actions/suite/suiteActions';
-import { selectIsDebugModeActive, selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
@@ -19,7 +16,7 @@ export const useDebugLanguageShortcut = () => {
 
     const isDebug = useSelector(selectIsDebugModeActive);
     const language = useSelector(selectLanguage);
-    const isLanguageAutodetect = useSelector(state => state.suite.settings.autodetect.language);
+    const isLanguageAutodetect = useSelector(state => state.suiteSettings.autodetect.language);
 
     const onLanguageKeys = useCallback(
         (event: KeyboardEvent) => {
@@ -29,17 +26,17 @@ export const useDebugLanguageShortcut = () => {
                 const nextIndex = (currentIndex + 1) % languages.length;
 
                 if (isLanguageAutodetect) {
-                    dispatch(setAutodetect({ language: false }));
+                    dispatch(suiteSettingsActions.setAutodetect({ language: false }));
                 }
-                dispatch(setLanguage(languages[nextIndex].value || 'en'));
+                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex].value || 'en'));
             }
 
             if (event.ctrlKey && event.key === KEYBOARD_CODE.FUNCTION_KEY_SEVEN) {
                 const nextIndex = (currentIndex - 1 + languages.length) % languages.length;
                 if (isLanguageAutodetect) {
-                    dispatch(setAutodetect({ language: false }));
+                    dispatch(suiteSettingsActions.setAutodetect({ language: false }));
                 }
-                dispatch(setLanguage(languages[nextIndex].value));
+                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex].value));
             }
         },
         [language, dispatch, isLanguageAutodetect],

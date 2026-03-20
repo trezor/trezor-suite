@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
+import { suiteSettingsActions } from '@suite/settings';
 import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -12,7 +12,7 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const TradeApi = () => {
-    const debug = useSelector(state => state.suite.settings.debug);
+    const debug = useSelector(state => state.suiteSettings.debug);
     const dispatch = useDispatch();
 
     const invityApiServerOptions = Object.entries(invityAPI.SERVERS).map(
@@ -26,7 +26,7 @@ export const TradeApi = () => {
         invityApiServerOptions[0];
 
     const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
-        dispatch(setDebugMode({ invityServerEnvironment: item.value }));
+        dispatch(suiteSettingsActions.setDebugMode({ invityServerEnvironment: item.value }));
         invityAPI.setInvityServersEnvironment(item.value);
         // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
         reloadApp(100);

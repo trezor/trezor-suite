@@ -14,6 +14,7 @@ import {
     asSuiteRouterHistoryService,
     createSuiteRouterHistory,
 } from '@suite/router';
+import { type SuiteSettingsState } from '@suite/settings';
 import {
     type DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
@@ -146,18 +147,18 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectDebugSettings: (state: AppState) => state.suite.settings.debug,
+        selectDebugSettings: (state: AppState) => state.suiteSettings.debug,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.device.selectedDevice,
-        selectLanguage: (state: AppState) => state.suite.settings.language,
+        selectLanguage: (state: AppState) => state.suiteSettings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
+        selectAddressDisplayType: (state: AppState) => state.suiteSettings.addressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
         selectTradingEnvironment: (state: AppState) =>
-            state.suite.settings.debug.invityServerEnvironment,
+            state.suiteSettings.debug.invityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectIsSuiteSyncEnabled: (state: AppState) => state.suiteSync.settings.isSuiteSyncEnabled,
         selectThpSettings: (state: AppState) => ({
@@ -310,6 +311,18 @@ export const extraDependencies: ExtraDependenciesStatic = {
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
             payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
+        storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
+            if (!payload.suiteSettings?.settings) return state;
+
+            return {
+                ...state,
+                ...payload.suiteSettings.settings,
+                enabledSecurityChecks: {
+                    ...state.enabledSecurityChecks,
+                    ...payload.suiteSettings.settings.enabledSecurityChecks,
+                },
+            };
+        },
     },
 };
 

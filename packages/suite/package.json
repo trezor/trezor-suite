@@ -89,6 +89,7 @@
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/recovery": "workspace:*",
         "@suite/router": "workspace:*",
+        "@suite/settings": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { SettingsAnchor } from '@suite/router';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
@@ -20,7 +21,6 @@ import {
 } from 'src/constants/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 

@@ -1,3 +1,4 @@
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import {
     AddressDisplayOptions,
@@ -6,7 +7,6 @@ import {
 } from '@suite-common/wallet-types';
 
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { DisplayMode } from 'src/types/suite';
 
 import { useSelector } from './useSelector';

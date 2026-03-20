@@ -1,36 +1,14 @@
 import { produce } from 'immer';
 
-import type { ExperimentalFeature } from '@suite/experimental';
 import type { CountryCode } from '@suite-common/geolocation';
-import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { type Locale } from '@suite-common/suite-types';
-import type { InvityServerEnvironment } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { type ConnectSettings, TRANSPORT, type TransportInfo } from '@trezor/connect';
-import { isWeb } from '@trezor/env-utils';
-import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { TRANSPORT, type TransportInfo } from '@trezor/connect';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { type Action, type TorBootstrap, TorStatus } from 'src/types/suite';
 
 export interface SuiteRootState {
     suite: SuiteState;
-}
-
-export interface DebugModeOptions {
-    invityServerEnvironment?: InvityServerEnvironment;
-    oauthServerEnvironment?: OAuthServerEnvironment;
-    showDebugMenu: boolean;
-    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
-    isUnlockedBootloaderAllowed: boolean;
-    showConnectLogs: boolean;
-}
-
-export interface AutodetectSettings {
-    language: boolean;
-    theme: boolean;
 }
 
 type SuiteLifecycle =
@@ -55,31 +33,6 @@ export interface PrefillFields {
     transactionHistory?: string;
 }
 
-export interface SuiteSettings {
-    theme: {
-        variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
-    };
-    language: Locale;
-    torOnionLinks: boolean;
-    isCoinjoinReceiveWarningHidden: boolean;
-    isDesktopSuitePromoHidden: boolean;
-    debug: DebugModeOptions;
-    autodetect: AutodetectSettings;
-    enabledSecurityChecks: {
-        deviceAuthenticity: boolean;
-        entropy: boolean;
-        firmwareRevision: boolean;
-        firmwareHash: boolean;
-        deviceMeta: boolean;
-    };
-    addressDisplayType: AddressDisplayOptions;
-    experimental?: ExperimentalFeature[];
-    sidebarWidth: number;
-    isCoinsFilterVisible: boolean;
-    suiteSyncRelayUrl: string | null;
-    autoEject: boolean;
-}
-
 export interface TransportState {
     transports: TransportInfo[];
     error?: string;
@@ -94,7 +47,6 @@ export interface SuiteState {
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
-    settings: SuiteSettings;
     recentlyConnectedDeviceRef: string | null; // TODO use type DeviceRef from suite-types; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
     recentlyDisconnectedDevice: string | null;
     seenDisconnectNotificationForDeviceIds: string[];
@@ -114,38 +66,6 @@ const initialState: SuiteState = {
         transactionHistory: '',
     },
     countryCode: null,
-    settings: {
-        theme: {
-            variant: 'light',
-        },
-        language: 'en-US',
-        torOnionLinks: isWeb(),
-        isCoinjoinReceiveWarningHidden: false,
-        isDesktopSuitePromoHidden: false,
-        enabledSecurityChecks: {
-            deviceAuthenticity: true,
-            entropy: true,
-            firmwareRevision: true,
-            firmwareHash: true,
-            deviceMeta: true,
-        },
-        debug: {
-            invityServerEnvironment: undefined,
-            showDebugMenu: false,
-            transports: [],
-            isUnlockedBootloaderAllowed: false,
-            showConnectLogs: false,
-        },
-        autodetect: {
-            language: true,
-            theme: true,
-        },
-        addressDisplayType: AddressDisplayOptions.CHUNKED,
-        sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
-        isCoinsFilterVisible: false,
-        suiteSyncRelayUrl: null,
-        autoEject: false,
-    },
     recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,
     seenDisconnectNotificationForDeviceIds: [],
@@ -165,14 +85,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.seenDisconnectNotificationForDeviceIds,
                     ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
                 ];
-                draft.settings = {
-                    ...draft.settings,
-                    ...action.payload.suiteSettings?.settings,
-                    enabledSecurityChecks: {
-                        ...draft.settings.enabledSecurityChecks,
-                        ...action.payload.suiteSettings?.settings.enabledSecurityChecks,
-                    },
-                };
                 break;
             case STORAGE.ERROR:
                 draft.lifecycle = { status: 'db-error', error: action.payload };
@@ -189,18 +101,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.ERROR:
                 draft.lifecycle = { status: 'error', error: action.error };
-                break;
-
-            case SUITE.SET_LANGUAGE:
-                draft.settings.language = action.locale;
-                break;
-
-            case SUITE.SET_DEBUG_MODE:
-                draft.settings.debug = { ...draft.settings.debug, ...action.payload };
-                break;
-
-            case SUITE.SET_EXPERIMENTAL_FEATURES:
-                draft.settings.experimental = action.payload.enabledFeatures;
                 break;
 
             case SUITE.SET_RECENTLY_CONNECTED_DEVICE:
@@ -239,35 +139,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 };
                 break;
 
-            case SUITE.SET_THEME:
-                draft.settings.theme.variant = action.variant;
-                break;
-
             case SUITE.SET_SEND_FORM_PREFILL:
                 draft.prefillFields.sendForm = action.payload.contractAddress;
                 break;
 
             case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
                 draft.prefillFields.transactionHistory = action.payload;
-                break;
-
-            case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-                draft.settings.addressDisplayType = action.option;
-                break;
-
-            case SUITE.SET_AUTODETECT:
-                draft.settings.autodetect = {
-                    ...draft.settings.autodetect,
-                    ...action.payload,
-                };
-                break;
-
-            case SUITE.SET_SIDEBAR_WIDTH:
-                draft.settings.sidebarWidth = action.payload.width;
-                break;
-
-            case SUITE.SET_IS_COINS_FILTER_VISIBLE:
-                draft.settings.isCoinsFilterVisible = action.payload.isCoinsFilterVisible;
                 break;
 
             case TRANSPORT.START: {
@@ -300,28 +177,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.torBootstrap = action.payload;
                 break;
 
-            case SUITE.ONION_LINKS:
-                draft.settings.torOnionLinks = action.payload;
-                break;
-
-            case SUITE.COINJOIN_RECEIVE_WARNING:
-                draft.settings.isCoinjoinReceiveWarningHidden = action.payload;
-                break;
-            case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
-                draft.settings.enabledSecurityChecks.deviceAuthenticity = action.payload;
-                break;
-            case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
-                draft.settings.enabledSecurityChecks.firmwareRevision = action.payload;
-                break;
-            case SUITE.TOGGLE_DEVICE_META_CHECKS:
-                draft.settings.enabledSecurityChecks.deviceMeta = action.payload;
-                break;
-            case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
-                draft.settings.enabledSecurityChecks.firmwareHash = action.payload;
-                break;
-            case SUITE.TOGGLE_ENTROPY_CHECK:
-                draft.settings.enabledSecurityChecks.entropy = action.payload;
-                break;
             // no default
         }
     });

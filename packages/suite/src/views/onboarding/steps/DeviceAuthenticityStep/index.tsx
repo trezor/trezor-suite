@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
@@ -9,7 +10,6 @@ import { Card, Column, Grid, Icon, type IconName, Paragraph } from '@trezor/comp
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const items: { icon: IconName; text: TranslationKey }[] = [
     { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },

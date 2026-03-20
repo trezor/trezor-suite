@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { selectLanguage } from '@suite/settings';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
@@ -10,7 +11,6 @@ import { borders, spacings, transitions, typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getNodeTitle } from 'src/utils/suite/guide';
 

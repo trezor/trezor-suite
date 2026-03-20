@@ -3,6 +3,11 @@
 import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
+import {
+    prepareSuiteSettingsReducer,
+    suiteSettingsActions,
+    suiteSettingsInitialState,
+} from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -25,11 +30,11 @@ import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
-import * as suiteActions from '../suiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
+const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
@@ -75,6 +80,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    suiteSettings: suiteSettingsInitialState,
     flags: flagsInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
@@ -109,8 +115,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, flags, device, router } = store.getState();
+        const { suite, suiteSettings, flags, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
+        store.getState().suiteSettings = suiteSettingsReducer(suiteSettings, action);
         store.getState().flags = flagsReducer(flags, action);
         store.getState().device = deviceReducer(device, action);
         store.getState().router = routerReducer(router, action);
@@ -128,6 +135,13 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             f.actions.forEach((action: any, i: number) => {
                 store.dispatch(action);
+
+                if ('suiteSettings' in f.result[i]) {
+                    expect(store.getState().suiteSettings).toMatchObject(f.result[i].suiteSettings);
+
+                    return;
+                }
+
                 expect(store.getState().suite).toMatchObject(f.result[i]);
             });
         });
@@ -226,8 +240,8 @@ describe('Suite Actions', () => {
         expect(deviceActions.forgetDevice({ device: SUITE_DEVICE })).toMatchObject({
             type: deviceActions.forgetDevice.type,
         });
-        expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
-            type: SUITE.SET_DEBUG_MODE,
+        expect(suiteSettingsActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
+            type: suiteSettingsActions.setDebugMode.type,
         });
     });
 });

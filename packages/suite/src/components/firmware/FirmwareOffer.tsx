@@ -1,4 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -14,7 +15,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
-import { selectIsDebugModeActive } from '../../selectors/suite/suiteSelectors';
 import { DebugOnlyBadge } from '../suite/DebugOnlyBadge';
 
 type FirmwareOfferProps = {

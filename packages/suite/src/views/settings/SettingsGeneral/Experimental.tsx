@@ -6,16 +6,15 @@ import type { ExperimentalFeature } from '@suite/experimental';
 import { feedbackRequested } from '@suite/experimental-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type FeatureLineProps = {
@@ -37,14 +36,13 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
 
         try {
             await config?.onToggle?.({ services, newValue });
-            dispatch({
-                type: SUITE.SET_EXPERIMENTAL_FEATURES,
-                payload: {
-                    enabledFeatures: newValue
+            dispatch(
+                suiteSettingsActions.setExperimentalFeatures(
+                    newValue
                         ? [...enabledFeatures, feature]
                         : enabledFeatures.filter(enabledFeature => enabledFeature !== feature),
-                },
-            });
+                ),
+            );
             if (!newValue) {
                 dispatch(feedbackRequested({ feature, isFeatureBeingDisabled: true }));
             }
@@ -115,7 +113,7 @@ const bannerMotionDivProps = {
 } as const;
 
 export const Experimental = () => {
-    const enabledFeatures = useSelector(state => state.suite.settings.experimental);
+    const enabledFeatures = useSelector(state => state.suiteSettings.experimental);
     const isExperimentalEnabled = enabledFeatures !== undefined;
     const isDebug = useSelector(selectIsDebugModeActive);
 
@@ -130,10 +128,11 @@ export const Experimental = () => {
             }),
         );
 
-        dispatch({
-            type: SUITE.SET_EXPERIMENTAL_FEATURES,
-            payload: { enabledFeatures: enabledFeatures === undefined ? [] : undefined },
-        });
+        dispatch(
+            suiteSettingsActions.setExperimentalFeatures(
+                enabledFeatures === undefined ? [] : undefined,
+            ),
+        );
     };
 
     const experimentalFeatures = useMemo(

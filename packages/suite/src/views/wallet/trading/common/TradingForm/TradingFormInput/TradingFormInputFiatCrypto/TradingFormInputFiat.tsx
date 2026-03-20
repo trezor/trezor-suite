@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { type FieldErrors, type UseControllerProps, useFormContext } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -27,7 +28,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,

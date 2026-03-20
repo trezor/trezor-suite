@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectHasExperimentalFeature } from '@suite/settings';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsSuiteSyncDebugEnabled,
@@ -12,7 +13,6 @@ import { spacings } from '@trezor/theme';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 export const SuiteSyncSettings = () => {

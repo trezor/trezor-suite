@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
+import { selectIsDebugModeActive } from '@suite/settings';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { AuthenticateDeviceFailStep } from './AuthenticateDeviceFailStep';
 import { AuthenticateDeviceInititalStep } from './AuthenticateDeviceInititalStep';

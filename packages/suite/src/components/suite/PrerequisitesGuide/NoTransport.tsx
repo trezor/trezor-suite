@@ -1,3 +1,4 @@
+import { selectIsDebugModeActive } from '@suite/settings';
 import { isDesktop } from '@trezor/env-utils';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -7,7 +8,6 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
 } from 'src/components/suite/troubleshooting/tips';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../../hooks/suite';
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';

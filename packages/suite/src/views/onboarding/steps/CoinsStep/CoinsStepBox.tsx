@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Badge, CollapsibleBox, Column, Row, Tooltip } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
@@ -9,7 +10,6 @@ import { isDesktop, isWeb } from '@trezor/env-utils';
 import { CoinGroup } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 import { TorSection } from './TorSection';

@@ -114,7 +114,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     showPureChildren = false,
     showAccounts = true,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
-    const theme = useSelector(state => state.suite.settings.theme);
+    const theme = useSelector(state => state.suiteSettings.theme);
 
     return (
         <ElevationDown>

@@ -1,6 +1,7 @@
 import { address } from '@solana/kit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
@@ -42,7 +43,6 @@ import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateTransaction = (

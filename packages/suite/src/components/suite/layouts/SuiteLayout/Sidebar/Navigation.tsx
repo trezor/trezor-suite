@@ -4,12 +4,12 @@ import styled from 'styled-components';
 
 import { selectIsInitialRun } from '@suite/flags';
 import { type Route } from '@suite/router';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';

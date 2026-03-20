@@ -16,6 +16,11 @@ import {
     routerMiddleware,
     routerReducer,
 } from '@suite/router';
+import {
+    prepareSuiteSettingsReducer,
+    suiteSettingsActions,
+    suiteSettingsInitialState,
+} from '@suite/settings';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -62,6 +67,7 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
+const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
 
 global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
@@ -77,6 +83,7 @@ const getInitialState = (initialRun?: boolean) => {
 
     return {
         suite: suiteReducer(undefined, EMPTY_ACTION),
+        suiteSettings: suiteSettingsInitialState,
         flags: {
             ...(initialRun !== undefined
                 ? { ...initialFlagsState, initialRun }
@@ -117,7 +124,7 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             initDevices.pending.type,
             initDevices.fulfilled.type,
-            SUITE.SET_LANGUAGE,
+            suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
@@ -176,7 +183,7 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             initDevices.pending.type,
             initDevices.fulfilled.type,
-            SUITE.SET_LANGUAGE,
+            suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
@@ -230,7 +237,7 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             initDevices.pending.type,
             initDevices.fulfilled.type,
-            SUITE.SET_LANGUAGE,
+            suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
@@ -284,7 +291,7 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             initDevices.pending.type,
             initDevices.fulfilled.type,
-            SUITE.SET_LANGUAGE,
+            suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
@@ -325,8 +332,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];
-        const { suite, router, locks } = store.getState();
+        const { suite, suiteSettings, router, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
+        store.getState().suiteSettings = suiteSettingsReducer(suiteSettings, action);
         store.getState().router = routerReducer(router, action);
         store.getState().locks = locksReducer(locks, action);
     });

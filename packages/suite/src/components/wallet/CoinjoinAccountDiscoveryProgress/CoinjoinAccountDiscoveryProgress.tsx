@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { RotatingFacts } from './RotatingFacts';
 

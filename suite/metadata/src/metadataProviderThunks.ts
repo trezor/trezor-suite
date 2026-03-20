@@ -89,7 +89,7 @@ export const getProviderInstance =
         providerInstance[dataType] = createProviderInstance(
             provider.type,
             provider.tokens,
-            state.suite.settings.debug.oauthServerEnvironment,
+            state.suiteSettings.debug.oauthServerEnvironment,
             clientId,
         );
 
@@ -245,7 +245,7 @@ export const connectProvider =
         const providerInstance = createProviderInstance(
             type,
             {},
-            getState().suite.settings.debug.oauthServerEnvironment,
+            getState().suiteSettings.debug.oauthServerEnvironment,
             clientId,
         );
 

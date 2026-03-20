@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 
 export const DeviceAuthenticityOptOut = () => {
     const dispatch = useDispatch();
