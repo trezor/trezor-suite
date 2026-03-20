@@ -471,6 +471,7 @@ export type StellarManageTokenStackParamList = {
     [StellarManageTokenStackRoutes.ActivationFee]: {
         accountKey: AccountKey;
         tokenContract: TokenAddress;
+        isTrading?: boolean;
     };
     [StellarManageTokenStackRoutes.DeactivationFee]: {
         accountKey: AccountKey;

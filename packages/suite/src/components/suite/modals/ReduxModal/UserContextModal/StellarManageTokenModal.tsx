@@ -235,6 +235,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         <Modal
             width={600}
             onCancel={!isProcessing ? onCancel : undefined}
+            isBackdropCancelable={!isProcessing}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={
                 <Row gap={spacings.xs}>

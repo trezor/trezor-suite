@@ -1,10 +1,9 @@
 import { Pressable } from 'react-native';
 
+import { type StellarTokenInfo } from '@suite-common/wallet-types';
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { type StellarTokenInfo } from '../hooks/useInactiveStellarTokens';
 
 type TokenListItemProps = {
     token: StellarTokenInfo;

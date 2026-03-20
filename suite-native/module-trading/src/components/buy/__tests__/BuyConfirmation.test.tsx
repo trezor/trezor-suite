@@ -1,3 +1,4 @@
+import { Button } from '@suite-native/atoms';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
@@ -13,13 +14,26 @@ jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
     }),
 }));
 
+jest.mock('../../../hooks/general/useTradingStellarActivateToken', () => ({
+    useTradingStellarActivateToken: jest.fn(),
+}));
+
 describe('BuyConfirmation', () => {
     const mockUseBuyFlow = require('../../../hooks/buy/useBuyFlow').useBuyFlow;
+    const mockUseTradingStellarActivateToken =
+        require('../../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
 
     const renderConfirmation = () =>
         renderWithStoreProvider(<BuyConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
+
+    beforeEach(() => {
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: false,
+            activateButtonElement: null,
+        });
+    });
 
     it('should render continue button when canProceed is true', () => {
         mockUseBuyFlow.mockReturnValue({
@@ -46,5 +60,43 @@ describe('BuyConfirmation', () => {
         const { queryByText } = renderConfirmation();
 
         expect(queryByText('Continue')).toBeNull();
+    });
+
+    it('should render activate button when trading inactive Stellar token', () => {
+        mockUseBuyFlow.mockReturnValue({
+            canProceed: true,
+            selectQuote: jest.fn(),
+            isConsentRequested: false,
+            giveConsent: jest.fn(),
+            cancelConsent: jest.fn(),
+        });
+
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: true,
+            activateButtonElement: <Button>Activate</Button>,
+        });
+
+        const { queryByText } = renderConfirmation();
+        expect(queryByText('Activate')).toBeTruthy();
+        expect(queryByText('Continue')).toBeNull();
+    });
+
+    it('should not render activate button when not trading inactive Stellar token', () => {
+        mockUseBuyFlow.mockReturnValue({
+            canProceed: true,
+            selectQuote: jest.fn(),
+            isConsentRequested: false,
+            giveConsent: jest.fn(),
+            cancelConsent: jest.fn(),
+        });
+
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: false,
+            activateButtonElement: <Button>Activate</Button>,
+        });
+
+        const { queryByText } = renderConfirmation();
+        expect(queryByText('Activate')).toBeNull();
+        expect(queryByText('Continue')).toBeTruthy();
     });
 });
