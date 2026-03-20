@@ -236,3 +236,6 @@ export const selectStake = (state: StakeRootState) => state.wallet.stake;
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     state.wallet.stake.precomposedForm;
+
+export const selectStakePrecomposedTx = (state: StakeRootState) =>
+    state.wallet.stake.precomposedTx;

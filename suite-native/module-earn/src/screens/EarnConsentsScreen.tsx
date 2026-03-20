@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackNavigationProps,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 import {
     type NativeStakingRootState,
@@ -43,9 +43,14 @@ const titleStyle = prepareNativeStyle(utils => ({
 export const EarnConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
     const [isSecondCardExpanded, setIsSecondCardExpanded] = useState(false);
-
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnConsents>>();
-    const { accountKey } = route.params;
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnConsents>>();
+    const { accountKey, amount } = route.params;
+
+    const handleConfirm = () => {
+        navigation.navigate(RootStackRoutes.EarnTransactionDataReview, { accountKey, amount });
+    };
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -73,6 +78,7 @@ export const EarnConsentsScreen = () => {
                 <EarnConsentsDelegatingCard
                     isExpanded={isSecondCardExpanded}
                     symbol={account?.symbol}
+                    onConfirm={handleConfirm}
                 />
             </VStack>
         </Screen>

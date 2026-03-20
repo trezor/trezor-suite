@@ -26,7 +26,7 @@ export const EarnFormScreen = () => {
     } = form;
 
     const handleSubmit = form.handleSubmit(() => {
-        navigation.navigate(RootStackRoutes.EarnConsents, { accountKey });
+        navigation.navigate(RootStackRoutes.EarnConsents, { accountKey, amount: amountValue });
     });
 
     return (
@@ -37,8 +37,8 @@ export const EarnFormScreen = () => {
                     accountKey={accountKey}
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isFormValid={isValid}
-                    onPress={handleSubmit}
+                    isDisabled={!isValid}
+                    onPress={() => handleSubmit()}
                 />
             }
         >

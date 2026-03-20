@@ -27,9 +27,12 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
+    EarnConsentsScreen,
+    EarnFormScreen,
+    EarnTransactionDataReviewScreen,
+    HowStakeWorksScreen,
     StakingDetailScreen,
     StakingManagementScreen,
-    HowStakeWorksScreen,
 } from '@suite-native/module-earn';
 import { ExperimentalFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -121,6 +124,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.EarnConsents }}
                 name={RootStackRoutes.EarnConsents}
                 component={EarnConsentsScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnTransactionDataReview }}
+                name={RootStackRoutes.EarnTransactionDataReview}
+                component={EarnTransactionDataReviewScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}

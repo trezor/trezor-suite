@@ -1,4 +1,4 @@
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
@@ -7,7 +7,12 @@ import {
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+import {
+    getAccountEverstakeStakingPool,
+    getUnstakingPeriodInDays,
+    isPending,
+    secondsToDays,
+} from '@suite-common/wallet-utils';
 
 import { type NativeStakingRootState } from './types';
 
@@ -125,26 +130,25 @@ export const selectEthereumPendingDepositedBalanceByAccountKey = (
 };
 
 export const selectUnstakingPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    const { validatorWithdrawTime, validatorExitTime } = selectValidatorsQueueData(state, symbol);
+    const validatorsQueue = selectValidatorsQueueData(state, symbol);
 
     return getUnstakingPeriodInDays({
         networkType: symbol ? getNetworkType(symbol) : undefined,
-        validatorWithdrawTime,
-        validatorExitTime,
+        validatorWithdrawTime: validatorsQueue?.validatorWithdrawTime,
+        validatorExitTime: validatorsQueue?.validatorExitTime,
     });
 };
 
 export const selectEntryPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    const { validatorActivationTime, validatorAddingDelay } = selectValidatorsQueueData(
-        state,
-        symbol,
-    );
+    const validatorsQueue = selectValidatorsQueueData(state, symbol);
+    const validatorActivationTime = validatorsQueue?.validatorActivationTime;
+    const validatorAddingDelay = validatorsQueue?.validatorAddingDelay;
 
     if (validatorActivationTime === undefined || validatorAddingDelay === undefined) {
         return undefined;

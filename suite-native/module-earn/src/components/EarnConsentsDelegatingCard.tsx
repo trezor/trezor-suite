@@ -52,10 +52,6 @@ export const EarnConsentsDelegatingCard = ({
     const measuredHeight = useSharedValue(-1);
     const expandableHeight = useSharedValue(0);
 
-    const handleUnderstand = () => {
-        // TODO: redirect to the next screen
-    };
-
     const handleLayout = (event: LayoutChangeEvent) => {
         if (measuredHeight.value === -1) {
             measuredHeight.value = event.nativeEvent.layout.height;
