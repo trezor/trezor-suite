@@ -124,11 +124,7 @@ export const TradingExchangeApprovalScreen = ({
                         />
                     )}
 
-                    <ExchangeApprovalDetails
-                        fee={fee}
-                        isLoading={isLoading}
-                        exchange={quote.exchange}
-                    />
+                    <ExchangeApprovalDetails exchange={quote.exchange} />
                 </VStack>
             </Screen>
         </TradingDeviceConnectionGuard>
