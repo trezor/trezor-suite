@@ -16,7 +16,7 @@ describe('Sign/Verify actions', () => {
         store = configureStore()({
             wallet: { selectedAccount: { account: { symbol: 'btc', networkType: 'bitcoin' } } },
             device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
-            suite: { settings: { addressDisplayType: 'chunked' } },
+            suiteSettings: { addressDisplayType: 'chunked' },
         });
     });
 

@@ -62,7 +62,7 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
     return {
-        language: state.suite.settings.language,
+        language: state.suiteSettings.language,
         enabledNetworks: state.wallet.settings.enabledNetworks,
         customBackends: getCustomBackends(state.wallet.blockchain)
             .map(({ symbol }) => symbol)
@@ -77,10 +77,10 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
-        theme: state.suite.settings.theme.variant,
+        theme: state.suiteSettings.theme.variant,
         suiteVersion: process.env.VERSION || '',
         earlyAccessProgram: state.desktopUpdate.allowPrerelease,
-        experimentalFeatures: state.suite.settings.experimental,
+        experimentalFeatures: state.suiteSettings.experimental,
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
         osName: getOsName(),
@@ -89,8 +89,8 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
 
         windowWidth: getWindowWidth(),
         windowHeight: getWindowHeight(),
-        autodetectLanguage: state.suite.settings.autodetect.language,
-        autodetectTheme: state.suite.settings.autodetect.theme,
+        autodetectLanguage: state.suiteSettings.autodetect.language,
+        autodetectTheme: state.suiteSettings.autodetect.theme,
 
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
 

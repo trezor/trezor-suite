@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { Button, Row } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;

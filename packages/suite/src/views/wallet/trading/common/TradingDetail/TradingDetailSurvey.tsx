@@ -1,3 +1,4 @@
+import { selectLanguage } from '@suite/settings';
 import {
     Feature,
     type TradingSurveyPayload,
@@ -10,7 +11,6 @@ import { spacings } from '@trezor/theme';
 
 import { MessageSystemButton } from 'src/components/suite/banners/MessageSystemButton';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
     try {

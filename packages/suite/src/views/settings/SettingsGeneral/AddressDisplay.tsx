@@ -1,10 +1,10 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
 
-import { setAddressDisplayType } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -22,7 +22,7 @@ const options = [
 ];
 
 export const AddressDisplay = () => {
-    const selectedAddressDisplay = useSelector(state => state.suite.settings.addressDisplayType);
+    const selectedAddressDisplay = useSelector(state => state.suiteSettings.addressDisplayType);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const onChange = (value: AddressDisplayOptions) => {
@@ -32,7 +32,7 @@ export const AddressDisplay = () => {
                 addressDisplayType: value,
             },
         });
-        dispatch(setAddressDisplayType(value));
+        dispatch(suiteSettingsActions.setAddressDisplayType(value));
     };
 
     return (

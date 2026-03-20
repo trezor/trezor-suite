@@ -3,6 +3,7 @@ import { metadataLabelingActions } from '@suite/metadata';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { initialRedirection, routerInit } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -19,7 +20,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
-import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -30,9 +30,9 @@ import { onSuiteReady } from './suiteActions';
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
-            settings: { language },
             lifecycle: { status },
         },
+        suiteSettings: { language },
         wallet: {
             settings: { localCurrency },
         },
@@ -56,7 +56,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
      */
 
     // 2. fetching locales
-    dispatch(languageActions.setLanguage(language));
+    dispatch(suiteSettingsActions.setLanguage(language));
 
     // 3. fetch message system config
     await prepareCachedEnvData();

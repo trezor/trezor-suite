@@ -302,10 +302,10 @@ export const SecurityCheck = () => {
     const devices = useSelector(selectDevices);
     const { initialRun } = useSelector(selectFlags);
     const isDeviceAuthenticityCheckEnabled = useSelector(
-        state => state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
+        state => state.suiteSettings.enabledSecurityChecks.deviceAuthenticity,
     );
     const isUnlockedBootloaderAllowed = useSelector(
-        state => state.suite.settings.debug.isUnlockedBootloaderAllowed,
+        state => state.suiteSettings.debug.isUnlockedBootloaderAllowed,
     );
     const dispatch = useDispatch();
     const { goToSuite } = useOnboarding();

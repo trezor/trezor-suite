@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
 import { BulletList, type BulletListItemState, Text } from '@trezor/components';
 
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';
@@ -18,7 +18,7 @@ const useOnboardingStepCategoriesInPath = () => {
     const { path: onboardingPath } = useOnboarding();
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
     const isUnlockedBootloaderAllowed = useSelector(
-        state => state.suite.settings.debug.isUnlockedBootloaderAllowed,
+        state => state.suiteSettings.debug.isUnlockedBootloaderAllowed,
     );
 
     return useMemo(

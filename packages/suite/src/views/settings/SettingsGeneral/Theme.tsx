@@ -1,14 +1,13 @@
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
-import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
 
@@ -54,8 +53,8 @@ const useThemeOptions = () => {
 
 export const Theme = () => {
     const analytics = useAnalytics();
-    const theme = useSelector(state => state.suite.settings.theme);
-    const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
+    const theme = useSelector(state => state.suiteSettings.theme);
+    const autodetectTheme = useSelector(state => state.suiteSettings.autodetect.theme);
     const dispatch = useDispatch();
     const { optionGroups, getOption } = useThemeOptions();
 
@@ -79,11 +78,11 @@ export const Theme = () => {
         });
 
         if ((themeValue === 'system') !== autodetectTheme) {
-            dispatch(setAutodetect({ theme: !autodetectTheme }));
+            dispatch(suiteSettingsActions.setAutodetect({ theme: !autodetectTheme }));
         }
 
         if (themeValue !== 'system') {
-            dispatch(setTheme(themeValue));
+            dispatch(suiteSettingsActions.setTheme(themeValue));
         }
 
         if (desktopApi.available) {

@@ -1,14 +1,14 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import {
+    selectIsFirmwareHashCheckEnabled,
+    selectIsFirmwareRevisionCheckEnabled,
+} from '@suite/settings';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectIsFirmwareHashCheckEnabled,
-    selectIsFirmwareRevisionCheckEnabled,
-} from 'src/selectors/suite/suiteSelectors';
 
 export const FirmwareAuthenticityChecks = () => {
     const dispatch = useDispatch();

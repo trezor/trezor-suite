@@ -3,6 +3,7 @@ import { type MiddlewareAPI } from 'redux';
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import { addLog } from '@suite-common/logger';
 import { redactUserPathFromString } from '@trezor/utils';
 
@@ -16,13 +17,13 @@ const log =
     (action: Action): Action => {
         // IMPORTANT: Actions that are shared between native and desktop app can be found in this file: suite-common/logger/src/logsMiddleware.ts
         switch (action.type) {
-            case SUITE.SET_LANGUAGE:
-            case SUITE.SET_THEME:
-            case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-            case SUITE.SET_AUTODETECT:
+            case suiteSettingsActions.setLanguage.type:
+            case suiteSettingsActions.setTheme.type:
+            case suiteSettingsActions.setAddressDisplayType.type:
+            case suiteSettingsActions.setAutodetect.type:
             case METADATA.ENABLE:
             case METADATA.DISABLE:
-            case SUITE.ONION_LINKS:
+            case suiteSettingsActions.setOnionLinks.type:
             case DESKTOP_UPDATE.CHECKING:
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:

@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -11,7 +12,6 @@ import {
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 

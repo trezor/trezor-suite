@@ -1,14 +1,11 @@
 import { goto } from '@suite/router';
+import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { resolveMessageContent } from '@suite-common/message-system';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectLanguage,
-    selectTorOnionLinks,
-    selectTorState,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type MessageSystemButtonProps = {

@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 
+import { type DebugModeOptions, suiteSettingsActions } from '@suite/settings';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
@@ -33,7 +32,7 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
 
 const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
-    const debugTransports = useSelector(state => state.suite.settings.debug.transports);
+    const debugTransports = useSelector(state => state.suiteSettings.debug.transports);
 
     return useMemo(
         () =>
@@ -77,7 +76,11 @@ export const Transport = () => {
                                 const nextTransports = items
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);
-                                dispatch(setDebugMode({ transports: nextTransports }));
+                                dispatch(
+                                    suiteSettingsActions.setDebugMode({
+                                        transports: nextTransports,
+                                    }),
+                                );
                                 TrezorConnect.updateConnectSettings({ transports: nextTransports });
                             }}
                         />

@@ -1,5 +1,6 @@
 import styled, { type RuleSet, css } from 'styled-components';
 
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
@@ -8,7 +9,6 @@ import { type TypographyStyle } from '@trezor/theme';
 
 import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 const TRUNCATION_PLACEHOLDER = '...';
 const REGEXP_ADDRESS = /^(0x)?((.{8})(?:.{4})*(.{5,8}))$/;

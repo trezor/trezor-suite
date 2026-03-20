@@ -3,6 +3,7 @@ import { type MiddlewareAPI } from 'redux';
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange, selectRouterUrl } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -29,15 +30,15 @@ import {
 const deviceContextName = 'trezor-device';
 
 const breadcrumbActions = new Set<Action['type']>([
-    SUITE.SET_LANGUAGE,
-    SUITE.SET_THEME,
-    SUITE.SET_ADDRESS_DISPLAY_TYPE,
-    SUITE.SET_AUTODETECT,
+    suiteSettingsActions.setLanguage.type,
+    suiteSettingsActions.setTheme.type,
+    suiteSettingsActions.setAddressDisplayType.type,
+    suiteSettingsActions.setAutodetect.type,
     setBaseCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
     METADATA.ENABLE,
     METADATA.DISABLE,
-    SUITE.ONION_LINKS,
+    suiteSettingsActions.setOnionLinks.type,
     analyticsActions.enableAnalytics.type,
     analyticsActions.disableAnalytics.type,
     DESKTOP_UPDATE.CHECKING,

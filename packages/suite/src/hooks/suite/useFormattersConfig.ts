@@ -1,8 +1,8 @@
+import { selectLanguage } from '@suite/settings';
 import { type FormatterProviderConfig } from '@suite-common/formatters';
 import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);

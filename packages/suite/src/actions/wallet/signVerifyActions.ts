@@ -1,3 +1,4 @@
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -13,7 +14,6 @@ import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Result } from '@trezor/type-utils';
 
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 

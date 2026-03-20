@@ -74,8 +74,8 @@ const getAllStepsInPath = (getState: GetState) => {
         device: selectSelectedDevice(getState()),
         onboardingPath: getState().onboarding.path,
         isDeviceAuthenticityCheckEnabled:
-            getState().suite.settings.enabledSecurityChecks.deviceAuthenticity,
-        isUnlockedBootloaderAllowed: getState().suite.settings.debug.isUnlockedBootloaderAllowed,
+            getState().suiteSettings.enabledSecurityChecks.deviceAuthenticity,
+        isUnlockedBootloaderAllowed: getState().suiteSettings.debug.isUnlockedBootloaderAllowed,
     };
 
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));

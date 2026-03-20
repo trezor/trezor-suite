@@ -75,7 +75,7 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const theme = useSelector(state => state.suite.settings.theme);
+    const theme = useSelector(state => state.suiteSettings.theme);
 
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();

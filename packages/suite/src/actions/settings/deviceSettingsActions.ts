@@ -1,4 +1,5 @@
 import { openModal } from '@suite/modal';
+import { selectIsEntropyCheckEnabled } from '@suite/settings';
 import { selectSelectedDevice, selectSimulatedEntropyCheckFail } from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
@@ -13,7 +14,6 @@ import {
     DEFAULT_SKIP_BACKUP,
     DEFAULT_STRENGTH,
 } from 'src/constants/suite/device';
-import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 import { type Dispatch, type GetState } from 'src/types/suite';
 
 export const applySettings =

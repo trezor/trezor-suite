@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import {
     selectDeviceSupportedNetworks,
@@ -23,7 +24,6 @@ import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';

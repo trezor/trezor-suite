@@ -3,6 +3,7 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
@@ -10,7 +11,6 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { type CustomFeeBasicProps } from './CustomFeeBasicProps';

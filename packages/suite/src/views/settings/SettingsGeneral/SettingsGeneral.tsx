@@ -1,6 +1,7 @@
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled, selectSelectedProviderForLabels } from '@suite/metadata';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -14,7 +15,7 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature, selectTorState } from 'src/selectors/suite/suiteSelectors';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';

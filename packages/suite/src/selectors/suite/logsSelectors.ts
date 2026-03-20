@@ -4,23 +4,21 @@ import {
     selectSelectedLabelsProviderType,
 } from '@suite/metadata';
 import {
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectIsDebugModeActive,
+    selectLanguage,
+    selectTheme,
+    selectTorOnionLinks,
+} from '@suite/settings';
+import {
     type LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
     selectRedactedApplicationInfo,
 } from '@suite-common/logger';
 import { type DeviceState } from '@trezor/connect';
 
-import {
-    selectAutodetectLanguage,
-    selectAutodetectTheme,
-    selectIsDebugModeActive,
-    selectIsSuiteOnline,
-    selectLanguage,
-    selectSuiteTransports,
-    selectTheme,
-    selectTorOnionLinks,
-    selectTorState,
-} from './suiteSelectors';
+import { selectIsSuiteOnline, selectSuiteTransports, selectTorState } from './suiteSelectors';
 import {
     type DesktopUpdateRootState,
     selectDesktopUpdateAllowPrerelease,

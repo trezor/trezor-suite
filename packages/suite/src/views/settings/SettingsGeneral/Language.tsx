@@ -3,17 +3,15 @@ import { useMemo } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { setLanguage } from 'src/actions/settings/languageActions';
-import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsLocale } from 'src/utils/suite/l10n';
 
@@ -64,7 +62,7 @@ const useLanguageOptions = () => {
 export const Language = () => {
     const analytics = useAnalytics();
     const language = useSelector(selectLanguage);
-    const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
+    const autodetectLanguage = useSelector(state => state.suiteSettings.autodetect.language);
     const dispatch = useDispatch();
 
     const { options, systemOption } = useLanguageOptions();
@@ -89,10 +87,10 @@ export const Language = () => {
             },
         });
         if ((value === 'system') !== autodetectLanguage) {
-            dispatch(setAutodetect({ language: !autodetectLanguage }));
+            dispatch(suiteSettingsActions.setAutodetect({ language: !autodetectLanguage }));
         }
         if (value !== 'system') {
-            dispatch(setLanguage(value));
+            dispatch(suiteSettingsActions.setLanguage(value));
         }
     };
 

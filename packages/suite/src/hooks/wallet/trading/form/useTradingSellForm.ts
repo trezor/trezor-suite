@@ -7,6 +7,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { events } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -49,7 +50,6 @@ import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';

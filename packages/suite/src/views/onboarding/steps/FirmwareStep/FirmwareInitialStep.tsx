@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
@@ -14,7 +15,6 @@ import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirma
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

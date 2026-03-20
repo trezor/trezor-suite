@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
+import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -28,10 +29,6 @@ import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/A
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/selectors/suite/suiteSelectors';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 

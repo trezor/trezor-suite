@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
+import { selectLanguage } from '@suite/settings';
 import { type Locale } from '@suite-common/suite-types';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
-
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../hooks/suite';
 

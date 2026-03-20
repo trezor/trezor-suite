@@ -171,6 +171,7 @@
         },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
+        { "path": "../../suite/settings" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/tx-simulation" },

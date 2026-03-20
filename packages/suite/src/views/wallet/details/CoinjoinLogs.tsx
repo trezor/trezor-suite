@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { Card, Column } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 export const CoinjoinLogs = () => {
     const isDebug = useSelector(selectIsDebugModeActive);

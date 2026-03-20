@@ -1,3 +1,4 @@
+import { selectLanguage } from '@suite/settings';
 import {
     type AssetFiatBalance,
     type AssetFiatBalanceWithPercentage,
@@ -9,7 +10,6 @@ import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;
