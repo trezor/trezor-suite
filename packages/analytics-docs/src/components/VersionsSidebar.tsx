@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import styled from 'styled-components';
 
 import {
@@ -8,6 +10,7 @@ import {
     H3,
     Icon,
     type IconProps,
+    Paragraph,
     type SuiteThemeColors,
     Text,
     Tooltip,
@@ -106,31 +109,55 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
 };
 
 const getTooltipContent = (changeInfo: ChangeInfo) => {
-    const parts: string[] = [];
+    const elements: JSX.Element[] = [];
 
     if (changeInfo.isEventAdded) {
-        parts.push(`Event added`);
+        elements.push(
+            <Paragraph key="event-added" typographyStyle="body-sm-strong">
+                Event added.
+            </Paragraph>,
+        );
     }
 
     if (changeInfo.isEventUpdated) {
-        parts.push(`Event updated`);
+        elements.push(
+            <Paragraph key="event-updated" typographyStyle="body-sm-strong">
+                Event updated.
+            </Paragraph>,
+        );
     }
 
     if (changeInfo.addedAttributes.length > 0) {
-        parts.push(`Attribute${changeInfo.addedAttributes.length > 1 ? 's' : ''} added:`);
+        elements.push(
+            <Paragraph key="attrs-added-title" typographyStyle="body-sm-strong">
+                Attribute{changeInfo.addedAttributes.length > 1 ? 's' : ''} added:
+            </Paragraph>,
+        );
         changeInfo.addedAttributes.forEach(attr => {
-            parts.push(`  - ${attr}`);
+            elements.push(
+                <Paragraph key={`added-${attr}`} typographyStyle="body-xs">
+                    &nbsp;&nbsp;- {attr}
+                </Paragraph>,
+            );
         });
     }
 
     if (changeInfo.updatedAttributes.length > 0) {
-        parts.push(`Attribute${changeInfo.updatedAttributes.length > 1 ? 's' : ''} updated:`);
+        elements.push(
+            <Paragraph key="attrs-updated-title" typographyStyle="body-sm-strong">
+                Attribute{changeInfo.updatedAttributes.length > 1 ? 's' : ''} updated:
+            </Paragraph>,
+        );
         changeInfo.updatedAttributes.forEach(attr => {
-            parts.push(`  - ${attr}`);
+            elements.push(
+                <Paragraph key={`updated-${attr}`} typographyStyle="body-xs">
+                    &nbsp;&nbsp;- <Text isMonospaced>{attr}</Text>
+                </Paragraph>,
+            );
         });
     }
 
-    return parts.map(p => <div key={p}>{p}</div>);
+    return <Column gap={4}>{elements}</Column>;
 };
 
 const getEventChangeProps = (changeInfo: ChangeInfo) =>
