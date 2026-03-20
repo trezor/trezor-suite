@@ -34,14 +34,7 @@ import {
 } from '../utils/logServerUrl';
 import { useLiveLogEvents } from '../utils/useLiveLogEvents';
 
-const META_KEYS = [
-    'version',
-    'commit',
-    'instanceId',
-    'sessionId',
-    'messageId',
-    'deviceId',
-] as const;
+const META_KEYS = ['version', 'commit', 'instanceId', 'sessionId', 'messageId'] as const;
 const SHOW_META_IN_PAYLOAD_STORAGE_KEY = 'analytics-docs-live-log-show-meta-in-payload';
 
 export const NEW_EVENT_TIMEOUT = 20_000;
