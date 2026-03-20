@@ -5,7 +5,7 @@ import type { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/t
 
 export type FiatValueMap = { [K in BaseCurrencyCode]?: BaseCurrencyAmount | undefined };
 
-export type ObjectType<T> = T extends 'account'
+export type GraphDataPoint<T> = T extends 'account'
     ? AggregatedAccountHistory
     : T extends 'dashboard'
       ? AggregatedDashboardHistory

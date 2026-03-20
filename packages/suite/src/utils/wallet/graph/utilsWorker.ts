@@ -10,9 +10,9 @@ import {
     type GraphData,
 } from 'src/types/wallet/graph';
 
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
 import { getGraphDataForInterval } from './utils';
 import { sumFiatValueMapInPlace } from './utilsShared';
-import { type FiatValueMap, type ObjectType, type TypeName } from './types';
 import type { State as GraphState } from '../../../reducers/wallet/graphReducer';
 
 const calcFiatValueMap = (amount: string, rates: FiatRatesBySymbol): FiatValueMap =>
@@ -33,8 +33,8 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     graphData: GraphData[],
     groupBy: 'day' | 'month',
     type: TType,
-): ObjectType<TType>[] => {
-    const groupedByTimestamp: { [key: string]: ObjectType<TType> } = {};
+): GraphDataPoint<TType>[] => {
+    const groupedByTimestamp: { [key: string]: GraphDataPoint<TType> } = {};
 
     for (let i = 0; i < graphData.length; i++) {
         // graph data for one account
@@ -85,7 +85,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
                     groupedByTimestamp[key] = (
                         type === 'account' ? accountProps : baseProps
-                    ) as ObjectType<TType>;
+                    ) as GraphDataPoint<TType>;
                 } else {
                     // add to existing bin
                     bin.txs += dataPoint.txs;
@@ -134,7 +134,7 @@ type PrepareGraphDataAsyncProps = {
 export const prepareGraphDataAsync = ({
     graph,
     deviceState,
-}: PrepareGraphDataAsyncProps): Promise<ObjectType<'dashboard'>[]> =>
+}: PrepareGraphDataAsyncProps): Promise<GraphDataPoint<'dashboard'>[]> =>
     new Promise(resolve => {
         window.setTimeout(() => {
             const history = getGraphDataForInterval({ deviceState, graph });

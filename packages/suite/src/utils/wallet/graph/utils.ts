@@ -23,8 +23,8 @@ import {
     type GraphScale,
 } from 'src/types/wallet/graph';
 
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
 import { sumFiatValueMapInPlace } from './utilsShared';
-import { type FiatValueMap, type ObjectType, type TypeName } from './types';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
@@ -119,11 +119,11 @@ export const enhanceBlockchainAccountHistory = (
  * Return array with 2 items, minimum non-zero value and maximum value calculated from sent, received and balance fields
  */
 export const getMinMaxValueFromData = <TType extends TypeName, TValue extends BigNumber>(
-    data: ObjectType<TType>[],
+    data: GraphDataPoint<TType>[],
     _type: TType,
-    extractSentValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractReceivedValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractBalanceValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+    extractSentValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractReceivedValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractBalanceValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
 ): [TValue, TValue] => {
     if (!data || data.length === 0) {
         return [new BigNumber(0) as TValue, new BigNumber(0) as TValue];
