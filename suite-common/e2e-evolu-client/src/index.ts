@@ -7,3 +7,10 @@ export {
     seedQuotaManagerData,
 } from './baseEvoluClient';
 export type { EvoluClientInitParams } from './baseEvoluClient';
+export {
+    createOwnerIdFromSecret,
+    createWalletRowId,
+    createAccountRowId,
+    createAddressRowId,
+    createOutputRowId,
+} from './createEvoluRowIds';

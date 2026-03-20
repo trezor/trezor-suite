@@ -1,41 +1,33 @@
-import { OwnerId } from '@evolu/common';
-
+import { createOwnerIdFromSecret } from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
-import {
-    ownerId as defaultWalletOwnerId,
-    ownerSecret as defaultWalletOwnerSecret,
-    walletDescriptor,
-} from '../../../fixtures/metadata/default-metadata-ids';
+import { ownerSecret as defaultWalletOwnerSecret } from '../../../fixtures/metadata/default-metadata-ids';
+import { buildExpectedWallet } from '../../../fixtures/metadata/suite-sync-data';
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
+const walletOneOwnerSecret = asSuiteSyncOwnerSecretHex(
+    'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
+);
 const walletOne = {
     index: 1,
     passphrase: 'First passphrase',
-    ownerId: OwnerId.orThrow('nv3sJB3YFuddnYPsMy03BA'),
-    ownerSecret: asSuiteSyncOwnerSecretHex(
-        'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
-    ),
+    ownerSecret: walletOneOwnerSecret,
+    ownerId: createOwnerIdFromSecret(walletOneOwnerSecret),
 };
 
+const walletTwoOwnerSecret = asSuiteSyncOwnerSecretHex(
+    '2b1643b805e3dec4ec2c3f57e707bce641f197ddd468070ffd4225393c4cb1a8e3935be81dd63f1e6d55145a73415d330328ba9c6eaa65fa56be8234fe512690',
+);
 const walletTwo = {
     index: 2,
     passphrase: 'Second passphrase',
-    ownerId: OwnerId.orThrow('Mvz4DxvvznAgmppCU67NPw'),
-    ownerSecret: asSuiteSyncOwnerSecretHex(
-        '2b1643b805e3dec4ec2c3f57e707bce641f197ddd468070ffd4225393c4cb1a8e3935be81dd63f1e6d55145a73415d330328ba9c6eaa65fa56be8234fe512690',
-    ),
+    ownerSecret: walletTwoOwnerSecret,
+    ownerId: createOwnerIdFromSecret(walletTwoOwnerSecret),
 };
 
-const expectedDefaultWalletLabel = {
-    updatedAt: null,
-    isDeleted: null,
-    ownerId: defaultWalletOwnerId,
-    walletDescriptor,
-    label: 'Evolu Default wallet',
-};
+const expectedDefaultWalletLabel = buildExpectedWallet({ label: 'Evolu Default wallet' });
 
 const expectedWalletOneLabel = {
     updatedAt: null,
