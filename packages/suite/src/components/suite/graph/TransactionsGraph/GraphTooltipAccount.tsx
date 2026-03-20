@@ -8,10 +8,10 @@ import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import type { CryptoGraphProps } from 'src/components/suite/graph/types';
 import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
-import type { CryptoGraphProps } from './TransactionsGraph';
 
 const formatAmount = (
     amount: string | undefined,
