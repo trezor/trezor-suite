@@ -141,6 +141,15 @@ export const sendCryptoAmountValidationSchema = yup
             return true;
         }
 
+        if (networkReserve && convertedValue <= parseFloat(balance)) {
+            return testContext.createError({
+                type: 'network-reserve',
+                message: translate('moduleTrading.validators.networkReserve', {
+                    displaySymbol: sendSymbol.toUpperCase(),
+                }),
+            });
+        }
+
         return testContext.createError({
             type: 'insufficient-balance',
             message: translate('moduleTrading.validators.insufficientBalance'),

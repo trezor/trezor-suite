@@ -339,5 +339,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         form,
         network,
         amount,
+        feeLevelsMaxAmount,
     };
 };

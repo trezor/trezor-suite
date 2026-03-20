@@ -2557,6 +2557,7 @@ export const messages = {
             max: 'Maximum is {max}',
             noQuotes: 'No offers available for your request. Change amount or currency.',
             insufficientBalance: 'Insufficient balance',
+            networkReserve: 'Not enough {displaySymbol} after network fees',
         },
         tradingExchangePreviewScreen: {
             title: 'Swap',

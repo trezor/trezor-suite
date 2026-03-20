@@ -1,12 +1,19 @@
 import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountFormattedBalance,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Card, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { NetworkReserveBanner } from '@suite-native/transaction-management';
+import {
+    NetworkReserveBanner,
+    useIsNetworkReserveBannerVisible,
+} from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { RecipientInputs } from './RecipientInputs';
@@ -16,6 +23,7 @@ import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 type SendOutputFieldsProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    maxAmount?: string;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -23,13 +31,30 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
 }));
 
-export const SendOutputFields = ({ accountKey, tokenContract }: SendOutputFieldsProps) => {
+export const SendOutputFields = ({
+    accountKey,
+    tokenContract,
+    maxAmount,
+}: SendOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
-    const { control } = useFormContext<SendOutputsFormValues>();
+    const { control, watch } = useFormContext<SendOutputsFormValues>();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const formattedBalance = useSelector((state: AccountsRootState) =>
+        selectAccountFormattedBalance(state, accountKey),
+    );
     const outputsFieldArray = useFieldArray({ control, name: 'outputs' });
+
+    const amount = watch('outputs.0.amount');
+
+    const shouldShowBanner = useIsNetworkReserveBannerVisible({
+        symbol,
+        contractAddress: tokenContract,
+        amount,
+        balance: formattedBalance,
+        maxAmount,
+    });
 
     return (
         <VStack spacing="sp16">
@@ -46,7 +71,7 @@ export const SendOutputFields = ({ accountKey, tokenContract }: SendOutputFields
                     TODO: add output (outputs.append({...})) button
                     issue: https://github.com/trezor/trezor-suite/issues/12944
                     */}
-                    {symbol && (
+                    {symbol && shouldShowBanner && (
                         <NetworkReserveBanner symbol={symbol} contractAddress={tokenContract} />
                     )}
                 </VStack>
