@@ -6,12 +6,9 @@ import { ThemeProvider } from 'styled-components';
 
 import { Modal, intermediaryTheme } from '@trezor/components';
 
-import {
-    type AssetProps,
-    ITEM_HEIGHT,
-    SelectAssetModal as SelectAssetModalComponent,
-} from './SelectAssetModal';
+import { ITEM_HEIGHT, SelectAssetModal as SelectAssetModalComponent } from './SelectAssetModal';
 import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
+import { type AssetProps } from './types';
 
 const meta = {
     title: 'SelectAssetModal',
