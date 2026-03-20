@@ -257,7 +257,6 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.ForgetDevice]: undefined;
     [DeviceSettingsStackRoutes.ForgetDeviceStack]: NavigatorScreenParams<ForgetDeviceStackParamList>;
-    [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
@@ -269,7 +268,6 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]:
         | NavigatorScreenParams<DeviceAuthenticityStackParamList>
         | undefined;
-    [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.WipeDevice]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]:
         | NavigatorScreenParams<WipeDeviceStackParamList>

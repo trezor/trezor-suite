@@ -5,7 +5,6 @@ import {
     selectDeviceModel,
     selectDeviceName,
     selectIsDeviceInitialized,
-    selectIsThpDevice,
 } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { TitledSection, VStack } from '@suite-native/atoms';
@@ -30,7 +29,6 @@ export const DeviceSettingsScreen = () => {
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const isThpDevice = useSelector(selectIsThpDevice);
 
     if (!deviceModel || !deviceName) {
         return null;
@@ -46,7 +44,7 @@ export const DeviceSettingsScreen = () => {
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
                     <DeviceFirmwareCard />
-                    {isThpDevice && <DeviceConnectionCard />}
+                    <DeviceConnectionCard />
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
