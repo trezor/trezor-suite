@@ -71,6 +71,8 @@ export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) 
 export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
     getNetwork(networkSymbol).networkType === 'ethereum';
 
+export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
+
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
     isEvmLedger(networkType, accountType) ? 1 : 0;
 
@@ -244,20 +246,20 @@ export const getAccountTypeTech = (path: Bip43PathTemplate) => {
 };
 
 type getAccountTypeDescProps = {
+    account: {
+        symbol: NetworkSymbol;
+    };
     path: Bip43PathTemplate;
     accountType?: AccountType;
-    symbol?: NetworkSymbol;
     networkType?: NetworkType;
 };
 
 export const getAccountTypeDesc = ({
+    account,
     path,
     accountType,
-    symbol,
     networkType,
 }: getAccountTypeDescProps) => {
-    const isEvmTestnet = symbol === 'tsep' || symbol === 'thod';
-
     switch (accountType) {
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
@@ -266,7 +268,7 @@ export const getAccountTypeDesc = ({
                 return 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC';
             }
 
-            if (isEvmTestnet) {
+            if (networkType === 'ethereum' && isTestnet(account.symbol)) {
                 return 'TR_ACCOUNT_TYPE_EVM_TESTNET_LEGACY_DESC';
             }
 
@@ -275,7 +277,7 @@ export const getAccountTypeDesc = ({
 
     switch (networkType) {
         case 'ethereum':
-            if (isEvmTestnet) {
+            if (isTestnet(account.symbol)) {
                 return 'TR_ACCOUNT_TYPE_EVM_TESTNET_NORMAL_DESC';
             }
 
@@ -662,8 +664,6 @@ export const getTotalFiatBalance = ({
 
     return instanceBalance;
 };
-
-export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (

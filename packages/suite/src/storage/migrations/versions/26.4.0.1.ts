@@ -2,23 +2,12 @@ import { createMigration } from '@suite/idb-migration-utils';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
-import { updateAll } from '../utils';
+import { removePersistedNetworkData } from '../networks/removeNetwork';
 
-const legacyEvmTestnetPathPrefix = "m/44'/1'/0'/0/";
+const migratedNetworkSymbols = ['tsep', 'thod'] as const;
 
 export default createMigration<SuiteDBSchema>('26.4.0.1', async (_, tx) => {
-    await updateAll(tx, 'accounts', account => {
-        const shouldMigrateAccount =
-            (account.symbol === 'tsep' || account.symbol === 'thod') &&
-            account.accountType === 'normal' &&
-            account.path.startsWith(legacyEvmTestnetPathPrefix);
-
-        if (!shouldMigrateAccount) {
-            return account;
-        }
-
-        account.accountType = 'legacy';
-
-        return account;
-    });
+    for (const networkSymbol of migratedNetworkSymbols) {
+        await removePersistedNetworkData(tx, networkSymbol);
+    }
 });

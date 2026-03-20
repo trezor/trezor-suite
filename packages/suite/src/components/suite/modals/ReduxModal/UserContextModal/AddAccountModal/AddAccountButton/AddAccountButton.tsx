@@ -16,12 +16,10 @@ import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
 const verifyAvailability = ({
     emptyAccounts,
     account,
-    accountDefinition,
     unavailableCapability,
 }: {
     emptyAccounts: Account[];
     account?: Account;
-    accountDefinition?: NetworkAccount;
     unavailableCapability?: UnavailableCapability;
 }) => {
     if (unavailableCapability === 'no-support') {
@@ -36,13 +34,9 @@ const verifyAvailability = ({
     if (unavailableCapability === 'no-capability') {
         return 'TR_ACCOUNT_TYPE_NO_CAPABILITY';
     }
-    if (!accountDefinition) {
+    if (!account) {
         // discovery failed?
         return 'MODAL_ADD_ACCOUNT_NO_ACCOUNT';
-    }
-
-    if (!account) {
-        return;
     }
 
     if (account.networkType !== 'ethereum') {
@@ -62,7 +56,6 @@ const verifyAvailability = ({
 
 interface AddAccountButtonProps {
     network: Network;
-    currentAccountDefinition?: NetworkAccount;
     selectedAccount?: NetworkAccount;
     scopedAccounts: Account[];
     onEnableAccount: (account: Account) => void;
@@ -74,7 +67,6 @@ const AddDefaultAccountButton = ({
     onEnableAccount,
     onAddNewAccount,
     network,
-    currentAccountDefinition,
     selectedAccount,
 }: AddAccountButtonProps) => {
     const defaultAccount = scopedAccounts.at(-1);
@@ -121,7 +113,6 @@ const AddDefaultAccountButton = ({
     const disabledMessage = verifyAvailability({
         emptyAccounts: scopedAccounts.filter(account => account.empty && !account.visible),
         account: defaultAccount,
-        accountDefinition: currentAccountDefinition,
         unavailableCapability,
     });
 
@@ -136,7 +127,6 @@ const AddDefaultAccountButton = ({
 
 export const AddAccountButton = ({
     network,
-    currentAccountDefinition,
     selectedAccount,
     scopedAccounts,
     onEnableAccount,
@@ -149,7 +139,6 @@ export const AddAccountButton = ({
             return (
                 <AddDefaultAccountButton
                     network={network}
-                    currentAccountDefinition={currentAccountDefinition}
                     selectedAccount={selectedAccount}
                     scopedAccounts={scopedAccounts}
                     onEnableAccount={onEnableAccount}

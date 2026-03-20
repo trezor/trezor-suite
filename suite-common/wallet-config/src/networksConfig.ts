@@ -606,7 +606,7 @@ export const networks = {
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             legacy: {
-                // Previous Trezor path kept for compatibility and debugging.
+                // deprecated Trezor path
                 accountType: 'legacy',
                 bip43Path: "m/44'/1'/0'/0/i",
                 isDebugOnlyAccountType: true,
@@ -639,7 +639,7 @@ export const networks = {
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             legacy: {
-                // Previous Trezor path kept for compatibility and debugging.
+                // deprecated Trezor path
                 accountType: 'legacy',
                 bip43Path: "m/44'/1'/0'/0/i",
                 isDebugOnlyAccountType: true,
