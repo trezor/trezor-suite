@@ -192,5 +192,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
         storageLoadFlags: notImplementedReducer('storageLoadFlags'),
+        storageLoadSuiteSettings: notImplementedReducer('storageLoadSuiteSettings'),
     },
 };

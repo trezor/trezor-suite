@@ -1,4 +1,4 @@
-import { suiteSettingsActions } from '@suite/settings';
+import { selectIsUnlockedBootloaderAllowed, suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticity = () => {
     const dispatch = useDispatch();
-    const debug = useSelector(state => state.suiteSettings.debug);
+    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
 
     const handleChange = (state: boolean) =>
         dispatch(suiteSettingsActions.setDebugMode({ isUnlockedBootloaderAllowed: state }));
@@ -18,7 +18,7 @@ export const DeviceAuthenticity = () => {
                 description="Skip device authenticity check when bootloader is unlocked."
             />
             <ActionColumn>
-                <Switch onChange={handleChange} isChecked={debug.isUnlockedBootloaderAllowed} />
+                <Switch onChange={handleChange} isChecked={isUnlockedBootloaderAllowed} />
             </ActionColumn>
         </SectionItem>
     );

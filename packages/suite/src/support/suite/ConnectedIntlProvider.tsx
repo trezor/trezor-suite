@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
+import { selectLanguage } from '@suite/settings';
 import type { Locale } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import enMessages from '@trezor/suite-data/files/translations/en-US.json';
@@ -37,7 +38,7 @@ interface ConnectedIntlProviderProps {
 }
 
 export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {
-    const locale = useSelector(state => state.suiteSettings.language);
+    const locale = useSelector(selectLanguage);
     const messages = useFetchMessages(locale);
 
     return (

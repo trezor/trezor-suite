@@ -48,6 +48,7 @@
         },
         { "path": "../analytics" },
         { "path": "../intl" },
+        { "path": "../settings" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },

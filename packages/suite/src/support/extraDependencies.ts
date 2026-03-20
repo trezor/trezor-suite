@@ -14,7 +14,13 @@ import {
     asSuiteRouterHistoryService,
     createSuiteRouterHistory,
 } from '@suite/router';
-import { type SuiteSettingsState } from '@suite/settings';
+import {
+    type SuiteSettingsState,
+    selectAddressDisplayType,
+    selectDebugSettings,
+    selectInvityServerEnvironment,
+    selectLanguage,
+} from '@suite/settings';
 import {
     type DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
@@ -145,18 +151,17 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectDebugSettings: (state: AppState) => state.suiteSettings.debug,
+        selectDebugSettings,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.device.selectedDevice,
-        selectLanguage: (state: AppState) => state.suiteSettings.language,
+        selectLanguage,
         selectMetadata: (state: AppState) => state.metadata,
-        selectAddressDisplayType: (state: AppState) => state.suiteSettings.addressDisplayType,
+        selectAddressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
-        selectTradingEnvironment: (state: AppState) =>
-            state.suiteSettings.debug.invityServerEnvironment,
+        selectTradingEnvironment: selectInvityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectIsSuiteSyncEnabled: (state: AppState) => state.suiteSync.settings.isSuiteSyncEnabled,
         selectThpSettings: (state: AppState) => ({

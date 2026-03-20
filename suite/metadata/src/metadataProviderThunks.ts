@@ -1,6 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectOAuthServerEnvironment } from '@suite/settings';
 import {
     type DataType,
     type MetadataProvider,
@@ -89,7 +90,7 @@ export const getProviderInstance =
         providerInstance[dataType] = createProviderInstance(
             provider.type,
             provider.tokens,
-            state.suiteSettings.debug.oauthServerEnvironment,
+            selectOAuthServerEnvironment(state),
             clientId,
         );
 
@@ -245,7 +246,7 @@ export const connectProvider =
         const providerInstance = createProviderInstance(
             type,
             {},
-            getState().suiteSettings.debug.oauthServerEnvironment,
+            selectOAuthServerEnvironment(getState()),
             clientId,
         );
 

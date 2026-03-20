@@ -1,3 +1,4 @@
+import { selectSuiteSettings } from '@suite/settings';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -94,7 +95,7 @@ export const saveCoinjoinAccount =
     };
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
-    const settings = { ...state.suiteSettings };
+    const settings = { ...selectSuiteSettings(state) };
 
     settings.isCoinjoinReceiveWarningHidden = false;
 

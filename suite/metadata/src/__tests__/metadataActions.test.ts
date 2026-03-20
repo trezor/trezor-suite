@@ -45,11 +45,17 @@ interface InitialState {
     device: any;
     accounts: any[];
     suite: Partial<SuiteRootStateSliceForMetadata>;
+    suiteSettings?: {
+        debug?: {
+            oauthServerEnvironment?: string;
+        };
+    };
 }
 
 const getInitialState = (state?: InitialState) => {
     const metadata = state ? state.metadata : undefined;
     const suite = state ? state.suite : {};
+    const suiteSettings = state?.suiteSettings ?? {};
 
     const device = state
         ? state.device
@@ -59,8 +65,7 @@ const getInitialState = (state?: InitialState) => {
               metadata: { status: 'disabled' },
           };
     const accounts = state ? state.accounts || [] : [];
-    const settings = suite?.settings || { debug: {} };
-    const debug = settings?.debug || {};
+    const debug = suiteSettings.debug ?? {};
     const initAction: any = { type: '@storage/load', payload: { metadata } };
 
     return {
@@ -73,10 +78,10 @@ const getInitialState = (state?: InitialState) => {
         },
         suite: {
             ...suite,
-            settings: {
-                ...settings,
-                debug, // debug settings are needed for OAuth API
-            },
+        },
+        suiteSettings: {
+            ...suiteSettings,
+            debug, // debug settings are needed for OAuth API
         },
         wallet: {
             accounts,

@@ -6,7 +6,11 @@ import type { ExperimentalFeature } from '@suite/experimental';
 import { feedbackRequested } from '@suite/experimental-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
+import {
+    selectExperimentalFeatures,
+    selectIsDebugModeActive,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
@@ -113,7 +117,7 @@ const bannerMotionDivProps = {
 } as const;
 
 export const Experimental = () => {
-    const enabledFeatures = useSelector(state => state.suiteSettings.experimental);
+    const enabledFeatures = useSelector(selectExperimentalFeatures);
     const isExperimentalEnabled = enabledFeatures !== undefined;
     const isDebug = useSelector(selectIsDebugModeActive);
 

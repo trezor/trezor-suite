@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { suiteSettingsActions } from '@suite/settings';
+import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
@@ -40,7 +40,7 @@ export const AccountsMenuHeader = () => {
     const isEmpty = accounts.length === 0;
 
     const isDiscoveryRunning = discovery?.status === 'progress';
-    const isCoinsFilterVisible = useSelector(state => state.suiteSettings.isCoinsFilterVisible);
+    const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
     const dispatch = useDispatch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 

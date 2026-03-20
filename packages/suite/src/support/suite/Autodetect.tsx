@@ -1,6 +1,12 @@
 import { useCallback, useEffect } from 'react';
 
-import { suiteSettingsActions } from '@suite/settings';
+import {
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectLanguage,
+    selectTheme,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { type Locale } from '@suite-common/suite-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -8,10 +14,10 @@ import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
 
 const Autodetect = () => {
-    const autodetectTheme = useSelector(state => state.suiteSettings.autodetect.theme);
-    const autodetectLanguage = useSelector(state => state.suiteSettings.autodetect.language);
-    const currentTheme = useSelector(state => state.suiteSettings.theme.variant);
-    const currentLanguage = useSelector(state => state.suiteSettings.language);
+    const autodetectTheme = useSelector(selectAutodetectTheme);
+    const autodetectLanguage = useSelector(selectAutodetectLanguage);
+    const currentTheme = useSelector(selectTheme);
+    const currentLanguage = useSelector(selectLanguage);
 
     const dispatch = useDispatch();
 

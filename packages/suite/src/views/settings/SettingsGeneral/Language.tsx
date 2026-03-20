@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
-import { selectLanguage, suiteSettingsActions } from '@suite/settings';
+import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
@@ -62,7 +62,7 @@ const useLanguageOptions = () => {
 export const Language = () => {
     const analytics = useAnalytics();
     const language = useSelector(selectLanguage);
-    const autodetectLanguage = useSelector(state => state.suiteSettings.autodetect.language);
+    const autodetectLanguage = useSelector(selectAutodetectLanguage);
     const dispatch = useDispatch();
 
     const { options, systemOption } = useLanguageOptions();

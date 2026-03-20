@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectThemeSettings } from '@suite/settings';
 import {
     Column,
     ElevationDown,
@@ -114,7 +115,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     showPureChildren = false,
     showAccounts = true,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
-    const theme = useSelector(state => state.suiteSettings.theme);
+    const theme = useSelector(selectThemeSettings);
 
     return (
         <ElevationDown>
