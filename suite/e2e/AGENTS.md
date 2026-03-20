@@ -12,3 +12,4 @@ Apart from [top-level AGENTS.md](../../AGENTS.md), the following skills are mand
 - [Await & Retry Strategy](skills/retries.md) – Playwright auto-waiting, custom polling, Redux waits, flakiness prevention
 - [Test Tagging](skills/tagging.md) – Device models, platforms, execution scope, project filtering
 - [Test Data Organization](skills/test-data.md) – Fixtures structure, API responses, device metadata, best practices
+- [Agentic Test Creation](skills/agentic-test-creation.md) – Mandatory discovery-first workflow for writing new tests from user stories
