@@ -11,10 +11,11 @@ yarn suite:dev:vite        # Development with Vite (faster hot reload)
 ## Code Quality
 
 ```bash
-yarn lint                  # Lint JavaScript/TypeScript and styles
-yarn lint:js:fix-files     # Auto-fix linting issues
+yarn lint:styles           # Lint CSS styles
+yarn lint:js:fix           # Auto-fix linting issues
 yarn format                # Format code with Prettier
 yarn type-check            # TypeScript type checking (10-15 minutes)
+yarn nx run @package-scope/package-name:type-check  # TypeScript check of specific package
 ```
 
 ## Testing

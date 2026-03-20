@@ -55,7 +55,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        run: yarn nx:type-check --output-style=stream
+        run: yarn type-check --output-style=stream
 
   lint:
     name: Linting and formatting
@@ -79,9 +79,9 @@ jobs:
             '!**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
-        run: yarn nx:lint:js --output-style=stream
+        run: yarn lint:js --output-style=stream
       - name: Lint Styles
-        run: yarn nx:lint:styles --output-style=stream
+        run: yarn lint:styles --output-style=stream
       - name: Check rust files changes
         uses: dorny/paths-filter@v3
         id: changes
@@ -128,7 +128,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn nx:test-unit:${{ matrix.test-task }} --output-style=stream
+        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
@@ -144,7 +144,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Build Libs
-        run: yarn nx:build:libs --output-style=stream
+        run: yarn build:libs:verify --output-style=stream
 
   other-checks:
     name: Other Checks
@@ -160,7 +160,7 @@ jobs:
       - name: Verify Requirements
         run: yarn requirements:verify
       - name: Check Files for Correct Formatting
-        run: yarn nx format:check
+        run: yarn format:verify
       - name: Verify TS Project References
         run: yarn verify-project-references
       - name: Detect unused dependencies
