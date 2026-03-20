@@ -10005,14 +10005,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:2.2.2":
-  version: 2.2.2
-  resolution: "@shopify/flash-list@npm:2.2.2"
+"@shopify/flash-list@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@shopify/flash-list@npm:2.3.0"
   peerDependencies:
     "@babel/runtime": "*"
     react: "*"
     react-native: "*"
-  checksum: 10/eee3b247af0228a0ccc51e637b145dc4609da75e0b1c2fe4732fa3ff1cb8921d0bcde1183f8c83993638085dce9b376fdedf1dda0c2d9c33d61804f4bc243257
+  checksum: 10/056e75590c599a5182e0e71042feeae63753e3256b6354503298bca366f30244c92f8f10182239b29b2f9cf111d589980b7c245d3d5eb44f375c3a9937d7b0b4
   languageName: node
   linkType: hard
 
@@ -12282,7 +12282,7 @@ __metadata:
     "@rozenite/performance-monitor-plugin": "npm:^1.2.0"
     "@rozenite/redux-devtools-plugin": "npm:^1.2.0"
     "@sentry/react-native": "npm:8.2.0"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.4.18"
     "@storybook/react-native": "npm:^10.2.1"
     "@suite-common/device": "workspace:*"
@@ -12477,7 +12477,7 @@ __metadata:
     "@gorhom/bottom-sheet": "npm:5.2.8"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.4.18"
     "@storybook/react-native": "npm:^10.2.1"
     "@suite-common/wallet-config": "workspace:*"
@@ -13212,7 +13212,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.4.18"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -13645,7 +13645,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-api": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -13799,7 +13799,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -13959,7 +13959,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
@@ -14828,7 +14828,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
-    "@shopify/flash-list": "npm:2.2.2"
+    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
