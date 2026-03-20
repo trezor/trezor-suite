@@ -65,14 +65,14 @@ export const isAccountFailed = (account: Account): account is FailedAccount => !
 export const isAccountDiscoverable = ({ accountType }: Account) =>
     accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
 
-export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) =>
-    networkType === 'ethereum' && accountType === 'ledger';
+export const shouldSkipFirstAccountIndex = (networkType: NetworkType, accountType: AccountType) =>
+    (networkType === 'ethereum' || networkType === 'tron') && accountType === 'ledger';
 
 export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
     getNetwork(networkSymbol).networkType === 'ethereum';
 
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
-    isEvmLedger(networkType, accountType) ? 1 : 0;
+    shouldSkipFirstAccountIndex(networkType, accountType) ? 1 : 0;
 
 export const getFirstFreshAddress = (
     account: Account,

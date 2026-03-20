@@ -53,8 +53,8 @@ const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
 const isCardanoRequest = (request: Request): request is CardanoRequest =>
     isCardano(request.account);
 
-const isEvmLedger = (account: AccountTypeItem, coinInfo: CoinInfo) =>
-    coinInfo.type === 'ethereum' && account.type === 'ledger';
+const shouldSkipFirstAccountIndex = (account: AccountTypeItem, coinInfo: CoinInfo) =>
+    (coinInfo.type === 'ethereum' || coinInfo.shortcut === 'TRX') && account.type === 'ledger';
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
@@ -147,7 +147,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     skip: known?.skip ?? 0, // Use the possibly passed skip param or fall back to zero
                     account,
                     ...rest,
-                    offset: isEvmLedger(account, coinInfo) ? 1 : 0,
+                    offset: shouldSkipFirstAccountIndex(account, coinInfo) ? 1 : 0,
                     derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
                 }));
         });

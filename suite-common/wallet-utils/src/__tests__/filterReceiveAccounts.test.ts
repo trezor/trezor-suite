@@ -64,6 +64,7 @@ describe('filter receive accounts', () => {
         expect(isDebugOnlyAccountType('ledger', 'btc')).toBe(false);
         expect(isDebugOnlyAccountType('legacy', 'eth')).toBe(true);
         expect(isDebugOnlyAccountType('ledger', 'eth')).toBe(true);
+        expect(isDebugOnlyAccountType('ledger', 'trx')).toBe(true);
         expect(isDebugOnlyAccountType('normal', 'regtest')).toBe(false);
     });
 
