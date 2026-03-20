@@ -1,15 +1,15 @@
+import { suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticity = () => {
     const dispatch = useDispatch();
-    const debug = useSelector(state => state.suite.settings.debug);
+    const debug = useSelector(state => state.suiteSettings.debug);
 
     const handleChange = (state: boolean) =>
-        dispatch(setDebugMode({ isUnlockedBootloaderAllowed: state }));
+        dispatch(suiteSettingsActions.setDebugMode({ isUnlockedBootloaderAllowed: state }));
 
     return (
         <SectionItem data-testid="@settings/debug/device-authenticity/switch">

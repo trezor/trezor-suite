@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { type Network } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import type { BackendOption } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const Capitalize = styled.span`
     text-transform: capitalize;

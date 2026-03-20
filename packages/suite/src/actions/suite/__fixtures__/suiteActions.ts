@@ -1,3 +1,4 @@
+import { suiteSettingsActions } from '@suite/settings';
 import { deviceActions } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -119,16 +120,16 @@ const reducerActions = [
         ],
     },
     {
-        description: `SUITE.SET_LANGUAGE`,
+        description: suiteSettingsActions.setLanguage.type,
         actions: [
             {
-                type: SUITE.SET_LANGUAGE,
-                locale: 'cz',
+                type: suiteSettingsActions.setLanguage.type,
+                payload: 'cz',
             },
         ],
         result: [
             {
-                settings: {
+                suiteSettings: {
                     language: 'cz',
                 },
             },

@@ -4,6 +4,7 @@ import { type MiddlewareAPI } from 'redux';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/experimental-feedback';
 import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
+import { suiteSettingsActions } from '@suite/settings';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
@@ -330,25 +331,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveWalletSettings());
 
                     break;
-                case SUITE.SET_LANGUAGE:
+                case suiteSettingsActions.setLanguage.type:
                 case setFlag.type:
-                case SUITE.SET_DEBUG_MODE:
-                case SUITE.SET_EXPERIMENTAL_FEATURES:
-                case SUITE.ONION_LINKS:
-                case SUITE.SET_THEME:
-                case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-                case SUITE.SET_AUTODETECT:
-                case SUITE.SET_SIDEBAR_WIDTH:
-                case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
-                case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
-                case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
-                case SUITE.TOGGLE_DEVICE_META_CHECKS:
+                case suiteSettingsActions.setDebugMode.type:
+                case suiteSettingsActions.setExperimentalFeatures.type:
+                case suiteSettingsActions.setOnionLinks.type:
+                case suiteSettingsActions.setTheme.type:
+                case suiteSettingsActions.setAddressDisplayType.type:
+                case suiteSettingsActions.setAutodetect.type:
+                case suiteSettingsActions.setSidebarWidth.type:
+                case suiteSettingsActions.toggleDeviceAuthenticityCheck.type:
+                case suiteSettingsActions.toggleFirmwareRevisionCheck.type:
+                case suiteSettingsActions.toggleFirmwareHashCheck.type:
+                case suiteSettingsActions.toggleDeviceMetaChecks.type:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
-                case SUITE.SET_IS_COINS_FILTER_VISIBLE:
+                case suiteSettingsActions.setIsCoinsFilterVisible.type:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
-                case SUITE.COINJOIN_RECEIVE_WARNING: {
+                case suiteSettingsActions.setCoinjoinReceiveWarningHidden.type: {
                     const device = selectSelectedDevice(api.getState());
                     const isWalletRemembered = device?.remember;
 

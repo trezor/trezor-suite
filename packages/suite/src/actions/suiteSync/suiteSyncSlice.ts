@@ -1,3 +1,4 @@
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SuiteSyncInteraction,
@@ -11,7 +12,6 @@ import { type StaticSessionId } from '@trezor/connect';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { type Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';

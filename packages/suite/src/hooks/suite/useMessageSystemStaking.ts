@@ -1,11 +1,10 @@
+import { selectLanguage } from '@suite/settings';
 import {
     Feature,
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from './useSelector';
 

@@ -1,5 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -12,7 +13,6 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { validateStakingMax } from 'src/utils/suite/staking';

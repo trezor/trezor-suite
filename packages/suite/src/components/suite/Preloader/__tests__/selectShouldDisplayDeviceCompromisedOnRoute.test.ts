@@ -116,14 +116,11 @@ const fixtures: Fixture[] = [
                     },
                 },
             },
-            suite: {
-                ...initialAppState.suite,
-                settings: {
-                    ...initialAppState.suite.settings,
-                    enabledSecurityChecks: {
-                        ...initialAppState.suite.settings.enabledSecurityChecks,
-                        firmwareRevision: false,
-                    },
+            suiteSettings: {
+                ...initialAppState.suiteSettings,
+                enabledSecurityChecks: {
+                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    firmwareRevision: false,
                 },
             },
         },
@@ -166,14 +163,11 @@ const fixtures: Fixture[] = [
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            suite: {
-                ...initialAppState.suite,
-                settings: {
-                    ...initialAppState.suite.settings,
-                    enabledSecurityChecks: {
-                        ...initialAppState.suite.settings.enabledSecurityChecks,
-                        entropy: false,
-                    },
+            suiteSettings: {
+                ...initialAppState.suiteSettings,
+                enabledSecurityChecks: {
+                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    entropy: false,
                 },
             },
         },

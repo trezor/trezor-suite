@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -12,7 +13,6 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`

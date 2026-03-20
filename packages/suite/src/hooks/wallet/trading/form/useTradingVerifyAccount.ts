@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { openModal } from '@suite/modal';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cryptoIdToSymbol,
@@ -18,7 +19,6 @@ import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import {
     type TradingGetTranslationIdsProps,
     type TradingVerifyAccountProps,

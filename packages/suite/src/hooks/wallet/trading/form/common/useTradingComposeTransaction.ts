@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -18,7 +19,6 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import {
     type TradingSellExchangeFormProps,
     type TradingUseComposeTransactionProps,

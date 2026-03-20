@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TradingType,
@@ -21,7 +22,6 @@ import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { type TradingPageType } from 'src/types/trading/trading';
 import {
     type TradingGetTranslationIdsProps,

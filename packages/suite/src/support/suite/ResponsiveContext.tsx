@@ -26,7 +26,7 @@ type ResponsiveContextType = {
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
 
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
+    const sidebarWidthFromRedux = useSelector(state => state.suiteSettings.sidebarWidth);
 
     const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(sidebarWidthFromRedux);
     const [sidebarWidthRaw, setSidebarWidthRaw] = useState<number>(sidebarWidthFromRedux);

@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { type SuiteSettingsRootState } from '@suite/settings';
 import {
     type DeviceReducerState,
     type DeviceRootState,
@@ -12,7 +13,6 @@ import {
     type AccountLabels,
     type DataType,
     type MetadataState,
-    type OAuthServerEnvironment,
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
@@ -44,14 +44,14 @@ export const initialMetadataState: MetadataState = {
 
 export type SuiteRootStateSliceForMetadata = {
     online: boolean;
-    settings: { debug: { oauthServerEnvironment?: OAuthServerEnvironment } };
 };
 
 /** @deprecated Legacy labeling */
 export type MetadataRootState = {
     metadata: MetadataState;
 } & AccountsRootState &
-    DeviceRootState & { suite: SuiteRootStateSliceForMetadata };
+    DeviceRootState &
+    SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
 
 /**
  * @deprecated Legacy Labeling

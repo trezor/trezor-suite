@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { spacingsPx } from '@trezor/theme';
 
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
 import { useGuideLoadArticle } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const ArticleWrapper = styled.div`
     padding-bottom: ${spacingsPx.xxl};

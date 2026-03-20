@@ -13,7 +13,7 @@ import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/Con
 
 export const Receive = () => {
     const isCoinjoinReceiveWarningHidden = useSelector(
-        state => state.suite.settings.isCoinjoinReceiveWarningHidden,
+        state => state.suiteSettings.isCoinjoinReceiveWarningHidden,
     );
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);

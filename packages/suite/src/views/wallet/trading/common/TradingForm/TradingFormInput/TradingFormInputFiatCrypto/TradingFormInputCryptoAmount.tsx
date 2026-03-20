@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { type FieldErrors, type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -22,7 +23,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,

@@ -36,7 +36,7 @@ export const selectIsLabelActionEnabled = (
     );
 
     const isSuiteSyncFeatureEnabled =
-        state.suite.settings.experimental?.includes('suite-sync') ?? false;
+        state.suiteSettings.experimental?.includes('suite-sync') ?? false;
 
     // Turn ON in Experimental Features
     if (isSuiteSyncFeatureEnabled) {

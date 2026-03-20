@@ -2,6 +2,7 @@ import { type FiatCurrencyCode } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectLanguage } from '@suite/settings';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -16,7 +17,6 @@ import { Banner, Column, Text } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import {
     isTradingBuyContext,
     isTradingSellContext,

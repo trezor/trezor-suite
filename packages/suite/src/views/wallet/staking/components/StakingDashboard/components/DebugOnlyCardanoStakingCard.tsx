@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -11,7 +12,6 @@ import { spacings } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;

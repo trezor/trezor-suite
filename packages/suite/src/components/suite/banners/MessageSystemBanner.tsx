@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
+import { selectLanguage } from '@suite/settings';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type BannerProps } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { MessageSystemButton } from './MessageSystemButton';
 

@@ -1,4 +1,10 @@
 import {
+    selectAreDeviceMetaChecksEnabled,
+    selectIsEntropyCheckEnabled,
+    selectIsFirmwareHashCheckEnabled,
+    selectIsFirmwareRevisionCheckEnabled,
+} from '@suite/settings';
+import {
     getIsDeviceIdValid,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
@@ -15,13 +21,6 @@ import {
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 import { type AppState } from 'src/types/suite';
-
-import {
-    selectAreDeviceMetaChecksEnabled,
-    selectIsEntropyCheckEnabled,
-    selectIsFirmwareHashCheckEnabled,
-    selectIsFirmwareRevisionCheckEnabled,
-} from './suiteSelectors';
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const device = selectSelectedDevice(state);

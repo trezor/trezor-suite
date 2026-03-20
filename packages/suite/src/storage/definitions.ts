@@ -3,6 +3,7 @@ import { type FieldValues } from 'react-hook-form';
 import type { DBSchema } from 'idb';
 
 import type { FlagsState } from '@suite/flags';
+import type { SuiteSettingsState } from '@suite/settings';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { type ExperimentalFeedbackState } from '@suite-common/feedback';
@@ -75,7 +76,7 @@ export interface SuiteDBSchema extends DBSchema {
     suiteSettings: {
         key: string;
         value: {
-            settings: SuiteState['settings'];
+            settings: SuiteSettingsState;
             flags: FlagsState;
             evmSettings: SuiteState['evmSettings'];
             seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];

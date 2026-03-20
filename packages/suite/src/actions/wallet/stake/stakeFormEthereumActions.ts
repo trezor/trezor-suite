@@ -1,6 +1,7 @@
 import { toWei } from 'web3-utils';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
@@ -33,7 +34,6 @@ import {
 import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateStakingTransaction = (
