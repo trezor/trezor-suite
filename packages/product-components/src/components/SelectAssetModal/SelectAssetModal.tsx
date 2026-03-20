@@ -1,49 +1,24 @@
-import { type ReactNode, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 
 import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';
+import type { AssetProps, SelectAssetModalProps } from './types';
 
-export interface AssetTokenBalance {
-    baseSymbol?: string; // TokenInfo['symbol'];
-    baseAmount: string;
-    fiatAmount: BaseCurrencyAmount | null;
-}
-
-export interface AssetProps {
-    ticker: string;
-    badge?: ReactNode;
-    symbol: NetworkSymbolExtended;
-    cryptoName?: string;
-    coingeckoId?: string;
-    contractAddress: string | null;
-    height: number;
-    shouldTryToFetch?: boolean;
-    tokenBalance?: AssetTokenBalance;
-}
-
-export type AssetOptionBaseProps = Omit<AssetProps, 'height' | 'formattedBalance'>;
+export type {
+    AssetOptionBaseProps,
+    AssetProps,
+    AssetTokenBalance,
+    SelectAssetModalProps,
+} from './types';
 
 export const ITEM_HEIGHT = 60;
 const LIST_MIN_HEIGHT = 200;
 const HEADER_HEIGHT = 267;
 const LIST_HEIGHT = `calc(80vh - ${HEADER_HEIGHT}px)`;
-
-export interface SelectAssetModalProps {
-    options: AssetProps[];
-    onSelectAsset: (selectedAsset: AssetOptionBaseProps) => Promise<void> | void;
-    onClose: () => void;
-    searchInput?: ReactNode;
-    filterTabs?: ReactNode;
-    noItemsAvailablePlaceholder: { heading: ReactNode; body?: ReactNode };
-    'data-testid'?: string;
-    renderOptionBalance: (assetProps: AssetProps) => ReactNode;
-}
 
 export const SelectAssetModal = ({
     options,
