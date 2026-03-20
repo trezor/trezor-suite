@@ -1,16 +1,15 @@
+import { selectIsN4w1BackupEnabled, suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { selectIsN4w1BackupEnabled } from '../../../selectors/suite/suiteSelectors';
 
 export const N4w1Backup = () => {
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
     const dispatch = useDispatch();
 
-    const toggle = () => dispatch(setDebugMode({ isN4w1BackupEnabled: !isN4w1BackupEnabled }));
+    const toggle = () =>
+        dispatch(suiteSettingsActions.setDebugMode({ isN4w1BackupEnabled: !isN4w1BackupEnabled }));
 
     return (
         <SectionItem>

@@ -1,5 +1,6 @@
 import assert from 'assert';
 
+import type { SuiteSettingsState } from '@suite/settings';
 import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -16,6 +17,7 @@ export const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 export type DeviceSettingsFixtureState = {
     suite: ReturnType<typeof suiteReducer>;
+    suiteSettings: SuiteSettingsState;
     device: ReturnType<typeof deviceReducer>;
 };
 

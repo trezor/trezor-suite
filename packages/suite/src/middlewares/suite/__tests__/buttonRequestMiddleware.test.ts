@@ -1,5 +1,6 @@
 import { lockDevice } from '@suite/locks';
 import { routerReducer } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -21,6 +22,7 @@ const getInitialState = () => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
     },
+    suiteSettings: suiteSettingsInitialState,
     wallet: {
         settings: {
             enabledNetworks: [],

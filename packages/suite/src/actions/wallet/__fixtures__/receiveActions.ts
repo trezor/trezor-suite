@@ -163,8 +163,8 @@ export default [
     {
         description: 'Show address, device not connected',
         initialState: {
-            suite: {
-                settings: { debug: {} },
+            suiteSettings: {
+                debug: {},
             },
             device: {
                 selectedDevice: mockSuiteDevice({ connected: false }),
