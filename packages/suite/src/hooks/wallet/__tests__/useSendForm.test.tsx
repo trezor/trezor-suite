@@ -5,6 +5,7 @@ import { type DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
+import { suiteSettingsInitialState } from '@suite/settings';
 import {
     configureMockStore,
     filterThunkActionTypes,
@@ -83,7 +84,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
                 coinjoin,
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thod'] },
             },
-            suiteSettings: { language: 'en' },
+            suiteSettings: { ...suiteSettingsInitialState, language: 'en' },
             router: { route: { name: 'wallet-send' } },
         },
     });

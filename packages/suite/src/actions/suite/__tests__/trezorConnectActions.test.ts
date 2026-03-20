@@ -1,4 +1,5 @@
 import { lockDevice } from '@suite/locks';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -19,6 +20,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    suiteSettings: suiteSettingsInitialState,
     device: {
         ...deviceReducerInitialState,
         devices: device?.devices || [],

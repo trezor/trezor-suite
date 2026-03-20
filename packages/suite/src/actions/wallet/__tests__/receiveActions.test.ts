@@ -1,4 +1,5 @@
 import { modalReducer } from '@suite/modal';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -63,6 +64,7 @@ type DeviceState = ReturnType<typeof deviceReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
+    suiteSettings: Partial<typeof suiteSettingsInitialState>;
     wallet: {
         receive: ReceiveState;
         selectedAccount: {
@@ -90,6 +92,10 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...state?.suite,
+    },
+    suiteSettings: {
+        ...suiteSettingsInitialState,
+        ...state?.suiteSettings,
     },
     wallet: {
         receive: receiveReducer([], { type: 'foo' } as any),

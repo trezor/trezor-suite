@@ -1,6 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
@@ -93,7 +94,7 @@ const tx2 = getWalletTransaction({
 
 type PartialState = Pick<
     AppState,
-    'suite' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager' | 'flags'
+    'suite' | 'suiteSettings' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager' | 'flags'
 > & {
     wallet: Partial<
         Pick<
@@ -115,6 +116,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),
     ),
+    suiteSettings: prevState?.suiteSettings ?? suiteSettingsInitialState,
     flags: flagsReducer(
         prevState ? prevState.flags : undefined,
         action || ({ type: 'foo' } as any),
@@ -180,6 +182,7 @@ const updateStore = (store: mockStoreType) => {
         const action = store.getActions().pop();
         const prevState = store.getState();
         store.getState().suite = getInitialState(prevState, action).suite;
+        store.getState().suiteSettings = getInitialState(prevState, action).suiteSettings;
         store.getState().flags = getInitialState(prevState, action).flags;
         store.getState().suiteSync = getInitialState(prevState, action).suiteSync;
         store.getState().device = getInitialState(prevState, action).device;

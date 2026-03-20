@@ -1,4 +1,5 @@
 import { recoveryReducer } from '@suite/recovery';
+import { suiteSettingsInitialState } from '@suite/settings';
 
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -36,6 +37,7 @@ const getInitialState = (custom?: any) => {
             ...suiteReducer(undefined, {} as Action),
             ...suite,
         },
+        suiteSettings: suiteSettingsInitialState,
         device: device ?? {},
     };
 };

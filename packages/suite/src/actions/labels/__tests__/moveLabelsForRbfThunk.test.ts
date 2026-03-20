@@ -1,11 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
+import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
 import suiteReducer from '../../../reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
+import { extraDependencies } from '../../../support/extraDependencies';
 import {
     accountReceivingCoins,
     accountSpendingCoins,
@@ -26,6 +28,7 @@ const rootReducer = combineReducers({
     }),
     metadata: metadataReducer,
     suite: suiteReducer,
+    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
     suiteSync: suiteSyncReducer,
 });
 
