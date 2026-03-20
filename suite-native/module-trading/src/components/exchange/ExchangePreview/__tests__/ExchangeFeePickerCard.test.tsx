@@ -3,6 +3,12 @@ import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
 
+// Mock FeeSelector to avoid deep dependency chain
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    FeeSelector: jest.fn(() => null),
+}));
+
 describe('ExchangeFeePickerCard', () => {
     const renderExchangeFeePickerCard = (
         props: Partial<ExchangeFeePickerCardProps> = {},
@@ -11,7 +17,6 @@ describe('ExchangeFeePickerCard', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'exchange' }),
         };
-        preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
 
         return renderWithStoreProviderAsync(
@@ -47,6 +52,6 @@ describe('ExchangeFeePickerCard', () => {
     it('should render FeePickerCard otherwise', async () => {
         const { getByText } = await renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(getByText('Transaction details')).toBeOnTheScreen();
     });
 });

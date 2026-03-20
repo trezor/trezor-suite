@@ -18,12 +18,5 @@ export const ExchangeFeePickerCard = ({ quote, isTxnError }: ExchangeFeePickerCa
         return null;
     }
 
-    return (
-        <FeePickerCard
-            trade={quote}
-            symbol={fromAccount.symbol}
-            accountKey={fromAccount.key}
-            tradingType="exchange"
-        />
-    );
+    return <FeePickerCard trade={quote} accountKey={fromAccount.key} tradingType="exchange" />;
 };

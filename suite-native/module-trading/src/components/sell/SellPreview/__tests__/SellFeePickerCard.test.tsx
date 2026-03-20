@@ -4,6 +4,12 @@ import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { SellFeePickerCard, type SellFeePickerCardProps } from '../SellFeePickerCard';
 
+// Mock FeeSelector to avoid deep dependency chain
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    FeeSelector: jest.fn(() => null),
+}));
+
 describe('SellFeePickerCard', () => {
     const renderSellFeePickerCard = (
         props: Partial<SellFeePickerCardProps> = {},
@@ -13,7 +19,6 @@ describe('SellFeePickerCard', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
         preloadedState.wallet!.trading!.providerConfirmationStatus = providerConfirmationStatus;
 
@@ -71,6 +76,6 @@ describe('SellFeePickerCard', () => {
     it('should render FeePickerCard otherwise', async () => {
         const { getByText } = await renderSellFeePickerCard({ quote: sellQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(getByText('Transaction details')).toBeOnTheScreen();
     });
 });
