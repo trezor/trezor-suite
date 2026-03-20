@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
@@ -38,12 +39,8 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
 const rootReducer = combineReducers({
-    suite: createReducer(
-        {
-            settings: { debug: {} },
-        },
-        () => ({}),
-    ),
+    suite: createReducer({}, () => ({})),
+    suiteSettings: createReducer(suiteSettingsInitialState, state => state),
     locks: locksReducer,
     device: createReducer(
         { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
@@ -62,10 +59,19 @@ type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & {
     device?: State['device'];
     suite?: State['suite'];
+    suiteSettings?: State['suiteSettings'];
     locks?: Partial<State['locks']>;
 };
 
-const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
+const initStore = ({
+    accounts,
+    coinjoin,
+    device,
+    selectedAccount,
+    suite,
+    suiteSettings,
+    locks,
+}: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
@@ -73,6 +79,7 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }
             rootReducer,
             partialState: {
                 suite,
+                suiteSettings,
                 locks,
                 device,
                 wallet: {

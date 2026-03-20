@@ -1,3 +1,4 @@
+import { suiteSettingsInitialState } from '@suite/settings';
 import type { DeviceReducerState } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
@@ -15,21 +16,25 @@ type SuiteState = ReturnType<typeof suiteReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 interface InitialState {
     suite?: Partial<SuiteState>;
+    suiteSettings?: Partial<typeof suiteSettingsInitialState>;
     firmware?: Partial<FirmwareState>;
     device?: Partial<DeviceReducerState>;
 }
 
 const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
+    const suiteSettings = override ? override.suiteSettings : undefined;
     const device = override ? override.device : undefined;
 
     return {
         suite: {
-            flags: {},
-            settings: {
-                language: 'en',
-            },
+            ...suiteReducer(undefined, { type: 'foo' } as any),
             ...suite,
+        },
+        suiteSettings: {
+            ...suiteSettingsInitialState,
+            language: 'en',
+            ...suiteSettings,
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         device: {
