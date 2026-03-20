@@ -35,15 +35,11 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
         updatedAttributes: [],
     };
 
-    // Check if this version is when the event was first added
     const eventAddedVersion = event.changelog?.addedInVersion;
     const isEventAddedInThisVersion = eventAddedVersion === version;
 
-    // Check event changelog entries for this version
     const eventChanges = event.changelog?.entries?.filter(e => e.version === version);
     if (eventChanges && eventChanges.length > 0) {
-        // Only show "Event added" if this is the version where event was first added
-        // AND there are no attribute-only changes in this version
         const hasEventLevelChanges = eventChanges.some(
             c =>
                 c.notes.toLowerCase().includes('added') || !c.notes.toLowerCase().includes('added'),
@@ -56,20 +52,15 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
         }
     }
 
-    // Check attributes
     for (const [attrName, attrDoc] of Object.entries(event.attributes)) {
         const attrChanges = attrDoc.changelog?.entries?.filter(e => e.version === version);
         if (attrChanges && attrChanges.length > 0) {
             const isAdded = attrChanges.some(c => c.notes.toLowerCase().includes('added'));
 
-            // If attribute was added in the same version as event was first added,
-            // don't show it separately (it's part of the initial event)
             if (isAdded && isEventAddedInThisVersion) {
                 continue;
             }
 
-            // If attribute has "added on [platform]" notes but event also has same notes in this version,
-            // treat it as "updated" if the event was already added on another platform
             const attrNotes = attrChanges.map(c => c.notes.toLowerCase()).join(' ');
             const eventNotes = eventChanges?.map(c => c.notes.toLowerCase()).join(' ') ?? '';
             const hasMatchingPlatformNote =
@@ -78,13 +69,11 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
                 (attrNotes.includes('added on mobile') && eventNotes.includes('added on mobile'));
 
             if (hasMatchingPlatformNote && !isEventAddedInThisVersion) {
-                // Event exists on another platform, so attributes are being "updated" (added to new platform)
                 info.updatedAttributes.push(attrName);
                 continue;
             }
 
             if (hasMatchingPlatformNote && isEventAddedInThisVersion) {
-                // Both event and attributes are being added for the first time
                 continue;
             }
 
@@ -96,7 +85,6 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
         }
     }
 
-    // If we only have attribute changes and no event-level changes, mark as event updated
     if (
         !info.isEventAdded &&
         !info.isEventUpdated &&
