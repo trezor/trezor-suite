@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "2.4.18",
+        "@shopify/react-native-skia": "2.5.1",
         "@trezor/utils": "workspace:*",
         "@types/react": "19.2.14",
         "react": "19.2.4",
