@@ -17,10 +17,124 @@ import {
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
 
-const isAdded = (event: EventDoc, version: string) => event.changelog?.addedInVersion === version;
+type ChangeInfo = {
+    isEventAdded: boolean;
+    isEventUpdated: boolean;
+    addedAttributes: string[];
+    updatedAttributes: string[];
+};
 
-const getEventChangeProps = (event: EventDoc, version: string) =>
-    isAdded(event, version)
+const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
+    const info: ChangeInfo = {
+        isEventAdded: false,
+        isEventUpdated: false,
+        addedAttributes: [],
+        updatedAttributes: [],
+    };
+
+    // Check if this version is when the event was first added
+    const eventAddedVersion = event.changelog?.addedInVersion;
+    const isEventAddedInThisVersion = eventAddedVersion === version;
+
+    // Check event changelog entries for this version
+    const eventChanges = event.changelog?.entries?.filter(e => e.version === version);
+    if (eventChanges && eventChanges.length > 0) {
+        // Only show "Event added" if this is the version where event was first added
+        // AND there are no attribute-only changes in this version
+        const hasEventLevelChanges = eventChanges.some(
+            c =>
+                c.notes.toLowerCase().includes('added') || !c.notes.toLowerCase().includes('added'),
+        );
+
+        if (isEventAddedInThisVersion && hasEventLevelChanges) {
+            info.isEventAdded = true;
+        } else if (!isEventAddedInThisVersion && hasEventLevelChanges) {
+            info.isEventUpdated = true;
+        }
+    }
+
+    // Check attributes
+    for (const [attrName, attrDoc] of Object.entries(event.attributes)) {
+        const attrChanges = attrDoc.changelog?.entries?.filter(e => e.version === version);
+        if (attrChanges && attrChanges.length > 0) {
+            const isAdded = attrChanges.some(c => c.notes.toLowerCase().includes('added'));
+
+            // If attribute was added in the same version as event was first added,
+            // don't show it separately (it's part of the initial event)
+            if (isAdded && isEventAddedInThisVersion) {
+                continue;
+            }
+
+            // If attribute has "added on [platform]" notes but event also has same notes in this version,
+            // treat it as "updated" if the event was already added on another platform
+            const attrNotes = attrChanges.map(c => c.notes.toLowerCase()).join(' ');
+            const eventNotes = eventChanges?.map(c => c.notes.toLowerCase()).join(' ') ?? '';
+            const hasMatchingPlatformNote =
+                (attrNotes.includes('added on desktop') &&
+                    eventNotes.includes('added on desktop')) ||
+                (attrNotes.includes('added on mobile') && eventNotes.includes('added on mobile'));
+
+            if (hasMatchingPlatformNote && !isEventAddedInThisVersion) {
+                // Event exists on another platform, so attributes are being "updated" (added to new platform)
+                info.updatedAttributes.push(attrName);
+                continue;
+            }
+
+            if (hasMatchingPlatformNote && isEventAddedInThisVersion) {
+                // Both event and attributes are being added for the first time
+                continue;
+            }
+
+            if (isAdded) {
+                info.addedAttributes.push(attrName);
+            } else {
+                info.updatedAttributes.push(attrName);
+            }
+        }
+    }
+
+    // If we only have attribute changes and no event-level changes, mark as event updated
+    if (
+        !info.isEventAdded &&
+        !info.isEventUpdated &&
+        (info.addedAttributes.length > 0 || info.updatedAttributes.length > 0)
+    ) {
+        info.isEventUpdated = true;
+    }
+
+    return info;
+};
+
+const getTooltipContent = (changeInfo: ChangeInfo) => {
+    const parts: string[] = [];
+
+    if (changeInfo.isEventAdded) {
+        parts.push(`Event added`);
+    }
+
+    if (changeInfo.isEventUpdated) {
+        parts.push(`Event updated`);
+    }
+
+    if (changeInfo.addedAttributes.length > 0) {
+        parts.push(`Attribute${changeInfo.addedAttributes.length > 1 ? 's' : ''} added:`);
+        changeInfo.addedAttributes.forEach(attr => {
+            parts.push(`  - ${attr}`);
+        });
+    }
+
+    if (changeInfo.updatedAttributes.length > 0) {
+        parts.push(`Attribute${changeInfo.updatedAttributes.length > 1 ? 's' : ''} updated:`);
+        changeInfo.updatedAttributes.forEach(attr => {
+            parts.push(`  - ${attr}`);
+        });
+    }
+
+    return parts.map(p => <div key={p}>{p}</div>);
+};
+
+const getEventChangeProps = (changeInfo: ChangeInfo) =>
+    changeInfo.isEventAdded
         ? { name: 'plus' as const, intent: 'brand' as const }
         : { name: 'arrowsClockwiseFilled' as const, intent: 'warning' as const };
 
@@ -72,26 +186,28 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                             .sort((a: EventDoc, b: EventDoc) =>
                                 (a.name ?? '').localeCompare(b.name ?? ''),
                             )
-                            .map(event => (
-                                <CardList.Item
-                                    paddingType="small"
-                                    onClick={() => {
-                                        onEventClick?.(event.name);
-                                    }}
-                                    key={event.name}
-                                >
-                                    <Text typographyStyle="body-xs">{event.name}</Text>
+                            .map(event => {
+                                const changeInfo = getChangeInfo(event, version);
 
-                                    <Tooltip
-                                        content={isAdded(event, version) ? 'Added' : 'Updated'}
+                                return (
+                                    <CardList.Item
+                                        paddingType="small"
+                                        onClick={() => {
+                                            onEventClick?.(event.name);
+                                        }}
+                                        key={event.name}
                                     >
-                                        <Icon
-                                            {...(getEventChangeProps(event, version) as IconProps)}
-                                            size={12}
-                                        />
-                                    </Tooltip>
-                                </CardList.Item>
-                            ))}
+                                        <Text typographyStyle="body-xs">{event.name}</Text>
+
+                                        <Tooltip content={getTooltipContent(changeInfo)}>
+                                            <Icon
+                                                {...(getEventChangeProps(changeInfo) as IconProps)}
+                                                size={12}
+                                            />
+                                        </Tooltip>
+                                    </CardList.Item>
+                                );
+                            })}
                     </CardList>
                 </Box>
             ))}
