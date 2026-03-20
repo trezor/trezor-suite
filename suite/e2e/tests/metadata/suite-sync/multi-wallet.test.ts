@@ -78,12 +78,14 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
         dashboardPage,
         metadataPage,
         walletPage,
+        devicePrompt,
     }) => {
         await test.step('Change default wallet label', async () => {
             await dashboardPage.openDeviceSwitcher();
             await metadataPage.wallet.changeLabel({
                 index: 0,
                 label: expectedDefaultWalletLabel.label,
+                confirmSuiteSync: true,
             });
         });
 
@@ -100,6 +102,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
             await metadataPage.wallet.changeLabel({
                 index: walletOne.index,
                 label: expectedWalletOneLabel.label,
+                confirmSuiteSync: true,
             });
         });
 
@@ -127,7 +130,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.openDevice(walletTwo.index);
             await metadataPage.suiteSyncBannerButton.click();
-            await metadataPage.confirmSuiteSyncSetup();
+            await devicePrompt.confirmSuiteSyncSetup();
             await expect(metadataPage.suiteSyncBanner).toBeHidden();
         });
 
@@ -137,6 +140,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
             await metadataPage.wallet.changeLabel({
                 index: walletTwo.index,
                 label: expectedWalletTwoLabel.label,
+                confirmSuiteSync: true,
             });
         });
 

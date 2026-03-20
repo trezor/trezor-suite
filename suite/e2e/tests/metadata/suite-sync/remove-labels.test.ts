@@ -21,6 +21,7 @@ test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
             evoluClient.writeTo('output', outputSeed);
+            evoluClient.seedQuotaManagerData();
         });
 
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });

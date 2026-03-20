@@ -60,6 +60,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await metadataPage.account.changeLabel({
                 accountId: AccountLabelId.BitcoinDefault1,
                 label: expectedAccount.label,
+                confirmSuiteSync: true,
             });
             await expect
                 .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))

@@ -2,8 +2,8 @@ export {
     BaseEvoluClient,
     RELAY_URL,
     QUOTA_URL,
-    wipeEvoluRelayData,
-    restartEvoluRelayServer,
+    wipeAndRestartEvoluRelayServer,
     checkEvoluRelayServerRunning,
+    seedQuotaManagerData,
 } from './baseEvoluClient';
 export type { EvoluClientInitParams } from './baseEvoluClient';
