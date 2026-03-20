@@ -9,7 +9,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { prepareThpReducer } from '@suite-common/thp';
 
 import { forgetPersistentDataPreloadedStateFixture } from '../__fixtures__/forgetPersistentDataPreloadedState';
-import { forgetSingleDevicePersistentDataThunk } from '../deviceThunks';
+import { forgetDevicePersistentDataThunk } from '../deviceThunks';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(
@@ -27,10 +27,10 @@ const initStore = () =>
         preloadedState: forgetPersistentDataPreloadedStateFixture,
     });
 
-describe(forgetSingleDevicePersistentDataThunk.name, () => {
+describe(forgetDevicePersistentDataThunk.name, () => {
     it('forgets a single device data with Bluetooth and THP', async () => {
         const store = initStore();
-        await store.dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: 'device-id-1' }));
+        await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-1' }));
         const state = store.getState();
 
         // device-id-1 persistent data is removed, others remain
@@ -46,7 +46,7 @@ describe(forgetSingleDevicePersistentDataThunk.name, () => {
 
     it('forgets a single device data with THP, but no Bluetooth data', async () => {
         const store = initStore();
-        await store.dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: 'device-id-2' }));
+        await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-2' }));
         const state = store.getState();
 
         expect(state.device.persistentDeviceData.map(d => d.device_id)).toEqual([
@@ -59,7 +59,7 @@ describe(forgetSingleDevicePersistentDataThunk.name, () => {
 
     it('forgets a single device data with pointer to non-existent data', async () => {
         const store = initStore();
-        await store.dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: 'device-id-3' }));
+        await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-3' }));
         const state = store.getState();
 
         expect(state.device.persistentDeviceData.map(d => d.device_id)).toEqual([
@@ -72,7 +72,7 @@ describe(forgetSingleDevicePersistentDataThunk.name, () => {
 
     it('does nothing for a non-existent device', async () => {
         const store = initStore();
-        await store.dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: 'device-id-4' }));
+        await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-4' }));
         const state = store.getState();
         expect(state).toEqual(forgetPersistentDataPreloadedStateFixture);
     });
