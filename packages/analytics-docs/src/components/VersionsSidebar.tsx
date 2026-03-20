@@ -40,14 +40,9 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
 
     const eventChanges = event.changelog?.entries?.filter(e => e.version === version);
     if (eventChanges && eventChanges.length > 0) {
-        const hasEventLevelChanges = eventChanges.some(
-            c =>
-                c.notes.toLowerCase().includes('added') || !c.notes.toLowerCase().includes('added'),
-        );
-
-        if (isEventAddedInThisVersion && hasEventLevelChanges) {
+        if (isEventAddedInThisVersion) {
             info.isEventAdded = true;
-        } else if (!isEventAddedInThisVersion && hasEventLevelChanges) {
+        } else {
             info.isEventUpdated = true;
         }
     }
