@@ -34,6 +34,7 @@ import {
     type EarnStackRoutes,
     type FirmwareLanguageStackRoutes,
     type FirmwareUpdateStackRoutes,
+    type ForgetDeviceStackRoutes,
     type HomeStackRoutes,
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
@@ -254,6 +255,8 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.DeviceConnection]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
+    [DeviceSettingsStackRoutes.ForgetDevice]: undefined;
+    [DeviceSettingsStackRoutes.ForgetDeviceStack]: NavigatorScreenParams<ForgetDeviceStackParamList>;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
@@ -295,6 +298,12 @@ export type FirmwareLanguageStackParamList = {
 export type DeviceAutoConnectStackParamList = {
     [DeviceAutoConnectStackRoutes.DeviceConnectionGuard]: undefined;
     [DeviceAutoConnectStackRoutes.ConfirmAutoConnect]: undefined;
+};
+
+export type ForgetDeviceStackParamList = {
+    [ForgetDeviceStackRoutes.ForgetDeviceConfirmation]: undefined;
+    [ForgetDeviceStackRoutes.ForgetDeviceGuide]: undefined;
+    [ForgetDeviceStackRoutes.ForgetDeviceFinish]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {

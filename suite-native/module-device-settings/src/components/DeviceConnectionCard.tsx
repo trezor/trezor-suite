@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -21,7 +22,7 @@ export const DeviceConnectionCard = () => {
     };
 
     return (
-        <CompactCardWithIconLayout
+        <DeviceSettingsItemCard
             icon="plugs"
             title={<Translation id="moduleDeviceSettings.connection.title" />}
             subtitle={<Translation id="moduleDeviceSettings.connection.description" />}

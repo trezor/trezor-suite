@@ -12,6 +12,7 @@ import {
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { asTypedNativeAnalytics } from '@suite-native/analytics';
+import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
@@ -39,7 +40,12 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
         if (isDeviceEventAction(action, DEVICE.DISCONNECT)) {
-            dispatch(forgetDisconnectedDevices({ device: action.payload }));
+            dispatch(
+                forgetDisconnectedDevices({
+                    device: action.payload,
+                    forceForget: selectIsBluetoothDeviceOsUnpairingRequired(getState()),
+                }),
+            );
 
             const discovery = selectDiscoveryByDevicePath(getState(), action.payload.path);
             if (discovery?.status === 'complete' && action.payload.mode === 'normal') {

@@ -35,10 +35,10 @@ export const useBluetoothPlatformSpecificAlerts = () => {
 
     const showSystemUnpairingAlert = useCallback(() => {
         showAlert({
-            title: translate('bluetooth.alerts.systemUnpairing.title.ios'),
+            title: translate('bluetooth.alerts.systemUnpairing.title'),
             textAlign: 'left',
             description: (
-                <SystemUnpairingAlertIosInstructions translationKey="bluetooth.alerts.systemUnpairing.description.ios" />
+                <SystemUnpairingAlertIosInstructions translationKey="bluetooth.alerts.systemUnpairing.description" />
             ),
             primaryButtonTitle: translate('generic.buttons.gotIt'),
             onPressPrimaryButton: () => {

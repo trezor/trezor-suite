@@ -13624,6 +13624,7 @@ __metadata:
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@suite-native/module-check-backup": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
@@ -13631,9 +13632,11 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
+    react-native-svg: "npm:15.15.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -40428,6 +40431,20 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/cb8cc1c18c8d340f53a34a15e84ad6a3bd0ee43384d712a9e4c2a8257428c129c9bae0900ab86f64a4ebdc27684e6b12be9064a410e8f54c7a649534f12a9d76
+  languageName: node
+  linkType: hard
+
+"react-native-svg@npm:15.15.2":
+  version: 15.15.2
+  resolution: "react-native-svg@npm:15.15.2"
+  dependencies:
+    css-select: "npm:^5.1.0"
+    css-tree: "npm:^1.1.3"
+    warn-once: "npm:0.1.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/d3d6d29f036c3a9f7c877351eb179cb676c187ec4844a677b13f1766eaa0fb1cd531d7f87d68d69410ec95aed9cc9797f9e35e6354229ed702e4990ea6dbe40c
   languageName: node
   linkType: hard
 

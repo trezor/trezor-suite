@@ -31,6 +31,7 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@suite-native/module-check-backup": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
@@ -38,9 +39,11 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.4",
+        "react-native-svg": "15.15.2",
         "react-redux": "9.2.0"
     }
 }

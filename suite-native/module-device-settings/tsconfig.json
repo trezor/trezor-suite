@@ -28,6 +28,7 @@
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../module-check-backup" },
         { "path": "../navigation" },
         { "path": "../services" },
@@ -35,6 +36,7 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]

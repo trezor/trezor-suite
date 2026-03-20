@@ -43,8 +43,8 @@ export const useBluetoothPlatformSpecificAlerts = () => {
 
     const showSystemUnpairingAlert = useCallback(() => {
         showAlert({
-            title: translate('bluetooth.alerts.systemUnpairing.title.android'),
-            description: translate('bluetooth.alerts.systemUnpairing.description.android'),
+            title: translate('bluetooth.alerts.systemUnpairing.title'),
+            description: translate('bluetooth.alerts.systemUnpairing.description'),
             primaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.primaryButton'),
             onPressPrimaryButton: () => {
                 dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
